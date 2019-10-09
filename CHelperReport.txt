@@ -1,3 +1,2 @@
-32 src/main/java/contest/TaskB.json
-1
+31 src/main/java/contest/Task.json
 0
