@@ -37,6 +37,10 @@ public class FastInput {
         }
     }
 
+    public String next() {
+        return readString();
+    }
+
     public int readInt() {
         int sign = 1;
 
