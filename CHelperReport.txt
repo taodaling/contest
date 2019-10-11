@@ -1,2 +1,2 @@
-62 src/main/java/contest/G - Adilbek and the Watering System.json
+32 src/main/java/contest/TaskC.json
 0

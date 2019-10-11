@@ -1,0 +1,40 @@
+{
+  "name" : "TaskB",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4 5 8\n1 1\n1 4\n1 5\n2 3\n3 1\n3 2\n3 4\n4 4",
+    "output" : "0\n0\n0\n2\n4\n0\n0\n0\n0\n0\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "10 10 20\n1 1\n1 4\n1 9\n2 5\n3 10\n4 2\n4 7\n5 9\n6 4\n6 6\n6 7\n7 1\n7 3\n7 7\n8 1\n8 5\n8 10\n9 2\n10 4\n10 9",
+    "output" : "4\n26\n22\n10\n2\n0\n0\n0\n0\n0",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256m -Xss64m",
+  "mainClass" : "Main",
+  "taskClass" : "contest.TaskB",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.10.11",
+  "contestName" : "Atcoder ARC061",
+  "truncate" : true,
+  "inputClass" : "template.FastInput",
+  "outputClass" : "java.io.PrintWriter",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

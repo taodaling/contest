@@ -22,9 +22,9 @@ public class NumberTheory {
         /**
          * O(pc)
          *
-         * @param p  the prime
+         * @param p the prime
          * @param pc p^c
-         * @param g  buffer
+         * @param g buffer
          */
         public ExtLucasFactorial(int p, int pc, int[] g) {
             this.p = p;
@@ -44,8 +44,7 @@ public class NumberTheory {
         }
 
         /**
-         * return m! (mod pc) without any factor which is multiple of p.
-         * <br>
+         * return m! (mod pc) without any factor which is multiple of p. <br>
          * O(\log_2^2{m})
          */
         private int fact(long m) {
@@ -61,8 +60,7 @@ public class NumberTheory {
         }
 
         /**
-         * Find C(m,n), it means choose n elements from a set whose size is m.
-         * <br>
+         * Find C(m,n), it means choose n elements from a set whose size is m. <br>
          * O(\log_2^2{m})
          */
         public int composite(long m, long n) {
@@ -89,7 +87,8 @@ public class NumberTheory {
         public ExtLucas(int p) {
             Map<Integer, Integer> factors = pr.findAllFactors(p);
             for (Map.Entry<Integer, Integer> entry : factors.entrySet()) {
-                factorialMap.put(entry.getValue(), new ExtLucasFactorial(entry.getKey(), entry.getValue(), new int[entry.getValue() + 1]));
+                factorialMap.put(entry.getValue(),
+                                new ExtLucasFactorial(entry.getKey(), entry.getValue(), new int[entry.getValue() + 1]));
             }
         }
 
@@ -115,7 +114,8 @@ public class NumberTheory {
         public LongExtLucas(long p) {
             Map<Long, Long> factors = pr.findAllFactors(p);
             for (Map.Entry<Long, Long> entry : factors.entrySet()) {
-                factorialMap.put(entry.getValue().intValue(), new ExtLucasFactorial(entry.getKey().intValue(), entry.getValue().intValue(), new int[entry.getValue().intValue() + 1]));
+                factorialMap.put(entry.getValue().intValue(), new ExtLucasFactorial(entry.getKey().intValue(),
+                                entry.getValue().intValue(), new int[entry.getValue().intValue() + 1]));
             }
         }
 
@@ -236,7 +236,8 @@ public class NumberTheory {
         int[] smallestPrimeFactor;
         int[] numberOfSmallestPrimeFactor;
 
-        public MultiplicativeFunctionSieve(int limit, boolean enableMobius, boolean enableEuler, boolean enableFactors) {
+        public MultiplicativeFunctionSieve(int limit, boolean enableMobius, boolean enableEuler,
+                        boolean enableFactors) {
             isComp = new boolean[limit + 1];
             primes = new int[limit + 1];
             numberOfSmallestPrimeFactor = new int[limit + 1];
@@ -251,8 +252,8 @@ public class NumberTheory {
                     int pi = primes[j] * i;
                     smallestPrimeFactor[pi] = primes[j];
                     numberOfSmallestPrimeFactor[pi] = smallestPrimeFactor[i] == primes[j]
-                            ? (numberOfSmallestPrimeFactor[i] * numberOfSmallestPrimeFactor[primes[j]])
-                            : numberOfSmallestPrimeFactor[primes[j]];
+                                    ? (numberOfSmallestPrimeFactor[i] * numberOfSmallestPrimeFactor[primes[j]])
+                                    : numberOfSmallestPrimeFactor[primes[j]];
                     isComp[pi] = true;
                     if (i % primes[j] == 0) {
                         break;
@@ -270,8 +271,8 @@ public class NumberTheory {
                         if (numberOfSmallestPrimeFactor[i] != smallestPrimeFactor[i]) {
                             mobius[i] = 0;
                         } else {
-                            mobius[i] = mobius[numberOfSmallestPrimeFactor[i]] *
-                                    mobius[i / numberOfSmallestPrimeFactor[i]];
+                            mobius[i] = mobius[numberOfSmallestPrimeFactor[i]]
+                                            * mobius[i / numberOfSmallestPrimeFactor[i]];
                         }
                     }
                 }
@@ -287,8 +288,8 @@ public class NumberTheory {
                         if (numberOfSmallestPrimeFactor[i] == i) {
                             euler[i] = i - i / smallestPrimeFactor[i];
                         } else {
-                            euler[i] = euler[numberOfSmallestPrimeFactor[i]] *
-                                    euler[i / numberOfSmallestPrimeFactor[i]];
+                            euler[i] = euler[numberOfSmallestPrimeFactor[i]]
+                                            * euler[i / numberOfSmallestPrimeFactor[i]];
                         }
                     }
                 }
@@ -304,8 +305,8 @@ public class NumberTheory {
                         if (numberOfSmallestPrimeFactor[i] == i) {
                             factors[i] = 1 + factors[i / smallestPrimeFactor[i]];
                         } else {
-                            factors[i] = factors[numberOfSmallestPrimeFactor[i]] *
-                                    factors[i / numberOfSmallestPrimeFactor[i]];
+                            factors[i] = factors[numberOfSmallestPrimeFactor[i]]
+                                            * factors[i / numberOfSmallestPrimeFactor[i]];
                         }
                     }
                 }
@@ -548,6 +549,14 @@ public class NumberTheory {
         public Factorial(int limit, Modular modular) {
             this(new int[limit + 1], new int[limit + 1], new InverseNumber(limit, modular), limit, modular);
         }
+
+        public int fact(int n) {
+            return fact[n];
+        }
+
+        public int invFact(int n) {
+            return inv[n];
+        }
     }
 
     /**
@@ -766,8 +775,7 @@ public class NumberTheory {
         }
 
         /**
-         * Find the representation of n=p1^c1 * p2^c2 * ... * pm ^ cm.
-         * <br>
+         * Find the representation of n=p1^c1 * p2^c2 * ... * pm ^ cm. <br>
          * The returned map contained such entries: pi -> pi^ci
          */
         public Map<Long, Long> findAllFactors(long n) {
@@ -828,9 +836,8 @@ public class NumberTheory {
                 return false;
             }
             this.m = m1 / g * m2;
-            this.r = BigInteger.valueOf(a).multiply(BigInteger.valueOf((x2 - x1) / g))
-                    .multiply(BigInteger.valueOf(m1)).add(BigInteger.valueOf(x1))
-                    .mod(BigInteger.valueOf(this.m)).longValue();
+            this.r = BigInteger.valueOf(a).multiply(BigInteger.valueOf((x2 - x1) / g)).multiply(BigInteger.valueOf(m1))
+                            .add(BigInteger.valueOf(x1)).mod(BigInteger.valueOf(this.m)).longValue();
             return true;
         }
     }
@@ -852,7 +859,7 @@ public class NumberTheory {
                 return 1;
             }
             return composite.modular.mul(composite.composite((int) (m % modulus), (int) (n % modulus)),
-                    composite(m / modulus, n / modulus));
+                            composite(m / modulus, n / modulus));
         }
     }
 
@@ -877,12 +884,9 @@ public class NumberTheory {
         }
 
         /**
-         * Find all prime factor of n
-         * <br>
-         * p1 => p1^c1
-         * <br>
-         * ...
-         * <br>
+         * Find all prime factor of n <br>
+         * p1 => p1^c1 <br>
+         * ... <br>
          * pk => pk^ck
          */
         public Map<Integer, Integer> findAllFactors(int n) {
@@ -934,8 +938,7 @@ public class NumberTheory {
         Modular modular = new Modular(1);
 
         /**
-         * Find ka=b(mod c) where k is the minimum possible non negative integer.
-         * <br>
+         * Find ka=b(mod c) where k is the minimum possible non negative integer. <br>
          * If it's impossible, -1 will be returned.
          */
         public long solve(long a, long b, int c) {
@@ -1017,8 +1020,7 @@ public class NumberTheory {
                 int real = 1;
                 int img = 0;
                 for (; i >= 0; i--) {
-                    int nReal = modular.plus(modular.mul(real, real),
-                            modular.mul(modular.mul(img, img), w));
+                    int nReal = modular.plus(modular.mul(real, real), modular.mul(modular.mul(img, img), w));
                     int nImg = modular.mul(modular.mul(real, img), 2);
                     real = nReal;
                     img = nImg;
@@ -1040,7 +1042,7 @@ public class NumberTheory {
             }
             Map<Integer, Integer> factorMap = rho.findAllFactors(modular.m - 1);
             int[] factors = factorMap.keySet().stream().mapToInt(Integer::intValue).toArray();
-            for (int i = 2; ; i++) {
+            for (int i = 2;; i++) {
                 boolean valid = true;
                 for (int factor : factors) {
                     if (power.pow(i, (modular.m - 1) / factor) == 1) {
