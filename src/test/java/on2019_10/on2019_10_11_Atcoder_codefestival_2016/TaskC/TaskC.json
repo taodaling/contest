@@ -1,0 +1,75 @@
+{
+  "name" : "TaskC",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "xyz\n4",
+    "output" : "aya\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "a\n25",
+    "output" : "z\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "codefestival\n100",
+    "output" : "aaaafeaaivap",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "a\n1",
+    "output" : "b",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "z\n2",
+    "output" : "b",
+    "index" : 4,
+    "active" : true
+  }, {
+    "input" : "zz\n0",
+    "output" : "zz",
+    "index" : 5,
+    "active" : true
+  }, {
+    "input" : "ab\n1",
+    "output" : "ac",
+    "index" : 6,
+    "active" : true
+  }, {
+    "input" : "ab\n26",
+    "output" : "ab",
+    "index" : 7,
+    "active" : true
+  }, {
+    "input" : "nsomyarhao\n98",
+    "output" : "aaaaaaaaaj",
+    "index" : 8,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256m -Xss64m",
+  "mainClass" : "Main",
+  "taskClass" : "on2019_10.on2019_10_11_Atcoder_codefestival_2016.TaskC.TaskC",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.10.11",
+  "contestName" : "Atcoder codefestival 2016",
+  "truncate" : true,
+  "inputClass" : "template.FastInput",
+  "outputClass" : "java.io.PrintWriter",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}
