@@ -3,6 +3,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.IOException;
+import java.util.Deque;
+import java.util.ArrayDeque;
 import java.io.InputStream;
 
 /**
@@ -24,31 +26,53 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             PrintWriter out = new PrintWriter(outputStream);
-            TaskC solver = new TaskC();
+            TaskB solver = new TaskB();
             solver.solve(1, in, out);
             out.close();
         }
     }
-    static class TaskC {
+    static class TaskB {
         public void solve(int testNumber, FastInput in, PrintWriter out) {
-            char[] s = new char[100000];
-            int n = in.readString(s, 0);
-            int k = in.readInt();
-
-            for (int i = 0; i < n && k > 0; i++) {
-                if (s[i] == 'a') {
-                    continue;
+            int n = in.readInt();
+            int[] perm = new int[n + 1];
+            int[] prev = new int[n + 1];
+            int[] next = new int[n + 1];
+            for (int i = 1; i <= n; i++) {
+                perm[i] = in.readInt();
+            }
+            Deque<Integer> decQueue = new ArrayDeque<>(n);
+            Deque<Integer> incQueue = new ArrayDeque<>(n);
+            for (int i = 1; i <= n; i++) {
+                while (decQueue.size() > 0 && perm[decQueue.peekLast()] > perm[i]) {
+                    decQueue.removeLast();
                 }
-                int atLeast = 'z' + 1 - s[i];
-                if (k < atLeast) {
-                    continue;
+                if (decQueue.size() == 0) {
+                    prev[i] = 1;
+                } else {
+                    prev[i] = decQueue.peekLast() + 1;
                 }
-                s[i] = 'a';
-                k -= atLeast;
+                decQueue.addLast(i);
+            }
+            for (int i = n; i >= 1; i--) {
+                while (incQueue.size() > 0 && perm[incQueue.peekFirst()] >= perm[i]) {
+                    incQueue.removeFirst();
+                }
+                if (incQueue.size() == 0) {
+                    next[i] = n;
+                } else {
+                    next[i] = incQueue.peekFirst() - 1;
+                }
+                incQueue.addFirst(i);
             }
 
-            s[n - 1] = (char) ((s[n - 1] - 'a' + k) % ('z' - 'a' + 1) + 'a');
-            out.println(String.valueOf(s, 0, n));
+            long ans = 0;
+            for (int i = 1; i <= n; i++) {
+                int l = i - prev[i] + 1;
+                int r = next[i] + 1 - i;
+                ans += (long) l * r * perm[i];
+            }
+
+            out.println(ans);
         }
 
     }
@@ -107,18 +131,6 @@ public class Main {
             }
 
             return val;
-        }
-
-        public int readString(char[] data, int offset) {
-            skipBlank();
-
-            int originalOffset = offset;
-            while (next > 32) {
-                data[offset++] = (char) next;
-                next = read();
-            }
-
-            return offset - originalOffset;
         }
 
     }
