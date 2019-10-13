@@ -6,13 +6,15 @@ import java.util.Arrays;
  * For all i, prepare c(n, i) in O(nlog2n)
  */
 public class FirstStirlingNumber {
-    private static NumberTheory.Modular mod = new NumberTheory.Modular(998244353);
-    private static NumberTheory.Log2 log2 = new NumberTheory.Log2();
+    private NumberTheory.Modular mod;
+    private NumberTheoryTransform ntt;
+    private NumberTheory.Log2 log2 = new NumberTheory.Log2();
     private NumberTheory.Factorial factorial;
     private int[] stirling;
 
 
-    public FirstStirlingNumber(NumberTheory.Factorial factorial, int n) {
+    public FirstStirlingNumber(NumberTheoryTransform ntt, NumberTheory.Factorial factorial, int n) {
+        this.ntt = ntt;
         this.factorial = factorial;
         stirling = getStirling(n);
     }
@@ -42,7 +44,7 @@ public class FirstStirlingNumber {
         int half = n / 2;
         calcStirling(ans, buf, buf2, r, half);
         int proper = log2.ceilLog((half + 1) * 2 - 1);
-        NumberTheoryTransform.prepareReverse(r, proper);
+        ntt.prepareReverse(r, proper);
         Arrays.fill(buf, 0, 1 << proper, 0);
         Arrays.fill(buf2, 0, 1 << proper, 0);
         int ni = 1;
@@ -52,19 +54,19 @@ public class FirstStirlingNumber {
             ni = mod.mul(ni, half);
         }
         reverse(buf, 0, half);
-        NumberTheoryTransform.dft(r, buf, proper);
-        NumberTheoryTransform.dft(r, buf2, proper);
-        NumberTheoryTransform.dotMul(buf, buf2, buf, proper);
-        NumberTheoryTransform.idft(r, buf, proper);
+        ntt.dft(r, buf, proper);
+        ntt.dft(r, buf2, proper);
+        ntt.dotMul(buf, buf2, buf, proper);
+        ntt.idft(r, buf, proper);
         reverse(buf, 0, half);
         for (int i = 0; i <= half; i++) {
             buf[i] = mod.mul(buf[i], factorial.inv[i]);
         }
         Arrays.fill(buf, half + 1, 1 << proper, 0);
-        NumberTheoryTransform.dft(r, buf, proper);
-        NumberTheoryTransform.dft(r, ans, proper);
-        NumberTheoryTransform.dotMul(ans, buf, ans, proper);
-        NumberTheoryTransform.idft(r, ans, proper);
+        ntt.dft(r, buf, proper);
+        ntt.dft(r, ans, proper);
+        ntt.dotMul(ans, buf, ans, proper);
+        ntt.idft(r, ans, proper);
     }
 
     private void reverse(int[] data, int l, int r) {

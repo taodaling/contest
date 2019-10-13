@@ -22,9 +22,9 @@ public class NumberTheory {
         /**
          * O(pc)
          *
-         * @param p the prime
+         * @param p  the prime
          * @param pc p^c
-         * @param g buffer
+         * @param g  buffer
          */
         public ExtLucasFactorial(int p, int pc, int[] g) {
             this.p = p;
@@ -88,7 +88,7 @@ public class NumberTheory {
             Map<Integer, Integer> factors = pr.findAllFactors(p);
             for (Map.Entry<Integer, Integer> entry : factors.entrySet()) {
                 factorialMap.put(entry.getValue(),
-                                new ExtLucasFactorial(entry.getKey(), entry.getValue(), new int[entry.getValue() + 1]));
+                        new ExtLucasFactorial(entry.getKey(), entry.getValue(), new int[entry.getValue() + 1]));
             }
         }
 
@@ -115,7 +115,7 @@ public class NumberTheory {
             Map<Long, Long> factors = pr.findAllFactors(p);
             for (Map.Entry<Long, Long> entry : factors.entrySet()) {
                 factorialMap.put(entry.getValue().intValue(), new ExtLucasFactorial(entry.getKey().intValue(),
-                                entry.getValue().intValue(), new int[entry.getValue().intValue() + 1]));
+                        entry.getValue().intValue(), new int[entry.getValue().intValue() + 1]));
             }
         }
 
@@ -237,7 +237,7 @@ public class NumberTheory {
         int[] numberOfSmallestPrimeFactor;
 
         public MultiplicativeFunctionSieve(int limit, boolean enableMobius, boolean enableEuler,
-                        boolean enableFactors) {
+                                           boolean enableFactors) {
             isComp = new boolean[limit + 1];
             primes = new int[limit + 1];
             numberOfSmallestPrimeFactor = new int[limit + 1];
@@ -252,8 +252,8 @@ public class NumberTheory {
                     int pi = primes[j] * i;
                     smallestPrimeFactor[pi] = primes[j];
                     numberOfSmallestPrimeFactor[pi] = smallestPrimeFactor[i] == primes[j]
-                                    ? (numberOfSmallestPrimeFactor[i] * numberOfSmallestPrimeFactor[primes[j]])
-                                    : numberOfSmallestPrimeFactor[primes[j]];
+                            ? (numberOfSmallestPrimeFactor[i] * numberOfSmallestPrimeFactor[primes[j]])
+                            : numberOfSmallestPrimeFactor[primes[j]];
                     isComp[pi] = true;
                     if (i % primes[j] == 0) {
                         break;
@@ -272,7 +272,7 @@ public class NumberTheory {
                             mobius[i] = 0;
                         } else {
                             mobius[i] = mobius[numberOfSmallestPrimeFactor[i]]
-                                            * mobius[i / numberOfSmallestPrimeFactor[i]];
+                                    * mobius[i / numberOfSmallestPrimeFactor[i]];
                         }
                     }
                 }
@@ -289,7 +289,7 @@ public class NumberTheory {
                             euler[i] = i - i / smallestPrimeFactor[i];
                         } else {
                             euler[i] = euler[numberOfSmallestPrimeFactor[i]]
-                                            * euler[i / numberOfSmallestPrimeFactor[i]];
+                                    * euler[i / numberOfSmallestPrimeFactor[i]];
                         }
                     }
                 }
@@ -306,7 +306,7 @@ public class NumberTheory {
                             factors[i] = 1 + factors[i / smallestPrimeFactor[i]];
                         } else {
                             factors[i] = factors[numberOfSmallestPrimeFactor[i]]
-                                            * factors[i / numberOfSmallestPrimeFactor[i]];
+                                    * factors[i / numberOfSmallestPrimeFactor[i]];
                         }
                     }
                 }
@@ -319,6 +319,10 @@ public class NumberTheory {
      */
     public static class Modular {
         int m;
+
+        public int getMod() {
+            return m;
+        }
 
         public Modular(int m) {
             this.m = m;
@@ -535,8 +539,14 @@ public class NumberTheory {
     public static class Factorial {
         int[] fact;
         int[] inv;
+        Modular modular;
+
+        public Modular getModular() {
+            return modular;
+        }
 
         public Factorial(int[] fact, int[] inv, InverseNumber in, int limit, Modular modular) {
+            this.modular = modular;
             this.fact = fact;
             this.inv = inv;
             fact[0] = inv[0] = 1;
@@ -566,13 +576,14 @@ public class NumberTheory {
         final Factorial factorial;
         final Modular modular;
 
-        public Composite(Factorial factorial, Modular modular) {
+        public Composite(Factorial factorial) {
             this.factorial = factorial;
-            this.modular = modular;
+            this.modular = factorial.modular;
         }
 
+
         public Composite(int limit, Modular modular) {
-            this(new Factorial(limit, modular), modular);
+            this(new Factorial(limit, modular));
         }
 
         public int composite(int m, int n) {
@@ -837,7 +848,7 @@ public class NumberTheory {
             }
             this.m = m1 / g * m2;
             this.r = BigInteger.valueOf(a).multiply(BigInteger.valueOf((x2 - x1) / g)).multiply(BigInteger.valueOf(m1))
-                            .add(BigInteger.valueOf(x1)).mod(BigInteger.valueOf(this.m)).longValue();
+                    .add(BigInteger.valueOf(x1)).mod(BigInteger.valueOf(this.m)).longValue();
             return true;
         }
     }
@@ -859,7 +870,7 @@ public class NumberTheory {
                 return 1;
             }
             return composite.modular.mul(composite.composite((int) (m % modulus), (int) (n % modulus)),
-                            composite(m / modulus, n / modulus));
+                    composite(m / modulus, n / modulus));
         }
     }
 
@@ -982,7 +993,6 @@ public class NumberTheory {
         }
     }
 
-
     public static class QuadraticResidue {
         final Modular modular;
         final BitOperator bitOperator = new BitOperator();
@@ -1042,7 +1052,7 @@ public class NumberTheory {
             }
             Map<Integer, Integer> factorMap = rho.findAllFactors(modular.m - 1);
             int[] factors = factorMap.keySet().stream().mapToInt(Integer::intValue).toArray();
-            for (int i = 2;; i++) {
+            for (int i = 2; ; i++) {
                 boolean valid = true;
                 for (int factor : factors) {
                     if (power.pow(i, (modular.m - 1) / factor) == 1) {
@@ -1054,6 +1064,42 @@ public class NumberTheory {
                     return i;
                 }
             }
+        }
+    }
+
+    public static class PrimitiveRoot {
+        private int[] factors;
+        private Modular mod;
+        private Power pow;
+        int phi;
+        private static PollardRho rho = new PollardRho();
+
+        public PrimitiveRoot(int x) {
+            phi = x - 1;
+            mod = new Modular(x);
+            pow = new Power(mod);
+            factors = rho.findAllFactors(phi).keySet()
+                    .stream().mapToInt(Integer::intValue).toArray();
+        }
+
+        public int findMinPrimitiveRoot() {
+            return findMinPrimitiveRoot(2);
+        }
+
+        public int findMinPrimitiveRoot(int since) {
+            for (int i = since; i < mod.m; i++) {
+                boolean flag = true;
+                for (int f : factors) {
+                    if (pow.pow(i, phi / f) == 1) {
+                        flag = false;
+                        break;
+                    }
+                }
+                if (flag) {
+                    return i;
+                }
+            }
+            return -1;
         }
     }
 }

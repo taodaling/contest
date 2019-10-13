@@ -5,13 +5,16 @@ package template;
  * for all i, prepare all s(n,i) in O(nlog2n) time complexity
  */
 public class SecondStirlingNumber {
-    private static NumberTheory.Modular mod = new NumberTheory.Modular(998244353);
+    private NumberTheoryTransform ntt;
+    private NumberTheory.Modular mod;
     private NumberTheory.Factorial factorial;
-    private static NumberTheory.Log2 log2 = new NumberTheory.Log2();
-    private static NumberTheory.Power power = new NumberTheory.Power(mod);
+    private NumberTheory.Log2 log2 = new NumberTheory.Log2();
+    private NumberTheory.Power power = new NumberTheory.Power(mod);
     private int[] stirling;
 
-    public SecondStirlingNumber(NumberTheory.Factorial factorial, int n) {
+    public SecondStirlingNumber(NumberTheoryTransform ntt, NumberTheory.Factorial factorial, int n) {
+        this.ntt = ntt;
+        this.mod = factorial.getModular();
         this.factorial = factorial;
         stirling = getStirling(n);
     }
@@ -32,11 +35,11 @@ public class SecondStirlingNumber {
             b[i] = mod.mul(b[i], power.pow(i, n));
         }
 
-        NumberTheoryTransform.prepareReverse(r, m);
-        NumberTheoryTransform.dft(r, a, m);
-        NumberTheoryTransform.dft(r, b, m);
-        NumberTheoryTransform.dotMul(a, b, a, m);
-        NumberTheoryTransform.idft(r, a, m);
+        ntt.prepareReverse(r, m);
+        ntt.dft(r, a, m);
+        ntt.dft(r, b, m);
+        ntt.dotMul(a, b, a, m);
+        ntt.idft(r, a, m);
         return a;
     }
 }

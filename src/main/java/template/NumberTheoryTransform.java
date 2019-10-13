@@ -3,13 +3,22 @@ package template;
 import java.util.Arrays;
 
 public class NumberTheoryTransform {
-    private static final NumberTheory.Modular MODULAR = new NumberTheory.Modular(998244353);
-    private static final NumberTheory.Power POWER = new NumberTheory.Power(MODULAR);
-    private static final int G = 3;
-    private static int[] wCache = new int[23];
-    private static int[] invCache = new int[23];
+    public static final NumberTheoryTransform STANDARD = new NumberTheoryTransform(new NumberTheory.Modular(998244353), 3);
+    private NumberTheory.Modular MODULAR;
+    private NumberTheory.Power POWER;
+    private int G;
+    private int[] wCache = new int[30];
+    private int[] invCache = new int[30];
 
-    static {
+
+    public NumberTheoryTransform(NumberTheory.Modular mod){
+        this(mod, new NumberTheory.PrimitiveRoot(mod.getMod()).findMinPrimitiveRoot());
+    }
+
+    public NumberTheoryTransform(NumberTheory.Modular mod, int g) {
+        this.MODULAR = mod;
+        this.POWER = new NumberTheory.Power(mod);
+        this.G = g;
         for (int i = 0, until = wCache.length; i < until; i++) {
             int s = 1 << i;
             wCache[i] = POWER.pow(G, (MODULAR.m - 1) / 2 / s);
@@ -17,13 +26,13 @@ public class NumberTheoryTransform {
         }
     }
 
-    public static void dotMul(int[] a, int[] b, int[] c, int m) {
+    public void dotMul(int[] a, int[] b, int[] c, int m) {
         for (int i = 0, n = 1 << m; i < n; i++) {
             c[i] = MODULAR.mul(a[i], b[i]);
         }
     }
 
-    public static void prepareReverse(int[] r, int b) {
+    public void prepareReverse(int[] r, int b) {
         int n = 1 << b;
         r[0] = 0;
         for (int i = 1; i < n; i++) {
@@ -31,7 +40,7 @@ public class NumberTheoryTransform {
         }
     }
 
-    public static void dft(int[] r, int[] p, int m) {
+    public void dft(int[] r, int[] p, int m) {
         int n = 1 << m;
 
         for (int i = 0; i < n; i++) {
@@ -62,7 +71,7 @@ public class NumberTheoryTransform {
         }
     }
 
-    public static void idft(int[] r, int[] p, int m) {
+    public void idft(int[] r, int[] p, int m) {
         dft(r, p, m);
 
         int n = 1 << m;
@@ -77,7 +86,7 @@ public class NumberTheoryTransform {
         }
     }
 
-    public static void reverse(int[] p, int l, int r) {
+    public void reverse(int[] p, int l, int r) {
         while (l < r) {
             int tmp = p[l];
             p[l] = p[r];
@@ -87,7 +96,7 @@ public class NumberTheoryTransform {
         }
     }
 
-    public static int rankOf(int[] p) {
+    public int rankOf(int[] p) {
         for (int i = p.length - 1; i >= 0; i--) {
             if (p[i] > 0) {
                 return i;
@@ -99,7 +108,7 @@ public class NumberTheoryTransform {
     /**
      * calc a = b * c + remainder, m >= 1 + ceil(log_2 max(|a|, |b|))
      */
-    public static void divide(int[] r, int[] a, int[] b, int[] c, int[] remainder, int m)  {
+    public void divide(int[] r, int[] a, int[] b, int[] c, int[] remainder, int m) {
         int rankA = rankOf(a);
         int rankB = rankOf(b);
         reverse(a, 0, rankA);
@@ -134,7 +143,7 @@ public class NumberTheoryTransform {
      * <br>
      * You are supposed to guarantee the lengths of all arrays are greater than or equal to 2^{ceil(log2(m)) + 1}
      */
-    private static void inverse(int[] r, int[] p, int[] inv, int[] buf, int m) {
+    private void inverse(int[] r, int[] p, int[] inv, int[] buf, int m) {
         if (m == 0) {
             inv[0] = POWER.inverse(p[0]);
             return;
