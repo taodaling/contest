@@ -1,4 +1,6 @@
-package contest;
+package on2019_10.on2019_10_14_.TaskE0;
+
+
 
 
 import java.io.PrintWriter;
