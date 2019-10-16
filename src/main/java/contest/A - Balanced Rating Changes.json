@@ -1,0 +1,40 @@
+{
+  "name" : "A - Balanced Rating Changes",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3\n10\n-5\n-5\n",
+    "output" : "5\n-2\n-3\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "7\n-7\n-29\n0\n3\n24\n-29\n38\n",
+    "output" : "-3\n-15\n0\n2\n12\n-15\n19\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx512M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.TaskA",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.10.16",
+  "contestName" : "Codeforces Global Round 5",
+  "truncate" : true,
+  "inputClass" : "template.FastInput",
+  "outputClass" : "template.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

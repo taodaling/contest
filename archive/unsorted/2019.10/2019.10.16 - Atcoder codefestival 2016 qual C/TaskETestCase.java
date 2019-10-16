@@ -1,5 +1,7 @@
 package contest;
 
+
+
 import net.egork.chelper.task.Test;
 import net.egork.chelper.tester.TestCase;
 import template.NumberTheory;
@@ -17,15 +19,15 @@ public class TaskETestCase {
     @TestCase
     public Collection<Test> createTests() {
         List<Test> list = new ArrayList<>();
-        for(int i = 0; i < 10; i++){
+        for(int i = 0; i < 100; i++){
             list.add(createSingleTask());
         }
         return list;
     }
 
+    Random random = new Random(0);
     public Test createSingleTask() {
-        Random random = new Random();
-        int n = random.nextInt(1) + 1;
+        int n = 3;//random.nextInt(3) + 1;
         int[] num = new int[n];
         for (int i = 0; i < n; i++) {
             num[i] = i + 1;
@@ -88,6 +90,7 @@ public class TaskETestCase {
             ans = mod.plus(ans, dfs(num, used, i + 1));
             used[j] = false;
         }
+        num[i] = 0;
         return ans;
     }
 }
