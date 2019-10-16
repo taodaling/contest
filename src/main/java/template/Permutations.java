@@ -38,6 +38,30 @@ public class Permutations {
         return new TailPermutation(seq, since);
     }
 
+    public static long rankOf(int[] perm) {
+        return rankOf(perm, 0);
+    }
+
+    private static long rankOf(int[] perm, int i) {
+        if (perm.length == i) {
+            return 1;
+        }
+        int remain = perm.length - i - 1;
+        long cnt = perm[i] * PERMUTATION_CNT[remain];
+        for (int j = i + 1; j < perm.length; j++) {
+            if (perm[j] > perm[i]) {
+                perm[j]--;
+            }
+        }
+        cnt += rankOf(perm, i + 1);
+        for (int j = i + 1; j < perm.length; j++) {
+            if (perm[j] >= perm[i]) {
+                perm[j]++;
+            }
+        }
+        return cnt;
+    }
+
     private static void genSeq(long[] seq, int offset, long k) {
         int n = seq.length;
         if (offset == n) {
@@ -74,7 +98,7 @@ public class Permutations {
             if (e < offset) {
                 return e;
             }
-            for (int i = 0; ; i++) {
+            for (int i = 0;; i++) {
                 if (e == p[i]) {
                     return i + offset;
                 }

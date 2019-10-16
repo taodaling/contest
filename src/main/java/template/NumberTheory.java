@@ -1,5 +1,7 @@
 package template;
 
+import com.sun.org.apache.xpath.internal.operations.Mod;
+
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
@@ -326,6 +328,20 @@ public class NumberTheory {
 
         public Modular(int m) {
             this.m = m;
+        }
+
+        public Modular(long m){
+            this.m = (int)m;
+            if(this.m != m){
+                throw new IllegalArgumentException();
+            }
+        }
+
+        public Modular(double m){
+            this.m = (int)m;
+            if(this.m != m){
+                throw new IllegalArgumentException();
+            }
         }
 
         public int valueOf(int x) {
