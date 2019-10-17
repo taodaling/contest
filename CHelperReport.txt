@@ -1,2 +1,2 @@
-31 src/main/java/contest/Task.json
+56 src/main/java/contest/E - Alice and the Unfair Game.json
 0

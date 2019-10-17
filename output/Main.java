@@ -2,7 +2,6 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.io.Closeable;
@@ -11,8 +10,9 @@ import java.io.OutputStreamWriter;
 import java.io.InputStream;
 
 /**
- * Built using CHelper plug-in Actual solution is at the top
- * 
+ * Built using CHelper plug-in
+ * Actual solution is at the top
+ *
  * @author daltao
  */
 public class Main {
@@ -29,283 +29,133 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            Task solver = new Task();
+            TaskE solver = new TaskE();
             solver.solve(1, in, out);
             out.close();
         }
     }
-    static class Task {
+
+    static class TaskE {
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            ModLinearFeedbackShiftRegister mlfsr =
-                            new ModLinearFeedbackShiftRegister(new NumberTheory.Modular(1e9 + 7), n);
+            int m = in.readInt();
+            int[] seq = new int[m];
+            for (int i = 0; i < m; i++) {
+                seq[i] = in.readInt() - 1;
+            }
+            if (n == 1 && m > 0) {
+                out.println(0);
+                return;
+            }
+
+            Node[] nodes = new Node[n];
             for (int i = 0; i < n; i++) {
-                mlfsr.add(in.readInt());
+                nodes[i] = new Node();
+                nodes[i].id = i;
             }
-            out.println(mlfsr.length());
+
+            for (int i = 0; i < n; i++) {
+                nodes[i].rewind();
+            }
+
+            Splay root = Splay.NIL;
+            for (int i = 0; i < n; i++) {
+                Splay s = new Splay();
+                s.key = i;
+                s.node = nodes[i];
+                s.pushUp();
+                root = Splay.add(root, s);
+            }
+
+            for (int i = 0; i < m; i++) {
+                root = Splay.selectKeyAsRoot(root, seq[i] + 1);
+                if (root.key != seq[i] + 1) {
+                    root.setFix(-1);
+                    continue;
+                }
+                root.left.setFix(-1);
+                Splay r = Splay.splitRight(root);
+                r = Splay.selectMinAsRoot(r);
+                r.setFix(-1);
+                if (r.key != root.key) {
+                    root.setRight(r);
+                    continue;
+                }
+                Node.merge(r.node, root.node);
+                Splay l = Splay.splitLeft(root);
+                r.pushDown();
+                r.setLeft(l);
+                root = r;
+            }
+
+            dfs(root);
+            for (int i = 0; i < n; i++) {
+                nodes[i].left = nodes[i].find().place;
+            }
+
+            for (int i = 0; i < n; i++) {
+                nodes[i].rewind();
+            }
+
+            root = Splay.NIL;
+            for (int i = 0; i < n; i++) {
+                Splay s = new Splay();
+                s.key = i;
+                s.node = nodes[i];
+                s.pushUp();
+                root = Splay.add(root, s);
+            }
+
+            for (int i = 0; i < m; i++) {
+                root = Splay.selectKeyAsRoot(root, seq[i] - 1);
+                if (root.key != seq[i] - 1) {
+                    root.setFix(+1);
+                    continue;
+                }
+                root.right.setFix(+1);
+                Splay r = Splay.splitLeft(root);
+                r = Splay.selectMaxAsRoot(r);
+                r.setFix(+1);
+                if (r.key != root.key) {
+                    root.setLeft(r);
+                    continue;
+                }
+                Node.merge(r.node, root.node);
+                Splay l = Splay.splitRight(root);
+                r.pushDown();
+                r.setRight(l);
+                root = r;
+            }
+
+            dfs(root);
+            for (int i = 0; i < n; i++) {
+                nodes[i].right = nodes[i].find().place;
+            }
+
+            long ans = 0;
+            for (int i = 0; i < n; i++) {
+                int l = Math.max(0, nodes[i].left - 1);
+                int r = Math.min(n - 1, nodes[i].right + 1);
+                int range = r - l + 1;
+                range = Math.max(0, range);
+                ans += range;
+            }
+
+            out.println(ans);
         }
 
-    }
-    static class NumberTheory {
-        public static class Modular {
-            int m;
-
-            public Modular(int m) {
-                this.m = m;
-            }
-
-            public Modular(long m) {
-                this.m = (int) m;
-                if (this.m != m) {
-                    throw new IllegalArgumentException();
-                }
-            }
-
-            public Modular(double m) {
-                this.m = (int) m;
-                if (this.m != m) {
-                    throw new IllegalArgumentException();
-                }
-            }
-
-            public int valueOf(int x) {
-                x %= m;
-                if (x < 0) {
-                    x += m;
-                }
-                return x;
-            }
-
-            public int valueOf(long x) {
-                x %= m;
-                if (x < 0) {
-                    x += m;
-                }
-                return (int) x;
-            }
-
-            public int mul(int x, int y) {
-                return valueOf((long) x * y);
-            }
-
-            public int plus(int x, int y) {
-                return valueOf(x + y);
-            }
-
-            public int subtract(int x, int y) {
-                return valueOf(x - y);
-            }
-
-            public String toString() {
-                return "mod " + m;
-            }
-
-        }
-
-        public static class Power {
-            final NumberTheory.Modular modular;
-
-            public Power(NumberTheory.Modular modular) {
-                this.modular = modular;
-            }
-
-            public int pow(int x, long n) {
-                if (n == 0) {
-                    return 1;
-                }
-                long r = pow(x, n >> 1);
-                r = modular.valueOf(r * r);
-                if ((n & 1) == 1) {
-                    r = modular.valueOf(r * x);
-                }
-                return (int) r;
-            }
-
-            public int inverse(int x) {
-                return pow(x, modular.m - 2);
-            }
-
-        }
-
-    }
-    static class ModLinearFeedbackShiftRegister {
-        private IntList cm;
-        int m = -1;
-        int dm;
-        private IntList cn;
-        private IntList buf;
-        private IntList seq;
-        private NumberTheory.Modular mod;
-        private NumberTheory.Power pow;
-
-        public ModLinearFeedbackShiftRegister(NumberTheory.Modular mod, int cap) {
-            cm = new IntList(cap + 1);
-            cn = new IntList(cap + 1);
-            seq = new IntList(cap + 1);
-            buf = new IntList(cap + 1);
-            cn.add(1);
-
-            this.mod = mod;
-            this.pow = new NumberTheory.Power(mod);
-        }
-
-        public ModLinearFeedbackShiftRegister(NumberTheory.Modular mod) {
-            this(mod, 0);
-        }
-
-        private int estimateDelta() {
-            int n = seq.size() - 1;
-            int ans = 0;
-            for (int i = 0, until = cn.size(); i < until; i++) {
-                ans = mod.plus(ans, mod.mul(cn.get(i), seq.get(n - i)));
-            }
-            return ans;
-        }
-
-        public void add(int x) {
-            x = mod.valueOf(x);
-            int n = seq.size();
-
-            seq.add(x);
-            int dn = estimateDelta();
-            if (dn == 0) {
+        public void dfs(Splay root) {
+            if (root == Splay.NIL) {
                 return;
             }
-
-            if (m < 0) {
-                cm.clear();
-                cm.addAll(cn);
-                dm = dn;
-                m = n;
-
-                cn.expandWith(0, n + 2);
-                return;
-            }
-
-            int ln = cn.size() - 1;
-            int len = Math.max(ln, n + 1 - ln);
-            buf.clear();
-            buf.expandWith(0, len + 1);
-            for (int i = 0, until = cn.size(); i < until; i++) {
-                buf.set(i, cn.get(i));
-            }
-
-            int factor = mod.mul(dn, pow.inverse(dm));
-            for (int i = n - m, until = n - m + cm.size(); i < until; i++) {
-                buf.set(i, mod.subtract(buf.get(i), mod.mul(factor, cm.get(i - (n - m)))));
-            }
-
-            if (cn.size() < buf.size()) {
-                IntList tmp = cm;
-                cm = cn;
-                cn = tmp;
-                m = n;
-                dm = dn;
-            }
-            {
-                IntList tmp = cn;
-                cn = buf;
-                buf = tmp;
-            }
-
-
-        }
-
-        public int length() {
-            return cn.size() - 1;
-        }
-
-        public String toString() {
-            return cn.toString();
+            root.pushDown();
+            root.node.find().place = root.key;
+            dfs(root.left);
+            dfs(root.right);
         }
 
     }
-    static class IntList {
-        private int size;
-        private int cap;
-        private int[] data;
-        private static final int[] EMPTY = new int[0];
 
-        public IntList(int cap) {
-            this.cap = cap;
-            if (cap == 0) {
-                data = EMPTY;
-            } else {
-                data = new int[cap];
-            }
-        }
-
-        public IntList(IntList list) {
-            this.size = list.size;
-            this.cap = list.cap;
-            this.data = Arrays.copyOf(list.data, size);
-        }
-
-        public IntList() {
-            this(0);
-        }
-
-        private void ensureSpace(int need) {
-            int req = size + need;
-            if (req > cap) {
-                while (cap < req) {
-                    cap = Math.max(cap + 10, 2 * cap);
-                }
-                data = Arrays.copyOf(data, cap);
-            }
-        }
-
-        private void checkRange(int i) {
-            if (i < 0 || i >= size) {
-                throw new ArrayIndexOutOfBoundsException();
-            }
-        }
-
-        public int get(int i) {
-            checkRange(i);
-            return data[i];
-        }
-
-        public void add(int x) {
-            ensureSpace(1);
-            data[size++] = x;
-        }
-
-        public void addAll(int[] x, int offset, int len) {
-            ensureSpace(len);
-            System.arraycopy(x, offset, data, size, len);
-            size += len;
-        }
-
-        public void addAll(IntList list) {
-            addAll(list.data, 0, list.size);
-        }
-
-        public void expandWith(int x, int len) {
-            ensureSpace(len - size);
-            while (size < len) {
-                add(x);
-            }
-        }
-
-        public void set(int i, int x) {
-            checkRange(i);
-            data[i] = x;
-        }
-
-        public int size() {
-            return size;
-        }
-
-        public void clear() {
-            size = 0;
-        }
-
-        public String toString() {
-            return Arrays.toString(Arrays.copyOf(data, size));
-        }
-
-    }
     static class FastInput {
         private final InputStream is;
         private byte[] buf = new byte[1 << 13];
@@ -364,6 +214,306 @@ public class Main {
         }
 
     }
+
+    static class Node {
+        Node p;
+        int rank;
+        int place;
+        int left;
+        int right;
+        int id;
+
+        public String toString() {
+            return "" + id;
+        }
+
+        public void rewind() {
+            p = this;
+            rank = 0;
+        }
+
+        public Node find() {
+            return p.p == p ? p : (p = p.find());
+        }
+
+        public static void merge(Node a, Node b) {
+            a = a.find();
+            b = b.find();
+            if (a == b) {
+                return;
+            }
+            if (a.rank == b.rank) {
+                a.rank++;
+            }
+            if (a.rank > b.rank) {
+                b.p = a;
+            } else {
+                a.p = b;
+            }
+        }
+
+    }
+
+    static class Splay implements Cloneable {
+        public static final Splay NIL = new Splay();
+        Splay left = NIL;
+        Splay right = NIL;
+        Splay father = NIL;
+        int size = 1;
+        int key;
+        int fix;
+        Node node;
+
+        static {
+            NIL.left = NIL;
+            NIL.right = NIL;
+            NIL.father = NIL;
+            NIL.size = 0;
+            NIL.key = -(int) 1e9;
+        }
+
+        public void setFix(int f) {
+            if (this == NIL) {
+                return;
+            }
+            key += f;
+            fix += f;
+        }
+
+        public static void splay(Splay x) {
+            if (x == NIL) {
+                return;
+            }
+            Splay y, z;
+            while ((y = x.father) != NIL) {
+                if ((z = y.father) == NIL) {
+                    y.pushDown();
+                    x.pushDown();
+                    if (x == y.left) {
+                        zig(x);
+                    } else {
+                        zag(x);
+                    }
+                } else {
+                    z.pushDown();
+                    y.pushDown();
+                    x.pushDown();
+                    if (x == y.left) {
+                        if (y == z.left) {
+                            zig(y);
+                            zig(x);
+                        } else {
+                            zig(x);
+                            zag(x);
+                        }
+                    } else {
+                        if (y == z.left) {
+                            zag(x);
+                            zig(x);
+                        } else {
+                            zag(y);
+                            zag(x);
+                        }
+                    }
+                }
+            }
+
+            x.pushDown();
+            x.pushUp();
+        }
+
+        public static void zig(Splay x) {
+            Splay y = x.father;
+            Splay z = y.father;
+            Splay b = x.right;
+
+            y.setLeft(b);
+            x.setRight(y);
+            z.changeChild(y, x);
+
+            y.pushUp();
+        }
+
+        public static void zag(Splay x) {
+            Splay y = x.father;
+            Splay z = y.father;
+            Splay b = x.left;
+
+            y.setRight(b);
+            x.setLeft(y);
+            z.changeChild(y, x);
+
+            y.pushUp();
+        }
+
+        public void setLeft(Splay x) {
+            left = x;
+            x.father = this;
+        }
+
+        public void setRight(Splay x) {
+            right = x;
+            x.father = this;
+        }
+
+        public void changeChild(Splay y, Splay x) {
+            if (left == y) {
+                setLeft(x);
+            } else {
+                setRight(x);
+            }
+        }
+
+        public void pushUp() {
+            size = left.size + right.size + 1;
+        }
+
+        public void pushDown() {
+            if (this == NIL) {
+                return;
+            }
+            if (fix != 0) {
+                left.setFix(fix);
+                right.setFix(fix);
+                fix = 0;
+            }
+        }
+
+        public static void toString(Splay root, StringBuilder builder) {
+            if (root == NIL) {
+                return;
+            }
+            root.pushDown();
+            toString(root.left, builder);
+            builder.append(root.key).append(',');
+            toString(root.right, builder);
+        }
+
+        public Splay clone() {
+            try {
+                return (Splay) super.clone();
+            } catch (CloneNotSupportedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        public static Splay cloneTree(Splay splay) {
+            if (splay == NIL) {
+                return NIL;
+            }
+            splay = splay.clone();
+            splay.left = cloneTree(splay.left);
+            splay.right = cloneTree(splay.right);
+            return splay;
+        }
+
+        public static Splay add(Splay root, Splay node) {
+            if (root == NIL) {
+                return node;
+            }
+            Splay p = root;
+            while (root != NIL) {
+                p = root;
+                root.pushDown();
+                if (root.key < node.key) {
+                    root = root.right;
+                } else {
+                    root = root.left;
+                }
+            }
+
+            if (p.key < node.key) {
+                p.setRight(node);
+            } else {
+                p.setLeft(node);
+            }
+            p.pushUp();
+            splay(node);
+            return node;
+        }
+
+        public static Splay selectMinAsRoot(Splay root) {
+            if (root == NIL) {
+                return root;
+            }
+            root.pushDown();
+            while (root.left != NIL) {
+                root = root.left;
+                root.pushDown();
+            }
+            splay(root);
+            return root;
+        }
+
+        public static Splay selectMaxAsRoot(Splay root) {
+            if (root == NIL) {
+                return root;
+            }
+            root.pushDown();
+            while (root.right != NIL) {
+                root = root.right;
+                root.pushDown();
+            }
+            splay(root);
+            return root;
+        }
+
+        public static Splay splitLeft(Splay root) {
+            root.pushDown();
+            Splay left = root.left;
+            left.father = NIL;
+            root.setLeft(NIL);
+            root.pushUp();
+            return left;
+        }
+
+        public static Splay splitRight(Splay root) {
+            root.pushDown();
+            Splay right = root.right;
+            right.father = NIL;
+            root.setRight(NIL);
+            root.pushUp();
+            return right;
+        }
+
+        public static Splay selectKeyAsRoot(Splay root, int k) {
+            if (root == NIL) {
+                return NIL;
+            }
+            Splay trace = root;
+            Splay father = NIL;
+            Splay find = NIL;
+            while (trace != NIL) {
+                father = trace;
+                trace.pushDown();
+                if (trace.key > k) {
+                    trace = trace.left;
+                } else {
+                    if (trace.key == k) {
+                        find = trace;
+                        trace = trace.left;
+                    } else {
+                        trace = trace.right;
+                    }
+                }
+            }
+
+            splay(father);
+            if (find != NIL) {
+                splay(find);
+                return find;
+            }
+            return father;
+        }
+
+        public String toString() {
+            StringBuilder builder = new StringBuilder().append(key).append(":");
+            toString(cloneTree(this), builder);
+            return builder.toString();
+        }
+
+    }
+
     static class FastOutput implements AutoCloseable, Closeable {
         private StringBuilder cache = new StringBuilder(1 << 20);
         private final Writer os;
@@ -377,6 +527,11 @@ public class Main {
         }
 
         public FastOutput println(int c) {
+            cache.append(c).append('\n');
+            return this;
+        }
+
+        public FastOutput println(long c) {
             cache.append(c).append('\n');
             return this;
         }
