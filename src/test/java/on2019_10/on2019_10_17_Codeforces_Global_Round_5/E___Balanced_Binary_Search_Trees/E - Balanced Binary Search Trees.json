@@ -19,11 +19,16 @@
     "output" : "0\n",
     "index" : 1,
     "active" : true
+  }, {
+    "input" : "5",
+    "output" : "1",
+    "index" : 2,
+    "active" : true
   } ],
   "location" : "src/main/java/contest",
   "vmArgs" : "-Xmx512M",
   "mainClass" : "Main",
-  "taskClass" : "contest.TaskE",
+  "taskClass" : "on2019_10.on2019_10_17_Codeforces_Global_Round_5.E___Balanced_Binary_Search_Trees.TaskE",
   "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
   "checkerParameters" : "",
   "testClasses" : [ ],

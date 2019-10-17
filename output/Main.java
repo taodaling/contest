@@ -3,20 +3,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
-import java.util.Collection;
 import java.io.IOException;
-import java.util.Deque;
 import java.io.UncheckedIOException;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
-import java.util.ArrayDeque;
 import java.io.InputStream;
 
 /**
- * Built using CHelper plug-in
- * Actual solution is at the top
- *
+ * Built using CHelper plug-in Actual solution is at the top
+ * 
  * @author daltao
  */
 public class Main {
@@ -33,160 +29,283 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            TaskD solver = new TaskD();
+            Task solver = new Task();
             solver.solve(1, in, out);
             out.close();
         }
     }
-
-    static class TaskD {
-        int n;
-        Segment seg;
-        int[] a;
-        int[] dp;
-        int[] next;
-        int[] half;
-
-        public int dp(int i) {
-            i %= n;
-            if (dp[i] == -1) {
-                if (next[i] != -1 && seg.query(i + 1, next[i], 0, 2 * n) * 2 >= a[i]) {
-                    int ans = dp(next[i]);
-                    if (ans == -1) {
-                        dp[i] = -1;
-                    } else {
-                        dp[i] = ans + next[i] - i;
-                    }
-                    return dp[i];
-                }
-
-                int l = i + 1;
-                int r = 2 * n;
-                while (l < r) {
-                    int m = (l + r) >> 1;
-                    int v = seg.query(i + 1, m, 0, 2 * n);
-                    if (v * 2 < a[i]) {
-                        r = m;
-                    } else {
-                        l = m + 1;
-                    }
-                }
-                if (next[i] != -1 && next[i] <= l) {
-                    int ans = dp(next[i]);
-                    if (ans == -1) {
-                        dp[i] = -1;
-                    } else {
-                        dp[i] = ans + next[i] - i;
-                    }
-                } else if (l == 2 * n) {
-                    dp[i] = -1;
-                } else {
-                    dp[i] = l - i;
-                }
-            }
-            return dp[i];
-        }
-
+    static class Task {
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            n = in.readInt();
-            a = new int[2 * n + 1];
+            int n = in.readInt();
+            ModLinearFeedbackShiftRegister mlfsr =
+                            new ModLinearFeedbackShiftRegister(new NumberTheory.Modular(1e9 + 7), n);
             for (int i = 0; i < n; i++) {
-                a[n + i] = a[i] = in.readInt();
+                mlfsr.add(in.readInt());
             }
-
-            seg = new Segment(0, 2 * n, a);
-            dp = new int[n];
-            Arrays.fill(dp, -1);
-
-            next = new int[n];
-            Deque<Integer> minQue = new ArrayDeque<>(n * 2);
-            for (int i = 2 * n - 1; i >= n; i--) {
-                while (!minQue.isEmpty() && a[minQue.peekFirst()] <= a[i]) {
-                    minQue.removeFirst();
-                }
-                minQue.addFirst(i);
-            }
-            for (int i = n - 1; i >= 0; i--) {
-                while (!minQue.isEmpty() && a[minQue.peekFirst()] <= a[i]) {
-                    minQue.removeFirst();
-                }
-                if (minQue.isEmpty()) {
-                    next[i] = -1;
-                } else {
-                    next[i] = minQue.peekFirst();
-                }
-                minQue.addFirst(i);
-            }
-
-            half = new int[n];
-            int last = 2 * n - 1;
-            for (int i = n - 1; i >= 0; i--) {
-
-            }
-
-            for (int i = 0; i < n; i++) {
-                int ans = dp(i);
-                out.println(ans);
-            }
+            out.println(mlfsr.length());
         }
 
     }
+    static class NumberTheory {
+        public static class Modular {
+            int m;
 
-    static class Segment implements Cloneable {
-        private Segment left;
-        private Segment right;
-        private int min;
-        private int max;
-        private int maxIndex;
-
-        public void pushUp() {
-            min = Math.min(left.min, right.min);
-            max = Math.max(left.max, right.max);
-            if (max == left.max) {
-                maxIndex = left.maxIndex;
-            } else {
-                maxIndex = right.maxIndex;
+            public Modular(int m) {
+                this.m = m;
             }
-        }
 
-        public void pushDown() {
-        }
-
-        public Segment(int l, int r, int[] a) {
-            if (l < r) {
-                int m = (l + r) >> 1;
-                left = new Segment(l, m, a);
-                right = new Segment(m + 1, r, a);
-                pushUp();
-            } else {
-                maxIndex = l;
-                min = max = a[l];
+            public Modular(long m) {
+                this.m = (int) m;
+                if (this.m != m) {
+                    throw new IllegalArgumentException();
+                }
             }
-        }
 
-        private boolean covered(int ll, int rr, int l, int r) {
-            return ll <= l && rr >= r;
-        }
-
-        private boolean noIntersection(int ll, int rr, int l, int r) {
-            return ll > r || rr < l;
-        }
-
-        public int query(int ll, int rr, int l, int r) {
-            if (noIntersection(ll, rr, l, r)) {
-                return Integer.MAX_VALUE;
+            public Modular(double m) {
+                this.m = (int) m;
+                if (this.m != m) {
+                    throw new IllegalArgumentException();
+                }
             }
-            if (covered(ll, rr, l, r)) {
-                return min;
+
+            public int valueOf(int x) {
+                x %= m;
+                if (x < 0) {
+                    x += m;
+                }
+                return x;
             }
-            pushDown();
-            int m = (l + r) >> 1;
-            return Math.min(left.query(ll, rr, l, m),
-                    right.query(ll, rr, m + 1, r));
+
+            public int valueOf(long x) {
+                x %= m;
+                if (x < 0) {
+                    x += m;
+                }
+                return (int) x;
+            }
+
+            public int mul(int x, int y) {
+                return valueOf((long) x * y);
+            }
+
+            public int plus(int x, int y) {
+                return valueOf(x + y);
+            }
+
+            public int subtract(int x, int y) {
+                return valueOf(x - y);
+            }
+
+            public String toString() {
+                return "mod " + m;
+            }
+
+        }
+
+        public static class Power {
+            final NumberTheory.Modular modular;
+
+            public Power(NumberTheory.Modular modular) {
+                this.modular = modular;
+            }
+
+            public int pow(int x, long n) {
+                if (n == 0) {
+                    return 1;
+                }
+                long r = pow(x, n >> 1);
+                r = modular.valueOf(r * r);
+                if ((n & 1) == 1) {
+                    r = modular.valueOf(r * x);
+                }
+                return (int) r;
+            }
+
+            public int inverse(int x) {
+                return pow(x, modular.m - 2);
+            }
+
         }
 
     }
+    static class ModLinearFeedbackShiftRegister {
+        private IntList cm;
+        int m = -1;
+        int dm;
+        private IntList cn;
+        private IntList buf;
+        private IntList seq;
+        private NumberTheory.Modular mod;
+        private NumberTheory.Power pow;
 
+        public ModLinearFeedbackShiftRegister(NumberTheory.Modular mod, int cap) {
+            cm = new IntList(cap + 1);
+            cn = new IntList(cap + 1);
+            seq = new IntList(cap + 1);
+            buf = new IntList(cap + 1);
+            cn.add(1);
+
+            this.mod = mod;
+            this.pow = new NumberTheory.Power(mod);
+        }
+
+        public ModLinearFeedbackShiftRegister(NumberTheory.Modular mod) {
+            this(mod, 0);
+        }
+
+        private int estimateDelta() {
+            int n = seq.size() - 1;
+            int ans = 0;
+            for (int i = 0, until = cn.size(); i < until; i++) {
+                ans = mod.plus(ans, mod.mul(cn.get(i), seq.get(n - i)));
+            }
+            return ans;
+        }
+
+        public void add(int x) {
+            x = mod.valueOf(x);
+            int n = seq.size();
+
+            seq.add(x);
+            int dn = estimateDelta();
+            if (dn == 0) {
+                return;
+            }
+
+            if (m < 0) {
+                cm.clear();
+                cm.addAll(cn);
+                dm = dn;
+                m = n;
+
+                cn.expandWith(0, n + 2);
+                return;
+            }
+
+            int ln = cn.size() - 1;
+            int len = Math.max(ln, n + 1 - ln);
+            buf.clear();
+            buf.expandWith(0, len + 1);
+            for (int i = 0, until = cn.size(); i < until; i++) {
+                buf.set(i, cn.get(i));
+            }
+
+            int factor = mod.mul(dn, pow.inverse(dm));
+            for (int i = n - m, until = n - m + cm.size(); i < until; i++) {
+                buf.set(i, mod.subtract(buf.get(i), mod.mul(factor, cm.get(i - (n - m)))));
+            }
+
+            if (cn.size() < buf.size()) {
+                IntList tmp = cm;
+                cm = cn;
+                cn = tmp;
+                m = n;
+                dm = dn;
+            }
+            {
+                IntList tmp = cn;
+                cn = buf;
+                buf = tmp;
+            }
+
+
+        }
+
+        public int length() {
+            return cn.size() - 1;
+        }
+
+        public String toString() {
+            return cn.toString();
+        }
+
+    }
+    static class IntList {
+        private int size;
+        private int cap;
+        private int[] data;
+        private static final int[] EMPTY = new int[0];
+
+        public IntList(int cap) {
+            this.cap = cap;
+            if (cap == 0) {
+                data = EMPTY;
+            } else {
+                data = new int[cap];
+            }
+        }
+
+        public IntList(IntList list) {
+            this.size = list.size;
+            this.cap = list.cap;
+            this.data = Arrays.copyOf(list.data, size);
+        }
+
+        public IntList() {
+            this(0);
+        }
+
+        private void ensureSpace(int need) {
+            int req = size + need;
+            if (req > cap) {
+                while (cap < req) {
+                    cap = Math.max(cap + 10, 2 * cap);
+                }
+                data = Arrays.copyOf(data, cap);
+            }
+        }
+
+        private void checkRange(int i) {
+            if (i < 0 || i >= size) {
+                throw new ArrayIndexOutOfBoundsException();
+            }
+        }
+
+        public int get(int i) {
+            checkRange(i);
+            return data[i];
+        }
+
+        public void add(int x) {
+            ensureSpace(1);
+            data[size++] = x;
+        }
+
+        public void addAll(int[] x, int offset, int len) {
+            ensureSpace(len);
+            System.arraycopy(x, offset, data, size, len);
+            size += len;
+        }
+
+        public void addAll(IntList list) {
+            addAll(list.data, 0, list.size);
+        }
+
+        public void expandWith(int x, int len) {
+            ensureSpace(len - size);
+            while (size < len) {
+                add(x);
+            }
+        }
+
+        public void set(int i, int x) {
+            checkRange(i);
+            data[i] = x;
+        }
+
+        public int size() {
+            return size;
+        }
+
+        public void clear() {
+            size = 0;
+        }
+
+        public String toString() {
+            return Arrays.toString(Arrays.copyOf(data, size));
+        }
+
+    }
     static class FastInput {
         private final InputStream is;
         private byte[] buf = new byte[1 << 13];
@@ -245,7 +364,6 @@ public class Main {
         }
 
     }
-
     static class FastOutput implements AutoCloseable, Closeable {
         private StringBuilder cache = new StringBuilder(1 << 20);
         private final Writer os;

@@ -22,6 +22,26 @@ public class Randomized {
         }
     }
 
+    public static void randomizedArray(char[] data, int from, int to) {
+        to--;
+        for (int i = from; i <= to; i++) {
+            int s = nextInt(i, to);
+            char tmp = data[i];
+            data[i] = data[s];
+            data[s] = tmp;
+        }
+    }
+
+    public static void randomizedArray(byte[] data, int from, int to) {
+        to--;
+        for (int i = from; i <= to; i++) {
+            int s = nextInt(i, to);
+            byte tmp = data[i];
+            data[i] = data[s];
+            data[s] = tmp;
+        }
+    }
+
     public static void randomizedArray(long[] data, int from, int to) {
         to--;
         for (int i = from; i <= to; i++) {
