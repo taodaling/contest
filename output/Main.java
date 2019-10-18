@@ -2,6 +2,7 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.io.Closeable;
@@ -10,9 +11,8 @@ import java.io.OutputStreamWriter;
 import java.io.InputStream;
 
 /**
- * Built using CHelper plug-in
- * Actual solution is at the top
- *
+ * Built using CHelper plug-in Actual solution is at the top
+ * 
  * @author daltao
  */
 public class Main {
@@ -29,133 +29,125 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            TaskE solver = new TaskE();
+            TaskF solver = new TaskF();
             solver.solve(1, in, out);
             out.close();
         }
     }
+    static class TaskF {
+        NumberTheory.Modular mod = new NumberTheory.Modular(998244353);
+        NumberTheory.Factorial fact = new NumberTheory.Factorial(10000, mod);
+        NumberTheory.Composite comp = new NumberTheory.Composite(fact);
+        boolean[] rows;
+        boolean[] cols;
+        int[][] rowPutWays;
+        int[][] colPutWays;
+        int h;
+        int w;
 
-    static class TaskE {
         public void solve(int testNumber, FastInput in, FastOutput out) {
+            h = in.readInt();
+            w = in.readInt();
+
+            rows = new boolean[h + 1];
+            cols = new boolean[w + 1];
+
+            int rowCnt = 0;
+            int colCnt = 0;
+
             int n = in.readInt();
-            int m = in.readInt();
-            int[] seq = new int[m];
-            for (int i = 0; i < m; i++) {
-                seq[i] = in.readInt() - 1;
-            }
-            if (n == 1 && m > 0) {
-                out.println(0);
-                return;
-            }
-
-            Node[] nodes = new Node[n];
             for (int i = 0; i < n; i++) {
-                nodes[i] = new Node();
-                nodes[i].id = i;
+                int x1 = in.readInt();
+                int y1 = in.readInt();
+                int x2 = in.readInt();
+                int y2 = in.readInt();
+                rows[x1] = rows[x2] = true;
+                cols[y1] = cols[y2] = true;
             }
 
-            for (int i = 0; i < n; i++) {
-                nodes[i].rewind();
-            }
-
-            Splay root = Splay.NIL;
-            for (int i = 0; i < n; i++) {
-                Splay s = new Splay();
-                s.key = i;
-                s.node = nodes[i];
-                s.pushUp();
-                root = Splay.add(root, s);
-            }
-
-            for (int i = 0; i < m; i++) {
-                root = Splay.selectKeyAsRoot(root, seq[i] + 1);
-                if (root.key != seq[i] + 1) {
-                    root.setFix(-1);
+            for (int i = 1; i <= h; i++) {
+                if (rows[i]) {
                     continue;
                 }
-                root.left.setFix(-1);
-                Splay r = Splay.splitRight(root);
-                r = Splay.selectMinAsRoot(r);
-                r.setFix(-1);
-                if (r.key != root.key) {
-                    root.setRight(r);
+                rowCnt++;
+            }
+
+            for (int i = 1; i <= w; i++) {
+                if (cols[i]) {
                     continue;
                 }
-                Node.merge(r.node, root.node);
-                Splay l = Splay.splitLeft(root);
-                r.pushDown();
-                r.setLeft(l);
-                root = r;
+                colCnt++;
             }
 
-            dfs(root);
-            for (int i = 0; i < n; i++) {
-                nodes[i].left = nodes[i].find().place;
-            }
+            rowPutWays = new int[h + 1][h / 2 + 1];
+            colPutWays = new int[w + 1][w / 2 + 1];
 
-            for (int i = 0; i < n; i++) {
-                nodes[i].rewind();
-            }
+            ArrayUtils.deepFill(rowPutWays, -1);
+            ArrayUtils.deepFill(colPutWays, -1);
 
-            root = Splay.NIL;
-            for (int i = 0; i < n; i++) {
-                Splay s = new Splay();
-                s.key = i;
-                s.node = nodes[i];
-                s.pushUp();
-                root = Splay.add(root, s);
-            }
 
-            for (int i = 0; i < m; i++) {
-                root = Splay.selectKeyAsRoot(root, seq[i] - 1);
-                if (root.key != seq[i] - 1) {
-                    root.setFix(+1);
-                    continue;
+            int ans = 0;
+            for (int i = 0; i <= h / 2; i++) {
+                for (int j = 0; j <= w / 2; j++) {
+                    // check
+                    if (i * 2 + j > rowCnt || j * 2 + i > colCnt) {
+                        continue;
+                    }
+                    int rWay = rowPutWays(h, i);
+                    int cWay = colPutWays(w, j);
+                    int way = mod.mul(rWay, cWay);
+                    way = mod.mul(way, comp.composite(rowCnt - i * 2, j));
+                    way = mod.mul(way, comp.composite(colCnt - j * 2, i));
+                    way = mod.mul(way, fact.fact(j));
+                    way = mod.mul(way, fact.fact(i));
+                    ans = mod.plus(ans, way);
                 }
-                root.right.setFix(+1);
-                Splay r = Splay.splitLeft(root);
-                r = Splay.selectMaxAsRoot(r);
-                r.setFix(+1);
-                if (r.key != root.key) {
-                    root.setLeft(r);
-                    continue;
-                }
-                Node.merge(r.node, root.node);
-                Splay l = Splay.splitRight(root);
-                r.pushDown();
-                r.setRight(l);
-                root = r;
-            }
-
-            dfs(root);
-            for (int i = 0; i < n; i++) {
-                nodes[i].right = nodes[i].find().place;
-            }
-
-            long ans = 0;
-            for (int i = 0; i < n; i++) {
-                int l = Math.max(0, nodes[i].left - 1);
-                int r = Math.min(n - 1, nodes[i].right + 1);
-                int range = r - l + 1;
-                range = Math.max(0, range);
-                ans += range;
             }
 
             out.println(ans);
         }
 
-        public void dfs(Splay root) {
-            if (root == Splay.NIL) {
-                return;
+        public int rowPutWays(int i, int j) {
+            if (j < 0) {
+                return 0;
             }
-            root.pushDown();
-            root.node.find().place = root.key;
-            dfs(root.left);
-            dfs(root.right);
+            if (i <= 0) {
+                return j == 0 ? 1 : 0;
+            }
+            if (rowPutWays[i][j] == -1) {
+                if (rows[i]) {
+                    rowPutWays[i][j] = rowPutWays(i - 1, j);
+                } else {
+                    rowPutWays[i][j] = rowPutWays(i - 1, j);
+                    if (i > 1 && !rows[i - 1]) {
+                        rowPutWays[i][j] = mod.plus(rowPutWays[i][j], rowPutWays(i - 2, j - 1));
+                    }
+                }
+            }
+            return rowPutWays[i][j];
+        }
+
+        public int colPutWays(int i, int j) {
+            if (j < 0) {
+                return 0;
+            }
+            if (i <= 0) {
+                return j == 0 ? 1 : 0;
+            }
+            if (colPutWays[i][j] == -1) {
+                if (cols[i]) {
+                    colPutWays[i][j] = colPutWays(i - 1, j);
+                } else {
+                    colPutWays[i][j] = colPutWays(i - 1, j);
+                    if (i > 1 && !cols[i - 1]) {
+                        colPutWays[i][j] = mod.plus(colPutWays[i][j], colPutWays(i - 2, j - 1));
+                    }
+                }
+            }
+            return colPutWays[i][j];
         }
 
     }
-
     static class FastInput {
         private final InputStream is;
         private byte[] buf = new byte[1 << 13];
@@ -214,306 +206,6 @@ public class Main {
         }
 
     }
-
-    static class Node {
-        Node p;
-        int rank;
-        int place;
-        int left;
-        int right;
-        int id;
-
-        public String toString() {
-            return "" + id;
-        }
-
-        public void rewind() {
-            p = this;
-            rank = 0;
-        }
-
-        public Node find() {
-            return p.p == p ? p : (p = p.find());
-        }
-
-        public static void merge(Node a, Node b) {
-            a = a.find();
-            b = b.find();
-            if (a == b) {
-                return;
-            }
-            if (a.rank == b.rank) {
-                a.rank++;
-            }
-            if (a.rank > b.rank) {
-                b.p = a;
-            } else {
-                a.p = b;
-            }
-        }
-
-    }
-
-    static class Splay implements Cloneable {
-        public static final Splay NIL = new Splay();
-        Splay left = NIL;
-        Splay right = NIL;
-        Splay father = NIL;
-        int size = 1;
-        int key;
-        int fix;
-        Node node;
-
-        static {
-            NIL.left = NIL;
-            NIL.right = NIL;
-            NIL.father = NIL;
-            NIL.size = 0;
-            NIL.key = -(int) 1e9;
-        }
-
-        public void setFix(int f) {
-            if (this == NIL) {
-                return;
-            }
-            key += f;
-            fix += f;
-        }
-
-        public static void splay(Splay x) {
-            if (x == NIL) {
-                return;
-            }
-            Splay y, z;
-            while ((y = x.father) != NIL) {
-                if ((z = y.father) == NIL) {
-                    y.pushDown();
-                    x.pushDown();
-                    if (x == y.left) {
-                        zig(x);
-                    } else {
-                        zag(x);
-                    }
-                } else {
-                    z.pushDown();
-                    y.pushDown();
-                    x.pushDown();
-                    if (x == y.left) {
-                        if (y == z.left) {
-                            zig(y);
-                            zig(x);
-                        } else {
-                            zig(x);
-                            zag(x);
-                        }
-                    } else {
-                        if (y == z.left) {
-                            zag(x);
-                            zig(x);
-                        } else {
-                            zag(y);
-                            zag(x);
-                        }
-                    }
-                }
-            }
-
-            x.pushDown();
-            x.pushUp();
-        }
-
-        public static void zig(Splay x) {
-            Splay y = x.father;
-            Splay z = y.father;
-            Splay b = x.right;
-
-            y.setLeft(b);
-            x.setRight(y);
-            z.changeChild(y, x);
-
-            y.pushUp();
-        }
-
-        public static void zag(Splay x) {
-            Splay y = x.father;
-            Splay z = y.father;
-            Splay b = x.left;
-
-            y.setRight(b);
-            x.setLeft(y);
-            z.changeChild(y, x);
-
-            y.pushUp();
-        }
-
-        public void setLeft(Splay x) {
-            left = x;
-            x.father = this;
-        }
-
-        public void setRight(Splay x) {
-            right = x;
-            x.father = this;
-        }
-
-        public void changeChild(Splay y, Splay x) {
-            if (left == y) {
-                setLeft(x);
-            } else {
-                setRight(x);
-            }
-        }
-
-        public void pushUp() {
-            size = left.size + right.size + 1;
-        }
-
-        public void pushDown() {
-            if (this == NIL) {
-                return;
-            }
-            if (fix != 0) {
-                left.setFix(fix);
-                right.setFix(fix);
-                fix = 0;
-            }
-        }
-
-        public static void toString(Splay root, StringBuilder builder) {
-            if (root == NIL) {
-                return;
-            }
-            root.pushDown();
-            toString(root.left, builder);
-            builder.append(root.key).append(',');
-            toString(root.right, builder);
-        }
-
-        public Splay clone() {
-            try {
-                return (Splay) super.clone();
-            } catch (CloneNotSupportedException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        public static Splay cloneTree(Splay splay) {
-            if (splay == NIL) {
-                return NIL;
-            }
-            splay = splay.clone();
-            splay.left = cloneTree(splay.left);
-            splay.right = cloneTree(splay.right);
-            return splay;
-        }
-
-        public static Splay add(Splay root, Splay node) {
-            if (root == NIL) {
-                return node;
-            }
-            Splay p = root;
-            while (root != NIL) {
-                p = root;
-                root.pushDown();
-                if (root.key < node.key) {
-                    root = root.right;
-                } else {
-                    root = root.left;
-                }
-            }
-
-            if (p.key < node.key) {
-                p.setRight(node);
-            } else {
-                p.setLeft(node);
-            }
-            p.pushUp();
-            splay(node);
-            return node;
-        }
-
-        public static Splay selectMinAsRoot(Splay root) {
-            if (root == NIL) {
-                return root;
-            }
-            root.pushDown();
-            while (root.left != NIL) {
-                root = root.left;
-                root.pushDown();
-            }
-            splay(root);
-            return root;
-        }
-
-        public static Splay selectMaxAsRoot(Splay root) {
-            if (root == NIL) {
-                return root;
-            }
-            root.pushDown();
-            while (root.right != NIL) {
-                root = root.right;
-                root.pushDown();
-            }
-            splay(root);
-            return root;
-        }
-
-        public static Splay splitLeft(Splay root) {
-            root.pushDown();
-            Splay left = root.left;
-            left.father = NIL;
-            root.setLeft(NIL);
-            root.pushUp();
-            return left;
-        }
-
-        public static Splay splitRight(Splay root) {
-            root.pushDown();
-            Splay right = root.right;
-            right.father = NIL;
-            root.setRight(NIL);
-            root.pushUp();
-            return right;
-        }
-
-        public static Splay selectKeyAsRoot(Splay root, int k) {
-            if (root == NIL) {
-                return NIL;
-            }
-            Splay trace = root;
-            Splay father = NIL;
-            Splay find = NIL;
-            while (trace != NIL) {
-                father = trace;
-                trace.pushDown();
-                if (trace.key > k) {
-                    trace = trace.left;
-                } else {
-                    if (trace.key == k) {
-                        find = trace;
-                        trace = trace.left;
-                    } else {
-                        trace = trace.right;
-                    }
-                }
-            }
-
-            splay(father);
-            if (find != NIL) {
-                splay(find);
-                return find;
-            }
-            return father;
-        }
-
-        public String toString() {
-            StringBuilder builder = new StringBuilder().append(key).append(":");
-            toString(cloneTree(this), builder);
-            return builder.toString();
-        }
-
-    }
-
     static class FastOutput implements AutoCloseable, Closeable {
         private StringBuilder cache = new StringBuilder(1 << 20);
         private final Writer os;
@@ -527,11 +219,6 @@ public class Main {
         }
 
         public FastOutput println(int c) {
-            cache.append(c).append('\n');
-            return this;
-        }
-
-        public FastOutput println(long c) {
             cache.append(c).append('\n');
             return this;
         }
@@ -553,6 +240,146 @@ public class Main {
             } catch (IOException e) {
                 throw new UncheckedIOException(e);
             }
+        }
+
+    }
+    static class ArrayUtils {
+        public static void deepFill(Object array, int val) {
+            if (!array.getClass().isArray()) {
+                throw new IllegalArgumentException();
+            }
+            if (array instanceof int[]) {
+                int[] intArray = (int[]) array;
+                Arrays.fill(intArray, val);
+            } else {
+                Object[] objArray = (Object[]) array;
+                for (Object obj : objArray) {
+                    deepFill(obj, val);
+                }
+            }
+        }
+
+    }
+    static class NumberTheory {
+        public static class Modular {
+            int m;
+
+            public Modular(int m) {
+                this.m = m;
+            }
+
+            public Modular(long m) {
+                this.m = (int) m;
+                if (this.m != m) {
+                    throw new IllegalArgumentException();
+                }
+            }
+
+            public Modular(double m) {
+                this.m = (int) m;
+                if (this.m != m) {
+                    throw new IllegalArgumentException();
+                }
+            }
+
+            public int valueOf(int x) {
+                x %= m;
+                if (x < 0) {
+                    x += m;
+                }
+                return x;
+            }
+
+            public int valueOf(long x) {
+                x %= m;
+                if (x < 0) {
+                    x += m;
+                }
+                return (int) x;
+            }
+
+            public int mul(int x, int y) {
+                return valueOf((long) x * y);
+            }
+
+            public int plus(int x, int y) {
+                return valueOf(x + y);
+            }
+
+            public String toString() {
+                return "mod " + m;
+            }
+
+        }
+
+        public static class InverseNumber {
+            int[] inv;
+
+            public InverseNumber(int[] inv, int limit, NumberTheory.Modular modular) {
+                this.inv = inv;
+                inv[1] = 1;
+                int p = modular.m;
+                for (int i = 2; i <= limit; i++) {
+                    int k = p / i;
+                    int r = p % i;
+                    inv[i] = modular.mul(-k, inv[r]);
+                }
+            }
+
+            public InverseNumber(int limit, NumberTheory.Modular modular) {
+                this(new int[limit + 1], limit, modular);
+            }
+
+        }
+
+        public static class Factorial {
+            int[] fact;
+            int[] inv;
+            NumberTheory.Modular modular;
+
+            public Factorial(int[] fact, int[] inv, NumberTheory.InverseNumber in, int limit,
+                            NumberTheory.Modular modular) {
+                this.modular = modular;
+                this.fact = fact;
+                this.inv = inv;
+                fact[0] = inv[0] = 1;
+                for (int i = 1; i <= limit; i++) {
+                    fact[i] = modular.mul(fact[i - 1], i);
+                    inv[i] = modular.mul(inv[i - 1], in.inv[i]);
+                }
+            }
+
+            public Factorial(int limit, NumberTheory.Modular modular) {
+                this(new int[limit + 1], new int[limit + 1], new NumberTheory.InverseNumber(limit, modular), limit,
+                                modular);
+            }
+
+            public int fact(int n) {
+                return fact[n];
+            }
+
+        }
+
+        public static class Composite {
+            final NumberTheory.Factorial factorial;
+            final NumberTheory.Modular modular;
+
+            public Composite(NumberTheory.Factorial factorial) {
+                this.factorial = factorial;
+                this.modular = factorial.modular;
+            }
+
+            public Composite(int limit, NumberTheory.Modular modular) {
+                this(new NumberTheory.Factorial(limit, modular));
+            }
+
+            public int composite(int m, int n) {
+                if (n > m) {
+                    return 0;
+                }
+                return modular.mul(modular.mul(factorial.fact[m], factorial.inv[n]), factorial.inv[m - n]);
+            }
+
         }
 
     }

@@ -124,6 +124,18 @@ public class CharList {
         size--;
     }
 
+
+    public char[] toArray() {
+        return Arrays.copyOf(data, size);
+    }
+
+    public char[] toArray(char[] arr) {
+        if (arr.length < size) {
+            arr = new char[size];
+        }
+        System.arraycopy(data, 0, arr, 0, size);
+        return arr;
+    }
     public boolean isEmpty() {
         return size == 0;
     }

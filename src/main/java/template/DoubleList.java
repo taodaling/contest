@@ -43,6 +43,18 @@ public class DoubleList {
         }
     }
 
+    public double[] toArray() {
+        return Arrays.copyOf(data, size);
+    }
+
+    public double[] toArray(double[] arr) {
+        if (arr.length < size) {
+            arr = new double[size];
+        }
+        System.arraycopy(data, 0, arr, 0, size);
+        return arr;
+    }
+
     public double get(int i) {
         checkRange(i);
         return data[i];

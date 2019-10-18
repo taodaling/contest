@@ -94,7 +94,7 @@ public class ByteList {
         add(x);
     }
 
-    public void set(int i, byte x){
+    public void set(int i, byte x) {
         checkRange(i);
         data[i] = x;
     }
@@ -122,6 +122,18 @@ public class ByteList {
         }
         System.arraycopy(data, index + 1, data, index, size - index);
         size--;
+    }
+
+    public byte[] toArray() {
+        return Arrays.copyOf(data, size);
+    }
+
+    public byte[] toArray(byte[] arr) {
+        if (arr.length < size) {
+            arr = new byte[size];
+        }
+        System.arraycopy(data, 0, arr, 0, size);
+        return arr;
     }
 
     public boolean isEmpty() {

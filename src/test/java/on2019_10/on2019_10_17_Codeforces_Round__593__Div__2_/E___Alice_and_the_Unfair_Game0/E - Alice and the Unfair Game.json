@@ -1,0 +1,85 @@
+{
+  "name" : "E - Alice and the Unfair Game",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 3\n2 2 2\n",
+    "output" : "7",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "5 2\n3 1\n",
+    "output" : "21",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "1 3\n1 1 1",
+    "output" : "0",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "1 0",
+    "output" : "1",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "2 4\n1 2 1 2 ",
+    "output" : "4",
+    "index" : 4,
+    "active" : true
+  }, {
+    "input" : "3 1\n2",
+    "output" : "7",
+    "index" : 5,
+    "active" : true
+  }, {
+    "input" : "3 1\n1",
+    "output" : "9",
+    "index" : 6,
+    "active" : true
+  }, {
+    "input" : "4 1\n1",
+    "output" : "14",
+    "index" : 7,
+    "active" : true
+  }, {
+    "input" : "10 10\n1 1 1 1 1 1 1 1 1 1 ",
+    "output" : "100",
+    "index" : 8,
+    "active" : true
+  }, {
+    "input" : "10004 1\n1",
+    "output" : "50014",
+    "index" : 9,
+    "active" : true
+  }, {
+    "input" : "10004 1\n2",
+    "output" : "50012",
+    "index" : 10,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2019_10.on2019_10_17_Codeforces_Round__593__Div__2_.E___Alice_and_the_Unfair_Game0.TaskE",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "on2019_10.on2019_10_17_Codeforces_Round__593__Div__2_.E___Alice_and_the_Unfair_Game0.TaskETestCase" ],
+  "date" : "2019.10.17",
+  "contestName" : "Codeforces Round #593 (Div. 2)",
+  "truncate" : true,
+  "inputClass" : "template.FastInput",
+  "outputClass" : "template.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

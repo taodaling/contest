@@ -124,6 +124,18 @@ public class LongList {
         size--;
     }
 
+    public long[] toArray() {
+        return Arrays.copyOf(data, size);
+    }
+
+    public long[] toArray(long[] arr) {
+        if (arr.length < size) {
+            arr = new long[size];
+        }
+        System.arraycopy(data, 0, arr, 0, size);
+        return arr;
+    }
+
     public boolean isEmpty() {
         return size == 0;
     }

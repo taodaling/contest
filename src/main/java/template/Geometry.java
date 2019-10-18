@@ -63,7 +63,7 @@ public class Geometry {
         final Point2[] points = point2s.toArray(new Point2[0]);
         int n = points.length;
 
-        Memory.swap(points, 0, Memory.min(points, 0, n, new Comparator<Point2>() {
+        ArrayUtils.swap(points, 0, ArrayUtils.min(points, 0, n, new Comparator<Point2>() {
             @Override
             public int compare(Point2 o1, Point2 o2) {
                 return o1.y != o2.y ? Double.compare(o1.y, o2.y) : Double.compare(o1.x, o2.x);

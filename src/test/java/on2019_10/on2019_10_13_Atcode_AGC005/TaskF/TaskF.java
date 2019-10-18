@@ -2,16 +2,14 @@ package on2019_10.on2019_10_13_Atcode_AGC005.TaskF;
 
 
 
+import template.ArrayUtils;
 import template.FastInput;
-import template.Memory;
 import template.NumberTheory;
 import template.NumberTheoryTransform;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class TaskF {
     NumberTheory.Modular mod = new NumberTheory.Modular(924844033);
@@ -46,7 +44,7 @@ public class TaskF {
             f[i] = mod.mul(coe[i], fact.fact(i));
             g[i] = fact.invFact(i);
         }
-        Memory.reverse(f, 0, n + 1);
+        ArrayUtils.reverse(f, 0, n + 1);
 
         ntt.prepareReverse(r, m);
 
@@ -54,7 +52,7 @@ public class TaskF {
         ntt.dft(r, g, m);
         ntt.dotMul(f, g, f, m);
         ntt.idft(r, f, m);
-        Memory.reverse(f, 0, n + 1);
+        ArrayUtils.reverse(f, 0, n + 1);
 
         for (int i = 1; i <= n; i++) {
             int c = mod.mul(f[i], fact.invFact(i));

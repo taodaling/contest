@@ -1,2 +1,2 @@
-56 src/main/java/contest/E - Alice and the Unfair Game.json
+57 src/main/java/contest/F - Balanced Domino Placements.json
 0

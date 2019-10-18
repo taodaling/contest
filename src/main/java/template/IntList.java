@@ -93,7 +93,7 @@ public class IntList {
         Arrays.sort(data, 0, size);
     }
 
-    public void set(int i, int x){
+    public void set(int i, int x) {
         checkRange(i);
         data[i] = x;
     }
@@ -124,6 +124,18 @@ public class IntList {
         size--;
     }
 
+    public int[] toArray() {
+        return Arrays.copyOf(data, size);
+    }
+
+    public int[] toArray(int[] arr) {
+        if (arr.length < size) {
+            arr = new int[size];
+        }
+        System.arraycopy(data, 0, arr, 0, size);
+        return arr;
+    }
+
     public boolean isEmpty() {
         return size == 0;
     }
@@ -133,6 +145,6 @@ public class IntList {
     }
 
     public String toString() {
-        return Arrays.toString(Arrays.copyOf(data, size));
+        return Arrays.toString(toArray());
     }
 }

@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
-public class Memory {
+public class ArrayUtils {
     public static <T> void swap(T[] data, int i, int j) {
         T tmp = data[i];
         data[i] = data[j];
@@ -33,6 +33,96 @@ public class Memory {
         double tmp = data[i];
         data[i] = data[j];
         data[j] = tmp;
+    }
+
+    public static void deepFill(Object array, int val) {
+        if (!array.getClass().isArray()) {
+            throw new IllegalArgumentException();
+        }
+        if (array instanceof int[]) {
+            int[] intArray = (int[]) array;
+            Arrays.fill(intArray, val);
+        } else {
+            Object[] objArray = (Object[]) array;
+            for (Object obj : objArray) {
+                deepFill(obj, val);
+            }
+        }
+    }
+
+    public static void deepFill(Object array, long val) {
+        if (!array.getClass().isArray()) {
+            throw new IllegalArgumentException();
+        }
+        if (array instanceof long[]) {
+            long[] longArray = (long[]) array;
+            Arrays.fill(longArray, val);
+        } else {
+            Object[] objArray = (Object[]) array;
+            for (Object obj : objArray) {
+                deepFill(obj, val);
+            }
+        }
+    }
+
+    public static void deepFill(Object array, double val) {
+        if (!array.getClass().isArray()) {
+            throw new IllegalArgumentException();
+        }
+        if (array instanceof double[]) {
+            double[] doubleArray = (double[]) array;
+            Arrays.fill(doubleArray, val);
+        } else {
+            Object[] objArray = (Object[]) array;
+            for (Object obj : objArray) {
+                deepFill(obj, val);
+            }
+        }
+    }
+
+    public static void deepFill(Object array, float val) {
+        if (!array.getClass().isArray()) {
+            throw new IllegalArgumentException();
+        }
+        if (array instanceof float[]) {
+            float[] floatArray = (float[]) array;
+            Arrays.fill(floatArray, val);
+        } else {
+            Object[] objArray = (Object[]) array;
+            for (Object obj : objArray) {
+                deepFill(obj, val);
+            }
+        }
+    }
+
+    public static void deepFill(Object array, char val) {
+        if (!array.getClass().isArray()) {
+            throw new IllegalArgumentException();
+        }
+        if (array instanceof char[]) {
+            char[] charArray = (char[]) array;
+            Arrays.fill(charArray, val);
+        } else {
+            Object[] objArray = (Object[]) array;
+            for (Object obj : objArray) {
+                deepFill(obj, val);
+            }
+        }
+    }
+
+    public static void deepFill(Object array, byte val) {
+        if (!array.getClass().isArray()) {
+            throw new IllegalArgumentException();
+        }
+        if (array instanceof byte[]) {
+            byte[] byteArray = (byte[]) array;
+            Arrays.fill(byteArray, val);
+        } else {
+            Object[] objArray = (Object[]) array;
+            for (Object obj : objArray) {
+                deepFill(obj, val);
+            }
+        }
     }
 
     public static <T> int min(T[] data, int from, int to, Comparator<T> cmp) {

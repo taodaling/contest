@@ -1,0 +1,75 @@
+{
+  "name" : "F - Balanced Domino Placements",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5 7 2\n3 1 3 2\n4 4 4 5\n",
+    "output" : "8\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "5 4 2\n1 2 2 2\n4 3 4 4\n",
+    "output" : "1\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "23 42 0\n",
+    "output" : "102848351\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "1 1 0",
+    "output" : "1",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "2 2 0",
+    "output" : "5",
+    "index" : 4,
+    "active" : true
+  }, {
+    "input" : "2 3 0\n",
+    "output" : "8",
+    "index" : 5,
+    "active" : true
+  }, {
+    "input" : "3 3 0",
+    "output" : "17",
+    "index" : 6,
+    "active" : true
+  }, {
+    "input" : "2 40 0\n",
+    "output" : "",
+    "index" : 7,
+    "active" : false
+  }, {
+    "input" : "4 4 2\n1 1 2 1\n3 2 4 2",
+    "output" : "1",
+    "index" : 8,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx512M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.TaskF",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.10.18",
+  "contestName" : "Codeforces Global Round 5",
+  "truncate" : true,
+  "inputClass" : "template.FastInput",
+  "outputClass" : "template.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}
