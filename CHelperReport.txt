@@ -1,2 +1,2 @@
-57 src/main/java/contest/F - Balanced Domino Placements.json
+44 src/main/java/contest/D - Catowice City.json
 0

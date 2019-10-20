@@ -12,6 +12,14 @@ public class MinQueue<T> {
     Deque<T> increasing;
     Comparator<T> comparator;
 
+    public int size(){
+        return data.size();
+    }
+
+    public boolean isEmpty(){
+        return data.isEmpty();
+    }
+
     public MinQueue(int cap, Comparator<T> comparator) {
         data = new ArrayDeque<>(cap);
         increasing = new ArrayDeque<>(cap);
@@ -41,5 +49,9 @@ public class MinQueue<T> {
 
     public T query() {
         return increasing.peekFirst();
+    }
+
+    public T peek() {
+        return data.peekFirst();
     }
 }

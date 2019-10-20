@@ -5,12 +5,11 @@ package on2019_10.on2019_10_16_Atcoder_codefestival_2016_qual_C.TaskE;
 import net.egork.chelper.task.Test;
 import net.egork.chelper.tester.TestCase;
 import template.NumberTheory;
-import template.Permutations;
+import template.PermutationUtils;
 import template.Randomized;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -71,7 +70,7 @@ public class TaskETestCase {
             for(int j = 0; j < i; j++){
                 num[j]--;
             }
-            int ans = mod.valueOf(Permutations.rankOf(num));
+            int ans = mod.valueOf(PermutationUtils.rankOf(num));
             for(int j = 0; j < i; j++){
                 num[j]++;
             }
