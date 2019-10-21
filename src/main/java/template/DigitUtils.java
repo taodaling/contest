@@ -30,4 +30,28 @@ public class DigitUtils {
     public static boolean isEven(long x) {
         return (x & 1) == 0;
     }
+
+    public static int mod(long x, int mod){
+        x %= mod;
+        if(x < 0){
+            x += mod;
+        }
+        return (int)x;
+    }
+
+    public static int mod(int x, int mod){
+        x %= mod;
+        if(x < 0){
+            x += mod;
+        }
+        return x;
+    }
+
+    public static long mod(long x, long mod){
+        x %= mod;
+        if(x < 0){
+            x += mod;
+        }
+        return x;
+    }
 }

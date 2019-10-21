@@ -2,14 +2,33 @@ package template;
 
 import java.util.Comparator;
 
-/**
- * Created by dalt on 2018/5/20.
- */
-public class Sortable {
-    private static <T> void swap(T[] data, int i, int j) {
-        T tmp = data[i];
-        data[i] = data[j];
-        data[j] = tmp;
+public class CompareUtils {
+    private CompareUtils() {
+    }
+
+    public static int middleOf(int a, int b, int c) {
+        int signAB = Integer.compare(a, b);
+        int signAC = Integer.compare(a, c);
+        int signBC = Integer.compare(b, c);
+        if (signAB * signAC <= 0) {
+            return a;
+        }
+        if (signAB * signBC >= 0) {
+            return b;
+        }
+        return c;
+    }
+
+    public static <T> T max(T a, T b, Comparator<T> comp) {
+        return comp.compare(a, b) >= 0 ? a : b;
+    }
+
+    public static <T> T min(T a, T b, Comparator<T> comp) {
+        return comp.compare(a, b) <= 0 ? a : b;
+    }
+
+    public static <T> boolean equal(T a, T b, Comparator<T> comp) {
+        return comp.compare(a, b) == 0;
     }
 
     private static final int THRESHOLD = 4;
@@ -31,7 +50,7 @@ public class Sortable {
             insertSort(data, cmp, f, t);
             return data[f + k - 1];
         }
-        swap(data, f, Randomized.nextInt(f, t - 1));
+        ArrayUtils.swap(data, f, Randomized.nextInt(f, t - 1));
         int l = f;
         int r = t;
         int m = l + 1;
@@ -40,11 +59,11 @@ public class Sortable {
             if (c == 0) {
                 m++;
             } else if (c < 0) {
-                swap(data, l, m);
+                ArrayUtils.swap(data, l, m);
                 l++;
                 m++;
             } else {
-                swap(data, m, --r);
+                ArrayUtils.swap(data, m, --r);
             }
         }
         if (l - f >= k) {
