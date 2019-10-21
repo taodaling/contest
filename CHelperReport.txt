@@ -1,2 +1,2 @@
-44 src/main/java/contest/D - Catowice City.json
+32 src/main/java/contest/TaskE.json
 0
