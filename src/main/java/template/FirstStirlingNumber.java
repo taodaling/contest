@@ -8,7 +8,7 @@ import java.util.Arrays;
 public class FirstStirlingNumber {
     private NumberTheory.Modular mod;
     private NumberTheoryTransform ntt;
-    private NumberTheory.Log2 log2 = new NumberTheory.Log2();
+    private DigitUtils.Log2 log2 = new DigitUtils.Log2();
     private NumberTheory.Factorial factorial;
     private int[] stirling;
 

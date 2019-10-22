@@ -135,6 +135,26 @@ public class ArrayUtils {
         return m;
     }
 
+    public static int indexOfMin(int[] data, int from, int to) {
+        int m = from;
+        for (int i = from + 1; i < to; i++) {
+            if (data[m] > data[i]) {
+                m = i;
+            }
+        }
+        return m;
+    }
+
+    public static int indexOfMax(int[] data, int from, int to) {
+        int m = from;
+        for (int i = from + 1; i < to; i++) {
+            if (data[m] < data[i]) {
+                m = i;
+            }
+        }
+        return m;
+    }
+
     public static <T> void move(T[] data, int from, int to, int step) {
         int len = to - from;
         step = len - (step % len + len) % len;
@@ -167,6 +187,23 @@ public class ArrayUtils {
                 take = tmp;
             }
             list.set(i + offset, take);
+        }
+    }
+
+    public static <T> void rotate(T[] list, int l, int newBeg, int r) {
+        int offset = l;
+        int len = r - l + 1;
+        int step = len - (newBeg - l);
+        int g = gcd0(newBeg, r - l + 1);
+        for (int i = 0; i < g; i++) {
+            T take = list[i + offset];
+            int ni = i;
+            while ((ni = (ni + step) % len) != i) {
+                T tmp = list[ni + offset];
+                list[ni + offset] = take;
+                take = tmp;
+            }
+            list[i + offset] = take;
         }
     }
 

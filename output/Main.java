@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.IOException;
+import java.util.Random;
 import java.util.ArrayList;
 import java.io.UncheckedIOException;
 import java.util.List;
@@ -30,108 +31,144 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            TaskE solver = new TaskE();
+            TaskF solver = new TaskF();
             solver.solve(1, in, out);
             out.close();
         }
     }
-    static class TaskE {
-        boolean flag;
-
+    static class TaskF {
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            flag = true;
-
             int n = in.readInt();
-            Node[] nodes = new Node[n + 1];
-            for (int i = 1; i <= n; i++) {
-                nodes[i] = new Node();
-            }
-            for (int i = 1; i < n; i++) {
-                Node a = nodes[in.readInt()];
-                Node b = nodes[in.readInt()];
-                a.next.add(b);
-                b.next.add(a);
-            }
-            int k = in.readInt();
-            Node root = nodes[1];
-            for (int i = 0; i < k; i++) {
-                Node v = nodes[in.readInt()];
-                v.num = in.readInt();
-                if (root.num > v.num) {
-                    root = v;
+            char[] s = new char[n + 1];
+            char[] t = new char[n + 1];
+            in.readString(s, 1);
+            in.readString(t, 1);
+
+            List<Interval> intervalList = new ArrayList<>(n);
+            int scan = n + 1;
+            for (int i = n; i >= 1; i--) {
+                if (scan > i) {
+                    scan = i;
                 }
-            }
-
-            check(root, null, root.num);
-            setRange(root, null);
-            setValue(root, null, root.num, root.num);
-
-            if (!flag) {
-                out.println("No");
-                return;
-            }
-
-            out.println("Yes");
-            for (int i = 1; i <= n; i++) {
-                out.println(nodes[i].num);
-            }
-        }
-
-        public void setValue(Node root, Node fa, int l, int r) {
-            l = Math.max(l, root.l);
-            r = Math.min(r, root.r);
-            root.num = r;
-            for (Node node : root.next) {
-                if (node == fa) {
+                if (s[scan] == t[i]) {
                     continue;
                 }
-                setValue(node, root, root.num - 1, root.num + 1);
+                while (s[scan] != t[i] && scan > 1) {
+                    scan--;
+                }
+                if (s[scan] != t[i]) {
+                    out.println(-1);
+                    return;
+                }
+                Interval interval = new Interval();
+                interval.l = scan;
+                interval.r = i;
+                intervalList.add(interval);
             }
-        }
 
-        public void setRange(Node root, Node fa) {
-            root.l = -(int) 1e9;
-            root.r = (int) 1e9;
-            if (root.num != Node.unknow) {
-                root.l = root.r = root.num;
+            Interval[] intervals = intervalList.toArray(new Interval[0]);
+            ArrayUtils.reverse(intervals, 0, intervals.length);
+
+            int m = intervals.length;
+            int[] perm = new int[m];
+            for (int i = 0; i < m; i++) {
+                perm[i] = i;
             }
+            Randomized.randomizedArray(perm, 0, m);
 
-            for (Node node : root.next) {
-                if (node == fa) {
+            int ans = 0;
+            for (int i = 0; i < m; i++) {
+                int j = perm[i];
+                if (j + ans >= m || intervals[j].r <= intervals[j + ans].l - (ans)) {
                     continue;
                 }
-                setRange(node, root);
-                if (root.r < node.l || root.l > node.r) {
-                    flag = false;
+                int l = ans + 1;
+                int r = m - j;
+                while (l < r) {
+                    int mid = (l + r) >> 1;
+                    if (j + mid >= m || intervals[j].r <= intervals[j + mid].l - mid) {
+                        r = mid;
+                    } else {
+                        l = mid + 1;
+                    }
                 }
-                root.l = Math.max(root.l, node.l - 1);
-                root.r = Math.min(root.r, node.r + 1);
+                ans = l;
             }
 
-            if (root.l > root.r) {
-                flag = false;
-            }
+            out.println(ans);
         }
 
-        public void check(Node root, Node fa, int depth) {
-            if (root.num != Node.unknow && root.num % 2 != depth % 2) {
-                flag = false;
+    }
+    static class FastOutput implements AutoCloseable, Closeable {
+        private StringBuilder cache = new StringBuilder(1 << 20);
+        private final Writer os;
+
+        public FastOutput(Writer os) {
+            this.os = os;
+        }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput println(int c) {
+            cache.append(c).append('\n');
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
             }
-            for (Node node : root.next) {
-                if (node == fa) {
-                    continue;
-                }
-                check(node, root, depth + 1);
+            return this;
+        }
+
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
             }
         }
 
     }
-    static class Node {
-        public static int unknow = (int) 1e9;
-        List<Node> next = new ArrayList<>();
-        int num = unknow;
-        int l;
-        int r;
+    static class ArrayUtils {
+        public static <T> void swap(T[] data, int i, int j) {
+            T tmp = data[i];
+            data[i] = data[j];
+            data[j] = tmp;
+        }
+
+        public static <T> void reverse(T[] data, int f, int t) {
+            int l = f, r = t - 1;
+            while (l < r) {
+                swap(data, l, r);
+                l++;
+                r--;
+            }
+        }
+
+    }
+    static class Randomized {
+        static Random random = new Random();
+
+        public static void randomizedArray(int[] data, int from, int to) {
+            to--;
+            for (int i = from; i <= to; i++) {
+                int s = nextInt(i, to);
+                int tmp = data[i];
+                data[i] = data[s];
+                data[s] = tmp;
+            }
+        }
+
+        public static int nextInt(int l, int r) {
+            return random.nextInt(r - l + 1) + l;
+        }
 
     }
     static class FastInput {
@@ -191,47 +228,22 @@ public class Main {
             return val;
         }
 
+        public int readString(char[] data, int offset) {
+            skipBlank();
+
+            int originalOffset = offset;
+            while (next > 32) {
+                data[offset++] = (char) next;
+                next = read();
+            }
+
+            return offset - originalOffset;
+        }
+
     }
-    static class FastOutput implements AutoCloseable, Closeable {
-        private StringBuilder cache = new StringBuilder(1 << 20);
-        private final Writer os;
-
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput println(String c) {
-            cache.append(c).append('\n');
-            return this;
-        }
-
-        public FastOutput println(int c) {
-            cache.append(c).append('\n');
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        }
+    static class Interval {
+        int l;
+        int r;
 
     }
 }

@@ -1,5 +1,5 @@
 {
-  "name" : "TaskE",
+  "name" : "TaskF",
   "testType" : "SINGLE",
   "input" : {
     "type" : "STANDARD",
@@ -10,35 +10,29 @@
     "fileName" : "output.txt"
   },
   "tests" : [ {
-    "input" : "5\n1 2\n3 1\n4 3\n3 5\n2\n2 6\n5 7",
+    "input" : "10 10 4\n1 6\n4 1\n6 9\n9 4",
+    "output" : "32\n",
     "index" : 0,
-    "active" : false
+    "active" : true
   }, {
-    "input" : "4\n1 2\n2 3\n3 4\n1\n1 0",
+    "input" : "5 4 5\n0 0\n1 1\n2 2\n4 3\n5 4",
+    "output" : "12",
     "index" : 1,
-    "active" : false
+    "active" : true
   }, {
-    "input" : "5\n1 2\n3 1\n4 3\n3 5\n3\n2 6\n4 3\n5 7",
+    "input" : "100 100 8\n19 33\n8 10\n52 18\n94 2\n81 36\n88 95\n67 83\n20 71",
+    "output" : "270",
     "index" : 2,
-    "active" : false
-  }, {
-    "input" : "3\n1 2\n1 3\n2\n1 1\n2 4",
-    "output" : "No",
-    "index" : 3,
-    "active" : false
-  }, {
-    "input" : "3\n1 2\n1 3\n2\n1 1\n2 0",
-    "index" : 4,
     "active" : true
   } ],
   "location" : "src/main/java/contest",
-  "vmArgs" : "-Xmx256M",
+  "vmArgs" : "-Xmx256m -Xss64m",
   "mainClass" : "Main",
-  "taskClass" : "contest.TaskE",
+  "taskClass" : "contest.TaskF",
   "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
   "checkerParameters" : "",
   "testClasses" : [ ],
-  "date" : "2019.10.21",
+  "date" : "2019.10.22",
   "contestName" : "ARC063",
   "truncate" : true,
   "inputClass" : "template.FastInput",

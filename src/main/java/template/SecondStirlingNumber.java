@@ -8,9 +8,13 @@ public class SecondStirlingNumber {
     private NumberTheoryTransform ntt;
     private NumberTheory.Modular mod;
     private NumberTheory.Factorial factorial;
-    private NumberTheory.Log2 log2 = new NumberTheory.Log2();
+    private DigitUtils.Log2 log2 = new DigitUtils.Log2();
     private NumberTheory.Power power = new NumberTheory.Power(mod);
     private int[] stirling;
+
+    public int stirling(int i){
+        return stirling[i];
+    }
 
     public SecondStirlingNumber(NumberTheoryTransform ntt, NumberTheory.Factorial factorial, int n) {
         this.ntt = ntt;

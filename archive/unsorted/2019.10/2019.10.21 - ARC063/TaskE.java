@@ -1,5 +1,7 @@
 package contest;
 
+
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +16,7 @@ public class TaskE {
         Node[] nodes = new Node[n + 1];
         for (int i = 1; i <= n; i++) {
             nodes[i] = new Node();
+            nodes[i].id = i;
         }
         for (int i = 1; i < n; i++) {
             Node a = nodes[in.readInt()];
@@ -70,7 +73,7 @@ public class TaskE {
                 continue;
             }
             setRange(node, root);
-            if (root.r < node.l || root.l > node.r) {
+            if (root.r < node.l - 1 || root.l > node.r + 1) {
                 flag = false;
             }
             root.l = Math.max(root.l, node.l - 1);
@@ -103,6 +106,12 @@ class Node {
     List<Node> next = new ArrayList<>();
     int num = unknow;
 
+    int id;
     int l;
     int r;
+
+    @Override
+    public String toString() {
+        return "" + id;
+    }
 }
