@@ -1,0 +1,55 @@
+{
+  "name" : "TaskE",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "8 1",
+    "output" : "7\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "1000000000000 1000000000000",
+    "output" : "1000000000000",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "8 0",
+    "output" : "4",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "6 1",
+    "output" : "6",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "5 5",
+    "output" : "5",
+    "index" : 4,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256m -Xss64m",
+  "mainClass" : "Main",
+  "taskClass" : "on2019_10.on2019_10_23_codefestival_2016_final.TaskE.TaskE",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.10.23",
+  "contestName" : "codefestival 2016 final",
+  "truncate" : true,
+  "inputClass" : "template.FastInput",
+  "outputClass" : "template.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

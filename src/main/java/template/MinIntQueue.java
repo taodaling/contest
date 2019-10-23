@@ -12,8 +12,8 @@ public class MinIntQueue {
     }
 
     public void reset() {
-        minQueue.reset();
-        data.reset();
+        minQueue.clear();
+        data.clear();
     }
 
     public void enqueue(int val) {

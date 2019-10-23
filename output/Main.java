@@ -2,14 +2,11 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.IOException;
-import java.util.Random;
-import java.util.ArrayList;
 import java.io.UncheckedIOException;
-import java.util.List;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
+import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -31,143 +28,87 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            TaskF solver = new TaskF();
+            TaskH solver = new TaskH();
             solver.solve(1, in, out);
             out.close();
         }
     }
-    static class TaskF {
+    static class TaskH {
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            char[] s = new char[n + 1];
-            char[] t = new char[n + 1];
-            in.readString(s, 1);
-            in.readString(t, 1);
+            int[] a = new int[n + 1];
 
-            List<Interval> intervalList = new ArrayList<>(n);
-            int scan = n + 1;
-            for (int i = n; i >= 1; i--) {
-                if (scan > i) {
-                    scan = i;
-                }
-                if (s[scan] == t[i]) {
-                    continue;
-                }
-                while (s[scan] != t[i] && scan > 1) {
-                    scan--;
-                }
-                if (s[scan] != t[i]) {
-                    out.println(-1);
-                    return;
-                }
-                Interval interval = new Interval();
-                interval.l = scan;
-                interval.r = i;
-                intervalList.add(interval);
+            for (int i = 1; i < n; i++) {
+                a[i] = in.readInt();
             }
 
-            Interval[] intervals = intervalList.toArray(new Interval[0]);
-            ArrayUtils.reverse(intervals, 0, intervals.length);
+            int preSum = 0;
+            for (int i = 3; i < n; i++) {
+                preSum += a[i];
+            }
 
-            int m = intervals.length;
-            int[] perm = new int[m];
+            int limit = 1_000_001;
+            RotateArray ra = new RotateArray(limit);
+            int[] buf = new int[limit];
+            for (int j = 0; j < limit; j++) {
+                ra.set(j, j);
+            }
+            for (int i = 3; i < n; i++) {
+                for (int j = 1; j <= a[i]; j++) {
+                    buf[j] = ra.get(j);
+                }
+                for (int j = 1; j <= a[i]; j++) {
+                    ra.set(-j, buf[j]);
+                }
+                ra.rotate(-a[i]);
+            }
+
+            int m = in.readInt();
             for (int i = 0; i < m; i++) {
-                perm[i] = i;
-            }
-            Randomized.randomizedArray(perm, 0, m);
-
-            int ans = 0;
-            for (int i = 0; i < m; i++) {
-                int j = perm[i];
-                if (j + ans >= m || intervals[j].r <= intervals[j + ans].l - (ans)) {
-                    continue;
+                int x = in.readInt();
+                int ans;
+                if (x >= limit) {
+                    ans = x - preSum;
+                } else {
+                    ans = ra.get(x);
                 }
-                int l = ans + 1;
-                int r = m - j;
-                while (l < r) {
-                    int mid = (l + r) >> 1;
-                    if (j + mid >= m || intervals[j].r <= intervals[j + mid].l - mid) {
-                        r = mid;
-                    } else {
-                        l = mid + 1;
-                    }
-                }
-                ans = l;
-            }
-
-            out.println(ans);
-        }
-
-    }
-    static class FastOutput implements AutoCloseable, Closeable {
-        private StringBuilder cache = new StringBuilder(1 << 20);
-        private final Writer os;
-
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput println(int c) {
-            cache.append(c).append('\n');
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
+                out.println(ans + a[1] - a[2]);
             }
         }
 
     }
-    static class ArrayUtils {
-        public static <T> void swap(T[] data, int i, int j) {
-            T tmp = data[i];
-            data[i] = data[j];
-            data[j] = tmp;
-        }
+    static class DigitUtils {
+        private DigitUtils() {}
 
-        public static <T> void reverse(T[] data, int f, int t) {
-            int l = f, r = t - 1;
-            while (l < r) {
-                swap(data, l, r);
-                l++;
-                r--;
+        public static int mod(int x, int mod) {
+            x %= mod;
+            if (x < 0) {
+                x += mod;
             }
+            return x;
         }
 
     }
-    static class Randomized {
-        static Random random = new Random();
+    static class RotateArray {
+        private int offset;
+        private int[] data;
+        private int n;
 
-        public static void randomizedArray(int[] data, int from, int to) {
-            to--;
-            for (int i = from; i <= to; i++) {
-                int s = nextInt(i, to);
-                int tmp = data[i];
-                data[i] = data[s];
-                data[s] = tmp;
-            }
+        public RotateArray(int cap) {
+            data = new int[cap];
+            n = cap;
         }
 
-        public static int nextInt(int l, int r) {
-            return random.nextInt(r - l + 1) + l;
+        public int get(int i) {
+            return data[DigitUtils.mod(i + offset, n)];
+        }
+
+        public void set(int i, int v) {
+            data[DigitUtils.mod(i + offset, n)] = v;
+        }
+
+        public void rotate(int x) {
+            offset += x;
         }
 
     }
@@ -228,22 +169,42 @@ public class Main {
             return val;
         }
 
-        public int readString(char[] data, int offset) {
-            skipBlank();
+    }
+    static class FastOutput implements AutoCloseable, Closeable {
+        private StringBuilder cache = new StringBuilder(1 << 20);
+        private final Writer os;
 
-            int originalOffset = offset;
-            while (next > 32) {
-                data[offset++] = (char) next;
-                next = read();
-            }
-
-            return offset - originalOffset;
+        public FastOutput(Writer os) {
+            this.os = os;
         }
 
-    }
-    static class Interval {
-        int l;
-        int r;
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput println(int c) {
+            cache.append(c).append('\n');
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            return this;
+        }
+
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
 
     }
 }

@@ -59,7 +59,7 @@ public class IntDeque {
         data[bpos = last(bpos)] = val;
     }
 
-    public void reset() {
+    public void clear() {
         bpos = epos = 0;
     }
 
