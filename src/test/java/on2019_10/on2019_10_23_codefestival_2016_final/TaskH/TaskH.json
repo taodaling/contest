@@ -1,5 +1,5 @@
 {
-  "name" : "TaskF",
+  "name" : "TaskH",
   "testType" : "SINGLE",
   "input" : {
     "type" : "STANDARD",
@@ -18,12 +18,12 @@
     "input" : "9\n2 0 1 6 1 1 2 6\n5\n2016\n1\n1\n2\n6",
     "output" : "2001\n6\n6\n7\n7",
     "index" : 1,
-    "active" : false
+    "active" : true
   } ],
   "location" : "src/main/java/contest",
   "vmArgs" : "-Xmx256m -Xss64m",
   "mainClass" : "Main",
-  "taskClass" : "contest.TaskF",
+  "taskClass" : "on2019_10.on2019_10_23_codefestival_2016_final.TaskH.TaskH",
   "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
   "checkerParameters" : "",
   "testClasses" : [ ],

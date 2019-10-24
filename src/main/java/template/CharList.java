@@ -94,8 +94,26 @@ public class CharList {
     }
 
     public void sort() {
+        if (size <= 1) {
+            return;
+        }
         Randomized.randomizedArray(data, 0, size);
         Arrays.sort(data, 0, size);
+    }
+
+    public void unique() {
+        if (size <= 1) {
+            return;
+        }
+
+        sort();
+        int wpos = 1;
+        for (int i = 1; i < size; i++) {
+            if (data[i] != data[wpos - 1]) {
+                data[wpos++] = data[i];
+            }
+        }
+        size = wpos;
     }
 
     public int binarySearch(char x) {

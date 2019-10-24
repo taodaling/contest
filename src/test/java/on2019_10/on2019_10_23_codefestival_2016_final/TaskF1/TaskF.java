@@ -1,4 +1,6 @@
-package contest;
+package on2019_10.on2019_10_23_codefestival_2016_final.TaskF1;
+
+
 
 import template.FastInput;
 import template.FastOutput;

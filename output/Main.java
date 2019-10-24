@@ -2,11 +2,11 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
-import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -28,87 +28,89 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            TaskH solver = new TaskH();
+            TaskB solver = new TaskB();
             solver.solve(1, in, out);
             out.close();
         }
     }
-    static class TaskH {
+    static class TaskB {
+        NumberTheory.Modular mod = new NumberTheory.Modular(1e9 + 7);
+
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            int n = in.readInt();
-            int[] a = new int[n + 1];
-
-            for (int i = 1; i < n; i++) {
-                a[i] = in.readInt();
+            long n = in.readLong();
+            int[] bits = new int[64];
+            DigitUtils.BitOperator bo = new DigitUtils.BitOperator();
+            for (int i = 0; i < 64; i++) {
+                bits[i] = bo.bitAt(n, i);
             }
 
-            int preSum = 0;
-            for (int i = 3; i < n; i++) {
-                preSum += a[i];
-            }
-
-            int limit = 1_000_001;
-            RotateArray ra = new RotateArray(limit);
-            int[] buf = new int[limit];
-            for (int j = 0; j < limit; j++) {
-                ra.set(j, j);
-            }
-            for (int i = 3; i < n; i++) {
-                for (int j = 1; j <= a[i]; j++) {
-                    buf[j] = ra.get(j);
-                }
-                for (int j = 1; j <= a[i]; j++) {
-                    ra.set(-j, buf[j]);
-                }
-                ra.rotate(-a[i]);
-            }
-
-            int m = in.readInt();
-            for (int i = 0; i < m; i++) {
-                int x = in.readInt();
-                int ans;
-                if (x >= limit) {
-                    ans = x - preSum;
+            long[][] dp = new long[64][3];
+            // 0 equal, 1 less 1, 2 less more than 1
+            dp[63][0] = 1;
+            for (int i = 62; i >= 0; i--) {
+                if (bits[i] == 1) {
+                    // a put and b put
+                    dp[i][0] = dp[i + 1][0];
+                    // b not put
+                    // b and a put
+                    dp[i][1] += dp[i + 1][0] + dp[i + 1][1];
+                    // b put or not
+                    // b and a put or not
+                    dp[i][2] += dp[i + 1][1] * 2 + dp[i + 1][2] * 3;
                 } else {
-                    ans = ra.get(x);
+                    // a not put and b not put
+                    // a put and b put
+                    dp[i][0] += dp[i + 1][0] + dp[i + 1][1];
+                    // b put
+                    dp[i][1] += dp[i + 1][1];
+                    // b and a not put
+                    dp[i][2] += dp[i + 1][1] + dp[i + 1][2] * 3;
                 }
-                out.println(ans + a[1] - a[2]);
+
+                for (int j = 0; j < 3; j++) {
+                    dp[i][j] = mod.valueOf(dp[i][j]);
+                }
             }
+
+            long ans = mod.valueOf(dp[0][0] + dp[0][1] + dp[0][2]);
+            out.println(ans);
         }
 
     }
-    static class DigitUtils {
-        private DigitUtils() {}
+    static class NumberTheory {
+        public static class Modular {
+            int m;
 
-        public static int mod(int x, int mod) {
-            x %= mod;
-            if (x < 0) {
-                x += mod;
+            public Modular(int m) {
+                this.m = m;
             }
-            return x;
-        }
 
-    }
-    static class RotateArray {
-        private int offset;
-        private int[] data;
-        private int n;
+            public Modular(long m) {
+                this.m = (int) m;
+                if (this.m != m) {
+                    throw new IllegalArgumentException();
+                }
+            }
 
-        public RotateArray(int cap) {
-            data = new int[cap];
-            n = cap;
-        }
+            public Modular(double m) {
+                this.m = (int) m;
+                if (this.m != m) {
+                    throw new IllegalArgumentException();
+                }
+            }
 
-        public int get(int i) {
-            return data[DigitUtils.mod(i + offset, n)];
-        }
+            public int valueOf(long x) {
+                x %= m;
+                if (x < 0) {
+                    x += m;
+                }
+                return (int) x;
+            }
 
-        public void set(int i, int v) {
-            data[DigitUtils.mod(i + offset, n)] = v;
-        }
+            public String toString() {
+                return "mod " + m;
+            }
 
-        public void rotate(int x) {
-            offset += x;
         }
 
     }
@@ -144,7 +146,7 @@ public class Main {
             }
         }
 
-        public int readInt() {
+        public long readLong() {
             int sign = 1;
 
             skipBlank();
@@ -153,7 +155,7 @@ public class Main {
                 next = read();
             }
 
-            int val = 0;
+            long val = 0;
             if (sign == 1) {
                 while (next >= '0' && next <= '9') {
                     val = val * 10 + next - '0';
@@ -182,7 +184,7 @@ public class Main {
             this(new OutputStreamWriter(os));
         }
 
-        public FastOutput println(int c) {
+        public FastOutput println(long c) {
             cache.append(c).append('\n');
             return this;
         }
@@ -204,6 +206,17 @@ public class Main {
             } catch (IOException e) {
                 throw new UncheckedIOException(e);
             }
+        }
+
+    }
+    static class DigitUtils {
+        private DigitUtils() {}
+
+        public static class BitOperator {
+            public int bitAt(long x, int i) {
+                return (int) ((x >> i) & 1);
+            }
+
         }
 
     }

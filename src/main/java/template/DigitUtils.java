@@ -3,6 +3,34 @@ package template;
 public class DigitUtils {
     private DigitUtils() {}
 
+    /**
+     * return floor(a / b) while b is positive
+     */
+    public static long floorDiv(long a, long b) {
+        return a < 0 ? -ceilDiv(-a, b) : a / b;
+    }
+
+    /**
+     * return floor(a / b) while b is positive
+     */
+    public static int floorDiv(int a, int b) {
+        return a < 0 ? -ceilDiv(-a, b) : a / b;
+    }
+
+    /**
+     * return ceil(a / b) while b is positive
+     */
+    public static long ceilDiv(long a, long b) {
+        return a < 0 ? -floorDiv(-a, b) : (a + b - 1) / b;
+    }
+
+    /**
+     * return ceil(a / b) while b is positive
+     */
+    public static int ceilDiv(int a, int b) {
+        return a < 0 ? -floorDiv(-a, b) : (a + b - 1) / b;
+    }
+
     public static long asLong(int high, int low) {
         return (((long) high) << 32) | low;
     }
@@ -31,25 +59,25 @@ public class DigitUtils {
         return (x & 1) == 0;
     }
 
-    public static int mod(long x, int mod){
+    public static int mod(long x, int mod) {
         x %= mod;
-        if(x < 0){
+        if (x < 0) {
             x += mod;
         }
-        return (int)x;
+        return (int) x;
     }
 
-    public static int mod(int x, int mod){
+    public static int mod(int x, int mod) {
         x %= mod;
-        if(x < 0){
+        if (x < 0) {
             x += mod;
         }
         return x;
     }
 
-    public static long mod(long x, long mod){
+    public static long mod(long x, long mod) {
         x %= mod;
-        if(x < 0){
+        if (x < 0) {
             x += mod;
         }
         return x;
