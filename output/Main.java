@@ -10,8 +10,9 @@ import java.io.OutputStreamWriter;
 import java.io.InputStream;
 
 /**
- * Built using CHelper plug-in Actual solution is at the top
- * 
+ * Built using CHelper plug-in
+ * Actual solution is at the top
+ *
  * @author daltao
  */
 public class Main {
@@ -28,92 +29,82 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            TaskB solver = new TaskB();
+            TaskF solver = new TaskF();
             solver.solve(1, in, out);
             out.close();
         }
     }
-    static class TaskB {
-        NumberTheory.Modular mod = new NumberTheory.Modular(1e9 + 7);
 
+    static class TaskF {
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            long n = in.readLong();
-            int[] bits = new int[64];
-            DigitUtils.BitOperator bo = new DigitUtils.BitOperator();
-            for (int i = 0; i < 64; i++) {
-                bits[i] = bo.bitAt(n, i);
+            int n = in.readInt();
+            int k = in.readInt();
+
+            int[] a = new int[n];
+            for (int i = 0; i < n; i++) {
+                a[i] = in.readInt();
+            }
+            int[] b = new int[k];
+            for (int i = 0; i < k; i++) {
+                b[i] = in.readInt();
             }
 
-            long[][] dp = new long[64][3];
-            // 0 equal, 1 less 1, 2 less more than 1
-            dp[63][0] = 1;
-            for (int i = 62; i >= 0; i--) {
-                if (bits[i] == 1) {
-                    // a put and b put
-                    dp[i][0] = dp[i + 1][0];
-                    // b not put
-                    // b and a put
-                    dp[i][1] += dp[i + 1][0] + dp[i + 1][1];
-                    // b put or not
-                    // b and a put or not
-                    dp[i][2] += dp[i + 1][1] * 2 + dp[i + 1][2] * 3;
-                } else {
-                    // a not put and b not put
-                    // a put and b put
-                    dp[i][0] += dp[i + 1][0] + dp[i + 1][1];
-                    // b put
-                    dp[i][1] += dp[i + 1][1];
-                    // b and a not put
-                    dp[i][2] += dp[i + 1][1] + dp[i + 1][2] * 3;
-                }
-
-                for (int j = 0; j < 3; j++) {
-                    dp[i][j] = mod.valueOf(dp[i][j]);
-                }
+            int limit = 300000;
+            int[] cnts = new int[limit + 1];
+            for (int i = 0; i < n; i++) {
+                cnts[a[i]]++;
             }
 
-            long ans = mod.valueOf(dp[0][0] + dp[0][1] + dp[0][2]);
-            out.println(ans);
+            int[] dbCnt = new int[k];
+            int[] sgCnt = new int[k];
+            for (int i = 0; i < k; i++) {
+                int db = 0;
+                int sg = 0;
+                for (int j = 0; j < b[i]; j++) {
+                    if (cnts[j] >= 2) {
+                        db++;
+                    } else if (cnts[j] == 1) {
+                        sg++;
+                    }
+                }
+                dbCnt[i] = db;
+                sgCnt[i] = sg;
+            }
+
+            NumberTheory.Modular mod = new NumberTheory.Modular(998244353);
+            NumberTheory.Power power = new NumberTheory.Power(mod);
+            int q = in.readInt();
+
+            int t = mod.mul(2, power.inverse(9));
+            int inv = power.inverse(mod.subtract(t, 1));
+            for (int i = 0; i < q; i++) {
+                int ans = 0;
+                int x = in.readInt() / 2;
+                for (int j = 0; j < k; j++) {
+                    int y = x - b[j] - 1;
+                    if (y < 0) {
+                        continue;
+                    }
+                    int sg = sgCnt[j];
+                    int db = dbCnt[j];
+                    int dSince = Math.max(0, DigitUtils.ceilDiv(y - sg, 2));
+                    int dUntil = Math.min(y / 2, db);
+                    if (dSince > dUntil) {
+                        continue;
+                    }
+                    int contrib = mod.subtract(power.pow(t, dUntil + 1),
+                            power.pow(t, dSince));
+                    contrib = mod.mul(contrib, inv);
+                    contrib = mod.mul(contrib, power.pow(3, y));
+                    ans = mod.plus(ans, contrib);
+                }
+
+                out.println(ans);
+            }
         }
 
     }
-    static class NumberTheory {
-        public static class Modular {
-            int m;
 
-            public Modular(int m) {
-                this.m = m;
-            }
-
-            public Modular(long m) {
-                this.m = (int) m;
-                if (this.m != m) {
-                    throw new IllegalArgumentException();
-                }
-            }
-
-            public Modular(double m) {
-                this.m = (int) m;
-                if (this.m != m) {
-                    throw new IllegalArgumentException();
-                }
-            }
-
-            public int valueOf(long x) {
-                x %= m;
-                if (x < 0) {
-                    x += m;
-                }
-                return (int) x;
-            }
-
-            public String toString() {
-                return "mod " + m;
-            }
-
-        }
-
-    }
     static class FastInput {
         private final InputStream is;
         private byte[] buf = new byte[1 << 13];
@@ -146,7 +137,7 @@ public class Main {
             }
         }
 
-        public long readLong() {
+        public int readInt() {
             int sign = 1;
 
             skipBlank();
@@ -155,7 +146,7 @@ public class Main {
                 next = read();
             }
 
-            long val = 0;
+            int val = 0;
             if (sign == 1) {
                 while (next >= '0' && next <= '9') {
                     val = val * 10 + next - '0';
@@ -172,6 +163,7 @@ public class Main {
         }
 
     }
+
     static class FastOutput implements AutoCloseable, Closeable {
         private StringBuilder cache = new StringBuilder(1 << 20);
         private final Writer os;
@@ -184,7 +176,7 @@ public class Main {
             this(new OutputStreamWriter(os));
         }
 
-        public FastOutput println(long c) {
+        public FastOutput println(int c) {
             cache.append(c).append('\n');
             return this;
         }
@@ -209,14 +201,100 @@ public class Main {
         }
 
     }
-    static class DigitUtils {
-        private DigitUtils() {}
 
-        public static class BitOperator {
-            public int bitAt(long x, int i) {
-                return (int) ((x >> i) & 1);
+    static class NumberTheory {
+        public static class Modular {
+            int m;
+
+            public Modular(int m) {
+                this.m = m;
             }
 
+            public Modular(long m) {
+                this.m = (int) m;
+                if (this.m != m) {
+                    throw new IllegalArgumentException();
+                }
+            }
+
+            public Modular(double m) {
+                this.m = (int) m;
+                if (this.m != m) {
+                    throw new IllegalArgumentException();
+                }
+            }
+
+            public int valueOf(int x) {
+                x %= m;
+                if (x < 0) {
+                    x += m;
+                }
+                return x;
+            }
+
+            public int valueOf(long x) {
+                x %= m;
+                if (x < 0) {
+                    x += m;
+                }
+                return (int) x;
+            }
+
+            public int mul(int x, int y) {
+                return valueOf((long) x * y);
+            }
+
+            public int plus(int x, int y) {
+                return valueOf(x + y);
+            }
+
+            public int subtract(int x, int y) {
+                return valueOf(x - y);
+            }
+
+            public String toString() {
+                return "mod " + m;
+            }
+
+        }
+
+        public static class Power {
+            final NumberTheory.Modular modular;
+
+            public Power(NumberTheory.Modular modular) {
+                this.modular = modular;
+            }
+
+            public int pow(int x, long n) {
+                if (n == 0) {
+                    return 1;
+                }
+                long r = pow(x, n >> 1);
+                r = modular.valueOf(r * r);
+                if ((n & 1) == 1) {
+                    r = modular.valueOf(r * x);
+                }
+                return (int) r;
+            }
+
+            public int inverse(int x) {
+                return pow(x, modular.m - 2);
+            }
+
+        }
+
+    }
+
+    static class DigitUtils {
+        private DigitUtils() {
+        }
+
+        public static int floorDiv(int a, int b) {
+            return a < 0 ? -ceilDiv(-a, b) : a / b;
+        }
+
+        public static int ceilDiv(int a, int b) {
+            return a < 0 ? -floorDiv(-a, b) : (a + b - 1) / b;
         }
 
     }
