@@ -45,12 +45,7 @@ public class MoOnTree {
         eulerTrace = new Node[nodes.length * 2];
         lcaTrace = new Node[nodes.length * 2 - 1];
         dfs(nodes[0], null);
-        sparseTable = new SparseTable(lcaTrace, lcaTraceTail, new Comparator<Node>() {
-            @Override
-            public int compare(Node a, Node b) {
-                return a.dfn - b.dfn;
-            }
-        });
+        sparseTable = new SparseTable<Node>(lcaTrace, lcaTraceTail, (a, b) -> a.dfn < b.dfn ? a : b);
     }
 
     Node[] eulerTrace;

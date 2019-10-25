@@ -1,3 +1,2 @@
-46 src/main/java/contest/F - Red-White Fence.json
-1
+32 src/main/java/contest/TaskD.json
 0

@@ -2,6 +2,7 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.io.Closeable;
@@ -10,9 +11,8 @@ import java.io.OutputStreamWriter;
 import java.io.InputStream;
 
 /**
- * Built using CHelper plug-in
- * Actual solution is at the top
- *
+ * Built using CHelper plug-in Actual solution is at the top
+ * 
  * @author daltao
  */
 public class Main {
@@ -29,82 +29,61 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            TaskF solver = new TaskF();
+            TaskD solver = new TaskD();
             solver.solve(1, in, out);
             out.close();
         }
     }
-
-    static class TaskF {
+    static class TaskD {
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            int k = in.readInt();
-
-            int[] a = new int[n];
-            for (int i = 0; i < n; i++) {
-                a[i] = in.readInt();
-            }
-            int[] b = new int[k];
-            for (int i = 0; i < k; i++) {
-                b[i] = in.readInt();
-            }
-
-            int limit = 300000;
-            int[] cnts = new int[limit + 1];
-            for (int i = 0; i < n; i++) {
-                cnts[a[i]]++;
+            int[] vals = new int[n + 1];
+            vals[1] = in.readInt();
+            for (int i = 2; i <= n; i++) {
+                char c = in.readChar();
+                vals[i] = in.readInt();
+                if (c == '-') {
+                    vals[i] = -vals[i];
+                }
             }
 
-            int[] dbCnt = new int[k];
-            int[] sgCnt = new int[k];
-            for (int i = 0; i < k; i++) {
-                int db = 0;
-                int sg = 0;
-                for (int j = 0; j < b[i]; j++) {
-                    if (cnts[j] >= 2) {
-                        db++;
-                    } else if (cnts[j] == 1) {
-                        sg++;
+            long[][] dp = new long[n + 1][3];
+            ArrayUtils.deepFill(dp, (long) -1e18);
+            dp[0][0] = 0;
+            int[] sign = new int[] {1, -1, 1};
+            for (int i = 1; i <= n; i++) {
+                for (int j = 2; j >= 0; j--) {
+                    if (j < 2) {
+                        dp[i][j] = Math.max(dp[i][j], dp[i][j + 1]);
+                    }
+                    dp[i][j] = Math.max(dp[i][j], dp[i - 1][j] + sign[j] * vals[i]);
+                    if (vals[i] < 0 && j > 0) {
+                        dp[i][j] = Math.max(dp[i][j], dp[i - 1][j - 1] + sign[j - 1] * vals[i]);
                     }
                 }
-                dbCnt[i] = db;
-                sgCnt[i] = sg;
             }
 
-            NumberTheory.Modular mod = new NumberTheory.Modular(998244353);
-            NumberTheory.Power power = new NumberTheory.Power(mod);
-            int q = in.readInt();
+            out.println(dp[n][0]);
+        }
 
-            int t = mod.mul(2, power.inverse(9));
-            int inv = power.inverse(mod.subtract(t, 1));
-            for (int i = 0; i < q; i++) {
-                int ans = 0;
-                int x = in.readInt() / 2;
-                for (int j = 0; j < k; j++) {
-                    int y = x - b[j] - 1;
-                    if (y < 0) {
-                        continue;
-                    }
-                    int sg = sgCnt[j];
-                    int db = dbCnt[j];
-                    int dSince = Math.max(0, DigitUtils.ceilDiv(y - sg, 2));
-                    int dUntil = Math.min(y / 2, db);
-                    if (dSince > dUntil) {
-                        continue;
-                    }
-                    int contrib = mod.subtract(power.pow(t, dUntil + 1),
-                            power.pow(t, dSince));
-                    contrib = mod.mul(contrib, inv);
-                    contrib = mod.mul(contrib, power.pow(3, y));
-                    ans = mod.plus(ans, contrib);
+    }
+    static class ArrayUtils {
+        public static void deepFill(Object array, long val) {
+            if (!array.getClass().isArray()) {
+                throw new IllegalArgumentException();
+            }
+            if (array instanceof long[]) {
+                long[] longArray = (long[]) array;
+                Arrays.fill(longArray, val);
+            } else {
+                Object[] objArray = (Object[]) array;
+                for (Object obj : objArray) {
+                    deepFill(obj, val);
                 }
-
-                out.println(ans);
             }
         }
 
     }
-
     static class FastInput {
         private final InputStream is;
         private byte[] buf = new byte[1 << 13];
@@ -162,8 +141,14 @@ public class Main {
             return val;
         }
 
-    }
+        public char readChar() {
+            skipBlank();
+            char c = (char) next;
+            next = read();
+            return c;
+        }
 
+    }
     static class FastOutput implements AutoCloseable, Closeable {
         private StringBuilder cache = new StringBuilder(1 << 20);
         private final Writer os;
@@ -176,7 +161,7 @@ public class Main {
             this(new OutputStreamWriter(os));
         }
 
-        public FastOutput println(int c) {
+        public FastOutput println(long c) {
             cache.append(c).append('\n');
             return this;
         }
@@ -198,103 +183,6 @@ public class Main {
             } catch (IOException e) {
                 throw new UncheckedIOException(e);
             }
-        }
-
-    }
-
-    static class NumberTheory {
-        public static class Modular {
-            int m;
-
-            public Modular(int m) {
-                this.m = m;
-            }
-
-            public Modular(long m) {
-                this.m = (int) m;
-                if (this.m != m) {
-                    throw new IllegalArgumentException();
-                }
-            }
-
-            public Modular(double m) {
-                this.m = (int) m;
-                if (this.m != m) {
-                    throw new IllegalArgumentException();
-                }
-            }
-
-            public int valueOf(int x) {
-                x %= m;
-                if (x < 0) {
-                    x += m;
-                }
-                return x;
-            }
-
-            public int valueOf(long x) {
-                x %= m;
-                if (x < 0) {
-                    x += m;
-                }
-                return (int) x;
-            }
-
-            public int mul(int x, int y) {
-                return valueOf((long) x * y);
-            }
-
-            public int plus(int x, int y) {
-                return valueOf(x + y);
-            }
-
-            public int subtract(int x, int y) {
-                return valueOf(x - y);
-            }
-
-            public String toString() {
-                return "mod " + m;
-            }
-
-        }
-
-        public static class Power {
-            final NumberTheory.Modular modular;
-
-            public Power(NumberTheory.Modular modular) {
-                this.modular = modular;
-            }
-
-            public int pow(int x, long n) {
-                if (n == 0) {
-                    return 1;
-                }
-                long r = pow(x, n >> 1);
-                r = modular.valueOf(r * r);
-                if ((n & 1) == 1) {
-                    r = modular.valueOf(r * x);
-                }
-                return (int) r;
-            }
-
-            public int inverse(int x) {
-                return pow(x, modular.m - 2);
-            }
-
-        }
-
-    }
-
-    static class DigitUtils {
-        private DigitUtils() {
-        }
-
-        public static int floorDiv(int a, int b) {
-            return a < 0 ? -ceilDiv(-a, b) : a / b;
-        }
-
-        public static int ceilDiv(int a, int b) {
-            return a < 0 ? -floorDiv(-a, b) : (a + b - 1) / b;
         }
 
     }

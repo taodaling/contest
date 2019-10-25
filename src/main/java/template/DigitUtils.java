@@ -172,4 +172,34 @@ public class DigitUtils {
             return 63 - Long.numberOfLeadingZeros(x);
         }
     }
+
+    /**
+     * Log operations
+     */
+    public static class CachedLog2 {
+        public CachedLog2(int n) {
+            cache = new int[n + 1];
+            int b = 0;
+            for (int i = 0; i <= n; i++) {
+                while ((1 << b) < i) {
+                    b++;
+                }
+                cache[i] = b;
+            }
+        }
+
+        private int[] cache;
+
+        public int ceilLog(int x) {
+            int ans = floorLog(x);
+            if ((1 << ans) < x) {
+                x++;
+            }
+            return x;
+        }
+
+        public int floorLog(int x) {
+            return cache[x];
+        }
+    }
 }
