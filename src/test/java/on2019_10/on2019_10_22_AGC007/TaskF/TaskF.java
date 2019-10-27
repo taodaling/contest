@@ -5,7 +5,7 @@ package on2019_10.on2019_10_22_AGC007.TaskF;
 import java.util.ArrayList;
 import java.util.List;
 
-import template.ArrayUtils;
+import template.SequenceUtils;
 import template.FastInput;
 import template.FastOutput;
 import template.Randomized;
@@ -41,7 +41,7 @@ public class TaskF {
         }
 
         Interval[] intervals = intervalList.toArray(new Interval[0]);
-        ArrayUtils.reverse(intervals, 0, intervals.length);
+        SequenceUtils.reverse(intervals, 0, intervals.length);
 
         int m = intervals.length;
         int[] perm = new int[m];

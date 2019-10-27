@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
-public class ArrayUtils {
+public class SequenceUtils {
     public static <T> void swap(T[] data, int i, int j) {
         T tmp = data[i];
         data[i] = data[j];
@@ -21,6 +21,12 @@ public class ArrayUtils {
         int tmp = data[i];
         data[i] = data[j];
         data[j] = tmp;
+    }
+
+    public static<T> void swap(List<T> data, int i, int j) {
+        T tmp = data.get(i);
+        data.set(i, data.get(j));
+        data.set(j, tmp);
     }
 
     public static void swap(long[] data, int i, int j) {
@@ -207,6 +213,15 @@ public class ArrayUtils {
         }
     }
 
+    public static <T> void reverse(List<T> data, int f, int t) {
+        int l = f, r = t - 1;
+        while (l < r) {
+            swap(data, l, r);
+            l++;
+            r--;
+        }
+    }
+
     public static <T> void reverse(T[] data, int f, int t) {
         int l = f, r = t - 1;
         while (l < r) {
@@ -225,14 +240,8 @@ public class ArrayUtils {
         }
     }
 
-    public static void copy(Object[] src, Object[] dst, int srcf, int dstf, int len) {
-        if (len < 8) {
-            for (int i = 0; i < len; i++) {
-                dst[dstf + i] = src[srcf + i];
-            }
-        } else {
-            System.arraycopy(src, srcf, dst, dstf, len);
-        }
+    public static void copy(Object src, Object dst, int srcf, int dstf, int len) {
+        System.arraycopy(src, srcf, dst, dstf, len);
     }
 
     public static void fill(int[][] x, int val) {

@@ -32,6 +32,9 @@ public class LongBIT {
      * 将A[i]更新为A[i]+mod
      */
     public void update(int i, long mod) {
+        if (i <= 0) {
+            return;
+        }
         for (; i <= n; i += i & -i) {
             data[i] += mod;
         }

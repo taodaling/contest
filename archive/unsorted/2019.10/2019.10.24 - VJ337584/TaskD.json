@@ -32,7 +32,7 @@
   "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
   "checkerParameters" : "",
   "testClasses" : [ ],
-  "date" : "2019.10.24",
+  "date" : "2019.10.25",
   "contestName" : "VJ337584",
   "truncate" : true,
   "inputClass" : "template.FastInput",

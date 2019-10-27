@@ -26,8 +26,8 @@
   "taskClass" : "contest.TaskE",
   "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
   "checkerParameters" : "",
-  "testClasses" : [ ],
-  "date" : "2019.10.24",
+  "testClasses" : [ "contest.TaskETestCase" ],
+  "date" : "2019.10.25",
   "contestName" : "VJ337584",
   "truncate" : true,
   "inputClass" : "template.FastInput",
@@ -36,5 +36,5 @@
   "failOnOverflow" : false,
   "interactive" : false,
   "interactor" : "net.egork.chelper.tester.Interactor",
-  "newThread" : true
+  "newThread" : false
 }

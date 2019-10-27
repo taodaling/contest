@@ -1,0 +1,45 @@
+{
+  "name" : "C - Rock Is Push",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "1 1\n.\n",
+    "output" : "1\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "2 3\n...\n..R\n",
+    "output" : "0\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "4 4\n...R\n.RR.\n.RR.\nR...\n",
+    "output" : "4\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx512M",
+  "mainClass" : "Main",
+  "taskClass" : "on2019_10.on2019_10_26_Codeforces_Round__596__Div__1__based_on_Technocup_2020_Elimination_Round_2_.C___Rock_Is_Push.TaskC",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.10.26",
+  "contestName" : "Codeforces Round #596 (Div. 1, based on Technocup 2020 Elimination Round 2)",
+  "truncate" : true,
+  "inputClass" : "template.FastInput",
+  "outputClass" : "template.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

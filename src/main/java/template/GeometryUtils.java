@@ -24,8 +24,8 @@ public class GeometryUtils {
     }
 
     public static class Point2D {
-        final double x;
-        final double y;
+        public final double x;
+        public final double y;
         static final Point2D ORIGIN = new Point2D(0, 0);
         static final Comparator<Point2D> SORT_BY_X_AND_Y = new Comparator<Point2D>() {
             @Override
@@ -105,10 +105,10 @@ public class GeometryUtils {
     }
 
     public static class Line2D {
-        final Point2D a;
-        final Point2D b;
-        final Point2D d;
-        final double theta;
+        public final Point2D a;
+        public final Point2D b;
+        public final Point2D d;
+        public final double theta;
         /**
          * 按照[0,2pi)极角对线排序
          */
@@ -315,8 +315,16 @@ public class GeometryUtils {
     }
 
     public static class HalfPlaneIntersection {
-        LineConvexHull convex;
-        boolean hasSolution = true;
+        private LineConvexHull convex;
+        private boolean hasSolution = true;
+
+        public LineConvexHull getConvex() {
+            return convex;
+        }
+
+        public boolean isHasSolution() {
+            return hasSolution;
+        }
 
         public HalfPlaneIntersection(Polygon<Line2D> linePolygon, boolean close) {
             this(linePolygon, close, false);

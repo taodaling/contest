@@ -6,7 +6,7 @@ import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
 
-import template.ArrayUtils;
+import template.SequenceUtils;
 import template.FastInput;
 import template.FastOutput;
 import template.NumberTheory;
@@ -51,7 +51,7 @@ public class TaskC {
         m = intervals.length;
 
         dp = new int[m + 1][6001];
-        ArrayUtils.deepFill(dp, -1);
+        SequenceUtils.deepFill(dp, -1);
         Arrays.fill(dp[m], 0);
         dp[m][zero] = 1;
 

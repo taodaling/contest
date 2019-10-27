@@ -1,0 +1,75 @@
+{
+  "name" : "TaskD",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4 10\n3 4 3 3\n2\n4 3",
+    "output" : "NO\nYES",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "5 9\n4 4 2 3 2\n5\n1 4 2 3 5",
+    "output" : "YES\nYES\nYES\nYES\nYES",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "6 15\n4 3 5 4 2 1\n6\n1 2 3 4 5 6",
+    "output" : "NO\nNO\nYES\nNO\nNO\nYES",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "1 1\n1\n1\n1",
+    "output" : "YES",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "3 2\n1 2 1\n3\n1 2 3",
+    "output" : "NO NO YES",
+    "index" : 4,
+    "active" : true
+  }, {
+    "input" : "3 1000000000\n1000000000 1000000000 1000000000\n3\n1 2 3",
+    "output" : "YES NO NO",
+    "index" : 5,
+    "active" : true
+  }, {
+    "input" : "5 1000000000\n1000000000 100000000 10000000 1000000 100000\n5\n1 2 3 4 5",
+    "output" : "YES NO NO NO NO",
+    "index" : 6,
+    "active" : true
+  }, {
+    "input" : "5 1000000000\n1000000001 100000000 10000000 1000000 100000\n5\n1 2 3 4 5",
+    "output" : "YES YES YES YES YES",
+    "index" : 7,
+    "active" : true
+  }, {
+    "input" : "4\n2\n4 3 1 5 \n4\n1 2 3 4 ",
+    "output" : "NO\nYES\nYES\nNO\n",
+    "index" : 8,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx512M",
+  "mainClass" : "Main",
+  "taskClass" : "on2019_10.on2019_10_26_Codeforces_Round__596__Div__1__based_on_Technocup_2020_Elimination_Round_2_.TaskD.TaskD",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.10.26",
+  "contestName" : "Codeforces Round #596 (Div. 1, based on Technocup 2020 Elimination Round 2)",
+  "truncate" : true,
+  "inputClass" : "template.FastInput",
+  "outputClass" : "template.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

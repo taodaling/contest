@@ -1,0 +1,50 @@
+{
+  "name" : "TaskD",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 3\nS.o\n.o.\no.T",
+    "output" : "2",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "3 4\nS...\n.oo.\n...T",
+    "output" : "0",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "4 3\n.S.\n.o.\n.o.\n.T.",
+    "output" : "-1",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "10 10\n.o...o..o.\n....o.....\n....oo.oo.\n..oooo..o.\n....oo....\n..o..o....\no..o....So\no....T....\n....o.....\n........oo",
+    "output" : "5",
+    "index" : 3,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx512M",
+  "mainClass" : "Main",
+  "taskClass" : "on2019_10.on2019_10_27_338483.TaskD.TaskD",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.10.27",
+  "contestName" : "338483",
+  "truncate" : true,
+  "inputClass" : "template.FastInput",
+  "outputClass" : "template.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

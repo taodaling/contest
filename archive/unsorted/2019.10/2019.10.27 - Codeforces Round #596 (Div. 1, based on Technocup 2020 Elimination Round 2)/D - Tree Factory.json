@@ -1,0 +1,47 @@
+{
+  "name" : "D - Tree Factory",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5\n0 0 1 1\n",
+    "index" : 0,
+    "active" : false
+  }, {
+    "input" : "4\n0 1 2\n",
+    "index" : 1,
+    "active" : false
+  }, {
+    "input" : "100\n0 0 1 3 0 0 4 7 5 7 6 10 5 1 8 1 13 13 11 16 11 14 7 8 22 17 12 21 18 21 18 14 27 24 11 8 7 22 12 6 1 9 13 5 23 33 29 24 30 12 49 37 16 45 37 35 51 40 57 34 11 37 57 7 8 25 59 67 67 10 30 48 10 1 73 25 24 41 60 56 50 46 0 25 20 25 84 45 24 28 41 90 86 89 0 59 60 42 19",
+    "output" : "",
+    "index" : 2,
+    "active" : false
+  }, {
+    "input" : "7\n0 1 1 0 4 4",
+    "index" : 3,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx512M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.TaskD",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.10.27",
+  "contestName" : "Codeforces Round #596 (Div. 1, based on Technocup 2020 Elimination Round 2)",
+  "truncate" : true,
+  "inputClass" : "template.FastInput",
+  "outputClass" : "template.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

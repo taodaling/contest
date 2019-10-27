@@ -50,7 +50,7 @@ public class CompareUtils {
             insertSort(data, cmp, f, t);
             return data[f + k - 1];
         }
-        ArrayUtils.swap(data, f, Randomized.nextInt(f, t - 1));
+        SequenceUtils.swap(data, f, Randomized.nextInt(f, t - 1));
         int l = f;
         int r = t;
         int m = l + 1;
@@ -59,11 +59,11 @@ public class CompareUtils {
             if (c == 0) {
                 m++;
             } else if (c < 0) {
-                ArrayUtils.swap(data, l, m);
+                SequenceUtils.swap(data, l, m);
                 l++;
                 m++;
             } else {
-                ArrayUtils.swap(data, m, --r);
+                SequenceUtils.swap(data, m, --r);
             }
         }
         if (l - f >= k) {

@@ -177,7 +177,7 @@ public class DirectMinSpanningTree {
         }
     }
 
-    public static class LeftSideTree {
+    private static class LeftSideTree {
         public static final LeftSideTree NIL = new LeftSideTree(null);
 
         static {

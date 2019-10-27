@@ -1,7 +1,9 @@
 package contest;
 
+
 import template.*;
 
+import java.util.Arrays;
 import java.util.Map;
 
 public class TaskF {
@@ -32,7 +34,7 @@ public class TaskF {
             for (int j = 0; j < b[i]; j++) {
                 if (cnts[j] >= 2) {
                     db++;
-                }else if(cnts[j] == 1){
+                } else if (cnts[j] == 1) {
                     sg++;
                 }
             }
@@ -40,32 +42,42 @@ public class TaskF {
             sgCnt[i] = sg;
         }
 
-        NumberTheory.Modular mod = new NumberTheory.Modular(998244353 );
-        NumberTheory.Power power = new NumberTheory.Power(mod);
-        int q = in.readInt();
+        NumberTheory.Modular mod = new NumberTheory.Modular(998244353);
+        NumberTheory.Composite comp = new NumberTheory.Composite(n, mod);
+        DigitUtils.Log2 log2 = new DigitUtils.Log2();
+        int proper = log2.ceilLog(n + 1) + 1;
+        int[][] ways = new int[k][];
+        NumberTheoryTransform ntt = new NumberTheoryTransform(mod, 3);
+        int[] rev = new int[1 << proper];
+        ntt.prepareReverse(rev, proper);
+        for (int i = 0; i < k; i++) {
+            int[] buf1 = new int[1 << proper];
+            int[] buf2 = new int[1 << proper];
+            int sg = sgCnt[i];
+            int db = dbCnt[i];
+            int p2 = 1;
+            for (int j = 0; j <= sg || j <= db; j++) {
+                buf1[j] = mod.mul(comp.composite(sg, j), p2);
+                buf2[j] = comp.composite(2 * db, j);
+                p2 = mod.mul(p2, 2);
+            }
+            ntt.dft(rev, buf1, proper);
+            ntt.dft(rev, buf2, proper);
+            ntt.dotMul(buf1, buf2, buf1, proper);
+            ntt.idft(rev, buf1, proper);
+            ways[i] = buf1;
+        }
 
-        int t = mod.mul(2, power.inverse(9));
-        int inv = power.inverse(mod.subtract(t, 1));
+        int q = in.readInt();
         for(int i = 0; i < q; i++){
+            int qi = in.readInt() / 2 - 1;
             int ans = 0;
-            int x = in.readInt() / 2;
             for(int j = 0; j < k; j++){
-                int y = x - b[j] - 1;
-                if(y < 0){
+                int num = qi - b[j];
+                if(num < 0 || num >= ways[j].length){
                     continue;
                 }
-                int sg = sgCnt[j];
-                int db = dbCnt[j];
-                int dSince = Math.max(0, DigitUtils.ceilDiv(y - sg, 2));
-                int dUntil = Math.min(y / 2, db);
-                if(dSince > dUntil){
-                    continue;
-                }
-                int contrib = mod.subtract(power.pow(t, dUntil + 1),
-                        power.pow(t, dSince));
-                contrib = mod.mul(contrib, inv);
-                contrib = mod.mul(contrib, power.pow(3, y));
-                ans = mod.plus(ans, contrib);
+                ans = mod.plus(ans, ways[j][num]);
             }
 
             out.println(ans);

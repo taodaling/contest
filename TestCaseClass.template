@@ -8,7 +8,7 @@ import net.egork.chelper.task.Test;
 import net.egork.chelper.tester.TestCase;
 import template.RandomWrapper;
 
-public class TaskETestCase {
+public class %TestCaseClass% {
     @TestCase
     public Collection<Test> createTests() {
         List<Test> tests = new ArrayList<>();

@@ -5,44 +5,35 @@ import template.FastInput;
 import template.FastOutput;
 
 public class TaskD {
-    long[][] f;
-    int n;
-    int[] nums;
-
     public void solve(int testNumber, FastInput in, FastOutput out) {
-        n = in.readInt();
-        nums = new int[n + 1];
+        int n = in.readInt();
+        int[] vals = new int[n + 1];
+        vals[1] = in.readInt();
+        for (int i = 2; i <= n; i++) {
+            char c = in.readChar();
+            vals[i] = in.readInt();
+            if (c == '-') {
+                vals[i] = -vals[i];
+            }
+        }
+
+        long[][] dp = new long[n + 1][3];
+        ArrayUtils.deepFill(dp, (long) -1e18);
+        dp[0][0] = 0;
+        int[] sign = new int[]{1, -1, 1};
         for (int i = 1; i <= n; i++) {
-            boolean positive = true;
-            if (i > 1) {
-                positive = in.readChar() == '+';
-            }
-            nums[i] = in.readInt();
-            if (!positive) {
-                nums[i] = -nums[i];
-            }
-        }
-
-        f = new long[2][n + 1];
-        ArrayUtils.deepFill(f, -1L);
-
-        long ans = f(1, 0);
-        out.println(ans);
-    }
-
-    public long f(int i, int j) {
-        if (i > n) {
-            return 0;
-        }
-        if (f[j][i] == -1) {
-            if (j == 0) {
-                if (nums[j] < 0) {
-                    
+            for (int j = 2; j >= 0; j--) {
+                if(j < 2){
+                    dp[i][j] = Math.max(dp[i][j], dp[i][j + 1]);
                 }
-
+                dp[i][j] = Math.max(dp[i][j], dp[i - 1][j] + sign[j] * vals[i]);
+                if(vals[i] < 0 && j > 0){
+                    dp[i][j] = Math.max(dp[i][j], dp[i - 1][j - 1] +
+                            sign[j - 1] * vals[i]);
+                }
             }
         }
-        return f[j][i];
-    }
 
+        out.println(dp[n][0]);
+    }
 }

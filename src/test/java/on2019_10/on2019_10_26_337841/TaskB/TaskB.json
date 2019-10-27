@@ -1,0 +1,50 @@
+{
+  "name" : "TaskB",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2 1",
+    "output" : "1",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "17 2",
+    "output" : "262144",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "2000 1000",
+    "output" : "674286644",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "3 3",
+    "output" : "2",
+    "index" : 3,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256m -Xss64m",
+  "mainClass" : "Main",
+  "taskClass" : "on2019_10.on2019_10_26_337841.TaskB.TaskB",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.10.26",
+  "contestName" : "337841",
+  "truncate" : true,
+  "inputClass" : "template.FastInput",
+  "outputClass" : "template.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

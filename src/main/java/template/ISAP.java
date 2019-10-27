@@ -44,11 +44,11 @@ public class ISAP {
         return result;
     }
 
-    public Collection<DirectChannel> getChannels() {
+    private Collection<DirectChannel> getChannels() {
         return channelMap.values();
     }
 
-    public DirectChannel addChannel(int src, int dst) {
+    private DirectChannel addChannel(int src, int dst) {
         DirectChannel channel = new DirectChannel(nodes[src], nodes[dst], 0, 0);
         nodes[src].channelList.add(channel);
         nodes[dst].channelList.add(channel.getInverse());
@@ -86,7 +86,7 @@ public class ISAP {
         return flowSnapshot - flow;
     }
 
-    public double send(Node node, double flowRemain) {
+    private double send(Node node, double flowRemain) {
         if (node == target) {
             return flowRemain;
         }
@@ -131,7 +131,7 @@ public class ISAP {
         target = nodes[id];
     }
 
-    public void bfs() {
+    private void bfs() {
         if (bfsFlag) {
             return;
         }

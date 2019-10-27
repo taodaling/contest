@@ -3,16 +3,24 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
+import java.util.PriorityQueue;
+import java.util.Collection;
+import java.util.AbstractQueue;
 import java.io.IOException;
+import java.util.Deque;
+import java.util.ArrayList;
 import java.io.UncheckedIOException;
+import java.util.List;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
+import java.util.ArrayDeque;
 import java.io.InputStream;
 
 /**
- * Built using CHelper plug-in Actual solution is at the top
- * 
+ * Built using CHelper plug-in
+ * Actual solution is at the top
+ *
  * @author daltao
  */
 public class Main {
@@ -29,61 +37,61 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            TaskD solver = new TaskD();
+            TaskB solver = new TaskB();
             solver.solve(1, in, out);
             out.close();
         }
     }
-    static class TaskD {
+
+    static class TaskB {
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            int[] vals = new int[n + 1];
-            vals[1] = in.readInt();
-            for (int i = 2; i <= n; i++) {
-                char c = in.readChar();
-                vals[i] = in.readInt();
-                if (c == '-') {
-                    vals[i] = -vals[i];
+            int m = in.readInt();
+            int[][] lrs = new int[n][2];
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < 2; j++) {
+                    lrs[i][j] = in.readInt();
+                }
+            }
+            Arrays.sort(lrs, (a, b) -> a[0] - b[0]);
+            Deque<int[]> que = new ArrayDeque<>(Arrays.asList(lrs));
+            List<int[]> remain = new ArrayList<>(n);
+            while (!que.isEmpty() && que.peekFirst()[0] == 0) {
+                remain.add(que.removeFirst());
+            }
+            PriorityQueue<int[]> leftSide = new PriorityQueue<>(n, (a, b) -> a[1] - b[1]);
+            for (int i = 1; i <= m; i++) {
+                if (que.isEmpty()) {
+                    break;
+                }
+                leftSide.add(que.removeFirst());
+                while (!que.isEmpty() && que.peekFirst()[0] == i) {
+                    if (leftSide.peek()[1] < que.peekFirst()[1]) {
+                        remain.add(leftSide.remove());
+                        leftSide.add(que.removeFirst());
+                    } else {
+                        remain.add(que.removeFirst());
+                    }
                 }
             }
 
-            long[][] dp = new long[n + 1][3];
-            ArrayUtils.deepFill(dp, (long) -1e18);
-            dp[0][0] = 0;
-            int[] sign = new int[] {1, -1, 1};
-            for (int i = 1; i <= n; i++) {
-                for (int j = 2; j >= 0; j--) {
-                    if (j < 2) {
-                        dp[i][j] = Math.max(dp[i][j], dp[i][j + 1]);
-                    }
-                    dp[i][j] = Math.max(dp[i][j], dp[i - 1][j] + sign[j] * vals[i]);
-                    if (vals[i] < 0 && j > 0) {
-                        dp[i][j] = Math.max(dp[i][j], dp[i - 1][j - 1] + sign[j - 1] * vals[i]);
-                    }
+            int cnt = leftSide.size();
+            remain.sort((a, b) -> -(a[1] - b[1]));
+            int next = m;
+            for (int[] lr : remain) {
+                if (lr[1] > next) {
+                    continue;
                 }
+                next--;
+                cnt++;
             }
 
-            out.println(dp[n][0]);
+            cnt = Math.min(cnt, m);
+            out.println(n - cnt);
         }
 
     }
-    static class ArrayUtils {
-        public static void deepFill(Object array, long val) {
-            if (!array.getClass().isArray()) {
-                throw new IllegalArgumentException();
-            }
-            if (array instanceof long[]) {
-                long[] longArray = (long[]) array;
-                Arrays.fill(longArray, val);
-            } else {
-                Object[] objArray = (Object[]) array;
-                for (Object obj : objArray) {
-                    deepFill(obj, val);
-                }
-            }
-        }
 
-    }
     static class FastInput {
         private final InputStream is;
         private byte[] buf = new byte[1 << 13];
@@ -141,16 +149,10 @@ public class Main {
             return val;
         }
 
-        public char readChar() {
-            skipBlank();
-            char c = (char) next;
-            next = read();
-            return c;
-        }
-
     }
+
     static class FastOutput implements AutoCloseable, Closeable {
-        private StringBuilder cache = new StringBuilder(1 << 20);
+        private StringBuilder cache = new StringBuilder(10 << 20);
         private final Writer os;
 
         public FastOutput(Writer os) {
@@ -161,7 +163,7 @@ public class Main {
             this(new OutputStreamWriter(os));
         }
 
-        public FastOutput println(long c) {
+        public FastOutput println(int c) {
             cache.append(c).append('\n');
             return this;
         }

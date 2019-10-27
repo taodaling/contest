@@ -1,5 +1,12 @@
 package template;
 
+/**
+ * For given sequence a1, a2, ... , an.
+ * <br>
+ * find a linear feed back shift register c1, c2, ..., ck,
+ * <br>
+ * satisfy for any i > k that ai=\sum_{j=1}^k a_{i-j}c_j
+ */
 public class ModLinearFeedbackShiftRegister {
     private IntList cm;
     int m = -1;
@@ -113,6 +120,7 @@ public class ModLinearFeedbackShiftRegister {
         }
     }
 
+    //start from 1
     public int codeAt(int i){
         return cn.get(i);
     }
