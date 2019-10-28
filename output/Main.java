@@ -86,7 +86,7 @@ public class Main {
                         if (node.choice1 == -1) {
                             node.choice1 = i;
                         } else {
-                            node.choice1 = i;
+                            node.choice2 = i;
                             break;
                         }
                     }
@@ -478,8 +478,8 @@ public class Main {
         }
 
         public static class Node {
-            List<TwoSat.Node> outEdge = new ArrayList(2);
-            List<TwoSat.Node> inEdge = new ArrayList(2);
+            List<TwoSat.Node> outEdge = new ArrayList();
+            List<TwoSat.Node> inEdge = new ArrayList();
             int id;
             TwoSat.Node inverse;
             TwoSat.Node head;

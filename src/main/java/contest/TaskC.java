@@ -54,7 +54,7 @@ public class TaskC {
                     if (node.choice1 == -1) {
                         node.choice1 = i;
                     } else {
-                        node.choice1 = i;
+                        node.choice2 = i;
                         break;
                     }
                 }
