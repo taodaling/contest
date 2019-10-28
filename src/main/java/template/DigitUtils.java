@@ -1,8 +1,7 @@
 package template;
 
 public class DigitUtils {
-    private DigitUtils() {
-    }
+    private DigitUtils() {}
 
     private static final long[] DIGIT_VALUES = new long[19];
 
@@ -209,7 +208,7 @@ public class DigitUtils {
             cache = new int[n + 1];
             int b = 0;
             for (int i = 0; i <= n; i++) {
-                while ((1 << b) < i) {
+                while ((1 << (b + 1)) <= i) {
                     b++;
                 }
                 cache[i] = b;
@@ -217,6 +216,7 @@ public class DigitUtils {
         }
 
         private int[] cache;
+        private Log2 log2;
 
         public int ceilLog(int x) {
             int ans = floorLog(x);
@@ -227,6 +227,9 @@ public class DigitUtils {
         }
 
         public int floorLog(int x) {
+            if (x >= cache.length) {
+                return log2.floorLog(x);
+            }
             return cache[x];
         }
     }

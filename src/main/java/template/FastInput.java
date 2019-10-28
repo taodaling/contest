@@ -22,7 +22,7 @@ public class FastInput {
             try {
                 bufLen = is.read(buf);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                bufLen = -1;
             }
             if (bufLen == -1) {
                 return -1;

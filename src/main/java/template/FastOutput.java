@@ -102,6 +102,7 @@ public class FastOutput implements AutoCloseable, Closeable {
     public FastOutput flush() {
         try {
             os.append(cache);
+            os.flush();
             cache.setLength(0);
         } catch (IOException e) {
             throw new UncheckedIOException(e);

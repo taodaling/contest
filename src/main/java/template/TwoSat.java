@@ -7,8 +7,8 @@ import java.util.List;
 
 public class TwoSat {
     public static class Node {
-        List<Node> outEdge = new ArrayList(2);
-        List<Node> inEdge = new ArrayList(2);
+        List<Node> outEdge = new ArrayList();
+        List<Node> inEdge = new ArrayList();
         int id;
         Node inverse;
         Node head;
@@ -158,7 +158,7 @@ public class TwoSat {
             return true;
         }
 
-        //Topological sort
+        // Topological sort
         for (int i = 0; i < 2; i++) {
             for (int j = 1; j <= n; j++) {
                 for (Node node : nodes[i][j].outEdge) {
