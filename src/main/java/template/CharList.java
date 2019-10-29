@@ -93,6 +93,15 @@ public class CharList {
         return -1;
     }
 
+    public char first() {
+        checkRange(0);
+        return data[0];
+    }
+
+    public char tail() {
+        checkRange(0);
+        return data[size - 1];
+    }
     public void sort() {
         if (size <= 1) {
             return;

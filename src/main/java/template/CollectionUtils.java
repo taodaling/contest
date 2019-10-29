@@ -14,7 +14,7 @@ public class CollectionUtils {
         }
     }
 
-    public static <T> Boolean IsIntersectionEmpty(Set<T> a, Set<T> b) {
+    public static <T> boolean IsIntersectionEmpty(Set<T> a, Set<T> b) {
         if (a.size() > b.size()) {
             Set<T> tmp = a;
             a = b;

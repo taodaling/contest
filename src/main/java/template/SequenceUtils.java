@@ -5,6 +5,22 @@ import java.util.Comparator;
 import java.util.List;
 
 public class SequenceUtils {
+    public static int floorIndex(int[] data, int x) {
+        int index = Arrays.binarySearch(data, x);
+        if (index < 0) {
+            return -(index + 1) - 1;
+        }
+        return index;
+    }
+
+    public static int ceilIndex(int[] data, int x) {
+        int index = Arrays.binarySearch(data, x);
+        if (index < 0) {
+            return -(index + 1);
+        }
+        return index;
+    }
+
     public static <T> void swap(T[] data, int i, int j) {
         T tmp = data[i];
         data[i] = data[j];
@@ -23,7 +39,7 @@ public class SequenceUtils {
         data[j] = tmp;
     }
 
-    public static<T> void swap(List<T> data, int i, int j) {
+    public static <T> void swap(List<T> data, int i, int j) {
         T tmp = data.get(i);
         data.set(i, data.get(j));
         data.set(j, tmp);

@@ -96,6 +96,15 @@ public class IntList {
         Arrays.sort(data, 0, size);
     }
 
+    public int first() {
+        checkRange(0);
+        return data[0];
+    }
+
+    public int tail() {
+        checkRange(0);
+        return data[size - 1];
+    }
     public void unique() {
         if (size <= 1) {
             return;

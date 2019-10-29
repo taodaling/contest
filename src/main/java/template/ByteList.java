@@ -80,6 +80,15 @@ public class ByteList {
         }
         return -1;
     }
+    public byte first() {
+        checkRange(0);
+        return data[0];
+    }
+
+    public byte tail() {
+        checkRange(0);
+        return data[size - 1];
+    }
 
     public void sort() {
         if (size <= 1) {

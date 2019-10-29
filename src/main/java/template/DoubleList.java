@@ -105,6 +105,15 @@ public class DoubleList {
         return -1;
     }
 
+    public double first() {
+        checkRange(0);
+        return data[0];
+    }
+
+    public double tail() {
+        checkRange(0);
+        return data[size - 1];
+    }
     public void sort() {
         if (size <= 1) {
             return;

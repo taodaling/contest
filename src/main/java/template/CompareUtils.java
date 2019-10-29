@@ -3,8 +3,7 @@ package template;
 import java.util.Comparator;
 
 public class CompareUtils {
-    private CompareUtils() {
-    }
+    private CompareUtils() {}
 
     public static int middleOf(int a, int b, int c) {
         int signAB = Integer.compare(a, b);
@@ -73,4 +72,6 @@ public class CompareUtils {
         }
         return theKthSmallestElement(data, cmp, m, t, k - (m - f));
     }
+
+
 }

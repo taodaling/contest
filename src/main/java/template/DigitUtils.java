@@ -1,5 +1,7 @@
 package template;
 
+import java.util.Arrays;
+
 public class DigitUtils {
     private DigitUtils() {}
 
@@ -49,6 +51,30 @@ public class DigitUtils {
      */
     public static long ceilDiv(long a, long b) {
         return a < 0 ? -floorDiv(-a, b) : (a + b - 1) / b;
+    }
+
+    public static boolean isMultiplicationOverflow(long a, long b, long limit) {
+        if (limit < 0) {
+            limit = -limit;
+        }
+        if (a < 0) {
+            a = -a;
+        }
+        if (b < 0) {
+            b = -b;
+        }
+        if (a == 0 || b == 0) {
+            return false;
+        }
+        return a > limit / b;
+    }
+
+    public static long mul(long a, long b, long limit, long overflowVal) {
+        return isMultiplicationOverflow(a, b, limit) ? overflowVal : a * b;
+    }
+
+    public static long mul(long a, long b, long overflowVal) {
+        return mul(a, b, Long.MAX_VALUE, overflowVal);
     }
 
     /**
@@ -174,7 +200,15 @@ public class DigitUtils {
             return x & y;
         }
 
+        public int intersect(int x, int y) {
+            return x & y;
+        }
+
         public long differ(long x, long y) {
+            return x - intersect(x, y);
+        }
+
+        public int differ(int x, int y) {
             return x - intersect(x, y);
         }
     }
@@ -231,6 +265,68 @@ public class DigitUtils {
                 return log2.floorLog(x);
             }
             return cache[x];
+        }
+    }
+
+    public static class DigitBase {
+        private long[] pow;
+        private long base;
+
+        public DigitBase(long base) {
+            if (base <= 1) {
+                throw new IllegalArgumentException();
+            }
+            this.base = base;
+            LongList ll = new LongList(64);
+            ll.add(1);
+            while (!isMultiplicationOverflow(ll.tail(), base, Long.MAX_VALUE)) {
+                ll.add(ll.tail() * base);
+            }
+            pow = ll.toArray();
+        }
+
+        public long valueOfBit(int i) {
+            return pow[i];
+        }
+
+        public int getBit(long x, int i) {
+            return (int) (x / pow[i] % base);
+        }
+
+        public long setBit(long x, int i, long val) {
+            return x + (val - getBit(x, i)) * pow[i];
+        }
+
+        public int bitCount() {
+            return pow.length;
+        }
+
+        public int[] decompose(long x) {
+            return decompose(x, new int[bitCount()]);
+        }
+
+        public int[] decompose(long x, int[] ans) {
+            for (int i = 0; i < ans.length; i++) {
+                ans[i] = (int)(x % base);
+                x /= base;
+            }
+            return ans;
+        }
+
+        public long compose(int[] bits) {
+            if (bits.length > bitCount()) {
+                throw new IllegalArgumentException();
+            }
+            long ans = 0;
+            for (int i = bits.length - 1; i >= 0; i--) {
+                ans = ans * base + bits[i];
+            }
+            return ans;
+        }
+
+        public String toString(long x) {
+            int[] bits = decompose(x);
+            return Arrays.toString(bits);
         }
     }
 }

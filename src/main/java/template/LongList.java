@@ -37,7 +37,7 @@ public class LongList {
         }
     }
 
-    public void set(int i, long x){
+    public void set(int i, long x) {
         checkRange(i);
         data[i] = x;
     }
@@ -58,6 +58,16 @@ public class LongList {
     public long get(int i) {
         checkRange(i);
         return data[i];
+    }
+
+    public long first() {
+        checkRange(0);
+        return data[0];
+    }
+
+    public long tail() {
+        checkRange(0);
+        return data[size - 1];
     }
 
     public void add(long x) {
