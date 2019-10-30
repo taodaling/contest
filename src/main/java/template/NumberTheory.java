@@ -1,7 +1,5 @@
 package template;
 
-import com.sun.org.apache.xpath.internal.operations.Mod;
-
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,9 +22,9 @@ public class NumberTheory {
         /**
          * O(pc)
          *
-         * @param p  the prime
+         * @param p the prime
          * @param pc p^c
-         * @param g  buffer
+         * @param g buffer
          */
         public ExtLucasFactorial(int p, int pc, int[] g) {
             this.p = p;
@@ -90,7 +88,7 @@ public class NumberTheory {
             Map<Integer, Integer> factors = pr.findAllFactors(p);
             for (Map.Entry<Integer, Integer> entry : factors.entrySet()) {
                 factorialMap.put(entry.getValue(),
-                        new ExtLucasFactorial(entry.getKey(), entry.getValue(), new int[entry.getValue() + 1]));
+                                new ExtLucasFactorial(entry.getKey(), entry.getValue(), new int[entry.getValue() + 1]));
             }
         }
 
@@ -117,7 +115,7 @@ public class NumberTheory {
             Map<Long, Long> factors = pr.findAllFactors(p);
             for (Map.Entry<Long, Long> entry : factors.entrySet()) {
                 factorialMap.put(entry.getValue().intValue(), new ExtLucasFactorial(entry.getKey().intValue(),
-                        entry.getValue().intValue(), new int[entry.getValue().intValue() + 1]));
+                                entry.getValue().intValue(), new int[entry.getValue().intValue() + 1]));
             }
         }
 
@@ -202,9 +200,31 @@ public class NumberTheory {
      * Euler sieve for filter primes
      */
     public static class EulerSieve {
-        int[] primes;
-        boolean[] isComp;
-        int primeLength;
+        private int[] primes;
+        private boolean[] isComp;
+        private int primeLength;
+
+        public int getPrimeCount() {
+            return primeLength;
+        }
+
+        public int get(int k) {
+            return primes[k];
+        }
+
+        public boolean isPrime(int x) {
+            if(x == 1){
+                return false;
+            }
+            return !isComp[x];
+        }
+
+        public boolean isComp(int x) {
+            if(x == 1){
+                return false;
+            }
+            return isComp[x];
+        }
 
         public EulerSieve(int limit) {
             isComp = new boolean[limit + 1];
@@ -239,7 +259,7 @@ public class NumberTheory {
         int[] numberOfSmallestPrimeFactor;
 
         public MultiplicativeFunctionSieve(int limit, boolean enableMobius, boolean enableEuler,
-                                           boolean enableFactors) {
+                        boolean enableFactors) {
             isComp = new boolean[limit + 1];
             primes = new int[limit + 1];
             numberOfSmallestPrimeFactor = new int[limit + 1];
@@ -254,8 +274,8 @@ public class NumberTheory {
                     int pi = primes[j] * i;
                     smallestPrimeFactor[pi] = primes[j];
                     numberOfSmallestPrimeFactor[pi] = smallestPrimeFactor[i] == primes[j]
-                            ? (numberOfSmallestPrimeFactor[i] * numberOfSmallestPrimeFactor[primes[j]])
-                            : numberOfSmallestPrimeFactor[primes[j]];
+                                    ? (numberOfSmallestPrimeFactor[i] * numberOfSmallestPrimeFactor[primes[j]])
+                                    : numberOfSmallestPrimeFactor[primes[j]];
                     isComp[pi] = true;
                     if (i % primes[j] == 0) {
                         break;
@@ -274,7 +294,7 @@ public class NumberTheory {
                             mobius[i] = 0;
                         } else {
                             mobius[i] = mobius[numberOfSmallestPrimeFactor[i]]
-                                    * mobius[i / numberOfSmallestPrimeFactor[i]];
+                                            * mobius[i / numberOfSmallestPrimeFactor[i]];
                         }
                     }
                 }
@@ -291,7 +311,7 @@ public class NumberTheory {
                             euler[i] = i - i / smallestPrimeFactor[i];
                         } else {
                             euler[i] = euler[numberOfSmallestPrimeFactor[i]]
-                                    * euler[i / numberOfSmallestPrimeFactor[i]];
+                                            * euler[i / numberOfSmallestPrimeFactor[i]];
                         }
                     }
                 }
@@ -308,7 +328,7 @@ public class NumberTheory {
                             factors[i] = 1 + factors[i / smallestPrimeFactor[i]];
                         } else {
                             factors[i] = factors[numberOfSmallestPrimeFactor[i]]
-                                    * factors[i / numberOfSmallestPrimeFactor[i]];
+                                            * factors[i / numberOfSmallestPrimeFactor[i]];
                         }
                     }
                 }
@@ -330,16 +350,16 @@ public class NumberTheory {
             this.m = m;
         }
 
-        public Modular(long m){
-            this.m = (int)m;
-            if(this.m != m){
+        public Modular(long m) {
+            this.m = (int) m;
+            if (this.m != m) {
                 throw new IllegalArgumentException();
             }
         }
 
-        public Modular(double m){
-            this.m = (int)m;
-            if(this.m != m){
+        public Modular(double m) {
+            this.m = (int) m;
+            if (this.m != m) {
                 throw new IllegalArgumentException();
             }
         }
@@ -437,7 +457,7 @@ public class NumberTheory {
         }
     }
 
-      /**
+    /**
      * Find all inverse number
      */
     public static class InverseNumber {
@@ -774,7 +794,7 @@ public class NumberTheory {
             }
             this.m = m1 / g * m2;
             this.r = BigInteger.valueOf(a).multiply(BigInteger.valueOf((x2 - x1) / g)).multiply(BigInteger.valueOf(m1))
-                    .add(BigInteger.valueOf(x1)).mod(BigInteger.valueOf(this.m)).longValue();
+                            .add(BigInteger.valueOf(x1)).mod(BigInteger.valueOf(this.m)).longValue();
             return true;
         }
     }
@@ -796,7 +816,7 @@ public class NumberTheory {
                 return 1;
             }
             return composite.modular.mul(composite.composite((int) (m % modulus), (int) (n % modulus)),
-                    composite(m / modulus, n / modulus));
+                            composite(m / modulus, n / modulus));
         }
     }
 
@@ -978,7 +998,7 @@ public class NumberTheory {
             }
             Map<Integer, Integer> factorMap = rho.findAllFactors(modular.m - 1);
             int[] factors = factorMap.keySet().stream().mapToInt(Integer::intValue).toArray();
-            for (int i = 2; ; i++) {
+            for (int i = 2;; i++) {
                 boolean valid = true;
                 for (int factor : factors) {
                     if (power.pow(i, (modular.m - 1) / factor) == 1) {
@@ -1004,8 +1024,7 @@ public class NumberTheory {
             phi = x - 1;
             mod = new Modular(x);
             pow = new Power(mod);
-            factors = rho.findAllFactors(phi).keySet()
-                    .stream().mapToInt(Integer::intValue).toArray();
+            factors = rho.findAllFactors(phi).keySet().stream().mapToInt(Integer::intValue).toArray();
         }
 
         public int findMinPrimitiveRoot() {

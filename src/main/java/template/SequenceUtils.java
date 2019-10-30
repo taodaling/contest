@@ -13,6 +13,38 @@ public class SequenceUtils {
         return index;
     }
 
+    public static int[] wrapArray(int... x) {
+        return x;
+    }
+
+    public static long[] wrapArray(long... x) {
+        return x;
+    }
+
+    public static double[] wrapArray(double... x) {
+        return x;
+    }
+
+    public static byte[] wrapArray(byte... x) {
+        return x;
+    }
+
+    public static float[] wrapArray(float... x) {
+        return x;
+    }
+
+    public static char[] wrapArray(char... x) {
+        return x;
+    }
+
+    public static short[] wrapArray(short... x) {
+        return x;
+    }
+
+    public static <T> T[] wrapArray(T... x) {
+        return x;
+    }
+
     public static int ceilIndex(int[] data, int x) {
         int index = Arrays.binarySearch(data, x);
         if (index < 0) {

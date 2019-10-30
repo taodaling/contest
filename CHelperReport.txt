@@ -1,2 +1,2 @@
-32 src/main/java/contest/TaskC.json
+39 src/main/java/contest/Tree Burning.json
 0

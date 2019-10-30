@@ -8,10 +8,6 @@ import java.util.Random;
 public class Randomized {
     static Random random = new Random();
 
-    public static double nextDouble(double min, double max) {
-        return random.nextDouble() * (max - min) + min;
-    }
-
     public static void randomizedArray(int[] data, int from, int to) {
         to--;
         for (int i = from; i <= to; i++) {

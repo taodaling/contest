@@ -2,11 +2,11 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
+import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -28,98 +28,55 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            TaskC solver = new TaskC();
+            TreeBurning solver = new TreeBurning();
             solver.solve(1, in, out);
             out.close();
         }
     }
-    static class TaskC {
+    static class TreeBurning {
         public void solve(int testNumber, FastInput in, FastOutput out) {
+            int l = in.readInt();
             int n = in.readInt();
-            int m = in.readInt();
-            int[][] boards = new int[n + 1][m + 1];
+            int[] x = new int[n + 1];
             for (int i = 1; i <= n; i++) {
-                for (int j = 1; j <= m; j++) {
-                    if (in.readChar() == '#') {
-                        boards[i][j] = 1;
-                    }
+                x[i] = in.readInt();
+            }
+
+            long[] clockwisePreSum = new long[n + 2];
+            long[] countClockwisePreSum = new long[n + 2];
+            for (int i = 1; i <= n; i++) {
+                clockwisePreSum[i] = clockwisePreSum[i - 1] + x[i];
+            }
+            for (int i = n; i >= 1; i--) {
+                countClockwisePreSum[i] = countClockwisePreSum[i + 1] + (l - x[i]);
+            }
+
+            long ans = 0;
+            for (int i = 1; i <= n; i++) {
+                int lCnt = i - 1;
+                int rCnt = n - i;
+                int oneCnt = Math.min(lCnt, rCnt);
+
+                // same
+                ans = Math.max(ans,
+                                Math.max(x[i], l - x[i]) + (clockwisePreSum[i - 1] - clockwisePreSum[i - 1 - oneCnt]
+                                                + countClockwisePreSum[i + 1] - countClockwisePreSum[i + 1 + oneCnt])
+                                                * 2);
+
+                // leftMore
+                if (lCnt > 0) {
+                    int rOneCnt = Math.min(lCnt - 1, rCnt);
+                    int lOneCnt = rOneCnt + 1;
+                    ans = Math.max(ans, l - x[i] + (clockwisePreSum[i - 1] - clockwisePreSum[i - 1 - lOneCnt]
+                                    + countClockwisePreSum[i + 1] - countClockwisePreSum[i + 1 + rOneCnt]) * 2);
                 }
-            }
 
-            int ans = Math.max(n, m);
-
-            int[][] upRight = new int[n + 1][m + 1];
-            for (int j = 1; j <= m; j++) {
-                upRight[1][j] = m - j + 1;
-            }
-            for (int i = 2; i <= n; i++) {
-                upRight[i][m] = 1;
-                for (int j = m - 1; j >= 1; j--) {
-                    upRight[i][j] = DigitUtils
-                                    .isEven(boards[i][j] + boards[i - 1][j] + boards[i][j + 1] + boards[i - 1][j + 1])
-                                                    ? upRight[i][j + 1] + 1
-                                                    : 1;
-                }
-            }
-
-
-            int[][] botRight = new int[n + 1][m + 1];
-            for (int j = 1; j <= m; j++) {
-                botRight[n][j] = m - j + 1;
-            }
-            for (int i = 1; i < n; i++) {
-                botRight[i][m] = 1;
-                for (int j = m - 1; j >= 1; j--) {
-                    botRight[i][j] = DigitUtils
-                                    .isEven(boards[i][j] + boards[i + 1][j] + boards[i][j + 1] + boards[i + 1][j + 1])
-                                                    ? botRight[i][j + 1] + 1
-                                                    : 1;
-                }
-            }
-
-            int[][] upUntil = new int[n + 1][m + 1];
-            int[][] botUntil = new int[n + 1][m + 1];
-
-            IntDeque deque = new IntDeque(n);
-            for (int j = 1; j <= m; j++) {
-                deque.clear();
-                for (int i = 1; i <= n; i++) {
-                    while (!deque.isEmpty() && upRight[deque.peekLast()][j] >= upRight[i][j]) {
-                        deque.removeLast();
-                    }
-                    if (deque.isEmpty()) {
-                        upUntil[i][j] = 1;
-                    } else {
-                        upUntil[i][j] = deque.peekLast();
-                    }
-                    deque.addLast(i);
-                }
-            }
-
-            for (int j = 1; j <= m; j++) {
-                deque.clear();
-                for (int i = n; i >= 1; i--) {
-                    while (!deque.isEmpty() && botRight[deque.peekFirst()][j] >= botRight[i][j]) {
-                        deque.removeFirst();
-                    }
-                    if (deque.isEmpty()) {
-                        botUntil[i][j] = n;
-                    } else {
-                        botUntil[i][j] = deque.peekFirst();
-                    }
-                    deque.addFirst(i);
-                }
-            }
-
-            for (int i = 2; i <= n; i++) {
-                for (int j = 1; j <= m; j++) {
-                    int area1 = (botUntil[i - 1][j] - upUntil[i][j] + 1) * upRight[i][j];
-                    int area2 = (botUntil[i - 1][j] - (i - 1) + 1) * upRight[i][j];
-                    int area3 = (i - upUntil[i][j] + 1) * upRight[i][j];
-
-                    ans = Math.max(ans, area1);
-                    ans = Math.max(ans, area2);
-                    ans = Math.max(ans, area3);
+                // rightMore
+                if (rCnt > 0) {
+                    int lOneCnt = Math.min(lCnt, rCnt - 1);
+                    int rOneCnt = lOneCnt + 1;
+                    ans = Math.max(ans, x[i] + (clockwisePreSum[i - 1] - clockwisePreSum[i - 1 - lOneCnt]
+                                    + countClockwisePreSum[i + 1] - countClockwisePreSum[i + 1 + rOneCnt]) * 2);
                 }
             }
 
@@ -184,13 +141,6 @@ public class Main {
             return val;
         }
 
-        public char readChar() {
-            skipBlank();
-            char c = (char) next;
-            next = read();
-            return c;
-        }
-
     }
     static class FastOutput implements AutoCloseable, Closeable {
         private StringBuilder cache = new StringBuilder(10 << 20);
@@ -204,7 +154,7 @@ public class Main {
             this(new OutputStreamWriter(os));
         }
 
-        public FastOutput println(int c) {
+        public FastOutput println(long c) {
             cache.append(c).append('\n');
             return this;
         }
@@ -227,86 +177,6 @@ public class Main {
             } catch (IOException e) {
                 throw new UncheckedIOException(e);
             }
-        }
-
-    }
-    static class DigitUtils {
-        private static final long[] DIGIT_VALUES = new long[19];
-        static {
-            DIGIT_VALUES[0] = 1;
-            for (int i = 1; i < 19; i++) {
-                DIGIT_VALUES[i] = DIGIT_VALUES[i - 1] * 10;
-            }
-        }
-
-        private DigitUtils() {}
-
-        public static boolean isEven(int x) {
-            return (x & 1) == 0;
-        }
-
-    }
-    static class IntDeque {
-        int[] data;
-        int bpos;
-        int epos;
-        int cap;
-
-        public IntDeque(int cap) {
-            this.cap = cap + 1;
-            this.data = new int[this.cap];
-        }
-
-        public boolean isEmpty() {
-            return epos == bpos;
-        }
-
-        public int peekFirst() {
-            return data[bpos];
-        }
-
-        private int last(int i) {
-            return (i == 0 ? cap : i) - 1;
-        }
-
-        private int next(int i) {
-            int n = i + 1;
-            return n == cap ? 0 : n;
-        }
-
-        public int peekLast() {
-            return data[last(epos)];
-        }
-
-        public int removeFirst() {
-            int t = bpos;
-            bpos = next(bpos);
-            return data[t];
-        }
-
-        public int removeLast() {
-            return data[epos = last(epos)];
-        }
-
-        public void addLast(int val) {
-            data[epos] = val;
-            epos = next(epos);
-        }
-
-        public void addFirst(int val) {
-            data[bpos = last(bpos)] = val;
-        }
-
-        public void clear() {
-            bpos = epos = 0;
-        }
-
-        public String toString() {
-            StringBuilder builder = new StringBuilder();
-            for (int i = bpos; i != epos; i = next(i)) {
-                builder.append(data[i]).append(' ');
-            }
-            return builder.toString();
         }
 
     }
