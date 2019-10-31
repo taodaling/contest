@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class DirectedEulerTrace {
     private static class Node {
-        List<Node> edges = new ArrayList(2);
+        List<Node> edges = new ArrayList();
         Deque<Node> deque = new ArrayDeque();
         int id;
         int inDegree;

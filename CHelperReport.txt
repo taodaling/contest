@@ -1,2 +1,2 @@
-39 src/main/java/contest/Tree Burning.json
+42 src/main/java/contest/Skolem XOR Tree.json
 0

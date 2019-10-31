@@ -119,4 +119,9 @@ public class FastOutput implements AutoCloseable, Closeable {
             throw new UncheckedIOException(e);
         }
     }
+
+    @Override
+    public String toString() {
+        return cache.toString();
+    }
 }

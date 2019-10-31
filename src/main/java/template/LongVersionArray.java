@@ -1,17 +1,17 @@
 package template;
 
-public class VersionArray {
-    int[] data;
+public class LongVersionArray {
+    long[] data;
     int[] version;
     int now;
-    int def;
+    long def;
 
-    public VersionArray(int cap) {
+    public LongVersionArray(int cap) {
         this(cap, 0);
     }
 
-    public VersionArray(int cap, int def) {
-        data = new int[cap];
+    public LongVersionArray(int cap, long def) {
+        data = new long[cap];
         version = new int[cap];
         now = 0;
         this.def = def;
@@ -28,18 +28,23 @@ public class VersionArray {
         }
     }
 
-    public void set(int i, int v) {
+    public void set(int i, long v) {
         version[i] = now;
         data[i] = v;
     }
 
-    public int get(int i) {
+    public long get(int i) {
         visit(i);
         return data[i];
     }
 
-    public int inc(int i) {
+    public long inc(int i) {
         visit(i);
         return ++data[i];
+    }
+
+    public long dec(int i) {
+        visit(i);
+        return --data[i];
     }
 }

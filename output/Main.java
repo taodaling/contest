@@ -2,11 +2,11 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
-import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -28,59 +28,107 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            TreeBurning solver = new TreeBurning();
+            SkolemXORTree solver = new SkolemXORTree();
             solver.solve(1, in, out);
             out.close();
         }
     }
-    static class TreeBurning {
+    static class SkolemXORTree {
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            int l = in.readInt();
             int n = in.readInt();
-            int[] x = new int[n + 1];
-            for (int i = 1; i <= n; i++) {
-                x[i] = in.readInt();
+            if (Integer.bitCount(n) == 1) {
+                out.println("No");
+                return;
+            }
+            out.println("Yes");
+            DigitUtils.Log2 log2 = new DigitUtils.Log2();
+            int floorLog = log2.floorLog(n + 1);
+
+            int m = (1 << floorLog);
+            for (int i = 2; i < m; i++) {
+                printEdge(out, i - 1, i);
+            }
+            printEdge(out, m - 1, n + 1);
+            for (int i = 2; i < m; i++) {
+                printEdge(out, n + i - 1, n + i);
             }
 
-            long[] clockwisePreSum = new long[n + 2];
-            long[] countClockwisePreSum = new long[n + 2];
-            for (int i = 1; i <= n; i++) {
-                clockwisePreSum[i] = clockwisePreSum[i - 1] + x[i];
-            }
-            for (int i = n; i >= 1; i--) {
-                countClockwisePreSum[i] = countClockwisePreSum[i + 1] + (l - x[i]);
-            }
 
-            long ans = 0;
-            for (int i = 1; i <= n; i++) {
-                int lCnt = i - 1;
-                int rCnt = n - i;
-                int oneCnt = Math.min(lCnt, rCnt);
-
-                // same
-                ans = Math.max(ans,
-                                Math.max(x[i], l - x[i]) + (clockwisePreSum[i - 1] - clockwisePreSum[i - 1 - oneCnt]
-                                                + countClockwisePreSum[i + 1] - countClockwisePreSum[i + 1 + oneCnt])
-                                                * 2);
-
-                // leftMore
-                if (lCnt > 0) {
-                    int rOneCnt = Math.min(lCnt - 1, rCnt);
-                    int lOneCnt = rOneCnt + 1;
-                    ans = Math.max(ans, l - x[i] + (clockwisePreSum[i - 1] - clockwisePreSum[i - 1 - lOneCnt]
-                                    + countClockwisePreSum[i + 1] - countClockwisePreSum[i + 1 + rOneCnt]) * 2);
+            if (m <= n) {
+                int since = m;
+                int until = n;
+                if (DigitUtils.isOdd(until - since + 1)) {
+                    until--;
                 }
 
-                // rightMore
-                if (rCnt > 0) {
-                    int lOneCnt = Math.min(lCnt, rCnt - 1);
-                    int rOneCnt = lOneCnt + 1;
-                    ans = Math.max(ans, x[i] + (clockwisePreSum[i - 1] - clockwisePreSum[i - 1 - lOneCnt]
-                                    + countClockwisePreSum[i + 1] - countClockwisePreSum[i + 1 + rOneCnt]) * 2);
+                for (int i = since + 1; i <= until; i++) {
+                    printEdge(out, i - 1, i);
+                    printEdge(out, i - 1 + n, i + n);
+                }
+                printEdge(out, until - (m - 1), until);
+                printEdge(out, m - 1, n + since);
+
+                if (until == n - 1) {
+                    printEdge(out, n, until);
+                    printEdge(out, n + n, until - (m - 1) - 1);
                 }
             }
+        }
 
-            out.println(ans);
+        public void printEdge(FastOutput out, int a, int b) {
+            out.append(a).append(' ').append(b).append('\n');
+        }
+
+    }
+    static class FastOutput implements AutoCloseable, Closeable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
+
+        public FastOutput(Writer os) {
+            this.os = os;
+        }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput append(char c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput append(int c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput println(String c) {
+            cache.append(c).append('\n');
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            return this;
+        }
+
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+
+        public String toString() {
+            return cache.toString();
         }
 
     }
@@ -142,41 +190,26 @@ public class Main {
         }
 
     }
-    static class FastOutput implements AutoCloseable, Closeable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
-
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput println(long c) {
-            cache.append(c).append('\n');
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
+    static class DigitUtils {
+        private static final long[] DIGIT_VALUES = new long[19];
+        static {
+            DIGIT_VALUES[0] = 1;
+            for (int i = 1; i < 19; i++) {
+                DIGIT_VALUES[i] = DIGIT_VALUES[i - 1] * 10;
             }
-            return this;
         }
 
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
+        private DigitUtils() {}
+
+        public static boolean isOdd(int x) {
+            return (x & 1) == 1;
+        }
+
+        public static class Log2 {
+            public int floorLog(int x) {
+                return 31 - Integer.numberOfLeadingZeros(x);
             }
+
         }
 
     }

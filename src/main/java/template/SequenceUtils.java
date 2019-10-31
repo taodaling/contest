@@ -41,7 +41,7 @@ public class SequenceUtils {
         return x;
     }
 
-    public static <T> T[] wrapArray(T... x) {
+    public static <T> T[] wrapObjectArray(T... x) {
         return x;
     }
 

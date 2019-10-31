@@ -47,6 +47,10 @@ public class LinearBasis {
         return (val >>> i) & 1;
     }
 
+    public long xorNumberCount(){
+        return 1L << size;
+    }
+
     /**
      * Find the k-th smallest possible generated number, and we consider 0 is the 0-th smallest.
      */
@@ -68,18 +72,14 @@ public class LinearBasis {
     /**
      * The rank of n in all generated numbers, 0's rank is 0
      */
-    long theRankOfNumber(long n)
-    {
+    public long theRankOfNumber(long n) {
         int index = size - 1;
         long rank = 0;
-        for(int i = 63; i >= 0; i--)
-        {
-            if(map[i] == 0)
-            {
+        for (int i = 63; i >= 0; i--) {
+            if (map[i] == 0) {
                 continue;
             }
-            if(bitAt(n, i) == 1)
-            {
+            if (bitAt(n, i) == 1) {
                 rank |= 1L << index;
                 n ^= map[i];
             }
@@ -91,16 +91,12 @@ public class LinearBasis {
     /**
      * Find the maximun value x ^ v where v is generated
      */
-    long theMaximumNumberXor(long x)
-    {
-        for (int i = 0; i < 64; i++)
-        {
-            if (map[i] == 0)
-            {
+    public long theMaximumNumberXor(long x) {
+        for (int i = 0; i < 64; i++) {
+            if (map[i] == 0) {
                 continue;
             }
-            if (bitAt(x, i) == 0)
-            {
+            if (bitAt(x, i) == 0) {
                 x ^= map[i];
             }
         }

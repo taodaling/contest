@@ -9,8 +9,8 @@ import java.util.List;
 
 import template.FastInput;
 import template.FastOutput;
+import template.IntVersionArray;
 import template.TwoSat;
-import template.VersionArray;
 
 public class TaskC {
     public void solve(int testNumber, FastInput in, FastOutput out) {
@@ -136,7 +136,7 @@ public class TaskC {
         return false;
     }
 
-    VersionArray va = new VersionArray(300000);
+    IntVersionArray va = new IntVersionArray(300000);
 
     public void dfsForMex(Node root) {
         if (root.mex != -1) {

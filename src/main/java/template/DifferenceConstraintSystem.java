@@ -9,7 +9,7 @@ import java.util.TreeSet;
 
 public class DifferenceConstraintSystem {
     private static class Node {
-        List<Edge> edges = new ArrayList(2);
+        List<Edge> edges = new ArrayList();
         long dist;
         boolean inque;
         boolean instk;
