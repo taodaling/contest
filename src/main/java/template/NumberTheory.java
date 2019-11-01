@@ -477,6 +477,10 @@ public class NumberTheory {
         public InverseNumber(int limit, Modular modular) {
             this(new int[limit + 1], limit, modular);
         }
+
+        public int inverse(int x){
+            return inv[x];
+        }
     }
 
     /**

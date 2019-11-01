@@ -1,0 +1,45 @@
+{
+  "name" : "LCMs",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3\n2 4 6",
+    "output" : "22\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "8\n1 2 3 4 6 8 12 12",
+    "output" : "313",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "10\n356822 296174 484500 710640 518322 888250 259161 609120 592348 713644",
+    "output" : "353891724",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256m -Xss64m",
+  "mainClass" : "Main",
+  "taskClass" : "on2019_11.on2019_11_01_Daily_training.LCMs.LCMs",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.11.01",
+  "contestName" : "Daily training",
+  "truncate" : true,
+  "inputClass" : "template.FastInput",
+  "outputClass" : "template.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

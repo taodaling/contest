@@ -2,11 +2,11 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
+import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -28,55 +28,35 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            SkolemXORTree solver = new SkolemXORTree();
+            StrangeNim solver = new StrangeNim();
             solver.solve(1, in, out);
             out.close();
         }
     }
-    static class SkolemXORTree {
+    static class StrangeNim {
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            if (Integer.bitCount(n) == 1) {
-                out.println("No");
-                return;
+
+
+            int xor = 0;
+            for (int i = 0; i < n; i++) {
+                int stones = in.readInt();
+                int k = in.readInt();
+
+                int group = stones / k + 1;
+                int lastPosition = k - 1;
+                int curPosition = DigitUtils.mod(lastPosition - stones % k, group);
+                int dieRound = JosephusCircle.dieTime(group, k, curPosition);
+                int numberOnIt = group - dieRound;
+
+                xor ^= numberOnIt;
             }
-            out.println("Yes");
-            DigitUtils.Log2 log2 = new DigitUtils.Log2();
-            int floorLog = log2.floorLog(n + 1);
 
-            int m = (1 << floorLog);
-            for (int i = 2; i < m; i++) {
-                printEdge(out, i - 1, i);
+            if (xor == 0) {
+                out.println("Aoki");
+            } else {
+                out.println("Takahashi");
             }
-            printEdge(out, m - 1, n + 1);
-            for (int i = 2; i < m; i++) {
-                printEdge(out, n + i - 1, n + i);
-            }
-
-
-            if (m <= n) {
-                int since = m;
-                int until = n;
-                if (DigitUtils.isOdd(until - since + 1)) {
-                    until--;
-                }
-
-                for (int i = since + 1; i <= until; i++) {
-                    printEdge(out, i - 1, i);
-                    printEdge(out, i - 1 + n, i + n);
-                }
-                printEdge(out, until - (m - 1), until);
-                printEdge(out, m - 1, n + since);
-
-                if (until == n - 1) {
-                    printEdge(out, n, until);
-                    printEdge(out, n + n, until - (m - 1) - 1);
-                }
-            }
-        }
-
-        public void printEdge(FastOutput out, int a, int b) {
-            out.append(a).append(' ').append(b).append('\n');
         }
 
     }
@@ -90,16 +70,6 @@ public class Main {
 
         public FastOutput(OutputStream os) {
             this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput append(char c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput append(int c) {
-            cache.append(c);
-            return this;
         }
 
         public FastOutput println(String c) {
@@ -129,6 +99,52 @@ public class Main {
 
         public String toString() {
             return cache.toString();
+        }
+
+    }
+    static class JosephusCircle {
+        public static int dieTimeBF(int n, int k, int who) {
+            if ((k - 1) % n == who) {
+                return 1;
+            }
+            return dieTimeBF(n - 1, k, DigitUtils.mod(who - k, n)) + 1;
+        }
+
+        public static int dieTime(int n, int k, int who) {
+            if ((who + 1) % k == 0) {
+                return (who + 1) / k;
+            }
+            int turn = n / k;
+            if (turn <= 1) {
+                return dieTimeBF(n, k, who);
+            }
+            int next;
+            if (who >= turn * k) {
+                next = who - turn * k;
+            } else {
+                next = n + who - (who + 1) / k - turn * k;
+            }
+            return dieTime(n - turn, k, DigitUtils.mod(next, n)) + turn;
+        }
+
+    }
+    static class DigitUtils {
+        private static final long[] DIGIT_VALUES = new long[19];
+        static {
+            DIGIT_VALUES[0] = 1;
+            for (int i = 1; i < 19; i++) {
+                DIGIT_VALUES[i] = DIGIT_VALUES[i - 1] * 10;
+            }
+        }
+
+        private DigitUtils() {}
+
+        public static int mod(int x, int mod) {
+            x %= mod;
+            if (x < 0) {
+                x += mod;
+            }
+            return x;
         }
 
     }
@@ -187,29 +203,6 @@ public class Main {
             }
 
             return val;
-        }
-
-    }
-    static class DigitUtils {
-        private static final long[] DIGIT_VALUES = new long[19];
-        static {
-            DIGIT_VALUES[0] = 1;
-            for (int i = 1; i < 19; i++) {
-                DIGIT_VALUES[i] = DIGIT_VALUES[i - 1] * 10;
-            }
-        }
-
-        private DigitUtils() {}
-
-        public static boolean isOdd(int x) {
-            return (x & 1) == 1;
-        }
-
-        public static class Log2 {
-            public int floorLog(int x) {
-                return 31 - Integer.numberOfLeadingZeros(x);
-            }
-
         }
 
     }

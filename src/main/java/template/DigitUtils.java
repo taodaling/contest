@@ -50,7 +50,14 @@ public class DigitUtils {
      * return ceil(a / b) while b is positive
      */
     public static long ceilDiv(long a, long b) {
-        return a < 0 ? -floorDiv(-a, b) : (a + b - 1) / b;
+        if (a < 0) {
+            return -floorDiv(-a, b);
+        }
+        long c = a / b;
+        if (c * b < a) {
+            return c + 1;
+        }
+        return c;
     }
 
     public static boolean isMultiplicationOverflow(long a, long b, long limit) {
@@ -81,7 +88,14 @@ public class DigitUtils {
      * return ceil(a / b) while b is positive
      */
     public static int ceilDiv(int a, int b) {
-        return a < 0 ? -floorDiv(-a, b) : (a + b - 1) / b;
+        if (a < 0) {
+            return -floorDiv(-a, b);
+        }
+        int c = a / b;
+        if (c * b < a) {
+            return c + 1;
+        }
+        return c;
     }
 
     public static long asLong(int high, int low) {
@@ -307,7 +321,7 @@ public class DigitUtils {
 
         public int[] decompose(long x, int[] ans) {
             for (int i = 0; i < ans.length; i++) {
-                ans[i] = (int)(x % base);
+                ans[i] = (int) (x % base);
                 x /= base;
             }
             return ans;

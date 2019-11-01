@@ -1,0 +1,50 @@
+{
+  "name" : "Skolem XOR Tree",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "1",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "5",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "6",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "4",
+    "index" : 4,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256m -Xss64m",
+  "mainClass" : "Main",
+  "taskClass" : "on2019_10.on2019_10_31_daily_training_on_atcoder.Skolem_XOR_Tree.SkolemXORTree",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.10.31",
+  "contestName" : "daily training on atcoder",
+  "truncate" : true,
+  "inputClass" : "template.FastInput",
+  "outputClass" : "template.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

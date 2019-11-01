@@ -1,2 +1,2 @@
-42 src/main/java/contest/Skolem XOR Tree.json
+38 src/main/java/contest/Strange Nim.json
 0
