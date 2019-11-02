@@ -1,2 +1,2 @@
-38 src/main/java/contest/Strange Nim.json
+57 src/main/java/contest/F - Daniel and Spring Cleaning.json
 0
