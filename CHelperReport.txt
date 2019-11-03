@@ -1,2 +1,2 @@
-57 src/main/java/contest/F - Daniel and Spring Cleaning.json
+31 src/main/java/contest/Task.json
 0
