@@ -13,12 +13,12 @@ public class %TestCaseClass% {
     public Collection<Test> createTests() {
         List<Test> tests = new ArrayList<>();
         for(int i = 0; i < 100; i++){
-            tests.add(create());
+            tests.add(create(i));
         }
         return tests;
     }
 
     RandomWrapper random = new RandomWrapper(new Random(0));
-    public Test create(){
+    public Test create(int testNum){
     }
 }

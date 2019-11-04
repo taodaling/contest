@@ -1,5 +1,5 @@
 {
-  "name" : "Fountain Walk",
+  "name" : "Task",
   "testType" : "SINGLE",
   "input" : {
     "type" : "STANDARD",
@@ -9,31 +9,19 @@
     "type" : "STANDARD",
     "fileName" : "output.txt"
   },
-  "tests" : [ {
-    "input" : "1 1 6 5\n3\n3 2\n5 3\n2 4",
-    "index" : 0,
-    "active" : true
-  }, {
-    "input" : "3 5 6 4\n3\n3 2\n5 3\n2 4",
-    "index" : 1,
-    "active" : true
-  }, {
-    "input" : "4 2 2 2\n3\n3 2\n5 3\n2 4",
-    "index" : 2,
-    "active" : true
-  } ],
+  "tests" : [ ],
   "location" : "src/main/java/contest",
   "vmArgs" : "-Xmx256m -Xss64m",
   "mainClass" : "Main",
-  "taskClass" : "contest.FountainWalk",
+  "taskClass" : "on2019_11.on2019_11_04_.Task.Task",
   "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
   "checkerParameters" : "",
   "testClasses" : [ ],
   "date" : "2019.11.04",
-  "contestName" : "agc019",
+  "contestName" : "",
   "truncate" : true,
   "inputClass" : "template.FastInput",
-  "outputClass" : "java.io.PrintWriter",
+  "outputClass" : "template.FastOutput",
   "includeLocale" : false,
   "failOnOverflow" : false,
   "interactive" : false,

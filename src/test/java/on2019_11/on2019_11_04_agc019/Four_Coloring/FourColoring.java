@@ -1,4 +1,8 @@
-package contest;
+package on2019_11.on2019_11_04_agc019.Four_Coloring;
+
+
+
+
 
 import java.io.PrintWriter;
 

@@ -244,6 +244,23 @@ public class SequenceUtils {
         }
     }
 
+    public static void rotate(int[] list, int l, int newBeg, int r) {
+        int offset = l;
+        int len = r - l + 1;
+        int step = len - (newBeg - l);
+        int g = gcd0(newBeg, r - l + 1);
+        for (int i = 0; i < g; i++) {
+            int take = list[i + offset];
+            int ni = i;
+            while ((ni = (ni + step) % len) != i) {
+                int tmp = list[ni + offset];
+                list[ni + offset] = take;
+                take = tmp;
+            }
+            list[i + offset] = take;
+        }
+    }
+
     public static <T> void rotate(T[] list, int l, int newBeg, int r) {
         int offset = l;
         int len = r - l + 1;
@@ -302,5 +319,14 @@ public class SequenceUtils {
         for (int[][] v : x) {
             fill(v, val);
         }
+    }
+
+    public static <T> int indexOf(T[] array, int l, int r, T val) {
+        for (int i = l; i <= r; i++) {
+            if (array[i] == val) {
+                return i;
+            }
+        }
+        return -1;
     }
 }
