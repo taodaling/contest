@@ -1,0 +1,45 @@
+{
+  "name" : "E - Symmetric Grid",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2 3\narc\nrac\n",
+    "output" : "YES\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "3 7\natcoder\nregular\ncontest\n",
+    "output" : "NO\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "12 12\nbimonigaloaf\nfaurwlkbleht\ndexwimqxzxbb\nlxdgyoifcxid\nydxiliocfdgx\nnfoabgilamoi\nibxbdqmzxxwe\npqirylfrcrnf\nwtehfkllbura\nyfrnpflcrirq\nwvcclwgiubrk\nlkbrwgwuiccv\n",
+    "output" : "YES\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2019_11.on2019_11_05_AtCoder_Regular_Contest_095.E___Symmetric_Grid.TaskE",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.11.05",
+  "contestName" : "AtCoder Regular Contest 095",
+  "truncate" : true,
+  "inputClass" : "template.FastInput",
+  "outputClass" : "java.io.PrintWriter",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

@@ -1,2 +1,3 @@
-43 src/main/java/contest/Ants on a Circle.json
-0
+42 src/main/java/contest/E - Equilateral.json
+1
+5

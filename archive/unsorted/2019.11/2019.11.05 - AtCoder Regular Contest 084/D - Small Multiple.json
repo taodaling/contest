@@ -1,0 +1,69 @@
+{
+  "name" : "D - Small Multiple",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "6\n",
+    "output" : "3\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "41\n",
+    "output" : "5\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "79992\n",
+    "output" : "36\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "99999",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "2",
+    "output" : "1",
+    "index" : 4,
+    "active" : true
+  }, {
+    "input" : "22",
+    "output" : "2",
+    "index" : 5,
+    "active" : true
+  }, {
+    "input" : "10000",
+    "output" : "1",
+    "index" : 6,
+    "active" : true
+  }, {
+    "input" : "100000",
+    "output" : "1",
+    "index" : 7,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.TaskD",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.11.05",
+  "contestName" : "AtCoder Regular Contest 084",
+  "truncate" : true,
+  "inputClass" : "template.FastInput",
+  "outputClass" : "template.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

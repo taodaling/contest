@@ -1,23 +1,19 @@
 import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
 import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.Collection;
 import java.io.IOException;
-import java.util.Deque;
+import java.util.ArrayList;
 import java.io.UncheckedIOException;
+import java.util.List;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
-import java.util.ArrayDeque;
 import java.io.InputStream;
 
 /**
- * Built using CHelper plug-in
- * Actual solution is at the top
- *
+ * Built using CHelper plug-in Actual solution is at the top
+ * 
  * @author daltao
  */
 public class Main {
@@ -33,128 +29,180 @@ public class Main {
             InputStream inputStream = System.in;
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
-            PrintWriter out = new PrintWriter(outputStream);
-            AntsonaCircle solver = new AntsonaCircle();
+            FastOutput out = new FastOutput(outputStream);
+            TaskE solver = new TaskE();
             solver.solve(1, in, out);
             out.close();
         }
     }
+    static class TaskE {
+        public void solve(int testNumber, FastInput in, FastOutput out) {
+            int h = in.readInt();
+            int w = in.readInt();
 
-    static class AntsonaCircle {
-        public void solve(int testNumber, FastInput in, PrintWriter out) {
-            int n = in.readInt();
-            long l = in.readInt();
-            long t = in.readInt();
-            l *= 4;
-            t = t * 4 + 1;
-
-            Ant[] ants = new Ant[n];
-            for (int i = 0; i < n; i++) {
-                ants[i] = new Ant();
-                ants[i].x = in.readLong() * 4;
-                ants[i].w = in.readInt();
-                ants[i].id = i;
-                ants[i].label = i;
-            }
-
-            boolean allSameDirection = true;
-            for (int i = 1; i < n; i++) {
-                allSameDirection = allSameDirection && ants[i].w == ants[i - 1].w;
-            }
-
-            for (int i = 0; i < n; i++) {
-                long x = ants[i].x;
-                if (ants[i].w == 1) {
-                    x += t;
-                } else {
-                    x -= t;
-                }
-                ants[i].y = DigitUtils.mod(x, l);
-            }
-
-            int diffIndex = n;
-            for (int i = 1; i < n; i++) {
-                if (ants[i].w == 2 && ants[i - 1].w == 1) {
-                    diffIndex = i;
-                    break;
-                }
-            }
-            if (diffIndex == n) {
-                diffIndex = 0;
-            }
-
-            Deque<Ant> cw = new ArrayDeque<>(2 * n);
-            Deque<Ant> ccw = new ArrayDeque<>(2 * n);
-            for (int i = 0; i < n; i++) {
-                Ant ant = ants[DigitUtils.mod(diffIndex + i, n)];
-                if (ant.w == 2) {
-                    ccw.addLast(ant);
+            List<Point> pts = new ArrayList<>(h * w);
+            int[][] rowData = new int[1801][1801];
+            int[][] colData = new int[1801][1801];
+            for (int i = 1; i <= h; i++) {
+                for (int j = 1; j <= w; j++) {
+                    if (in.readChar() == '#') {
+                        Point pt = new Point();
+                        pt.x = i + j + 600;
+                        pt.y = i - j + w + 600;
+                        pts.add(pt);
+                        rowData[pt.y][pt.x] = 1;
+                        colData[pt.x][pt.y] = 1;
+                    }
                 }
             }
 
-            for (int i = 0; i < n; i++) {
-                Ant ant = ants[DigitUtils.mod(diffIndex - i, n)];
-                if (ant.w == 1) {
-                    cw.addLast(ant);
+
+            PreSum[] rows = new PreSum[1801];
+            PreSum[] cols = new PreSum[1801];
+            for (int i = 1; i <= 1800; i++) {
+                rows[i] = new PreSum(rowData[i]);
+                cols[i] = new PreSum(colData[i]);
+            }
+
+
+            long ans = 0;
+
+            int[][] rowDp = new int[1801][1801];
+            int[][] colDp = new int[1801][1801];
+            for (int side = 2; side <= h + w; side += 2) {
+                int len = 1 + side * 2;
+                // rowDp
+                for (int i = 1 + 600; i <= h + w + 600; i++) {
+                    for (int j = 600; j <= 1800; j++) {
+                        rowDp[i][j] = rowDp[i][j - 1];
+                        if (j - len > 0 && rowData[i][j - len] == 1 && rowData[i][j - len + side] == 1) {
+                            rowDp[i][j]--;
+                        }
+                        if (j - side > 0 && rowData[i][j - side] == 1 && rowData[i][j] == 1) {
+                            rowDp[i][j]++;
+                        }
+                    }
+                }
+                // colDp
+                for (int j = 1 + 600; j <= h + w + 600; j++) {
+                    for (int i = 600; i <= 1800; i++) {
+                        colDp[i][j] = colDp[i - 1][j];
+                        if (i - len > 0 && rowData[i - len][j] == 1 && rowData[i - len + side][j] == 1) {
+                            colDp[i][j]--;
+                        }
+                        if (i - side > 0 && rowData[i - side][j] == 1 && rowData[i][j] == 1) {
+                            colDp[i][j]++;
+                        }
+                    }
+                }
+
+                for (Point pt : pts) {
+                    int l = pt.x - side;
+                    int r = pt.x + side;
+                    int b = pt.y - side;
+                    int t = pt.y + side;
+
+                    long contri = 0;
+                    contri += rowDp[t][r];
+                    contri += rowDp[b][r];
+                    contri += colDp[t][l];
+                    contri += colDp[t][r];
+
+                    contri += rowData[t][pt.x] * (cols[l].intervalSum(pt.y, t - 1) + cols[r].intervalSum(pt.y, t - 1));
+                    contri += rowData[b][pt.x] * (cols[l].intervalSum(b + 1, pt.y) + cols[r].intervalSum(b + 1, pt.y));
+                    contri += rowData[pt.y][l]
+                                    * (rows[b].intervalSum(l + 1, pt.x - 1) + rows[t].intervalSum(l + 1, pt.x - 1));
+                    contri += rowData[pt.y][r]
+                                    * (rows[b].intervalSum(pt.x + 1, r - 1) + rows[t].intervalSum(pt.x + 1, r - 1));
+
+                    ans += contri;
                 }
             }
 
-            int antId = antOn(new ArrayDeque<>(ccw), new ArrayDeque<>(cw), l, l).id;
-            Ant mod = antOn(new ArrayDeque<>(ccw), new ArrayDeque<>(cw), t % l, l);
-            Arrays.sort(ants, (a, b) -> Long.compare(a.y, b.y));
-            int diffLabel = DigitUtils.mod(diffIndex + (diffIndex - antId) * (t / l), n);
-            int index = SequenceUtils.indexOf(ants, 0, n - 1, mod);
-
-            int[] ans = new int[n];
-            for (int i = 0; i < n; i++) {
-                int label = DigitUtils.mod((i - index) + diffLabel, n);
-                ans[label] = position(ants[i].y, ants[i].w, l);
-            }
-
-            for (int i = 0; i < n; i++) {
-                out.println(ans[i]);
-            }
-        }
-
-        public int position(long y, int w, long l) {
-            if (w == 1) {
-                y -= w;
-            } else {
-                y += w;
-            }
-            y /= 4;
-            return (int) DigitUtils.mod(y, l / 4);
-        }
-
-        public Ant antOn(Deque<Ant> ccw, Deque<Ant> cw, long t, long l) {
-            long totalMove = t * 2;
-            while (!ccw.isEmpty() && !cw.isEmpty()) {
-                long distBetween = DigitUtils.mod(ccw.peekFirst().x - (t * 2 - totalMove) - cw.peekFirst().x, l);
-                if (distBetween == 0) {
-                    distBetween = l;
-                }
-                if (distBetween > totalMove) {
-                    return ccw.removeFirst();
-                }
-                totalMove -= distBetween;
-                ccw.addLast(ccw.removeFirst());
-
-                distBetween = DigitUtils.mod(ccw.peekFirst().x - (t * 2 - totalMove) - cw.peekFirst().x, l);
-                if (distBetween == 0) {
-                    distBetween = l;
-                }
-                if (distBetween > totalMove) {
-                    return cw.removeFirst();
-                }
-                cw.addLast(cw.removeFirst());
-                totalMove -= distBetween;
-            }
-
-            return ccw.isEmpty() ? cw.peekFirst() : ccw.peekFirst();
+            out.println(ans / 3);
         }
 
     }
+    static class FastOutput implements AutoCloseable, Closeable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
 
+        public FastOutput(Writer os) {
+            this.os = os;
+        }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput println(long c) {
+            cache.append(c).append('\n');
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            return this;
+        }
+
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+
+        public String toString() {
+            return cache.toString();
+        }
+
+    }
+    static class PreSum {
+        private long[] pre;
+
+        public PreSum(long[] a) {
+            int n = a.length;
+            pre = new long[n];
+            pre[0] = a[0];
+            for (int i = 1; i < n; i++) {
+                pre[i] = pre[i - 1] + a[i];
+            }
+        }
+
+        public PreSum(int[] a) {
+            int n = a.length;
+            pre = new long[n];
+            pre[0] = a[0];
+            for (int i = 1; i < n; i++) {
+                pre[i] = pre[i - 1] + a[i];
+            }
+        }
+
+        public long intervalSum(int l, int r) {
+            if (l == 0) {
+                return pre[r];
+            }
+            return pre[r] - pre[l - 1];
+        }
+
+    }
+    static class Point {
+        int x;
+        int y;
+
+        public String toString() {
+            return String.format("(%d,%d)", x, y);
+        }
+
+    }
     static class FastInput {
         private final InputStream is;
         private byte[] buf = new byte[1 << 13];
@@ -212,127 +260,11 @@ public class Main {
             return val;
         }
 
-        public long readLong() {
-            int sign = 1;
-
+        public char readChar() {
             skipBlank();
-            if (next == '+' || next == '-') {
-                sign = next == '+' ? 1 : -1;
-                next = read();
-            }
-
-            long val = 0;
-            if (sign == 1) {
-                while (next >= '0' && next <= '9') {
-                    val = val * 10 + next - '0';
-                    next = read();
-                }
-            } else {
-                while (next >= '0' && next <= '9') {
-                    val = val * 10 - next + '0';
-                    next = read();
-                }
-            }
-
-            return val;
-        }
-
-    }
-
-    static class DigitUtils {
-        private static final long[] DIGIT_VALUES = new long[19];
-
-        static {
-            DIGIT_VALUES[0] = 1;
-            for (int i = 1; i < 19; i++) {
-                DIGIT_VALUES[i] = DIGIT_VALUES[i - 1] * 10;
-            }
-        }
-
-        private DigitUtils() {
-        }
-
-        public static int mod(long x, int mod) {
-            x %= mod;
-            if (x < 0) {
-                x += mod;
-            }
-            return (int) x;
-        }
-
-        public static int mod(int x, int mod) {
-            x %= mod;
-            if (x < 0) {
-                x += mod;
-            }
-            return x;
-        }
-
-        public static long mod(long x, long mod) {
-            x %= mod;
-            if (x < 0) {
-                x += mod;
-            }
-            return x;
-        }
-
-    }
-
-    static class Ant {
-        int id;
-        long x;
-        int w;
-        int label;
-        long y;
-
-    }
-
-    static class FastOutput implements AutoCloseable, Closeable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
-
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        }
-
-        public String toString() {
-            return cache.toString();
-        }
-
-    }
-
-    static class SequenceUtils {
-        public static <T> int indexOf(T[] array, int l, int r, T val) {
-            for (int i = l; i <= r; i++) {
-                if (array[i] == val) {
-                    return i;
-                }
-            }
-            return -1;
+            char c = (char) next;
+            next = read();
+            return c;
         }
 
     }
