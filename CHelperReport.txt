@@ -1,3 +1,2 @@
-42 src/main/java/contest/E - Equilateral.json
-1
-5
+41 src/main/java/contest/Min Cost Cycle.json
+0

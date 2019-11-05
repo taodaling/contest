@@ -1,0 +1,45 @@
+{
+  "name" : "Min Cost Cycle",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3\n1 5\n4 2\n6 3",
+    "output" : "7\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "4\n1 5\n2 6\n3 7\n4 8",
+    "output" : "10",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "6\n19 92\n64 64\n78 48\n57 33\n73 6\n95 73",
+    "output" : "227",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256m -Xss64m",
+  "mainClass" : "Main",
+  "taskClass" : "contest.MinCostCycle",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.11.05",
+  "contestName" : "agc028",
+  "truncate" : true,
+  "inputClass" : "template.FastInput",
+  "outputClass" : "java.io.PrintWriter",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}
