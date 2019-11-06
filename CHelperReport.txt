@@ -1,2 +1,2 @@
-36 src/main/java/contest/C - Tests.json
+42 src/main/java/contest/C - Sum Balance.json
 0
