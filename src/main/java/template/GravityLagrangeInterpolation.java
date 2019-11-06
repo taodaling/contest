@@ -4,17 +4,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GravityModLagrangeInterpolation {
-    private NumberTheory.Power power;
-    private NumberTheory.Modular modular;
+public class GravityLagrangeInterpolation {
 
-    public GravityModLagrangeInterpolation(NumberTheory.Modular modular, int expect) {
-        this(new NumberTheory.Power(modular), expect);
-    }
-
-    public GravityModLagrangeInterpolation(NumberTheory.Power power, int expect) {
-        this.modular = power.getModular();
-        this.power = power;
+    public GravityLagrangeInterpolation(int expect) {
         xs = new Polynomial(expect);
         ys = new Polynomial(expect);
         lx = new Polynomial(expect);
@@ -27,10 +19,8 @@ public class GravityModLagrangeInterpolation {
     /**
      * O(n)
      */
-    public void addPoint(int x, int y) {
-        x = modular.valueOf(x);
-        y = modular.valueOf(y);
-        Integer exist = points.get(x);
+    public void addPoint(double x, double y) {
+        Double exist = points.get(x);
         if (exist != null) {
             if (exist != y) {
                 throw new RuntimeException();
@@ -43,13 +33,13 @@ public class GravityModLagrangeInterpolation {
         xs.coes[n] = x;
         ys.setN(n + 1);
         ys.coes[n] = y;
-        lx.multiply(modular.valueOf(-x), lxBuf);
+        lx.multiply(-x, lxBuf);
         switchBuf();
         invW.setN(n + 1);
         invW.coes[n] = 1;
         for (int i = 0; i < n; i++) {
-            invW.coes[i] = modular.mul(invW.coes[i], modular.subtract(xs.coes[i], x));
-            invW.coes[n] = modular.mul(invW.coes[n], modular.subtract(x, xs.coes[i]));
+            invW.coes[i] *= xs.coes[i] - x;
+            invW.coes[n] *= x - xs.coes[i];
         }
         n++;
     }
@@ -57,21 +47,20 @@ public class GravityModLagrangeInterpolation {
     /**
      * O(n)
      */
-    public int getYByInterpolation(int x) {
-        x = modular.valueOf(x);
+    public double getYByInterpolation(double x) {
         if (points.containsKey(x)) {
             return points.get(x);
         }
 
-        int y = lx.function(x);
-        int sum = 0;
+        double y = lx.function(x);
+        double sum = 0;
         for (int i = 0; i < n; i++) {
-            int val = modular.mul(invW.coes[i], modular.subtract(x, xs.coes[i]));
-            val = modular.mul(power.inverse(val), ys.coes[i]);
-            sum = modular.plus(sum, val);
+            double val = invW.coes[i] * (x - xs.coes[i]);
+            val = ys.coes[i] / val;
+            sum += val;
         }
 
-        return modular.mul(y, sum);
+        return y * sum;
     }
 
     /**
@@ -81,8 +70,8 @@ public class GravityModLagrangeInterpolation {
         Polynomial ans = new Polynomial(n);
         Polynomial ansBuf = new Polynomial(n);
         for (int i = 0; i < n; i++) {
-            int c = modular.mul(ys.coes[i], power.inverse(invW.coes[i]));
-            lx.div(modular.valueOf(-xs.coes[i]), ansBuf);
+            double c = ys.coes[i] / invW.coes[i];
+            lx.div(-xs.coes[i], ansBuf);
             ansBuf.mulConstant(c, ansBuf);
             ans.plus(ansBuf, ans);
         }
@@ -96,7 +85,7 @@ public class GravityModLagrangeInterpolation {
     }
 
 
-    Map<Integer, Integer> points = new HashMap<>();
+    Map<Double, Double> points = new HashMap<>();
     Polynomial xs;
     Polynomial ys;
     Polynomial lx;
@@ -106,10 +95,10 @@ public class GravityModLagrangeInterpolation {
 
 
     public class Polynomial {
-        private int[] coes;
+        private double[] coes;
         private int n;
 
-        public int getCoefficient(int i) {
+        public double getCoefficient(int i) {
             if (i >= n) {
                 return 0;
             }
@@ -120,19 +109,19 @@ public class GravityModLagrangeInterpolation {
             return n - 1;
         }
 
-        public int function(int x) {
-            int ans = 0;
-            int xi = 1;
+        public double function(double x) {
+            double ans = 0;
+            double xi = 1;
             for (int i = 0; i < n; i++) {
-                ans = modular.plus(ans, modular.mul(xi, coes[i]));
-                xi = modular.mul(xi, x);
+                ans +=xi * coes[i];
+                xi *= x;
             }
             return ans;
         }
 
         public Polynomial(int n) {
             this.n = 0;
-            coes = new int[n];
+            coes = new double[n];
         }
 
         public void ensureLength() {
@@ -141,7 +130,7 @@ public class GravityModLagrangeInterpolation {
             }
             int proper = coes.length;
             while (proper < n) {
-                proper = Math.max(proper + proper, proper + 10);
+                proper = Math.max(2 * proper, proper + 10);
             }
             coes = Arrays.copyOf(coes, proper);
         }
@@ -158,24 +147,24 @@ public class GravityModLagrangeInterpolation {
         /**
          * this * (x + b) => ans
          */
-        public void multiply(int b, Polynomial ans) {
+        public void multiply(double b, Polynomial ans) {
             ans.setN(n + 1);
             for (int i = 0; i < n; i++) {
-                ans.coes[i] = modular.mul(coes[i], b);
+                ans.coes[i] = coes[i] * b;
             }
             ans.coes[n] = 0;
             for (int i = 0; i < n; i++) {
-                ans.coes[i + 1] = modular.plus(ans.coes[i + 1], coes[i]);
+                ans.coes[i + 1] = ans.coes[i + 1] + coes[i];
             }
         }
 
         /**
          * this * b => ans
          */
-        public void mulConstant(int b, Polynomial ans) {
+        public void mulConstant(double b, Polynomial ans) {
             ans.setN(n);
             for (int i = 0; i < n; i++) {
-                ans.coes[i] = modular.mul(coes[i], b);
+                ans.coes[i] *= b;
             }
         }
 
@@ -188,20 +177,20 @@ public class GravityModLagrangeInterpolation {
                 ans.coes[i] = coes[i];
             }
             for (int i = 0; i < a.n; i++) {
-                ans.coes[i] = modular.plus(ans.coes[i], a.coes[i]);
+                ans.coes[i] += a.coes[i];
             }
         }
 
         /**
          * this / (x + b) => ans
          */
-        public void div(int b, Polynomial ans) {
+        public void div(double b, Polynomial ans) {
             ans.setN(n - 1);
             int affect = 0;
             for (int i = n - 1; i >= 1; i--) {
-                affect = modular.plus(affect, coes[i]);
+                affect += coes[i];
                 ans.coes[i - 1] = affect;
-                affect = modular.mul(-affect, b);
+                affect *= -b;
             }
         }
 

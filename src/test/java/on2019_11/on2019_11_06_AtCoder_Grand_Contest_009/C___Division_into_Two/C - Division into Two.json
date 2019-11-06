@@ -1,0 +1,65 @@
+{
+  "name" : "C - Division into Two",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5 3 7\n1\n3\n6\n9\n12\n",
+    "output" : "5\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "7 5 3\n0\n2\n4\n7\n8\n11\n15\n",
+    "output" : "4\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "8 2 9\n3\n4\n5\n13\n15\n22\n26\n32\n",
+    "output" : "13\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "3 3 4\n5\n6\n7\n",
+    "output" : "0\n",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "1 1 1\n1",
+    "output" : "2",
+    "index" : 4,
+    "active" : true
+  }, {
+    "input" : "3 10000 1000000000000\n\n1000000000000 1000000000001 1000000000002",
+    "output" : "0",
+    "index" : 5,
+    "active" : true
+  }, {
+    "input" : "3 10000 1000000000000\n\n1000000000000 1000000000001 2000000000000",
+    "output" : "3",
+    "index" : 6,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2019_11.on2019_11_06_AtCoder_Grand_Contest_009.C___Division_into_Two.TaskC",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "on2019_11.on2019_11_06_AtCoder_Grand_Contest_009.C___Division_into_Two.TaskCTestCase" ],
+  "date" : "2019.11.06",
+  "contestName" : "AtCoder Grand Contest 009",
+  "truncate" : true,
+  "inputClass" : "template.FastInput",
+  "outputClass" : "template.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

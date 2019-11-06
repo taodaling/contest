@@ -5,8 +5,16 @@ import java.util.Comparator;
 import java.util.List;
 
 public class SequenceUtils {
-    public static int floorIndex(int[] data, int x) {
-        int index = Arrays.binarySearch(data, x);
+    public static int floorIndex(int[] data, int x, int l, int r) {
+        int index = Arrays.binarySearch(data, l, r + 1, x);
+        if (index < 0) {
+            return -(index + 1) - 1;
+        }
+        return index;
+    }
+
+    public static int floorIndex(long[] data, long x, int l, int r) {
+        int index = Arrays.binarySearch(data, l, r + 1, x);
         if (index < 0) {
             return -(index + 1) - 1;
         }
@@ -45,8 +53,8 @@ public class SequenceUtils {
         return x;
     }
 
-    public static int ceilIndex(int[] data, int x) {
-        int index = Arrays.binarySearch(data, x);
+    public static int ceilIndex(int[] data, int x, int l, int r) {
+        int index = Arrays.binarySearch(data, l, r + 1, x);
         if (index < 0) {
             return -(index + 1);
         }

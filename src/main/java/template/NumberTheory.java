@@ -213,14 +213,14 @@ public class NumberTheory {
         }
 
         public boolean isPrime(int x) {
-            if(x == 1){
+            if (x == 1) {
                 return false;
             }
             return !isComp[x];
         }
 
         public boolean isComp(int x) {
-            if(x == 1){
+            if (x == 1) {
                 return false;
             }
             return isComp[x];
@@ -430,7 +430,7 @@ public class NumberTheory {
 
         public int pow(int x, long n) {
             if (n == 0) {
-                return 1;
+                return modular.valueOf(x);
             }
             long r = pow(x, n >> 1);
             r = modular.valueOf(r * r);
@@ -478,7 +478,7 @@ public class NumberTheory {
             this(new int[limit + 1], limit, modular);
         }
 
-        public int inverse(int x){
+        public int inverse(int x) {
             return inv[x];
         }
     }

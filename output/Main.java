@@ -1,17 +1,20 @@
 import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
-import java.util.List;
-import java.util.PriorityQueue;
+import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.stream.LongStream;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.io.UncheckedIOException;
+import java.util.stream.Stream;
+import java.io.Closeable;
+import java.io.Writer;
+import java.io.OutputStreamWriter;
 import java.io.InputStream;
 
 /**
- * Built using CHelper plug-in
- * Actual solution is at the top
- *
+ * Built using CHelper plug-in Actual solution is at the top
+ * 
  * @author daltao
  */
 public class Main {
@@ -27,102 +30,150 @@ public class Main {
             InputStream inputStream = System.in;
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
-            PrintWriter out = new PrintWriter(outputStream);
-            MinCostCycle solver = new MinCostCycle();
+            FastOutput out = new FastOutput(outputStream);
+            TaskC solver = new TaskC();
             solver.solve(1, in, out);
             out.close();
         }
     }
+    static class TaskC {
+        Exam[] exams;
+        long x;
+        int n;
+        PreSum ps;
+        long debt;
 
-    static class MinCostCycle {
-        public void solve(int testNumber, FastInput in, PrintWriter out) {
-            int n = in.readInt();
-
-            PriorityQueue<Node> pqA = new PriorityQueue<>(n, (a, b) -> a.a - b.a);
-            PriorityQueue<Node> pqB = new PriorityQueue<>(n, (a, b) -> a.b - b.b);
-
-            Node[] nodes = new Node[n];
+        public void solve(int testNumber, FastInput in, FastOutput out) {
+            n = in.readInt();
+            x = in.readInt();
+            exams = new Exam[n];
+            debt = 0;
             for (int i = 0; i < n; i++) {
-                Node node = new Node();
-                nodes[i] = node;
-                node.a = in.readInt();
-                node.b = in.readInt();
-
-                pqA.add(node);
-                pqB.add(node);
+                exams[i] = new Exam();
+                exams[i].b = in.readInt();
+                exams[i].l = in.readInt();
+                exams[i].r = in.readInt();
+                exams[i].profit = exams[i].r * x - exams[i].b * (exams[i].r - exams[i].l);
+                debt += exams[i].l * exams[i].b;
             }
 
-            List<Node> aList = new ArrayList<>(n);
-            List<Node> bList = new ArrayList<>(n);
+            Arrays.sort(exams, (a, b) -> -Long.compare(a.profit, b.profit));
+            ps = new PreSum(Arrays.stream(exams).mapToLong(x -> x.profit).toArray());
 
-            while (pqA.size() + pqB.size() > n) {
-                if (pqA.peek().a <= pqB.peek().b) {
-                    aList.add(pqA.poll());
+
+            check(2540);
+            long l = 0;
+            long r = x * n;
+            while (l < r) {
+                long m = (l + r) >> 1;
+                if (check(m)) {
+                    r = m;
                 } else {
-                    bList.add(pqB.poll());
+                    l = m + 1;
                 }
             }
 
-            long total = 0;
-            for (Node node : aList) {
-                total += node.a;
-            }
-            for (Node node : bList) {
-                total += node.b;
+            out.println(l);
+        }
+
+        public boolean check(long time) {
+            long remain = time % x;
+            long block = time / x;
+            if (block >= n) {
+                return true;
             }
 
-            for (Node node : aList) {
-                node.inList = true;
-            }
-            for (Node node : bList) {
-                node.inList = true;
-            }
-
-            boolean hasIgnore = false;
-            for (Node node : nodes) {
-                if (node.inList == false) {
-                    hasIgnore = true;
-                    break;
+            for (int i = 0; i < n; i++) {
+                long debtRemain = debt;
+                if (i < block) {
+                    debtRemain -= (ps.prefix((int) block) - exams[i].profit);
+                } else if (block - 1 >= 0) {
+                    debtRemain -= ps.prefix((int) block - 1);
+                }
+                if (debtRemain <= 0 || debtRemain - (remain - exams[i].b) * exams[i].r - exams[i].b * exams[i].l <= 0
+                                || debtRemain - remain * exams[i].l <= 0) {
+                    return true;
                 }
             }
-
-            if (aList.isEmpty() || bList.isEmpty() || hasIgnore) {
-                out.println(total);
-                return;
-            }
-
-            long ans = (long) 1e18;
-            for (int i = 0; i < aList.size(); i++) {
-                long bonus = aList.get(i).b;
-                long punish = bList.get(bList.size() - 1).b;
-                if (i == aList.size() - 1) {
-                    if (i > 0) {
-                        punish = Math.max(punish, aList.get(i - 1).a);
-                    }
-                } else {
-                    punish = Math.max(punish, aList.get(aList.size() - 1).a);
-                }
-                ans = Math.min(ans, total + bonus - punish);
-            }
-            for (int i = 0; i < bList.size(); i++) {
-                long bonus = bList.get(i).a;
-                long punish = aList.get(aList.size() - 1).a;
-                if (i == bList.size() - 1) {
-                    if (i > 0) {
-                        punish = Math.max(punish, bList.get(i - 1).b);
-                    }
-                } else {
-                    punish = Math.max(punish, bList.get(bList.size() - 1).b);
-                }
-                ans = Math.min(ans, total + bonus - punish);
-            }
-
-
-            out.println(ans);
+            return false;
         }
 
     }
+    static class Exam {
+        long b;
+        long l;
+        long r;
+        long profit;
 
+    }
+    static class FastOutput implements AutoCloseable, Closeable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
+
+        public FastOutput(Writer os) {
+            this.os = os;
+        }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput println(long c) {
+            cache.append(c).append('\n');
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            return this;
+        }
+
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+
+        public String toString() {
+            return cache.toString();
+        }
+
+    }
+    static class PreSum {
+        private long[] pre;
+
+        public PreSum(long[] a) {
+            int n = a.length;
+            pre = new long[n];
+            pre[0] = a[0];
+            for (int i = 1; i < n; i++) {
+                pre[i] = pre[i - 1] + a[i];
+            }
+        }
+
+        public PreSum(int[] a) {
+            int n = a.length;
+            pre = new long[n];
+            pre[0] = a[0];
+            for (int i = 1; i < n; i++) {
+                pre[i] = pre[i - 1] + a[i];
+            }
+        }
+
+        public long prefix(int i) {
+            return pre[i];
+        }
+
+    }
     static class FastInput {
         private final InputStream is;
         private byte[] buf = new byte[1 << 13];
@@ -179,13 +230,6 @@ public class Main {
 
             return val;
         }
-
-    }
-
-    static class Node {
-        int a;
-        int b;
-        boolean inList;
 
     }
 }

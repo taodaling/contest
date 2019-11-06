@@ -36,8 +36,11 @@ public class ModMatrix {
         }
     }
 
-    public void asStandard() {
+    public void asStandard(NumberTheory.Modular mod) {
         fill(0);
+        if(mod.getMod() == 1){
+            return;
+        }
         for (int i = 0; i < n && i < m; i++) {
             mat[i][i] = 1;
         }
@@ -155,7 +158,7 @@ public class ModMatrix {
         ModMatrix l = new ModMatrix(x);
         l.normalize(modular);
         ModMatrix r = new ModMatrix(n, n);
-        r.asStandard();
+        r.asStandard(modular);
         for (int i = 0; i < n; i++) {
             int maxRow = i;
             for (int j = i; j < n; j++) {
@@ -223,7 +226,7 @@ public class ModMatrix {
     public static ModMatrix pow(ModMatrix x, long n, NumberTheory.Modular modular) {
         if (n == 0) {
             ModMatrix r = new ModMatrix(x.n, x.m);
-            r.asStandard();
+            r.asStandard(modular);
             return r;
         }
         ModMatrix r = pow(x, n >> 1, modular);

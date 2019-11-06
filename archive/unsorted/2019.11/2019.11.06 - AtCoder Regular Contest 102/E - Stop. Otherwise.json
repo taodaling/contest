@@ -1,0 +1,45 @@
+{
+  "name" : "E - Stop. Otherwise...",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 3\n",
+    "output" : "7\n7\n4\n7\n7\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "4 5\n",
+    "output" : "36\n36\n20\n20\n20\n36\n36\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "6 1000\n",
+    "output" : "149393349\n149393349\n668669001\n668669001\n4000002\n4000002\n4000002\n668669001\n668669001\n149393349\n149393349\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.TaskE",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.11.06",
+  "contestName" : "AtCoder Regular Contest 102",
+  "truncate" : true,
+  "inputClass" : "template.FastInput",
+  "outputClass" : "template.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

@@ -12,6 +12,9 @@ public class FirstStirlingNumber {
     private NumberTheory.Factorial factorial;
     private int[] stirling;
 
+    public int stirlingAt(int i) {
+        return stirling[i];
+    }
 
     public FirstStirlingNumber(NumberTheoryTransform ntt, NumberTheory.Factorial factorial, int n) {
         this.ntt = ntt;

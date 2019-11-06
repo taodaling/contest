@@ -170,7 +170,6 @@ public class LiChaoSegment implements Cloneable {
                 segment.eval(map.val[x]));
     }
 
-
     @Override
     public LiChaoSegment clone() {
         try {

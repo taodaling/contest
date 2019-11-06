@@ -1,2 +1,2 @@
-41 src/main/java/contest/Min Cost Cycle.json
+36 src/main/java/contest/C - Tests.json
 0
