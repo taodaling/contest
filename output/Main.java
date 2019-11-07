@@ -2,21 +2,15 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.io.IOException;
-import java.util.LinkedHashMap;
 import java.io.UncheckedIOException;
-import java.util.Map;
 import java.io.Closeable;
-import java.util.Map.Entry;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
 import java.io.InputStream;
 
 /**
- * Built using CHelper plug-in
- * Actual solution is at the top
+ * Built using CHelper plug-in Actual solution is at the top
  */
 public class Main {
     public static void main(String[] args) throws Exception {
@@ -32,267 +26,179 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            TaskC solver = new TaskC();
+            TaskD solver = new TaskD();
             solver.solve(1, in, out);
             out.close();
         }
     }
-
-    static class TaskC {
-        SubsetGenerator sg = new SubsetGenerator();
-        Node[] nodes;
-        int n;
-        Map<Long, Node> map;
-        long notExist;
-        long[] mask2Key;
-        Map<Long, LongList> sequence;
-        DigitUtils.BitOperator bo = new DigitUtils.BitOperator();
-        boolean[] dp;
-
+    static class TaskD {
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            n = in.readInt();
-            nodes = new Node[n];
+            int n = in.readInt();
+            int q = in.readInt();
+            int[] a = new int[n];
             for (int i = 0; i < n; i++) {
-                nodes[i] = new Node();
-                nodes[i].id = i;
+                a[i] = in.readInt();
+            }
+            int[][] swaps = new int[q][2];
+            for (int i = 0; i < q; i++) {
+                swaps[i][0] = in.readInt() - 1;
+                swaps[i][1] = in.readInt() - 1;
             }
 
-            map = new LinkedHashMap<>(200000);
+
+
+            NumberTheory.Modular mod = new NumberTheory.Modular(1e9 + 7);
+            NumberTheory.Power pow = new NumberTheory.Power(mod);
+            int inv2 = pow.inverse(2);
+
+            int[][] dp = new int[n][n];
             for (int i = 0; i < n; i++) {
-                int k = in.readInt();
-                for (int j = 0; j < k; j++) {
-                    long x = in.readInt();
-                    map.put(x, nodes[i]);
-                    nodes[i].sum += x;
-                }
-            }
-
-            long total = 0;
-            for (Node node : nodes) {
-                total += node.sum;
-            }
-
-            if (total % n != 0) {
-                out.println("No");
-                return;
-            }
-            long avg = total / n;
-
-            notExist = (long) 1e18;
-            mask2Key = new long[1 << n];
-            Arrays.fill(mask2Key, notExist);
-            sequence = new HashMap<>(200000);
-
-
-            for (Map.Entry<Long, Node> kv : map.entrySet()) {
-                for (Node node : nodes) {
-                    node.handled = false;
-                }
-
-                long key = kv.getKey();
-
-                Node node = kv.getValue();
-                node.handled = true;
-                int mask = bo.setBit(0, node.id, true);
-
-                LongList list = new LongList(15);
-                list.add(key);
-
-                long req = avg - (node.sum - key);
-                boolean valid = true;
-
-                while (true) {
-                    if (req == key) {
-                        break;
+                for (int j = 0; j < n; j++) {
+                    if (a[i] < a[j]) {
+                        dp[i][j]++;
                     }
-                    Node next = map.get(req);
-                    if (next == null || next.handled) {
-                        valid = false;
-                        break;
-                    }
-                    next.handled = true;
-                    list.add(req);
-                    req = avg - (next.sum - req);
-                    mask = bo.setBit(mask, next.id, true);
                 }
-
-                if (!valid) {
-                    continue;
-                }
-
-                mask2Key[mask] = key;
-                sequence.put(key, list);
             }
 
+            int[] xInL = new int[n];
+            int[] xInR = new int[n];
 
-            dp = new boolean[1 << n];
-            for (int i = 0; i < (1 << n); i++) {
-                dp[i] = mask2Key[i] != notExist;
-                sg.setSet(i);
-                while (!dp[i] && sg.hasNext()) {
-                    int next = sg.next();
-                    if (next == 0 || next == i) {
+            for (int j = 0; j < q; j++) {
+                int x = swaps[j][0];
+                int y = swaps[j][1];
+
+                // x in l
+                for (int r = 0; r < n; r++) {
+                    if (r == y || r == x) {
+                        xInL[r] = 0;
                         continue;
                     }
-                    dp[i] = dp[i] || (dp[next] && dp[i - next]);
+                    xInL[r] = mod.plus(dp[y][r], dp[x][r]);
+                }
+
+
+                // x in r
+                for (int l = 0; l < n; l++) {
+                    if (l == y || l == x) {
+                        xInR[l] = 0;
+                        continue;
+                    }
+                    xInR[l] = mod.plus(dp[l][x], dp[l][y]);
+                }
+
+                int xy = dp[x][y];
+                int yx = dp[y][x];
+
+                // update x in l
+                for (int i = 0; i < n; i++) {
+                    int half = mod.mul(inv2, xInL[i]);
+                    dp[x][i] = dp[y][i] = half;
+                }
+
+                // update x in r
+                for (int i = 0; i < n; i++) {
+                    int half = mod.mul(inv2, xInR[i]);
+                    dp[i][x] = dp[i][y] = half;
+                }
+
+                int half = mod.mul(mod.plus(xy, yx), inv2);
+                dp[x][y] = dp[y][x] = half;
+            }
+
+            int p = pow.pow(2, q);
+            int ans = 0;
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    if (i > j) {
+                        ans = mod.plus(dp[i][j], ans);
+                    }
                 }
             }
+            ans = mod.mul(p, ans);
 
-            if (!dp[(1 << n) - 1]) {
-                out.println("No");
-                return;
-            }
 
-            populate((1 << n) - 1);
-            out.println("Yes");
-            for (Node node : nodes) {
-                out.append(node.out).append(' ').append(node.to + 1).append('\n');
-            }
-        }
-
-        public void populate(int mask) {
-            if (mask2Key[mask] != notExist) {
-                LongList list = sequence.get(mask2Key[mask]);
-                int m = list.size();
-                for (int i = 0; i < m; i++) {
-                    long v = list.get(i);
-                    long last = list.get(DigitUtils.mod(i - 1, m));
-                    Node which = map.get(v);
-                    Node to = map.get(last);
-
-                    which.out = v;
-                    which.to = to.id;
-                }
-                return;
-            }
-
-            sg.setSet(mask);
-            while (sg.hasNext()) {
-                int next = sg.next();
-                if (next == 0 || next == mask) {
-                    continue;
-                }
-                if (dp[next] && dp[mask - next]) {
-                    populate(next);
-                    populate(mask - next);
-                    return;
-                }
-            }
+            out.println(ans);
         }
 
     }
+    static class NumberTheory {
+        public static class Modular {
+            int m;
 
-    static class LongList {
-        private int size;
-        private int cap;
-        private long[] data;
-        private static final long[] EMPTY = new long[0];
-
-        public LongList(int cap) {
-            this.cap = cap;
-            if (cap == 0) {
-                data = EMPTY;
-            } else {
-                data = new long[cap];
+            public Modular(int m) {
+                this.m = m;
             }
-        }
 
-        public LongList(LongList list) {
-            this.size = list.size;
-            this.cap = list.cap;
-            this.data = Arrays.copyOf(list.data, size);
-        }
-
-        public LongList() {
-            this(0);
-        }
-
-        private void ensureSpace(int need) {
-            int req = size + need;
-            if (req > cap) {
-                while (cap < req) {
-                    cap = Math.max(cap + 10, 2 * cap);
+            public Modular(long m) {
+                this.m = (int) m;
+                if (this.m != m) {
+                    throw new IllegalArgumentException();
                 }
-                data = Arrays.copyOf(data, cap);
             }
-        }
 
-        private void checkRange(int i) {
-            if (i < 0 || i >= size) {
-                throw new ArrayIndexOutOfBoundsException();
+            public Modular(double m) {
+                this.m = (int) m;
+                if (this.m != m) {
+                    throw new IllegalArgumentException();
+                }
             }
+
+            public int valueOf(int x) {
+                x %= m;
+                if (x < 0) {
+                    x += m;
+                }
+                return x;
+            }
+
+            public int valueOf(long x) {
+                x %= m;
+                if (x < 0) {
+                    x += m;
+                }
+                return (int) x;
+            }
+
+            public int mul(int x, int y) {
+                return valueOf((long) x * y);
+            }
+
+            public int plus(int x, int y) {
+                return valueOf(x + y);
+            }
+
+            public String toString() {
+                return "mod " + m;
+            }
+
         }
 
-        public long get(int i) {
-            checkRange(i);
-            return data[i];
-        }
+        public static class Power {
+            final NumberTheory.Modular modular;
 
-        public void add(long x) {
-            ensureSpace(1);
-            data[size++] = x;
-        }
+            public Power(NumberTheory.Modular modular) {
+                this.modular = modular;
+            }
 
-        public int size() {
-            return size;
-        }
+            public int pow(int x, long n) {
+                if (n == 0) {
+                    return modular.valueOf(1);
+                }
+                long r = pow(x, n >> 1);
+                r = modular.valueOf(r * r);
+                if ((n & 1) == 1) {
+                    r = modular.valueOf(r * x);
+                }
+                return (int) r;
+            }
 
-        public String toString() {
-            return Arrays.toString(Arrays.copyOf(data, size));
+            public int inverse(int x) {
+                return pow(x, modular.m - 2);
+            }
+
         }
 
     }
-
-    static class SubsetGenerator {
-        private int[] meanings = new int[33];
-        private int[] bits = new int[33];
-        private int remain;
-        private int next;
-
-        public void setSet(int set) {
-            int bitCount = 0;
-            while (set != 0) {
-                meanings[bitCount] = set & -set;
-                bits[bitCount] = 0;
-                set -= meanings[bitCount];
-                bitCount++;
-            }
-            remain = 1 << bitCount;
-            next = 0;
-        }
-
-        public boolean hasNext() {
-            return remain > 0;
-        }
-
-        private void consume() {
-            remain = remain - 1;
-            int i;
-            for (i = 0; bits[i] == 1; i++) {
-                bits[i] = 0;
-                next -= meanings[i];
-            }
-            bits[i] = 1;
-            next += meanings[i];
-        }
-
-        public int next() {
-            int returned = next;
-            consume();
-            return returned;
-        }
-
-    }
-
-    static class Node {
-        int id;
-        long sum;
-        boolean handled;
-        long out;
-        long to;
-
-    }
-
     static class FastInput {
         private final InputStream is;
         private byte[] buf = new byte[1 << 13];
@@ -351,7 +257,6 @@ public class Main {
         }
 
     }
-
     static class FastOutput implements AutoCloseable, Closeable {
         private StringBuilder cache = new StringBuilder(10 << 20);
         private final Writer os;
@@ -364,17 +269,7 @@ public class Main {
             this(new OutputStreamWriter(os));
         }
 
-        public FastOutput append(char c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput append(long c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput println(String c) {
+        public FastOutput println(int c) {
             cache.append(c).append('\n');
             return this;
         }
@@ -401,41 +296,6 @@ public class Main {
 
         public String toString() {
             return cache.toString();
-        }
-
-    }
-
-    static class DigitUtils {
-        private static final long[] DIGIT_VALUES = new long[19];
-
-        static {
-            DIGIT_VALUES[0] = 1;
-            for (int i = 1; i < 19; i++) {
-                DIGIT_VALUES[i] = DIGIT_VALUES[i - 1] * 10;
-            }
-        }
-
-        private DigitUtils() {
-        }
-
-        public static int mod(int x, int mod) {
-            x %= mod;
-            if (x < 0) {
-                x += mod;
-            }
-            return x;
-        }
-
-        public static class BitOperator {
-            public int setBit(int x, int i, boolean v) {
-                if (v) {
-                    x |= 1 << i;
-                } else {
-                    x &= ~(1 << i);
-                }
-                return x;
-            }
-
         }
 
     }

@@ -14,6 +14,7 @@ public class DigitUtils {
         }
     }
 
+
     /**
      * Get the digit on the i-th position while i start from 0
      */
@@ -74,6 +75,17 @@ public class DigitUtils {
             return false;
         }
         return a > limit / b;
+    }
+
+    public static boolean isPlusOverflow(long a, long b) {
+        if (Long.signum(a) != Long.signum(b)) {
+            return false;
+        }
+        if (a < 0) {
+            return a + b > 0;
+        }else{
+            return a + b < 0;
+        }
     }
 
     public static long mul(long a, long b, long limit, long overflowVal) {

@@ -430,7 +430,7 @@ public class NumberTheory {
 
         public int pow(int x, long n) {
             if (n == 0) {
-                return modular.valueOf(x);
+                return modular.valueOf(1);
             }
             long r = pow(x, n >> 1);
             r = modular.valueOf(r * r);

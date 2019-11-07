@@ -1,2 +1,2 @@
-42 src/main/java/contest/C - Sum Balance.json
+44 src/main/java/contest/D - Inversion Sum.json
 0
