@@ -1,5 +1,5 @@
 {
-  "name" : "B - 0-1 MST",
+  "name" : "C - Painting Machines",
   "testType" : "SINGLE",
   "input" : {
     "type" : "STANDARD",
@@ -10,25 +10,35 @@
     "fileName" : "output.txt"
   },
   "tests" : [ {
-    "input" : "6 11\n1 3\n1 4\n1 5\n1 6\n2 3\n2 4\n2 5\n2 6\n3 4\n3 5\n3 6\n",
-    "output" : "2\n",
+    "input" : "4\n",
+    "output" : "16\n",
     "index" : 0,
     "active" : true
   }, {
-    "input" : "3 0\n",
-    "output" : "0\n",
+    "input" : "2\n",
+    "output" : "1\n",
     "index" : 1,
+    "active" : true
+  }, {
+    "input" : "5\n",
+    "output" : "84\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "100000\n",
+    "output" : "341429644\n",
+    "index" : 3,
     "active" : true
   } ],
   "location" : "src/main/java/contest",
   "vmArgs" : "-Xmx256M",
   "mainClass" : "Main",
-  "taskClass" : "contest.TaskB",
+  "taskClass" : "on2019_11.on2019_11_07_AtCoder_Grand_Contest_023.C___Painting_Machines.TaskC",
   "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
   "checkerParameters" : "",
   "testClasses" : [ ],
-  "date" : "2019.11.06",
-  "contestName" : "Codeforces Round #599 (Div. 1)",
+  "date" : "2019.11.07",
+  "contestName" : "AtCoder Grand Contest 023",
   "truncate" : true,
   "inputClass" : "template.FastInput",
   "outputClass" : "template.FastOutput",

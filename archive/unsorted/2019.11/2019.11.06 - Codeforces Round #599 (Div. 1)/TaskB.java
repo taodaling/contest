@@ -1,9 +1,11 @@
 package contest;
 
+
+import java.util.HashSet;
+import java.util.Set;
+
 import template.FastInput;
 import template.FastOutput;
-
-import java.util.*;
 
 public class TaskB {
     public void solve(int testNumber, FastInput in, FastOutput out) {
@@ -13,6 +15,7 @@ public class TaskB {
         Node[] nodes = new Node[n + 1];
         for (int i = 1; i <= n; i++) {
             nodes[i] = new Node();
+            nodes[i].id = i;
         }
 
         for (int i = 0; i < m; i++) {
@@ -22,33 +25,28 @@ public class TaskB {
             b.set.add(a);
         }
 
-        Deque<Node> pend = new ArrayDeque<>(n);
-        Set<Node> wait = new LinkedHashSet<>(n);
-        wait.addAll(Arrays.asList(nodes).subList(1, n + 1));
+        LinkedList wait = new LinkedList();
+        LinkedList pend = new LinkedList();
+        for (int i = 1; i <= n; i++) {
+            wait.addLast(nodes[i]);
+        }
+        pend.addLast(wait.remove(wait.head));
 
-        wait.remove(nodes[1]);
-        pend.add(nodes[1]);
-
-        List<Node> take = new ArrayList<>();
         int fee = 0;
-        while (!wait.isEmpty()) {
-            if (pend.isEmpty()) {
+        while (wait.head != null) {
+            if (pend.head == null) {
                 fee++;
-                Node any = wait.iterator().next();
-                wait.remove(any);
-                pend.add(any);
+                pend.addLast(wait.remove(wait.head));
                 continue;
             }
-            Node head = pend.removeFirst();
-            take.clear();
-            for (Node node : wait) {
+            Node head = pend.remove(pend.head);
+            for (Node node = wait.head, next; node != null; node = next) {
+                next = node.next;
                 if (head.set.contains(node)) {
                     continue;
                 }
-                take.add(node);
+                pend.addLast(wait.remove(node));
             }
-            wait.removeAll(take);
-            pend.addAll(take);
         }
 
         out.println(fee);
@@ -56,7 +54,46 @@ public class TaskB {
 
 }
 
+
 class Node {
     Set<Node> set = new HashSet<>();
-    boolean visited;
+    int id;
+    Node next;
+    Node prev;
+}
+
+
+class LinkedList {
+    Node head = null;
+    Node tail = null;
+    int size;
+
+    void addLast(Node node) {
+        size++;
+        if (tail == null) {
+            head = tail = node;
+            return;
+        }
+        tail.next = node;
+        node.prev = tail;
+        tail = node;
+    }
+
+    Node remove(Node node) {
+        if (node.prev != null) {
+            node.prev.next = node.next;
+        }
+        if (node.next != null) {
+            node.next.prev = node.prev;
+        }
+        if (node == head) {
+            head = node.next;
+        }
+        if (node == tail) {
+            tail = node.prev;
+        }
+        size--;
+        node.next = node.prev = null;
+        return node;
+    }
 }
