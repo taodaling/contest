@@ -1,2 +1,2 @@
-42 src/main/java/contest/C - Sum Balance.json
+50 src/main/java/contest/D - A or...or B Problem.json
 0
