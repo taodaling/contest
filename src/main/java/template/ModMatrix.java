@@ -23,6 +23,9 @@ public class ModMatrix {
     }
 
     public ModMatrix(int[][] mat) {
+        if (mat.length == 0 || mat[0].length == 0) {
+            throw new IllegalArgumentException();
+        }
         this.n = mat.length;
         this.m = mat[0].length;
         this.mat = mat;
@@ -38,7 +41,7 @@ public class ModMatrix {
 
     public void asStandard(NumberTheory.Modular mod) {
         fill(0);
-        if(mod.getMod() == 1){
+        if (mod.getMod() == 1) {
             return;
         }
         for (int i = 0; i < n && i < m; i++) {
@@ -74,7 +77,7 @@ public class ModMatrix {
      */
     public static int determinant(ModMatrix x, NumberTheory.Modular modular) {
         if (x.n != x.m) {
-            throw new RuntimeException("Matrix is not square");
+            throw new RuntimeException("ModMatrix is not square");
         }
         int n = x.n;
         ModMatrix l = new ModMatrix(x);
@@ -108,7 +111,7 @@ public class ModMatrix {
      */
     public static int determinant(ModMatrix x, NumberTheory.Power power) {
         if (x.n != x.m) {
-            throw new RuntimeException("Matrix is not square");
+            throw new RuntimeException("ModMatrix is not square");
         }
         NumberTheory.Modular modular = power.getModular();
         int n = x.n;
@@ -151,7 +154,7 @@ public class ModMatrix {
 
     public static ModMatrix inverse(ModMatrix x, NumberTheory.Power power) {
         if (x.n != x.m) {
-            throw new RuntimeException("Matrix is not square");
+            throw new RuntimeException("ModMatrix is not square");
         }
         NumberTheory.Modular modular = power.getModular();
         int n = x.n;
@@ -237,7 +240,7 @@ public class ModMatrix {
         return r;
     }
 
-    static ModMatrix transposition(ModMatrix x, NumberTheory.Modular modular) {
+    static ModMatrix transposition(ModMatrix x) {
         int n = x.n;
         int m = x.m;
         ModMatrix t = new ModMatrix(m, n);
@@ -258,5 +261,93 @@ public class ModMatrix {
             builder.append('\n');
         }
         return builder.toString();
+    }
+
+    public void asSame(ModMatrix matrix) {
+        if (matrix.n != n || matrix.m != m) {
+            throw new IllegalArgumentException();
+        }
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                mat[i][j] = matrix.mat[i][j];
+            }
+        }
+    }
+
+    private void swapCol(int i, int j) {
+        for (int k = 0; k < n; k++) {
+            int tmp = mat[k][i];
+            mat[k][i] = mat[k][j];
+            mat[k][j] = tmp;
+        }
+    }
+
+    private void asTopHeisenbergModMatrix(NumberTheory.Power pow) {
+        NumberTheory.Modular mod = pow.getModular();
+
+        for (int i = 0; i < n - 1; i++) {
+            int maxRow = i + 1;
+            for (int j = i + 1; j < n; j++) {
+                if (mat[j][i] != 0) {
+                    maxRow = j;
+                    break;
+                }
+            }
+            if (mat[maxRow][i] == 0) {
+                continue;
+            }
+            if (maxRow != i + 1) {
+                swapRow(maxRow, i + 1);
+                swapCol(maxRow, i + 1);
+            }
+            int inv = pow.inverse(mat[maxRow][i]);
+            for (int j = i + 2; j < n; j++) {
+                if (mat[j][i] == 0) {
+                    continue;
+                }
+                subtractRow(j, i + 1, mod.mul(mat[j][i], inv), mod);
+            }
+        }
+    }
+
+    private int topHeisenbergModMatrixDeterminant(NumberTheory.Power pow) {
+        NumberTheory.Modular mod = pow.getModular();
+        int ans = mod.valueOf(1);
+
+        for (int i = 0; i < n - 1; i++) {
+            if (mat[i][i] == 0 && mat[i + 1][i] != 0) {
+                swapRow(i, i + 1);
+                ans = -ans;
+            }
+            if (mat[i + 1][i] != 0) {
+                subtractRow(i + 1, i, mod.mul(mat[i + 1][i], pow.inverse(mat[i][i])), mod);
+            }
+            ans = mod.mul(ans, mat[i][i]);
+        }
+
+        ans = mod.mul(mat[n - 1][n - 1], ans);
+        return ans;
+    }
+
+    public GravityModLagrangeInterpolation.Polynomial getCharacteristicPolynomial(NumberTheory.Power pow) {
+        NumberTheory.Modular mod = pow.getModular();
+        if (n != m) {
+            throw new UnsupportedOperationException();
+        }
+
+        ModMatrix heisenberg = new ModMatrix(this);
+        heisenberg.asTopHeisenbergModMatrix(pow);
+        ModMatrix copy = new ModMatrix(n, m);
+
+        GravityModLagrangeInterpolation gli = new GravityModLagrangeInterpolation(mod, n + 1);
+        for (int i = 0; i <= n; i++) {
+            copy.asSame(heisenberg);
+            for (int j = 0; j < n; j++) {
+                copy.mat[j][j] = mod.subtract(i, copy.mat[j][j]);
+            }
+            gli.addPoint(i, copy.topHeisenbergModMatrixDeterminant(pow));
+        }
+
+        return gli.preparePolynomial();
     }
 }

@@ -199,4 +199,9 @@ public class GravityLagrangeInterpolation {
             return Arrays.toString(Arrays.copyOfRange(coes, 0, n));
         }
     }
+
+    @Override
+    public String toString() {
+        return points.toString();
+    }
 }

@@ -17,11 +17,16 @@ public class Matrix implements Cloneable {
         n = model.n;
         m = model.m;
         mat = new double[n][m];
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                mat[i][j] = model.mat[i][j];
-            }
+        asSame(model);
+    }
+
+    public Matrix(double[][] mat) {
+        if (mat.length == 0 || mat[0].length == 0) {
+            throw new IllegalArgumentException();
         }
+        this.n = mat.length;
+        this.m = mat[0].length;
+        this.mat = mat;
     }
 
     public Matrix(int n, int m) {
@@ -166,7 +171,7 @@ public class Matrix implements Cloneable {
         return r;
     }
 
-    static Matrix transposition(Matrix x) {
+    public static Matrix transposition(Matrix x) {
         int n = x.n;
         int m = x.m;
         Matrix t = new Matrix(m, n);
@@ -178,19 +183,19 @@ public class Matrix implements Cloneable {
         return t;
     }
 
-    void swapRow(int i, int j) {
+    private void swapRow(int i, int j) {
         double[] row = mat[i];
         mat[i] = mat[j];
         mat[j] = row;
     }
 
-    void subtractRow(int i, int j, double f) {
+    private void subtractRow(int i, int j, double f) {
         for (int k = 0; k < m; k++) {
             mat[i][k] -= mat[j][k] * f;
         }
     }
 
-    void divideRow(int i, double f) {
+    private void divideRow(int i, double f) {
         for (int k = 0; k < m; k++) {
             mat[i][k] /= f;
         }
@@ -207,4 +212,86 @@ public class Matrix implements Cloneable {
         return builder.toString();
     }
 
+
+    public void asSame(Matrix matrix) {
+        if (matrix.n != n || matrix.m != m) {
+            throw new IllegalArgumentException();
+        }
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                mat[i][j] = matrix.mat[i][j];
+            }
+        }
+    }
+
+    private void swapCol(int i, int j) {
+        for (int k = 0; k < n; k++) {
+            double tmp = mat[k][i];
+            mat[k][i] = mat[k][j];
+            mat[k][j] = tmp;
+        }
+    }
+
+    private void asTopHeisenbergMatrix() {
+        for (int i = 0; i < n - 1; i++) {
+            int maxRow = i + 1;
+            for (int j = i + 2; j < n; j++) {
+                if (Math.abs(mat[maxRow][i]) < Math.abs(mat[j][i])) {
+                    maxRow = j;
+                }
+            }
+            if (mat[maxRow][i] == 0) {
+                continue;
+            }
+            if(maxRow != i + 1) {
+                swapRow(maxRow, i + 1);
+                swapCol(maxRow, i + 1);
+            }
+            for (int j = i + 2; j < n; j++) {
+                if (mat[j][i] == 0) {
+                    continue;
+                }
+                subtractRow(j, i + 1, mat[j][i] / mat[i + 1][i]);
+            }
+        }
+    }
+
+    private double topHeisenbergMatrixDeterminant() {
+        double ans = 1;
+
+        for (int i = 0; i < n - 1; i++) {
+            if (Math.abs(mat[i][i]) < Math.abs(mat[i + 1][i])) {
+                swapRow(i, i + 1);
+                ans = -ans;
+            }
+            if (mat[i + 1][i] != 0) {
+                subtractRow(i + 1, i, mat[i + 1][i] / mat[i][i]);
+            }
+            ans *= mat[i][i];
+        }
+
+        ans *= mat[n - 1][n - 1];
+        return ans;
+    }
+
+    public GravityLagrangeInterpolation.Polynomial getCharacteristicPolynomial() {
+        if (n != m) {
+            throw new UnsupportedOperationException();
+        }
+
+        Matrix heisenberg = new Matrix(this);
+        heisenberg.asTopHeisenbergMatrix();
+        Matrix copy = new Matrix(n, m);
+
+        GravityLagrangeInterpolation gli = new GravityLagrangeInterpolation(n + 1);
+        for (int i = 0; i <= n; i++) {
+            copy.asSame(heisenberg);
+            for (int j = 0; j < n; j++) {
+                copy.mat[j][j] = i - copy.mat[j][j];
+            }
+            gli.addPoint(i, copy.topHeisenbergMatrixDeterminant());
+        }
+
+        return gli.preparePolynomial();
+    }
 }

@@ -3,7 +3,8 @@ package template;
 import java.util.Arrays;
 
 public class NumberTheoryTransform {
-    public static final NumberTheoryTransform STANDARD = new NumberTheoryTransform(new NumberTheory.Modular(998244353), 3);
+    public static final NumberTheoryTransform STANDARD =
+                    new NumberTheoryTransform(new NumberTheory.Modular(998244353), 3);
     private NumberTheory.Modular MODULAR;
     private NumberTheory.Power POWER;
     private int G;
@@ -11,7 +12,7 @@ public class NumberTheoryTransform {
     private int[] invCache = new int[30];
 
 
-    public NumberTheoryTransform(NumberTheory.Modular mod){
+    public NumberTheoryTransform(NumberTheory.Modular mod) {
         this(mod, new NumberTheory.PrimitiveRoot(mod.getMod()).findMinPrimitiveRoot());
     }
 
@@ -139,9 +140,9 @@ public class NumberTheoryTransform {
     }
 
     /**
-     * return polynomial g while p * g = 1 (mod x^m).
-     * <br>
-     * You are supposed to guarantee the lengths of all arrays are greater than or equal to 2^{ceil(log2(m)) + 1}
+     * return polynomial g while p * g = 1 (mod x^m). <br>
+     * You are supposed to guarantee the lengths of all arrays are greater than or equal to
+     * 2^{ceil(log2(m)) + 1}
      */
     private void inverse(int[] r, int[] p, int[] inv, int[] buf, int m) {
         if (m == 0) {
@@ -162,5 +163,44 @@ public class NumberTheoryTransform {
         for (int i = 1 << m; i < n; i++) {
             inv[i] = 0;
         }
+    }
+
+    /**
+     * Get remainder = x^k % p, m >= 2 + ceil(log_2 max(|p|))
+     */
+    public void module(int k, int[] p, int[] remainder, int m) {
+        int rankOfP = rankOf(p);
+        if (rankOfP == 1) {
+            Arrays.fill(remainder, 0);
+            return;
+        }
+        int[] r = new int[1 << m];
+        int[] a = new int[1 << m];
+        int[] b = new int[1 << m];
+        int[] c = new int[1 << m];
+        prepareReverse(r, m);
+        module(r, k, a, b, c, remainder, m);
+    }
+
+    public void module(int[] r, int k, int[] a, int[] b, int[] c, int[] remainder, int m) {
+        if (k == 0) {
+            Arrays.fill(remainder, 0);
+            remainder[0] = MODULAR.valueOf(1);
+            return;
+        }
+        module(r, k / 2, a, b, c, remainder, m);
+        dft(r, remainder, m);
+        dotMul(remainder, remainder, remainder, m);
+        idft(r, remainder, m);
+
+        if (k % 2 == 1) {
+            for (int i = remainder.length - 1; i > 0; i--) {
+                remainder[i] = remainder[i - 1];
+            }
+            remainder[0] = 0;
+        }
+
+        System.arraycopy(remainder, 0, a, 0, 1 << m);
+        divide(r, a, b, c, remainder, m);
     }
 }
