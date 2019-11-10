@@ -73,6 +73,12 @@ public class SequenceUtils {
         data[j] = tmp;
     }
 
+    public static void swap(byte[] data, int i, int j) {
+        byte tmp = data[i];
+        data[i] = data[j];
+        data[j] = tmp;
+    }
+
     public static void swap(int[] data, int i, int j) {
         int tmp = data[i];
         data[i] = data[j];
@@ -313,6 +319,15 @@ public class SequenceUtils {
         }
     }
 
+    public static void reverse(byte[] data, int f, int t) {
+        int l = f, r = t - 1;
+        while (l < r) {
+            swap(data, l, r);
+            l++;
+            r--;
+        }
+    }
+
     public static void copy(Object src, Object dst, int srcf, int dstf, int len) {
         System.arraycopy(src, srcf, dst, dstf, len);
     }
@@ -336,5 +351,17 @@ public class SequenceUtils {
             }
         }
         return -1;
+    }
+
+    public static boolean equal(int[] a, int[] b, int al, int ar, int bl, int br){
+        if((ar - al) != (br - bl)){
+            return false;
+        }
+        for(int i = al, j = bl; i <= ar; i++, j++){
+            if(a[i] != b[j]){
+                return false;
+            }
+        }
+        return true;
     }
 }

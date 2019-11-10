@@ -8,6 +8,25 @@ public class IntList {
     private int[] data;
     private static final int[] EMPTY = new int[0];
 
+    public int[] getData() {
+        return data;
+    }
+
+    public void remove(int l, int r) {
+        checkRange(l);
+        checkRange(r);
+        if (l > r) {
+            return;
+        }
+        if (r == size - 1) {
+            size = l;
+            return;
+        } else {
+            System.arraycopy(data, l, data, r + 1, size - (r + 1));
+            size -= (r - l + 1);
+        }
+    }
+
     public IntList(int cap) {
         this.cap = cap;
         if (cap == 0) {
@@ -27,7 +46,7 @@ public class IntList {
         this(0);
     }
 
-    private void ensureSpace(int need) {
+    public void ensureSpace(int need) {
         int req = size + need;
         if (req > cap) {
             while (cap < req) {
@@ -52,7 +71,9 @@ public class IntList {
         ensureSpace(1);
         data[size++] = x;
     }
-
+    public void addAll(int[] x) {
+        addAll(x, 0, x.length);
+    }
     public void addAll(int[] x, int offset, int len) {
         ensureSpace(len);
         System.arraycopy(x, offset, data, size, len);
@@ -84,7 +105,7 @@ public class IntList {
     public void expandWith(int x, int len) {
         ensureSpace(len - size);
         while (size < len) {
-            add(x);
+            data[size++] = x;
         }
     }
 
@@ -101,15 +122,30 @@ public class IntList {
         return data[0];
     }
 
+    /**
+     * Just retain the first n element in array, if there are not enough element,
+     * nothing will occur.
+     */
+    public void retain(int n) {
+        if (n < 0) {
+            throw new IllegalArgumentException();
+        }
+        if (n >= size) {
+            return;
+        }
+        size = n;
+    }
+
     public int tail() {
         checkRange(0);
         return data[size - 1];
     }
+
     public void unique() {
         if (size <= 1) {
             return;
         }
-        
+
         sort();
         int wpos = 1;
         for (int i = 1; i < size; i++) {
@@ -173,5 +209,14 @@ public class IntList {
 
     public String toString() {
         return Arrays.toString(toArray());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof IntList)) {
+            return false;
+        }
+        IntList other = (IntList) obj;
+        return SequenceUtils.equal(data, other.data, 0, size - 1, 0, other.size - 1);
     }
 }

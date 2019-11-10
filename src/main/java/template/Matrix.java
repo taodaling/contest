@@ -91,6 +91,42 @@ public class Matrix implements Cloneable {
         return r;
     }
 
+    public static Matrix plus(Matrix a, Matrix b) {
+        if (a.n != b.n || a.m != b.m) {
+            throw new IllegalArgumentException();
+        }
+        Matrix ans = new Matrix(a.n, a.m);
+        for (int i = 0; i < a.n; i++) {
+            for (int j = 0; j < a.m; j++) {
+                ans.mat[i][j] = a.mat[i][j] + b.mat[i][j];
+            }
+        }
+        return ans;
+    }
+
+    public static Matrix subtract(Matrix a, Matrix b) {
+        if (a.n != b.n || a.m != b.m) {
+            throw new IllegalArgumentException();
+        }
+        Matrix ans = new Matrix(a.n, a.m);
+        for (int i = 0; i < a.n; i++) {
+            for (int j = 0; j < a.m; j++) {
+                ans.mat[i][j] = a.mat[i][j] - b.mat[i][j];
+            }
+        }
+        return ans;
+    }
+
+    public static Matrix mul(Matrix a, double k) {
+        Matrix ans = new Matrix(a.n, a.m);
+        for (int i = 0; i < a.n; i++) {
+            for (int j = 0; j < a.m; j++) {
+                ans.mat[i][j] = a.mat[i][j] * k;
+            }
+        }
+        return ans;
+    }
+
     public static double determinant(Matrix x) {
         if (x.n != x.m) {
             throw new RuntimeException("Matrix is not square");
@@ -243,7 +279,7 @@ public class Matrix implements Cloneable {
             if (mat[maxRow][i] == 0) {
                 continue;
             }
-            if(maxRow != i + 1) {
+            if (maxRow != i + 1) {
                 swapRow(maxRow, i + 1);
                 swapCol(maxRow, i + 1);
             }
@@ -251,8 +287,16 @@ public class Matrix implements Cloneable {
                 if (mat[j][i] == 0) {
                     continue;
                 }
-                subtractRow(j, i + 1, mat[j][i] / mat[i + 1][i]);
+                double c = mat[j][i] / mat[i + 1][i];
+                subtractRow(j, i + 1, c);
+                subtractCol(i + 1, j, -c);
             }
+        }
+    }
+
+    public void subtractCol(int i, int j, double f){
+        for(int k = 0; k < n; k++){
+            mat[k][i] -= mat[k][j] * f;
         }
     }
 
@@ -287,9 +331,13 @@ public class Matrix implements Cloneable {
         for (int i = 0; i <= n; i++) {
             copy.asSame(heisenberg);
             for (int j = 0; j < n; j++) {
-                copy.mat[j][j] = i - copy.mat[j][j];
+                copy.mat[j][j] = copy.mat[j][j] - i;
             }
-            gli.addPoint(i, copy.topHeisenbergMatrixDeterminant());
+            double y = copy.topHeisenbergMatrixDeterminant();
+            if (n % 2 == 1) {
+                y = -y;
+            }
+            gli.addPoint(i, y);
         }
 
         return gli.preparePolynomial();

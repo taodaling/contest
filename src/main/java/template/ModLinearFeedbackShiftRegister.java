@@ -35,8 +35,10 @@ public class ModLinearFeedbackShiftRegister {
     private int estimateDelta() {
         int n = seq.size() - 1;
         int ans = 0;
+        int[] cnData = cn.getData();
+        int[] seqData = seq.getData();
         for (int i = 0, until = cn.size(); i < until; i++) {
-            ans = mod.plus(ans, mod.mul(cn.get(i), seq.get(n - i)));
+            ans = mod.plus(ans, mod.mul(cnData[i], seqData[n - i]));
         }
         return ans;
     }
@@ -64,14 +66,15 @@ public class ModLinearFeedbackShiftRegister {
         int ln = cn.size() - 1;
         int len = Math.max(ln, n + 1 - ln);
         buf.clear();
+        buf.addAll(cn);
         buf.expandWith(0, len + 1);
-        for (int i = 0, until = cn.size(); i < until; i++) {
-            buf.set(i, cn.get(i));
-        }
 
         int factor = mod.mul(dn, pow.inverse(dm));
+
+        int[] bufData = buf.getData();
+        int[] cmData = cm.getData();
         for (int i = n - m, until = n - m + cm.size(); i < until; i++) {
-            buf.set(i, mod.subtract(buf.get(i), mod.mul(factor, cm.get(i - (n - m)))));
+            bufData[i] = mod.subtract(bufData[i], mod.mul(factor, cmData[i - (n - m)]));
         }
 
         if (cn.size() < buf.size()) {
@@ -122,7 +125,7 @@ public class ModLinearFeedbackShiftRegister {
 
     //start from 1
     public int codeAt(int i){
-        return cn.get(i);
+        return mod.valueOf(-cn.get(i));
     }
 
     private class EstimatorImpl implements Estimator {
@@ -149,8 +152,9 @@ public class ModLinearFeedbackShiftRegister {
 
         public int next() {
             int ans = 0;
+            int[] cnData = cn.getData();
             for (int i = 1, until = cn.size(); i < until; i++) {
-                ans = mod.plus(ans, mod.mul(cn.get(i), get(len - i)));
+                ans = mod.plus(ans, mod.mul(cnData[i], get(len - i)));
             }
             ans = mod.subtract(0, ans);
             record(ans);

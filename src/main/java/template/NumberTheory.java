@@ -440,6 +440,22 @@ public class NumberTheory {
             return (int) r;
         }
 
+        public int pow(int x, ByteList n){
+            return pow(x, n, n.size() - 1);
+        }
+
+        private int pow(int x, ByteList n, int i) {
+            if (i < 0) {
+                return modular.valueOf(1);
+            }
+            long r = pow(x, n, i - 1);
+            r = modular.valueOf(r * r);
+            if (n.get(i) == 1) {
+                r = modular.valueOf(r * x);
+            }
+            return (int) r;
+        }
+
         public int inverse(int x) {
             return pow(x, modular.m - 2);
         }

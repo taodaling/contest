@@ -3,19 +3,46 @@ package template;
 import java.util.Comparator;
 
 public class CompareUtils {
-    private CompareUtils() {}
+    private CompareUtils() {
+    }
 
     public static int middleOf(int a, int b, int c) {
-        int signAB = Integer.compare(a, b);
-        int signAC = Integer.compare(a, c);
-        int signBC = Integer.compare(b, c);
-        if (signAB * signAC <= 0) {
-            return a;
+        if (a >= b) {
+            if (c <= b) {
+                return b;
+            }
+            if (c >= a) {
+                return a;
+            }
+            return c;
+        } else {
+            if (c <= a) {
+                return a;
+            }
+            if (c >= b) {
+                return b;
+            }
+            return c;
         }
-        if (signAB * signBC >= 0) {
-            return b;
+    }
+
+    public static <T> int compareArray(T[] a, T[] b, int al, int ar, int bl, int br, Comparator<T> comp) {
+        for (int i = al, j = bl; i <= ar && j <= br; i++, j++) {
+            int c = comp.compare(a[i], b[j]);
+            if (c != 0) {
+                return c;
+            }
         }
-        return c;
+        return (ar - al) - (br - bl);
+    }
+
+    public static int compareArray(char[] a, char[] b, int al, int ar, int bl, int br) {
+        for (int i = al, j = bl; i <= ar && j <= br; i++, j++) {
+            if (a[i] != b[j]) {
+                return a[i] - b[i];
+            }
+        }
+        return (ar - al) - (br - bl);
     }
 
     public static <T> T max(T a, T b, Comparator<T> comp) {
@@ -72,6 +99,4 @@ public class CompareUtils {
         }
         return theKthSmallestElement(data, cmp, m, t, k - (m - f));
     }
-
-
 }

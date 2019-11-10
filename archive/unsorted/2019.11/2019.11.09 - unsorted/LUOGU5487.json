@@ -1,0 +1,40 @@
+{
+  "name" : "LUOGU5487",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4 10\n1 1 2 3",
+    "output" : "1 1 \n89",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "5 10\n3 7 27 95 339",
+    "output" : "3 2\n691707",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx768M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.LUOGU5487",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.11.09",
+  "contestName" : "",
+  "truncate" : true,
+  "inputClass" : "template.FastInput",
+  "outputClass" : "template.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : true,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : false
+}

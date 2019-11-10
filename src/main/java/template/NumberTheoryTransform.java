@@ -4,16 +4,16 @@ import java.util.Arrays;
 
 public class NumberTheoryTransform {
     public static final NumberTheoryTransform STANDARD =
-                    new NumberTheoryTransform(new NumberTheory.Modular(998244353), 3);
+            new NumberTheoryTransform(new NumberTheory.Modular(998244353), 3);
     private NumberTheory.Modular MODULAR;
     private NumberTheory.Power POWER;
     private int G;
     private int[] wCache = new int[30];
     private int[] invCache = new int[30];
-
+    public static Buffer<IntList> listBuffer = new Buffer<>(IntList::new, list -> list.clear());
 
     public NumberTheoryTransform(NumberTheory.Modular mod) {
-        this(mod, new NumberTheory.PrimitiveRoot(mod.getMod()).findMinPrimitiveRoot());
+        this(mod, mod.getMod() == 998244353 ? 3 : new NumberTheory.PrimitiveRoot(mod.getMod()).findMinPrimitiveRoot());
     }
 
     public NumberTheoryTransform(NumberTheory.Modular mod, int g) {
@@ -97,8 +97,8 @@ public class NumberTheoryTransform {
         }
     }
 
-    public int rankOf(int[] p) {
-        for (int i = p.length - 1; i >= 0; i--) {
+    public int rankOf(int[] p, int m) {
+        for (int i = (1 << m) - 1; i >= 1; i--) {
             if (p[i] > 0) {
                 return i;
             }
@@ -110,33 +110,54 @@ public class NumberTheoryTransform {
      * calc a = b * c + remainder, m >= 1 + ceil(log_2 max(|a|, |b|))
      */
     public void divide(int[] r, int[] a, int[] b, int[] c, int[] remainder, int m) {
-        int rankA = rankOf(a);
-        int rankB = rankOf(b);
+        int n = 1 << m;
+
+        int rankA = rankOf(a, m);
+        int rankB = rankOf(b, m);
+
+        if (rankA < rankB) {
+            Arrays.fill(c, 0, n, 0);
+            System.arraycopy(a, 0, remainder, 0, n);
+            return;
+        }
+
+        IntList aSnapshot = listBuffer.alloc();
+        IntList bSnapshot = listBuffer.alloc();
+        IntList cSnapshot = listBuffer.alloc();
+        aSnapshot.addAll(a, 0, n);
+        bSnapshot.addAll(b, 0, n);
+
         reverse(a, 0, rankA);
         reverse(b, 0, rankB);
         inverse(r, b, c, remainder, m - 1);
         dft(r, a, m);
         dft(r, c, m);
         dotMul(a, c, c, m);
-        idft(r, a, m);
         idft(r, c, m);
-        reverse(a, 0, rankA);
+
+        System.arraycopy(aSnapshot.getData(), 0, a, 0, n);
         reverse(b, 0, rankB);
-        for (int i = rankA - rankB + 1; i < c.length; i++) {
+
+        for (int i = rankA - rankB + 1; i < n; i++) {
             c[i] = 0;
         }
         reverse(c, 0, rankA - rankB);
 
+        cSnapshot.addAll(c, 0, n);
         dft(r, a, m);
         dft(r, b, m);
         dft(r, c, m);
-        for (int i = 0; i < remainder.length; i++) {
+        for (int i = 0; i < n; i++) {
             remainder[i] = MODULAR.subtract(a[i], MODULAR.mul(b[i], c[i]));
         }
-        idft(r, a, m);
-        idft(r, b, m);
-        idft(r, c, m);
         idft(r, remainder, m);
+        System.arraycopy(aSnapshot.getData(), 0, a, 0, n);
+        System.arraycopy(bSnapshot.getData(), 0, b, 0, n);
+        System.arraycopy(cSnapshot.getData(), 0, c, 0, n);
+
+        listBuffer.release(aSnapshot);
+        listBuffer.release(bSnapshot);
+        listBuffer.release(cSnapshot);
     }
 
     /**
@@ -146,6 +167,7 @@ public class NumberTheoryTransform {
      */
     private void inverse(int[] r, int[] p, int[] inv, int[] buf, int m) {
         if (m == 0) {
+            Arrays.fill(inv, 0);
             inv[0] = POWER.inverse(p[0]);
             return;
         }
@@ -168,34 +190,90 @@ public class NumberTheoryTransform {
     /**
      * Get remainder = x^k % p, m >= 2 + ceil(log_2 max(|p|))
      */
-    public void module(int k, int[] p, int[] remainder, int m) {
-        int rankOfP = rankOf(p);
-        if (rankOfP == 1) {
+    public void module(long k, int[] p, int[] remainder, int m) {
+        int rankOfP = rankOf(p, m);
+        if (rankOfP == 0) {
             Arrays.fill(remainder, 0);
             return;
         }
-        int[] r = new int[1 << m];
-        int[] a = new int[1 << m];
-        int[] b = new int[1 << m];
-        int[] c = new int[1 << m];
-        prepareReverse(r, m);
-        module(r, k, a, b, c, remainder, m);
+        IntList r = listBuffer.alloc();
+        IntList a = listBuffer.alloc();
+        IntList c = listBuffer.alloc();
+
+        r.expandWith(0, 1 << m);
+        a.expandWith(0, 1 << m);
+        c.expandWith(0, 1 << m);
+
+        prepareReverse(r.getData(), m);
+        module(r.getData(), k, a.getData(), p, c.getData(), remainder, rankOfP, m);
+
+        listBuffer.release(a);
+        listBuffer.release(r);
+        listBuffer.release(c);
     }
 
-    public void module(int[] r, int k, int[] a, int[] b, int[] c, int[] remainder, int m) {
-        if (k == 0) {
+    private void module(int[] r, long k, int[] a, int[] b, int[] c, int[] remainder, int rb, int m) {
+        if (k < rb) {
             Arrays.fill(remainder, 0);
-            remainder[0] = MODULAR.valueOf(1);
+            remainder[(int)k] = MODULAR.valueOf(1);
             return;
         }
-        module(r, k / 2, a, b, c, remainder, m);
+        module(r, k / 2, a, b, c, remainder, rb, m);
         dft(r, remainder, m);
         dotMul(remainder, remainder, remainder, m);
         idft(r, remainder, m);
 
         if (k % 2 == 1) {
-            for (int i = remainder.length - 1; i > 0; i--) {
+            for (int i = (1 << m) - 1; i > 0; i--) {
                 remainder[i] = remainder[i - 1];
+            }
+            remainder[0] = 0;
+        }
+
+        System.arraycopy(remainder, 0, a, 0, 1 << m);
+        divide(r, a, b, c, remainder, m);
+    }
+
+    /**
+     * Get remainder = x^k % p, m >= 2 + ceil(log_2 max(|p|)),
+     * the smaller index, the more significant bit in k.
+     */
+    public void module(ByteList k, int[] p, int[] remainder, int m) {
+        int rankOfP = rankOf(p, m);
+        if (rankOfP == 0) {
+            Arrays.fill(remainder, 0);
+            return;
+        }
+        IntList r = listBuffer.alloc();
+        IntList a = listBuffer.alloc();
+        IntList c = listBuffer.alloc();
+
+        r.expandWith(0, 1 << m);
+        a.expandWith(0, 1 << m);
+        c.expandWith(0, 1 << m);
+
+        prepareReverse(r.getData(), m);
+        module(r.getData(), k, k.size() - 1, a.getData(), p, c.getData(), remainder, m);
+
+        listBuffer.release(a);
+        listBuffer.release(r);
+        listBuffer.release(c);
+    }
+
+    private void module(int[] r, ByteList k, int i, int[] a, int[] b, int[] c, int[] remainder, int m) {
+        if (i < 0) {
+            Arrays.fill(remainder, 0);
+            remainder[0] = MODULAR.valueOf(1);
+            return;
+        }
+        module(r, k, i - 1, a, b, c, remainder, m);
+        dft(r, remainder, m);
+        dotMul(remainder, remainder, remainder, m);
+        idft(r, remainder, m);
+
+        if (k.get(i) == 1) {
+            for (int j = (1 << m) - 1; j > 0; j--) {
+                remainder[j] = remainder[j - 1];
             }
             remainder[0] = 0;
         }

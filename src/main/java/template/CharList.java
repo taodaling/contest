@@ -16,7 +16,33 @@ public class CharList {
             data = new char[cap];
         }
     }
-
+    /**
+     * Just retain the first n element in array, if there are not enough element,
+     * nothing will occur.
+     */
+    public void retain(int n) {
+        if (n < 0) {
+            throw new IllegalArgumentException();
+        }
+        if (n >= size) {
+            return;
+        }
+        size = n;
+    }
+    public void remove(int l, int r) {
+        checkRange(l);
+        checkRange(r);
+        if (l > r) {
+            return;
+        }
+        if (r == size - 1) {
+            size = l;
+            return;
+        } else {
+            System.arraycopy(data, l, data, r + 1, size - (r + 1));
+            size -= (r - l + 1);
+        }
+    }
     public CharList(CharList list) {
         this.size = list.size;
         this.cap = list.cap;

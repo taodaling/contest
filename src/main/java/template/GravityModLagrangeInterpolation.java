@@ -109,6 +109,10 @@ public class GravityModLagrangeInterpolation {
         private int[] coes;
         private int n;
 
+        public int[] toArray(){
+            return Arrays.copyOf(coes, n);
+        }
+
         public int getCoefficient(int i) {
             if (i >= n) {
                 return 0;

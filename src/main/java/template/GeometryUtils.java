@@ -1,11 +1,6 @@
 package template;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Deque;
-import java.util.List;
+import java.util.*;
 
 public class GeometryUtils {
     private static final double PREC = 1e-12;
@@ -41,8 +36,8 @@ public class GeometryUtils {
         };
 
         public Point2D(double x, double y) {
-            this.x = x;
-            this.y = y;
+            this.x = valueOf(x);
+            this.y = valueOf(y);
         }
 
         public double distance2Between(Point2D another) {
@@ -80,7 +75,7 @@ public class GeometryUtils {
 
         public Point2D normalize() {
             double d = distanceBetween(ORIGIN);
-            return new Point2D(valueOf(x / d), valueOf(y / d));
+            return new Point2D(x / d, y / d);
         }
 
         @Override
@@ -123,7 +118,7 @@ public class GeometryUtils {
         public Line2D(Point2D a, Point2D b) {
             this.a = a;
             this.b = b;
-            d = new Point2D(valueOf(b.x - a.x), valueOf(b.y - a.y));
+            d = new Point2D(b.x - a.x, b.y - a.y);
             theta = Math.atan2(d.y, d.x);
         }
 
@@ -201,6 +196,10 @@ public class GeometryUtils {
             return cross(p.x - a.x, p.y - a.y, d.x, d.y) == 0
                     && valueOf(p.x - Math.min(a.x, b.x)) >= 0 && valueOf(p.x - Math.max(a.x, b.x)) <= 0
                     && valueOf(p.y - Math.min(a.y, b.y)) >= 0 && valueOf(p.y - Math.max(a.y, b.y)) <= 0;
+        }
+
+        public boolean containWithoutEndpoint(Point2D p) {
+            return contain(p) && !p.equals(a) && !p.equals(b);
         }
 
         /**
@@ -642,6 +641,108 @@ public class GeometryUtils {
 
         private Polygon(List<T> data) {
             this.data = data;
+        }
+    }
+
+    public static double theta(double y, double x) {
+        double theta = Math.atan2(y, x);
+        if (theta < 0) {
+            theta += Math.PI * 2;
+        }
+        return theta;
+    }
+
+    public static class DynamicConvexHull {
+        private TreeMap<Double, Point2D> pts = new TreeMap<>((a, b) ->
+                near(a, b) ? 0 : a.compareTo(b));
+        private Point2D center;
+
+        public DynamicConvexHull(Point2D center) {
+            this.center = center;
+        }
+
+        private Map.Entry<Double, Point2D> clockwise(Double theta) {
+            Map.Entry<Double, Point2D> floor = pts.floorEntry(theta);
+            if (floor == null) {
+                floor = pts.lastEntry();
+            }
+            return floor;
+        }
+
+        private Map.Entry<Double, Point2D> countclockwise(Double theta) {
+            Map.Entry<Double, Point2D> ceil = pts.ceilingEntry(theta);
+            if (ceil == null) {
+                ceil = pts.firstEntry();
+            }
+            return ceil;
+        }
+
+        private boolean contain(Point2D point, Double theta, boolean close) {
+            Point2D cw = clockwise(theta).getValue();
+            Point2D ccw = countclockwise(theta).getValue();
+
+            if (cw == ccw) {
+                Segment2D seg= new Segment2D(center, ccw);
+                if(close){
+                    return seg.contain(point);
+                }
+                return seg.containWithoutEndpoint(point);
+            }
+
+            if (close) {
+                return center.cross(cw, point) >= 0 &&
+                        cw.cross(ccw, point) >= 0 &&
+                        ccw.cross(center, point) >= 0;
+            }
+            return center.cross(cw, point) > 0 &&
+                    cw.cross(ccw, point) > 0 &&
+                    ccw.cross(center, point) > 0;
+        }
+
+        public boolean contain(Point2D point, boolean close) {
+            if (pts.isEmpty()) {
+                return false;
+            }
+            return contain(point, theta(point.y - center.y, point.x - center.x), close);
+        }
+
+        public void add(Point2D point) {
+            Double theta = theta(point.y - center.y, point.x - center.x);
+            if (pts.size() < 3) {
+                Point2D exists = pts.get(theta);
+                if (exists != null && center.distance2Between(exists) >= center.distance2Between(point)) {
+                    return;
+                }
+                pts.put(theta, point);
+                return;
+            }
+
+            if (contain(point, theta, true)) {
+                return;
+            }
+
+            //clockwise
+            while (pts.size() >= 3) {
+                Map.Entry<Double, Point2D> cw = clockwise(theta);
+                pts.remove(cw.getKey());
+                Point2D next = clockwise(theta).getValue();
+                if (point.cross(cw.getValue(), next) < 0) {
+                    pts.put(cw.getKey(), cw.getValue());
+                    break;
+                }
+            }
+            //clockwise
+            while (pts.size() >= 3) {
+                Map.Entry<Double, Point2D> ccw = countclockwise(theta);
+                pts.remove(ccw.getKey());
+                Point2D next = countclockwise(theta).getValue();
+                if (point.cross(ccw.getValue(), next) > 0) {
+                    pts.put(ccw.getKey(), ccw.getValue());
+                    break;
+                }
+            }
+
+            pts.put(theta, point);
         }
     }
 }

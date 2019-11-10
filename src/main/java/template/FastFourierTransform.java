@@ -2,6 +2,7 @@ package template;
 
 public class FastFourierTransform {
     private static double[][] wCache = new double[31][2];
+    private static double eps = 1e-12;
 
     static {
         for (int i = 0, until = wCache.length; i < until; i++) {
@@ -90,6 +91,15 @@ public class FastFourierTransform {
     private static void div(double r1, double i1, double r2, double[] r) {
         r[0] = r1 / r2;
         r[1] = i1 / r2;
+    }
+
+    public int rankOf(double[][] p, int m) {
+        for (int i = (1 << m) - 1; i >= 1; i--) {
+            if (p[i][0] < -eps || p[i][0] > eps) {
+                return i;
+            }
+        }
+        return 0;
     }
 
     /**

@@ -17,6 +17,20 @@ public class LongList {
         }
     }
 
+    /**
+     * Just retain the first n element in array, if there are not enough element,
+     * nothing will occur.
+     */
+    public void retain(int n) {
+        if (n < 0) {
+            throw new IllegalArgumentException();
+        }
+        if (n >= size) {
+            return;
+        }
+        size = n;
+    }
+
     public LongList(LongList list) {
         this.size = list.size;
         this.cap = list.cap;
@@ -141,7 +155,20 @@ public class LongList {
     public int size() {
         return size;
     }
-
+    public void remove(int l, int r) {
+        checkRange(l);
+        checkRange(r);
+        if (l > r) {
+            return;
+        }
+        if (r == size - 1) {
+            size = l;
+            return;
+        } else {
+            System.arraycopy(data, l, data, r + 1, size - (r + 1));
+            size -= (r - l + 1);
+        }
+    }
     public void remove(int index) {
         checkRange(index);
         if (index == size - 1) {

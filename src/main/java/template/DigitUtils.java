@@ -3,34 +3,15 @@ package template;
 import java.util.Arrays;
 
 public class DigitUtils {
-    private DigitUtils() {}
-
-    private static final long[] DIGIT_VALUES = new long[19];
-
-    static {
-        DIGIT_VALUES[0] = 1;
-        for (int i = 1; i < 19; i++) {
-            DIGIT_VALUES[i] = DIGIT_VALUES[i - 1] * 10;
-        }
+    private DigitUtils() {
     }
 
 
-    /**
-     * Get the digit on the i-th position while i start from 0
-     */
-    public static int digitOn(long x, int i) {
-        if (x < 0) {
-            return digitOn(-x, i);
+    public static double normalizeToZero(double x, double prec) {
+        if (x < prec && x > -prec) {
+            return 0;
         }
-        x /= DIGIT_VALUES[i];
-        return (int) (x % 10);
-    }
-
-    public static long setDigitOn(long x, int i, int newDigit) {
-        if (x < 0) {
-            return -setDigitOn(-x, i, newDigit);
-        }
-        return x + (newDigit - digitOn(x, i)) * DIGIT_VALUES[i];
+        return x;
     }
 
     /**
@@ -83,7 +64,7 @@ public class DigitUtils {
         }
         if (a < 0) {
             return a + b > 0;
-        }else{
+        } else {
             return a + b < 0;
         }
     }

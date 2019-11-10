@@ -17,6 +17,35 @@ public class ByteList {
         }
     }
 
+    /**
+     * Just retain the first n element in array, if there are not enough element,
+     * nothing will occur.
+     */
+    public void retain(int n) {
+        if (n < 0) {
+            throw new IllegalArgumentException();
+        }
+        if (n >= size) {
+            return;
+        }
+        size = n;
+    }
+
+    public void remove(int l, int r) {
+        checkRange(l);
+        checkRange(r);
+        if (l > r) {
+            return;
+        }
+        if (r == size - 1) {
+            size = l;
+            return;
+        } else {
+            System.arraycopy(data, l, data, r + 1, size - (r + 1));
+            size -= (r - l + 1);
+        }
+    }
+
     public ByteList(ByteList list) {
         this.size = list.size;
         this.cap = list.cap;
@@ -25,6 +54,16 @@ public class ByteList {
 
     public ByteList() {
         this(0);
+    }
+
+    public void reverse(int l, int r) {
+        checkRange(l);
+        checkRange(r);
+        SequenceUtils.reverse(data, l, r);
+    }
+
+    public byte[] getData() {
+        return data;
     }
 
     private void ensureSpace(int need) {
@@ -80,6 +119,7 @@ public class ByteList {
         }
         return -1;
     }
+
     public byte first() {
         checkRange(0);
         return data[0];

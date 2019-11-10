@@ -53,6 +53,10 @@ public class ModMatrix {
         mat[i][j] = val;
     }
 
+    public int get(int i, int j) {
+        return mat[i][j];
+    }
+
     public void normalize(NumberTheory.Modular mod) {
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
@@ -60,7 +64,6 @@ public class ModMatrix {
             }
         }
     }
-
 
     public static ModMatrix region(ModMatrix x, int b, int t, int l, int r) {
         ModMatrix y = new ModMatrix(t - b + 1, r - l + 1);
@@ -84,7 +87,6 @@ public class ModMatrix {
         l.normalize(modular);
         int ans = 1;
         for (int i = 0; i < n; i++) {
-            int maxRow = i;
             for (int j = i + 1; j < n; j++) {
                 if (modular.valueOf(l.mat[j][i]) == 0) {
                     continue;
@@ -208,6 +210,12 @@ public class ModMatrix {
         }
     }
 
+    void subtractCol(int i, int j, int f, NumberTheory.Modular modular) {
+        for (int k = 0; k < n; k++) {
+            mat[k][i] = modular.subtract(mat[k][i], modular.mul(mat[k][j], f));
+        }
+    }
+
     void mulRow(int i, int f, NumberTheory.Modular modular) {
         for (int k = 0; k < m; k++) {
             mat[i][k] = modular.mul(mat[i][k], f);
@@ -240,7 +248,43 @@ public class ModMatrix {
         return r;
     }
 
-    static ModMatrix transposition(ModMatrix x) {
+    public static ModMatrix plus(ModMatrix a, ModMatrix b, NumberTheory.Modular mod) {
+        if (a.n != b.n || a.m != b.m) {
+            throw new IllegalArgumentException();
+        }
+        ModMatrix ans = new ModMatrix(a.n, a.m);
+        for (int i = 0; i < a.n; i++) {
+            for (int j = 0; j < a.m; j++) {
+                ans.mat[i][j] = mod.plus(a.mat[i][j], b.mat[i][j]);
+            }
+        }
+        return ans;
+    }
+
+    public static ModMatrix subtract(ModMatrix a, ModMatrix b, NumberTheory.Modular mod) {
+        if (a.n != b.n || a.m != b.m) {
+            throw new IllegalArgumentException();
+        }
+        ModMatrix ans = new ModMatrix(a.n, a.m);
+        for (int i = 0; i < a.n; i++) {
+            for (int j = 0; j < a.m; j++) {
+                ans.mat[i][j] = mod.subtract(a.mat[i][j], b.mat[i][j]);
+            }
+        }
+        return ans;
+    }
+
+    public static ModMatrix mul(ModMatrix a, int k, NumberTheory.Modular mod) {
+        ModMatrix ans = new ModMatrix(a.n, a.m);
+        for (int i = 0; i < a.n; i++) {
+            for (int j = 0; j < a.m; j++) {
+                ans.mat[i][j] = mod.mul(a.mat[i][j], k);
+            }
+        }
+        return ans;
+    }
+
+    public static ModMatrix transposition(ModMatrix x) {
         int n = x.n;
         int m = x.m;
         ModMatrix t = new ModMatrix(m, n);
@@ -305,7 +349,9 @@ public class ModMatrix {
                 if (mat[j][i] == 0) {
                     continue;
                 }
-                subtractRow(j, i + 1, mod.mul(mat[j][i], inv), mod);
+                int c = mod.mul(mat[j][i], inv);
+                subtractRow(j, i + 1, c, mod);
+                subtractCol(i + 1, j, mod.valueOf(-c), mod);
             }
         }
     }
@@ -343,9 +389,13 @@ public class ModMatrix {
         for (int i = 0; i <= n; i++) {
             copy.asSame(heisenberg);
             for (int j = 0; j < n; j++) {
-                copy.mat[j][j] = mod.subtract(i, copy.mat[j][j]);
+                copy.mat[j][j] = mod.subtract(copy.mat[j][j], i);
             }
-            gli.addPoint(i, copy.topHeisenbergModMatrixDeterminant(pow));
+            int y = copy.topHeisenbergModMatrixDeterminant(pow);
+            if (n % 2 == 1) {
+                y = mod.valueOf(-y);
+            }
+            gli.addPoint(i, y);
         }
 
         return gli.preparePolynomial();
