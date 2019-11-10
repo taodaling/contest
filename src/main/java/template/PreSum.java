@@ -25,6 +25,9 @@ public class PreSum {
      * get a[l] + a[l + 1] + ... + a[r]
      */
     public long intervalSum(int l, int r) {
+        if (l > r) {
+            return 0;
+        }
         if (l == 0) {
             return pre[r];
         }

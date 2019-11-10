@@ -319,6 +319,15 @@ public class SequenceUtils {
         }
     }
 
+    public static void reverse(long[] data, int f, int t) {
+        int l = f, r = t - 1;
+        while (l < r) {
+            swap(data, l, r);
+            l++;
+            r--;
+        }
+    }
+
     public static void reverse(byte[] data, int f, int t) {
         int l = f, r = t - 1;
         while (l < r) {

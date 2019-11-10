@@ -1,0 +1,35 @@
+{
+  "name" : "A - Save the Nature",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4\n1\n100\n50 1\n49 1\n100\n8\n100 200 100 200 100 200 100 100\n10 2\n15 3\n107\n3\n1000000000 1000000000 1000000000\n50 1\n50 1\n3000000000\n5\n200 100 100 100 100\n69 5\n31 2\n90\n",
+    "output" : "-1\n6\n3\n4\n",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2019_11.on2019_11_10_Codeforces_Round__591__Div__1__based_on_Technocup_2020_Elimination_Round_1_.A___Save_the_Nature.TaskA",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.11.10",
+  "contestName" : "Codeforces Round #591 (Div. 1, based on Technocup 2020 Elimination Round 1)",
+  "truncate" : true,
+  "inputClass" : "template.FastInput",
+  "outputClass" : "template.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : true,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

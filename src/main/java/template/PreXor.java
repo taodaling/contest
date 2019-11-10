@@ -12,7 +12,7 @@ public class PreXor {
         }
     }
 
-    public int length(){
+    public int length() {
         return pre.length;
     }
 
@@ -29,6 +29,9 @@ public class PreXor {
      * get a[l] + a[l + 1] + ... + a[r]
      */
     public long intervalSum(int l, int r) {
+        if (r < l) {
+            return 0;
+        }
         if (l == 0) {
             return pre[r];
         }
