@@ -1,10 +1,6 @@
 package template;
 
-import org.apache.commons.lang3.tuple.Pair;
-
-import java.util.ArrayDeque;
 import java.util.Comparator;
-import java.util.Deque;
 import java.util.Objects;
 
 public class PairingHeap<T> implements Cloneable {

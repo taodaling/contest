@@ -17,6 +17,16 @@ public class LongList {
         }
     }
 
+    public int ceilBinarySearchIndex(long x) {
+        return SequenceUtils.ceilIndex(data, x, 0, size - 1);
+    }
+
+    public int floorBinarySearchIndex(long x) {
+        return SequenceUtils.floorIndex(data, x, 0, size - 1);
+    }
+
+
+
     /**
      * Just retain the first n element in array, if there are not enough element,
      * nothing will occur.

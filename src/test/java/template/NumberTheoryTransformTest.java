@@ -92,12 +92,31 @@ public class NumberTheoryTransformTest {
         int[] clone = p.clone();
         NumberTheory.Modular mod = new NumberTheory.Modular(998244353);
         NumberTheoryTransform ntt = new NumberTheoryTransform(mod);
-        int[] r = new int[1 << m];
-        ntt.prepareReverse(r, m);
-        ntt.dft(r, p, m);
-        ntt.idft(r, p, m);
+        ntt.dft(p, m);
+        ntt.idft(p, m);
 
 
         Assert.assertArrayEquals(clone, p);
+    }
+
+    @Test
+    public void test9(){
+        NumberTheory.Modular mod = new NumberTheory.Modular(998244353);
+        NumberTheoryTransform ntt = new NumberTheoryTransform(mod);
+
+        IntList[] lists = new IntList[3];
+        lists[0] = new IntList();
+        lists[0].addAll(SequenceUtils.wrapArray(1, 0, 1));
+        lists[1] = new IntList();
+        lists[1].addAll(SequenceUtils.wrapArray(0, 1, 0));
+        lists[2] = new IntList();
+        lists[2].addAll(SequenceUtils.wrapArray(2));
+
+
+        IntList ans = new IntList();
+        IntList exp = new IntList();
+        exp.addAll(SequenceUtils.wrapArray(0, 2, 0, 2));
+        ntt.dacMul(lists, ans);
+        Assert.assertEquals(exp, ans);
     }
 }

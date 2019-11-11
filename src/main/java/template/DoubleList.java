@@ -16,6 +16,17 @@ public class DoubleList {
             data = new double[cap];
         }
     }
+
+
+    public int ceilBinarySearchIndex(int x) {
+        return SequenceUtils.ceilIndex(data, x, 0, size - 1);
+    }
+
+    public int floorBinarySearchIndex(int x) {
+        return SequenceUtils.floorIndex(data, x, 0, size - 1);
+    }
+
+
     public void remove(int l, int r) {
         checkRange(l);
         checkRange(r);

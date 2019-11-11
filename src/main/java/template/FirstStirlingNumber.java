@@ -24,18 +24,18 @@ public class FirstStirlingNumber {
 
     private int[] getStirling(int n) {
         int proper = log2.ceilLog(n + 1);
-        int[][] ans = new int[4][1 << proper];
-        calcStirling(ans[0], ans[1], ans[2], ans[3], n);
+        int[][] ans = new int[3][1 << proper];
+        calcStirling(ans[0], ans[1], ans[2], n);
         return ans[0];
     }
 
-    private void calcStirling(int[] ans, int[] buf, int[] buf2, int[] r, int n) {
+    private void calcStirling(int[] ans, int[] buf, int[] buf2, int n) {
         if (n == 0) {
             ans[0] = 1;
             return;
         }
         if (n % 2 == 1) {
-            calcStirling(ans, buf, buf2, r, n - 1);
+            calcStirling(ans, buf, buf2, n - 1);
             for (int i = n; i >= 0; i--) {
                 ans[i] = mod.mul(n - 1, ans[i]);
                 if (i >= 1) {
@@ -45,9 +45,8 @@ public class FirstStirlingNumber {
             return;
         }
         int half = n / 2;
-        calcStirling(ans, buf, buf2, r, half);
+        calcStirling(ans, buf, buf2, half);
         int proper = log2.ceilLog((half + 1) * 2 - 1);
-        ntt.prepareReverse(r, proper);
         Arrays.fill(buf, 0, 1 << proper, 0);
         Arrays.fill(buf2, 0, 1 << proper, 0);
         int ni = 1;
@@ -56,30 +55,20 @@ public class FirstStirlingNumber {
             buf2[i] = mod.mul(ni, factorial.inv[i]);
             ni = mod.mul(ni, half);
         }
-        reverse(buf, 0, half);
-        ntt.dft(r, buf, proper);
-        ntt.dft(r, buf2, proper);
+        SequenceUtils.reverse(buf, 0, half);
+        ntt.dft(buf, proper);
+        ntt.dft(buf2, proper);
         ntt.dotMul(buf, buf2, buf, proper);
-        ntt.idft(r, buf, proper);
-        reverse(buf, 0, half);
+        ntt.idft(buf, proper);
+        SequenceUtils.reverse(buf, 0, half);
         for (int i = 0; i <= half; i++) {
             buf[i] = mod.mul(buf[i], factorial.inv[i]);
         }
         Arrays.fill(buf, half + 1, 1 << proper, 0);
-        ntt.dft(r, buf, proper);
-        ntt.dft(r, ans, proper);
+        ntt.dft(buf, proper);
+        ntt.dft(ans, proper);
         ntt.dotMul(ans, buf, ans, proper);
-        ntt.idft(r, ans, proper);
+        ntt.idft(ans, proper);
     }
 
-    private void reverse(int[] data, int l, int r) {
-        while (l < r) {
-            int tmp = data[l];
-            data[l] = data[r];
-            data[r] = tmp;
-            l++;
-            r--;
-        }
-
-    }
 }

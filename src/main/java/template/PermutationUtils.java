@@ -1,6 +1,8 @@
 package template;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * All permutation start with 0
@@ -12,6 +14,28 @@ public class PermutationUtils {
         PERMUTATION_CNT[0] = 1;
         for (int i = 1; i <= 20; i++) {
             PERMUTATION_CNT[i] = PERMUTATION_CNT[i - 1] * i;
+        }
+    }
+
+    public static List<int[]> generateAllPermutations(int n) {
+        List<int[]> list = new ArrayList<>((int) PERMUTATION_CNT[n]);
+        traceAllPermutations(new boolean[n], new int[n], list, 0);
+        return list;
+    }
+
+    private static void traceAllPermutations(boolean[] used, int[] perm, List<int[]> recorders, int i) {
+        if (i == perm.length) {
+            recorders.add(perm.clone());
+            return;
+        }
+        for (int j = 0; j < used.length; j++) {
+            if (used[j]) {
+                continue;
+            }
+            used[j] = true;
+            perm[i] = j;
+            traceAllPermutations(used, perm, recorders, i + 1);
+            used[j] = false;
         }
     }
 

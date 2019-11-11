@@ -1,0 +1,40 @@
+{
+  "name" : "LUOGU4705",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "1 1\n1\n2\n3",
+    "output" : "3\n9\n27",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "2 8\n764074134 743107904\n663532060 183287581 749169979 7678045 393887277 27071620 13482818 125504606\n6",
+    "output" : "774481679\n588343913\n758339354\n233707576\n36464684\n461784746",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2019_11.on2019_11_11_AtCoder_Grand_Contest_018.LUOGU4705.LUOGU4705",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "on2019_11.on2019_11_11_AtCoder_Grand_Contest_018.LUOGU4705.LUOGU4705TestCase" ],
+  "date" : "2019.11.11",
+  "contestName" : "AtCoder Grand Contest 018",
+  "truncate" : true,
+  "inputClass" : "template.FastInput",
+  "outputClass" : "template.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : true,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : false
+}

@@ -71,9 +71,11 @@ public class IntList {
         ensureSpace(1);
         data[size++] = x;
     }
+
     public void addAll(int[] x) {
         addAll(x, 0, x.length);
     }
+
     public void addAll(int[] x, int offset, int len) {
         ensureSpace(len);
         System.arraycopy(x, offset, data, size, len);
@@ -123,8 +125,7 @@ public class IntList {
     }
 
     /**
-     * Just retain the first n element in array, if there are not enough element,
-     * nothing will occur.
+     * Just retain the first n element in array, if there are not enough element, nothing will occur.
      */
     public void retain(int n) {
         if (n < 0) {
@@ -163,6 +164,14 @@ public class IntList {
 
     public int binarySearch(int x) {
         return Arrays.binarySearch(data, 0, size, x);
+    }
+
+    public int ceilBinarySearchIndex(int x) {
+        return SequenceUtils.ceilIndex(data, x, 0, size - 1);
+    }
+
+    public int floorBinarySearchIndex(int x) {
+        return SequenceUtils.floorIndex(data, x, 0, size - 1);
     }
 
     public void push(int x) {

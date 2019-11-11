@@ -17,6 +17,15 @@ public class ByteList {
         }
     }
 
+    public int ceilBinarySearchIndex(byte x) {
+        return SequenceUtils.ceilIndex(data, x, 0, size - 1);
+    }
+
+    public int floorBinarySearchIndex(byte x) {
+        return SequenceUtils.floorIndex(data, x, 0, size - 1);
+    }
+
+
     /**
      * Just retain the first n element in array, if there are not enough element,
      * nothing will occur.

@@ -199,13 +199,13 @@ public class ModifiableMoOnTree {
     }
 
     public static class Query {
-        int l;
-        int r;
-        int version;
-        int u;
-        int v;
-        int answer;
-        int lca;
+        public int l;
+        public int r;
+        public int version;
+        public int u;
+        public int v;
+        public int answer;
+        public  int lca;
 
         @Override
         public String toString() {

@@ -21,6 +21,86 @@ public class SequenceUtils {
         return index;
     }
 
+    public static <T> int floorIndex(T[] data, T x, int l, int r, Comparator<T> comparator) {
+        int index = Arrays.binarySearch(data, l, r + 1, x, comparator);
+        if (index < 0) {
+            return -(index + 1) - 1;
+        }
+        return index;
+    }
+
+    public static <T> int ceilIndex(T[] data, T x, int l, int r, Comparator<T> comparator) {
+        int index = Arrays.binarySearch(data, l, r + 1, x, comparator);
+        if (index < 0) {
+            return -(index + 1);
+        }
+        return index;
+    }
+
+    public static int ceilIndex(int[] data, int x, int l, int r) {
+        int index = Arrays.binarySearch(data, l, r + 1, x);
+        if (index < 0) {
+            return -(index + 1);
+        }
+        return index;
+    }
+
+    public static int ceilIndex(long[] data, long x, int l, int r) {
+        int index = Arrays.binarySearch(data, l, r + 1, x);
+        if (index < 0) {
+            return -(index + 1);
+        }
+        return index;
+    }
+
+    public static int floorIndex(double[] data, double x, int l, int r) {
+        int index = Arrays.binarySearch(data, l, r + 1, x);
+        if (index < 0) {
+            return -(index + 1) - 1;
+        }
+        return index;
+    }
+
+    public static int ceilIndex(double[] data, double x, int l, int r) {
+        int index = Arrays.binarySearch(data, l, r + 1, x);
+        if (index < 0) {
+            return -(index + 1);
+        }
+        return index;
+    }
+
+    public static int floorIndex(char[] data, char x, int l, int r) {
+        int index = Arrays.binarySearch(data, l, r + 1, x);
+        if (index < 0) {
+            return -(index + 1) - 1;
+        }
+        return index;
+    }
+
+    public static int ceilIndex(char[] data, char x, int l, int r) {
+        int index = Arrays.binarySearch(data, l, r + 1, x);
+        if (index < 0) {
+            return -(index + 1);
+        }
+        return index;
+    }
+
+    public static int floorIndex(byte[] data, byte x, int l, int r) {
+        int index = Arrays.binarySearch(data, l, r + 1, x);
+        if (index < 0) {
+            return -(index + 1) - 1;
+        }
+        return index;
+    }
+
+    public static int ceilIndex(byte[] data, byte x, int l, int r) {
+        int index = Arrays.binarySearch(data, l, r + 1, x);
+        if (index < 0) {
+            return -(index + 1);
+        }
+        return index;
+    }
+
     public static int[] wrapArray(int... x) {
         return x;
     }
@@ -53,13 +133,6 @@ public class SequenceUtils {
         return x;
     }
 
-    public static int ceilIndex(int[] data, int x, int l, int r) {
-        int index = Arrays.binarySearch(data, l, r + 1, x);
-        if (index < 0) {
-            return -(index + 1);
-        }
-        return index;
-    }
 
     public static <T> void swap(T[] data, int i, int j) {
         T tmp = data[i];
@@ -292,8 +365,7 @@ public class SequenceUtils {
         }
     }
 
-    public static <T> void reverse(List<T> data, int f, int t) {
-        int l = f, r = t - 1;
+    public static <T> void reverse(List<T> data, int l, int r) {
         while (l < r) {
             swap(data, l, r);
             l++;
@@ -301,8 +373,7 @@ public class SequenceUtils {
         }
     }
 
-    public static <T> void reverse(T[] data, int f, int t) {
-        int l = f, r = t - 1;
+    public static <T> void reverse(T[] data, int l, int r) {
         while (l < r) {
             swap(data, l, r);
             l++;
@@ -310,8 +381,7 @@ public class SequenceUtils {
         }
     }
 
-    public static void reverse(int[] data, int f, int t) {
-        int l = f, r = t - 1;
+    public static void reverse(int[] data, int l, int r) {
         while (l < r) {
             swap(data, l, r);
             l++;
@@ -319,8 +389,7 @@ public class SequenceUtils {
         }
     }
 
-    public static void reverse(long[] data, int f, int t) {
-        int l = f, r = t - 1;
+    public static void reverse(long[] data, int l, int r) {
         while (l < r) {
             swap(data, l, r);
             l++;
@@ -328,8 +397,7 @@ public class SequenceUtils {
         }
     }
 
-    public static void reverse(byte[] data, int f, int t) {
-        int l = f, r = t - 1;
+    public static void reverse(byte[] data, int l, int r) {
         while (l < r) {
             swap(data, l, r);
             l++;
@@ -362,12 +430,12 @@ public class SequenceUtils {
         return -1;
     }
 
-    public static boolean equal(int[] a, int[] b, int al, int ar, int bl, int br){
-        if((ar - al) != (br - bl)){
+    public static boolean equal(int[] a, int[] b, int al, int ar, int bl, int br) {
+        if ((ar - al) != (br - bl)) {
             return false;
         }
-        for(int i = al, j = bl; i <= ar; i++, j++){
-            if(a[i] != b[j]){
+        for (int i = al, j = bl; i <= ar; i++, j++) {
+            if (a[i] != b[j]) {
                 return false;
             }
         }

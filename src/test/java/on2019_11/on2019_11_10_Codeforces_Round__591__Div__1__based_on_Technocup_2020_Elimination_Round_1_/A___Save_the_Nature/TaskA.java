@@ -15,7 +15,7 @@ public class TaskA {
         }
         Randomized.randomizedArray(p, 0, n);
         Arrays.sort(p);
-        SequenceUtils.reverse(p, 0, n);
+        SequenceUtils.reverse(p, 0, n - 1);
         PreSum ps = new PreSum(p);
         int x = in.readInt();
         int a = in.readInt();

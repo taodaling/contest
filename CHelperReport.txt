@@ -1,2 +1,2 @@
-56 src/main/java/contest/D - Stack Exterminable Arrays.json
+48 src/main/java/contest/E - Connecting Cities.json
 0

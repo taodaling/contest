@@ -12,7 +12,7 @@ public class SecondStirlingNumber {
     private NumberTheory.Power power = new NumberTheory.Power(mod);
     private int[] stirling;
 
-    public int stirling(int i){
+    public int stirling(int i) {
         return stirling[i];
     }
 
@@ -28,7 +28,6 @@ public class SecondStirlingNumber {
         int proper = 1 << m;
         int[] a = new int[proper];
         int[] b = new int[proper];
-        int[] r = new int[proper];
 
         for (int i = 0; i <= n; i++) {
             a[i] = factorial.inv[i];
@@ -39,11 +38,10 @@ public class SecondStirlingNumber {
             b[i] = mod.mul(b[i], power.pow(i, n));
         }
 
-        ntt.prepareReverse(r, m);
-        ntt.dft(r, a, m);
-        ntt.dft(r, b, m);
+        ntt.dft(a, m);
+        ntt.dft(b, m);
         ntt.dotMul(a, b, a, m);
-        ntt.idft(r, a, m);
+        ntt.idft(a, m);
         return a;
     }
 }

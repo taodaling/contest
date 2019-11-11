@@ -2,6 +2,7 @@ package template;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
+import java.util.Comparator;
 
 public class ObjectList<T> {
     private int size;
@@ -18,9 +19,18 @@ public class ObjectList<T> {
         }
     }
 
+    public int ceilBinarySearchIndex(T x, Comparator<T> comparator) {
+        return SequenceUtils.ceilIndex((T[]) data, x, 0, size - 1, comparator);
+    }
+
+    public int floorBinarySearchIndex(T x, Comparator<T> comparator) {
+        return SequenceUtils.floorIndex((T[]) data, x, 0, size - 1, comparator);
+    }
+
+
+
     /**
-     * Just retain the first n element in array, if there are not enough element,
-     * nothing will occur.
+     * Just retain the first n element in array, if there are not enough element, nothing will occur.
      */
     public void retain(int n) {
         if (n < 0) {
@@ -69,6 +79,7 @@ public class ObjectList<T> {
             add(x);
         }
     }
+
     public void remove(int l, int r) {
         checkRange(l);
         checkRange(r);
@@ -83,6 +94,7 @@ public class ObjectList<T> {
             size -= (r - l + 1);
         }
     }
+
     public T get(int i) {
         checkRange(i);
         return (T) data[i];
