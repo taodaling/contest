@@ -1,0 +1,50 @@
+{
+  "name" : "C - Tiling",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 4 4 2\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "4 5 5 3\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "7 9 20 20\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "3 3 2 2 ",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "5 3 4 3",
+    "index" : 4,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2019_11.on2019_11_12_AtCoder_Grand_Contest_021.C___Tiling0.TaskC",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.11.12",
+  "contestName" : "AtCoder Grand Contest 021",
+  "truncate" : true,
+  "inputClass" : "template.FastInput",
+  "outputClass" : "template.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : true,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

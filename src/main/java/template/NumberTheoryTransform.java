@@ -5,9 +5,9 @@ import java.util.Arrays;
 public class NumberTheoryTransform {
     public static final NumberTheoryTransform STANDARD =
                     new NumberTheoryTransform(new NumberTheory.Modular(998244353), 3);
-    private NumberTheory.Modular MODULAR;
-    private NumberTheory.Power POWER;
-    private int G;
+    private NumberTheory.Modular modular;
+    private NumberTheory.Power power;
+    private int g;
     private int[] wCache = new int[30];
     private int[] invCache = new int[30];
     public static Buffer<IntList> listBuffer = Polynomials.listBuffer;
@@ -18,19 +18,19 @@ public class NumberTheoryTransform {
     }
 
     public NumberTheoryTransform(NumberTheory.Modular mod, int g) {
-        this.MODULAR = mod;
-        this.POWER = new NumberTheory.Power(mod);
-        this.G = g;
+        this.modular = mod;
+        this.power = new NumberTheory.Power(mod);
+        this.g = g;
         for (int i = 0, until = wCache.length; i < until; i++) {
             int s = 1 << i;
-            wCache[i] = POWER.pow(G, (MODULAR.m - 1) / 2 / s);
-            invCache[i] = POWER.inverse(s);
+            wCache[i] = power.pow(this.g, (modular.m - 1) / 2 / s);
+            invCache[i] = power.inverse(s);
         }
     }
 
     public void dotMul(int[] a, int[] b, int[] c, int m) {
         for (int i = 0, n = 1 << m; i < n; i++) {
-            c[i] = MODULAR.mul(a[i], b[i]);
+            c[i] = modular.mul(a[i], b[i]);
         }
     }
 
@@ -69,10 +69,10 @@ public class NumberTheoryTransform {
                 for (int j = 0; j < s; j++) {
                     int a = i + j;
                     int b = a + s;
-                    t = MODULAR.mul(w, p[b]);
-                    p[b] = MODULAR.plus(p[a], -t);
-                    p[a] = MODULAR.plus(p[a], t);
-                    w = MODULAR.mul(w, w1);
+                    t = modular.mul(w, p[b]);
+                    p[b] = modular.plus(p[a], -t);
+                    p[a] = modular.plus(p[a], t);
+                    w = modular.mul(w, w1);
                 }
             }
         }
@@ -86,12 +86,12 @@ public class NumberTheoryTransform {
         int n = 1 << m;
         int invN = invCache[m];
 
-        p[0] = MODULAR.mul(p[0], invN);
-        p[n / 2] = MODULAR.mul(p[n / 2], invN);
+        p[0] = modular.mul(p[0], invN);
+        p[n / 2] = modular.mul(p[n / 2], invN);
         for (int i = 1, until = n / 2; i < until; i++) {
             int a = p[n - i];
-            p[n - i] = MODULAR.mul(p[i], invN);
-            p[i] = MODULAR.mul(a, invN);
+            p[n - i] = modular.mul(p[i], invN);
+            p[i] = modular.mul(a, invN);
         }
     }
 
@@ -146,7 +146,7 @@ public class NumberTheoryTransform {
         dft(b, m);
         dft(c, m);
         for (int i = 0; i < n; i++) {
-            remainder[i] = MODULAR.subtract(a[i], MODULAR.mul(b[i], c[i]));
+            remainder[i] = modular.subtract(a[i], modular.mul(b[i], c[i]));
         }
         idft(remainder, m);
         System.arraycopy(aSnapshot.getData(), 0, a, 0, n);
@@ -181,7 +181,7 @@ public class NumberTheoryTransform {
 
         if (a.size() < NTT_THRESHOLD || b.size() < NTT_THRESHOLD) {
             IntList ans = listBuffer.alloc();
-            Polynomials.mul(a, b, ans, MODULAR);
+            Polynomials.mul(a, b, ans, modular);
             listBuffer.release(a);
             listBuffer.release(b);
             return ans;
@@ -207,7 +207,7 @@ public class NumberTheoryTransform {
     public void inverse(int[] p, int[] inv, int m) {
         if (m == 0) {
             Arrays.fill(inv, 0);
-            inv[0] = POWER.inverse(p[0]);
+            inv[0] = power.inverse(p[0]);
             return;
         }
         inverse(p, inv, m - 1);
@@ -219,7 +219,7 @@ public class NumberTheoryTransform {
         dft(bufData, (m + 1));
         dft(inv, (m + 1));
         for (int i = 0; i < n; i++) {
-            inv[i] = MODULAR.mul(inv[i], 2 - MODULAR.mul(bufData[i], inv[i]));
+            inv[i] = modular.mul(inv[i], 2 - modular.mul(bufData[i], inv[i]));
         }
         idft(inv, m + 1);
         for (int i = 1 << m; i < n; i++) {
@@ -252,7 +252,7 @@ public class NumberTheoryTransform {
     private void module(long k, int[] a, int[] b, int[] c, int[] remainder, int rb, int m) {
         if (k < rb) {
             Arrays.fill(remainder, 0);
-            remainder[(int) k] = MODULAR.valueOf(1);
+            remainder[(int) k] = modular.valueOf(1);
             return;
         }
         module(k / 2, a, b, c, remainder, rb, m);
@@ -299,7 +299,7 @@ public class NumberTheoryTransform {
     private void module(ByteList k, int i, int[] a, int[] b, int[] c, int[] remainder, int m) {
         if (i < 0) {
             Arrays.fill(remainder, 0);
-            remainder[0] = MODULAR.valueOf(1);
+            remainder[0] = modular.valueOf(1);
             return;
         }
         module(k, i - 1, a, b, c, remainder, m);

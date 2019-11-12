@@ -1,0 +1,63 @@
+{
+  "name" : "C - Tiling",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 4 4 2\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "4 5 5 3\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "7 9 20 20\n",
+    "output" : "NO\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "10 10 25 25",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "6 6 12 6",
+    "index" : 4,
+    "active" : true
+  }, {
+    "input" : "1 1 0 0",
+    "index" : 5,
+    "active" : true
+  }, {
+    "input" : "1 2 0 1",
+    "index" : 6,
+    "active" : true
+  }, {
+    "input" : "1 2 1 0",
+    "index" : 7,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2019_11.on2019_11_12_AtCoder_Grand_Contest_021.C___Tiling.TaskC",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.11.12",
+  "contestName" : "AtCoder Grand Contest 021",
+  "truncate" : true,
+  "inputClass" : "template.FastInput",
+  "outputClass" : "template.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : true,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}
