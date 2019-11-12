@@ -1,0 +1,55 @@
+{
+  "name" : "A - Valeriy and Deque",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5 3\n1 2 3 4 5\n1\n2\n10\n",
+    "output" : "1 2\n2 3\n5 2\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "2 0\n0 0\n",
+    "output" : "\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "4 2\n2 4 3 1\n1\n5",
+    "output" : "2 4\n4 3",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "2 3\n1 1000000000000\n5\n1\n1000000000000\n\n",
+    "output" : "1000000000000 1\n1 1000000000000\n1000000000000 1",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "3 3\n1000000000000 1000000000000 1\n5\n1\n1000000000000\n\n",
+    "output" : "1000000000000 1000000000000\n1000000000000 1000000000000\n1000000000000 1",
+    "index" : 4,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.TaskA",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "contest.TaskATestCase" ],
+  "date" : "2019.11.12",
+  "contestName" : "Codeforces Round #569 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.FastInput",
+  "outputClass" : "template.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : true,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

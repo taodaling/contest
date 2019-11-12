@@ -1,2 +1,2 @@
-50 src/main/java/contest/E - Polynomial Divisors.json
+52 src/main/java/contest/C - Serge and Dining Room.json
 0

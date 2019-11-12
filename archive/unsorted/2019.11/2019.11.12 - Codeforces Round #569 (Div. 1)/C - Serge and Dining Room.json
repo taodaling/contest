@@ -1,0 +1,45 @@
+{
+  "name" : "C - Serge and Dining Room",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "1 1\n1\n1\n1\n1 1 100\n",
+    "output" : "100\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "1 1\n1\n1\n1\n2 1 100\n",
+    "output" : "-1\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "4 6\n1 8 2 4\n3 3 6 1 5 2\n3\n1 1 1\n2 5 10\n1 1 6\n",
+    "output" : "8\n-1\n4\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.TaskC",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.11.12",
+  "contestName" : "Codeforces Round #569 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.FastInput",
+  "outputClass" : "template.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : true,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}
