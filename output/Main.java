@@ -2,6 +2,8 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.function.BiFunction;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.io.Closeable;
@@ -10,7 +12,8 @@ import java.io.OutputStreamWriter;
 import java.io.InputStream;
 
 /**
- * Built using CHelper plug-in Actual solution is at the top
+ * Built using CHelper plug-in
+ * Actual solution is at the top
  */
 public class Main {
     public static void main(String[] args) throws Exception {
@@ -26,33 +29,144 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            TaskC solver = new TaskC();
-            solver.solve(1, in, out);
+            TaskD solver = new TaskD();
+            int testCount = Integer.parseInt(in.next());
+            for (int i = 1; i <= testCount; i++)
+                solver.solve(i, in, out);
             out.close();
         }
     }
-    static class TaskC {
+
+    static class TaskD {
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
+            Integer[] monster = new Integer[n];
 
-            NumberTheory.Modular mod = new NumberTheory.Modular(998244353);
-            NumberTheory.Power pow = new NumberTheory.Power(mod);
-            NumberTheory.Composite comp = new NumberTheory.Composite(n, mod);
-
-            int all = pow.pow(3, n);
-            int invalidCnt = 0;
-            int p2 = pow.pow(2, n / 2);
-            int inv2 = pow.inverse(2);
-            for (int i = n / 2 + 1; i <= n; i++) {
-                p2 = mod.mul(p2, inv2);
-                invalidCnt = mod.plus(invalidCnt, mod.mul(comp.composite(n, i), p2));
+            for (int i = 0; i < n; i++) {
+                monster[i] = in.readInt();
+            }
+            SparseTable<Integer> st = new SparseTable<>(monster, n, (a, b) -> a > b ? a : b);
+            int m = in.readInt();
+            int[] s = new int[n + 1];
+            for (int i = 0; i < m; i++) {
+                int p = in.readInt();
+                int live = in.readInt();
+                s[live] = Math.max(s[live], p);
+            }
+            for (int i = n - 1; i >= 1; i--) {
+                s[i] = Math.max(s[i], s[i + 1]);
             }
 
-            invalidCnt = mod.mul(invalidCnt, 2);
-            out.println(mod.subtract(all, invalidCnt));
+            if (st.query(0, n - 1) > s[1]) {
+                out.println(-1);
+                return;
+            }
+
+            int day = 0;
+            int pos = 0;
+
+            while (pos < n) {
+                int l = pos;
+                int r = n - 1;
+                while (l < r) {
+                    int mid = (l + r + 1) / 2;
+                    if (st.query(l, mid) > s[mid - l + 1]) {
+                        r = mid - 1;
+                    } else {
+                        l = mid;
+                    }
+                }
+
+                day++;
+                pos = l + 1;
+            }
+
+            out.println(day);
         }
 
     }
+
+    static class DigitUtils {
+        private DigitUtils() {
+        }
+
+        public static class Log2 {
+            public int floorLog(int x) {
+                return 31 - Integer.numberOfLeadingZeros(x);
+            }
+
+        }
+
+        public static class CachedLog2 {
+            private int[] cache;
+            private DigitUtils.Log2 log2;
+
+            public CachedLog2(int n) {
+                cache = new int[n + 1];
+                int b = 0;
+                for (int i = 0; i <= n; i++) {
+                    while ((1 << (b + 1)) <= i) {
+                        b++;
+                    }
+                    cache[i] = b;
+                }
+            }
+
+            public int floorLog(int x) {
+                if (x >= cache.length) {
+                    return log2.floorLog(x);
+                }
+                return cache[x];
+            }
+
+        }
+
+    }
+
+    static class SparseTable<T> {
+        private Object[][] st;
+        private BiFunction<T, T, T> merger;
+        private DigitUtils.CachedLog2 log2;
+
+        public SparseTable(Object[] data, int length, BiFunction<T, T, T> merger) {
+            log2 = new DigitUtils.CachedLog2(length);
+            int m = log2.floorLog(length);
+
+            st = new Object[m + 1][length];
+            this.merger = merger;
+            for (int i = 0; i < length; i++) {
+                st[0][i] = data[i];
+            }
+            for (int i = 0; i < m; i++) {
+                int interval = 1 << i;
+                for (int j = 0; j < length; j++) {
+                    if (j + interval < length) {
+                        st[i + 1][j] = merge((T) st[i][j], (T) st[i][j + interval]);
+                    } else {
+                        st[i + 1][j] = st[i][j];
+                    }
+                }
+            }
+        }
+
+        private T merge(T a, T b) {
+            return merger.apply(a, b);
+        }
+
+        public T query(int left, int right) {
+            int queryLen = right - left + 1;
+            int bit = log2.floorLog(queryLen);
+            // x + 2^bit == right + 1
+            // So x should be right + 1 - 2^bit - left=queryLen - 2^bit
+            return merge((T) st[bit][left], (T) st[bit][right + 1 - (1 << bit)]);
+        }
+
+        public String toString() {
+            return Arrays.toString(st[0]);
+        }
+
+    }
+
     static class FastOutput implements AutoCloseable, Closeable {
         private StringBuilder cache = new StringBuilder(10 << 20);
         private final Writer os;
@@ -95,8 +209,10 @@ public class Main {
         }
 
     }
+
     static class FastInput {
         private final InputStream is;
+        private StringBuilder defaultStringBuf = new StringBuilder(1 << 13);
         private byte[] buf = new byte[1 << 13];
         private int bufLen;
         private int bufOffset;
@@ -127,6 +243,10 @@ public class Main {
             }
         }
 
+        public String next() {
+            return readString();
+        }
+
         public int readInt() {
             int sign = 1;
 
@@ -152,152 +272,20 @@ public class Main {
             return val;
         }
 
-    }
-    static class NumberTheory {
-        public static class Modular {
-            int m;
+        public String readString(StringBuilder builder) {
+            skipBlank();
 
-            public Modular(int m) {
-                this.m = m;
+            while (next > 32) {
+                builder.append((char) next);
+                next = read();
             }
 
-            public Modular(long m) {
-                this.m = (int) m;
-                if (this.m != m) {
-                    throw new IllegalArgumentException();
-                }
-            }
-
-            public Modular(double m) {
-                this.m = (int) m;
-                if (this.m != m) {
-                    throw new IllegalArgumentException();
-                }
-            }
-
-            public int valueOf(int x) {
-                x %= m;
-                if (x < 0) {
-                    x += m;
-                }
-                return x;
-            }
-
-            public int valueOf(long x) {
-                x %= m;
-                if (x < 0) {
-                    x += m;
-                }
-                return (int) x;
-            }
-
-            public int mul(int x, int y) {
-                return valueOf((long) x * y);
-            }
-
-            public int plus(int x, int y) {
-                return valueOf(x + y);
-            }
-
-            public int subtract(int x, int y) {
-                return valueOf(x - y);
-            }
-
-            public String toString() {
-                return "mod " + m;
-            }
-
+            return builder.toString();
         }
 
-        public static class Power {
-            final NumberTheory.Modular modular;
-
-            public Power(NumberTheory.Modular modular) {
-                this.modular = modular;
-            }
-
-            public int pow(int x, long n) {
-                if (n == 0) {
-                    return modular.valueOf(1);
-                }
-                long r = pow(x, n >> 1);
-                r = modular.valueOf(r * r);
-                if ((n & 1) == 1) {
-                    r = modular.valueOf(r * x);
-                }
-                return (int) r;
-            }
-
-            public int inverse(int x) {
-                return pow(x, modular.m - 2);
-            }
-
-        }
-
-        public static class InverseNumber {
-            int[] inv;
-
-            public InverseNumber(int[] inv, int limit, NumberTheory.Modular modular) {
-                this.inv = inv;
-                inv[1] = 1;
-                int p = modular.m;
-                for (int i = 2; i <= limit; i++) {
-                    int k = p / i;
-                    int r = p % i;
-                    inv[i] = modular.mul(-k, inv[r]);
-                }
-            }
-
-            public InverseNumber(int limit, NumberTheory.Modular modular) {
-                this(new int[limit + 1], limit, modular);
-            }
-
-        }
-
-        public static class Factorial {
-            int[] fact;
-            int[] inv;
-            NumberTheory.Modular modular;
-
-            public Factorial(int[] fact, int[] inv, NumberTheory.InverseNumber in, int limit,
-                            NumberTheory.Modular modular) {
-                this.modular = modular;
-                this.fact = fact;
-                this.inv = inv;
-                fact[0] = inv[0] = 1;
-                for (int i = 1; i <= limit; i++) {
-                    fact[i] = modular.mul(fact[i - 1], i);
-                    inv[i] = modular.mul(inv[i - 1], in.inv[i]);
-                }
-            }
-
-            public Factorial(int limit, NumberTheory.Modular modular) {
-                this(new int[limit + 1], new int[limit + 1], new NumberTheory.InverseNumber(limit, modular), limit,
-                                modular);
-            }
-
-        }
-
-        public static class Composite {
-            final NumberTheory.Factorial factorial;
-            final NumberTheory.Modular modular;
-
-            public Composite(NumberTheory.Factorial factorial) {
-                this.factorial = factorial;
-                this.modular = factorial.modular;
-            }
-
-            public Composite(int limit, NumberTheory.Modular modular) {
-                this(new NumberTheory.Factorial(limit, modular));
-            }
-
-            public int composite(int m, int n) {
-                if (n > m) {
-                    return 0;
-                }
-                return modular.mul(modular.mul(factorial.fact[m], factorial.inv[n]), factorial.inv[m - n]);
-            }
-
+        public String readString() {
+            defaultStringBuf.setLength(0);
+            return readString(defaultStringBuf);
         }
 
     }

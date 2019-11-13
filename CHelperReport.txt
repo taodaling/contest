@@ -1,2 +1,2 @@
-48 src/main/java/contest/C - Neither AB nor BA.json
+66 src/main/java/contest/D - Yet Another Monster Killing Problem.json
 0
