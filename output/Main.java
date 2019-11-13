@@ -10,8 +10,7 @@ import java.io.OutputStreamWriter;
 import java.io.InputStream;
 
 /**
- * Built using CHelper plug-in
- * Actual solution is at the top
+ * Built using CHelper plug-in Actual solution is at the top
  */
 public class Main {
     public static void main(String[] args) throws Exception {
@@ -32,57 +31,28 @@ public class Main {
             out.close();
         }
     }
-
     static class TaskC {
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            int m = in.readInt();
-            int limit = (int) 1e6;
-            int[] scores = new int[limit + 1];
-            int[] aCnt = new int[limit + 1];
-            int[] bCnt = new int[limit + 1];
-            int[] a = new int[n + 1];
-            int[] b = new int[m + 1];
 
+            NumberTheory.Modular mod = new NumberTheory.Modular(998244353);
+            NumberTheory.Power pow = new NumberTheory.Power(mod);
+            NumberTheory.Composite comp = new NumberTheory.Composite(n, mod);
 
-            for (int i = 1; i <= n; i++) {
-                a[i] = in.readInt();
-                aCnt[a[i]]++;
-            }
-            for (int i = 1; i <= m; i++) {
-                b[i] = in.readInt();
-                bCnt[b[i]]++;
+            int all = pow.pow(3, n);
+            int invalidCnt = 0;
+            int p2 = pow.pow(2, n / 2);
+            int inv2 = pow.inverse(2);
+            for (int i = n / 2 + 1; i <= n; i++) {
+                p2 = mod.mul(p2, inv2);
+                invalidCnt = mod.plus(invalidCnt, mod.mul(comp.composite(n, i), p2));
             }
 
-            scores[limit] = aCnt[limit] - bCnt[limit];
-            for (int i = limit - 1; i >= 1; i--) {
-                scores[i] = scores[i + 1] + aCnt[i] - bCnt[i];
-            }
-
-            Segment seg = new Segment(1, limit, scores);
-
-            int q = in.readInt();
-            for (int i = 0; i < q; i++) {
-                int t = in.readInt();
-                int which = in.readInt();
-                int x = in.readInt();
-                if (t == 1) {
-                    seg.update(1, a[which], 1, limit, -1);
-                    a[which] = x;
-                    seg.update(1, a[which], 1, limit, 1);
-                } else {
-                    seg.update(1, b[which], 1, limit, 1);
-                    b[which] = x;
-                    seg.update(1, b[which], 1, limit, -1);
-                }
-
-                int ans = seg.query(1, limit);
-                out.println(ans);
-            }
+            invalidCnt = mod.mul(invalidCnt, 2);
+            out.println(mod.subtract(all, invalidCnt));
         }
 
     }
-
     static class FastOutput implements AutoCloseable, Closeable {
         private StringBuilder cache = new StringBuilder(10 << 20);
         private final Writer os;
@@ -125,85 +95,6 @@ public class Main {
         }
 
     }
-
-    static class Segment implements Cloneable {
-        private Segment left;
-        private Segment right;
-        private int score;
-        private int mod;
-
-        public void mod(int x) {
-            mod += x;
-            score += x;
-        }
-
-        public void pushUp() {
-            score = Math.max(left.score, right.score);
-        }
-
-        public void pushDown() {
-            if (mod != 0) {
-                left.mod(mod);
-                right.mod(mod);
-                mod = 0;
-            }
-        }
-
-        public Segment(int l, int r, int[] scores) {
-            if (l < r) {
-                int m = (l + r) >> 1;
-                left = new Segment(l, m, scores);
-                right = new Segment(m + 1, r, scores);
-                pushUp();
-            } else {
-                score = scores[l];
-            }
-        }
-
-        private boolean covered(int ll, int rr, int l, int r) {
-            return ll <= l && rr >= r;
-        }
-
-        private boolean noIntersection(int ll, int rr, int l, int r) {
-            return ll > r || rr < l;
-        }
-
-        public void update(int ll, int rr, int l, int r, int x) {
-            if (noIntersection(ll, rr, l, r)) {
-                return;
-            }
-            if (covered(ll, rr, l, r)) {
-                mod(x);
-                return;
-            }
-            pushDown();
-            int m = (l + r) >> 1;
-            left.update(ll, rr, l, m, x);
-            right.update(ll, rr, m + 1, r, x);
-            pushUp();
-        }
-
-        public int query(int l, int r) {
-            Segment seg = this;
-            while (l < r) {
-                seg.pushDown();
-                int m = (l + r) >> 1;
-                if (seg.right.score > 0) {
-                    l = m + 1;
-                    seg = seg.right;
-                } else {
-                    r = m;
-                    seg = seg.left;
-                }
-            }
-            if (seg.score > 0) {
-                return l;
-            }
-            return -1;
-        }
-
-    }
-
     static class FastInput {
         private final InputStream is;
         private byte[] buf = new byte[1 << 13];
@@ -259,6 +150,154 @@ public class Main {
             }
 
             return val;
+        }
+
+    }
+    static class NumberTheory {
+        public static class Modular {
+            int m;
+
+            public Modular(int m) {
+                this.m = m;
+            }
+
+            public Modular(long m) {
+                this.m = (int) m;
+                if (this.m != m) {
+                    throw new IllegalArgumentException();
+                }
+            }
+
+            public Modular(double m) {
+                this.m = (int) m;
+                if (this.m != m) {
+                    throw new IllegalArgumentException();
+                }
+            }
+
+            public int valueOf(int x) {
+                x %= m;
+                if (x < 0) {
+                    x += m;
+                }
+                return x;
+            }
+
+            public int valueOf(long x) {
+                x %= m;
+                if (x < 0) {
+                    x += m;
+                }
+                return (int) x;
+            }
+
+            public int mul(int x, int y) {
+                return valueOf((long) x * y);
+            }
+
+            public int plus(int x, int y) {
+                return valueOf(x + y);
+            }
+
+            public int subtract(int x, int y) {
+                return valueOf(x - y);
+            }
+
+            public String toString() {
+                return "mod " + m;
+            }
+
+        }
+
+        public static class Power {
+            final NumberTheory.Modular modular;
+
+            public Power(NumberTheory.Modular modular) {
+                this.modular = modular;
+            }
+
+            public int pow(int x, long n) {
+                if (n == 0) {
+                    return modular.valueOf(1);
+                }
+                long r = pow(x, n >> 1);
+                r = modular.valueOf(r * r);
+                if ((n & 1) == 1) {
+                    r = modular.valueOf(r * x);
+                }
+                return (int) r;
+            }
+
+            public int inverse(int x) {
+                return pow(x, modular.m - 2);
+            }
+
+        }
+
+        public static class InverseNumber {
+            int[] inv;
+
+            public InverseNumber(int[] inv, int limit, NumberTheory.Modular modular) {
+                this.inv = inv;
+                inv[1] = 1;
+                int p = modular.m;
+                for (int i = 2; i <= limit; i++) {
+                    int k = p / i;
+                    int r = p % i;
+                    inv[i] = modular.mul(-k, inv[r]);
+                }
+            }
+
+            public InverseNumber(int limit, NumberTheory.Modular modular) {
+                this(new int[limit + 1], limit, modular);
+            }
+
+        }
+
+        public static class Factorial {
+            int[] fact;
+            int[] inv;
+            NumberTheory.Modular modular;
+
+            public Factorial(int[] fact, int[] inv, NumberTheory.InverseNumber in, int limit,
+                            NumberTheory.Modular modular) {
+                this.modular = modular;
+                this.fact = fact;
+                this.inv = inv;
+                fact[0] = inv[0] = 1;
+                for (int i = 1; i <= limit; i++) {
+                    fact[i] = modular.mul(fact[i - 1], i);
+                    inv[i] = modular.mul(inv[i - 1], in.inv[i]);
+                }
+            }
+
+            public Factorial(int limit, NumberTheory.Modular modular) {
+                this(new int[limit + 1], new int[limit + 1], new NumberTheory.InverseNumber(limit, modular), limit,
+                                modular);
+            }
+
+        }
+
+        public static class Composite {
+            final NumberTheory.Factorial factorial;
+            final NumberTheory.Modular modular;
+
+            public Composite(NumberTheory.Factorial factorial) {
+                this.factorial = factorial;
+                this.modular = factorial.modular;
+            }
+
+            public Composite(int limit, NumberTheory.Modular modular) {
+                this(new NumberTheory.Factorial(limit, modular));
+            }
+
+            public int composite(int m, int n) {
+                if (n > m) {
+                    return 0;
+                }
+                return modular.mul(modular.mul(factorial.fact[m], factorial.inv[n]), factorial.inv[m - n]);
+            }
+
         }
 
     }

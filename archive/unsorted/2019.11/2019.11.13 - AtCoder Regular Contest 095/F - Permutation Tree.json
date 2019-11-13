@@ -1,0 +1,50 @@
+{
+  "name" : "F - Permutation Tree",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "6\n1 2\n1 3\n1 4\n1 5\n5 6\n",
+    "output" : "1 2 4 5 3 6\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "6\n1 2\n2 3\n3 4\n1 5\n5 6\n",
+    "output" : "1 2 3 4 5 6\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "15\n1 2\n1 3\n2 4\n2 5\n3 6\n3 7\n4 8\n4 9\n5 10\n5 11\n6 12\n6 13\n7 14\n7 15\n",
+    "output" : "-1\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "5\n1 2\n1 3\n1 4\n1 5",
+    "output" : "1 3 4 2 5 ",
+    "index" : 3,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.TaskF",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.11.13",
+  "contestName" : "AtCoder Regular Contest 095",
+  "truncate" : true,
+  "inputClass" : "template.FastInput",
+  "outputClass" : "template.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : true,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

@@ -3,8 +3,7 @@ package template;
 import java.util.Comparator;
 
 public class CompareUtils {
-    private CompareUtils() {
-    }
+    private CompareUtils() {}
 
     public static int middleOf(int a, int b, int c) {
         if (a >= b) {
@@ -26,6 +25,55 @@ public class CompareUtils {
         }
     }
 
+    public static int minOf(int[] a, int l, int r) {
+        int x = a[l];
+        for (int i = l; i <= r; i++) {
+            x = Math.min(x, a[i]);
+        }
+        return x;
+    }
+
+    public static int maxOf(int[] a, int l, int r) {
+        int x = a[l];
+        for (int i = l; i <= r; i++) {
+            x = Math.max(x, a[i]);
+        }
+        return x;
+    }
+
+    public static long minOf(long[] a, int l, int r) {
+        long x = a[l];
+        for (int i = l; i <= r; i++) {
+            x = Math.min(x, a[i]);
+        }
+        return x;
+    }
+
+    public static long maxOf(long[] a, int l, int r) {
+        long x = a[l];
+        for (int i = l; i <= r; i++) {
+            x = Math.max(x, a[i]);
+        }
+        return x;
+    }
+
+    public static <T> T minOf(T[] a, int l, int r, Comparator<T> comp) {
+        T x = a[l];
+        for (int i = l; i <= r; i++) {
+
+            x = min(x, a[i], comp);
+        }
+        return x;
+    }
+
+    public static <T> T maxOf(T[] a, int l, int r, Comparator<T> comp) {
+        T x = a[l];
+        for (int i = l; i <= r; i++) {
+            x = max(x, a[i], comp);
+        }
+        return x;
+    }
+
     public static <T> int compareArray(T[] a, T[] b, int al, int ar, int bl, int br, Comparator<T> comp) {
         for (int i = al, j = bl; i <= ar && j <= br; i++, j++) {
             int c = comp.compare(a[i], b[j]);
@@ -45,6 +93,24 @@ public class CompareUtils {
         return (ar - al) - (br - bl);
     }
 
+    public static int compareArray(int[] a, int[] b, int al, int ar, int bl, int br) {
+        for (int i = al, j = bl; i <= ar && j <= br; i++, j++) {
+            if (a[i] != b[j]) {
+                return a[i] - b[i];
+            }
+        }
+        return (ar - al) - (br - bl);
+    }
+
+    public static int compareArray(long[] a, long[] b, int al, int ar, int bl, int br) {
+        for (int i = al, j = bl; i <= ar && j <= br; i++, j++) {
+            if (a[i] != b[j]) {
+                return Long.compare(a[i], b[i]);
+            }
+        }
+        return (ar - al) - (br - bl);
+    }
+
     public static <T> T max(T a, T b, Comparator<T> comp) {
         return comp.compare(a, b) >= 0 ? a : b;
     }
@@ -59,11 +125,11 @@ public class CompareUtils {
 
     private static final int THRESHOLD = 4;
 
-    public static <T> void insertSort(T[] data, Comparator<T> cmp, int f, int t) {
-        for (int i = f + 1; i < t; i++) {
+    public static <T> void insertSort(T[] data, Comparator<T> cmp, int l, int r) {
+        for (int i = l + 1; i <= r; i++) {
             int j = i;
             T val = data[i];
-            while (j > f && cmp.compare(data[j - 1], val) > 0) {
+            while (j > l && cmp.compare(data[j - 1], val) > 0) {
                 data[j] = data[j - 1];
                 j--;
             }
@@ -73,7 +139,7 @@ public class CompareUtils {
 
     public static <T> T theKthSmallestElement(T[] data, Comparator<T> cmp, int f, int t, int k) {
         if (t - f == THRESHOLD) {
-            insertSort(data, cmp, f, t);
+            insertSort(data, cmp, f, t - 1);
             return data[f + k - 1];
         }
         SequenceUtils.swap(data, f, Randomized.nextInt(f, t - 1));

@@ -1,2 +1,2 @@
-52 src/main/java/contest/C - Serge and Dining Room.json
+48 src/main/java/contest/C - Neither AB nor BA.json
 0
