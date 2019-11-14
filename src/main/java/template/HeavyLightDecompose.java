@@ -2,13 +2,12 @@ package template;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.LongBinaryOperator;
 
 public class HeavyLightDecompose {
-    private static long op(long a, long b) {
-        return a + b;
-    }
+    private LongBinaryOperator op;
 
-    public static class Segment {
+    public class Segment {
         private Segment left;
         private Segment right;
         private long val;
@@ -63,7 +62,7 @@ public class HeavyLightDecompose {
             }
             pushDown();
             int m = (l + r) >> 1;
-            return op(left.query(ll, rr, l, m),
+            return op.applyAsLong(left.query(ll, rr, l, m),
                     right.query(ll, rr, m + 1, r));
         }
     }
@@ -85,7 +84,8 @@ public class HeavyLightDecompose {
         }
     }
 
-    public HeavyLightDecompose(int n, int rootId) {
+    public HeavyLightDecompose(LongBinaryOperator op, int n, int rootId) {
+        this.op = op;
         this.n = n;
         nodes = new HLDNode[n];
         for (int i = 0; i < n; i++) {
@@ -130,7 +130,7 @@ public class HeavyLightDecompose {
                     u = v;
                     v = tmp;
                 }
-                sum = op(sum, segment.query(v.dfsOrderFrom + 1, u.dfsOrderFrom, 1, n));
+                sum = op.applyAsLong(sum, segment.query(v.dfsOrderFrom + 1, u.dfsOrderFrom, 1, n));
                 u = v;
             } else {
                 if (u.link.size > v.link.size) {
@@ -138,11 +138,11 @@ public class HeavyLightDecompose {
                     u = v;
                     v = tmp;
                 }
-                sum = op(sum, segment.query(u.link.dfsOrderFrom, u.dfsOrderFrom, 1, n));
+                sum = op.applyAsLong(sum, segment.query(u.link.dfsOrderFrom, u.dfsOrderFrom, 1, n));
                 u = u.link.father;
             }
         }
-        sum = op(sum, segment.query(u.dfsOrderFrom, u.dfsOrderFrom, 1, n));
+        sum = op.applyAsLong(sum, segment.query(u.dfsOrderFrom, u.dfsOrderFrom, 1, n));
         return sum;
     }
 

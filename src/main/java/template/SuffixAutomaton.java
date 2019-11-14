@@ -12,6 +12,10 @@ public class SuffixAutomaton {
     Node matchLast;
     int matchLength;
 
+    public int lengthMatch(){
+        return matchLength;
+    }
+
     public SuffixAutomaton() {
         buildLast = root = new Node();
         root.fail = null;

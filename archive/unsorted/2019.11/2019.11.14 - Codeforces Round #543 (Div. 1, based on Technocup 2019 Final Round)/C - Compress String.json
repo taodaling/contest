@@ -1,0 +1,85 @@
+{
+  "name" : "C - Compress String",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 3 1\naba\n",
+    "output" : "7\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "4 1 1\nabcd\n",
+    "output" : "4\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "4 10 1\naaaa\n",
+    "output" : "12\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "1 1 1\na",
+    "output" : "1",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "4 1 2\nabab",
+    "output" : "4",
+    "index" : 4,
+    "active" : true
+  }, {
+    "input" : "4 4 1\nabab",
+    "output" : "9",
+    "index" : 5,
+    "active" : true
+  }, {
+    "input" : "5 4 1\nababa",
+    "output" : "10",
+    "index" : 6,
+    "active" : true
+  }, {
+    "input" : "7 10 1\nabacabc",
+    "output" : "33",
+    "index" : 7,
+    "active" : true
+  }, {
+    "input" : "2 1 5\naa",
+    "output" : "2",
+    "index" : 8,
+    "active" : true
+  }, {
+    "input" : "2 5 1\naa",
+    "output" : "6",
+    "index" : 9,
+    "active" : true
+  }, {
+    "input" : "",
+    "output" : "",
+    "index" : 10,
+    "active" : false
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.TaskC",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.11.14",
+  "contestName" : "Codeforces Round #543 (Div. 1, based on Technocup 2019 Final Round)",
+  "truncate" : true,
+  "inputClass" : "template.FastInput",
+  "outputClass" : "template.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : true,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}
