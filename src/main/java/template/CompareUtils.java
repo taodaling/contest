@@ -84,6 +84,10 @@ public class CompareUtils {
         return (ar - al) - (br - bl);
     }
 
+    public static double compare(double a, double b, double prec){
+        return Math.abs(a - b) < prec ? 0 : Double.compare(a, b);
+    }
+
     public static int compareArray(char[] a, char[] b, int al, int ar, int bl, int br) {
         for (int i = al, j = bl; i <= ar && j <= br; i++, j++) {
             if (a[i] != b[j]) {

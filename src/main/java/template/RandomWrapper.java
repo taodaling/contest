@@ -28,4 +28,8 @@ public class RandomWrapper {
         }
         return builder.toString();
     }
+
+    public Random getRandom(){
+        return random;
+    }
 }

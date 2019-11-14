@@ -1,2 +1,3 @@
-66 src/main/java/contest/D - Yet Another Monster Killing Problem.json
-0
+49 src/main/java/contest/D - Histogram Coloring.json
+1
+2

@@ -148,7 +148,7 @@ public class NumberTheory {
         }
 
         /**
-         * Get g = Gcd(a, b) and find a way to set x and y to match ax+by=g
+         * Get g = Gcd(a, b) and find a way to set x and y to check ax+by=g
          */
         public long extgcd(long a, long b) {
             if (a >= b) {

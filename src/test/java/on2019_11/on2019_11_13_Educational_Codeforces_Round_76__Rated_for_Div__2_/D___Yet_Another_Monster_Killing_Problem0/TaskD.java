@@ -1,4 +1,6 @@
-package contest;
+package on2019_11.on2019_11_13_Educational_Codeforces_Round_76__Rated_for_Div__2_.D___Yet_Another_Monster_Killing_Problem0;
+
+
 
 
 import template.FastInput;

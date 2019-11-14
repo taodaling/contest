@@ -7,6 +7,10 @@ public class DiscreteMap {
     int f;
     int t;
 
+    public DiscreteMap(int[] val){
+        this(val, 0, val.length);
+    }
+
     public DiscreteMap(int[] val, int f, int t) {
         Randomized.randomizedArray(val, f, t);
         Arrays.sort(val, f, t);
