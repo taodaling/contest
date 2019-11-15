@@ -4,9 +4,9 @@ package template;
  * Created by dalt on 2018/5/25.
  */
 public class SuffixAutomaton {
-    static final int MIN_CHARACTER = 'a';
-    static final int MAX_CHARACTER = 'z';
-    static final int RANGE_SIZE = MAX_CHARACTER - MIN_CHARACTER + 1;
+    final int minCharacter;
+    final int maxCharacter;
+    final int alphabet;
     Node root;
     Node buildLast;
     Node matchLast;
@@ -16,8 +16,11 @@ public class SuffixAutomaton {
         return matchLength;
     }
 
-    public SuffixAutomaton() {
-        buildLast = root = new Node();
+    public SuffixAutomaton(int minCharacter, int maxCharacter) {
+        this.minCharacter = minCharacter;
+        this.maxCharacter = maxCharacter;
+        alphabet = maxCharacter - minCharacter + 1;
+        buildLast = root = new Node(alphabet);
         root.fail = null;
     }
 
@@ -27,7 +30,7 @@ public class SuffixAutomaton {
     }
 
     public void match(char c) {
-        int index = c - MIN_CHARACTER;
+        int index = c - minCharacter;
         if (matchLast.next[index] != null) {
             matchLast = matchLast.next[index];
             matchLength = matchLength + 1;
@@ -46,8 +49,8 @@ public class SuffixAutomaton {
     }
 
     public void build(char c) {
-        int index = c - MIN_CHARACTER;
-        Node now = new Node();
+        int index = c - minCharacter;
+        Node now = new Node(alphabet);
         now.maxlen = buildLast.maxlen + 1;
 
         Node p = visit(index, buildLast, null, now);
@@ -78,9 +81,13 @@ public class SuffixAutomaton {
     }
 
     public static class Node implements Cloneable {
-        Node[] next = new Node[RANGE_SIZE];
+        Node[] next;
         Node fail;
         int maxlen;
+
+        public Node(int alphabet){
+            next = new Node[alphabet];
+        }
 
         @Override
         public Node clone() {
