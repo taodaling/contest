@@ -1,0 +1,50 @@
+{
+  "name" : "E - All-you-can-eat",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2 60\n10 10\n100 100\n",
+    "output" : "110\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "3 60\n10 10\n10 20\n10 30\n",
+    "output" : "60\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "3 60\n30 10\n30 20\n30 30\n",
+    "output" : "50\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "10 100\n15 23\n20 18\n13 17\n24 12\n18 29\n19 27\n23 21\n18 20\n27 15\n22 25\n",
+    "output" : "145\n",
+    "index" : 3,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2019_11.on2019_11_16_AtCoder_Beginner_Contest_145.E___All_you_can_eat.TaskE",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.11.16",
+  "contestName" : "AtCoder Beginner Contest 145",
+  "truncate" : true,
+  "inputClass" : "template.FastInput",
+  "outputClass" : "template.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : true,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

@@ -1,0 +1,55 @@
+{
+  "name" : "E - Antenna Coverage",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 595\n43 2\n300 4\n554 10\n",
+    "output" : "281\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "1 1\n1 1\n",
+    "output" : "0\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "2 50\n20 0\n3 1\n",
+    "output" : "30\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "5 240\n13 0\n50 25\n60 5\n155 70\n165 70\n",
+    "output" : "26\n",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "2 100\n75 25\n60 10",
+    "output" : "49",
+    "index" : 4,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2019_11.on2019_11_16_Codeforces_Round__600__Div__2_.E___Antenna_Coverage.TaskE",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.11.16",
+  "contestName" : "Codeforces Round #600 (Div. 2)",
+  "truncate" : true,
+  "inputClass" : "template.FastInput",
+  "outputClass" : "template.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : true,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}
