@@ -71,49 +71,6 @@ public class Main {
 
     }
 
-    static class MinimumCloseSubGraph {
-        private ISAP isap;
-        private int n;
-        private double sumOfPositive;
-        private boolean solved;
-        private double minCut;
-
-        public MinimumCloseSubGraph(double[] weight) {
-            this.n = weight.length;
-            isap = new ISAP(n + 2);
-            int idOfSrc = n;
-            int idOfDst = n + 1;
-            isap.setSource(idOfSrc);
-            isap.setTarget(idOfDst);
-
-            for (int i = 0; i < n; i++) {
-                if (weight[i] > 0) {
-                    isap.getChannel(idOfSrc, i).reset(weight[i], 0);
-                    sumOfPositive += weight[i];
-                }
-                if (weight[i] < 0) {
-                    isap.getChannel(i, idOfDst).reset(-weight[i], 0);
-                }
-            }
-        }
-
-        public void addDependency(int from, int to) {
-            if (!(from >= 0 && from < n && to >= 0 && to < n)) {
-                throw new IllegalArgumentException();
-            }
-            isap.getChannel(from, to).reset(1e50, 0);
-        }
-
-        public double solve() {
-            if (!solved) {
-                minCut = isap.sendFlow(1e50);
-                solved = true;
-            }
-            return sumOfPositive - minCut;
-        }
-
-    }
-
     static class DigitUtils {
         private DigitUtils() {
         }
@@ -179,49 +136,6 @@ public class Main {
             }
 
             return val;
-        }
-
-    }
-
-    static class FastOutput implements AutoCloseable, Closeable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
-
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput println(long c) {
-            cache.append(c).append('\n');
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        }
-
-        public String toString() {
-            return cache.toString();
         }
 
     }
@@ -486,6 +400,92 @@ public class Main {
                 return "" + id;
             }
 
+        }
+
+    }
+
+    static class MinimumCloseSubGraph {
+        private ISAP isap;
+        private int n;
+        private double sumOfPositive;
+        private boolean solved;
+        private double minCut;
+
+        public MinimumCloseSubGraph(double[] weight) {
+            this.n = weight.length;
+            isap = new ISAP(n + 2);
+            int idOfSrc = n;
+            int idOfDst = n + 1;
+            isap.setSource(idOfSrc);
+            isap.setTarget(idOfDst);
+
+            for (int i = 0; i < n; i++) {
+                if (weight[i] > 0) {
+                    isap.getChannel(idOfSrc, i).reset(weight[i], 0);
+                    sumOfPositive += weight[i];
+                }
+                if (weight[i] < 0) {
+                    isap.getChannel(i, idOfDst).reset(-weight[i], 0);
+                }
+            }
+        }
+
+        public void addDependency(int from, int to) {
+            if (!(from >= 0 && from < n && to >= 0 && to < n)) {
+                throw new IllegalArgumentException();
+            }
+            isap.getChannel(from, to).reset(1e50, 0);
+        }
+
+        public double solve() {
+            if (!solved) {
+                minCut = isap.sendFlow(1e50);
+                solved = true;
+            }
+            return sumOfPositive - minCut;
+        }
+
+    }
+
+    static class FastOutput implements AutoCloseable, Closeable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
+
+        public FastOutput(Writer os) {
+            this.os = os;
+        }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput println(long c) {
+            cache.append(c).append('\n');
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            return this;
+        }
+
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+
+        public String toString() {
+            return cache.toString();
         }
 
     }
