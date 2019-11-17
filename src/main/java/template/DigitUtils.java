@@ -6,12 +6,19 @@ public class DigitUtils {
     private DigitUtils() {
     }
 
-
-    public static double normalizeToZero(double x, double prec) {
-        if (x < prec && x > -prec) {
-            return 0;
+    public static double normalizeTo(double x, double y, double prec) {
+        if (Math.abs(x - y) < prec) {
+            return y;
         }
         return x;
+    }
+
+    public static long round(double x){
+        return (long)(x + 0.5);
+    }
+
+    public static double normalizeToZero(double x, double prec) {
+        return normalizeTo(x, 0, prec);
     }
 
     /**

@@ -1,0 +1,45 @@
+{
+  "name" : "C - Average Length",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3\n0 0\n1 0\n0 1\n",
+    "output" : "2.2761423749\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "2\n-879 981\n-866 890\n",
+    "output" : "91.9238815543\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "8\n-406 10\n512 859\n494 362\n-955 -475\n128 553\n-986 -885\n763 77\n449 310\n",
+    "output" : "7641.9817824387\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.TaskC",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.11.16",
+  "contestName" : "AtCoder Beginner Contest 145",
+  "truncate" : true,
+  "inputClass" : "template.FastInput",
+  "outputClass" : "template.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : true,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

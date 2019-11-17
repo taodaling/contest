@@ -18,10 +18,12 @@ public class ISAP {
     Map<Long, DirectChannel> channelMap = new HashMap();
     Deque<Node> deque;
     boolean bfsFlag = false;
+    private static final double PREC = 1e-12;
+
 
     public List<Node> getComponentS() {
         List<Node> result = new ArrayList();
-        for (int i = 1; i <= nodeNum; i++) {
+        for (int i = 0; i < nodeNum; i++) {
             nodes[i].visited = false;
         }
         deque.addLast(source);
@@ -68,9 +70,9 @@ public class ISAP {
     public ISAP(int nodeNum) {
         this.nodeNum = nodeNum;
         deque = new ArrayDeque(nodeNum);
-        nodes = new Node[nodeNum + 1];
+        nodes = new Node[nodeNum];
         distanceCnt = new int[nodeNum + 2];
-        for (int i = 1; i <= nodeNum; i++) {
+        for (int i = 0; i < nodeNum; i++) {
             Node node = new Node();
             node.id = i;
             nodes[i] = node;
@@ -79,11 +81,11 @@ public class ISAP {
 
     public double sendFlow(double flow) {
         bfs();
-        double flowSnapshot = flow;
-        while (flow > 0 && source.distance < nodeNum) {
-            flow -= send(source, flow);
+        double sent = 0;
+        while (flow > sent && source.distance < nodeNum) {
+            sent += send(source, flow - sent);
         }
-        return flowSnapshot - flow;
+        return sent;
     }
 
     private double send(Node node, double flowRemain) {
@@ -91,7 +93,7 @@ public class ISAP {
             return flowRemain;
         }
 
-        double flowSnapshot = flowRemain;
+        double sent = 0;
         int nextDistance = node.distance - 1;
         for (Channel channel : node.channelList) {
             double channelRemain = channel.getCapacity() - channel.getFlow();
@@ -99,15 +101,15 @@ public class ISAP {
             if (channelRemain == 0 || dst.distance != nextDistance) {
                 continue;
             }
-            double actuallySend = send(channel.getDst(), Math.min(flowRemain, channelRemain));
+            double actuallySend = send(channel.getDst(), Math.min(flowRemain - sent, channelRemain));
             channel.sendFlow(actuallySend);
-            flowRemain -= actuallySend;
-            if (flowRemain == 0) {
+            sent += actuallySend;
+            if (flowRemain == sent) {
                 break;
             }
         }
 
-        if (flowSnapshot == flowRemain) {
+        if (sent == 0) {
             if (--distanceCnt[node.distance] == 0) {
                 distanceCnt[source.distance]--;
                 source.distance = nodeNum;
@@ -120,7 +122,7 @@ public class ISAP {
             }
         }
 
-        return flowSnapshot - flowRemain;
+        return sent;
     }
 
     public void setSource(int id) {
@@ -139,7 +141,7 @@ public class ISAP {
         Arrays.fill(distanceCnt, 0);
         deque.clear();
 
-        for (int i = 1; i <= nodeNum; i++) {
+        for (int i = 0; i < nodeNum; i++) {
             nodes[i].distance = nodeNum;
         }
 
@@ -297,6 +299,10 @@ public class ISAP {
         int distance;
         boolean visited;
         List<Channel> channelList = new ArrayList(1);
+
+        public int getId() {
+            return id;
+        }
 
         @Override
         public String toString() {

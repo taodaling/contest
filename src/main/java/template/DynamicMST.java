@@ -2,7 +2,7 @@ package template;
 
 public class DynamicMST {
     private LCTNode[] nodes;
-    private long totalWeight = 0;
+    private long totalWeight;
     private int edgeNum;
 
     public DynamicMST(int n) {
@@ -15,7 +15,7 @@ public class DynamicMST {
         }
         for (int i = 1; i < n; i++) {
             LCTNode node = new LCTNode();
-            node.weight = Integer.MAX_VALUE;
+            node.weight = Long.MAX_VALUE;
             node.a = nodes[i - 1];
             node.b = nodes[i];
             node.pushUp();
@@ -32,7 +32,7 @@ public class DynamicMST {
         return edgeNum;
     }
 
-    public void addEdge(int aId, int bId, int weight) {
+    public void addEdge(int aId, int bId, long weight) {
         LCTNode a = nodes[aId];
         LCTNode b = nodes[bId];
         LCTNode.findRoute(a, b);
@@ -44,7 +44,7 @@ public class DynamicMST {
         LCTNode.splay(largest);
         LCTNode.cut(largest.a, largest);
         LCTNode.cut(largest.b, largest);
-        if (largest.weight < Integer.MAX_VALUE) {
+        if (largest.weight < Long.MAX_VALUE) {
             edgeNum--;
             totalWeight -= largest.weight;
         }
@@ -64,10 +64,10 @@ public class DynamicMST {
      * 检查两个顶点之间是否存在一条路径
      */
     public boolean check(int aId, int bId) {
-        return maxWeightBetween(aId, bId) < Integer.MAX_VALUE;
+        return maxWeightBetween(aId, bId) < Long.MAX_VALUE;
     }
 
-    public int maxWeightBetween(int aId, int bId) {
+    public long maxWeightBetween(int aId, int bId) {
         LCTNode a = nodes[aId];
         LCTNode b = nodes[bId];
         LCTNode.findRoute(a, b);
@@ -97,7 +97,7 @@ public class DynamicMST {
         LCTNode a;
         LCTNode b;
         LCTNode largest;
-        int weight;
+        long weight;
 
         public static LCTNode larger(LCTNode a, LCTNode b) {
             return a.weight >= b.weight ? a : b;

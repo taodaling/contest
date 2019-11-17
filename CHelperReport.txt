@@ -1,2 +1,2 @@
-48 src/main/java/contest/F - Make Them Similar.json
+34 src/main/java/contest/E - MUL.json
 0
