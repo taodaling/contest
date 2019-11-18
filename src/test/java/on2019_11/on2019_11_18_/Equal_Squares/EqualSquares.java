@@ -66,12 +66,12 @@ public class EqualSquares {
             r11.clear();
             r31.clear();
             for (int i = 0; i < k - 1; i++) {
-                r11.addLast(rows11[i].partial(j, j + k - 1));
-                r31.addLast(rows31[i].partial(j, j + k - 1));
+                r11.addLast(rows11[i].hash(j, j + k - 1));
+                r31.addLast(rows31[i].hash(j, j + k - 1));
             }
             for (int i = k - 1; i < n; i++) {
-                r11.addLast(rows11[i].partial(j, j + k - 1));
-                r31.addLast(rows31[i].partial(j, j + k - 1));
+                r11.addLast(rows11[i].hash(j, j + k - 1));
+                r31.addLast(rows31[i].hash(j, j + k - 1));
                 Long h = DigitUtils.asLong(r11.hash(), r31.hash());
                 if (map.containsKey(h)) {
                     long pos = map.get(h);

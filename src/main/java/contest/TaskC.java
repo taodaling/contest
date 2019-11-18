@@ -16,16 +16,16 @@ public class TaskC {
 
         h11.populate(forbiden[0], 4);
         h31.populate(forbiden[0], 4);
-        long f1 = DigitUtils.asLong(h11.partialVerbose(0, 3), h31.partialVerbose(0, 3));
+        long f1 = DigitUtils.asLong(h11.hashVerbose(0, 3), h31.hashVerbose(0, 3));
         h11.populate(forbiden[1], 4);
         h31.populate(forbiden[1], 4);
-        long f2 = DigitUtils.asLong(h11.partialVerbose(0, 3), h31.partialVerbose(0, 3));
+        long f2 = DigitUtils.asLong(h11.hashVerbose(0, 3), h31.hashVerbose(0, 3));
         h11.populate(forbiden[2], 4);
         h31.populate(forbiden[2], 4);
-        long f3 = DigitUtils.asLong(h11.partialVerbose(0, 3), h31.partialVerbose(0, 3));
+        long f3 = DigitUtils.asLong(h11.hashVerbose(0, 3), h31.hashVerbose(0, 3));
         h11.populate(forbiden[3], 4);
         h31.populate(forbiden[3], 4);
-        long f4 = DigitUtils.asLong(h11.partialVerbose(0, 3), h31.partialVerbose(0, 3));
+        long f4 = DigitUtils.asLong(h11.hashVerbose(0, 3), h31.hashVerbose(0, 3));
 
         NumberTheory.Modular mod = new NumberTheory.Modular(1e9 + 7);
         LongHashSet set = new LongHashSet(m * (m - 1) / 2 + m);
@@ -38,8 +38,8 @@ public class TaskC {
             h31.populate(str, i + 1);
             Arrays.fill(dp, 0);
             for (int j = 0; j <= i; j++) {
-                long sig = DigitUtils.asLong(h11.partialVerbose(j, i),
-                        h31.partialVerbose(j, i));
+                long sig = DigitUtils.asLong(h11.hashVerbose(j, i),
+                        h31.hashVerbose(j, i));
                 if (set.contain(sig)) {
                     continue;
                 }
@@ -56,8 +56,8 @@ public class TaskC {
                 if (j + 3 <= i + 1) {
                     dp[j + 3] = mod.plus(dp[j + 3], dp[j]);
                 }
-                long h = DigitUtils.asLong(h11.partialVerbose(j, j + 3),
-                        h31.partialVerbose(j, j + 3));
+                long h = DigitUtils.asLong(h11.hashVerbose(j, j + 3),
+                        h31.hashVerbose(j, j + 3));
                 if (j + 4 <= i + 1 && !(h == f1 || h == f2 || h == f3 || h == f4)) {
                     dp[j + 4] = mod.plus(dp[j + 4], dp[j]);
                 }

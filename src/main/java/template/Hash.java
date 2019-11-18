@@ -54,13 +54,13 @@ public class Hash {
         }
     }
 
-    public int partialVerbose(int l, int r) {
-        int h = partial(l, r);
+    public int hashVerbose(int l, int r) {
+        int h = hash(l, r);
         h = MOD.plus(h, xs[r - l + 1]);
         return MOD.valueOf(h);
     }
 
-    public int partial(int l, int r) {
+    public int hash(int l, int r) {
         long h = hash[r];
         if (l > 0) {
             h -= hash[l - 1];

@@ -15,10 +15,10 @@ public class RollingHash {
 
     public RollingHash(int size, int x) {
         deque = new IntDeque(size);
-        xs = new int[size];
+        xs = new int[size + 1];
         inverse = new NumberTheory.Power(MOD).inverse(x);
         xs[0] = 1;
-        for (int i = 1; i < size; i++) {
+        for (int i = 1; i <= size; i++) {
             xs[i] = MOD.mul(xs[i - 1], x);
         }
     }
@@ -30,6 +30,10 @@ public class RollingHash {
 
     public int hash() {
         return hash;
+    }
+
+    public int hashVerbose() {
+        return MOD.plus(hash, xs[deque.size()]);
     }
 
     public void addLast(int v) {
