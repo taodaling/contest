@@ -1,2 +1,2 @@
-34 src/main/java/contest/E - MUL.json
+43 src/main/java/contest/D - Decrementing.json
 0

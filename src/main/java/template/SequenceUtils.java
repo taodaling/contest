@@ -421,6 +421,24 @@ public class SequenceUtils {
         }
     }
 
+    public static int indexOf(int[] array, int l, int r, int val) {
+        for (int i = l; i <= r; i++) {
+            if (array[i] == val) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public static int indexOf(char[] array, int l, int r, char val) {
+        for (int i = l; i <= r; i++) {
+            if (array[i] == val) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     public static <T> int indexOf(T[] array, int l, int r, T val) {
         for (int i = l; i <= r; i++) {
             if (array[i] == val) {

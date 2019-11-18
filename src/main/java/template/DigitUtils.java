@@ -3,8 +3,7 @@ package template;
 import java.util.Arrays;
 
 public class DigitUtils {
-    private DigitUtils() {
-    }
+    private DigitUtils() {}
 
     public static double normalizeTo(double x, double y, double prec) {
         if (Math.abs(x - y) < prec) {
@@ -13,8 +12,8 @@ public class DigitUtils {
         return x;
     }
 
-    public static long round(double x){
-        return (long)(x + 0.5);
+    public static long round(double x) {
+        return (long) (x + 0.5);
     }
 
     public static double normalizeToZero(double x, double prec) {
@@ -297,6 +296,24 @@ public class DigitUtils {
                 ll.add(ll.tail() * base);
             }
             pow = ll.toArray();
+        }
+
+        public int floorLog(long x) {
+            int ans = 0;
+            while (x >= base) {
+                x /= base;
+                ans++;
+            }
+            return ans;
+        }
+
+        public int ceilLog(long x) {
+            int ans = 0;
+            while (x > 0) {
+                x /= base;
+                ans++;
+            }
+            return ans;
         }
 
         public long valueOfBit(int i) {
