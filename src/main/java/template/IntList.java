@@ -226,6 +226,6 @@ public class IntList {
             return false;
         }
         IntList other = (IntList) obj;
-        return SequenceUtils.equal(data, other.data, 0, size - 1, 0, other.size - 1);
+        return SequenceUtils.equal(data, 0, size - 1, other.data, 0, other.size - 1);
     }
 }

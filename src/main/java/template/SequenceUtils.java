@@ -448,7 +448,19 @@ public class SequenceUtils {
         return -1;
     }
 
-    public static boolean equal(int[] a, int[] b, int al, int ar, int bl, int br) {
+    public static boolean equal(char[] a, int al, int ar, char[] b, int bl, int br) {
+        if ((ar - al) != (br - bl)) {
+            return false;
+        }
+        for (int i = al, j = bl; i <= ar; i++, j++) {
+            if (a[i] != b[j]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean equal(int[] a, int al, int ar, int[] b, int bl, int br) {
         if ((ar - al) != (br - bl)) {
             return false;
         }

@@ -6,6 +6,10 @@ public class IntDeque {
     int epos;
     int cap;
 
+    public int getCapacity() {
+        return cap;
+    }
+
     public IntDeque(int cap) {
         this.cap = cap + 1;
         this.data = new int[this.cap];

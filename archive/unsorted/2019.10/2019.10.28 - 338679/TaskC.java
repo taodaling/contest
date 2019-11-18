@@ -34,7 +34,7 @@ public class TaskC {
             return;
         }
 
-        // remove any edge and add back later
+        // removeFirst any edge and addLast back later
         circle.get(0).next.remove(circle.get(1));
         for (int i = 1; i <= n; i++) {
             dfsForMex(nodes[i]);

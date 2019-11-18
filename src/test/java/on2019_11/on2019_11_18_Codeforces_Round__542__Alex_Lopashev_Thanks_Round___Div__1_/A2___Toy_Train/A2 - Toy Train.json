@@ -1,0 +1,45 @@
+{
+  "name" : "A2 - Toy Train",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5 7\n2 4\n5 1\n2 3\n3 4\n4 1\n5 3\n3 5\n",
+    "output" : "10 9 10 10 9\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "2 3\n1 2\n1 2\n1 2\n",
+    "output" : "5 6\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "3 0",
+    "output" : "0 0 0 ",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2019_11.on2019_11_18_Codeforces_Round__542__Alex_Lopashev_Thanks_Round___Div__1_.A2___Toy_Train.TaskA2",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.11.18",
+  "contestName" : "Codeforces Round #542 [Alex Lopashev Thanks-Round] (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.FastInput",
+  "outputClass" : "template.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : true,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}
