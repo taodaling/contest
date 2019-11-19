@@ -62,6 +62,8 @@ public class IntHashMap {
             next[index] = alloc;
             keys[alloc] = x;
             values[alloc] = y;
+        }else{
+            values[index] = y;
         }
     }
 

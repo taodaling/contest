@@ -28,7 +28,6 @@ public class ObjectList<T> {
     }
 
 
-
     /**
      * Just retain the first n element in array, if there are not enough element, nothing will occur.
      */
@@ -52,8 +51,7 @@ public class ObjectList<T> {
         this(0);
     }
 
-    private void ensureSpace(int need) {
-        int req = size + need;
+    private void ensureSpace(int req) {
         if (req > cap) {
             while (cap < req) {
                 cap = Math.max(cap + 10, 2 * cap);
@@ -74,7 +72,7 @@ public class ObjectList<T> {
     }
 
     public void expandWith(T x, int len) {
-        ensureSpace(len - size);
+        ensureSpace(len);
         while (size < len) {
             add(x);
         }
@@ -95,7 +93,7 @@ public class ObjectList<T> {
         }
     }
 
-    public Object[] getData(){
+    public Object[] getData() {
         return data;
     }
 
@@ -115,12 +113,12 @@ public class ObjectList<T> {
     }
 
     public void add(T x) {
-        ensureSpace(1);
+        ensureSpace(size + 1);
         data[size++] = x;
     }
 
     public void addAll(T[] x, int offset, int len) {
-        ensureSpace(len);
+        ensureSpace(size + len);
         System.arraycopy(x, offset, data, size, len);
         size += len;
     }

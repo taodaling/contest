@@ -75,8 +75,7 @@ public class ByteList {
         return data;
     }
 
-    private void ensureSpace(int need) {
-        int req = size + need;
+    public void ensureSpace(int req) {
         if (req > cap) {
             while (cap < req) {
                 cap = Math.max(cap + 10, 2 * cap);
@@ -97,12 +96,12 @@ public class ByteList {
     }
 
     public void add(byte x) {
-        ensureSpace(1);
+        ensureSpace(size + 1);
         data[size++] = x;
     }
 
     public void addAll(byte[] x, int offset, int len) {
-        ensureSpace(len);
+        ensureSpace(size + len);
         System.arraycopy(x, offset, data, size, len);
         size += len;
     }
@@ -184,7 +183,7 @@ public class ByteList {
     }
 
     public void expandWith(byte x, int len) {
-        ensureSpace(len - size);
+        ensureSpace(len);
         while (size < len) {
             add(x);
         }

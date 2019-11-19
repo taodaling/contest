@@ -46,12 +46,11 @@ public class IntList {
         this(0);
     }
 
-    public void reverse(int l, int r){
+    public void reverse(int l, int r) {
         SequenceUtils.reverse(data, l, r);
     }
 
-    public void ensureSpace(int need) {
-        int req = size + need;
+    public void ensureSpace(int req) {
         if (req > cap) {
             while (cap < req) {
                 cap = Math.max(cap + 10, 2 * cap);
@@ -72,7 +71,7 @@ public class IntList {
     }
 
     public void add(int x) {
-        ensureSpace(1);
+        ensureSpace(size + 1);
         data[size++] = x;
     }
 
@@ -81,7 +80,7 @@ public class IntList {
     }
 
     public void addAll(int[] x, int offset, int len) {
-        ensureSpace(len);
+        ensureSpace(size + len);
         System.arraycopy(x, offset, data, size, len);
         size += len;
     }
@@ -109,7 +108,7 @@ public class IntList {
     }
 
     public void expandWith(int x, int len) {
-        ensureSpace(len - size);
+        ensureSpace(len);
         while (size < len) {
             data[size++] = x;
         }
@@ -119,8 +118,12 @@ public class IntList {
         if (size <= 1) {
             return;
         }
-        Randomized.randomizedArray(data, 0, size);
-        Arrays.sort(data, 0, size);
+        if (size < 256) {
+            Randomized.randomizedArray(data, 0, size);
+            Arrays.sort(data, 0, size);
+        } else {
+            CompareUtils.radixSort(data, 0, size - 1);
+        }
     }
 
     public int first() {

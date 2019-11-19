@@ -2,9 +2,10 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.io.UncheckedIOException;
+import java.util.List;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
@@ -28,143 +29,215 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            TaskC solver = new TaskC();
+            TaskD solver = new TaskD();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class TaskC {
-        int[][] forbiden = new int[][]{{0, 0, 1, 1},
-                {0, 1, 0, 1}, {1, 1, 1, 0}, {1, 1, 1, 1}};
+    static class TaskD {
+        int dfn = 1;
 
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            int m = in.readInt();
-            Hash h11 = new Hash(m + 4, 11);
-            Hash h31 = new Hash(m + 4, 31);
-
-            h11.populate(forbiden[0], 4);
-            h31.populate(forbiden[0], 4);
-            long f1 = DigitUtils.asLong(h11.partialVerbose(0, 3), h31.partialVerbose(0, 3));
-            h11.populate(forbiden[1], 4);
-            h31.populate(forbiden[1], 4);
-            long f2 = DigitUtils.asLong(h11.partialVerbose(0, 3), h31.partialVerbose(0, 3));
-            h11.populate(forbiden[2], 4);
-            h31.populate(forbiden[2], 4);
-            long f3 = DigitUtils.asLong(h11.partialVerbose(0, 3), h31.partialVerbose(0, 3));
-            h11.populate(forbiden[3], 4);
-            h31.populate(forbiden[3], 4);
-            long f4 = DigitUtils.asLong(h11.partialVerbose(0, 3), h31.partialVerbose(0, 3));
-
-            NumberTheory.Modular mod = new NumberTheory.Modular(1e9 + 7);
-            LongHashSet set = new LongHashSet(m * (m - 1) / 2 + m);
-            int[] str = new int[m];
-            int[] dp = new int[m + 1];
-            int ans = 0;
-            for (int i = 0; i < m; i++) {
-                str[i] = in.readInt();
-                h11.populate(str, i + 1);
-                h31.populate(str, i + 1);
-                Arrays.fill(dp, 0);
-                for (int j = 0; j <= i; j++) {
-                    long sig = DigitUtils.asLong(h11.partialVerbose(j, i),
-                            h31.partialVerbose(j, i));
-                    if (set.contain(sig)) {
-                        continue;
-                    }
-                    set.add(sig);
-                    dp[j] = 1;
-                }
-                for (int j = 0; j <= i; j++) {
-                    if (j + 1 <= i + 1) {
-                        dp[j + 1] = mod.plus(dp[j + 1], dp[j]);
-                    }
-                    if (j + 2 <= i + 1) {
-                        dp[j + 2] = mod.plus(dp[j + 2], dp[j]);
-                    }
-                    if (j + 3 <= i + 1) {
-                        dp[j + 3] = mod.plus(dp[j + 3], dp[j]);
-                    }
-                    long h = DigitUtils.asLong(h11.partialVerbose(j, j + 3),
-                            h31.partialVerbose(j, j + 3));
-                    if (j + 4 <= i + 1 && !(h == f1 || h == f2 || h == f3 || h == f4)) {
-                        dp[j + 4] = mod.plus(dp[j + 4], dp[j]);
-                    }
-                }
-                ans = mod.plus(ans, dp[i + 1]);
-                out.println(ans);
+            int n = in.readInt();
+            int q = in.readInt();
+            Node[] nodes = new Node[n + 1];
+            for (int i = 1; i <= n; i++) {
+                nodes[i] = new Node();
             }
+            for (int i = 1; i < n; i++) {
+                Node a = nodes[in.readInt()];
+                Node b = nodes[in.readInt()];
+                a.next.add(b);
+                b.next.add(a);
+            }
+            dfs(nodes[1], null);
+            Segment seg = new Segment(1, n);
+            NumberTheory.Modular mod = new NumberTheory.Modular(998244353);
+            NumberTheory.Power pow = new NumberTheory.Power(mod);
+            int invN = pow.inverse(n);
+            for (int i = 0; i < q; i++) {
+                int t = in.readInt();
+                if (t == 1) {
+                    int v = in.readInt();
+                    int d = in.readInt();
+                    seg.update(nodes[v].l, nodes[v].l, 1, n, d);
+                } else {
+                    int v = in.readInt();
+                    long total = seg.query(1, n, 1, n);
+                    long self = seg.query(nodes[v].l, nodes[v].r, 1, n);
+                    long subtree = seg.query(nodes[v].l + 1, nodes[v].r, 1, n);
+                    long outside = total - subtree - self;
+                    int exp = 0;
+                    exp = mod.plus(exp, mod.mul(mod.valueOf(outside), mod.mul(nodes[v].size, invN)));
+                    exp = mod.plus(exp, self);
+                    exp = mod.plus(exp, mod.mul(mod.valueOf(subtree), mod.mul(n - nodes[v].size + 1, invN)));
+                    out.println(exp);
+                }
+            }
+        }
 
-            return;
+        public void dfs(Node root, Node p) {
+            root.size = 1;
+            root.l = dfn++;
+            for (Node node : root.next) {
+                if (node == p) {
+                    continue;
+                }
+                dfs(node, root);
+                root.size += node.size;
+            }
+            root.r = dfn - 1;
         }
 
     }
 
-    static class LongHashSet {
-        private int[] slot;
-        private int[] next;
-        private long[] values;
-        private int alloc;
-        private boolean[] removed;
-        private int mask;
-        private int size;
+    static class NumberTheory {
+        public static class Modular {
+            int m;
 
-        public LongHashSet(int cap) {
-            this.mask = (1 << (32 - Integer.numberOfLeadingZeros(cap - 1))) - 1;
-            slot = new int[mask + 1];
-            next = new int[cap + 1];
-            values = new long[cap + 1];
-            removed = new boolean[cap + 1];
-        }
-
-        public void alloc() {
-            alloc++;
-            next[alloc] = 0;
-            removed[alloc] = false;
-            size++;
-        }
-
-        private int hash(long x) {
-            int h = Long.hashCode(x);
-            return h ^ (h >>> 16);
-        }
-
-        public void add(long x) {
-            int h = hash(x);
-            int s = h & mask;
-            if (slot[s] == 0) {
-                alloc();
-                slot[s] = alloc;
-                values[alloc] = x;
-                return;
+            public Modular(int m) {
+                this.m = m;
             }
-            int index = findIndexOrLastEntry(s, x);
-            if (values[index] != x) {
-                alloc();
-                next[index] = alloc;
-                values[alloc] = x;
-            }
-        }
 
-        public boolean contain(long x) {
-            int h = hash(x);
-            int s = h & mask;
-            if (slot[s] == 0) {
-                return false;
-            }
-            return values[findIndexOrLastEntry(s, x)] == x;
-        }
-
-        private int findIndexOrLastEntry(int s, long x) {
-            int iter = slot[s];
-            while (values[iter] != x) {
-                if (next[iter] != 0) {
-                    iter = next[iter];
-                } else {
-                    return iter;
+            public Modular(long m) {
+                this.m = (int) m;
+                if (this.m != m) {
+                    throw new IllegalArgumentException();
                 }
             }
-            return iter;
+
+            public Modular(double m) {
+                this.m = (int) m;
+                if (this.m != m) {
+                    throw new IllegalArgumentException();
+                }
+            }
+
+            public int valueOf(int x) {
+                x %= m;
+                if (x < 0) {
+                    x += m;
+                }
+                return x;
+            }
+
+            public int valueOf(long x) {
+                x %= m;
+                if (x < 0) {
+                    x += m;
+                }
+                return (int) x;
+            }
+
+            public int mul(int x, int y) {
+                return valueOf((long) x * y);
+            }
+
+            public int plus(int x, int y) {
+                return valueOf(x + y);
+            }
+
+            public int plus(long x, long y) {
+                x = valueOf(x);
+                y = valueOf(y);
+                return valueOf(x + y);
+            }
+
+            public String toString() {
+                return "mod " + m;
+            }
+
+        }
+
+        public static class Power {
+            final NumberTheory.Modular modular;
+
+            public Power(NumberTheory.Modular modular) {
+                this.modular = modular;
+            }
+
+            public int pow(int x, long n) {
+                if (n == 0) {
+                    return modular.valueOf(1);
+                }
+                long r = pow(x, n >> 1);
+                r = modular.valueOf(r * r);
+                if ((n & 1) == 1) {
+                    r = modular.valueOf(r * x);
+                }
+                return (int) r;
+            }
+
+            public int inverse(int x) {
+                return pow(x, modular.m - 2);
+            }
+
+        }
+
+    }
+
+    static class Segment implements Cloneable {
+        private Segment left;
+        private Segment right;
+        private long sum;
+
+        private void inc(long x) {
+            sum += x;
+        }
+
+        public void pushUp() {
+            sum = left.sum + right.sum;
+        }
+
+        public void pushDown() {
+        }
+
+        public Segment(int l, int r) {
+            if (l < r) {
+                int m = (l + r) >> 1;
+                left = new Segment(l, m);
+                right = new Segment(m + 1, r);
+                pushUp();
+            } else {
+
+            }
+        }
+
+        private boolean covered(int ll, int rr, int l, int r) {
+            return ll <= l && rr >= r;
+        }
+
+        private boolean noIntersection(int ll, int rr, int l, int r) {
+            return ll > r || rr < l;
+        }
+
+        public void update(int ll, int rr, int l, int r, long x) {
+            if (noIntersection(ll, rr, l, r)) {
+                return;
+            }
+            if (covered(ll, rr, l, r)) {
+                inc(x);
+                return;
+            }
+            pushDown();
+            int m = (l + r) >> 1;
+            left.update(ll, rr, l, m, x);
+            right.update(ll, rr, m + 1, r, x);
+            pushUp();
+        }
+
+        public long query(int ll, int rr, int l, int r) {
+            if (noIntersection(ll, rr, l, r)) {
+                return 0;
+            }
+            if (covered(ll, rr, l, r)) {
+                return sum;
+            }
+            pushDown();
+            int m = (l + r) >> 1;
+            return left.query(ll, rr, l, m) +
+                    right.query(ll, rr, m + 1, r);
         }
 
     }
@@ -228,95 +301,6 @@ public class Main {
 
     }
 
-    static class NumberTheory {
-        public static class Modular {
-            int m;
-
-            public Modular(int m) {
-                this.m = m;
-            }
-
-            public Modular(long m) {
-                this.m = (int) m;
-                if (this.m != m) {
-                    throw new IllegalArgumentException();
-                }
-            }
-
-            public Modular(double m) {
-                this.m = (int) m;
-                if (this.m != m) {
-                    throw new IllegalArgumentException();
-                }
-            }
-
-            public int valueOf(int x) {
-                x %= m;
-                if (x < 0) {
-                    x += m;
-                }
-                return x;
-            }
-
-            public int valueOf(long x) {
-                x %= m;
-                if (x < 0) {
-                    x += m;
-                }
-                return (int) x;
-            }
-
-            public int mul(int x, int y) {
-                return valueOf((long) x * y);
-            }
-
-            public int plus(int x, int y) {
-                return valueOf(x + y);
-            }
-
-            public String toString() {
-                return "mod " + m;
-            }
-
-        }
-
-        public static class Power {
-            final NumberTheory.Modular modular;
-
-            public Power(NumberTheory.Modular modular) {
-                this.modular = modular;
-            }
-
-            public int pow(int x, long n) {
-                if (n == 0) {
-                    return modular.valueOf(1);
-                }
-                long r = pow(x, n >> 1);
-                r = modular.valueOf(r * r);
-                if ((n & 1) == 1) {
-                    r = modular.valueOf(r * x);
-                }
-                return (int) r;
-            }
-
-            public int inverse(int x) {
-                return pow(x, modular.m - 2);
-            }
-
-        }
-
-    }
-
-    static class DigitUtils {
-        private DigitUtils() {
-        }
-
-        public static long asLong(int high, int low) {
-            return (((long) high) << 32) | low;
-        }
-
-    }
-
     static class FastOutput implements AutoCloseable, Closeable {
         private StringBuilder cache = new StringBuilder(10 << 20);
         private final Writer os;
@@ -360,53 +344,11 @@ public class Main {
 
     }
 
-    static class Hash {
-        public static final NumberTheory.Modular MOD = new NumberTheory.Modular((int) (1e9 + 7));
-        public static final NumberTheory.Power POWER = new NumberTheory.Power(MOD);
-        private int[] inverse;
-        private int[] xs;
-        private int[] hash;
-
-        public Hash(Hash model) {
-            inverse = model.inverse;
-            hash = new int[model.hash.length];
-            xs = model.xs;
-        }
-
-        public Hash(int size, int x) {
-            inverse = new int[size + 1];
-            hash = new int[size + 1];
-            xs = new int[size + 1];
-            int invX = POWER.inverse(x);
-            inverse[0] = 1;
-            xs[0] = 1;
-            for (int i = 1; i <= size; i++) {
-                this.inverse[i] = MOD.mul(this.inverse[i - 1], invX);
-                xs[i] = MOD.mul(xs[i - 1], x);
-            }
-        }
-
-        public void populate(int[] data, int n) {
-            hash[0] = data[0];
-            for (int i = 1; i < n; i++) {
-                hash[i] = MOD.plus(hash[i - 1], MOD.mul(data[i], xs[i]));
-            }
-        }
-
-        public int partialVerbose(int l, int r) {
-            int h = partial(l, r);
-            h = MOD.plus(h, xs[r - l + 1]);
-            return MOD.valueOf(h);
-        }
-
-        public int partial(int l, int r) {
-            long h = hash[r];
-            if (l > 0) {
-                h -= hash[l - 1];
-                h *= inverse[l];
-            }
-            return MOD.valueOf(h);
-        }
+    static class Node {
+        List<Node> next = new ArrayList<>();
+        int size;
+        int l;
+        int r;
 
     }
 }

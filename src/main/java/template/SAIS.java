@@ -1,9 +1,8 @@
 package template;
 
+
 public class SAIS {
     private int l;
-    private int r;
-    private int charset;
     private int[] rank2Index;
     private int[] index2Rank;
     private int[] lcp;
@@ -20,7 +19,7 @@ public class SAIS {
      * Get the kth smallest suffix (Min rank denoted with 0)
      */
     public int queryKth(int k) {
-        return rank2Index[k];
+        return rank2Index[k] + l;
     }
 
     /**
@@ -38,23 +37,26 @@ public class SAIS {
         this(array, 0, array.length - 1);
     }
 
-    public SAIS(char[] array, int l, int r){
+    public SAIS(char[] array, int l, int r) {
         if (l > r) {
             throw new IllegalArgumentException();
         }
-        int n = data.length;
-        for(int i = 0; i < n; i++){
+        this.l = l;
+        int n = r - l + 1;
+        data = new int[n];
+        for (int i = 0; i < n; i++) {
             data[i] = array[i + l];
         }
         process();
     }
 
-    public SAIS(int[] array, int l, int r){
+    public SAIS(int[] array, int l, int r) {
         if (l > r) {
             throw new IllegalArgumentException();
         }
-        int n = data.length;
-        for(int i = 0; i < n; i++){
+        int n = r - l + 1;
+        data = new int[n];
+        for (int i = 0; i < n; i++) {
             data[i] = array[i + l];
         }
         process();
@@ -69,20 +71,27 @@ public class SAIS {
             rank2Index[i] = i;
         }
         CompareUtils.radixSort(rank2Index, 0, n - 1, x -> data[x]);
-        buildReverseIndex();
+        int rank = 0;
+        index2Rank[rank2Index[0]] = 0;
+        for (int i = 1; i < data.length; i++) {
+            if (data[rank2Index[i]] > data[rank2Index[i - 1]]) {
+                rank++;
+            }
+            index2Rank[rank2Index[i]] = rank;
+        }
 
-        buildSA();
-        buildReverseIndex();
+        System.arraycopy(index2Rank, 0, rank2Index, 0, n);
+        buildSA(rank2Index, new IntList(n), new IntList(n), new MultiWayIntDeque(n, n), index2Rank);
+        for (int i = 0; i < n; i++) {
+            rank2Index[index2Rank[i]] = i;
+        }
         buildLcp();
     }
 
-    /**
-     * Get longest common prefix between i-th and i - 1-th suffix
-     */
     private void buildLcp() {
         int n = lcp.length;
         for (int i = 0; i < n; i++) {
-            int ri = rank2Index[i];
+            int ri = index2Rank[i];
             if (ri == 0) {
                 continue;
             }
@@ -91,14 +100,7 @@ public class SAIS {
             while (j + same < n && i + same < n && data[j + same] == data[i + same]) {
                 same++;
             }
-            lcp[i] = same;
-        }
-    }
-
-    private void buildReverseIndex() {
-        int n = data.length;
-        for (int i = 0; i < n; i++) {
-            index2Rank[rank2Index[i]] = i;
+            lcp[index2Rank[i]] = same;
         }
     }
 
@@ -106,17 +108,13 @@ public class SAIS {
     private static final int TYPE_PLUS = 1;
 
 
-    private void buildSA() {
+    private static void buildSA(int[] data, IntList plus, IntList minus, MultiWayIntDeque deque, int[] output) {
         int n = data.length;
-        IntList plus = new IntList(n);
-        IntList minus = new IntList(n);
-        MultiWayIntDeque deque = new MultiWayIntDeque(Math.max(charset, n), n);
-        buildSA();
-    }
-
-    private void buildSA(IntList plus, IntList minus, MultiWayIntDeque deque, int[] data, int[] rank2Index) {
-        int n = data.length;
-        byte[] type = new byte[data.length];
+        if (n == 1) {
+            output[0] = 0;
+            return ;
+        }
+        byte[] type = new byte[n];
         for (int i = n - 1; i >= 0; i--) {
             if (i == n - 1 || data[i] > data[i + 1] || data[i] == data[i + 1] && type[i + 1] == TYPE_MINUS) {
                 type[i] = TYPE_MINUS;
@@ -125,55 +123,119 @@ public class SAIS {
             }
         }
 
+        plus.clear();
+        minus.clear();
+
         // find relation between star type
+        deque.expandQueueNum(n);
+        deque.clear();
         for (int i = 1; i < n; i++) {
             if (type[i - 1] == TYPE_MINUS && type[i] == TYPE_PLUS) {
                 deque.addLast(data[i], i);
             }
         }
-        for (int i = 0; i < charset; i++) {
+        for (int i = 0; i < n; i++) {
             while (!deque.isEmpty(i)) {
                 plus.add(deque.removeFirst(i));
             }
         }
-        induceSort(plus, minus, deque, type, data);
 
-        minus.clear();
-        minus.addAll(plus);
-        plus.clear();
-        for (int i = 0, until = minus.size(); i < until; i++) {
-            int index = minus.get(i);
-            if (index > 0 && type[index - 1] == TYPE_MINUS && type[i] == TYPE_PLUS) {
-                plus.add(index);
+        if (!plus.isEmpty()) {
+            induceSort(plus, minus, type, data, deque);
+
+            minus.clear();
+            minus.addAll(plus);
+            plus.clear();
+            for (int i = 0, until = minus.size(); i < until; i++) {
+                int index = minus.get(i);
+                if (index > 0 && type[index - 1] == TYPE_MINUS && type[index] == TYPE_PLUS) {
+                    plus.add(index);
+                }
+            }
+
+            minus.clear();
+            for (int i = 1; i < n; i++) {
+                if (type[i - 1] == TYPE_MINUS && type[i] == TYPE_PLUS) {
+                    minus.add(i);
+                }
+            }
+
+            int[] order2Index = minus.toArray();
+            int[] alias = new int[order2Index.length];
+            int[] index2Order = new int[n];
+            for (int i = 0; i < order2Index.length; i++) {
+                index2Order[order2Index[i]] = i;
+            }
+            //assign alias
+            int r = 0;
+            alias[index2Order[plus.get(0)]] = r;
+            for (int i = 1; i < order2Index.length; i++) {
+                int l1 = plus.get(i);
+                int l2 = plus.get(i - 1);
+                int r1 = index2Order[l1];
+                if (r1 + 1 == order2Index.length) {
+                    r1 = n - 1;
+                } else {
+                    r1 = order2Index[r1 + 1];
+                }
+                int r2 = index2Order[l2];
+                if (r2 + 1 == order2Index.length) {
+                    r2 = n - 1;
+                } else {
+                    r2 = order2Index[r2 + 1];
+                }
+                if (compareArray(data, l1, r1, data, l2, r2) != 0) {
+                    r++;
+                }
+                alias[index2Order[plus.get(i)]] = r;
+            }
+            buildSA(alias, plus, minus, deque, output);
+            int[] index2Rank = output;
+            plus.clear();
+            plus.expandWith(0, order2Index.length);
+            for (int i = 0; i < order2Index.length; i++) {
+                plus.set(index2Rank[i], order2Index[i]);
             }
         }
 
-
-
         // find relation between minus type
-        induceSort(plus, minus, deque, type, data);
+        induceSort(plus, minus, type, data, deque);
         plus.reverse(0, plus.size() - 1);
         minus.reverse(0, minus.size() - 1);
 
         // merge
+        int[] index2Rank = output;
         int rank = 0;
         while (plus.size() + minus.size() > 0) {
             if (plus.isEmpty() || (!minus.isEmpty() && data[minus.tail()] <= data[plus.tail()])) {
-                rank2Index[rank++] = minus.pop();
+                index2Rank[minus.pop()] = rank++;
             } else {
-                rank2Index[rank++] = plus.pop();
+                index2Rank[plus.pop()] = rank++;
             }
         }
+
+        return;
     }
 
+    private static int compareArray(int[] a, int al, int ar, int[] b, int bl, int br) {
+        for (int i = al, j = bl; i <= ar && j <= br; i++, j++) {
+            if (a[i] != b[j]) {
+                return a[i] - b[j];
+            }
+        }
+        return -((ar - al) - (br - bl));
+    }
 
-    private void induceSort(IntList plus, IntList minus, MultiWayIntDeque deque, byte[] type, int[] data) {
+    private static void induceSort(IntList plus, IntList minus, byte[] type, int[] data, MultiWayIntDeque deque) {
+        int n = data.length;
+        deque.expandQueueNum(n);
         minus.clear();
         plus.reverse(0, plus.size() - 1);
 
         // from star to minus
         deque.clear();
-        for (int i = 0; i < charset; i++) {
+        deque.addFirst(data[n - 1], n - 1);
+        for (int i = 0; i < n; i++) {
             while (!deque.isEmpty(i)) {
                 int index = deque.removeFirst(i);
                 if (type[index] == TYPE_MINUS) {
@@ -193,7 +255,7 @@ public class SAIS {
         deque.clear();
         int rightScan = minus.size() - 1;
         // from minus to plus
-        for (int i = charset - 1; i >= 0; i--) {
+        for (int i = n - 1; i >= 0; i--) {
             while (!deque.isEmpty(i)) {
                 int index = deque.removeFirst(i);
                 if (type[index] == TYPE_PLUS) {
@@ -204,7 +266,7 @@ public class SAIS {
                 }
             }
             while (rightScan >= 0 && data[minus.get(rightScan)] == i) {
-                int index = plus.get(rightScan--);
+                int index = minus.get(rightScan--);
                 if (index > 0 && type[index - 1] == TYPE_PLUS) {
                     deque.addLast(data[index - 1], index - 1);
                 }

@@ -124,8 +124,17 @@ public class SuffixArray {
 
 
     public static class Suffix {
-        int suffixStartIndex;
-        int rank;
+        private int suffixStartIndex;
+
+        public int getSuffixStartIndex() {
+            return suffixStartIndex;
+        }
+
+        public int getRank() {
+            return rank;
+        }
+
+        private int rank;
 
 //        @Override
 //        public String toString() {

@@ -63,6 +63,8 @@ public class LongHashMap {
             next[index] = alloc;
             keys[alloc] = x;
             values[alloc] = y;
+        } else {
+            values[index] = y;
         }
     }
 

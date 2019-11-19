@@ -90,28 +90,28 @@ public class CompareUtils {
         return Math.abs(a - b) < prec ? 0 : Double.compare(a, b);
     }
 
-    public static int compareArray(char[] a, char[] b, int al, int ar, int bl, int br) {
+    public static int compareArray(char[] a, int al, int ar, char[] b, int bl, int br) {
         for (int i = al, j = bl; i <= ar && j <= br; i++, j++) {
             if (a[i] != b[j]) {
-                return a[i] - b[i];
+                return a[i] - b[j];
             }
         }
         return (ar - al) - (br - bl);
     }
 
-    public static int compareArray(int[] a, int[] b, int al, int ar, int bl, int br) {
+    public static int compareArray(int[] a, int al, int ar, int[] b, int bl, int br) {
         for (int i = al, j = bl; i <= ar && j <= br; i++, j++) {
             if (a[i] != b[j]) {
-                return a[i] - b[i];
+                return a[i] - b[j];
             }
         }
         return (ar - al) - (br - bl);
     }
 
-    public static int compareArray(long[] a, long[] b, int al, int ar, int bl, int br) {
+    public static int compareArray(long[] a, int al, int ar, long[] b, int bl, int br) {
         for (int i = al, j = bl; i <= ar && j <= br; i++, j++) {
             if (a[i] != b[j]) {
-                return Long.compare(a[i], b[i]);
+                return Long.compare(a[i], b[j]);
             }
         }
         return (ar - al) - (br - bl);

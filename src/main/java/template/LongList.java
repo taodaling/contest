@@ -25,7 +25,7 @@ public class LongList {
         return SequenceUtils.floorIndex(data, x, 0, size - 1);
     }
 
-    public long[] getData(){
+    public long[] getData() {
         return data;
     }
 
@@ -53,8 +53,7 @@ public class LongList {
         this(0);
     }
 
-    private void ensureSpace(int need) {
-        int req = size + need;
+    public void ensureSpace(int req) {
         if (req > cap) {
             while (cap < req) {
                 cap = Math.max(cap + 10, 2 * cap);
@@ -75,7 +74,7 @@ public class LongList {
     }
 
     public void expandWith(long x, int len) {
-        ensureSpace(len - size);
+        ensureSpace(len);
         while (size < len) {
             add(x);
         }
@@ -97,12 +96,12 @@ public class LongList {
     }
 
     public void add(long x) {
-        ensureSpace(1);
+        ensureSpace(size + 1);
         data[size++] = x;
     }
 
     public void addAll(long[] x, int offset, int len) {
-        ensureSpace(len);
+        ensureSpace(size + len);
         System.arraycopy(x, offset, data, size, len);
         size += len;
     }
@@ -133,8 +132,12 @@ public class LongList {
         if (size <= 1) {
             return;
         }
-        Randomized.randomizedArray(data, 0, size);
-        Arrays.sort(data, 0, size);
+        if (size < 256) {
+            Randomized.randomizedArray(data, 0, size);
+            Arrays.sort(data, 0, size);
+        } else {
+            CompareUtils.radixSort(data, 0, size - 1);
+        }
     }
 
     public void unique() {
@@ -167,6 +170,7 @@ public class LongList {
     public int size() {
         return size;
     }
+
     public void remove(int l, int r) {
         checkRange(l);
         checkRange(r);
@@ -181,6 +185,7 @@ public class LongList {
             size -= (r - l + 1);
         }
     }
+
     public void remove(int index) {
         checkRange(index);
         if (index == size - 1) {

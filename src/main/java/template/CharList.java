@@ -16,6 +16,7 @@ public class CharList {
             data = new char[cap];
         }
     }
+
     /**
      * Just retain the first n element in array, if there are not enough element,
      * nothing will occur.
@@ -29,6 +30,7 @@ public class CharList {
         }
         size = n;
     }
+
     public void remove(int l, int r) {
         checkRange(l);
         checkRange(r);
@@ -43,6 +45,7 @@ public class CharList {
             size -= (r - l + 1);
         }
     }
+
     public CharList(CharList list) {
         this.size = list.size;
         this.cap = list.cap;
@@ -53,8 +56,7 @@ public class CharList {
         this(0);
     }
 
-    private void ensureSpace(int need) {
-        int req = size + need;
+    private void ensureSpace(int req) {
         if (req > cap) {
             while (cap < req) {
                 cap = Math.max(cap + 10, 2 * cap);
@@ -75,24 +77,24 @@ public class CharList {
     }
 
     public void add(char x) {
-        ensureSpace(1);
+        ensureSpace(size + 1);
         data[size++] = x;
     }
 
     public void addAll(char[] x, int offset, int len) {
-        ensureSpace(len);
+        ensureSpace(size + len);
         System.arraycopy(x, offset, data, size, len);
         size += len;
     }
 
     public void expandWith(char x, int len) {
-        ensureSpace(len - size);
+        ensureSpace(len);
         while (size < len) {
             add(x);
         }
     }
 
-    public void set(int i, char x){
+    public void set(int i, char x) {
         checkRange(i);
         data[i] = x;
     }
@@ -128,6 +130,7 @@ public class CharList {
         checkRange(0);
         return data[size - 1];
     }
+
     public void sort() {
         if (size <= 1) {
             return;
@@ -189,6 +192,7 @@ public class CharList {
         System.arraycopy(data, 0, arr, 0, size);
         return arr;
     }
+
     public boolean isEmpty() {
         return size == 0;
     }

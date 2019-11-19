@@ -1,0 +1,40 @@
+{
+  "name" : "B - Wrong Answer",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "8\n",
+    "output" : "4\n6 -8 7 -42\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "612\n",
+    "output" : "7\n30 -12 -99 123 -2 245 -300\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2019_11.on2019_11_18_Codeforces_Round__542__Alex_Lopashev_Thanks_Round___Div__1_.B___Wrong_Answer.TaskB",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.11.18",
+  "contestName" : "Codeforces Round #542 [Alex Lopashev Thanks-Round] (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.FastInput",
+  "outputClass" : "template.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : true,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

@@ -65,8 +65,7 @@ public class DoubleList {
         this(0);
     }
 
-    private void ensureSpace(int need) {
-        int req = size + need;
+    private void ensureSpace(int req) {
         if (req > cap) {
             while (cap < req) {
                 cap = Math.max(cap + 10, 2 * cap);
@@ -99,7 +98,7 @@ public class DoubleList {
     }
 
     public void add(double x) {
-        ensureSpace(1);
+        ensureSpace(size + 1);
         data[size++] = x;
     }
 
@@ -109,14 +108,14 @@ public class DoubleList {
     }
 
     public void expandWith(double x, int len) {
-        ensureSpace(len - size);
+        ensureSpace(len);
         while (size < len) {
             add(x);
         }
     }
 
     public void addAll(double[] x, int offset, int len) {
-        ensureSpace(len);
+        ensureSpace(size + len);
         System.arraycopy(x, offset, data, size, len);
         size += len;
     }
