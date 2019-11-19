@@ -121,39 +121,15 @@ public class SuffixArray {
         return heights[i];
     }
 
-    private static class Loop<T> {
-        T[] loops;
-        int offset;
 
-        public Loop(T[] initVal) {
-            loops = initVal;
-        }
 
-        public T get(int index) {
-            return loops[(offset + index) % loops.length];
-        }
-
-        public T get() {
-            return get(0);
-        }
-
-        public T turn(int degree) {
-            offset += degree;
-            return get(0);
-        }
-
-        public T turn() {
-            return turn(1);
-        }
-    }
-
-    public class Suffix {
+    public static class Suffix {
         int suffixStartIndex;
         int rank;
 
-        @Override
-        public String toString() {
-            return String.valueOf(data, suffixStartIndex, data.length - suffixStartIndex);//suffixStartIndex + ":" + rank;
-        }
+//        @Override
+//        public String toString() {
+//            return String.valueOf(data, suffixStartIndex, data.length - suffixStartIndex);//suffixStartIndex + ":" + rank;
+//        }
     }
 }

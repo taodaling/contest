@@ -140,6 +140,12 @@ public class SequenceUtils {
         data[j] = tmp;
     }
 
+    public static void swap(IntList data, int i, int j) {
+        int tmp = data.get(i);
+        data.set(i, data.get(j));
+        data.set(j, tmp);
+    }
+
     public static void swap(char[] data, int i, int j) {
         char tmp = data[i];
         data[i] = data[j];
@@ -372,6 +378,7 @@ public class SequenceUtils {
             r--;
         }
     }
+
 
     public static <T> void reverse(T[] data, int l, int r) {
         while (l < r) {

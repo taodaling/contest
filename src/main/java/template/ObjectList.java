@@ -95,6 +95,10 @@ public class ObjectList<T> {
         }
     }
 
+    public Object[] getData(){
+        return data;
+    }
+
     public T get(int i) {
         checkRange(i);
         return (T) data[i];

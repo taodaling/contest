@@ -25,7 +25,9 @@ public class LongList {
         return SequenceUtils.floorIndex(data, x, 0, size - 1);
     }
 
-
+    public long[] getData(){
+        return data;
+    }
 
     /**
      * Just retain the first n element in array, if there are not enough element,

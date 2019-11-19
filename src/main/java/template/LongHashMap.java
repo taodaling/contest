@@ -24,8 +24,19 @@ public class LongHashMap {
         removed = new boolean[cap + 1];
     }
 
+    private void doubleCapacity() {
+        int newSize = Math.max(next.length + 10, next.length * 2);
+        next = Arrays.copyOf(next, newSize);
+        keys = Arrays.copyOf(keys, newSize);
+        values = Arrays.copyOf(values, newSize);
+        removed = Arrays.copyOf(removed, newSize);
+    }
+
     public void alloc() {
         alloc++;
+        if (alloc >= next.length) {
+            doubleCapacity();
+        }
         next[alloc] = 0;
         removed[alloc] = false;
         size++;
@@ -35,7 +46,6 @@ public class LongHashMap {
         int h = Long.hashCode(x);
         return h ^ (h >>> 16);
     }
-
 
     public void put(long x, long y) {
         int h = hash(x);
@@ -114,9 +124,11 @@ public class LongHashMap {
         size = 0;
     }
 
-    public LongIterator keyIterator() {
-        return new LongIterator() {
+
+    public LongEntryIterator iterator() {
+        return new LongEntryIterator() {
             int index = 1;
+            int readIndex = -1;
 
             @Override
             public boolean hasNext() {
@@ -127,11 +139,22 @@ public class LongHashMap {
             }
 
             @Override
-            public long next() {
+            public long getEntryKey() {
+                return keys[readIndex];
+            }
+
+            @Override
+            public long getEntryValue() {
+                return values[readIndex];
+            }
+
+            @Override
+            public void next() {
                 if (!hasNext()) {
                     throw new IllegalStateException();
                 }
-                return keys[index++];
+                readIndex = index;
+                index++;
             }
         };
     }

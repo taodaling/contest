@@ -2,23 +2,22 @@ package template;
 
 import java.util.Arrays;
 
-public class LongHashSet {
+public class IntHashSet {
     private int[] slot;
     private int[] next;
-    private long[] values;
+    private int[] keys;
+    private int[] values;
     private int alloc;
     private boolean[] removed;
     private int mask;
     private int size;
 
-    /**
-     * You can only invoke mask times add operation
-     */
-    public LongHashSet(int cap) {
+    public IntHashSet(int cap) {
         this.mask = (1 << (32 - Integer.numberOfLeadingZeros(cap - 1))) - 1;
         slot = new int[mask + 1];
         next = new int[cap + 1];
-        values = new long[cap + 1];
+        keys = new int[cap + 1];
+        values = new int[cap + 1];
         removed = new boolean[cap + 1];
     }
 
@@ -39,46 +38,61 @@ public class LongHashSet {
         size++;
     }
 
-    private int hash(long x) {
-        int h = Long.hashCode(x);
-        return h ^ (h >>> 16);
+    private int hash(int x) {
+        return x ^ (x >>> 16);
     }
 
 
-    public void add(long x) {
+    public void put(int x, int y) {
         int h = hash(x);
         int s = h & mask;
         if (slot[s] == 0) {
             alloc();
             slot[s] = alloc;
-            values[alloc] = x;
+            keys[alloc] = x;
+            values[alloc] = y;
             return;
         }
         int index = findIndexOrLastEntry(s, x);
-        if (values[index] != x) {
+        if (keys[index] != x) {
             alloc();
             next[index] = alloc;
-            values[alloc] = x;
+            keys[alloc] = x;
+            values[alloc] = y;
         }
     }
 
-    public boolean contain(long x) {
+    public boolean containKey(int x) {
         int h = hash(x);
         int s = h & mask;
         if (slot[s] == 0) {
             return false;
         }
-        return values[findIndexOrLastEntry(s, x)] == x;
+        return keys[findIndexOrLastEntry(s, x)] == x;
     }
 
-    public void remove(long x) {
+    public int getOrDefault(int x, int def) {
+        int h = hash(x);
+        int s = h & mask;
+        if (slot[s] == 0) {
+            return def;
+        }
+        int index = findIndexOrLastEntry(s, x);
+        return keys[index] == x ? values[index] : def;
+    }
+
+    public int get(int x) {
+        return getOrDefault(x, 0);
+    }
+
+    public void remove(int x) {
         int h = hash(x);
         int s = h & mask;
         if (slot[s] == 0) {
             return;
         }
         int index = findIndexOrLastEntry(s, x);
-        if (values[index] != x) {
+        if (keys[index] != x) {
             return;
         }
         if (slot[s] == index) {
@@ -88,9 +102,9 @@ public class LongHashSet {
         size--;
     }
 
-    private int findIndexOrLastEntry(int s, long x) {
+    private int findIndexOrLastEntry(int s, int x) {
         int iter = slot[s];
-        while (values[iter] != x) {
+        while (keys[iter] != x) {
             if (next[iter] != 0) {
                 iter = next[iter];
             } else {
@@ -106,9 +120,11 @@ public class LongHashSet {
         size = 0;
     }
 
-    public LongIterator iterator() {
-        return new LongIterator() {
+
+    public IntEntryIterator iterator() {
+        return new IntEntryIterator() {
             int index = 1;
+            int readIndex = -1;
 
             @Override
             public boolean hasNext() {
@@ -119,16 +135,27 @@ public class LongHashSet {
             }
 
             @Override
-            public long next() {
+            public int getEntryKey() {
+                return keys[readIndex];
+            }
+
+            @Override
+            public int getEntryValue() {
+                return values[readIndex];
+            }
+
+            @Override
+            public void next() {
                 if (!hasNext()) {
                     throw new IllegalStateException();
                 }
-                return values[index++];
+                readIndex = index;
+                index++;
             }
         };
     }
 
-    public int size(){
+    public int size() {
         return size;
     }
 }
