@@ -50,7 +50,7 @@ public abstract class SimulatedAnnealing<S> {
     }
 
     private S best;
-    private double bestWeight;
+    private double bestWeight = -1e100;
     private RandomWrapper random;
     private double threshold;
     /**

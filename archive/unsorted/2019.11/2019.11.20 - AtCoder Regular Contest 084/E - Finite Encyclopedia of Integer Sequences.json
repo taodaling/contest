@@ -1,0 +1,45 @@
+{
+  "name" : "E - Finite Encyclopedia of Integer Sequences",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 2\n",
+    "output" : "2 1 \n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "2 4\n",
+    "output" : "1 2 2 2\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "5 14\n",
+    "output" : "3 3 3 3 3 3 3 3 3 3 3 3 2 2 \n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.TaskE",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.11.20",
+  "contestName" : "AtCoder Regular Contest 084",
+  "truncate" : true,
+  "inputClass" : "template.FastInput",
+  "outputClass" : "template.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}
