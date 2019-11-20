@@ -12,8 +12,7 @@ import java.io.OutputStreamWriter;
 import java.io.InputStream;
 
 /**
- * Built using CHelper plug-in
- * Actual solution is at the top
+ * Built using CHelper plug-in Actual solution is at the top
  */
 public class Main {
     public static void main(String[] args) throws Exception {
@@ -34,214 +33,145 @@ public class Main {
             out.close();
         }
     }
-
     static class TaskD {
-        int dfn = 1;
-
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            int q = in.readInt();
             Node[] nodes = new Node[n + 1];
             for (int i = 1; i <= n; i++) {
                 nodes[i] = new Node();
+                nodes[i].id = i;
             }
+
             for (int i = 1; i < n; i++) {
-                Node a = nodes[in.readInt()];
-                Node b = nodes[in.readInt()];
-                a.next.add(b);
-                b.next.add(a);
+                Edge e = new Edge();
+                e.a = nodes[in.readInt()];
+                e.b = nodes[in.readInt()];
+                e.length = in.readInt();
+                e.a.next.add(e);
+                e.b.next.add(e);
             }
             dfs(nodes[1], null);
-            Segment seg = new Segment(1, n);
-            NumberTheory.Modular mod = new NumberTheory.Modular(998244353);
-            NumberTheory.Power pow = new NumberTheory.Power(mod);
-            int invN = pow.inverse(n);
-            for (int i = 0; i < q; i++) {
-                int t = in.readInt();
-                if (t == 1) {
-                    int v = in.readInt();
-                    int d = in.readInt();
-                    seg.update(nodes[v].l, nodes[v].l, 1, n, d);
-                } else {
-                    int v = in.readInt();
-                    long total = seg.query(1, n, 1, n);
-                    long self = seg.query(nodes[v].l, nodes[v].r, 1, n);
-                    long subtree = seg.query(nodes[v].l + 1, nodes[v].r, 1, n);
-                    long outside = total - subtree - self;
-                    int exp = 0;
-                    exp = mod.plus(exp, mod.mul(mod.valueOf(outside), mod.mul(nodes[v].size, invN)));
-                    exp = mod.plus(exp, self);
-                    exp = mod.plus(exp, mod.mul(mod.valueOf(subtree), mod.mul(n - nodes[v].size + 1, invN)));
-                    out.println(exp);
+            List<Node> gs = new ArrayList<>();
+            findGravity(nodes[1], null, n, gs);
+
+            long ans = 0;
+            for (Node g : gs) {
+                dfsForDepth(g, null, 0);
+
+                long totalDepth = 0;
+                long minDepth = (long) 1e18;
+                for (int i = 1; i <= n; i++) {
+                    if (nodes[i].depth == 0) {
+                        continue;
+                    }
+                    totalDepth += nodes[i].depth;
+                    minDepth = Math.min(minDepth, nodes[i].depth);
                 }
+                for (Node node : gs) {
+                    if (g == node) {
+                        continue;
+                    }
+                    minDepth = node.depth;
+                }
+                ans = Math.max(ans, totalDepth * 2 - minDepth);
             }
+
+            out.println(ans);
         }
 
-        public void dfs(Node root, Node p) {
-            root.size = 1;
-            root.l = dfn++;
-            for (Node node : root.next) {
-                if (node == p) {
+        public void dfsForDepth(Node root, Edge p, long depth) {
+            root.depth = depth;
+            for (Edge e : root.next) {
+                if (e == p) {
                     continue;
                 }
-                dfs(node, root);
+                Node node = e.other(root);
+                dfsForDepth(node, e, depth + e.length);
+            }
+        }
+
+        public void findGravity(Node root, Edge p, int total, List<Node> list) {
+            int maxSize = 0;
+            if (root.p != null) {
+                maxSize = Math.max(maxSize, total - root.size);
+            }
+            for (Edge e : root.next) {
+                if (e == p) {
+                    continue;
+                }
+                Node node = e.other(root);
+                maxSize = Math.max(maxSize, node.size);
+            }
+            if (maxSize <= total / 2) {
+                list.add(root);
+            }
+            for (Edge e : root.next) {
+                if (e == p) {
+                    continue;
+                }
+                Node node = e.other(root);
+                findGravity(node, e, total, list);
+            }
+        }
+
+        public void dfs(Node root, Edge p) {
+            if (p != null) {
+                root.p = p.other(root);
+            }
+            root.size = 1;
+            for (Edge e : root.next) {
+                if (e == p) {
+                    continue;
+                }
+                Node node = e.other(root);
+                dfs(node, e);
                 root.size += node.size;
             }
-            root.r = dfn - 1;
         }
 
     }
+    static class FastOutput implements AutoCloseable, Closeable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
 
-    static class NumberTheory {
-        public static class Modular {
-            int m;
-
-            public Modular(int m) {
-                this.m = m;
-            }
-
-            public Modular(long m) {
-                this.m = (int) m;
-                if (this.m != m) {
-                    throw new IllegalArgumentException();
-                }
-            }
-
-            public Modular(double m) {
-                this.m = (int) m;
-                if (this.m != m) {
-                    throw new IllegalArgumentException();
-                }
-            }
-
-            public int valueOf(int x) {
-                x %= m;
-                if (x < 0) {
-                    x += m;
-                }
-                return x;
-            }
-
-            public int valueOf(long x) {
-                x %= m;
-                if (x < 0) {
-                    x += m;
-                }
-                return (int) x;
-            }
-
-            public int mul(int x, int y) {
-                return valueOf((long) x * y);
-            }
-
-            public int plus(int x, int y) {
-                return valueOf(x + y);
-            }
-
-            public int plus(long x, long y) {
-                x = valueOf(x);
-                y = valueOf(y);
-                return valueOf(x + y);
-            }
-
-            public String toString() {
-                return "mod " + m;
-            }
-
+        public FastOutput(Writer os) {
+            this.os = os;
         }
 
-        public static class Power {
-            final NumberTheory.Modular modular;
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
 
-            public Power(NumberTheory.Modular modular) {
-                this.modular = modular;
+        public FastOutput println(long c) {
+            cache.append(c).append('\n');
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
             }
+            return this;
+        }
 
-            public int pow(int x, long n) {
-                if (n == 0) {
-                    return modular.valueOf(1);
-                }
-                long r = pow(x, n >> 1);
-                r = modular.valueOf(r * r);
-                if ((n & 1) == 1) {
-                    r = modular.valueOf(r * x);
-                }
-                return (int) r;
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
             }
+        }
 
-            public int inverse(int x) {
-                return pow(x, modular.m - 2);
-            }
-
+        public String toString() {
+            return cache.toString();
         }
 
     }
-
-    static class Segment implements Cloneable {
-        private Segment left;
-        private Segment right;
-        private long sum;
-
-        private void inc(long x) {
-            sum += x;
-        }
-
-        public void pushUp() {
-            sum = left.sum + right.sum;
-        }
-
-        public void pushDown() {
-        }
-
-        public Segment(int l, int r) {
-            if (l < r) {
-                int m = (l + r) >> 1;
-                left = new Segment(l, m);
-                right = new Segment(m + 1, r);
-                pushUp();
-            } else {
-
-            }
-        }
-
-        private boolean covered(int ll, int rr, int l, int r) {
-            return ll <= l && rr >= r;
-        }
-
-        private boolean noIntersection(int ll, int rr, int l, int r) {
-            return ll > r || rr < l;
-        }
-
-        public void update(int ll, int rr, int l, int r, long x) {
-            if (noIntersection(ll, rr, l, r)) {
-                return;
-            }
-            if (covered(ll, rr, l, r)) {
-                inc(x);
-                return;
-            }
-            pushDown();
-            int m = (l + r) >> 1;
-            left.update(ll, rr, l, m, x);
-            right.update(ll, rr, m + 1, r, x);
-            pushUp();
-        }
-
-        public long query(int ll, int rr, int l, int r) {
-            if (noIntersection(ll, rr, l, r)) {
-                return 0;
-            }
-            if (covered(ll, rr, l, r)) {
-                return sum;
-            }
-            pushDown();
-            int m = (l + r) >> 1;
-            return left.query(ll, rr, l, m) +
-                    right.query(ll, rr, m + 1, r);
-        }
-
-    }
-
     static class FastInput {
         private final InputStream is;
         private byte[] buf = new byte[1 << 13];
@@ -300,55 +230,26 @@ public class Main {
         }
 
     }
+    static class Edge {
+        Node a;
+        Node b;
+        long length;
 
-    static class FastOutput implements AutoCloseable, Closeable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
-
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput println(int c) {
-            cache.append(c).append('\n');
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        }
-
-        public String toString() {
-            return cache.toString();
+        public Node other(Node x) {
+            return a == x ? b : a;
         }
 
     }
-
     static class Node {
-        List<Node> next = new ArrayList<>();
+        List<Edge> next = new ArrayList<>();
         int size;
-        int l;
-        int r;
+        Node p;
+        long depth;
+        int id;
+
+        public String toString() {
+            return "" + id;
+        }
 
     }
 }

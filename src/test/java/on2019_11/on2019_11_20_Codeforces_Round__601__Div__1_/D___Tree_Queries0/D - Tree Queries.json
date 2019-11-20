@@ -1,0 +1,35 @@
+{
+  "name" : "D - Tree Queries",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5 12\n1 2\n1 3\n2 4\n2 5\n1 1 1\n2 1\n2 2\n2 3\n2 4\n2 5\n1 2 2\n2 1\n2 2\n2 3\n2 4\n2 5\n",
+    "output" : "1\n199648871\n399297742\n199648871\n199648871\n598946614\n199648873\n2\n2\n2\n",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx512M",
+  "mainClass" : "Main",
+  "taskClass" : "on2019_11.on2019_11_20_Codeforces_Round__601__Div__1_.D___Tree_Queries0.TaskD",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.11.20",
+  "contestName" : "Codeforces Round #601 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.FastInput",
+  "outputClass" : "template.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : true,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

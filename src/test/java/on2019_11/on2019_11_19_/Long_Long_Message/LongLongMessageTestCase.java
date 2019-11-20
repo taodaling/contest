@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Random;
 import net.egork.chelper.task.Test;
 import net.egork.chelper.tester.TestCase;
-import org.apache.commons.lang3.RandomUtils;
 import template.RandomWrapper;
 import template.SuffixAutomaton;
 
