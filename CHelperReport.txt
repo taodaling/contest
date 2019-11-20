@@ -1,3 +1,2 @@
-43 src/main/java/contest/D - Tree Queries.json
-1
+43 src/main/java/contest/E - Magic Stones.json
 0

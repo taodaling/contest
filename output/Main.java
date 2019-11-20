@@ -2,10 +2,10 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Random;
 import java.io.UncheckedIOException;
-import java.util.List;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
@@ -29,215 +29,102 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            TaskD solver = new TaskD();
+            TaskE solver = new TaskE();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class TaskD {
-        int dfn = 1;
-
+    static class TaskE {
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            int q = in.readInt();
-            Node[] nodes = new Node[n + 1];
-            for (int i = 1; i <= n; i++) {
-                nodes[i] = new Node();
+            int[] c = new int[n];
+            for (int i = 0; i < n; i++) {
+                c[i] = in.readInt();
             }
+            int[] t = new int[n];
+            for (int i = 0; i < n; i++) {
+                t[i] = in.readInt();
+            }
+            int[] dc = new int[n];
+            int[] dt = new int[n];
+            dc[0] = c[0];
+            dt[0] = t[0];
             for (int i = 1; i < n; i++) {
-                Node a = nodes[in.readInt()];
-                Node b = nodes[in.readInt()];
-                a.next.add(b);
-                b.next.add(a);
+                dc[i] = c[i] - c[i - 1];
+                dt[i] = t[i] - t[i - 1];
             }
-            dfs(nodes[1], null);
-            Segment seg = new Segment(1, n);
-            NumberTheory.Modular mod = new NumberTheory.Modular(998244353);
-            NumberTheory.Power pow = new NumberTheory.Power(mod);
-            int invN = pow.inverse(n);
-            for (int i = 0; i < q; i++) {
-                int t = in.readInt();
-                if (t == 1) {
-                    int v = in.readInt();
-                    int d = in.readInt();
-                    seg.update(nodes[v].l, nodes[v].l, 1, n, d);
-                } else {
-                    int v = in.readInt();
-                    long total = seg.query(1, n, 1, n);
-                    long self = seg.query(nodes[v].l, nodes[v].r, 1, n);
-                    long subtree = seg.query(nodes[v].l + 1, nodes[v].r, 1, n);
-                    long outside = total - subtree - self;
-                    int exp = 0;
-                    exp = mod.plus(exp, mod.mul(mod.valueOf(outside), mod.mul(nodes[v].size, invN)));
-                    exp = mod.plus(exp, self);
-                    exp = mod.plus(exp, mod.mul(mod.valueOf(subtree), mod.mul(n - nodes[v].size + 1, invN)));
-                    out.println(exp);
-                }
+            if (c[0] != t[0]) {
+                out.println("No");
+                return;
             }
-        }
-
-        public void dfs(Node root, Node p) {
-            root.size = 1;
-            root.l = dfn++;
-            for (Node node : root.next) {
-                if (node == p) {
-                    continue;
-                }
-                dfs(node, root);
-                root.size += node.size;
-            }
-            root.r = dfn - 1;
-        }
-
-    }
-
-    static class NumberTheory {
-        public static class Modular {
-            int m;
-
-            public Modular(int m) {
-                this.m = m;
-            }
-
-            public Modular(long m) {
-                this.m = (int) m;
-                if (this.m != m) {
-                    throw new IllegalArgumentException();
-                }
-            }
-
-            public Modular(double m) {
-                this.m = (int) m;
-                if (this.m != m) {
-                    throw new IllegalArgumentException();
-                }
-            }
-
-            public int valueOf(int x) {
-                x %= m;
-                if (x < 0) {
-                    x += m;
-                }
-                return x;
-            }
-
-            public int valueOf(long x) {
-                x %= m;
-                if (x < 0) {
-                    x += m;
-                }
-                return (int) x;
-            }
-
-            public int mul(int x, int y) {
-                return valueOf((long) x * y);
-            }
-
-            public int plus(int x, int y) {
-                return valueOf(x + y);
-            }
-
-            public int plus(long x, long y) {
-                x = valueOf(x);
-                y = valueOf(y);
-                return valueOf(x + y);
-            }
-
-            public String toString() {
-                return "mod " + m;
-            }
-
-        }
-
-        public static class Power {
-            final NumberTheory.Modular modular;
-
-            public Power(NumberTheory.Modular modular) {
-                this.modular = modular;
-            }
-
-            public int pow(int x, long n) {
-                if (n == 0) {
-                    return modular.valueOf(1);
-                }
-                long r = pow(x, n >> 1);
-                r = modular.valueOf(r * r);
-                if ((n & 1) == 1) {
-                    r = modular.valueOf(r * x);
-                }
-                return (int) r;
-            }
-
-            public int inverse(int x) {
-                return pow(x, modular.m - 2);
-            }
-
-        }
-
-    }
-
-    static class Segment implements Cloneable {
-        private Segment left;
-        private Segment right;
-        private long sum;
-
-        private void inc(long x) {
-            sum += x;
-        }
-
-        public void pushUp() {
-            sum = left.sum + right.sum;
-        }
-
-        public void pushDown() {
-        }
-
-        public Segment(int l, int r) {
-            if (l < r) {
-                int m = (l + r) >> 1;
-                left = new Segment(l, m);
-                right = new Segment(m + 1, r);
-                pushUp();
+            Randomized.randomizedArray(dc, 0, n);
+            Randomized.randomizedArray(dt, 0, n);
+            Arrays.sort(dc);
+            Arrays.sort(dt);
+            if (CompareUtils.compareArray(dc, 0, n - 1, dt, 0, n - 1) == 0) {
+                out.println("Yes");
             } else {
-
+                out.println("No");
             }
         }
 
-        private boolean covered(int ll, int rr, int l, int r) {
-            return ll <= l && rr >= r;
+    }
+
+    static class CompareUtils {
+        private CompareUtils() {
         }
 
-        private boolean noIntersection(int ll, int rr, int l, int r) {
-            return ll > r || rr < l;
+        public static int compareArray(int[] a, int al, int ar, int[] b, int bl, int br) {
+            for (int i = al, j = bl; i <= ar && j <= br; i++, j++) {
+                if (a[i] != b[j]) {
+                    return a[i] - b[j];
+                }
+            }
+            return (ar - al) - (br - bl);
         }
 
-        public void update(int ll, int rr, int l, int r, long x) {
-            if (noIntersection(ll, rr, l, r)) {
-                return;
-            }
-            if (covered(ll, rr, l, r)) {
-                inc(x);
-                return;
-            }
-            pushDown();
-            int m = (l + r) >> 1;
-            left.update(ll, rr, l, m, x);
-            right.update(ll, rr, m + 1, r, x);
-            pushUp();
+    }
+
+    static class FastOutput implements AutoCloseable, Closeable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
+
+        public FastOutput(Writer os) {
+            this.os = os;
         }
 
-        public long query(int ll, int rr, int l, int r) {
-            if (noIntersection(ll, rr, l, r)) {
-                return 0;
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput println(String c) {
+            cache.append(c).append('\n');
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
             }
-            if (covered(ll, rr, l, r)) {
-                return sum;
+            return this;
+        }
+
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
             }
-            pushDown();
-            int m = (l + r) >> 1;
-            return left.query(ll, rr, l, m) +
-                    right.query(ll, rr, m + 1, r);
+        }
+
+        public String toString() {
+            return cache.toString();
         }
 
     }
@@ -301,54 +188,22 @@ public class Main {
 
     }
 
-    static class FastOutput implements AutoCloseable, Closeable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
+    static class Randomized {
+        static Random random = new Random();
 
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput println(int c) {
-            cache.append(c).append('\n');
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
+        public static void randomizedArray(int[] data, int from, int to) {
+            to--;
+            for (int i = from; i <= to; i++) {
+                int s = nextInt(i, to);
+                int tmp = data[i];
+                data[i] = data[s];
+                data[s] = tmp;
             }
         }
 
-        public String toString() {
-            return cache.toString();
+        public static int nextInt(int l, int r) {
+            return random.nextInt(r - l + 1) + l;
         }
-
-    }
-
-    static class Node {
-        List<Node> next = new ArrayList<>();
-        int size;
-        int l;
-        int r;
 
     }
 }

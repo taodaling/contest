@@ -1,0 +1,44 @@
+{
+  "name" : "E - Magic Stones",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4\n7 2 4 12\n7 15 10 12\n",
+    "output" : "Yes\n",
+    "index" : 0,
+    "active" : false
+  }, {
+    "input" : "3\n4 4 4\n1 2 3\n",
+    "output" : "No\n",
+    "index" : 1,
+    "active" : false
+  }, {
+    "input" : "2\n3 1\n3 1",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.TaskE",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.11.20",
+  "contestName" : "Codeforces Global Round 1",
+  "truncate" : true,
+  "inputClass" : "template.FastInput",
+  "outputClass" : "template.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : true,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}
