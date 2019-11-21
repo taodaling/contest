@@ -11,6 +11,24 @@ public class MultiWayIntDeque {
     private int alloc;
     private int queueNum;
 
+    public IntIterator iterator(final int queue) {
+        return new IntIterator() {
+            int ele = heads[queue];
+
+            @Override
+            public boolean hasNext() {
+                return ele != 0;
+            }
+
+            @Override
+            public int next() {
+                int ans = vals[ele];
+                ele = next[ele];
+                return ans;
+            }
+        };
+    }
+
     private void doubleCapacity() {
         int newSize = Math.max(next.length + 10, next.length * 2);
         next = Arrays.copyOf(next, newSize);
@@ -29,7 +47,6 @@ public class MultiWayIntDeque {
     public int queueNumber() {
         return heads.length;
     }
-
 
     public void clear() {
         alloc = 0;
@@ -118,5 +135,21 @@ public class MultiWayIntDeque {
             prev[tails[qId]] = 0;
         }
         return ans;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        for(int i = 0; i < queueNum; i++){
+            builder.append(i).append(": ");
+            for(IntIterator iterator = iterator(i); iterator.hasNext(); ){
+                builder.append(iterator.next()).append(",");
+            }
+            if(builder.charAt(builder.length() - 1) == ','){
+                builder.setLength(builder.length() - 1);
+            }
+            builder.append('\n');
+        }
+        return builder.toString();
     }
 }

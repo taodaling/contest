@@ -2,20 +2,17 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Collection;
+import java.util.Arrays;
 import java.io.IOException;
-import java.util.Deque;
 import java.io.UncheckedIOException;
-import java.util.List;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
-import java.util.ArrayDeque;
-import java.util.LinkedList;
 import java.io.InputStream;
 
 /**
- * Built using CHelper plug-in Actual solution is at the top
+ * Built using CHelper plug-in
+ * Actual solution is at the top
  */
 public class Main {
     public static void main(String[] args) throws Exception {
@@ -36,66 +33,381 @@ public class Main {
             out.close();
         }
     }
+
     static class TaskF {
+        int p;
+        int M;
+
+        public int idOfStation(int x) {
+            return x - 1;
+        }
+
+        public int idOfGE(int x) {
+            return p + x - 1;
+        }
+
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            int p = in.readInt();
-            int M = in.readInt();
+            p = in.readInt();
+            M = in.readInt();
             int m = in.readInt();
 
-            TwoSat twoSat = new TwoSat(p + M + 1);
-
-            for (int i = 1; i <= M; i++) {
-                twoSat.deduce(twoSat.getElement(p + i + 1), twoSat.getElement(p + i));
+            TwoSatBeta ts = new TwoSatBeta(p + M + 1, 0);
+            for (int i = 0; i < n; i++) {
+                int a = in.readInt();
+                int b = in.readInt();
+                ts.atLeastOneIsTrue(ts.elementId(idOfStation(a)), ts.elementId(idOfStation(b)));
             }
 
-            for (int i = 0; i < n; i++) {
-                int x = in.readInt();
-                int y = in.readInt();
-                twoSat.or(twoSat.getElement(x), twoSat.getElement(y));
+            for (int i = 2; i <= M + 1; i++) {
+                ts.deduce(ts.elementId(idOfGE(i)), ts.elementId(idOfGE(i - 1)));
             }
 
             for (int i = 1; i <= p; i++) {
                 int l = in.readInt();
                 int r = in.readInt();
-                twoSat.deduce(twoSat.getElement(i), twoSat.getElement(p + l));
-                twoSat.deduce(twoSat.getElement(i), twoSat.getNotElement(p + r + 1));
+                ts.deduce(ts.elementId(idOfStation(i)),
+                        ts.elementId(idOfGE(l)));
+                ts.deduce(ts.elementId(idOfStation(i)),
+                        ts.negateElementId(idOfGE(r + 1)));
             }
 
-            for (int i = 1; i <= m; i++) {
-                int u = in.readInt();
-                int v = in.readInt();
-                twoSat.atLeastOneIsFalse(twoSat.getElement(u), twoSat.getElement(v));
+            for (int i = 0; i < m; i++) {
+                int a = in.readInt();
+                int b = in.readInt();
+                ts.atLeastOneIsFalse(ts.elementId(idOfStation(a)), ts.elementId(idOfStation(b)));
             }
 
-            if (!twoSat.solve(true)) {
-                out.append(-1);
+            boolean solvable = ts.solve(true);
+            if (!solvable) {
+                out.println(-1);
                 return;
             }
             int k = 0;
             int f = 0;
             for (int i = 1; i <= p; i++) {
-                if (twoSat.valueOf(i)) {
+                if (ts.valueOf(idOfStation(i))) {
                     k++;
                 }
             }
-
-            for (int i = 1; i <= M; i++) {
-                if (twoSat.valueOf(p + i) && !twoSat.valueOf(p + i + 1)) {
+            for (int i = 1; i <= M + 1; i++) {
+                if (ts.valueOf(idOfGE(i))) {
                     f = i;
-                    break;
                 }
             }
-
-            out.append(k).append(' ').append(f).append('\n');
+            out.append(k).append(' ').append(f).println();
             for (int i = 1; i <= p; i++) {
-                if (twoSat.valueOf(i)) {
+                if (ts.valueOf(idOfStation(i))) {
                     out.append(i).append(' ');
                 }
             }
         }
 
     }
+
+    static class MultiWayIntDeque {
+        private int[] vals;
+        private int[] next;
+        private int[] prev;
+        private int[] heads;
+        private int[] tails;
+        private int alloc;
+        private int queueNum;
+
+        public IntIterator iterator(final int queue) {
+            return new IntIterator() {
+                int ele = heads[queue];
+
+
+                public boolean hasNext() {
+                    return ele != 0;
+                }
+
+
+                public int next() {
+                    int ans = vals[ele];
+                    ele = next[ele];
+                    return ans;
+                }
+            };
+        }
+
+        private void doubleCapacity() {
+            int newSize = Math.max(next.length + 10, next.length * 2);
+            next = Arrays.copyOf(next, newSize);
+            prev = Arrays.copyOf(prev, newSize);
+            vals = Arrays.copyOf(vals, newSize);
+        }
+
+        public void alloc() {
+            alloc++;
+            if (alloc >= next.length) {
+                doubleCapacity();
+            }
+            next[alloc] = 0;
+        }
+
+        public MultiWayIntDeque(int qNum, int totalCapacity) {
+            vals = new int[totalCapacity + 1];
+            next = new int[totalCapacity + 1];
+            prev = new int[totalCapacity + 1];
+            heads = new int[qNum];
+            tails = new int[qNum];
+            queueNum = qNum;
+        }
+
+        public void addLast(int qId, int x) {
+            alloc();
+            vals[alloc] = x;
+
+            if (heads[qId] == 0) {
+                heads[qId] = tails[qId] = alloc;
+                return;
+            }
+            next[tails[qId]] = alloc;
+            prev[alloc] = tails[qId];
+            tails[qId] = alloc;
+        }
+
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < queueNum; i++) {
+                builder.append(i).append(": ");
+                for (IntIterator iterator = iterator(i); iterator.hasNext(); ) {
+                    builder.append(iterator.next()).append(",");
+                }
+                if (builder.charAt(builder.length() - 1) == ',') {
+                    builder.setLength(builder.length() - 1);
+                }
+                builder.append('\n');
+            }
+            return builder.toString();
+        }
+
+    }
+
+    static class TwoSatBeta {
+        private MultiWayIntDeque edges;
+        private boolean[] values;
+        private int[] sets;
+        private int[] dfns;
+        private int[] lows;
+        private boolean[] instk;
+        private IntDeque deque;
+        private int n;
+        private int dfn = 0;
+
+        public TwoSatBeta(int n, int m) {
+            values = new boolean[n * 2];
+            sets = new int[n * 2];
+            edges = new MultiWayIntDeque(n * 2, m * 2);
+            dfns = new int[n * 2];
+            lows = new int[n * 2];
+            instk = new boolean[n * 2];
+            deque = new IntDeque(n * 2);
+            this.n = n;
+        }
+
+        public boolean valueOf(int x) {
+            return values[sets[elementId(x)]];
+        }
+
+        public boolean solve(boolean fetchValue) {
+            Arrays.fill(values, false);
+            Arrays.fill(dfns, 0);
+            deque.clear();
+            dfn = 0;
+
+            for (int i = 0; i < sets.length; i++) {
+                tarjan(i);
+            }
+            for (int i = 0; i < n; i++) {
+                if (sets[elementId(i)] == sets[negateElementId(i)]) {
+                    return false;
+                }
+            }
+
+            if (!fetchValue) {
+                return true;
+            }
+
+            Arrays.fill(dfns, 0);
+            for (int i = 0; i < sets.length; i++) {
+                assign(i);
+            }
+            return true;
+        }
+
+        private void assign(int root) {
+            if (dfns[root] > 0) {
+                return;
+            }
+            dfns[root] = 1;
+            for (IntIterator iterator = edges.iterator(root); iterator.hasNext(); ) {
+                int node = iterator.next();
+                assign(node);
+            }
+            if (sets[root] == root) {
+                values[root] = !values[sets[negate(root)]];
+            }
+        }
+
+        private void tarjan(int root) {
+            if (dfns[root] > 0) {
+                return;
+            }
+            lows[root] = dfns[root] = ++dfn;
+            instk[root] = true;
+            deque.addLast(root);
+            for (IntIterator iterator = edges.iterator(root); iterator.hasNext(); ) {
+                int node = iterator.next();
+                tarjan(node);
+                if (instk[node] && lows[node] < lows[root]) {
+                    lows[root] = lows[node];
+                }
+            }
+            if (lows[root] == dfns[root]) {
+                int last;
+                do {
+                    last = deque.removeLast();
+                    sets[last] = root;
+                    instk[last] = false;
+                } while (last != root);
+            }
+        }
+
+        public int elementId(int x) {
+            return x << 1;
+        }
+
+        public int negateElementId(int x) {
+            return (x << 1) | 1;
+        }
+
+        private int negate(int x) {
+            return x ^ 1;
+        }
+
+        public void deduce(int a, int b) {
+            edges.addLast(a, b);
+            edges.addLast(negate(b), negate(a));
+        }
+
+        public void or(int a, int b) {
+            deduce(negate(a), b);
+        }
+
+        public void atLeastOneIsFalse(int a, int b) {
+            deduce(a, negate(b));
+        }
+
+        public void atLeastOneIsTrue(int a, int b) {
+            or(a, b);
+        }
+
+    }
+
+    static class IntDeque {
+        int[] data;
+        int bpos;
+        int epos;
+        int cap;
+
+        public IntDeque(int cap) {
+            this.cap = cap + 1;
+            this.data = new int[this.cap];
+        }
+
+        private int last(int i) {
+            return (i == 0 ? cap : i) - 1;
+        }
+
+        private int next(int i) {
+            int n = i + 1;
+            return n == cap ? 0 : n;
+        }
+
+        public int removeLast() {
+            return data[epos = last(epos)];
+        }
+
+        public void addLast(int val) {
+            data[epos] = val;
+            epos = next(epos);
+        }
+
+        public void clear() {
+            bpos = epos = 0;
+        }
+
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            for (int i = bpos; i != epos; i = next(i)) {
+                builder.append(data[i]).append(' ');
+            }
+            return builder.toString();
+        }
+
+    }
+
+    static class FastOutput implements AutoCloseable, Closeable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
+
+        public FastOutput(Writer os) {
+            this.os = os;
+        }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput append(char c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput append(int c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput println(int c) {
+            cache.append(c).append('\n');
+            return this;
+        }
+
+        public FastOutput println() {
+            cache.append('\n');
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            return this;
+        }
+
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+
+        public String toString() {
+            return cache.toString();
+        }
+
+    }
+
     static class FastInput {
         private final InputStream is;
         private byte[] buf = new byte[1 << 13];
@@ -154,235 +466,11 @@ public class Main {
         }
 
     }
-    static class FastOutput implements AutoCloseable, Closeable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
 
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
+    static interface IntIterator {
+        boolean hasNext();
 
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput append(char c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput append(int c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        }
-
-        public String toString() {
-            return cache.toString();
-        }
-
-    }
-    static class TwoSat {
-        TwoSat.Node[][] nodes;
-        Deque<TwoSat.Node> deque;
-        int n;
-        int order;
-
-        public TwoSat(int n) {
-            this.n = n;
-            deque = new ArrayDeque(2 * n);
-            nodes = new TwoSat.Node[2][n + 1];
-            for (int i = 0; i < 2; i++) {
-                for (int j = 1; j <= n; j++) {
-                    nodes[i][j] = new TwoSat.Node();
-                    nodes[i][j].id = i == 0 ? -j : j;
-                }
-            }
-            for (int i = 0; i < 2; i++) {
-                for (int j = 1; j <= n; j++) {
-                    nodes[i][j].inverse = nodes[1 - i][j];
-                }
-            }
-            reset(n);
-        }
-
-        void reset(int n) {
-            this.n = n;
-            order = 0;
-            for (int i = 0; i < 2; i++) {
-                for (int j = 1; j <= n; j++) {
-                    nodes[i][j].dfn = -1;
-                    nodes[i][j].outEdge.clear();
-                    nodes[i][j].inEdge.clear();
-                    nodes[i][j].head = null;
-                    nodes[i][j].value = -1;
-                    nodes[i][j].next = null;
-                    nodes[i][j].relyOn = 0;
-                }
-            }
-        }
-
-        public TwoSat.Node getElement(int i) {
-            return nodes[1][i];
-        }
-
-        public TwoSat.Node getNotElement(int i) {
-            return nodes[0][i];
-        }
-
-        private void addEdge(TwoSat.Node a, TwoSat.Node b) {
-            a.outEdge.add(b);
-            b.inEdge.add(a);
-        }
-
-        public void or(TwoSat.Node a, TwoSat.Node b) {
-            addEdge(a.inverse, b);
-            addEdge(b.inverse, a);
-        }
-
-        public void deduce(TwoSat.Node a, TwoSat.Node b) {
-            or(a.inverse, b);
-        }
-
-        public void atLeastOneIsFalse(TwoSat.Node a, TwoSat.Node b) {
-            or(a.inverse, b.inverse);
-        }
-
-        public boolean valueOf(int i) {
-            return nodes[1][i].value == 1;
-        }
-
-        public boolean solve(boolean fetchValue) {
-            for (int i = 0; i < 2; i++) {
-                for (int j = 1; j <= n; j++) {
-                    tarjan(nodes[i][j]);
-                }
-            }
-            for (int i = 1; i <= n; i++) {
-                if (nodes[0][i].head == nodes[1][i].head) {
-                    return false;
-                }
-            }
-
-            if (!fetchValue) {
-                return true;
-            }
-
-            // Topological sort
-            for (int i = 0; i < 2; i++) {
-                for (int j = 1; j <= n; j++) {
-                    for (TwoSat.Node node : nodes[i][j].outEdge) {
-                        if (node.head != nodes[i][j].head) {
-                            nodes[i][j].head.relyOn++;
-                        }
-                    }
-                }
-            }
-
-            for (int i = 0; i < 2; i++) {
-                for (int j = 1; j <= n; j++) {
-                    if (nodes[i][j].head == nodes[i][j] && nodes[i][j].relyOn == 0) {
-                        deque.addLast(nodes[i][j]);
-                    }
-                }
-            }
-
-            while (!deque.isEmpty()) {
-                TwoSat.Node head = deque.removeFirst();
-                if (head.inverse.value != -1) {
-                    head.value = 0;
-                } else {
-                    head.value = 1;
-                }
-                for (TwoSat.Node trace = head; trace != null; trace = trace.next) {
-                    trace.value = head.value;
-                    for (TwoSat.Node node : trace.inEdge) {
-                        if (node.head == head) {
-                            continue;
-                        }
-                        node.head.relyOn--;
-                        if (node.head.relyOn == 0) {
-                            deque.addLast(node.head);
-                        }
-                    }
-                }
-            }
-
-            return true;
-        }
-
-        private void tarjan(TwoSat.Node root) {
-            if (root.dfn >= 0) {
-                return;
-            }
-            root.low = root.dfn = order++;
-            deque.addLast(root);
-            root.instack = true;
-            for (TwoSat.Node node : root.outEdge) {
-                tarjan(node);
-                if (node.instack) {
-                    root.low = Math.min(root.low, node.low);
-                }
-            }
-            if (root.dfn == root.low) {
-                while (true) {
-                    TwoSat.Node head = deque.removeLast();
-                    head.instack = false;
-                    head.head = root;
-                    if (head == root) {
-                        break;
-                    }
-                    head.next = root.next;
-                    root.next = head;
-                }
-            }
-        }
-
-        public String toString() {
-            StringBuilder builder = new StringBuilder();
-            for (int i = 1; i <= n; i++) {
-                builder.append(valueOf(i)).append(' ');
-            }
-            return builder.toString();
-        }
-
-        public static class Node {
-            List<TwoSat.Node> outEdge = new LinkedList();
-            List<TwoSat.Node> inEdge = new LinkedList<>();
-            int id;
-            TwoSat.Node inverse;
-            TwoSat.Node head;
-            TwoSat.Node next;
-            int dfn;
-            int low;
-            boolean instack;
-            int value;
-            int relyOn;
-
-            public String toString() {
-                return "" + id;
-            }
-
-        }
+        int next();
 
     }
 }

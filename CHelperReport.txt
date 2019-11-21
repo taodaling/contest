@@ -1,3 +1,2 @@
 45 src/main/java/contest/F - Radio Stations.json
-1
 0
