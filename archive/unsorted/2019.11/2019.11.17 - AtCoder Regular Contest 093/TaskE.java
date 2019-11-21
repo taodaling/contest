@@ -3,7 +3,6 @@ package contest;
 import template.DynamicMST;
 import template.FastInput;
 import template.FastOutput;
-import template.NumberTheory;
 
 import java.util.*;
 
@@ -39,8 +38,8 @@ public class TaskE {
             cntMap.put(d, cntMap.getOrDefault(d, 0) + 1);
         }
 
-        NumberTheory.Modular mod = new NumberTheory.Modular(1e9 + 7);
-        NumberTheory.Power pow = new NumberTheory.Power(mod);
+        Modular mod = new Modular(1e9 + 7);
+        Power pow = new Power(mod);
         if (diff == 0) {
             int num = cntMap.get(diff);
             int ans = mod.subtract(pow.pow(2, m), pow.pow(2, m - num + 1));

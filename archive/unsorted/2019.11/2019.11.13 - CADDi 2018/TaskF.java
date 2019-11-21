@@ -6,7 +6,6 @@ import java.util.TreeMap;
 import template.DigitUtils;
 import template.FastInput;
 import template.FastOutput;
-import template.NumberTheory;
 
 public class TaskF {
     public void solve(int testNumber, FastInput in, FastOutput out) {
@@ -53,8 +52,8 @@ public class TaskF {
         }
 
 
-        NumberTheory.Modular mod = new NumberTheory.Modular(998244353);
-        NumberTheory.Power pow = new NumberTheory.Power(mod);
+        Modular mod = new Modular(998244353);
+        Power pow = new Power(mod);
 
         int[][] dp = new int[n + 1][2];
         if (diagonal[1] == -1) {

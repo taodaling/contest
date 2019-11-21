@@ -5,7 +5,6 @@ import template.DiscreteMap;
 import template.FastInput;
 import template.FastOutput;
 import template.IntList;
-import template.NumberTheory;
 import template.SequenceUtils;
 
 public class TaskD {
@@ -15,8 +14,8 @@ public class TaskD {
     int n;
     DiscreteMap dm;
     int m;
-    NumberTheory.Modular mod = new NumberTheory.Modular(1e9 + 7);
-    NumberTheory.Power pow = new NumberTheory.Power(mod);
+    Modular mod = new Modular(1e9 + 7);
+    Power pow = new Power(mod);
 
     public int f(int i, int j) {
         if (f[i][j] == -1) {

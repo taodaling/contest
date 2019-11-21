@@ -7,12 +7,11 @@ import java.util.Deque;
 import template.ArrayUtils;
 import template.FastInput;
 import template.FastOutput;
-import template.NumberTheory;
 
 public class TaskC {
 
-    NumberTheory.Modular mod = new NumberTheory.Modular(1e9 + 7);
-    NumberTheory.Composite comp = new NumberTheory.Composite(10000, mod);
+    Modular mod = new Modular(1e9 + 7);
+    Composite comp = new Composite(10000, mod);
 
     int[] preSum;
     int[][] dp;

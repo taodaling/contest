@@ -5,12 +5,11 @@ import java.util.List;
 
 import template.FastInput;
 import template.FastOutput;
-import template.NumberTheory;
 
 public class TaskF {
 
-    NumberTheory.Modular mod = new NumberTheory.Modular(1e9 + 7);
-    NumberTheory.Power pow = new NumberTheory.Power(mod);
+    Modular mod = new Modular(1e9 + 7);
+    Power pow = new Power(mod);
     int ONE_TWO = pow.inverse(2);
     int ONE_FOUR = pow.inverse(4);
 

@@ -1,15 +1,14 @@
 package contest;
 
 import template.FastInput;
-import template.NumberTheory;
 
 import java.io.PrintWriter;
 import java.util.List;
 
 public class TaskD {
     public void solve(int testNumber, FastInput in, PrintWriter out) {
-        NumberTheory.Modular mod = new NumberTheory.Modular(924844033);
-        NumberTheory.Factorial fact = new NumberTheory.Factorial(2000, mod);
+        Modular mod = new Modular(924844033);
+        Factorial fact = new Factorial(2000, mod);
 
         int n = in.readInt();
         int k = in.readInt();

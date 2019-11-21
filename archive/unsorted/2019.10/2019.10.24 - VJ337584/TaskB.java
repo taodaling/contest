@@ -3,14 +3,13 @@ package contest;
 import template.DigitUtils;
 import template.FastInput;
 import template.FastOutput;
-import template.NumberTheory;
 
 public class TaskB {
-    NumberTheory.Modular mod = new NumberTheory.Modular(1e9 + 7);
+    Modular mod = new Modular(1e9 + 7);
     public void solve(int testNumber, FastInput in, FastOutput out) {
         long n = in.readLong();
         int[] bits = new int[64];
-        DigitUtils.BitOperator bo = new DigitUtils.BitOperator();
+        BitOperator bo = new BitOperator();
         for (int i = 0; i < 64; i++) {
             bits[i] = bo.bitAt(n, i);
         }

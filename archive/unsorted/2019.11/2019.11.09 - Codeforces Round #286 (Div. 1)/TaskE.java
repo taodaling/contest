@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TaskE {
-    NumberTheory.Modular mod = new NumberTheory.Modular(10007);
+    Modular mod = new Modular(10007);
     int prime = 10007;
 
     public void solve(int testNumber, FastInput in, FastOutput out) {
@@ -75,7 +75,7 @@ public class TaskE {
         }
 
         IntList remainder = new IntList();
-        Polynomials.module(n / 2, p, remainder, new NumberTheory.Power(mod));
+        Polynomials.module(n / 2, p, remainder, new Power(mod));
         Polynomials.normalize(remainder);
 
         int[] rem = remainder.toArray();

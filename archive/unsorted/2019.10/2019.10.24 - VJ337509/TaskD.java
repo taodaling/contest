@@ -4,15 +4,14 @@ import template.DigitUtils;
 import template.FastInput;
 import template.FastOutput;
 import template.IntList;
-import template.NumberTheory;
 
 public class TaskD {
     public void solve(int testNumber, FastInput in, FastOutput out) {
         int n = in.readInt();
         int k = in.readInt();
 
-        NumberTheory.Modular mod = new NumberTheory.Modular(1e9 + 7);
-        NumberTheory.Power pow = new NumberTheory.Power(mod);
+        Modular mod = new Modular(1e9 + 7);
+        Power pow = new Power(mod);
 
         IntList factors = new IntList();
         for (int i = 1; i * i <= n; i++) {

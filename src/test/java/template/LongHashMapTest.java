@@ -6,6 +6,8 @@ import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
+import template.datastructure.LongEntryIterator;
+import template.datastructure.LongHashMap;
 
 public class LongHashMapTest {
 
@@ -40,7 +42,7 @@ public class LongHashMapTest {
     @Test
     public void test1() {
         int n = 10000000;
-        LongHashMap hm = new LongHashMap(5000000);
+        LongHashMap hm = new LongHashMap(5000000, true);
         for (int i = 0; i < n; i++) {
             hm.put(i, -i);
         }

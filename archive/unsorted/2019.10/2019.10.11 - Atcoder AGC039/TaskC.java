@@ -6,11 +6,10 @@ import java.util.List;
 import java.util.TreeMap;
 
 import template.FastInput;
-import template.NumberTheory;
 
 public class TaskC {
     public void solve(int testNumber, FastInput in, PrintWriter out) {
-        NumberTheory.Modular mod = new NumberTheory.Modular(998244353);
+        Modular mod = new Modular(998244353);
 
         int n = in.readInt();
         int[] x = new int[n];

@@ -13,7 +13,7 @@ public class TaskC {
     long notExist;
     long[] mask2Key;
     Map<Long, LongList> sequence;
-    DigitUtils.BitOperator bo = new DigitUtils.BitOperator();
+    BitOperator bo = new BitOperator();
     boolean[] dp;
 
     public void solve(int testNumber, FastInput in, FastOutput out) {

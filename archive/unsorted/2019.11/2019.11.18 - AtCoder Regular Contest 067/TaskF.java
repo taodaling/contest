@@ -4,7 +4,6 @@ import template.DigitUtils;
 import template.FastInput;
 import template.FastOutput;
 import template.ModMatrix;
-import template.NumberTheory;
 
 public class TaskF {
     public void solve(int testNumber, FastInput in, FastOutput out) {
@@ -12,7 +11,7 @@ public class TaskF {
         long a = in.readLong();
         long b = in.readLong();
 
-        NumberTheory.Modular mod = new NumberTheory.Modular(in.readInt());
+        Modular mod = new Modular(in.readInt());
         int maxDigit = base10.ceilLog(a + b * (L - 1));
         int minDigit = base10.ceilLog(a);
         int ans = 0;
@@ -33,7 +32,7 @@ public class TaskF {
         out.println(ans);
     }
 
-    DigitUtils.DigitBase base10 = new DigitUtils.DigitBase(10);
+    DigitBase base10 = new DigitBase(10);
 
     public long getL(int digit, long a, long b, long L) {
         long l = 0;

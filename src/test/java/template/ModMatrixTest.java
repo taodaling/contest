@@ -2,10 +2,14 @@ package template;
 
 import org.junit.Assert;
 import org.junit.Test;
+import template.math.ModMatrix;
+import template.math.Modular;
+import template.math.Power;
+import template.polynomial.GravityModLagrangeInterpolation;
 
 public class ModMatrixTest {
-    NumberTheory.Modular mod = new NumberTheory.Modular(1e9 + 7);
-    NumberTheory.Power pow = new NumberTheory.Power(mod);
+    Modular mod = new Modular(1e9 + 7);
+    Power pow = new Power(mod);
 
     @Test
     public void test1() {
@@ -56,8 +60,8 @@ public class ModMatrixTest {
 
     @Test
     public void test4() {
-        NumberTheory.Modular mod = new NumberTheory.Modular(1e9 + 7);
-        NumberTheory.Power pow = new NumberTheory.Power(mod);
+        Modular mod = new Modular(1e9 + 7);
+        Power pow = new Power(mod);
 
         ModMatrix matrix = new ModMatrix(new int[][]{
                 {0,0,2},

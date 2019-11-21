@@ -2,7 +2,6 @@ package contest;
 
 import template.FastInput;
 import template.FastOutput;
-import template.NumberTheory;
 
 public class TaskE {
     public void solve(int testNumber, FastInput in, FastOutput out) {
@@ -14,8 +13,8 @@ public class TaskE {
             }
         }
 
-        NumberTheory.Modular mod = new NumberTheory.Modular(998244353);
-        NumberTheory.Power pow = new NumberTheory.Power(mod);
+        Modular mod = new Modular(998244353);
+        Power pow = new Power(mod);
         int ans = pow.pow(2, n);
         ans = mod.subtract(ans, 1);
         ans = mod.subtract(ans, n);

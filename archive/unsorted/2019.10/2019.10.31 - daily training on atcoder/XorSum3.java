@@ -13,7 +13,7 @@ public class XorSum3 {
             a[i] = in.readLong();
         }
 
-        DigitUtils.BitOperator bo = new DigitUtils.BitOperator();
+        BitOperator bo = new BitOperator();
         int[] bitCnts = new int[64];
         for(int i = 0; i < n; i++){
             for(int j = 0; j < 64; j++){

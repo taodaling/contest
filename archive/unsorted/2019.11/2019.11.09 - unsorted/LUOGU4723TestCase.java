@@ -8,7 +8,6 @@ import java.util.Random;
 import net.egork.chelper.task.Test;
 import net.egork.chelper.tester.TestCase;
 import template.ModMatrix;
-import template.NumberTheory;
 import template.RandomWrapper;
 
 public class LUOGU4723TestCase {
@@ -49,7 +48,7 @@ public class LUOGU4723TestCase {
     }
 
     public int solve(int n, int k, int[] f, int[] a) {
-        NumberTheory.Modular mod = new NumberTheory.Modular(998244353);
+        Modular mod = new Modular(998244353);
         ModMatrix matrix = new ModMatrix(k, k);
         for (int i = 1; i < k; i++) {
             matrix.set(i, i - 1, 1);

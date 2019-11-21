@@ -43,7 +43,7 @@ public class TaskD {
         }
 
         int ans = inf;
-        DigitUtils.DigitBase base = new DigitUtils.DigitBase(10);
+        DigitBase base = new DigitBase(10);
         for (int i = 0; i < limit; i++) {
             int sum = 0;
             for (int j = 0; j < 6; j++) {

@@ -2,7 +2,6 @@ package contest;
 
 import template.FastInput;
 import template.Memory;
-import template.NumberTheory;
 import template.NumberTheoryTransform;
 
 import java.io.PrintWriter;
@@ -12,9 +11,9 @@ import java.util.List;
 import java.util.Map;
 
 public class TaskF {
-    NumberTheory.Modular mod = new NumberTheory.Modular(924844033);
-    NumberTheory.Factorial fact = new NumberTheory.Factorial(500000, mod);
-    NumberTheory.Log2 log2 = new NumberTheory.Log2();
+    Modular mod = new Modular(924844033);
+    Factorial fact = new Factorial(500000, mod);
+    Log2 log2 = new Log2();
     NumberTheoryTransform ntt = new NumberTheoryTransform(mod, 5);
 
     public void solve(int testNumber, FastInput in, PrintWriter out) {

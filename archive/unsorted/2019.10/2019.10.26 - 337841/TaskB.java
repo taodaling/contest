@@ -2,7 +2,6 @@ package contest;
 
 import template.FastInput;
 import template.FastOutput;
-import template.NumberTheory;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
@@ -12,8 +11,8 @@ public class TaskB {
         int n = in.readInt();
         int k = in.readInt();
 
-        NumberTheory.Modular mod = new NumberTheory.Modular(1e9 + 7);
-        NumberTheory.Power power = new NumberTheory.Power(mod);
+        Modular mod = new Modular(1e9 + 7);
+        Power power = new Power(mod);
         int[][] dp = new int[k][n];
         int[][] prefix = new int[k][n];
         dp[0][0] = 1;

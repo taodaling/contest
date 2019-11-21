@@ -4,11 +4,10 @@ import java.util.Arrays;
 
 import template.FastInput;
 import template.FastOutput;
-import template.NumberTheory;
 
 public class TaskC {
     public void solve(int testNumber, FastInput in, FastOutput out) {
-        NumberTheory.Modular mod = new NumberTheory.Modular((int) 1e9 + 7);
+        Modular mod = new Modular((int) 1e9 + 7);
 
         int n = in.readInt();
         int[] head = new int[n];

@@ -2,8 +2,7 @@ package template;
 
 import org.junit.Assert;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
+import template.string.SAIS;
 
 public class SAISTest {
 

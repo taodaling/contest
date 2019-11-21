@@ -2,7 +2,6 @@ package contest;
 
 import template.FastInput;
 import template.FastOutput;
-import template.NumberTheory;
 
 public class TaskA {
     public void solve(int testNumber, FastInput in, FastOutput out) {
@@ -14,7 +13,7 @@ public class TaskA {
             m = tmp;
         }
 
-        NumberTheory.Modular mod = new NumberTheory.Modular(1e9 + 7);
+        Modular mod = new Modular(1e9 + 7);
 
         int[] dp = new int[m + 1];
         dp[0] = 1;

@@ -3,12 +3,11 @@ package contest;
 import template.ArrayUtils;
 import template.FastInput;
 import template.FastOutput;
-import template.NumberTheory;
 
 public class TaskF {
-    NumberTheory.Modular mod = new NumberTheory.Modular(998244353);
-    NumberTheory.Factorial fact = new NumberTheory.Factorial(10000, mod);
-    NumberTheory.Composite comp = new NumberTheory.Composite(fact);
+    Modular mod = new Modular(998244353);
+    Factorial fact = new Factorial(10000, mod);
+    Composite comp = new Composite(fact);
     boolean[] rows;
     boolean[] cols;
     int[][] rowPutWays;

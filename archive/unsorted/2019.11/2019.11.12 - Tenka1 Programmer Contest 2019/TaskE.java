@@ -6,7 +6,6 @@ import template.DigitUtils;
 import template.FastInput;
 import template.FastOutput;
 import template.IntList;
-import template.NumberTheory;
 
 public class TaskE {
     public void solve(int testNumber, FastInput in, FastOutput out) {
@@ -16,15 +15,15 @@ public class TaskE {
         for (int i = n; i >= 0; i--) {
             coe[i] = in.readInt();
         }
-        NumberTheory.EulerSieve es = new NumberTheory.EulerSieve(n);
+        EulerSieve es = new EulerSieve(n);
         IntList ans = new IntList();
-        NumberTheory.Gcd gcd = new NumberTheory.Gcd();
+        Gcd gcd = new Gcd();
         int num = 0;
         for (int i = 0; i <= n; i++) {
             num = gcd.gcd(num, Math.abs(coe[i]));
         }
         if (num > 0) {
-            ans.addAll(new NumberTheory.PollardRho().findAllFactors(num).keySet().stream().mapToInt(Integer::intValue)
+            ans.addAll(new PollardRho().findAllFactors(num).keySet().stream().mapToInt(Integer::intValue)
                             .toArray());
         }
 

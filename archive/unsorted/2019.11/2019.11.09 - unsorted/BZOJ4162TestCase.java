@@ -8,7 +8,6 @@ import java.util.Random;
 import net.egork.chelper.task.Test;
 import net.egork.chelper.tester.TestCase;
 import template.ModMatrix;
-import template.NumberTheory;
 import template.RandomWrapper;
 
 public class BZOJ4162TestCase {
@@ -34,7 +33,7 @@ public class BZOJ4162TestCase {
         }
 
         ModMatrix matrix = new ModMatrix(mat);
-        ModMatrix ans = ModMatrix.pow(matrix, n, new NumberTheory.Modular(1e9 + 7));
+        ModMatrix ans = ModMatrix.pow(matrix, n, new Modular(1e9 + 7));
 
         StringBuilder in = new StringBuilder();
         StringBuilder out = new StringBuilder();

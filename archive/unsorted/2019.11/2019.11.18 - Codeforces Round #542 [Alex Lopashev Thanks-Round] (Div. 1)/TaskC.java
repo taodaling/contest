@@ -27,7 +27,7 @@ public class TaskC {
         h31.populate(forbiden[3], 4);
         long f4 = DigitUtils.asLong(h11.hashVerbose(0, 3), h31.hashVerbose(0, 3));
 
-        NumberTheory.Modular mod = new NumberTheory.Modular(1e9 + 7);
+        Modular mod = new Modular(1e9 + 7);
         LongHashSet set = new LongHashSet(m * (m - 1) / 2 + m);
         int[] str = new int[m];
         int[] dp = new int[m + 1];

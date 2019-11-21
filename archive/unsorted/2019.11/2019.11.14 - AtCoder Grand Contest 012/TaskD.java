@@ -10,12 +10,11 @@ import template.CollectionUtils;
 import template.CompareUtils;
 import template.FastInput;
 import template.FastOutput;
-import template.NumberTheory;
 
 public class TaskD {
     public void solve(int testNumber, FastInput in, FastOutput out) {
-        NumberTheory.Modular mod = new NumberTheory.Modular(1e9 + 7);
-        NumberTheory.Factorial fact = new NumberTheory.Factorial(200000, mod);
+        Modular mod = new Modular(1e9 + 7);
+        Factorial fact = new Factorial(200000, mod);
         int n = in.readInt();
         int x = in.readInt();
         int y = in.readInt();

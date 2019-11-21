@@ -9,9 +9,9 @@ import template.SubsetGenerator;
 public class TaskB {
     int[] cost;
     long[][] dp;
-    DigitUtils.DigitBase base3 = new DigitUtils.DigitBase(3);
-    DigitUtils.DigitBase base2 = new DigitUtils.DigitBase(2);
-    DigitUtils.BitOperator bo = new DigitUtils.BitOperator();
+    DigitBase base3 = new DigitBase(3);
+    DigitBase base2 = new DigitBase(2);
+    BitOperator bo = new BitOperator();
     int n;
     int m;
     int[][] edges;

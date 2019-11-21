@@ -43,7 +43,7 @@ public class TaskF {
 
         bitsOfL = new int[32];
         bitsOfR = new int[32];
-        DigitUtils.BitOperator bo = new DigitUtils.BitOperator();
+        BitOperator bo = new BitOperator();
         for (int i = 0; i < 32; i++) {
             bitsOfL[i] = bo.bitAt(l, i);
             bitsOfR[i] = bo.bitAt(r, i);

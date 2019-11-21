@@ -3,13 +3,12 @@ package contest;
 import java.io.PrintWriter;
 
 import template.FastInput;
-import template.NumberTheory;
 
 public class TaskD {
     public void solve(int testNumber, FastInput in, PrintWriter out) {
-        NumberTheory.Modular mod = new NumberTheory.Modular((int) 1e9 + 7);
-        NumberTheory.Power power = new NumberTheory.Power(mod);
-        NumberTheory.Composite comp = new NumberTheory.Composite(1000000, mod);
+        Modular mod = new Modular((int) 1e9 + 7);
+        Power power = new Power(mod);
+        Composite comp = new Composite(1000000, mod);
 
         int n = in.readInt();
         int m = in.readInt();

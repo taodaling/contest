@@ -3,11 +3,10 @@ package contest;
 import template.FastInput;
 import template.FastOutput;
 import template.ModBIT;
-import template.NumberTheory;
 
 public class TaskD {
     public void solve(int testNumber, FastInput in, FastOutput out) {
-        NumberTheory.Modular mod = new NumberTheory.Modular(998244353);
+        Modular mod = new Modular(998244353);
         int n = in.readInt();
         int k = in.readInt();
         int[] a = new int[n];

@@ -4,8 +4,8 @@ import template.*;
 
 public class LUOGU5487 {
     public void solve(int testNumber, FastInput in, FastOutput out) {
-        NumberTheory.Modular mod = new NumberTheory.Modular(998244353);
-        NumberTheory.Power pow = new NumberTheory.Power(mod);
+        Modular mod = new Modular(998244353);
+        Power pow = new Power(mod);
         NumberTheoryTransform ntt = new NumberTheoryTransform(mod);
 
         int n = in.readInt();
@@ -21,7 +21,7 @@ public class LUOGU5487 {
         }
 
         int length = bm.length();
-        DigitUtils.Log2 log2 = new DigitUtils.Log2();
+        Log2 log2 = new Log2();
         int proper = log2.ceilLog(length + 1) + 2;
         int[] p = new int[1 << proper];
         int[] remainder = new int[1 << proper];

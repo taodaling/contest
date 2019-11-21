@@ -2,14 +2,13 @@ package contest;
 
 import template.FastInput;
 import template.FastOutput;
-import template.NumberTheory;
 
 public class TaskD {
     public void solve(int testNumber, FastInput in, FastOutput out) {
         int x = in.readInt();
         int y = in.readInt();
-        NumberTheory.Modular mod = new NumberTheory.Modular(1e9 + 7);
-        NumberTheory.Composite comp = new NumberTheory.Composite(1000000, mod);
+        Modular mod = new Modular(1e9 + 7);
+        Composite comp = new Composite(1000000, mod);
         int ans = 0;
         for (int i = 0; i <= x; i++) {
             int rx = x - i;

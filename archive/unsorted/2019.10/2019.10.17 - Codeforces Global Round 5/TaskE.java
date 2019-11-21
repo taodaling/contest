@@ -8,12 +8,11 @@ import java.util.Set;
 
 import template.FastInput;
 import template.FastOutput;
-import template.NumberTheory;
 import template.NumberTheoryTransform;
 
 public class TaskE {
 
-    NumberTheory.Modular mod = new NumberTheory.Modular(998244353);
+    Modular mod = new Modular(998244353);
     NumberTheoryTransform ntt = new NumberTheoryTransform(mod, 3);
 
     public void solve(int testNumber, FastInput in, FastOutput out) {
@@ -59,7 +58,7 @@ public class TaskE {
         out.println(all.contains(n) ? 1 : 0);
     }
 
-    NumberTheory.Log2 log2 = new NumberTheory.Log2();
+    Log2 log2 = new Log2();
 
     public int level(int x) {
         return log2.ceilLog(x + 1);

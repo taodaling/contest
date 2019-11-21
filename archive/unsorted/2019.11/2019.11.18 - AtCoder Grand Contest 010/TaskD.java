@@ -2,13 +2,12 @@ package contest;
 
 import template.FastInput;
 import template.FastOutput;
-import template.NumberTheory;
 
 public class TaskD {
     int n;
     int[] preGcd;
     int[] sufGcd;
-    NumberTheory.Gcd gcd = new NumberTheory.Gcd();
+    Gcd gcd = new Gcd();
 
     public void solve(int testNumber, FastInput in, FastOutput out) {
         n = in.readInt();

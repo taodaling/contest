@@ -2,6 +2,7 @@ package template;
 
 import org.junit.Assert;
 import org.junit.Test;
+import template.datastructure.MultiWayIntDeque;
 
 public class MultiWayIntDequeTest {
 

@@ -2,16 +2,15 @@ package contest;
 
 import template.FastInput;
 import template.FastOutput;
-import template.NumberTheory;
 
 public class TaskE {
     public void solve(int testNumber, FastInput in, FastOutput out) {
         int K = in.readInt();
         int N = in.readInt();
 
-        NumberTheory.Modular mod = new NumberTheory.Modular(998244353);
-        NumberTheory.Factorial fact = new NumberTheory.Factorial(10000, mod);
-        NumberTheory.Composite comp = new NumberTheory.Composite(fact);
+        Modular mod = new Modular(998244353);
+        Factorial fact = new Factorial(10000, mod);
+        Composite comp = new Composite(fact);
 
         for (int i = 2; i <= 2 * K; i++) {
             int n = 0;

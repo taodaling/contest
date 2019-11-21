@@ -19,8 +19,8 @@ public class BZOJ4162 {
             }
         }
 
-        NumberTheory.Modular mod = new NumberTheory.Modular(1e9 + 7);
-        NumberTheory.Power pow = new NumberTheory.Power(mod);
+        Modular mod = new Modular(1e9 + 7);
+        Power pow = new Power(mod);
 
         ModMatrix matrix = new ModMatrix(matArray);
         GravityModLagrangeInterpolation.Polynomial p = matrix.getCharacteristicPolynomial(pow);

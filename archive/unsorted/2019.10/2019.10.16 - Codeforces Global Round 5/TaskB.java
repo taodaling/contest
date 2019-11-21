@@ -2,15 +2,14 @@ package contest;
 
 import template.FastInput;
 import template.FastOutput;
-import template.NumberTheory;
 
 public class TaskB {
     public void solve(int testNumber, FastInput in, FastOutput out) {
         int n = in.readInt();
         int m = in.readInt();
 
-        NumberTheory.Modular mod = new NumberTheory.Modular(1e9 + 7);
-        NumberTheory.Power power = new NumberTheory.Power(mod);
+        Modular mod = new Modular(1e9 + 7);
+        Power power = new Power(mod);
 
         int ans = power.pow(2, m);
         ans = mod.subtract(ans, 1);

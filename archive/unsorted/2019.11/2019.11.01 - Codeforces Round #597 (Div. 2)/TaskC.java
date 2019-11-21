@@ -2,13 +2,12 @@ package contest;
 
 import template.FastInput;
 import template.FastOutput;
-import template.NumberTheory;
 
 public class TaskC {
     public void solve(int testNumber, FastInput in, FastOutput out) {
         char[] s = new char[100001];
         int n = in.readString(s, 1);
-        NumberTheory.Modular mod = new NumberTheory.Modular(1e9 + 7);
+        Modular mod = new Modular(1e9 + 7);
 
         int[] dp = new int[n + 1];
         dp[0] = 1;

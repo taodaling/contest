@@ -2,6 +2,8 @@ package template;
 
 import org.junit.Assert;
 import org.junit.Test;
+import template.math.Matrix;
+import template.polynomial.GravityLagrangeInterpolation;
 
 
 public class MatrixTest {

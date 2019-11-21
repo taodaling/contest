@@ -5,6 +5,8 @@ import java.util.Random;
 
 import org.junit.Assert;
 import org.junit.Test;
+import template.utils.CompareUtils;
+import template.rand.RandomWrapper;
 
 public class CompareUtilsTest {
 

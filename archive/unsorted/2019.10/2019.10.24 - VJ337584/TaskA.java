@@ -3,7 +3,6 @@ package contest;
 import template.ArrayUtils;
 import template.FastInput;
 import template.FastOutput;
-import template.NumberTheory;
 
 public class TaskA {
 
@@ -14,9 +13,9 @@ public class TaskA {
     int d;
     int n;
 
-    NumberTheory.Modular mod = new NumberTheory.Modular(1e9 + 7);
-    NumberTheory.Power pow = new NumberTheory.Power(mod);
-    NumberTheory.Factorial fact = new NumberTheory.Factorial(2000, mod);
+    Modular mod = new Modular(1e9 + 7);
+    Power pow = new Power(mod);
+    Factorial fact = new Factorial(2000, mod);
 
     public void solve(int testNumber, FastInput in, FastOutput out) {
         n = in.readInt();

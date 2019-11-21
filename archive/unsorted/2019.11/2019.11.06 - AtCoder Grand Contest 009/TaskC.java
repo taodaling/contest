@@ -3,7 +3,6 @@ package contest;
 import template.FastInput;
 import template.FastOutput;
 import template.ModBIT;
-import template.NumberTheory;
 import template.SequenceUtils;
 
 public class TaskC {
@@ -49,7 +48,7 @@ public class TaskC {
             }
         }
 
-        NumberTheory.Modular mod = new NumberTheory.Modular(1e9 + 7);
+        Modular mod = new Modular(1e9 + 7);
         ModBIT bita = new ModBIT(n + 1, mod);
         ModBIT bitb = new ModBIT(n + 1, mod);
 

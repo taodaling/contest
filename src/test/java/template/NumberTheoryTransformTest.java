@@ -1,14 +1,17 @@
 package template;
 
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.junit.Assert;
 import org.junit.Test;
+import template.datastructure.IntList;
+import template.math.Modular;
+import template.polynomial.NumberTheoryTransform;
+import template.utils.SequenceUtils;
 
 public class NumberTheoryTransformTest {
 
     @Test
     public void test() {
-        NumberTheory.Modular mod = new NumberTheory.Modular(998244353);
+        Modular mod = new Modular(998244353);
         int[] p = new int[]{0, 1, 0, 0, 0, 0, 0, 0};
         int[] remainder = new int[]{0, 0, 0, 0, 0, 0, 0, 0};
         NumberTheoryTransform ntt = new NumberTheoryTransform(mod);
@@ -19,7 +22,7 @@ public class NumberTheoryTransformTest {
 
     @Test
     public void test2() {
-        NumberTheory.Modular mod = new NumberTheory.Modular(998244353);
+        Modular mod = new Modular(998244353);
         int[] p = new int[]{1, 1, 0, 0, 0, 0, 0, 0};
         int[] remainder = new int[]{0, 0, 0, 0, 0, 0, 0, 0};
         NumberTheoryTransform ntt = new NumberTheoryTransform(mod);
@@ -30,7 +33,7 @@ public class NumberTheoryTransformTest {
 
     @Test
     public void test3() {
-        NumberTheory.Modular mod = new NumberTheory.Modular(998244353);
+        Modular mod = new Modular(998244353);
         int[] p = new int[]{0, 1, 0, 0, 0, 0, 0, 0};
         int[] remainder = new int[]{0, 0, 0, 0, 0, 0, 0, 0};
         NumberTheoryTransform ntt = new NumberTheoryTransform(mod);
@@ -41,7 +44,7 @@ public class NumberTheoryTransformTest {
 
     @Test
     public void test4() {
-        NumberTheory.Modular mod = new NumberTheory.Modular(998244353);
+        Modular mod = new Modular(998244353);
         int[] p = new int[]{1, 1, 0, 0, 0, 0, 0, 0};
         int[] remainder = new int[]{0, 0, 0, 0, 0, 0, 0, 0};
         NumberTheoryTransform ntt = new NumberTheoryTransform(mod);
@@ -52,7 +55,7 @@ public class NumberTheoryTransformTest {
 
     @Test
     public void test5() {
-        NumberTheory.Modular mod = new NumberTheory.Modular(998244353);
+        Modular mod = new Modular(998244353);
         int[] p = new int[]{0, 1, 0, 0, 0, 0, 0, 0};
         int[] remainder = new int[]{0, 0, 0, 0, 0, 0, 0, 0};
         NumberTheoryTransform ntt = new NumberTheoryTransform(mod);
@@ -63,7 +66,7 @@ public class NumberTheoryTransformTest {
 
     @Test
     public void test6() {
-        NumberTheory.Modular mod = new NumberTheory.Modular(998244353);
+        Modular mod = new Modular(998244353);
         int[] p = new int[]{0, 1, 0, 0, 0, 0, 0, 0};
         int[] remainder = new int[]{0, 0, 0, 0, 0, 0, 0, 0};
         NumberTheoryTransform ntt = new NumberTheoryTransform(mod);
@@ -74,7 +77,7 @@ public class NumberTheoryTransformTest {
 
     @Test
     public void test7() {
-        NumberTheory.Modular mod = new NumberTheory.Modular(998244353);
+        Modular mod = new Modular(998244353);
         int[] p = new int[]{1, 1, 0, 0, 0, 0, 0, 0};
         int[] remainder = new int[]{0, 0, 0, 0, 0, 0, 0, 0};
         NumberTheoryTransform ntt = new NumberTheoryTransform(mod);
@@ -90,7 +93,7 @@ public class NumberTheoryTransformTest {
         p[1] = 1;
 
         int[] clone = p.clone();
-        NumberTheory.Modular mod = new NumberTheory.Modular(998244353);
+        Modular mod = new Modular(998244353);
         NumberTheoryTransform ntt = new NumberTheoryTransform(mod);
         ntt.dft(p, m);
         ntt.idft(p, m);
@@ -101,7 +104,7 @@ public class NumberTheoryTransformTest {
 
     @Test
     public void test9(){
-        NumberTheory.Modular mod = new NumberTheory.Modular(998244353);
+        Modular mod = new Modular(998244353);
         NumberTheoryTransform ntt = new NumberTheoryTransform(mod);
 
         IntList[] lists = new IntList[3];

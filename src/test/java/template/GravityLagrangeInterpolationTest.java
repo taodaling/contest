@@ -2,6 +2,7 @@ package template;
 
 import org.junit.Assert;
 import org.junit.Test;
+import template.polynomial.GravityLagrangeInterpolation;
 
 public class GravityLagrangeInterpolationTest {
     public boolean near(double a, double b){

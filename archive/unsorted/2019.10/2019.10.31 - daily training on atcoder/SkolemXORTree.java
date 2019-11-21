@@ -12,7 +12,7 @@ public class SkolemXORTree {
             return;
         }
         out.println("Yes");
-        DigitUtils.Log2 log2 = new DigitUtils.Log2();
+        Log2 log2 = new Log2();
         int floorLog = log2.floorLog(n + 1);
 
         int m = (1 << floorLog);

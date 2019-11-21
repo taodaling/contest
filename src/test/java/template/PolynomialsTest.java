@@ -1,12 +1,13 @@
 package template;
 
 
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.junit.Assert;
 import org.junit.Test;
-import template.IntList;
-import template.Polynomials;
-import template.SequenceUtils;
+import template.datastructure.IntList;
+import template.math.Modular;
+import template.math.Power;
+import template.polynomial.Polynomials;
+import template.utils.SequenceUtils;
 
 /**
 * Polynomials Tester. 
@@ -16,8 +17,8 @@ import template.SequenceUtils;
 * @version 1.0 
 */ 
 public class PolynomialsTest {
-    NumberTheory.Modular mod = new NumberTheory.Modular(1e9 + 7);
-    NumberTheory.Power pow = new NumberTheory.Power(mod);
+    Modular mod = new Modular(1e9 + 7);
+    Power pow = new Power(mod);
 
     public boolean equal(IntList a, IntList b){
         int ra = Polynomials.rankOf(a);

@@ -2,7 +2,6 @@ package contest;
 
 import template.FastInput;
 import template.FastOutput;
-import template.NumberTheory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +11,7 @@ public class TaskC {
     int m;
     int[][][] dp;
     List<int[]>[] constraints;
-    NumberTheory.Modular mod = new NumberTheory.Modular(1e9 + 7);
+    Modular mod = new Modular(1e9 + 7);
 
     public void solve(int testNumber, FastInput in, FastOutput out) {
         n = in.readInt();

@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Random;
 import net.egork.chelper.task.Test;
 import net.egork.chelper.tester.TestCase;
-import template.NumberTheory;
 import template.RandomWrapper;
 
 public class LUOGU4705TestCase {
@@ -57,8 +56,8 @@ public class LUOGU4705TestCase {
     }
 
     public int[] solve(int[] a, int[] b, int t){
-        NumberTheory.Modular mod = new NumberTheory.Modular(998244353);
-        NumberTheory.Power pow = new NumberTheory.Power(mod);
+        Modular mod = new Modular(998244353);
+        Power pow = new Power(mod);
 
         int[] ans = new int[t + 1];
         for(int i = 1; i <= t; i++){

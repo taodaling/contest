@@ -4,10 +4,9 @@ import template.FastInput;
 import template.FastOutput;
 import template.IntList;
 import template.KMAlgo;
-import template.NumberTheory;
 
 public class TaskD {
-    NumberTheory.EulerSieve es = new NumberTheory.EulerSieve(10000000);
+    EulerSieve es = new EulerSieve(10000000);
 
     public void solve(int testNumber, FastInput in, FastOutput out) {
         int n = in.readInt();

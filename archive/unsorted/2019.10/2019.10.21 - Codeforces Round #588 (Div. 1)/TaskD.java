@@ -204,7 +204,7 @@ public class TaskD {
 
 
 class Group {
-    static DigitUtils.BitOperator bo = new DigitUtils.BitOperator();
+    static BitOperator bo = new BitOperator();
 
     long b1;
     long b2;

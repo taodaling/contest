@@ -42,9 +42,9 @@ public class TaskF {
             sgCnt[i] = sg;
         }
 
-        NumberTheory.Modular mod = new NumberTheory.Modular(998244353);
-        NumberTheory.Composite comp = new NumberTheory.Composite(n, mod);
-        DigitUtils.Log2 log2 = new DigitUtils.Log2();
+        Modular mod = new Modular(998244353);
+        Composite comp = new Composite(n, mod);
+        Log2 log2 = new Log2();
         int proper = log2.ceilLog(n + 1) + 1;
         int[][] ways = new int[k][];
         NumberTheoryTransform ntt = new NumberTheoryTransform(mod, 3);

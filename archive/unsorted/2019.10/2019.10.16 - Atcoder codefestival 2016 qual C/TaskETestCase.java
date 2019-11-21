@@ -4,7 +4,6 @@ package contest;
 
 import net.egork.chelper.task.Test;
 import net.egork.chelper.tester.TestCase;
-import template.NumberTheory;
 import template.Permutations;
 import template.Randomized;
 
@@ -63,7 +62,7 @@ public class TaskETestCase {
     }
 
 
-    NumberTheory.Modular mod = new NumberTheory.Modular(1e9 + 7);
+    Modular mod = new Modular(1e9 + 7);
 
     public int dfs(int[] num, boolean[] used, int i) {
         int n = num.length;

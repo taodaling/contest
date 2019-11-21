@@ -6,11 +6,10 @@ import java.util.List;
 
 import template.FastInput;
 import template.FastOutput;
-import template.NumberTheory;
 
 public class TaskD {
-    NumberTheory.Modular mod = new NumberTheory.Modular(998244353);
-    NumberTheory.Power pow = new NumberTheory.Power(mod);
+    Modular mod = new Modular(998244353);
+    Power pow = new Power(mod);
 
     public void solve(int testNumber, FastInput in, FastOutput out) {
         int n = in.readInt();
@@ -107,7 +106,7 @@ class Node {
 
 
 class Segment implements Cloneable {
-    private static final NumberTheory.Modular MOD = new NumberTheory.Modular(998244353);
+    private static final Modular MOD = new Modular(998244353);
 
     private Segment left;
     private Segment right;

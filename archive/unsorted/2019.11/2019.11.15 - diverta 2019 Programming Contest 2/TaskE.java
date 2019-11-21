@@ -2,15 +2,14 @@ package contest;
 
 import template.FastInput;
 import template.FastOutput;
-import template.NumberTheory;
 
 public class TaskE {
     public void solve(int testNumber, FastInput in, FastOutput out) {
         int n = in.readInt();
         int h = in.readInt();
         int d = in.readInt();
-        NumberTheory.Modular mod = new NumberTheory.Modular(1e9 + 7);
-        NumberTheory.Factorial fact = new NumberTheory.Factorial(n, mod);
+        Modular mod = new Modular(1e9 + 7);
+        Factorial fact = new Factorial(n, mod);
         int[] dp = new int[h + 1];
         dp[0] = fact.fact(n);
         int factSum = 0;

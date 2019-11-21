@@ -17,7 +17,7 @@ public class TaskF {
         }
 
         RandomWrapper random = new RandomWrapper(new Random());
-        DigitUtils.BitOperator bo = new DigitUtils.BitOperator();
+        BitOperator bo = new BitOperator();
         SimulatedAnnealing<Integer> sa = new SimulatedAnnealing<Integer>(1e-5, 1, 0.99, random.getRandom()) {
             @Override
             public Integer next(Integer old, double temperature) {

@@ -2,7 +2,6 @@ package contest;
 
 import template.FastInput;
 import template.FastOutput;
-import template.NumberTheory;
 
 public class TaskF {
     public void solve(int testNumber, FastInput in, FastOutput out) {
@@ -13,8 +12,8 @@ public class TaskF {
         int[][][] dp = new int[n + 1][n + 1][mx + 1];
         dp[0][0][mx / 2] = 1;
 
-        NumberTheory.Modular mod = new NumberTheory.Modular(1e9 + 7);
-        NumberTheory.Composite comp = new NumberTheory.Composite(n, mod);
+        Modular mod = new Modular(1e9 + 7);
+        Composite comp = new Composite(n, mod);
 
         for (int i = 0; i < n; i++) {
             for (int j = 0; j <= n; j++) {

@@ -2,14 +2,13 @@ package contest;
 
 import template.FastInput;
 import template.FastOutput;
-import template.NumberTheory;
 
 public class LCMs {
-    NumberTheory.Modular mod = new NumberTheory.Modular(998244353);
-    NumberTheory.Power pow = new NumberTheory.Power(mod);
-    NumberTheory.InverseNumber inverseNumber = new NumberTheory.InverseNumber(1000000, mod);
-    NumberTheory.Factorial fact = new NumberTheory.Factorial(1000000, mod);
-    NumberTheory.Composite comp = new NumberTheory.Composite(fact);
+    Modular mod = new Modular(998244353);
+    Power pow = new Power(mod);
+    InverseNumber inverseNumber = new InverseNumber(1000000, mod);
+    Factorial fact = new Factorial(1000000, mod);
+    Composite comp = new Composite(fact);
 
 
     public void solve(int testNumber, FastInput in, FastOutput out) {

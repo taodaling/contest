@@ -2,12 +2,11 @@ package template;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.Before; 
-import org.junit.After;
+import template.datastructure.PairingHeap;
 
 import java.util.Comparator;
 
-import static template.PairingHeap.NIL;
+import static template.datastructure.PairingHeap.NIL;
 
 /** 
 * PairingHeap Tester. 

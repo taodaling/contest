@@ -2,6 +2,7 @@ package template;
 
 import org.junit.Assert;
 import org.junit.Test;
+import template.math.DoubleLinearFeedbackShiftRegister;
 
 public class DoubleLinearFeedbackShiftRegisterTest {
 

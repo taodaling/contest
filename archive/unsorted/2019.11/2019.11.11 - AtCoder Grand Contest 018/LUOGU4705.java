@@ -4,14 +4,13 @@ import template.DigitUtils;
 import template.FastInput;
 import template.FastOutput;
 import template.IntList;
-import template.NumberTheory;
 import template.NumberTheoryTransform;
 
 public class LUOGU4705 {
-    NumberTheory.Modular mod = new NumberTheory.Modular(998244353);
+    Modular mod = new Modular(998244353);
     NumberTheoryTransform ntt = new NumberTheoryTransform(mod);
-    DigitUtils.Log2 log2 = new DigitUtils.Log2();
-    NumberTheory.Power pow = new NumberTheory.Power(mod);
+    Log2 log2 = new Log2();
+    Power pow = new Power(mod);
 
     public void solve(int testNumber, FastInput in, FastOutput out) {
         int n = in.readInt();
@@ -30,7 +29,7 @@ public class LUOGU4705 {
         IntList A = generate(a, t);
         IntList B = generate(b, t);
 
-        NumberTheory.Factorial fact = new NumberTheory.Factorial(t, mod);
+        Factorial fact = new Factorial(t, mod);
         for(int i = 0; i <= t; i++){
             A.set(i, mod.mul(A.get(i), fact.invFact(i)));
             B.set(i, mod.mul(B.get(i), fact.invFact(i)));
