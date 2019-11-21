@@ -1,0 +1,85 @@
+{
+  "name" : "D - Jongmah",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "10 6\n2 3 3 3 4 4 4 5 5 6\n",
+    "output" : "3\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "12 6\n1 5 3 3 3 4 3 5 3 2 3 3\n",
+    "output" : "3\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "13 5\n1 1 5 1 2 3 3 2 4 2 3 4 5\n",
+    "output" : "4\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "3 1\n1 1 1",
+    "output" : "1",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "8 5\n1 1 1 2 3 2 3 4",
+    "output" : "2",
+    "index" : 4,
+    "active" : true
+  }, {
+    "input" : "7 100\n1 1  2 2  4 4 5",
+    "output" : "0",
+    "index" : 5,
+    "active" : true
+  }, {
+    "input" : "8 100\n1 1  2 2 3 4 4 5",
+    "output" : "1",
+    "index" : 6,
+    "active" : true
+  }, {
+    "input" : "7 5\n1 1 1 2 2  3 3",
+    "output" : "2",
+    "index" : 7,
+    "active" : true
+  }, {
+    "input" : "3 3\n1 2 3",
+    "output" : "1",
+    "index" : 8,
+    "active" : true
+  }, {
+    "input" : "1 1\n1",
+    "output" : "0",
+    "index" : 9,
+    "active" : true
+  }, {
+    "input" : "18 5\n1 1 2 2 2 2 3 3 3 3 3 3 4 4 4 4 5 5",
+    "output" : "6",
+    "index" : 10,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.TaskD",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.11.20",
+  "contestName" : "Codeforces Global Round 1",
+  "truncate" : true,
+  "inputClass" : "template.FastInput",
+  "outputClass" : "template.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : true,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

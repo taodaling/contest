@@ -9,8 +9,13 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.function.ToIntFunction;
 
+/**
+ * Be careful. the radix sort will regard the number in sequence as unsigned integer, it means -1 > -2 > 2 > 1.
+ * <br>
+ */
 public class CompareUtils {
-    private CompareUtils() {}
+    private CompareUtils() {
+    }
 
     public static int middleOf(int a, int b, int c) {
         if (a >= b) {
@@ -272,7 +277,7 @@ public class CompareUtils {
     }
 
     private static <T> void radixSort0(T[] data, Object[] output, int[] buf, int l, int r,
-                    ToIntFunction<T> indexFetcher) {
+                                       ToIntFunction<T> indexFetcher) {
         Arrays.fill(buf, 0);
         for (int i = l; i <= r; i++) {
             buf[indexFetcher.applyAsInt(data[i])]++;
