@@ -1,77 +1,100 @@
 package contest;
 
-
-
-import template.graph.TwoSatBeta;
+import template.datastructure.IntDeque;
 import template.io.FastInput;
 import template.io.FastOutput;
+import template.utils.ArrayIndex;
 
 public class TaskF {
-    int p;
-    int M;
-
-    public int idOfStation(int x) {
-        return x - 1;
-    }
-
-    public int idOfGE(int x) {
-        return p + x - 1;
-    }
-
     public void solve(int testNumber, FastInput in, FastOutput out) {
         int n = in.readInt();
-        p = in.readInt();
-        M = in.readInt();
         int m = in.readInt();
-
-        TwoSatBeta ts = new TwoSatBeta(p + M + 1, 0);
-        for (int i = 0; i < n; i++) {
-            int a = in.readInt();
-            int b = in.readInt();
-            ts.atLeastOneIsTrue(ts.elementId(idOfStation(a)), ts.elementId(idOfStation(b)));
+        int[] a = new int[n];
+        long[] presumOfA = new long[n];
+        for (int i = 1; i < n; i++) {
+            a[i] = in.readInt();
+            presumOfA[i] = presumOfA[i - 1] + a[i];
         }
 
-        for (int i = 2; i <= M + 1; i++) {
-            ts.deduce(ts.elementId(idOfGE(i)), ts.elementId(idOfGE(i - 1)));
-        }
-
-        for (int i = 1; i <= p; i++) {
-            int l = in.readInt();
-            int r = in.readInt();
-            ts.deduce(ts.elementId(idOfStation(i)),
-                    ts.elementId(idOfGE(l)));
-            ts.deduce(ts.elementId(idOfStation(i)),
-                    ts.negateElementId(idOfGE(r + 1)));
-        }
-
-        for (int i = 0; i < m; i++) {
-            int a = in.readInt();
-            int b = in.readInt();
-            ts.atLeastOneIsFalse(ts.elementId(idOfStation(a)), ts.elementId(idOfStation(b)));
-        }
-
-        boolean solvable = ts.solve(true);
-        if (!solvable) {
-            out.println(-1);
-            return;
-        }
-        int k = 0;
-        int f = 0;
-        for (int i = 1; i <= p; i++) {
-            if (ts.valueOf(idOfStation(i))) {
-                k++;
+        ArrayIndex aiNM = new ArrayIndex(n + 1, m + 1);
+        int[] b = new int[aiNM.totalSize()];
+        int[] l = new int[aiNM.totalSize()];
+        int[] r = new int[aiNM.totalSize()];
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= m; j++) {
+                b[aiNM.indexOf(i, j)] = in.readInt();
             }
         }
-        for (int i = 1; i <= M + 1; i++) {
-            if (ts.valueOf(idOfGE(i))) {
-                f = i;
+
+        ArrayIndex aiNN = new ArrayIndex(n + 1, n + 1);
+        long[] intervals = new long[aiNN.totalSize()];
+        IntDeque deque = new IntDeque(n);
+        for (int i = 1; i <= m; i++) {
+            deque.clear();
+            for (int j = 1; j <= n; j++) {
+                while (!deque.isEmpty() && b[aiNM.indexOf(deque.peekLast(), i)] <= b[aiNM.indexOf(j, i)]) {
+                    deque.removeLast();
+                }
+                if (deque.isEmpty()) {
+                    l[aiNM.indexOf(j, i)] = 1;
+                } else {
+                    l[aiNM.indexOf(j, i)] = deque.peekLast() + 1;
+                }
+                deque.addLast(j);
+            }
+            deque.clear();
+            for (int j = n; j >= 1; j--) {
+                while (!deque.isEmpty() && b[aiNM.indexOf(deque.peekFirst(), i)] < b[aiNM.indexOf(j, i)]) {
+                    deque.removeFirst();
+                }
+                if (deque.isEmpty()) {
+                    r[aiNM.indexOf(j, i)] = n;
+                } else {
+                    r[aiNM.indexOf(j, i)] = deque.peekFirst() - 1;
+                }
+                deque.addFirst(j);
             }
         }
-        out.append(k).append(' ').append(f).println();
-        for (int i = 1; i <= p; i++) {
-            if (ts.valueOf(idOfStation(i))) {
-                out.append(i).append(' ');
+
+
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= m; j++) {
+                int x = l[aiNM.indexOf(i, j)];
+                int y = r[aiNM.indexOf(i, j)];
+                intervals[aiNN.indexOf(i, y)] += b[aiNM.indexOf(i, j)];
+                intervals[aiNN.indexOf(x - 1, y)] -= b[aiNM.indexOf(i, j)];
+                intervals[aiNN.indexOf(i, i - 1)] -= b[aiNM.indexOf(i, j)];
+                intervals[aiNN.indexOf(x - 1, i - 1)] += b[aiNM.indexOf(i, j)];
             }
         }
+
+        // push down
+        for (int i = n + n; i >= 0; i--) {
+            for (int j = 1; j <= n; j++) {
+                int k = i - j;
+                if (k < 1 || k > n) {
+                    continue;
+                }
+                if (j + 1 <= n) {
+                    intervals[aiNN.indexOf(j, k)] += intervals[aiNN.indexOf(j + 1, k)];
+                }
+                if (k + 1 <= n) {
+                    intervals[aiNN.indexOf(j, k)] += intervals[aiNN.indexOf(j, k + 1)];
+                }
+                if (j + 1 <= n && k + 1 <= n) {
+                    intervals[aiNN.indexOf(j, k)] -= intervals[aiNN.indexOf(j + 1, k + 1)];
+                }
+            }
+        }
+
+        long ans = 0;
+        for (int i = 1; i <= n; i++) {
+            for (int j = i; j <= n; j++) {
+                long profit = intervals[aiNN.indexOf(i, j)] - (presumOfA[j - 1] - presumOfA[i - 1]);
+                ans = Math.max(ans, profit);
+            }
+        }
+
+        out.println(ans);
     }
 }

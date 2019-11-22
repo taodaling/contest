@@ -1,9 +1,12 @@
-package template.datastructure;
+package template.graph;
+
+import template.utils.RevokeIterator;
 
 import java.util.Arrays;
+import java.util.Iterator;
 
-public class MultiWayIntDeque {
-    private int[] values;
+public class MultiWayDeque<V> {
+    private Object[] values;
     private int[] next;
     private int[] prev;
     private int[] heads;
@@ -11,8 +14,8 @@ public class MultiWayIntDeque {
     private int alloc;
     private int queueNum;
 
-    public IntIterator iterator(final int queue) {
-        return new IntIterator() {
+    public RevokeIterator<V> iterator(final int queue) {
+        return new RevokeIterator() {
             int ele = heads[queue];
 
             @Override
@@ -21,10 +24,15 @@ public class MultiWayIntDeque {
             }
 
             @Override
-            public int next() {
-                int ans = values[ele];
+            public Object next() {
+                Object ans = values[ele];
                 ele = next[ele];
                 return ans;
+            }
+
+            @Override
+            public void revoke() {
+                ele = prev[ele];
             }
         };
     }
@@ -72,8 +80,8 @@ public class MultiWayIntDeque {
         queueNum = qNum;
     }
 
-    public MultiWayIntDeque(int qNum, int totalCapacity) {
-        values = new int[totalCapacity + 1];
+    public MultiWayDeque(int qNum, int totalCapacity) {
+        values = new Object[totalCapacity + 1];
         next = new int[totalCapacity + 1];
         prev = new int[totalCapacity + 1];
         heads = new int[qNum];
@@ -81,7 +89,7 @@ public class MultiWayIntDeque {
         queueNum = qNum;
     }
 
-    public void addLast(int qId, int x) {
+    public void addLast(int qId, V x) {
         alloc();
         values[alloc] = x;
 
@@ -94,7 +102,7 @@ public class MultiWayIntDeque {
         tails[qId] = alloc;
     }
 
-    public void addFirst(int qId, int x) {
+    public void addFirst(int qId, V x) {
         alloc();
         values[alloc] = x;
 
@@ -107,16 +115,16 @@ public class MultiWayIntDeque {
         heads[qId] = alloc;
     }
 
-    public int peekFirst(int qId) {
-        return values[heads[qId]];
+    public V peekFirst(int qId) {
+        return (V) values[heads[qId]];
     }
 
-    public int peekLast(int qId) {
-        return values[tails[qId]];
+    public V peekLast(int qId) {
+        return (V) values[tails[qId]];
     }
 
-    public int removeLast(int qId) {
-        int ans = values[tails[qId]];
+    public V removeLast(int qId) {
+        V ans = (V) values[tails[qId]];
         if (heads[qId] == tails[qId]) {
             heads[qId] = tails[qId] = 0;
         } else {
@@ -126,8 +134,8 @@ public class MultiWayIntDeque {
         return ans;
     }
 
-    public int removeFirst(int qId) {
-        int ans = values[heads[qId]];
+    public V removeFirst(int qId) {
+        V ans = (V) values[heads[qId]];
         if (heads[qId] == tails[qId]) {
             heads[qId] = tails[qId] = 0;
         } else {
@@ -140,12 +148,12 @@ public class MultiWayIntDeque {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        for(int i = 0; i < queueNum; i++){
+        for (int i = 0; i < queueNum; i++) {
             builder.append(i).append(": ");
-            for(IntIterator iterator = iterator(i); iterator.hasNext(); ){
+            for (Iterator<V> iterator = iterator(i); iterator.hasNext(); ) {
                 builder.append(iterator.next()).append(",");
             }
-            if(builder.charAt(builder.length() - 1) == ','){
+            if (builder.charAt(builder.length() - 1) == ',') {
                 builder.setLength(builder.length() - 1);
             }
             builder.append('\n');

@@ -1,5 +1,5 @@
 {
-  "name" : "F - Radio Stations",
+  "name" : "C - Tautonym Puzzle",
   "testType" : "SINGLE",
   "input" : {
     "type" : "STANDARD",
@@ -10,29 +10,27 @@
     "fileName" : "output.txt"
   },
   "tests" : [ {
-    "input" : "2 4 4 2\n1 3\n2 3\n1 4\n1 2\n3 4\n1 4\n1 2\n3 4\n",
-    "output" : "2 3\n1 3\n",
+    "input" : "7\n",
     "index" : 0,
-    "active" : true
+    "active" : false
   }, {
-    "input" : "2 4 4 2\n1 3\n2 4\n1 2\n1 2\n3 4\n3 4\n1 2\n3 4\n",
-    "output" : "-1\n",
+    "input" : "299\n",
     "index" : 1,
     "active" : false
   }, {
-    "input" : "1 2 5 1\n1 2\n1 3\n4 5\n1 2",
+    "input" : "1000000000000",
     "index" : 2,
-    "active" : false
+    "active" : true
   } ],
   "location" : "src/main/java/contest",
   "vmArgs" : "-Xmx256M",
   "mainClass" : "Main",
-  "taskClass" : "contest.TaskF",
+  "taskClass" : "contest.TaskC",
   "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
   "checkerParameters" : "",
   "testClasses" : [ ],
-  "date" : "2019.11.21",
-  "contestName" : "Codeforces Round #585 (Div. 2)",
+  "date" : "2019.11.22",
+  "contestName" : "AtCoder Grand Contest 012",
   "truncate" : true,
   "inputClass" : "template.io.FastInput",
   "outputClass" : "template.io.FastOutput",

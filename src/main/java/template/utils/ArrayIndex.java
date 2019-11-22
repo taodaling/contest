@@ -7,6 +7,14 @@ public class ArrayIndex {
         this.dimensions = dimensions;
     }
 
+    public int totalSize() {
+        int ans = 1;
+        for (int x : dimensions) {
+            ans *= x;
+        }
+        return ans;
+    }
+
     public int indexOf(int a, int b) {
         return a * dimensions[1] + b;
     }

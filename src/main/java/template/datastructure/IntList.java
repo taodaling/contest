@@ -45,6 +45,18 @@ public class IntList {
         this.data = Arrays.copyOf(list.data, size);
     }
 
+    public void insert(int i, int x) {
+        if (i == size) {
+            add(x);
+            return;
+        }
+        checkRange(i);
+        ensureSpace(size + 1);
+        System.arraycopy(data, i, data, i + 1, size - i);
+        data[i] = x;
+        size++;
+    }
+
     public IntList() {
         this(0);
     }
@@ -224,6 +236,22 @@ public class IntList {
 
     public String toString() {
         return Arrays.toString(toArray());
+    }
+
+    public IntIterator iterator() {
+        return new IntIterator() {
+            int i = 0;
+
+            @Override
+            public boolean hasNext() {
+                return i < size;
+            }
+
+            @Override
+            public int next() {
+                return data[i++];
+            }
+        };
     }
 
     @Override

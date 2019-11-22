@@ -28,324 +28,133 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            TaskF solver = new TaskF();
+            TaskC solver = new TaskC();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class TaskF {
-        int p;
-        int M;
-
-        public int idOfStation(int x) {
-            return x - 1;
-        }
-
-        public int idOfGE(int x) {
-            return p + x - 1;
-        }
-
+    static class TaskC {
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            int n = in.readInt();
-            p = in.readInt();
-            M = in.readInt();
-            int m = in.readInt();
-
-            TwoSatBeta ts = new TwoSatBeta(p + M + 1, 0);
-            for (int i = 0; i < n; i++) {
-                int a = in.readInt();
-                int b = in.readInt();
-                ts.atLeastOneIsTrue(ts.elementId(idOfStation(a)), ts.elementId(idOfStation(b)));
-            }
-
-            for (int i = 2; i <= M + 1; i++) {
-                ts.deduce(ts.elementId(idOfGE(i)), ts.elementId(idOfGE(i - 1)));
-            }
-
-            for (int i = 1; i <= p; i++) {
-                int l = in.readInt();
-                int r = in.readInt();
-                ts.deduce(ts.elementId(idOfStation(i)),
-                        ts.elementId(idOfGE(l)));
-                ts.deduce(ts.elementId(idOfStation(i)),
-                        ts.negateElementId(idOfGE(r + 1)));
-            }
-
-            for (int i = 0; i < m; i++) {
-                int a = in.readInt();
-                int b = in.readInt();
-                ts.atLeastOneIsFalse(ts.elementId(idOfStation(a)), ts.elementId(idOfStation(b)));
-            }
-
-            boolean solvable = ts.solve(true);
-            if (!solvable) {
-                out.println(-1);
-                return;
-            }
-            int k = 0;
-            int f = 0;
-            for (int i = 1; i <= p; i++) {
-                if (ts.valueOf(idOfStation(i))) {
-                    k++;
+            long n = in.readLong();
+            IntList list = new IntList();
+            while (n > 0) {
+                int i;
+                for (i = 0; i < list.size(); i++) {
+                    if (n < (1L << (i + 1))) {
+                        break;
+                    }
                 }
+                n -= 1L << i;
+                list.insert(i, list.size() + 1);
             }
-            for (int i = 1; i <= M + 1; i++) {
-                if (ts.valueOf(idOfGE(i))) {
-                    f = i;
-                }
+
+            out.println(list.size() * 2);
+            for (int i = 1; i <= list.size(); i++) {
+                out.append(i).append(' ');
             }
-            out.append(k).append(' ').append(f).println();
-            for (int i = 1; i <= p; i++) {
-                if (ts.valueOf(idOfStation(i))) {
-                    out.append(i).append(' ');
-                }
+            for (int i = 0; i < list.size(); i++) {
+                out.append(list.get(i)).append(' ');
             }
         }
 
     }
 
-    static class MultiWayIntDeque {
-        private int[] vals;
-        private int[] next;
-        private int[] prev;
-        private int[] heads;
-        private int[] tails;
-        private int alloc;
-        private int queueNum;
+    static class IntList {
+        private int size;
+        private int cap;
+        private int[] data;
+        private static final int[] EMPTY = new int[0];
 
-        public IntIterator iterator(final int queue) {
-            return new IntIterator() {
-                int ele = heads[queue];
-
-
-                public boolean hasNext() {
-                    return ele != 0;
-                }
-
-
-                public int next() {
-                    int ans = vals[ele];
-                    ele = next[ele];
-                    return ans;
-                }
-            };
-        }
-
-        private void doubleCapacity() {
-            int newSize = Math.max(next.length + 10, next.length * 2);
-            next = Arrays.copyOf(next, newSize);
-            prev = Arrays.copyOf(prev, newSize);
-            vals = Arrays.copyOf(vals, newSize);
-        }
-
-        public void alloc() {
-            alloc++;
-            if (alloc >= next.length) {
-                doubleCapacity();
+        public IntList(int cap) {
+            this.cap = cap;
+            if (cap == 0) {
+                data = EMPTY;
+            } else {
+                data = new int[cap];
             }
-            next[alloc] = 0;
         }
 
-        public MultiWayIntDeque(int qNum, int totalCapacity) {
-            vals = new int[totalCapacity + 1];
-            next = new int[totalCapacity + 1];
-            prev = new int[totalCapacity + 1];
-            heads = new int[qNum];
-            tails = new int[qNum];
-            queueNum = qNum;
+        public IntList(IntList list) {
+            this.size = list.size;
+            this.cap = list.cap;
+            this.data = Arrays.copyOf(list.data, size);
         }
 
-        public void addLast(int qId, int x) {
-            alloc();
-            vals[alloc] = x;
-
-            if (heads[qId] == 0) {
-                heads[qId] = tails[qId] = alloc;
+        public void insert(int i, int x) {
+            if (i == size) {
+                add(x);
                 return;
             }
-            next[tails[qId]] = alloc;
-            prev[alloc] = tails[qId];
-            tails[qId] = alloc;
+            checkRange(i);
+            ensureSpace(size + 1);
+            System.arraycopy(data, i, data, i + 1, size - i);
+            data[i] = x;
+            size++;
+        }
+
+        public IntList() {
+            this(0);
+        }
+
+        public void ensureSpace(int req) {
+            if (req > cap) {
+                while (cap < req) {
+                    cap = Math.max(cap + 10, 2 * cap);
+                }
+                data = Arrays.copyOf(data, cap);
+            }
+        }
+
+        private void checkRange(int i) {
+            if (i < 0 || i >= size) {
+                throw new ArrayIndexOutOfBoundsException();
+            }
+        }
+
+        public int get(int i) {
+            checkRange(i);
+            return data[i];
+        }
+
+        public void add(int x) {
+            ensureSpace(size + 1);
+            data[size++] = x;
+        }
+
+        public int size() {
+            return size;
+        }
+
+        public int[] toArray() {
+            return Arrays.copyOf(data, size);
         }
 
         public String toString() {
-            StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < queueNum; i++) {
-                builder.append(i).append(": ");
-                for (IntIterator iterator = iterator(i); iterator.hasNext(); ) {
-                    builder.append(iterator.next()).append(",");
-                }
-                if (builder.charAt(builder.length() - 1) == ',') {
-                    builder.setLength(builder.length() - 1);
-                }
-                builder.append('\n');
+            return Arrays.toString(toArray());
+        }
+
+        public boolean equals(Object obj) {
+            if (!(obj instanceof IntList)) {
+                return false;
             }
-            return builder.toString();
+            IntList other = (IntList) obj;
+            return SequenceUtils.equal(data, 0, size - 1, other.data, 0, other.size - 1);
         }
 
     }
 
-    static class TwoSatBeta {
-        private MultiWayIntDeque edges;
-        private boolean[] values;
-        private int[] sets;
-        private int[] dfns;
-        private int[] lows;
-        private boolean[] instk;
-        private IntDeque deque;
-        private int n;
-        private int dfn = 0;
-
-        public TwoSatBeta(int n, int m) {
-            values = new boolean[n * 2];
-            sets = new int[n * 2];
-            edges = new MultiWayIntDeque(n * 2, m * 2);
-            dfns = new int[n * 2];
-            lows = new int[n * 2];
-            instk = new boolean[n * 2];
-            deque = new IntDeque(n * 2);
-            this.n = n;
-        }
-
-        public boolean valueOf(int x) {
-            return values[sets[elementId(x)]];
-        }
-
-        public boolean solve(boolean fetchValue) {
-            Arrays.fill(values, false);
-            Arrays.fill(dfns, 0);
-            deque.clear();
-            dfn = 0;
-
-            for (int i = 0; i < sets.length; i++) {
-                tarjan(i);
+    static class SequenceUtils {
+        public static boolean equal(int[] a, int al, int ar, int[] b, int bl, int br) {
+            if ((ar - al) != (br - bl)) {
+                return false;
             }
-            for (int i = 0; i < n; i++) {
-                if (sets[elementId(i)] == sets[negateElementId(i)]) {
+            for (int i = al, j = bl; i <= ar; i++, j++) {
+                if (a[i] != b[j]) {
                     return false;
                 }
             }
-
-            if (!fetchValue) {
-                return true;
-            }
-
-            Arrays.fill(dfns, 0);
-            for (int i = 0; i < sets.length; i++) {
-                assign(i);
-            }
             return true;
-        }
-
-        private void assign(int root) {
-            if (dfns[root] > 0) {
-                return;
-            }
-            dfns[root] = 1;
-            for (IntIterator iterator = edges.iterator(root); iterator.hasNext(); ) {
-                int node = iterator.next();
-                assign(node);
-            }
-            if (sets[root] == root) {
-                values[root] = !values[sets[negate(root)]];
-            }
-        }
-
-        private void tarjan(int root) {
-            if (dfns[root] > 0) {
-                return;
-            }
-            lows[root] = dfns[root] = ++dfn;
-            instk[root] = true;
-            deque.addLast(root);
-            for (IntIterator iterator = edges.iterator(root); iterator.hasNext(); ) {
-                int node = iterator.next();
-                tarjan(node);
-                if (instk[node] && lows[node] < lows[root]) {
-                    lows[root] = lows[node];
-                }
-            }
-            if (lows[root] == dfns[root]) {
-                int last;
-                do {
-                    last = deque.removeLast();
-                    sets[last] = root;
-                    instk[last] = false;
-                } while (last != root);
-            }
-        }
-
-        public int elementId(int x) {
-            return x << 1;
-        }
-
-        public int negateElementId(int x) {
-            return (x << 1) | 1;
-        }
-
-        private int negate(int x) {
-            return x ^ 1;
-        }
-
-        public void deduce(int a, int b) {
-            edges.addLast(a, b);
-            edges.addLast(negate(b), negate(a));
-        }
-
-        public void or(int a, int b) {
-            deduce(negate(a), b);
-        }
-
-        public void atLeastOneIsFalse(int a, int b) {
-            deduce(a, negate(b));
-        }
-
-        public void atLeastOneIsTrue(int a, int b) {
-            or(a, b);
-        }
-
-    }
-
-    static class IntDeque {
-        int[] data;
-        int bpos;
-        int epos;
-        int cap;
-
-        public IntDeque(int cap) {
-            this.cap = cap + 1;
-            this.data = new int[this.cap];
-        }
-
-        private int last(int i) {
-            return (i == 0 ? cap : i) - 1;
-        }
-
-        private int next(int i) {
-            int n = i + 1;
-            return n == cap ? 0 : n;
-        }
-
-        public int removeLast() {
-            return data[epos = last(epos)];
-        }
-
-        public void addLast(int val) {
-            data[epos] = val;
-            epos = next(epos);
-        }
-
-        public void clear() {
-            bpos = epos = 0;
-        }
-
-        public String toString() {
-            StringBuilder builder = new StringBuilder();
-            for (int i = bpos; i != epos; i = next(i)) {
-                builder.append(data[i]).append(' ');
-            }
-            return builder.toString();
         }
 
     }
@@ -374,11 +183,6 @@ public class Main {
 
         public FastOutput println(int c) {
             cache.append(c).append('\n');
-            return this;
-        }
-
-        public FastOutput println() {
-            cache.append('\n');
             return this;
         }
 
@@ -440,7 +244,7 @@ public class Main {
             }
         }
 
-        public int readInt() {
+        public long readLong() {
             int sign = 1;
 
             skipBlank();
@@ -449,7 +253,7 @@ public class Main {
                 next = read();
             }
 
-            int val = 0;
+            long val = 0;
             if (sign == 1) {
                 while (next >= '0' && next <= '9') {
                     val = val * 10 + next - '0';
@@ -464,13 +268,6 @@ public class Main {
 
             return val;
         }
-
-    }
-
-    static interface IntIterator {
-        boolean hasNext();
-
-        int next();
 
     }
 }
