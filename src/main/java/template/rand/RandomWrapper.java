@@ -5,6 +5,10 @@ import java.util.Random;
 public class RandomWrapper {
     private Random random;
 
+    public RandomWrapper() {
+        this(new Random());
+    }
+
     public RandomWrapper(Random random) {
         this.random = random;
     }
@@ -29,7 +33,7 @@ public class RandomWrapper {
         return builder.toString();
     }
 
-    public Random getRandom(){
+    public Random getRandom() {
         return random;
     }
 }

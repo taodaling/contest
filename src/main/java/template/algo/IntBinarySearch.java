@@ -1,14 +1,14 @@
 package template.algo;
 
-public abstract class LongBinarySearch {
-    public abstract boolean check(long mid);
+public abstract class IntBinarySearch {
+    public abstract boolean check(int mid);
 
-    public long binarySearch(long l, long r) {
+    public int binarySearch(int l, int r) {
         if (l > r) {
             throw new IllegalArgumentException();
         }
         while (l < r) {
-            long mid = (l + r) >>> 1;
+            int mid = (l + r) >>> 1;
             if (check(mid)) {
                 r = mid;
             } else {

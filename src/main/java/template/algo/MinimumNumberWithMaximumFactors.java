@@ -1,10 +1,12 @@
 package template.algo;
 
 import template.math.DigitUtils;
+import template.math.LongPollardRho;
 
 public class MinimumNumberWithMaximumFactors {
     public static void main(String[] args) {
-        System.out.println(MinimumNumberWithMaximumFactors.find((long) 1e9));
+        System.out.println(MinimumNumberWithMaximumFactors.find((long) 1e15));
+        System.out.println(new LongPollardRho().findAllFactors(978217616376000L));
     }
 
     private static int[] primes = new int[] {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53};

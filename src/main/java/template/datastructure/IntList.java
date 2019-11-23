@@ -65,6 +65,10 @@ public class IntList {
         SequenceUtils.reverse(data, l, r);
     }
 
+    public void reverse() {
+        reverse(0, size - 1);
+    }
+
     public void ensureSpace(int req) {
         if (req > cap) {
             while (cap < req) {

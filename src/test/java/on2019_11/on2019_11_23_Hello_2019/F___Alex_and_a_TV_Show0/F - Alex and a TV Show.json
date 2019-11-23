@@ -1,0 +1,35 @@
+{
+  "name" : "F - Alex and a TV Show",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4 13\n1 1 1\n1 2 4\n1 3 6\n4 4 4\n1 4 4\n2 2 1 2\n2 3 3 4\n4 4 4\n3 2 2 3\n4 2 1\n4 2 2\n4 2 3\n4 2 4\n",
+    "output" : "010101\n",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2019_11.on2019_11_23_Hello_2019.F___Alex_and_a_TV_Show0.TaskF",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.11.23",
+  "contestName" : "Hello 2019",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

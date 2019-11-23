@@ -4,14 +4,14 @@ package template.math;
  * Euler sieve for multiplicative function
  */
 public class MultiplicativeFunctionSieve {
-    int[] primes;
-    boolean[] isComp;
-    int primeLength;
-    int[] mobius;
-    int[] euler;
-    int[] factors;
-    int[] smallestPrimeFactor;
-    int[] numberOfSmallestPrimeFactor;
+    public int[] primes;
+    public boolean[] isComp;
+    public int primeLength;
+    public int[] mobius;
+    public int[] euler;
+    public int[] factors;
+    public int[] smallestPrimeFactor;
+    public int[] numberOfSmallestPrimeFactor;
 
     public MultiplicativeFunctionSieve(int limit, boolean enableMobius, boolean enableEuler, boolean enableFactors) {
         isComp = new boolean[limit + 1];
