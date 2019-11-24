@@ -209,6 +209,7 @@ public class IntHashMap {
         if (builder.charAt(builder.length() - 1) == ',') {
             builder.setLength(builder.length() - 1);
         }
+        builder.append('}');
         return builder.toString();
     }
 }

@@ -133,6 +133,8 @@ public class Polynomials {
 
     /**
      * Try find x^k % p = remainder
+     * <br>
+     * This brute force run in O(n^2log_2k) while n is the length of p.
      */
     public static void module(long k, IntList p, IntList remainder, Power pow) {
         int rP = rankOf(p);

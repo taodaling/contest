@@ -35,118 +35,283 @@ public class Main {
     }
 
     static class TaskE {
-        FastInput in;
-        FastOutput out;
-
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            this.in = in;
-            this.out = out;
-
-            IntList question = new IntList(n);
-            boolean state;
-            for (int i = 1; i <= n; i++) {
-                question.add(i);
+            long k = in.readInt();
+            long[] a = new long[n];
+            for (int i = 0; i < n; i++) {
+                a[i] = in.readInt() - 1;
             }
-            state = redMore(question);
-            int red = 1;
-            int blue = 2;
-            int[] color = new int[2 * n + 1];
-            int sep;
+            PreSum ps = new PreSum(a);
+            LongHashMap map = new LongHashMap(n + 1, true);
+            map.put(0, 1);
+            int head = 0;
+            long ans = 0;
+            for (int i = 0; i < n; i++) {
+                while (head < i - k + 1) {
+                    long p = ps.prefix(head) % k;
+                    map.put(p, map.get(p) - 1);
+                    head++;
+                }
+                if (i == k - 1) {
+                    map.put(0, map.get(0) - 1);
+                }
+                long p = ps.prefix(i) % k;
+                long cnt = map.getOrDefault(p, 0);
+                ans += cnt;
+                map.put(p, map.getOrDefault(p, 0) + 1);
+            }
+            out.println(ans);
+        }
 
-            int l = 1;
-            int r = n;
+    }
 
-            while (l < r) {
-                sep = (l + r) >>> 1;
-                question.clear();
-                for (int j = 1; j <= 2 * n; j++) {
-                    if (j <= n - sep || j > n && j <= n + sep) {
-                        question.add(j);
+    static class LongHashMap {
+        private int[] slot;
+        private int[] next;
+        private long[] keys;
+        private long[] values;
+        private int alloc;
+        private boolean[] removed;
+        private int mask;
+        private int size;
+        private boolean rehash;
+
+        public LongHashMap(int cap, boolean rehash) {
+            this.mask = (1 << (32 - Integer.numberOfLeadingZeros(cap - 1))) - 1;
+            slot = new int[mask + 1];
+            next = new int[cap + 1];
+            keys = new long[cap + 1];
+            values = new long[cap + 1];
+            removed = new boolean[cap + 1];
+            this.rehash = rehash;
+        }
+
+        private void doubleCapacity() {
+            int newSize = Math.max(next.length + 10, next.length * 2);
+            next = Arrays.copyOf(next, newSize);
+            keys = Arrays.copyOf(keys, newSize);
+            values = Arrays.copyOf(values, newSize);
+            removed = Arrays.copyOf(removed, newSize);
+        }
+
+        public void alloc() {
+            alloc++;
+            if (alloc >= next.length) {
+                doubleCapacity();
+            }
+            next[alloc] = 0;
+            removed[alloc] = false;
+            size++;
+        }
+
+        private void rehash() {
+            int[] newSlots = new int[Math.max(16, slot.length * 2)];
+            int newMask = newSlots.length - 1;
+            for (int i = 0; i < slot.length; i++) {
+                if (slot[i] == 0) {
+                    continue;
+                }
+                int head = slot[i];
+                while (head != 0) {
+                    int n = next[head];
+                    int s = hash(keys[head]) & newMask;
+                    next[head] = newSlots[s];
+                    newSlots[s] = head;
+                    head = n;
+                }
+            }
+            this.slot = newSlots;
+            this.mask = newMask;
+        }
+
+        private int hash(long x) {
+            int h = Long.hashCode(x);
+            return h ^ (h >>> 16);
+        }
+
+        public void put(long x, long y) {
+            int h = hash(x);
+            int s = h & mask;
+            if (slot[s] == 0) {
+                alloc();
+                slot[s] = alloc;
+                keys[alloc] = x;
+                values[alloc] = y;
+            } else {
+                int index = findIndexOrLastEntry(s, x);
+                if (keys[index] != x) {
+                    alloc();
+                    next[index] = alloc;
+                    keys[alloc] = x;
+                    values[alloc] = y;
+                } else {
+                    values[index] = y;
+                }
+            }
+            if (rehash && size >= slot.length) {
+                rehash();
+            }
+        }
+
+        public long getOrDefault(long x, long def) {
+            int h = hash(x);
+            int s = h & mask;
+            if (slot[s] == 0) {
+                return def;
+            }
+            int index = findIndexOrLastEntry(s, x);
+            return keys[index] == x ? values[index] : def;
+        }
+
+        public long get(long x) {
+            return getOrDefault(x, 0);
+        }
+
+        private int findIndexOrLastEntry(int s, long x) {
+            int iter = slot[s];
+            while (keys[iter] != x) {
+                if (next[iter] != 0) {
+                    iter = next[iter];
+                } else {
+                    return iter;
+                }
+            }
+            return iter;
+        }
+
+        public LongEntryIterator iterator() {
+            return new LongEntryIterator() {
+                int index = 1;
+                int readIndex = -1;
+
+
+                public boolean hasNext() {
+                    while (index <= alloc && removed[index]) {
+                        index++;
                     }
+                    return index <= alloc;
                 }
-                if (state != redMore(question)) {
-                    r = sep;
-                } else {
-                    l = sep + 1;
-                }
-            }
 
-            sep = r;
-            color[n - sep + 1] = state ? red : blue;
-            color[n + sep] = 3 - color[n - sep + 1];
-            question.clear();
-            for (int j = 1; j <= 2 * n; j++) {
-                if (j <= n - sep || j > n && j <= n + sep) {
-                    question.add(j);
-                }
-            }
 
-            for (int i = 1; i <= n - sep; i++) {
-                replace(question, i, n - sep + 1);
-                if (state != redMore(question)) {
-                    color[i] = state ? red : blue;
-                } else {
-                    color[i] = state ? blue : red;
+                public long getEntryKey() {
+                    return keys[readIndex];
                 }
-                replace(question, n - sep + 1, i);
-            }
-            for (int i = n + sep + 1; i <= 2 * n; i++) {
-                replace(question, n + sep, i);
-                if (state == redMore(question)) {
-                    color[i] = state ? red : blue;
-                } else {
-                    color[i] = state ? blue : red;
-                }
-                replace(question, i, n + sep);
-            }
 
-            for (int i = n - sep + 2; i <= n; i++) {
-                replace(question, n + sep, i);
-                if (state == redMore(question)) {
-                    color[i] = state ? red : blue;
-                } else {
-                    color[i] = state ? blue : red;
-                }
-                replace(question, i, n + sep);
-            }
 
-            for (int i = n + 1; i < n + sep; i++) {
-                replace(question, i, n - sep + 1);
-                if (state != redMore(question)) {
-                    color[i] = state ? red : blue;
-                } else {
-                    color[i] = state ? blue : red;
+                public long getEntryValue() {
+                    return values[readIndex];
                 }
-                replace(question, n - sep + 1, i);
-            }
 
-            out.append("! ");
-            for (int i = 1; i <= 2 * n; i++) {
-                out.append(color[i] == red ? "R" : "B");
-            }
-            out.flush();
+
+                public void next() {
+                    if (!hasNext()) {
+                        throw new IllegalStateException();
+                    }
+                    readIndex = index;
+                    index++;
+                }
+            };
         }
 
-        public void replace(IntList x, int a, int b) {
-            x.set(x.indexOf(a), b);
+        public String toString() {
+            LongEntryIterator iterator = iterator();
+            StringBuilder builder = new StringBuilder("{");
+            while (iterator.hasNext()) {
+                iterator.next();
+                builder.append(iterator.getEntryKey()).append("->").append(iterator.getEntryValue()).append(',');
+            }
+            if (builder.charAt(builder.length() - 1) == ',') {
+                builder.setLength(builder.length() - 1);
+            }
+            return builder.toString();
         }
 
-        public boolean redMore(IntList a) {
-            out.append("? ");
-            for (int i = 0; i < a.size(); i++) {
-                out.append(a.get(i)).append(' ');
-            }
-            out.println();
-            out.flush();
-            return in.readString().equals("Red");
+    }
+
+    static class FastOutput implements AutoCloseable, Closeable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
+
+        public FastOutput(Writer os) {
+            this.os = os;
         }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput println(long c) {
+            cache.append(c).append('\n');
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            return this;
+        }
+
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+
+        public String toString() {
+            return cache.toString();
+        }
+
+    }
+
+    static class PreSum {
+        private long[] pre;
+
+        public PreSum(long[] a) {
+            int n = a.length;
+            pre = new long[n];
+            pre[0] = a[0];
+            for (int i = 1; i < n; i++) {
+                pre[i] = pre[i - 1] + a[i];
+            }
+        }
+
+        public PreSum(int[] a) {
+            int n = a.length;
+            pre = new long[n];
+            pre[0] = a[0];
+            for (int i = 1; i < n; i++) {
+                pre[i] = pre[i - 1] + a[i];
+            }
+        }
+
+        public long prefix(int i) {
+            return pre[i];
+        }
+
+    }
+
+    static interface LongEntryIterator {
+        boolean hasNext();
+
+        void next();
+
+        long getEntryKey();
+
+        long getEntryValue();
 
     }
 
     static class FastInput {
         private final InputStream is;
-        private StringBuilder defaultStringBuf = new StringBuilder(1 << 13);
         private byte[] buf = new byte[1 << 13];
         private int bufLen;
         private int bufOffset;
@@ -200,185 +365,6 @@ public class Main {
             }
 
             return val;
-        }
-
-        public String readString(StringBuilder builder) {
-            skipBlank();
-
-            while (next > 32) {
-                builder.append((char) next);
-                next = read();
-            }
-
-            return builder.toString();
-        }
-
-        public String readString() {
-            defaultStringBuf.setLength(0);
-            return readString(defaultStringBuf);
-        }
-
-    }
-
-    static class IntList {
-        private int size;
-        private int cap;
-        private int[] data;
-        private static final int[] EMPTY = new int[0];
-
-        public IntList(int cap) {
-            this.cap = cap;
-            if (cap == 0) {
-                data = EMPTY;
-            } else {
-                data = new int[cap];
-            }
-        }
-
-        public IntList(IntList list) {
-            this.size = list.size;
-            this.cap = list.cap;
-            this.data = Arrays.copyOf(list.data, size);
-        }
-
-        public IntList() {
-            this(0);
-        }
-
-        public void ensureSpace(int req) {
-            if (req > cap) {
-                while (cap < req) {
-                    cap = Math.max(cap + 10, 2 * cap);
-                }
-                data = Arrays.copyOf(data, cap);
-            }
-        }
-
-        private void checkRange(int i) {
-            if (i < 0 || i >= size) {
-                throw new ArrayIndexOutOfBoundsException();
-            }
-        }
-
-        public int get(int i) {
-            checkRange(i);
-            return data[i];
-        }
-
-        public void add(int x) {
-            ensureSpace(size + 1);
-            data[size++] = x;
-        }
-
-        public int indexOf(int x) {
-            for (int i = 0; i < size; i++) {
-                if (x == data[i]) {
-                    return i;
-                }
-            }
-            return -1;
-        }
-
-        public void set(int i, int x) {
-            checkRange(i);
-            data[i] = x;
-        }
-
-        public int size() {
-            return size;
-        }
-
-        public int[] toArray() {
-            return Arrays.copyOf(data, size);
-        }
-
-        public void clear() {
-            size = 0;
-        }
-
-        public String toString() {
-            return Arrays.toString(toArray());
-        }
-
-        public boolean equals(Object obj) {
-            if (!(obj instanceof IntList)) {
-                return false;
-            }
-            IntList other = (IntList) obj;
-            return SequenceUtils.equal(data, 0, size - 1, other.data, 0, other.size - 1);
-        }
-
-    }
-
-    static class SequenceUtils {
-        public static boolean equal(int[] a, int al, int ar, int[] b, int bl, int br) {
-            if ((ar - al) != (br - bl)) {
-                return false;
-            }
-            for (int i = al, j = bl; i <= ar; i++, j++) {
-                if (a[i] != b[j]) {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-    }
-
-    static class FastOutput implements AutoCloseable, Closeable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
-
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput append(char c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput append(int c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput append(String c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput println() {
-            cache.append('\n');
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        }
-
-        public String toString() {
-            return cache.toString();
         }
 
     }

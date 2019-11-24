@@ -1,0 +1,45 @@
+{
+  "name" : "B - ROT N",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2\nABCXYZ\n",
+    "output" : "CDEZAB\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "0\nABCXYZ\n",
+    "output" : "ABCXYZ\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "13\nABCDEFGHIJKLMNOPQRSTUVWXYZ\n",
+    "output" : "NOPQRSTUVWXYZABCDEFGHIJKLM\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2019_11.on2019_11_24_AtCoder_Beginner_Contest_146.B___ROT_N.TaskB",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.11.24",
+  "contestName" : "AtCoder Beginner Contest 146",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

@@ -1,0 +1,53 @@
+{
+  "name" : "D1 - Wrong Answer on test 233 (Easy Version)",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 3\n1 3 1\n",
+    "output" : "9\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "5 5\n1 1 4 2 2\n",
+    "output" : "1000\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "1 2\n2",
+    "output" : "0",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "2 1000000000\n1 2",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "3 2\n1 1 1",
+    "index" : 4,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2019_11.on2019_11_24_Codeforces_Round__602__Div__1__based_on_Technocup_2020_Elimination_Round_3_.D1___Wrong_Answer_on_test_233__Easy_Version_.TaskD1",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.11.24",
+  "contestName" : "Codeforces Round #602 (Div. 1, based on Technocup 2020 Elimination Round 3)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

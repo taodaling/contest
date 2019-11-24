@@ -177,6 +177,7 @@ public class LongHashSet {
         if (builder.charAt(builder.length() - 1) == ',') {
             builder.setLength(builder.length() - 1);
         }
+        builder.append('}');
         return builder.toString();
     }
 }

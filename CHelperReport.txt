@@ -1,2 +1,2 @@
-48 src/main/java/contest/E - Majority of Balls.json
+48 src/main/java/contest/E - Rem of Sum is Num.json
 0
