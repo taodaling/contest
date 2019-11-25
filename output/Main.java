@@ -3,11 +3,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.Collection;
+import java.util.function.BiFunction;
 import java.io.IOException;
+import java.util.Deque;
+import java.util.ArrayList;
 import java.io.UncheckedIOException;
+import java.util.List;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
+import java.util.ArrayDeque;
 import java.io.InputStream;
 
 /**
@@ -35,64 +42,144 @@ public class Main {
     }
 
     static class TaskE {
+        Modular mod = new Modular(1e9 + 7);
+        Power pow = new Power(mod);
+
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            long k = in.readInt();
-            long[] a = new long[n];
-            for (int i = 0; i < n; i++) {
-                a[i] = in.readInt() - 1;
+            Node[] nodes = new Node[n + 1];
+            for (int i = 0; i <= n; i++) {
+                nodes[i] = new Node();
+                nodes[i].id = i;
             }
-            PreSum ps = new PreSum(a);
-            LongHashMap map = new LongHashMap(n + 1, true);
-            map.put(0, 1);
-            int head = 0;
-            long ans = 0;
-            for (int i = 0; i < n; i++) {
-                while (head < i - k + 1) {
-                    long p = ps.prefix(head) % k;
-                    map.put(p, map.get(p) - 1);
-                    head++;
+            for (int i = 1; i <= n; i++) {
+                Node p = nodes[in.readInt()];
+                p.next.add(nodes[i]);
+            }
+            MultiWayDeque<Node> levels = new MultiWayDeque<>(n + 1, n + 1);
+            MultiWayDeque<Node> virtualEdges = new MultiWayDeque<>(n + 1, n + 1);
+            List<Node> trace = new ArrayList<>(2 * (n + 1));
+            dfs(nodes[0], levels, 0, trace);
+            SparseTable<Node> st = new SparseTable<>(trace.toArray(), trace.size(), (a, b) -> a.dfn <= b.dfn ? a : b);
+            Deque<Node> deque = new ArrayDeque<>(n + 1);
+            IntVersionArray va = new IntVersionArray(n + 1);
+
+            int ans = 0;
+            for (int i = 0; i <= n; i++) {
+                trace.clear();
+                va.clear();
+                for (Iterator<Node> iterator = levels.iterator(i); iterator.hasNext(); ) {
+                    Node node = iterator.next();
+                    va.set(node.id, 1);
+                    trace.add(node);
                 }
-                if (i == k - 1) {
-                    map.put(0, map.get(0) - 1);
+                int cnt = trace.size();
+                if (cnt == 0) {
+                    break;
                 }
-                long p = ps.prefix(i) % k;
-                long cnt = map.getOrDefault(p, 0);
-                ans += cnt;
-                map.put(p, map.getOrDefault(p, 0) + 1);
+                for (int j = 1, until = trace.size(); j < until; j++) {
+                    Node prev = trace.get(j - 1);
+                    Node cur = trace.get(j);
+                    Node lca = st.query(prev.dfn, cur.dfn);
+                    if (va.get(lca.id) == 1) {
+                        continue;
+                    }
+                    va.set(lca.id, 1);
+                    trace.add(lca);
+                }
+                trace.sort((a, b) -> a.dfn - b.dfn);
+                for (int j = 0, until = trace.size(); j < until; j++) {
+                    trace.get(j).virtualId = j;
+                }
+                deque.clear();
+                virtualEdges.expandQueueNum(trace.size());
+                virtualEdges.clear();
+                for (Node node : trace) {
+                    while (!deque.isEmpty() && st.query(deque.peekLast().dfn, node.dfn) != deque.peekLast()) {
+                        deque.removeLast();
+                    }
+                    if (!deque.isEmpty()) {
+                        virtualEdges.addLast(deque.peekLast().virtualId, node);
+                    }
+                    deque.addLast(node);
+                }
+
+                Node root = trace.get(0);
+                dpOnTree(root, virtualEdges);
+                int way = root.dp[1];
+                way = mod.mul(way, pow.pow(2, n + 1 - cnt));
+                ans = mod.plus(ans, way);
             }
             out.println(ans);
         }
 
+        public void dpOnTree(Node root, MultiWayDeque<Node> edges) {
+            if (edges.isEmpty(root.virtualId)) {
+                root.dp[0] = root.dp[1] = 1;
+                return;
+            }
+            root.dp[0] = 1;
+            root.dp[1] = 0;
+            int total = 1;
+            for (Iterator<Node> iterator = edges.iterator(root.virtualId); iterator.hasNext(); ) {
+                Node node = iterator.next();
+                dpOnTree(node, edges);
+                total = mod.mul(total, mod.plus(node.dp[0], node.dp[1]));
+                root.dp[1] = mod.plus(mod.mul(root.dp[1], node.dp[0]), mod.mul(root.dp[0], node.dp[1]));
+                root.dp[0] = mod.mul(root.dp[0], node.dp[0]);
+            }
+            root.dp[0] = mod.subtract(total, root.dp[1]);
+        }
+
+        public void dfs(Node root, MultiWayDeque<Node> deque, int height, List<Node> trace) {
+            deque.addLast(height, root);
+            root.dfn = trace.size();
+            trace.add(root);
+            for (Node node : root.next) {
+                dfs(node, deque, height + 1, trace);
+                trace.add(root);
+            }
+        }
+
     }
 
-    static class LongHashMap {
-        private int[] slot;
+    static class MultiWayDeque<V> {
+        private Object[] values;
         private int[] next;
-        private long[] keys;
-        private long[] values;
+        private int[] prev;
+        private int[] heads;
+        private int[] tails;
         private int alloc;
-        private boolean[] removed;
-        private int mask;
-        private int size;
-        private boolean rehash;
+        private int queueNum;
 
-        public LongHashMap(int cap, boolean rehash) {
-            this.mask = (1 << (32 - Integer.numberOfLeadingZeros(cap - 1))) - 1;
-            slot = new int[mask + 1];
-            next = new int[cap + 1];
-            keys = new long[cap + 1];
-            values = new long[cap + 1];
-            removed = new boolean[cap + 1];
-            this.rehash = rehash;
+        public RevokeIterator<V> iterator(final int queue) {
+            return new RevokeIterator() {
+                int ele = heads[queue];
+
+
+                public boolean hasNext() {
+                    return ele != 0;
+                }
+
+
+                public Object next() {
+                    Object ans = values[ele];
+                    ele = next[ele];
+                    return ans;
+                }
+
+
+                public void revoke() {
+                    ele = prev[ele];
+                }
+            };
         }
 
         private void doubleCapacity() {
             int newSize = Math.max(next.length + 10, next.length * 2);
             next = Arrays.copyOf(next, newSize);
-            keys = Arrays.copyOf(keys, newSize);
+            prev = Arrays.copyOf(prev, newSize);
             values = Arrays.copyOf(values, newSize);
-            removed = Arrays.copyOf(removed, newSize);
         }
 
         public void alloc() {
@@ -101,212 +188,109 @@ public class Main {
                 doubleCapacity();
             }
             next[alloc] = 0;
-            removed[alloc] = false;
-            size++;
         }
 
-        private void rehash() {
-            int[] newSlots = new int[Math.max(16, slot.length * 2)];
-            int newMask = newSlots.length - 1;
-            for (int i = 0; i < slot.length; i++) {
-                if (slot[i] == 0) {
-                    continue;
-                }
-                int head = slot[i];
-                while (head != 0) {
-                    int n = next[head];
-                    int s = hash(keys[head]) & newMask;
-                    next[head] = newSlots[s];
-                    newSlots[s] = head;
-                    head = n;
-                }
-            }
-            this.slot = newSlots;
-            this.mask = newMask;
+        public void clear() {
+            alloc = 0;
+            Arrays.fill(heads, 0, queueNum, 0);
+            Arrays.fill(tails, 0, queueNum, 0);
         }
 
-        private int hash(long x) {
-            int h = Long.hashCode(x);
-            return h ^ (h >>> 16);
+        public boolean isEmpty(int qId) {
+            return heads[qId] == 0;
         }
 
-        public void put(long x, long y) {
-            int h = hash(x);
-            int s = h & mask;
-            if (slot[s] == 0) {
-                alloc();
-                slot[s] = alloc;
-                keys[alloc] = x;
-                values[alloc] = y;
+        public void expandQueueNum(int qNum) {
+            if (qNum <= queueNum) {
+            } else if (qNum <= heads.length) {
+                Arrays.fill(heads, queueNum, qNum, 0);
+                Arrays.fill(tails, queueNum, qNum, 0);
             } else {
-                int index = findIndexOrLastEntry(s, x);
-                if (keys[index] != x) {
-                    alloc();
-                    next[index] = alloc;
-                    keys[alloc] = x;
-                    values[alloc] = y;
-                } else {
-                    values[index] = y;
-                }
+                Arrays.fill(heads, queueNum, heads.length, 0);
+                Arrays.fill(tails, queueNum, heads.length, 0);
+                heads = Arrays.copyOf(heads, qNum);
+                tails = Arrays.copyOf(tails, qNum);
             }
-            if (rehash && size >= slot.length) {
-                rehash();
-            }
+            queueNum = qNum;
         }
 
-        public long getOrDefault(long x, long def) {
-            int h = hash(x);
-            int s = h & mask;
-            if (slot[s] == 0) {
-                return def;
+        public MultiWayDeque(int qNum, int totalCapacity) {
+            values = new Object[totalCapacity + 1];
+            next = new int[totalCapacity + 1];
+            prev = new int[totalCapacity + 1];
+            heads = new int[qNum];
+            tails = new int[qNum];
+            queueNum = qNum;
+        }
+
+        public void addLast(int qId, V x) {
+            alloc();
+            values[alloc] = x;
+
+            if (heads[qId] == 0) {
+                heads[qId] = tails[qId] = alloc;
+                return;
             }
-            int index = findIndexOrLastEntry(s, x);
-            return keys[index] == x ? values[index] : def;
-        }
-
-        public long get(long x) {
-            return getOrDefault(x, 0);
-        }
-
-        private int findIndexOrLastEntry(int s, long x) {
-            int iter = slot[s];
-            while (keys[iter] != x) {
-                if (next[iter] != 0) {
-                    iter = next[iter];
-                } else {
-                    return iter;
-                }
-            }
-            return iter;
-        }
-
-        public LongEntryIterator iterator() {
-            return new LongEntryIterator() {
-                int index = 1;
-                int readIndex = -1;
-
-
-                public boolean hasNext() {
-                    while (index <= alloc && removed[index]) {
-                        index++;
-                    }
-                    return index <= alloc;
-                }
-
-
-                public long getEntryKey() {
-                    return keys[readIndex];
-                }
-
-
-                public long getEntryValue() {
-                    return values[readIndex];
-                }
-
-
-                public void next() {
-                    if (!hasNext()) {
-                        throw new IllegalStateException();
-                    }
-                    readIndex = index;
-                    index++;
-                }
-            };
+            next[tails[qId]] = alloc;
+            prev[alloc] = tails[qId];
+            tails[qId] = alloc;
         }
 
         public String toString() {
-            LongEntryIterator iterator = iterator();
-            StringBuilder builder = new StringBuilder("{");
-            while (iterator.hasNext()) {
-                iterator.next();
-                builder.append(iterator.getEntryKey()).append("->").append(iterator.getEntryValue()).append(',');
-            }
-            if (builder.charAt(builder.length() - 1) == ',') {
-                builder.setLength(builder.length() - 1);
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < queueNum; i++) {
+                builder.append(i).append(": ");
+                for (Iterator<V> iterator = iterator(i); iterator.hasNext(); ) {
+                    builder.append(iterator.next()).append(",");
+                }
+                if (builder.charAt(builder.length() - 1) == ',') {
+                    builder.setLength(builder.length() - 1);
+                }
+                builder.append('\n');
             }
             return builder.toString();
         }
 
     }
 
-    static class FastOutput implements AutoCloseable, Closeable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
+    static class Power {
+        final Modular modular;
 
-        public FastOutput(Writer os) {
-            this.os = os;
+        public Power(Modular modular) {
+            this.modular = modular;
         }
 
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput println(long c) {
-            cache.append(c).append('\n');
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
+        public int pow(int x, long n) {
+            if (n == 0) {
+                return modular.valueOf(1);
             }
-            return this;
+            long r = pow(x, n >> 1);
+            r = modular.valueOf(r * r);
+            if ((n & 1) == 1) {
+                r = modular.valueOf(r * x);
+            }
+            return (int) r;
         }
 
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        }
+    }
+
+    static class Node {
+        List<Node> next = new ArrayList<>();
+        int virtualId;
+        int[] dp = new int[2];
+        int dfn;
+        int id;
 
         public String toString() {
-            return cache.toString();
+            return "" + id;
         }
 
     }
 
-    static class PreSum {
-        private long[] pre;
-
-        public PreSum(long[] a) {
-            int n = a.length;
-            pre = new long[n];
-            pre[0] = a[0];
-            for (int i = 1; i < n; i++) {
-                pre[i] = pre[i - 1] + a[i];
-            }
+    static class Log2 {
+        public int floorLog(int x) {
+            return 31 - Integer.numberOfLeadingZeros(x);
         }
-
-        public PreSum(int[] a) {
-            int n = a.length;
-            pre = new long[n];
-            pre[0] = a[0];
-            for (int i = 1; i < n; i++) {
-                pre[i] = pre[i - 1] + a[i];
-            }
-        }
-
-        public long prefix(int i) {
-            return pre[i];
-        }
-
-    }
-
-    static interface LongEntryIterator {
-        boolean hasNext();
-
-        void next();
-
-        long getEntryKey();
-
-        long getEntryValue();
 
     }
 
@@ -365,6 +349,215 @@ public class Main {
             }
 
             return val;
+        }
+
+    }
+
+    static class IntVersionArray {
+        int[] data;
+        int[] version;
+        int now;
+        int def;
+
+        public IntVersionArray(int cap) {
+            this(cap, 0);
+        }
+
+        public IntVersionArray(int cap, int def) {
+            data = new int[cap];
+            version = new int[cap];
+            now = 0;
+            this.def = def;
+        }
+
+        public void clear() {
+            now++;
+        }
+
+        public void visit(int i) {
+            if (version[i] < now) {
+                version[i] = now;
+                data[i] = def;
+            }
+        }
+
+        public void set(int i, int v) {
+            version[i] = now;
+            data[i] = v;
+        }
+
+        public int get(int i) {
+            visit(i);
+            return data[i];
+        }
+
+    }
+
+    static class FastOutput implements AutoCloseable, Closeable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
+
+        public FastOutput(Writer os) {
+            this.os = os;
+        }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput println(int c) {
+            cache.append(c).append('\n');
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            return this;
+        }
+
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+
+        public String toString() {
+            return cache.toString();
+        }
+
+    }
+
+    static interface RevokeIterator<E> extends Iterator<E> {
+    }
+
+    static class SparseTable<T> {
+        private Object[][] st;
+        private BiFunction<T, T, T> merger;
+        private CachedLog2 log2;
+
+        public SparseTable(Object[] data, int length, BiFunction<T, T, T> merger) {
+            log2 = new CachedLog2(length);
+            int m = log2.floorLog(length);
+
+            st = new Object[m + 1][length];
+            this.merger = merger;
+            for (int i = 0; i < length; i++) {
+                st[0][i] = data[i];
+            }
+            for (int i = 0; i < m; i++) {
+                int interval = 1 << i;
+                for (int j = 0; j < length; j++) {
+                    if (j + interval < length) {
+                        st[i + 1][j] = merge((T) st[i][j], (T) st[i][j + interval]);
+                    } else {
+                        st[i + 1][j] = st[i][j];
+                    }
+                }
+            }
+        }
+
+        private T merge(T a, T b) {
+            return merger.apply(a, b);
+        }
+
+        public T query(int left, int right) {
+            int queryLen = right - left + 1;
+            int bit = log2.floorLog(queryLen);
+            // x + 2^bit == right + 1
+            // So x should be right + 1 - 2^bit - left=queryLen - 2^bit
+            return merge((T) st[bit][left], (T) st[bit][right + 1 - (1 << bit)]);
+        }
+
+        public String toString() {
+            return Arrays.toString(st[0]);
+        }
+
+    }
+
+    static class Modular {
+        int m;
+
+        public Modular(int m) {
+            this.m = m;
+        }
+
+        public Modular(long m) {
+            this.m = (int) m;
+            if (this.m != m) {
+                throw new IllegalArgumentException();
+            }
+        }
+
+        public Modular(double m) {
+            this.m = (int) m;
+            if (this.m != m) {
+                throw new IllegalArgumentException();
+            }
+        }
+
+        public int valueOf(int x) {
+            x %= m;
+            if (x < 0) {
+                x += m;
+            }
+            return x;
+        }
+
+        public int valueOf(long x) {
+            x %= m;
+            if (x < 0) {
+                x += m;
+            }
+            return (int) x;
+        }
+
+        public int mul(int x, int y) {
+            return valueOf((long) x * y);
+        }
+
+        public int plus(int x, int y) {
+            return valueOf(x + y);
+        }
+
+        public int subtract(int x, int y) {
+            return valueOf(x - y);
+        }
+
+        public String toString() {
+            return "mod " + m;
+        }
+
+    }
+
+    static class CachedLog2 {
+        private int[] cache;
+        private Log2 log2;
+
+        public CachedLog2(int n) {
+            cache = new int[n + 1];
+            int b = 0;
+            for (int i = 0; i <= n; i++) {
+                while ((1 << (b + 1)) <= i) {
+                    b++;
+                }
+                cache[i] = b;
+            }
+        }
+
+        public int floorLog(int x) {
+            if (x >= cache.length) {
+                return log2.floorLog(x);
+            }
+            return cache[x];
         }
 
     }
