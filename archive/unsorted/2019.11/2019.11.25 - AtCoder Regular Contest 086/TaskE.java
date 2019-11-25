@@ -1,5 +1,7 @@
 package contest;
 
+
+
 import template.datastructure.IntVersionArray;
 import template.datastructure.SparseTable;
 import template.graph.MultiWayDeque;

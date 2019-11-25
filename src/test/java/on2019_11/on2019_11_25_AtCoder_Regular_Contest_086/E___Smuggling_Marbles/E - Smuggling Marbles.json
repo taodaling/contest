@@ -1,0 +1,45 @@
+{
+  "name" : "E - Smuggling Marbles",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2\n0 0\n",
+    "output" : "8\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "5\n0 1 1 0 4\n",
+    "output" : "96\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "31\n0 1 0 2 4 0 4 1 6 4 3 9 7 3 7 2 15 6 12 10 12 16 5 3 20 1 25 20 23 24 23\n",
+    "output" : "730395550\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx512M",
+  "mainClass" : "Main",
+  "taskClass" : "on2019_11.on2019_11_25_AtCoder_Regular_Contest_086.E___Smuggling_Marbles.TaskE",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.11.25",
+  "contestName" : "AtCoder Regular Contest 086",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

@@ -1,2 +1,2 @@
-48 src/main/java/contest/E - Smuggling Marbles.json
+48 src/main/java/contest/G - Recursive Queries.json
 0

@@ -1,0 +1,40 @@
+{
+  "name" : "G - Recursive Queries",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4 5\n3 1 4 2\n2 1 1 2 1\n2 3 4 4 1\n",
+    "output" : "1 6 8 5 1\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "4 3\n2 3 1 0 \n2 3 1 \n4 3 3 ",
+    "output" : "6 1 5",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.TaskG",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "contest.TaskGTestCase" ],
+  "date" : "2019.11.25",
+  "contestName" : "Educational Codeforces Round 60 (Rated for Div. 2)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}
