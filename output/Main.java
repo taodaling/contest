@@ -28,420 +28,101 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            TaskE solver = new TaskE();
+            TaskD solver = new TaskD();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class TaskE {
+    static class TaskD {
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            char[] s = new char[100000];
-            int len = in.readString(s, 0);
-            Node[] nodes = new Node[len];
-            int mod = 'z' - 'a' + 1;
-            for (int i = 0; i < len; i++) {
-                nodes[i] = new Node();
-                nodes[i].val = s[i] - 'a';
-            }
-
             int n = in.readInt();
-            Interval[] intervals = new Interval[n];
+            long[][] xy = new long[n][2];
             for (int i = 0; i < n; i++) {
-                intervals[i] = new Interval();
-                intervals[i].id = i;
-                intervals[i].l = in.readInt() - 1;
-                intervals[i].r = in.readInt() - 1;
-            }
-            ModifiableHash h31 = new ModifiableHash(31, n);
-            ModifiableHash h11 = new ModifiableHash(11, n);
-            LongHashMap map = new LongHashMap(n * 2, true);
-
-            Interval[] intervalsSortByL = intervals.clone();
-            Interval[] intervalsSortByR = intervals.clone();
-            Arrays.sort(intervalsSortByL, (a, b) -> a.l - b.l);
-            Arrays.sort(intervalsSortByR, (a, b) -> a.r - b.r);
-            int lHead = 0;
-            int rHead = 0;
-            for (int i = 0; i < len; i++) {
-                while (lHead < n && intervalsSortByL[lHead].l <= i) {
-                    h31.modify(intervalsSortByL[lHead].id, 1);
-                    h11.modify(intervalsSortByL[lHead].id, 1);
-                    lHead++;
-                }
-                while (rHead < n && intervalsSortByR[rHead].r < i) {
-                    h31.modify(intervalsSortByR[rHead].id, -1);
-                    h11.modify(intervalsSortByR[rHead].id, -1);
-                    rHead++;
-                }
-                long state = DigitUtils.asLong(h11.hash(0, n - 1), h31.hash(0, n - 1));
-                if (!map.containKey(state)) {
-                    map.put(state, i);
-                    continue;
-                }
-                int index = (int) map.get(state);
-                Node.merge(nodes[index], nodes[i], nodes[i].val - nodes[index].val);
-            }
-            int l = 0;
-            int r = len - 1;
-            while (l < r) {
-                Node a = nodes[l++];
-                Node b = nodes[r--];
-                if (a.find() == b.find()) {
-                    int differ = a.dist - b.dist;
-                    if (differ % mod != 0) {
-                        out.println("NO");
-                        return;
-                    }
-                    continue;
-                }
-                Node.merge(a.find(), b.find(), 0);
-            }
-
-            out.println("YES");
-        }
-
-    }
-
-    static class Node {
-        Node p = this;
-        int rank = 0;
-        int dist;
-        int val;
-
-        Node find() {
-            if (p == p.p) {
-                return p;
-            }
-            p.find();
-            dist += p.dist;
-            p = p.find();
-            return p;
-        }
-
-        static void merge(Node a, Node b, int bSubA) {
-            a.find();
-            bSubA += a.dist;
-            a = a.find();
-            b.find();
-            bSubA -= b.dist;
-            b = b.find();
-            if (a == b) {
-                return;
-            }
-            if (a.rank == b.rank) {
-                a.rank++;
-            }
-            if (a.rank < b.rank) {
-                Node tmp = a;
-                a = b;
-                b = tmp;
-                bSubA = -bSubA;
-            }
-            b.p = a;
-            b.dist = bSubA;
-        }
-
-    }
-
-    static class ModBIT {
-        private int[] data;
-        private int n;
-        private Modular modular;
-
-        public ModBIT(int n, Modular mod) {
-            this.n = n;
-            data = new int[n + 1];
-            this.modular = mod;
-        }
-
-        public int query(int i) {
-            long sum = 0;
-            for (; i > 0; i -= i & -i) {
-                sum += data[i];
-            }
-            return modular.valueOf(sum);
-        }
-
-        public void update(int i, int mod) {
-            if (i <= 0) {
-                return;
-            }
-            for (; i <= n; i += i & -i) {
-                data[i] = modular.plus(data[i], mod);
-            }
-        }
-
-        public String toString() {
-            StringBuilder builder = new StringBuilder();
-            for (int i = 1; i <= n; i++) {
-                builder.append(query(i) - query(i - 1)).append(' ');
-            }
-            return builder.toString();
-        }
-
-    }
-
-    static class ModifiableHash {
-        public static final Modular MOD = new Modular((int) (1e9 + 7));
-        public static final Power POWER = new Power(MOD);
-        private int[] inverse;
-        private int[] xs;
-        private ModBIT bit;
-
-        public ModifiableHash(int x, int n) {
-            xs = new int[n + 1];
-            inverse = new int[n + 1];
-            bit = new ModBIT(n, MOD);
-
-            xs[0] = 1;
-            inverse[0] = 1;
-            int invX = POWER.inverse(x);
-            for (int i = 1; i <= n; i++) {
-                xs[i] = MOD.mul(xs[i - 1], x);
-                inverse[i] = MOD.mul(inverse[i - 1], invX);
-            }
-        }
-
-        public void modify(int i, int v) {
-            bit.update(i + 1, MOD.mul(v, xs[i]));
-        }
-
-        public int hash(int l, int r) {
-            int h = bit.query(r + 1);
-            if (l > 0) {
-                h = MOD.subtract(h, bit.query(l));
-                h = MOD.mul(h, inverse[l]);
-            }
-            return h;
-        }
-
-    }
-
-    static class LongHashMap {
-        private int[] slot;
-        private int[] next;
-        private long[] keys;
-        private long[] values;
-        private int alloc;
-        private boolean[] removed;
-        private int mask;
-        private int size;
-        private boolean rehash;
-
-        public LongHashMap(int cap, boolean rehash) {
-            this.mask = (1 << (32 - Integer.numberOfLeadingZeros(cap - 1))) - 1;
-            slot = new int[mask + 1];
-            next = new int[cap + 1];
-            keys = new long[cap + 1];
-            values = new long[cap + 1];
-            removed = new boolean[cap + 1];
-            this.rehash = rehash;
-        }
-
-        private void doubleCapacity() {
-            int newSize = Math.max(next.length + 10, next.length * 2);
-            next = Arrays.copyOf(next, newSize);
-            keys = Arrays.copyOf(keys, newSize);
-            values = Arrays.copyOf(values, newSize);
-            removed = Arrays.copyOf(removed, newSize);
-        }
-
-        public void alloc() {
-            alloc++;
-            if (alloc >= next.length) {
-                doubleCapacity();
-            }
-            next[alloc] = 0;
-            removed[alloc] = false;
-            size++;
-        }
-
-        private void rehash() {
-            int[] newSlots = new int[Math.max(16, slot.length * 2)];
-            int newMask = newSlots.length - 1;
-            for (int i = 0; i < slot.length; i++) {
-                if (slot[i] == 0) {
-                    continue;
-                }
-                int head = slot[i];
-                while (head != 0) {
-                    int n = next[head];
-                    int s = hash(keys[head]) & newMask;
-                    next[head] = newSlots[s];
-                    newSlots[s] = head;
-                    head = n;
+                for (int j = 0; j < 2; j++) {
+                    xy[i][j] = in.readInt();
                 }
             }
-            this.slot = newSlots;
-            this.mask = newMask;
-        }
+            for (int i = 1; i < n; i++) {
+                if (parity(xy[i]) != parity(xy[i - 1])) {
+                    out.println(-1);
+                    return;
+                }
+            }
 
-        private int hash(long x) {
-            int h = Long.hashCode(x);
-            return h ^ (h >>> 16);
-        }
-
-        public void put(long x, long y) {
-            int h = hash(x);
-            int s = h & mask;
-            if (slot[s] == 0) {
-                alloc();
-                slot[s] = alloc;
-                keys[alloc] = x;
-                values[alloc] = y;
+            boolean odd = parity(xy[0]) == 1;
+            if (!odd) {
+                out.println(35 + 1);
             } else {
-                int index = findIndexOrLastEntry(s, x);
-                if (keys[index] != x) {
-                    alloc();
-                    next[index] = alloc;
-                    keys[alloc] = x;
-                    values[alloc] = y;
-                } else {
-                    values[index] = y;
+                out.println(35);
+            }
+            for (int i = 35 - 1; i >= 0; i--) {
+                out.append((1L << i)).append(' ');
+            }
+            if (!odd) {
+                out.append(1);
+            }
+            out.println();
+            for (int i = 0; i < n; i++) {
+                CharList trace = new CharList(36);
+                long[] pos = xy[i].clone();
+                if (!odd) {
+                    pos[0]++;
                 }
-            }
-            if (rehash && size >= slot.length) {
-                rehash();
-            }
-        }
-
-        public boolean containKey(long x) {
-            int h = hash(x);
-            int s = h & mask;
-            if (slot[s] == 0) {
-                return false;
-            }
-            return keys[findIndexOrLastEntry(s, x)] == x;
-        }
-
-        public long getOrDefault(long x, long def) {
-            int h = hash(x);
-            int s = h & mask;
-            if (slot[s] == 0) {
-                return def;
-            }
-            int index = findIndexOrLastEntry(s, x);
-            return keys[index] == x ? values[index] : def;
-        }
-
-        public long get(long x) {
-            return getOrDefault(x, 0);
-        }
-
-        private int findIndexOrLastEntry(int s, long x) {
-            int iter = slot[s];
-            while (keys[iter] != x) {
-                if (next[iter] != 0) {
-                    iter = next[iter];
-                } else {
-                    return iter;
+                solve(34, pos, trace);
+                if (!odd) {
+                    trace.add('L');
                 }
-            }
-            return iter;
-        }
-
-        public LongEntryIterator iterator() {
-            return new LongEntryIterator() {
-                int index = 1;
-                int readIndex = -1;
-
-
-                public boolean hasNext() {
-                    while (index <= alloc && removed[index]) {
-                        index++;
-                    }
-                    return index <= alloc;
+                for (int j = 0; j < trace.size(); j++) {
+                    out.append(trace.get(j));
                 }
-
-
-                public long getEntryKey() {
-                    return keys[readIndex];
-                }
-
-
-                public long getEntryValue() {
-                    return values[readIndex];
-                }
-
-
-                public void next() {
-                    if (!hasNext()) {
-                        throw new IllegalStateException();
-                    }
-                    readIndex = index;
-                    index++;
-                }
-            };
-        }
-
-        public String toString() {
-            LongEntryIterator iterator = iterator();
-            StringBuilder builder = new StringBuilder("{");
-            while (iterator.hasNext()) {
-                iterator.next();
-                builder.append(iterator.getEntryKey()).append("->").append(iterator.getEntryValue()).append(',');
-            }
-            if (builder.charAt(builder.length() - 1) == ',') {
-                builder.setLength(builder.length() - 1);
-            }
-            builder.append('}');
-            return builder.toString();
-        }
-
-    }
-
-    static class Modular {
-        int m;
-
-        public Modular(int m) {
-            this.m = m;
-        }
-
-        public Modular(long m) {
-            this.m = (int) m;
-            if (this.m != m) {
-                throw new IllegalArgumentException();
+                out.println();
             }
         }
 
-        public Modular(double m) {
-            this.m = (int) m;
-            if (this.m != m) {
-                throw new IllegalArgumentException();
+        public void solve(int k, long[] pos, CharList trace) {
+            if (k == -1) {
+                return;
+            }
+            long jump = 1L << k;
+            long[] up = pos.clone();
+            up[1] += jump;
+            long[] left = pos.clone();
+            left[0] -= jump;
+            long[] right = pos.clone();
+            right[0] += jump;
+            long[] down = pos.clone();
+            down[1] -= jump;
+
+            if (distToSrc(up) < jump) {
+                trace.add('D');
+                solve(k - 1, up, trace);
+                return;
+            }
+            if (distToSrc(down) < jump) {
+                trace.add('U');
+                solve(k - 1, down, trace);
+                return;
+            }
+            if (distToSrc(left) < jump) {
+                trace.add('R');
+                solve(k - 1, left, trace);
+                return;
+            }
+            if (distToSrc(right) < jump) {
+                trace.add('L');
+                solve(k - 1, right, trace);
+                return;
             }
         }
 
-        public int valueOf(int x) {
-            x %= m;
-            if (x < 0) {
-                x += m;
-            }
-            return x;
+        public long distToSrc(long[] xy) {
+            return Math.abs(xy[0]) + Math.abs(xy[1]);
         }
 
-        public int valueOf(long x) {
-            x %= m;
-            if (x < 0) {
-                x += m;
-            }
-            return (int) x;
-        }
-
-        public int mul(int x, int y) {
-            return valueOf((long) x * y);
-        }
-
-        public int plus(int x, int y) {
-            return valueOf(x + y);
-        }
-
-        public int subtract(int x, int y) {
-            return valueOf(x - y);
-        }
-
-        public String toString() {
-            return "mod " + m;
+        public long parity(long[] xy) {
+            return (Math.abs(xy[0]) +
+                    Math.abs(xy[1])) % 2;
         }
 
     }
@@ -503,28 +184,6 @@ public class Main {
             return val;
         }
 
-        public int readString(char[] data, int offset) {
-            skipBlank();
-
-            int originalOffset = offset;
-            while (next > 32) {
-                data[offset++] = (char) next;
-                next = read();
-            }
-
-            return offset - originalOffset;
-        }
-
-    }
-
-    static class DigitUtils {
-        private DigitUtils() {
-        }
-
-        public static long asLong(int high, int low) {
-            return (((long) high) << 32) | low;
-        }
-
     }
 
     static class FastOutput implements AutoCloseable, Closeable {
@@ -539,8 +198,28 @@ public class Main {
             this(new OutputStreamWriter(os));
         }
 
-        public FastOutput println(String c) {
+        public FastOutput append(char c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput append(int c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput append(long c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput println(int c) {
             cache.append(c).append('\n');
+            return this;
+        }
+
+        public FastOutput println() {
+            cache.append('\n');
             return this;
         }
 
@@ -570,46 +249,63 @@ public class Main {
 
     }
 
-    static interface LongEntryIterator {
-        boolean hasNext();
+    static class CharList {
+        private int size;
+        private int cap;
+        private char[] data;
+        private static final char[] EMPTY = new char[0];
 
-        void next();
-
-        long getEntryKey();
-
-        long getEntryValue();
-
-    }
-
-    static class Power {
-        final Modular modular;
-
-        public Power(Modular modular) {
-            this.modular = modular;
-        }
-
-        public int pow(int x, long n) {
-            if (n == 0) {
-                return modular.valueOf(1);
+        public CharList(int cap) {
+            this.cap = cap;
+            if (cap == 0) {
+                data = EMPTY;
+            } else {
+                data = new char[cap];
             }
-            long r = pow(x, n >> 1);
-            r = modular.valueOf(r * r);
-            if ((n & 1) == 1) {
-                r = modular.valueOf(r * x);
+        }
+
+        public CharList(CharList list) {
+            this.size = list.size;
+            this.cap = list.cap;
+            this.data = Arrays.copyOf(list.data, size);
+        }
+
+        public CharList() {
+            this(0);
+        }
+
+        private void ensureSpace(int req) {
+            if (req > cap) {
+                while (cap < req) {
+                    cap = Math.max(cap + 10, 2 * cap);
+                }
+                data = Arrays.copyOf(data, cap);
             }
-            return (int) r;
         }
 
-        public int inverse(int x) {
-            return pow(x, modular.m - 2);
+        private void checkRange(int i) {
+            if (i < 0 || i >= size) {
+                throw new ArrayIndexOutOfBoundsException();
+            }
         }
 
-    }
+        public char get(int i) {
+            checkRange(i);
+            return data[i];
+        }
 
-    static class Interval {
-        int l;
-        int r;
-        int id;
+        public void add(char x) {
+            ensureSpace(size + 1);
+            data[size++] = x;
+        }
+
+        public int size() {
+            return size;
+        }
+
+        public String toString() {
+            return Arrays.toString(Arrays.copyOf(data, size));
+        }
 
     }
 }
