@@ -1,4 +1,7 @@
-package contest;
+package on2019_11.on2019_11_25_Educational_Codeforces_Round_60__Rated_for_Div__2_.C___Magic_Ship;
+
+
+
 
 import template.io.FastInput;
 import template.io.FastOutput;
@@ -25,31 +28,39 @@ public class TaskC {
                     break;
             }
         }
-        long[] trace = src.clone();
+
+        long l = 0;
+        long r = (long) 1e18;
+        while (l < r) {
+            long mid = (l + r) >>> 1;
+            if (check(src, dst, dxy, mid)) {
+                r = mid;
+            } else {
+                l = mid + 1;
+            }
+        }
+        if (check(src, dst, dxy, l)) {
+            out.println(l);
+        } else {
+            out.println(-1);
+        }
+    }
+
+    public boolean check(long[] src, long[] dst, int[][] dxy, long time) {
+        int n = dxy.length;
         long[] sum = new long[2];
         for (int i = 0; i < n; i++) {
-            trace[0] += dxy[i][0];
-            trace[1] += dxy[i][1];
             sum[0] += dxy[i][0];
             sum[1] += dxy[i][1];
         }
-
-        long shrink = dist(src, dst) - (dist(trace, dst) - n);
-        if (shrink == 0) {
-            out.println(-1);
-            return;
-        }
-        long loopNeed = dist(src, dst) / shrink;
-        long time = loopNeed * n;
-        trace[0] = src[0] + sum[0] * loopNeed;
-        trace[1] = src[1] + sum[1] * loopNeed;
-        for (int i = 0; i < n && dist(trace, dst) > time; i++) {
+        long[] trace = src.clone();
+        trace[0] += sum[0] * (time / n);
+        trace[1] += sum[1] * (time / n);
+        for (int i = 0; i < time % n; i++) {
             trace[0] += dxy[i][0];
             trace[1] += dxy[i][1];
-            time++;
         }
-
-        out.println(time);
+        return dist(trace, dst) <= time;
     }
 
     public long dist(long[] a, long[] b) {

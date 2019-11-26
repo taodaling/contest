@@ -1,2 +1,2 @@
-48 src/main/java/contest/G - Recursive Queries.json
+47 src/main/java/contest/E - Combination Lock.json
 0

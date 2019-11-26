@@ -61,7 +61,7 @@ public class Hash {
     public int hashVerbose(int l, int r) {
         int h = hash(l, r);
         h = MOD.plus(h, xs[r - l + 1]);
-        return MOD.valueOf(h);
+        return h;
     }
 
     public int hash(int l, int r) {

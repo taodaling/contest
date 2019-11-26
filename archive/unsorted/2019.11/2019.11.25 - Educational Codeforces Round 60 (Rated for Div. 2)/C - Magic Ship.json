@@ -70,6 +70,11 @@
     "input" : "0 0\n1000000000 999999999\n3\nUUR",
     "index" : 12,
     "active" : true
+  }, {
+    "input" : "\n2\n0\n2\n2\n3\nLRR",
+    "output" : "2",
+    "index" : 13,
+    "active" : true
   } ],
   "location" : "src/main/java/contest",
   "vmArgs" : "-Xmx256M",
