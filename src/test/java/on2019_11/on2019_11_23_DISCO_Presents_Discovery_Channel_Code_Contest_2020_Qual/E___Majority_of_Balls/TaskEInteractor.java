@@ -6,7 +6,6 @@ import net.egork.chelper.tester.Verdict;
 import net.egork.chelper.tester.State;
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.string.Hash;
 
 import java.io.InputStream;
 import java.io.OutputStream;

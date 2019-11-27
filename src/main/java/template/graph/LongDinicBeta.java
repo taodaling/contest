@@ -16,9 +16,10 @@ public class LongDinicBeta {
     private IntDeque deque;
     private int[] dists;
     private int vertexNumber;
+    private long totalFlow;
 
     public LongDinicBeta(int vertexNumber, int expectedChannelNumber,
-                     int source, int sink) {
+                         int source, int sink) {
         edges = new MultiWayDeque<>(vertexNumber, expectedChannelNumber * 2);
         iterators = new RevokeIterator[vertexNumber];
         map = new LongObjectHashMap<>(expectedChannelNumber, true);
@@ -57,7 +58,7 @@ public class LongDinicBeta {
 
     public long send(long flow) {
         long totalSent = 0;
-        while (true) {
+        while (flow > totalSent) {
             bfs();
             if (dists[source] == Integer.MAX_VALUE) {
                 break;
@@ -67,7 +68,12 @@ public class LongDinicBeta {
             }
             totalSent += send(source, flow - totalSent);
         }
+        totalFlow += totalSent;
         return totalSent;
+    }
+
+    public long totalFlow() {
+        return totalFlow;
     }
 
     private void bfs() {
@@ -136,6 +142,11 @@ public class LongDinicBeta {
         channel.expand(cap);
     }
 
+    public long getFlowBetween(int a, int b){
+        ChannelImpl channel = getChannel(a, b);
+        return channel.getFlow();
+    }
+
     private static interface Channel {
         Channel inverse();
 
@@ -194,7 +205,7 @@ public class LongDinicBeta {
 
         @Override
         public String toString() {
-            return String.format("%d-%.2f/%.2f->%d", getSrc(), getFlow(), getCap(), getDst());
+            return String.format("%d-%d/%d->%d", getSrc(), getFlow(), getCap(), getDst());
         }
     }
 
@@ -237,7 +248,7 @@ public class LongDinicBeta {
 
         @Override
         public String toString() {
-            return String.format("%d-%.2f/%.2f->%d", getSrc(), getFlow(), getCap(), getDst());
+            return String.format("%d-%d/%d->%d", getSrc(), getFlow(), getCap(), getDst());
         }
     }
 

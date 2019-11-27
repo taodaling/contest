@@ -266,4 +266,13 @@ public class IntList {
         IntList other = (IntList) obj;
         return SequenceUtils.equal(data, 0, size - 1, other.data, 0, other.size - 1);
     }
+
+    @Override
+    public int hashCode() {
+        int h = 1;
+        for (int i = 0; i < size; i++) {
+            h = h * 31 + data[i];
+        }
+        return h;
+    }
 }

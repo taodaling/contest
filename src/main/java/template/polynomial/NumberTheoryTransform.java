@@ -14,7 +14,7 @@ import java.util.Arrays;
 
 public class NumberTheoryTransform {
     public static final NumberTheoryTransform STANDARD =
-                    new NumberTheoryTransform(new Modular(998244353), 3);
+            new NumberTheoryTransform(new Modular(998244353), 3);
     private Modular modular;
     private Power power;
     private int g;
@@ -168,6 +168,13 @@ public class NumberTheoryTransform {
         listBuffer.release(cSnapshot);
     }
 
+    /**
+     * calculate lists[0] * lists[1] * ... * lists[lists.length - 1]
+     * by dividing and conquer technology.
+     * <br>
+     * The total time complexity is O(mlogn) while m = lists.length and
+     * n = lists[0].length + lists[1].length + ... + lists[m - 1].length.
+     */
     public void dacMul(IntList[] lists, IntList ans) {
         IntList prod = dacMul(lists, 0, lists.length - 1);
         ans.clear();

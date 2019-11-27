@@ -3,11 +3,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
+import java.util.Set;
+import java.util.HashMap;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.io.UncheckedIOException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
+import java.util.Comparator;
 import java.io.InputStream;
 
 /**
@@ -28,102 +35,294 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            TaskD solver = new TaskD();
+            TaskF solver = new TaskF();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class TaskD {
+    static class TaskF {
+        private List<Hash> hashes = Arrays.asList(new Hash(10000, 31), new Hash(10000, 11), new Hash(10000, 41));
+
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            long[][] xy = new long[n][2];
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < 2; j++) {
-                    xy[i][j] = in.readInt();
-                }
+            Node[] nodes = new Node[n + 1];
+            for (int i = 1; i <= n; i++) {
+                nodes[i] = new Node();
             }
             for (int i = 1; i < n; i++) {
-                if (parity(xy[i]) != parity(xy[i - 1])) {
-                    out.println(-1);
-                    return;
+                Node a = nodes[in.readInt()];
+                Node b = nodes[in.readInt()];
+                a.next.add(b);
+                b.next.add(a);
+            }
+
+            List<Node> list = new ArrayList<>();
+            dfs(nodes[1], null);
+            dfsForCenter(nodes[1], null, n, list);
+            if (list.size() != 1) {
+                out.println(-1);
+                return;
+            }
+
+            Map<List<Integer>, Integer> cntMap = new HashMap<>();
+            Node center = list.get(0);
+            for (Node node : center.next) {
+                node.next.remove(center);
+                handle(node, cntMap);
+            }
+
+            boolean exist = false;
+            for (int value : cntMap.values()) {
+                if (value == center.next.size()) {
+                    exist = true;
+                    break;
                 }
             }
 
-            boolean odd = parity(xy[0]) == 1;
-            if (!odd) {
-                out.println(35 + 1);
+            if (exist) {
+                out.println(center.next.size());
             } else {
-                out.println(35);
+                out.println(-1);
             }
-            for (int i = 35 - 1; i >= 0; i--) {
-                out.append((1L << i)).append(' ');
-            }
-            if (!odd) {
-                out.append(1);
-            }
-            out.println();
-            for (int i = 0; i < n; i++) {
-                CharList trace = new CharList(36);
-                long[] pos = xy[i].clone();
-                if (!odd) {
-                    pos[0]++;
+        }
+
+        public void handle(Node root, Map<List<Integer>, Integer> cntMap) {
+            dfs(root, null);
+            List<Node> centers = new ArrayList<>();
+            dfsForCenter(root, null, root.size, centers);
+
+            Set<List<Integer>> hashValue = new HashSet<>();
+            for (Node node : centers) {
+                List<Integer> hash = new ArrayList<>();
+                for (Hash h : hashes) {
+                    hash.add(dfsForHash(node, null, h));
                 }
-                solve(34, pos, trace);
-                if (!odd) {
-                    trace.add('L');
+                hashValue.add(hash);
+            }
+
+            for (List<Integer> key : hashValue) {
+                cntMap.put(key, cntMap.getOrDefault(key, 0) + 1);
+            }
+        }
+
+        public int dfsForHash(Node root, Node p, Hash h) {
+            List<Integer> children = new ArrayList<>();
+            for (Node node : root.next) {
+                if (node == p) {
+                    continue;
                 }
-                for (int j = 0; j < trace.size(); j++) {
-                    out.append(trace.get(j));
+                children.add(dfsForHash(node, root, h));
+            }
+            children.sort(Comparator.naturalOrder());
+            int[] data = new int[children.size() + 1];
+            data[0] = 1;
+            for (int i = 1; i < data.length; i++) {
+                data[i] = children.get(i - 1);
+            }
+            h.populate(data, data.length);
+            return h.hashVerbose(0, data.length - 1);
+        }
+
+        public void dfsForCenter(Node root, Node p, int total, List<Node> ans) {
+            int max = total - root.size;
+            for (Node node : root.next) {
+                if (node == p) {
+                    continue;
                 }
-                out.println();
+                max = Math.max(max, node.size);
+                dfsForCenter(node, root, total, ans);
+            }
+            if (max <= total / 2) {
+                ans.add(root);
             }
         }
 
-        public void solve(int k, long[] pos, CharList trace) {
-            if (k == -1) {
-                return;
-            }
-            long jump = 1L << k;
-            long[] up = pos.clone();
-            up[1] += jump;
-            long[] left = pos.clone();
-            left[0] -= jump;
-            long[] right = pos.clone();
-            right[0] += jump;
-            long[] down = pos.clone();
-            down[1] -= jump;
-
-            if (distToSrc(up) < jump) {
-                trace.add('D');
-                solve(k - 1, up, trace);
-                return;
-            }
-            if (distToSrc(down) < jump) {
-                trace.add('U');
-                solve(k - 1, down, trace);
-                return;
-            }
-            if (distToSrc(left) < jump) {
-                trace.add('R');
-                solve(k - 1, left, trace);
-                return;
-            }
-            if (distToSrc(right) < jump) {
-                trace.add('L');
-                solve(k - 1, right, trace);
-                return;
+        public void dfs(Node root, Node p) {
+            root.size = 1;
+            for (Node node : root.next) {
+                if (node == p) {
+                    continue;
+                }
+                dfs(node, root);
+                root.size += node.size;
             }
         }
 
-        public long distToSrc(long[] xy) {
-            return Math.abs(xy[0]) + Math.abs(xy[1]);
+    }
+
+    static class Power {
+        final Modular modular;
+
+        public Power(Modular modular) {
+            this.modular = modular;
         }
 
-        public long parity(long[] xy) {
-            return (Math.abs(xy[0]) +
-                    Math.abs(xy[1])) % 2;
+        public int pow(int x, long n) {
+            if (n == 0) {
+                return modular.valueOf(1);
+            }
+            long r = pow(x, n >> 1);
+            r = modular.valueOf(r * r);
+            if ((n & 1) == 1) {
+                r = modular.valueOf(r * x);
+            }
+            return (int) r;
         }
+
+        public int inverse(int x) {
+            return pow(x, modular.m - 2);
+        }
+
+    }
+
+    static class Hash {
+        public static final Modular MOD = new Modular((int) (1e9 + 7));
+        public static final Power POWER = new Power(MOD);
+        private int[] inverse;
+        private int[] xs;
+        private int[] hash;
+
+        public Hash(Hash model) {
+            inverse = model.inverse;
+            hash = new int[model.hash.length];
+            xs = model.xs;
+        }
+
+        public Hash(int size, int x) {
+            inverse = new int[size + 1];
+            hash = new int[size + 1];
+            xs = new int[size + 1];
+            int invX = POWER.inverse(x);
+            inverse[0] = 1;
+            xs[0] = 1;
+            for (int i = 1; i <= size; i++) {
+                this.inverse[i] = MOD.mul(this.inverse[i - 1], invX);
+                xs[i] = MOD.mul(xs[i - 1], x);
+            }
+        }
+
+        public void populate(int[] data, int n) {
+            hash[0] = data[0];
+            for (int i = 1; i < n; i++) {
+                hash[i] = MOD.plus(hash[i - 1], MOD.mul(data[i], xs[i]));
+            }
+        }
+
+        public int hashVerbose(int l, int r) {
+            int h = hash(l, r);
+            h = MOD.plus(h, xs[r - l + 1]);
+            return h;
+        }
+
+        public int hash(int l, int r) {
+            long h = hash[r];
+            if (l > 0) {
+                h -= hash[l - 1];
+                h *= inverse[l];
+            }
+            return MOD.valueOf(h);
+        }
+
+    }
+
+    static class FastOutput implements AutoCloseable, Closeable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
+
+        public FastOutput(Writer os) {
+            this.os = os;
+        }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput println(int c) {
+            cache.append(c).append('\n');
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            return this;
+        }
+
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+
+        public String toString() {
+            return cache.toString();
+        }
+
+    }
+
+    static class Modular {
+        int m;
+
+        public Modular(int m) {
+            this.m = m;
+        }
+
+        public Modular(long m) {
+            this.m = (int) m;
+            if (this.m != m) {
+                throw new IllegalArgumentException();
+            }
+        }
+
+        public Modular(double m) {
+            this.m = (int) m;
+            if (this.m != m) {
+                throw new IllegalArgumentException();
+            }
+        }
+
+        public int valueOf(int x) {
+            x %= m;
+            if (x < 0) {
+                x += m;
+            }
+            return x;
+        }
+
+        public int valueOf(long x) {
+            x %= m;
+            if (x < 0) {
+                x += m;
+            }
+            return (int) x;
+        }
+
+        public int mul(int x, int y) {
+            return valueOf((long) x * y);
+        }
+
+        public int plus(int x, int y) {
+            return valueOf(x + y);
+        }
+
+        public String toString() {
+            return "mod " + m;
+        }
+
+    }
+
+    static class Node {
+        List<Node> next = new ArrayList<>();
+        int size;
 
     }
 
@@ -182,129 +381,6 @@ public class Main {
             }
 
             return val;
-        }
-
-    }
-
-    static class FastOutput implements AutoCloseable, Closeable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
-
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput append(char c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput append(int c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput append(long c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput println(int c) {
-            cache.append(c).append('\n');
-            return this;
-        }
-
-        public FastOutput println() {
-            cache.append('\n');
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        }
-
-        public String toString() {
-            return cache.toString();
-        }
-
-    }
-
-    static class CharList {
-        private int size;
-        private int cap;
-        private char[] data;
-        private static final char[] EMPTY = new char[0];
-
-        public CharList(int cap) {
-            this.cap = cap;
-            if (cap == 0) {
-                data = EMPTY;
-            } else {
-                data = new char[cap];
-            }
-        }
-
-        public CharList(CharList list) {
-            this.size = list.size;
-            this.cap = list.cap;
-            this.data = Arrays.copyOf(list.data, size);
-        }
-
-        public CharList() {
-            this(0);
-        }
-
-        private void ensureSpace(int req) {
-            if (req > cap) {
-                while (cap < req) {
-                    cap = Math.max(cap + 10, 2 * cap);
-                }
-                data = Arrays.copyOf(data, cap);
-            }
-        }
-
-        private void checkRange(int i) {
-            if (i < 0 || i >= size) {
-                throw new ArrayIndexOutOfBoundsException();
-            }
-        }
-
-        public char get(int i) {
-            checkRange(i);
-            return data[i];
-        }
-
-        public void add(char x) {
-            ensureSpace(size + 1);
-            data[size++] = x;
-        }
-
-        public int size() {
-            return size;
-        }
-
-        public String toString() {
-            return Arrays.toString(Arrays.copyOf(data, size));
         }
 
     }

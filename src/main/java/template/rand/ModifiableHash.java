@@ -1,4 +1,4 @@
-package template.string;
+package template.rand;
 
 import template.datastructure.ModBIT;
 import template.math.Modular;

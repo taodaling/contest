@@ -10,7 +10,6 @@ public class LongISAP {
     int nodeNum;
     Map<Long, DirectChannel> channelMap = new HashMap();
     Deque<Node> deque;
-    boolean bfsFlag = false;
 
     public List<Node> getComponentS() {
         List<Node> result = new ArrayList();
@@ -70,14 +69,20 @@ public class LongISAP {
         }
     }
 
-    public long sendFlow(long flow) {
+    long totalFlow;
+
+    public long send(long flow) {
         long sent = 0;
+        bfs();
         while (flow > sent && source.distance < nodeNum) {
-            bfsFlag = false;
-            bfs();
             sent += send(source, flow - sent);
         }
+        totalFlow += sent;
         return sent;
+    }
+
+    public long totalFlow() {
+        return totalFlow;
     }
 
     private long send(Node node, long flowRemain) {
@@ -126,10 +131,6 @@ public class LongISAP {
     }
 
     private void bfs() {
-        if (bfsFlag) {
-            return;
-        }
-        bfsFlag = true;
         Arrays.fill(distanceCnt, 0);
         deque.clear();
 

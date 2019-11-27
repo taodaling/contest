@@ -1,8 +1,7 @@
-package template.string;
+package template.rand;
 
 import template.math.Modular;
 import template.math.Power;
-import template.rand.ToHash;
 
 public class Hash {
     public static final Modular MOD = new Modular((int) (1e9 + 7));

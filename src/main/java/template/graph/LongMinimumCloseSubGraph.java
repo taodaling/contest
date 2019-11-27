@@ -1,7 +1,5 @@
 package template.graph;
 
-import template.graph.LongISAP;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,7 +40,7 @@ public class LongMinimumCloseSubGraph {
 
     public long solve() {
         if (!solved) {
-            minCut = isap.sendFlow((long)1e18);
+            minCut = isap.send((long)1e18);
             solved = true;
         }
         return sumOfPositive - minCut;

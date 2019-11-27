@@ -17,8 +17,8 @@ public class ISAP {
     int nodeNum;
     Map<Long, DirectChannel> channelMap = new HashMap();
     Deque<Node> deque;
-    boolean bfsFlag = false;
     private static final double PREC = 1e-12;
+    private double totalFlow = 0;
 
 
     public List<Node> getComponentS() {
@@ -79,12 +79,17 @@ public class ISAP {
         }
     }
 
+    public double totalFlow() {
+        return totalFlow;
+    }
+
     public double sendFlow(double flow) {
         bfs();
         double sent = 0;
         while (flow > sent && source.distance < nodeNum) {
             sent += send(source, flow - sent);
         }
+        totalFlow += flow;
         return sent;
     }
 
@@ -134,10 +139,6 @@ public class ISAP {
     }
 
     private void bfs() {
-        if (bfsFlag) {
-            return;
-        }
-        bfsFlag = true;
         Arrays.fill(distanceCnt, 0);
         deque.clear();
 

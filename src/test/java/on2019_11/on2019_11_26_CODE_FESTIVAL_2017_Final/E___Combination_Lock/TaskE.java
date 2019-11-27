@@ -3,16 +3,8 @@ package on2019_11.on2019_11_26_CODE_FESTIVAL_2017_Final.E___Combination_Lock;
 
 
 
-import template.datastructure.LongHashMap;
-import template.datastructure.LongObjectHashMap;
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.math.DigitUtils;
-import template.string.ModifiableHash;
-
-import java.util.ArrayDeque;
-import java.util.Arrays;
-import java.util.Deque;
 
 public class TaskE {
     public void solve(int testNumber, FastInput in, FastOutput out) {

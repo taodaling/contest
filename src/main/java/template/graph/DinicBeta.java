@@ -16,6 +16,7 @@ public class DinicBeta {
     private IntDeque deque;
     private int[] dists;
     private int vertexNumber;
+    private double totalFlow;
 
     public DinicBeta(int vertexNumber, int expectedChannelNumber,
                      int source, int sink) {
@@ -57,7 +58,7 @@ public class DinicBeta {
 
     public double send(double flow) {
         double totalSent = 0;
-        while (true) {
+        while (flow > totalSent) {
             bfs();
             if (dists[source] == Integer.MAX_VALUE) {
                 break;
@@ -67,7 +68,17 @@ public class DinicBeta {
             }
             totalSent += send(source, flow - totalSent);
         }
+        totalFlow += totalSent;
         return totalSent;
+    }
+
+    public double totalFlow(){
+        return totalFlow;
+    }
+
+    public double getFlowBetween(int a, int b){
+        ChannelImpl channel = getChannel(a, b);
+        return channel.getFlow();
     }
 
     private void bfs() {
