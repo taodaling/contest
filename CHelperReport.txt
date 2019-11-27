@@ -1,2 +1,2 @@
-50 src/main/java/contest/F - Regular Forestation.json
+38 src/main/java/contest/A - Heating.json
 0
