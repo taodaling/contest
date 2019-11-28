@@ -9,22 +9,29 @@ import java.util.List;
  * Created by dalt on 2018/5/25.
  */
 public class ACAutomaton {
-    static final int MIN_CHARACTER = 'a';
-    static final int MAX_CHARACTER = 'z';
-    static final int RANGE_SIZE = MAX_CHARACTER - MIN_CHARACTER + 1;
+    private final int MIN_CHARACTER;
+    private final int MAX_CHARACTER;
+    private final int RANGE;
     Node root;
     Node buildLast;
     Node matchLast;
-    List<Node> allNodes = new ArrayList(1);
+    List<Node> allNodes = new ArrayList();
+
+    public List<Node> getAllNodes() {
+        return allNodes;
+    }
 
     private Node addNode() {
-        Node node = new Node();
+        Node node = new Node(RANGE);
         node.id = allNodes.size();
         allNodes.add(node);
         return node;
     }
 
-    public ACAutomaton() {
+    public ACAutomaton(int minCharacter, int maxCharacter) {
+        MIN_CHARACTER = minCharacter;
+        MAX_CHARACTER = maxCharacter;
+        RANGE = maxCharacter - minCharacter + 1;
         root = addNode();
     }
 
@@ -34,7 +41,7 @@ public class ACAutomaton {
 
     public void endBuilding() {
         Deque<Node> deque = new ArrayDeque(allNodes.size());
-        for (int i = 0; i < RANGE_SIZE; i++) {
+        for (int i = 0; i < RANGE; i++) {
             if (root.next[i] != null) {
                 deque.addLast(root.next[i]);
             }
@@ -48,15 +55,15 @@ public class ACAutomaton {
             } else {
                 head.fail = fail.next[head.index];
             }
-            head.word = head.word || head.fail.word;
-            for (int i = 0; i < RANGE_SIZE; i++) {
+            head.word = head.word + head.fail.word;
+            for (int i = 0; i < RANGE; i++) {
                 if (head.next[i] != null) {
                     deque.addLast(head.next[i]);
                 }
             }
         }
 
-        for (int i = 0; i < RANGE_SIZE; i++) {
+        for (int i = 0; i < RANGE; i++) {
             if (root.next[i] != null) {
                 deque.addLast(root.next[i]);
             } else {
@@ -65,7 +72,7 @@ public class ACAutomaton {
         }
         while (!deque.isEmpty()) {
             Node head = deque.removeFirst();
-            for (int i = 0; i < RANGE_SIZE; i++) {
+            for (int i = 0; i < RANGE; i++) {
                 if (head.next[i] != null) {
                     deque.addLast(head.next[i]);
                 } else {
@@ -103,16 +110,36 @@ public class ACAutomaton {
     }
 
     public static class Node {
-        Node[] next = new Node[RANGE_SIZE];
+        Node[] next;
         Node fail;
         Node father;
         int index;
         int id;
-        boolean word;
+        int word;
 
-        @Override
-        public String toString() {
-            return father == null ? "" : (father.toString() + (char) (MIN_CHARACTER + index));
+        public int getId() {
+            return id;
         }
+
+        public int getWord() {
+            return word;
+        }
+
+        public void decrease(){
+            word--;
+        }
+
+        public void increase(){
+            word++;
+        }
+
+        public Node(int range) {
+            next = new Node[range];
+        }
+
+//        @Override
+//        public String toString() {
+//            return father == null ? "" : (father.toString() + (char) (MIN_CHARACTER + index));
+//        }
     }
 }
