@@ -1,4 +1,8 @@
-package contest;
+package on2019_11.on2019_11_27_Educational_Codeforces_Round_77__Rated_for_Div__2_.B___Obtain_Two_Zeroes;
+
+
+
+
 
 import template.io.FastInput;
 import template.io.FastOutput;

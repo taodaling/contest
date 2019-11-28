@@ -7,6 +7,8 @@ public class ExpressionSolver {
     /**
      * Find ka=b(mod c) where k is the minimum possible non negative integer. <br>
      * If it's impossible, -1 will be returned.
+     * <br>
+     * The time complexity of this method is O(log2(max(a,b)))
      */
     public long findMinimumKForModEquation(long a, long b, long c) {
         a = DigitUtils.mod(a, c);
@@ -22,7 +24,7 @@ public class ExpressionSolver {
 
     /**
      * Find how many pair xy exists while following constraints obeyed.
-     * 
+     *
      * <pre>
      * ax+by=c
      * xl<=x<=xr
@@ -30,7 +32,8 @@ public class ExpressionSolver {
      * x is an integer
      * y is an integer
      * </pre>
-     *
+     * <p>
+     * The time complexity of this method is O(log2(max(a,b)))
      */
     public long findWaysToAssignXYSatisfyEquation(long a, long b, long c, long xl, long xr, long yl, long yr) {
         if (c < 0) {

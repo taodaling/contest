@@ -163,6 +163,18 @@ public class FastInput {
         return offset - originalOffset;
     }
 
+    public int readString(int[] data, int offset) {
+        skipBlank();
+
+        int originalOffset = offset;
+        while (next > 32) {
+            data[offset++] = (char) next;
+            next = read();
+        }
+
+        return offset - originalOffset;
+    }
+
     public int readString(byte[] data, int offset) {
         skipBlank();
 

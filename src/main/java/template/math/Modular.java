@@ -49,8 +49,6 @@ public class Modular {
     }
 
     public int mul(long x, long y) {
-        x = valueOf(x);
-        y = valueOf(y);
         return valueOf(x * y);
     }
 
@@ -59,8 +57,6 @@ public class Modular {
     }
 
     public int plus(long x, long y) {
-        x = valueOf(x);
-        y = valueOf(y);
         return valueOf(x + y);
     }
 
