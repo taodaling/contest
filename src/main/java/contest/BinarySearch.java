@@ -20,9 +20,11 @@ public class BinarySearch {
         int r = data.length - 1;
         while (l < r) {
             int m = (l + r) / 2;
-            if (data[m] <= x) {
+            if (data[m] < x) {
                 l = m;
-            } else {
+            } else if(data[m] == x) {
+                return m;
+            }else{
                 r = m;
             }
         }

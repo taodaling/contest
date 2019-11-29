@@ -17,6 +17,14 @@ public class ACAutomaton {
     Node matchLast;
     List<Node> allNodes = new ArrayList();
 
+    public Node getBuildLast() {
+        return buildLast;
+    }
+
+    public Node getMatchLast() {
+        return matchLast;
+    }
+
     public List<Node> getAllNodes() {
         return allNodes;
     }
@@ -55,7 +63,7 @@ public class ACAutomaton {
             } else {
                 head.fail = fail.next[head.index];
             }
-            head.word = head.word + head.fail.word;
+            head.preSum = head.cnt + head.fail.preSum;
             for (int i = 0; i < RANGE; i++) {
                 if (head.next[i] != null) {
                     deque.addLast(head.next[i]);
@@ -115,22 +123,27 @@ public class ACAutomaton {
         Node father;
         int index;
         int id;
-        int word;
+        int cnt;
+        int preSum;
 
         public int getId() {
             return id;
         }
 
-        public int getWord() {
-            return word;
+        public int getCnt() {
+            return cnt;
         }
 
-        public void decrease(){
-            word--;
+        public void decreaseCnt() {
+            cnt--;
         }
 
-        public void increase(){
-            word++;
+        public void increaseCnt() {
+            cnt++;
+        }
+
+        public int getPreSum() {
+            return preSum;
         }
 
         public Node(int range) {

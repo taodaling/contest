@@ -1,5 +1,5 @@
 {
-  "name" : "BinarySearch",
+  "name" : "LUOGU3378",
   "testType" : "SINGLE",
   "input" : {
     "type" : "STANDARD",
@@ -10,25 +10,20 @@
     "fileName" : "output.txt"
   },
   "tests" : [ {
-    "input" : "4 3\n1 2 3 4",
-    "output" : "2",
+    "input" : "5\n1 2\n1 5\n2\n3\n2",
+    "output" : "2\n5",
     "index" : 0,
-    "active" : true
-  }, {
-    "input" : "4 3\n1 3 5 4",
-    "output" : "",
-    "index" : 1,
     "active" : true
   } ],
   "location" : "src/main/java/contest",
-  "vmArgs" : "-Xmx256m -Xss64m",
+  "vmArgs" : "-Xmx768M",
   "mainClass" : "Main",
-  "taskClass" : "contest.BinarySearch",
+  "taskClass" : "on2019_11.on2019_11_29_Educational_Codeforces_Round_16.LUOGU3378.LUOGU3378",
   "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
   "checkerParameters" : "",
   "testClasses" : [ ],
-  "date" : "2019.11.25",
-  "contestName" : "",
+  "date" : "2019.11.29",
+  "contestName" : "Educational Codeforces Round 16",
   "truncate" : true,
   "inputClass" : "template.io.FastInput",
   "outputClass" : "template.io.FastOutput",
@@ -36,5 +31,5 @@
   "failOnOverflow" : false,
   "interactive" : false,
   "interactor" : "net.egork.chelper.tester.Interactor",
-  "newThread" : true
+  "newThread" : false
 }

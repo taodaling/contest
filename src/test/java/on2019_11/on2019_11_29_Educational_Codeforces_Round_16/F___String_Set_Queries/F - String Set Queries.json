@@ -1,5 +1,5 @@
 {
-  "name" : "BinarySearch",
+  "name" : "F - String Set Queries",
   "testType" : "SINGLE",
   "input" : {
     "type" : "STANDARD",
@@ -10,25 +10,25 @@
     "fileName" : "output.txt"
   },
   "tests" : [ {
-    "input" : "4 3\n1 2 3 4",
-    "output" : "2",
+    "input" : "5\n1 abc\n3 abcabc\n2 abc\n1 aba\n3 abababc\n",
+    "output" : "2\n2\n",
     "index" : 0,
     "active" : true
   }, {
-    "input" : "4 3\n1 3 5 4",
-    "output" : "",
+    "input" : "10\n1 abc\n1 bcd\n1 abcd\n3 abcd\n2 abcd\n3 abcd\n2 bcd\n3 abcd\n2 abc\n3 abcd\n",
+    "output" : "3\n2\n1\n0\n",
     "index" : 1,
     "active" : true
   } ],
   "location" : "src/main/java/contest",
-  "vmArgs" : "-Xmx256m -Xss64m",
+  "vmArgs" : "-Xmx768M",
   "mainClass" : "Main",
-  "taskClass" : "contest.BinarySearch",
+  "taskClass" : "on2019_11.on2019_11_29_Educational_Codeforces_Round_16.F___String_Set_Queries.TaskF",
   "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
   "checkerParameters" : "",
   "testClasses" : [ ],
-  "date" : "2019.11.25",
-  "contestName" : "",
+  "date" : "2019.11.29",
+  "contestName" : "Educational Codeforces Round 16",
   "truncate" : true,
   "inputClass" : "template.io.FastInput",
   "outputClass" : "template.io.FastOutput",

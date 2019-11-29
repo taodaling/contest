@@ -41,6 +41,11 @@ public class JosephusCircle {
         return (who + k) % n;
     }
 
+    /**
+     * There are n people form a circle, numbered with 0, 1, 2, ..., n -1. And we will start with 0 in
+     * order, if some guy is the k-th from the start, then kill him, start with the next guy. <br>
+     * This method find who will die on round <br>
+     */
     public static int dieAtRound(int n, int k, int round) {
         int alive = n - round + 1;
         if (k == 1) {
