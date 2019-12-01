@@ -1,3 +1,2 @@
-31 src/main/java/contest/Task.json
-1
+46 src/main/java/contest/E - Colorful Hats 2.json
 0

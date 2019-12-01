@@ -1,6 +1,6 @@
 package template.graph;
 
-import template.datastructure.IntDeque;
+import template.datastructure.IntDequeBeta;
 import template.datastructure.IntIterator;
 import template.datastructure.MultiWayIntDeque;
 
@@ -13,7 +13,7 @@ public class TwoSatBeta {
     private int[] dfns;
     private int[] lows;
     private boolean[] instk;
-    private IntDeque deque;
+    private IntDequeBeta deque;
     private int n;
 
     public TwoSatBeta(int n, int m) {
@@ -23,7 +23,7 @@ public class TwoSatBeta {
         dfns = new int[n * 2];
         lows = new int[n * 2];
         instk = new boolean[n * 2];
-        deque = new IntDeque(n * 2);
+        deque = new IntDequeBeta(n * 2);
         this.n = n;
     }
 

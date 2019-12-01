@@ -1,5 +1,6 @@
 package template;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -42,7 +43,7 @@ public class LongHashMapTest {
     @Test
     public void test1() {
         int n = 10000000;
-        LongHashMap hm = new LongHashMap(5000000, true);
+        LongHashMap hm = new LongHashMap(n, true);
         for (int i = 0; i < n; i++) {
             hm.put(i, -i);
         }

@@ -88,6 +88,7 @@ public class EdmondBlossom {
                 if (edges[i][j] && mate[i] == 0 && mate[j] == 0) {
                     mate[i] = j;
                     mate[j] = i;
+                    total++;
                 }
             }
         }

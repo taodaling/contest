@@ -1,0 +1,45 @@
+{
+  "name" : "F - Economic Difficulties",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3\n6\n4 1 1 4 2\n6 5 3\n4\n1 1 1\n3 4 2\n",
+    "output" : "5\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "4\n6\n4 4 1 1 1\n3 2 6 5\n6\n6 6 1 1 1\n5 4 3 2\n",
+    "output" : "6\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "5\n14\n1 1 11 2 14 14 13 7 12 2 5 6 1\n9 8 3 10 4\n16\n1 1 9 9 2 5 10 1 14 3 7 11 6 12 2\n8 16 13 4 15\n",
+    "output" : "17\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2019_11.on2019_11_30_Codeforces_Round__603__Div__2_.F___Economic_Difficulties.TaskF",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.11.30",
+  "contestName" : "Codeforces Round #603 (Div. 2)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

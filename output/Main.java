@@ -27,41 +27,32 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            Task solver = new Task();
+            TaskE solver = new TaskE();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class Task {
+    static class TaskE {
         public void solve(int testNumber, FastInput in, FastOutput out) {
+            Modular mod = new Modular(1e9 + 7);
             int n = in.readInt();
-            int x = in.readInt();
-            int[] data = new int[n];
+            int[] a = new int[n];
             for (int i = 0; i < n; i++) {
-                data[i] = in.readInt();
+                a[i] = in.readInt();
             }
-            byte[] bytes = new byte[Integer.MAX_VALUE];
-            bytes[bytes.length - 1] = 1;
-
-
-            int ans = binarySearch(bytes, (byte) 1);
-            out.println(ans);
-        }
-
-        public int binarySearch(byte[] data, byte x) {
-            int l = 0;
-            int r = data.length - 1;
-            while (l < r) {
-                int m = (l + r) / 2;
-                if (data[m] < x) {
-                    l = m + 1;
+            int ans = 1;
+            int[] cnt = new int[n];
+            for (int i = 0; i < n; i++) {
+                if (a[i] > 0) {
+                    ans = mod.mul(ans, cnt[a[i] - 1] - cnt[a[i]]);
                 } else {
-                    //data[m] >= x
-                    r = m;
+                    ans = mod.mul(ans, 3 - cnt[a[i]]);
                 }
+                cnt[a[i]]++;
             }
-            return l;
+
+            out.println(ans);
         }
 
     }
@@ -164,6 +155,45 @@ public class Main {
             }
 
             return val;
+        }
+
+    }
+
+    static class Modular {
+        int m;
+
+        public Modular(int m) {
+            this.m = m;
+        }
+
+        public Modular(long m) {
+            this.m = (int) m;
+            if (this.m != m) {
+                throw new IllegalArgumentException();
+            }
+        }
+
+        public Modular(double m) {
+            this.m = (int) m;
+            if (this.m != m) {
+                throw new IllegalArgumentException();
+            }
+        }
+
+        public int valueOf(long x) {
+            x %= m;
+            if (x < 0) {
+                x += m;
+            }
+            return (int) x;
+        }
+
+        public int mul(int x, int y) {
+            return valueOf((long) x * y);
+        }
+
+        public String toString() {
+            return "mod " + m;
         }
 
     }

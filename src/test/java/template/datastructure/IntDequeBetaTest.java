@@ -51,7 +51,7 @@ public class IntDequeBetaTest {
     @Test
     public void test3() {
         int n = 10000000;
-        IntDeque deque = new IntDeque(n);
+        IntDequeBeta deque = new IntDequeBeta(n);
         for (int i = 0; i < n; i++) {
             deque.addLast(i);
         }

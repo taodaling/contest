@@ -15,7 +15,7 @@ public class MinCostMaxFlow {
     int nodeNum;
     final static double INF = 1e50;
 
-    static class ID {
+    private static class ID {
         int src;
         int dst;
         double fee;
@@ -42,20 +42,22 @@ public class MinCostMaxFlow {
 
     Map<ID, DirectFeeChannel> channelMap = new HashMap();
 
-    public MinCostMaxFlow(int nodeNum) {
+    public MinCostMaxFlow(int nodeNum, int s, int t) {
         this.nodeNum = nodeNum;
-        nodes = new Node[nodeNum + 1];
-        for (int i = 1; i <= nodeNum; i++) {
+        nodes = new Node[nodeNum];
+        for (int i = 0; i < nodeNum; i++) {
             nodes[i] = new Node(i);
         }
         deque = new ArrayDeque(nodeNum);
+        setSource(s);
+        setTarget(t);
     }
 
-    public void setSource(int id) {
+    private void setSource(int id) {
         source = nodes[id];
     }
 
-    public void setTarget(int id) {
+    private void setTarget(int id) {
         target = nodes[id];
     }
 
@@ -122,7 +124,7 @@ public class MinCostMaxFlow {
     }
 
     private void spfa() {
-        for (int i = 1; i <= nodeNum; i++) {
+        for (int i = 0; i < nodeNum; i++) {
             nodes[i].distance = INF;
             nodes[i].inque = false;
             nodes[i].last = null;

@@ -1,16 +1,15 @@
 package template.datastructure;
 
-import template.datastructure.IntDeque;
 import template.utils.IntComparator;
 
 public class MinIntQueue {
-    IntDeque minQueue;
-    IntDeque data;
+    IntDequeBeta minQueue;
+    IntDequeBeta data;
     IntComparator comparator;
 
     public MinIntQueue(int cap, IntComparator comparator) {
-        minQueue = new IntDeque(cap);
-        data = new IntDeque(cap);
+        minQueue = new IntDequeBeta(cap);
+        data = new IntDequeBeta(cap);
         this.comparator = comparator;
     }
 

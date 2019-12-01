@@ -1,6 +1,5 @@
 package contest;
 
-import template.datastructure.IntDeque;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.utils.ArrayIndex;
