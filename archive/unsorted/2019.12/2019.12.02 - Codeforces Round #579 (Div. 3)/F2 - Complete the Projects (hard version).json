@@ -1,0 +1,50 @@
+{
+  "name" : "F2 - Complete the Projects (hard version)",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 4\n4 6\n10 -2\n8 -1\n",
+    "output" : "3\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "5 20\n45 -6\n34 -15\n10 34\n1 27\n40 -45\n",
+    "output" : "5\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "3 2\n300 -300\n1 299\n1 123\n",
+    "output" : "3\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "20 1000\n37 -298\n112 -288\n29 -298\n27 -298\n334 -295\n723 -298\n139 -286\n375 -296\n19 -296\n319 -300\n323 -295\n44 -300\n237 -296\n100 -296\n370 -300\n285 -299\n359 -300\n71 -297\n459 -299\n745 -298",
+    "output" : "3",
+    "index" : 3,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.TaskF2",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.12.02",
+  "contestName" : "Codeforces Round #579 (Div. 3)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

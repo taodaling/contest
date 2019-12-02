@@ -8,6 +8,18 @@ import java.util.Random;
 public class Randomized {
     static Random random = new Random();
 
+    public static void randomizedArray(int[] data) {
+        randomizedArray(data, 0, data.length - 1);
+    }
+
+    public static void randomizedArray(long[] data) {
+        randomizedArray(data, 0, data.length - 1);
+    }
+
+    public static void randomizedArray(double[] data) {
+        randomizedArray(data, 0, data.length - 1);
+    }
+
     public static void randomizedArray(int[] data, int from, int to) {
         to--;
         for (int i = from; i <= to; i++) {
@@ -68,7 +80,7 @@ public class Randomized {
         }
     }
 
-    public static<T> void randomizedArray(T[] data, int from, int to) {
+    public static <T> void randomizedArray(T[] data, int from, int to) {
         to--;
         for (int i = from; i <= to; i++) {
             int s = nextInt(i, to);
