@@ -1,0 +1,40 @@
+{
+  "name" : "F - K-th Path",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "6 10 5\n2 5 1\n5 3 9\n6 2 2\n1 3 1\n5 1 8\n6 5 10\n1 6 5\n6 4 6\n3 6 2\n3 4 5\n",
+    "output" : "3\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "7 15 18\n2 6 3\n5 7 4\n6 5 4\n3 6 9\n6 7 7\n1 6 4\n7 1 6\n7 2 1\n4 3 2\n3 2 8\n5 3 6\n2 5 5\n3 7 9\n4 1 8\n2 1 1\n",
+    "output" : "9\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.TaskF",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.12.02",
+  "contestName" : "Codeforces Round #575 (Div. 3)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}
