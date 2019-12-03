@@ -79,7 +79,7 @@ public class DynamicConvexHull {
                 break;
             }
         }
-        // clockwise
+        // counterclockwise
         while (pts.size() >= 3) {
             Map.Entry<Double, Point2D> ccw = countclockwise(theta);
             pts.remove(ccw.getKey());

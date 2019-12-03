@@ -3,10 +3,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.IOException;
+import java.util.Deque;
 import java.io.UncheckedIOException;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
+import java.util.ArrayDeque;
 import java.io.InputStream;
 
 /**
@@ -27,62 +29,95 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            TaskU solver = new TaskU();
+            TaskZ solver = new TaskZ();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class TaskU {
+    static class TaskZ {
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            int[][] mat = new int[n][n];
+            long c = in.readLong();
+            long[] h = new long[n];
             for (int i = 0; i < n; i++) {
-                for (int j = 0; j < n; j++) {
-                    mat[i][j] = in.readInt();
-                }
+                h[i] = in.readInt();
             }
-            long[] profits = new long[1 << n];
-            Log2 log2 = new Log2();
-            BitOperator bo = new BitOperator();
-            for (int i = 0; i < (1 << n); i++) {
-                if (Integer.lowestOneBit(i) == i) {
-                    profits[i] = 0;
-                    continue;
-                }
-                int bit = log2.floorLog(i);
-                int j = i - (1 << bit);
-                profits[i] = profits[j];
-                for (int k = 0; k < n; k++) {
-                    if (bo.bitAt(j, k) == 0) {
-                        continue;
-                    }
-                    profits[i] += mat[k][bit];
-                }
+            LeqSlopeOptimizer optimizer = new LeqSlopeOptimizer(n);
+            long[] dp = new long[n];
+            dp[0] = 0;
+            optimizer.add(dp[0] + h[0] * h[0], h[0], 0);
+            for (int i = 1; i < n; i++) {
+                int last = optimizer.getBestChoice(2 * h[i]);
+                dp[i] = dp[last] + (h[i] - h[last]) * (h[i] - h[last]) + c;
+                optimizer.add(dp[i] + h[i] * h[i], h[i], i);
             }
-
-            SubsetGenerator sg = new SubsetGenerator();
-            long[] dp = new long[1 << n];
-            for (int i = 1; i < (1 << n); i++) {
-                dp[i] = profits[i];
-                sg.setSet(i);
-                while (sg.hasNext()) {
-                    int next = sg.next();
-                    if (next == 0 || next == i) {
-                        continue;
-                    }
-                    dp[i] = Math.max(dp[i], dp[i - next] + dp[next]);
-                }
-            }
-
-            out.println(dp[(1 << n) - 1]);
+            out.println(dp[n - 1]);
         }
 
     }
 
-    static class Log2 {
-        public int floorLog(int x) {
-            return 31 - Integer.numberOfLeadingZeros(x);
+    static class LeqSlopeOptimizer {
+        Deque<LeqSlopeOptimizer.Point> deque;
+
+        public LeqSlopeOptimizer() {
+            deque = new ArrayDeque<>(0);
+        }
+
+        public LeqSlopeOptimizer(int exp) {
+            deque = new ArrayDeque<>(exp);
+        }
+
+        private double slope(LeqSlopeOptimizer.Point a, LeqSlopeOptimizer.Point b) {
+            if (b.x == a.x) {
+                if (b.y == a.y) {
+                    return 0;
+                } else if (b.y > a.y) {
+                    return 1e50;
+                } else {
+                    return 1e-50;
+                }
+            }
+            return (double) (b.y - a.y) / (b.x - a.x);
+        }
+
+        public LeqSlopeOptimizer.Point add(long y, long x, int id) {
+            LeqSlopeOptimizer.Point t1 = new LeqSlopeOptimizer.Point(x, y, id);
+            while (deque.size() >= 2) {
+                LeqSlopeOptimizer.Point t2 = deque.removeLast();
+                LeqSlopeOptimizer.Point t3 = deque.peekLast();
+                if (slope(t3, t2) < slope(t2, t1)) {
+                    deque.addLast(t2);
+                    break;
+                }
+            }
+            deque.addLast(t1);
+            return t1;
+        }
+
+        public int getBestChoice(long s) {
+            while (deque.size() >= 2) {
+                LeqSlopeOptimizer.Point h1 = deque.removeFirst();
+                LeqSlopeOptimizer.Point h2 = deque.peekFirst();
+                if (slope(h2, h1) > s) {
+                    deque.addFirst(h1);
+                    break;
+                }
+            }
+            return deque.peekFirst().id;
+        }
+
+        private static class Point {
+            final long x;
+            final long y;
+            final int id;
+
+            private Point(long x, long y, int id) {
+                this.x = x;
+                this.y = y;
+                this.id = id;
+            }
+
         }
 
     }
@@ -130,54 +165,6 @@ public class Main {
 
     }
 
-    static class BitOperator {
-        public int bitAt(int x, int i) {
-            return (x >> i) & 1;
-        }
-
-    }
-
-    static class SubsetGenerator {
-        private int[] meanings = new int[33];
-        private int[] bits = new int[33];
-        private int remain;
-        private int next;
-
-        public void setSet(int set) {
-            int bitCount = 0;
-            while (set != 0) {
-                meanings[bitCount] = set & -set;
-                bits[bitCount] = 0;
-                set -= meanings[bitCount];
-                bitCount++;
-            }
-            remain = 1 << bitCount;
-            next = 0;
-        }
-
-        public boolean hasNext() {
-            return remain > 0;
-        }
-
-        private void consume() {
-            remain = remain - 1;
-            int i;
-            for (i = 0; bits[i] == 1; i++) {
-                bits[i] = 0;
-                next -= meanings[i];
-            }
-            bits[i] = 1;
-            next += meanings[i];
-        }
-
-        public int next() {
-            int returned = next;
-            consume();
-            return returned;
-        }
-
-    }
-
     static class FastInput {
         private final InputStream is;
         private byte[] buf = new byte[1 << 13];
@@ -220,6 +207,31 @@ public class Main {
             }
 
             int val = 0;
+            if (sign == 1) {
+                while (next >= '0' && next <= '9') {
+                    val = val * 10 + next - '0';
+                    next = read();
+                }
+            } else {
+                while (next >= '0' && next <= '9') {
+                    val = val * 10 - next + '0';
+                    next = read();
+                }
+            }
+
+            return val;
+        }
+
+        public long readLong() {
+            int sign = 1;
+
+            skipBlank();
+            if (next == '+' || next == '-') {
+                sign = next == '+' ? 1 : -1;
+                next = read();
+            }
+
+            long val = 0;
             if (sign == 1) {
                 while (next >= '0' && next <= '9') {
                     val = val * 10 + next - '0';

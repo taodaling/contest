@@ -3,6 +3,13 @@ package template.algo;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
+/**
+ * Used to optimize such dp form:
+ * <pre>
+ * (Y(j) - Y(k)) / (X(j) - X(k)) >= S(i)
+ * </pre>
+ * while k < j < i and S(i) is an decreasing function.
+ */
 public class GeqSlopeOptimizer {
     private static class Point {
         final long x;
@@ -44,6 +51,7 @@ public class GeqSlopeOptimizer {
         deque.addLast(t1);
         return t1;
     }
+
 
     int getBestChoice(long s) {
         while (deque.size() >= 2) {
