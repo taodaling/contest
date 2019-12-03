@@ -1,0 +1,50 @@
+{
+  "name" : "B - Frog 2",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5 3\n10 30 40 50 20\n",
+    "output" : "30\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "3 1\n10 20 10\n",
+    "output" : "20\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "2 100\n10 10\n",
+    "output" : "0\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "10 4\n40 10 20 70 80 10 20 70 80 60\n",
+    "output" : "40\n",
+    "index" : 3,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2019_12.on2019_12_03_Educational_DP_Contest.B___Frog_2.TaskB",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.12.03",
+  "contestName" : "Educational DP Contest",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

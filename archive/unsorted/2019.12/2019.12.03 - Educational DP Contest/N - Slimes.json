@@ -1,0 +1,50 @@
+{
+  "name" : "N - Slimes",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4\n10 20 30 40\n",
+    "output" : "190\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "5\n10 10 10 10 10\n",
+    "output" : "120\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "3\n1000000000 1000000000 1000000000\n",
+    "output" : "5000000000\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "6\n7 6 8 6 1 1\n",
+    "output" : "68\n",
+    "index" : 3,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.TaskN",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.12.03",
+  "contestName" : "Educational DP Contest",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

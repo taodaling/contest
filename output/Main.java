@@ -27,40 +27,153 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            TaskE solver = new TaskE();
+            TaskU solver = new TaskU();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class TaskE {
+    static class TaskU {
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            int m = in.readInt();
-            int q = in.readInt();
-            int[][] mat = new int[n][m];
+            int[][] mat = new int[n][n];
             for (int i = 0; i < n; i++) {
-                for (int j = 0; j < m; j++) {
-                    mat[i][j] = in.readChar() - '0';
+                for (int j = 0; j < n; j++) {
+                    mat[i][j] = in.readInt();
+                }
+            }
+            long[] profits = new long[1 << n];
+            Log2 log2 = new Log2();
+            BitOperator bo = new BitOperator();
+            for (int i = 0; i < (1 << n); i++) {
+                if (Integer.lowestOneBit(i) == i) {
+                    profits[i] = 0;
+                    continue;
+                }
+                int bit = log2.floorLog(i);
+                int j = i - (1 << bit);
+                profits[i] = profits[j];
+                for (int k = 0; k < n; k++) {
+                    if (bo.bitAt(j, k) == 0) {
+                        continue;
+                    }
+                    profits[i] += mat[k][bit];
                 }
             }
 
-            MatrixMachine machine = new MatrixMachine(mat);
-            for (int i = 0; i < q; i++) {
-                int t = in.readInt();
-                int l = in.readInt();
-                int b = in.readInt();
-                int r = in.readInt();
-                long ans = machine.query(l, r, t, b);
-                out.println(ans);
+            SubsetGenerator sg = new SubsetGenerator();
+            long[] dp = new long[1 << n];
+            for (int i = 1; i < (1 << n); i++) {
+                dp[i] = profits[i];
+                sg.setSet(i);
+                while (sg.hasNext()) {
+                    int next = sg.next();
+                    if (next == 0 || next == i) {
+                        continue;
+                    }
+                    dp[i] = Math.max(dp[i], dp[i - next] + dp[next]);
+                }
             }
+
+            out.println(dp[(1 << n) - 1]);
         }
 
     }
 
     static class Log2 {
-        public int floorLog(long x) {
-            return 63 - Long.numberOfLeadingZeros(x);
+        public int floorLog(int x) {
+            return 31 - Integer.numberOfLeadingZeros(x);
+        }
+
+    }
+
+    static class FastOutput implements AutoCloseable, Closeable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
+
+        public FastOutput(Writer os) {
+            this.os = os;
+        }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput println(long c) {
+            cache.append(c).append('\n');
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            return this;
+        }
+
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+
+        public String toString() {
+            return cache.toString();
+        }
+
+    }
+
+    static class BitOperator {
+        public int bitAt(int x, int i) {
+            return (x >> i) & 1;
+        }
+
+    }
+
+    static class SubsetGenerator {
+        private int[] meanings = new int[33];
+        private int[] bits = new int[33];
+        private int remain;
+        private int next;
+
+        public void setSet(int set) {
+            int bitCount = 0;
+            while (set != 0) {
+                meanings[bitCount] = set & -set;
+                bits[bitCount] = 0;
+                set -= meanings[bitCount];
+                bitCount++;
+            }
+            remain = 1 << bitCount;
+            next = 0;
+        }
+
+        public boolean hasNext() {
+            return remain > 0;
+        }
+
+        private void consume() {
+            remain = remain - 1;
+            int i;
+            for (i = 0; bits[i] == 1; i++) {
+                bits[i] = 0;
+                next -= meanings[i];
+            }
+            bits[i] = 1;
+            next += meanings[i];
+        }
+
+        public int next() {
+            int returned = next;
+            consume();
+            return returned;
         }
 
     }
@@ -120,133 +233,6 @@ public class Main {
             }
 
             return val;
-        }
-
-        public char readChar() {
-            skipBlank();
-            char c = (char) next;
-            next = read();
-            return c;
-        }
-
-    }
-
-    static class FastOutput implements AutoCloseable, Closeable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
-
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput println(long c) {
-            cache.append(c).append('\n');
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        }
-
-        public String toString() {
-            return cache.toString();
-        }
-
-    }
-
-    static class MatrixMachine {
-        int[][] mat;
-        int[][] preSum;
-        int n;
-        int m;
-        Log2 log2 = new Log2();
-
-        public MatrixMachine(int[][] mat) {
-            this.mat = mat;
-            this.n = mat.length;
-            this.m = mat[0].length;
-            preSum = new int[n * 2][m * 2];
-            for (int i = 0; i < n * 2; i++) {
-                for (int j = 0; j < m * 2; j++) {
-                    int v = mat[i % n][j % m];
-                    if (i >= n) {
-                        v = 1 - v;
-                    }
-                    if (j >= m) {
-                        v = 1 - v;
-                    }
-                    preSum[i][j] = v;
-                    if (j > 0) {
-                        preSum[i][j] += preSum[i][j - 1];
-                    }
-                }
-                if (i > 0) {
-                    for (int j = 0; j < m * 2; j++) {
-                        preSum[i][j] += preSum[i - 1][j];
-                    }
-                }
-            }
-        }
-
-        private long queryZero(long r, long b) {
-            return r * b - query(r, b);
-        }
-
-        private long query(long r, long b) {
-            if (r <= 2 * m && b <= 2 * n) {
-                if (r == 0 || b == 0) {
-                    return 0;
-                }
-                return preSum[(int) (b - 1)][(int) (r - 1)];
-            }
-            if (b > 2 * n) {
-                long time = (b / (2 * n));
-                int floorLog = log2.floorLog(time);
-                long ans = (1L << floorLog) * n * r;
-                b -= 2 * n * (1L << floorLog);
-                ans += queryZero(r, b);
-                return ans;
-            }
-            long time = (r / (2 * m));
-            int floorLog = log2.floorLog(time);
-            long ans = (1L << floorLog) * m * b;
-            r -= 2 * m * (1L << floorLog);
-            ans += queryZero(r, b);
-            return ans;
-        }
-
-        public long query(int l, int r, int t, int b) {
-            long ans = query(r, b);
-            if (t > 1) {
-                ans -= query(r, t - 1);
-            }
-            if (l > 1) {
-                ans -= query(l - 1, b);
-            }
-            if (l > 1 && t > 1) {
-                ans += query(l - 1, t - 1);
-            }
-            return ans;
         }
 
     }

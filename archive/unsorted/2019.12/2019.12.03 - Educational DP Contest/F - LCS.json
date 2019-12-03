@@ -1,0 +1,55 @@
+{
+  "name" : "F - LCS",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "axyb\nabyxb\n",
+    "output" : "axb\n",
+    "index" : 0,
+    "active" : false
+  }, {
+    "input" : "aa\nxayaz\n",
+    "output" : "aa\n",
+    "index" : 1,
+    "active" : false
+  }, {
+    "input" : "a\nz\n",
+    "output" : "",
+    "index" : 2,
+    "active" : false
+  }, {
+    "input" : "abracadabra\navadakedavra\n",
+    "output" : "aaadara\n",
+    "index" : 3,
+    "active" : false
+  }, {
+    "input" : "caaba\nca\n",
+    "output" : "ca",
+    "index" : 4,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.TaskF",
+  "checkerClass" : "contest.TaskFChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.12.03",
+  "contestName" : "Educational DP Contest",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}
