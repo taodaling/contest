@@ -38,6 +38,15 @@ public class MultiWayStack<T> {
         };
     }
 
+    public Iterable<T> queue(int qId){
+        return new Iterable<T>() {
+            @Override
+            public Iterator<T> iterator() {
+                return MultiWayStack.this.iterator(qId);
+            }
+        };
+    }
+
     private void doubleCapacity() {
         int newSize = Math.max(next.length + 10, next.length * 2);
         next = Arrays.copyOf(next, newSize);

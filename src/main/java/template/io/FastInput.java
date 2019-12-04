@@ -95,7 +95,7 @@ public class FastInput {
         boolean sign = true;
         skipBlank();
         if (next == '+' || next == '-') {
-            sign = next == '+' ? true : false;
+            sign = next == '+';
             next = read();
         }
 

@@ -1,16 +1,9 @@
 package contest;
 
-
-
 import template.algo.IntBinarySearch;
 import template.datastructure.MultiWayStack;
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.math.DigitUtils;
-
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 
 public class TaskG {
     MultiWayStack<Edge> edges;
@@ -45,7 +38,8 @@ public class TaskG {
         out.println(ans);
         paint(1, null, ans);
         for (int i = 1; i < n; i++) {
-            out.append(es[i].color + 1).append(' ');
+            out.append(es[i].color + 1);
+            out.append(' ');
         }
     }
 
