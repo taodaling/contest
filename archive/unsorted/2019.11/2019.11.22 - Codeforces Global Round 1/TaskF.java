@@ -74,7 +74,7 @@ public class TaskF {
         }
 
         for (Query q : root.queries) {
-            q.ans = seg.query(q.l, q.r, 1, n);
+            q.ans = seg.queryMax(q.l, q.r, 1, n);
         }
 
         if (p != null) {
@@ -174,7 +174,7 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = (l + r) >> 1;
-        return Math.min(left.query(ll, rr, l, m),
-                right.query(ll, rr, m + 1, r));
+        return Math.min(left.queryMax(ll, rr, l, m),
+                right.queryMax(ll, rr, m + 1, r));
     }
 }

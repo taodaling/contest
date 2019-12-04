@@ -6,7 +6,9 @@ import template.math.Log2;
 import java.util.Arrays;
 
 public class DigitUtils {
-    private DigitUtils() {}
+
+    private DigitUtils() {
+    }
 
     public static double normalizeTo(double x, double y, double prec) {
         if (Math.abs(x - y) < prec) {
@@ -16,7 +18,11 @@ public class DigitUtils {
     }
 
     public static long round(double x) {
-        return (long) (x + 0.5);
+        if (x >= 0) {
+            return (long) (x + 0.5);
+        } else {
+            return (long) (x - 0.5);
+        }
     }
 
     public static double normalizeToZero(double x, double prec) {

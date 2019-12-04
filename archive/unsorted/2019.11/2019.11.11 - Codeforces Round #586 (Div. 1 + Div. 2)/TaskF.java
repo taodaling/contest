@@ -30,7 +30,7 @@ public class TaskF {
         valSeg = new MinMaxSegment(1, n, perm);
         buildTree(1, n);
         Recoder recoder = new Recoder();
-        recoder.record(seg.query(1, n, 1, 2 * n), 0);
+        recoder.record(seg.queryMax(1, n, 1, 2 * n), 0);
 
         int[] rightIndex = new int[2 * n + 1];
         IntDeque deque = new IntDeque(2 * n);
@@ -71,11 +71,11 @@ public class TaskF {
                 //seg.update(i + n, i + n, 1 , 2 * n, 0);
             } else {
                 seg.update(rightSide.peekLast() + 1, n - 1 + i, 1, 2 * n, 1);
-                int fatherDepth = seg.query(rightSide.peekLast(), rightSide.peekLast(), 1, 2 * n);
+                int fatherDepth = seg.queryMax(rightSide.peekLast(), rightSide.peekLast(), 1, 2 * n);
                 seg.update(i + n, i + n, 1, 2 * n, fatherDepth + 1);
             }
             rightSide.addLast(i + n);
-            recoder.record(seg.query(i + 1, i + n, 1, 2 * n), i);
+            recoder.record(seg.queryMax(i + 1, i + n, 1, 2 * n), i);
         }
 
         out.append(recoder.height + 1).append(' ').append(recoder.offset);
@@ -207,8 +207,8 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = (l + r) >> 1;
-        return Math.max(left.query(ll, rr, l, m),
-                right.query(ll, rr, m + 1, r));
+        return Math.max(left.queryMax(ll, rr, l, m),
+                right.queryMax(ll, rr, m + 1, r));
     }
 }
 

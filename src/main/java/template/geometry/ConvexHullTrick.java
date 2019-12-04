@@ -4,6 +4,9 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.TreeSet;
 
+/**
+ * Maintain lots of lines and support querying the max y overall lines inserted at some point x.
+ */
 public class ConvexHullTrick implements Iterable<ConvexHullTrick.Line> {
     static final double INF = 1e50;
 
@@ -63,7 +66,14 @@ public class ConvexHullTrick implements Iterable<ConvexHullTrick.Line> {
 
     private Line queryLine = new Line(0, 0);
 
+    public boolean isEmpty() {
+        return setOrderByA.isEmpty();
+    }
+
     public double query(double x) {
+        if (setOrderByLx.isEmpty()) {
+            return -INF;
+        }
         queryLine.lx = x;
         Line line = setOrderByLx.floor(queryLine);
         return line.y(x);
@@ -149,6 +159,11 @@ public class ConvexHullTrick implements Iterable<ConvexHullTrick.Line> {
             b.insert(line.a, line.b);
         }
         return b;
+    }
+
+    public void clear() {
+        setOrderByA.clear();
+        setOrderByLx.clear();
     }
 
     @Override

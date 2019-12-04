@@ -15,14 +15,14 @@ public class TaskF {
         }
         xs[0] = a;
         Segment seg = new Segment(1, n);
-        seg.update(b, b, 1, n, -seg.query(b, b, 1, n));
+        seg.update(b, b, 1, n, -seg.queryMax(b, b, 1, n));
 
         for (int i = 1; i <= q; i++) {
             long left = seg.queryMinMinusIndex(1, xs[i], 1, n) + xs[i];
             long right = seg.queryMinPlusIndex(xs[i], n, 1, n) - xs[i];
             seg.update(1, n, 1, n, Math.abs(xs[i - 1] - xs[i]));
 
-            long now = seg.query(xs[i - 1], xs[i - 1], 1, n);
+            long now = seg.queryMax(xs[i - 1], xs[i - 1], 1, n);
             if (Math.min(left, right) < now) {
                 seg.update(xs[i - 1], xs[i - 1], 1, n,
                         Math.min(left, right) - now);
@@ -31,7 +31,7 @@ public class TaskF {
 
         long ans = Long.MAX_VALUE;
         for(int i = 1; i <= n; i++){
-            ans = Math.min(ans, seg.query(i, i, 1, n));
+            ans = Math.min(ans, seg.queryMax(i, i, 1, n));
         }
 
         out.println(ans);
@@ -140,8 +140,8 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = (l + r) >> 1;
-        return Math.min(left.query(ll, rr, l, m),
-                right.query(ll, rr, m + 1, r));
+        return Math.min(left.queryMax(ll, rr, l, m),
+                right.queryMax(ll, rr, m + 1, r));
     }
 }
 

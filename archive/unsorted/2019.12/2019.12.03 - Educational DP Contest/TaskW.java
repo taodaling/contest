@@ -21,16 +21,16 @@ public class TaskW {
         Arrays.sort(intervals, (a, b) -> a.r - b.r);
         Deque<Interval> deque = new ArrayDeque<>(Arrays.asList(intervals));
         Segment seg = new Segment(0, n);
-        seg.update(0, 0, 0, n, -seg.query(0, 0, 0, n));
+        seg.update(0, 0, 0, n, -seg.queryMax(0, 0, 0, n));
         for (int i = 1; i <= n; i++) {
-            long max = seg.query(0, i - 1, 0, n);
-            seg.update(i, i, 0, n, max - seg.query(i, i, 0, n));
+            long max = seg.queryMax(0, i - 1, 0, n);
+            seg.update(i, i, 0, n, max - seg.queryMax(i, i, 0, n));
             while (!deque.isEmpty() && deque.peekFirst().r == i) {
                 Interval head = deque.removeFirst();
                 seg.update(head.l, head.r, 0, n, head.a);
             }
         }
-        long ans = seg.query(0, n, 0, n);
+        long ans = seg.queryMax(0, n, 0, n);
         out.println(ans);
     }
 }
@@ -107,7 +107,7 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = (l + r) >> 1;
-        return Math.max(left.query(ll, rr, l, m),
-                right.query(ll, rr, m + 1, r));
+        return Math.max(left.queryMax(ll, rr, l, m),
+                right.queryMax(ll, rr, m + 1, r));
     }
 }

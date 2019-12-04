@@ -26,13 +26,13 @@ public class TaskD {
         Segment seg = new Segment(1, n);
         seg.update(1, 1, 1, n, 0);
         for (int i = 1; i <= n; i++) {
-            long dist = seg.query(i, i, 1, n);
+            long dist = seg.queryMax(i, i, 1, n);
             for (int[] op : group.getOrDefault(i, Collections.emptyList())) {
                 seg.update(op[0], op[1], 1, n, dist + op[2]);
             }
         }
 
-        long ans = seg.query(n, n, 1, n);
+        long ans = seg.queryMax(n, n, 1, n);
         if (ans >= (long) 1e17) {
             out.println(-1);
         } else {
@@ -103,7 +103,7 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = (l + r) >> 1;
-        return Math.min(left.query(ll, rr, l, m),
-                right.query(ll, rr, m + 1, r));
+        return Math.min(left.queryMax(ll, rr, l, m),
+                right.queryMax(ll, rr, m + 1, r));
     }
 }

@@ -79,12 +79,12 @@ public class TaskG {
             Query head = root.pq.peek();
             root.pq = LeftistTree.pop(root.pq, Query.sortByR);
             head.ans = (head.r - head.l + 1) +
-                    segR.query(head.l, head.l, 0, n)
-                    + segL.query(head.r, head.r, 0, n);
+                    segR.queryMax(head.l, head.l, 0, n)
+                    + segL.queryMax(head.r, head.r, 0, n);
         }
-        long leftSum = segL.query(root.id - 1, root.id - 1, 0, n);
+        long leftSum = segL.queryMax(root.id - 1, root.id - 1, 0, n);
         segL.update(root.id, root.rangeR, 0, n, leftSum - root.rangeL + 1, 1);
-        long rightSum = segR.query(root.id + 1, root.id + 1, 0, n);
+        long rightSum = segR.queryMax(root.id + 1, root.id + 1, 0, n);
         segR.update(root.rangeL, root.id, 0, n, rightSum + root.rangeR + 1, -1);
     }
 }
@@ -173,7 +173,7 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = (l + r) >> 1;
-        return left.query(ll, rr, l, m) +
-                right.query(ll, rr, m + 1, r);
+        return left.queryMax(ll, rr, l, m) +
+                right.queryMax(ll, rr, m + 1, r);
     }
 }

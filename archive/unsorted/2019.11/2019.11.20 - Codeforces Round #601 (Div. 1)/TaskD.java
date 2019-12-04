@@ -47,7 +47,7 @@ public class TaskD {
             }else{
                 int v = in.readInt();
                 int exp = nodes[v].count;
-                exp = mod.plus(exp, seg.query(nodes[v].l, nodes[v].l, 1, n));
+                exp = mod.plus(exp, seg.queryMax(nodes[v].l, nodes[v].l, 1, n));
 
                 Node sub = nodes[v].lightFather;
                 while(sub != null){
@@ -175,6 +175,6 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = (l + r) >> 1;
-        return MOD.plus(left.query(ll, rr, l, m), right.query(ll, rr, m + 1, r));
+        return MOD.plus(left.queryMax(ll, rr, l, m), right.queryMax(ll, rr, m + 1, r));
     }
 }

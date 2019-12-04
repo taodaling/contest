@@ -27,8 +27,8 @@ public class TaskD {
             while(j + 1 < n && bears[j + 2] * 2 <= bears[i] * 2 - t){
                 j++;
             }
-            long ans1 = seg1.query(j + 1, i - 1, 0, n) + bears[i] + t;
-            long ans2 = seg2.query(0, j, 0, n) + 3 * bears[i];
+            long ans1 = seg1.queryMax(j + 1, i - 1, 0, n) + bears[i] + t;
+            long ans2 = seg2.queryMax(0, j, 0, n) + 3 * bears[i];
             dp[i] = Math.min(ans1, ans2);
 
             seg1.update(i, i, 0, n, dp[i] + bears[i + 1] - bears[i] - 3 * bears[i + 1] + 2 * bears[i + 1]);
@@ -99,6 +99,6 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = (l + r) >> 1;
-        return Math.min(left.query(ll, rr, l, m), right.query(ll, rr, m + 1, r));
+        return Math.min(left.queryMax(ll, rr, l, m), right.queryMax(ll, rr, m + 1, r));
     }
 }

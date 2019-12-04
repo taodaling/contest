@@ -17,10 +17,10 @@ public class TaskQ {
 
         Segment inc = new Segment(0, n);
         for (int i = 0; i < n; i++) {
-            long x = inc.query(0, h[i], 0, n);
+            long x = inc.queryMax(0, h[i], 0, n);
             inc.update(h[i], h[i], 0, n, x + a[i]);
         }
-        long ans = inc.query(0, n, 0, n);
+        long ans = inc.queryMax(0, n, 0, n);
 
         out.println(ans);
     }
@@ -81,8 +81,8 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = (l + r) >> 1;
-        return Math.max(left.query(ll, rr, l, m),
-                right.query(ll, rr, m + 1, r));
+        return Math.max(left.queryMax(ll, rr, l, m),
+                right.queryMax(ll, rr, m + 1, r));
     }
 }
 

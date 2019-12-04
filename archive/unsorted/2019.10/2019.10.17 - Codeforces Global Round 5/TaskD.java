@@ -25,7 +25,7 @@ public class TaskD {
     public int dp(int i) {
         i %= n;
         if (dp[i] == -1) {
-            if (next[i] != -1 && seg.query(i + 1, next[i], 0, 2 * n) * 2 >= a[i]) {
+            if (next[i] != -1 && seg.queryMax(i + 1, next[i], 0, 2 * n) * 2 >= a[i]) {
                 int ans = dp(next[i]);
                 if (ans == -1) {
                     dp[i] = -1;
@@ -39,7 +39,7 @@ public class TaskD {
             int r = 2 * n;
             while (l < r) {
                 int m = (l + r) >> 1;
-                int v = seg.query(i + 1, m, 0, 2 * n);
+                int v = seg.queryMax(i + 1, m, 0, 2 * n);
                 if (v * 2 < a[i]) {
                     r = m;
                 } else {
@@ -157,8 +157,8 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = (l + r) >> 1;
-        return Math.min(left.query(ll, rr, l, m),
-                right.query(ll, rr, m + 1, r));
+        return Math.min(left.queryMax(ll, rr, l, m),
+                right.queryMax(ll, rr, m + 1, r));
     }
 
     public void queryMaxIndex(int ll, int rr, int l, int r, int[] mx) {

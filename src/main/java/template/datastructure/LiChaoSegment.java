@@ -8,6 +8,9 @@ public class LiChaoSegment implements Cloneable {
     double r;
     double m;
 
+    private LiChaoSegment() {
+    }
+
     public static class Line {
         // y = ax + b
         double a;
@@ -33,7 +36,7 @@ public class LiChaoSegment implements Cloneable {
         }
     }
 
-    public static LiChaoSegment build(int l, int r, int[] vals) {
+    public static LiChaoSegment build(int l, int r, double[] vals) {
         LiChaoSegment segment = new LiChaoSegment();
         int m = (l + r) >> 1;
         segment.l = vals[l];
@@ -156,18 +159,18 @@ public class LiChaoSegment implements Cloneable {
         return line == null ? Double.MIN_VALUE : line.y(x);
     }
 
-    public static double query(int x, int l, int r, DiscreteMap map, LiChaoSegment segment) {
+    public static double query(int x, double actual, int l, int r, LiChaoSegment segment) {
         if (checkOutOfRange(x, x, l, r)) {
             return Double.MIN_VALUE;
         }
         if (l == r) {
-            return segment.eval(map.val[x]);
+            return segment.eval(actual);
         }
         int m = (l + r) >> 1;
         return Math.max(Math.max(
-                query(x, l, m, map, segment.left),
-                query(x, m + 1, r, map, segment.right)),
-                segment.eval(map.val[x]));
+                query(x, actual, l, m, segment.left),
+                query(x, actual, m + 1, r, segment.right)),
+                segment.eval(actual));
     }
 
     @Override

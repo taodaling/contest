@@ -41,7 +41,7 @@ public class TaskG {
             queue.add(e);
             while (e.carry > 0 && !queue.isEmpty()) {
                 Event top = queue.remove();
-                int canUse = c - segment.query(top.index, e.index, 0, n);
+                int canUse = c - segment.queryMax(top.index, e.index, 0, n);
                 canUse = Math.min(canUse, top.in);
                 canUse = Math.min(canUse, e.carry);
                 if (canUse == 0) {
@@ -147,6 +147,6 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = (l + r) >> 1;
-        return Math.max(left.query(ll, rr, l, m), right.query(ll, rr, m + 1, r));
+        return Math.max(left.queryMax(ll, rr, l, m), right.queryMax(ll, rr, m + 1, r));
     }
 }

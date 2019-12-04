@@ -1,8 +1,6 @@
 package template.graph;
 
-import template.datastructure.IntDequeBeta;
-import template.datastructure.IntList;
-import template.datastructure.LongObjectHashMap;
+import template.datastructure.*;
 import template.math.DigitUtils;
 import template.utils.RevokeIterator;
 
@@ -10,7 +8,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 public class LongHLPPBeta {
-    private MultiWayDeque<Channel> edges;
+    private MultiWayStack<Channel> edges;
     private RevokeIterator<Channel>[] iterators;
     private LongObjectHashMap<ChannelImpl> map;
     private int[] heights;
@@ -22,7 +20,7 @@ public class LongHLPPBeta {
 
     public LongHLPPBeta(int vertexNumber, int expectedChannelNumber,
                         int source, int sink) {
-        edges = new MultiWayDeque<>(vertexNumber, expectedChannelNumber * 2);
+        edges = new MultiWayStack<>(vertexNumber, expectedChannelNumber * 2);
         iterators = new RevokeIterator[vertexNumber];
         map = new LongObjectHashMap<>(expectedChannelNumber, true);
         this.sink = sink;
@@ -162,8 +160,8 @@ public class LongHLPPBeta {
         ChannelImpl channel = map.get(id);
         if (channel == null) {
             channel = new ChannelImpl(a, b);
-            edges.addLast(a, channel);
-            edges.addLast(b, channel.inverse());
+            edges.addFirst(a, channel);
+            edges.addFirst(b, channel.inverse());
             map.put(id, channel);
         }
         return channel;

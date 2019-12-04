@@ -28,7 +28,7 @@ public class TaskA {
             }
             int ans = deque.size();
             for(int j = 0; j <= m; j += i){
-                ans += seg.query(j, j, 0, m);
+                ans += seg.queryMax(j, j, 0, m);
             }
 
             out.println(ans);
@@ -103,7 +103,7 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = (l + r) >> 1;
-        return left.query(ll, rr, l, m) +
-        right.query(ll, rr, m + 1, r);
+        return left.queryMax(ll, rr, l, m) +
+        right.queryMax(ll, rr, m + 1, r);
     }
 }
