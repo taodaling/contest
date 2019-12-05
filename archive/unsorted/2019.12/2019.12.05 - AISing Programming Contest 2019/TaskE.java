@@ -1,5 +1,7 @@
 package contest;
 
+
+
 import template.datastructure.IntIterator;
 import template.datastructure.MultiWayIntStack;
 import template.datastructure.MultiWayStack;
@@ -79,9 +81,9 @@ public class TaskE {
                 }
             }
             posDp[root] += atLeastNeed;
-            for (int i = 0; i <= total + sizes[node] - 1; i++) {
+            for (int i = 0; i < total + sizes[node]; i++) {
                 next[i] = (long) 1e18;
-                if (i >= cutAtLeast) {
+                if (i >= cutAtLeast && i - cutAtLeast < total) {
                     next[i] = Math.min(next[i], last[(int) (i - cutAtLeast)]);
                 }
             }

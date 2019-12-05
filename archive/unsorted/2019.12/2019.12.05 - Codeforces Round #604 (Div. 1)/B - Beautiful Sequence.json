@@ -1,0 +1,67 @@
+{
+  "name" : "B - Beautiful Sequence",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2 2 2 1\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "1 2 3 4\n",
+    "output" : "NO\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "2 2 2 3\n",
+    "output" : "NO\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "3 4 0 0",
+    "output" : "",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "4 3 0 0",
+    "output" : "",
+    "index" : 4,
+    "active" : true
+  }, {
+    "input" : "0 0 4 3",
+    "index" : 5,
+    "active" : true
+  }, {
+    "input" : "0 0 3 4",
+    "index" : 6,
+    "active" : true
+  }, {
+    "input" : "0 1 2 0",
+    "output" : "",
+    "index" : 7,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.TaskB",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.12.05",
+  "contestName" : "Codeforces Round #604 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}
