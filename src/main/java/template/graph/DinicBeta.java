@@ -1,6 +1,6 @@
 package template.graph;
 
-import template.datastructure.IntDequeBeta;
+import template.datastructure.IntDequeImpl;
 import template.datastructure.IntList;
 import template.datastructure.LongObjectHashMap;
 import template.datastructure.MultiWayStack;
@@ -14,7 +14,7 @@ public class DinicBeta {
     private MultiWayStack<Channel> edges;
     private RevokeIterator<Channel>[] iterators;
     private LongObjectHashMap<ChannelImpl> map;
-    private IntDequeBeta deque;
+    private IntDequeImpl deque;
     private int[] dists;
     private int vertexNumber;
     private double totalFlow;
@@ -26,7 +26,7 @@ public class DinicBeta {
         map = new LongObjectHashMap<>(expectedChannelNumber, true);
         this.sink = sink;
         this.source = source;
-        deque = new IntDequeBeta(vertexNumber);
+        deque = new IntDequeImpl(vertexNumber);
         dists = new int[vertexNumber];
         this.vertexNumber = vertexNumber;
     }
@@ -136,8 +136,8 @@ public class DinicBeta {
         ChannelImpl channel = map.get(id);
         if (channel == null) {
             channel = new ChannelImpl(a, b);
-            edges.addFirst(a, channel);
-            edges.addFirst(b, channel.inverse());
+            edges.addLast(a, channel);
+            edges.addLast(b, channel.inverse());
             map.put(id, channel);
         }
         return channel;

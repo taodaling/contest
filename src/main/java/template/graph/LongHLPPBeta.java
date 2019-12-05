@@ -13,7 +13,7 @@ public class LongHLPPBeta {
     private LongObjectHashMap<ChannelImpl> map;
     private int[] heights;
     private long[] excess;
-    private IntDequeBeta deque;
+    private IntDequeImpl deque;
     private int vertexNumber;
     private long totalFlow;
     Node[] nodes;
@@ -25,7 +25,7 @@ public class LongHLPPBeta {
         map = new LongObjectHashMap<>(expectedChannelNumber, true);
         this.sink = sink;
         this.source = source;
-        deque = new IntDequeBeta(vertexNumber);
+        deque = new IntDequeImpl(vertexNumber);
         heights = new int[vertexNumber];
         excess = new long[vertexNumber];
         nodes = new Node[vertexNumber];
@@ -160,8 +160,8 @@ public class LongHLPPBeta {
         ChannelImpl channel = map.get(id);
         if (channel == null) {
             channel = new ChannelImpl(a, b);
-            edges.addFirst(a, channel);
-            edges.addFirst(b, channel.inverse());
+            edges.addLast(a, channel);
+            edges.addLast(b, channel.inverse());
             map.put(id, channel);
         }
         return channel;

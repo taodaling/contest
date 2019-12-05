@@ -1,4 +1,4 @@
-package template.graph;
+package template.datastructure;
 
 import template.utils.RevokeIterator;
 
@@ -37,8 +37,43 @@ public class MultiWayDeque<V> {
         };
     }
 
-    public Iterable<V> queue(int qId){
-        return new Iterable<V>() {
+    public SimplifiedDeque<V> queue(int qId) {
+        return new SimplifiedDeque<V>() {
+            @Override
+            public boolean isEmpty() {
+                return MultiWayDeque.this.isEmpty(qId);
+            }
+
+            @Override
+            public V peekFirst() {
+                return MultiWayDeque.this.peekFirst(qId);
+            }
+
+            @Override
+            public V peekLast() {
+                return MultiWayDeque.this.peekLast(qId);
+            }
+
+            @Override
+            public void addFirst(V x) {
+                MultiWayDeque.this.addFirst(qId, x);
+            }
+
+            @Override
+            public void addLast(V x) {
+                MultiWayDeque.this.addLast(qId, x);
+            }
+
+            @Override
+            public V removeFirst() {
+                return MultiWayDeque.this.removeFirst(qId);
+            }
+
+            @Override
+            public V removeLast() {
+                return MultiWayDeque.this.removeLast(qId);
+            }
+
             @Override
             public Iterator<V> iterator() {
                 return MultiWayDeque.this.iterator(qId);
@@ -61,7 +96,7 @@ public class MultiWayDeque<V> {
         next[alloc] = 0;
     }
 
-    public int queueNumber() {
+    public int numberOfQueue() {
         return heads.length;
     }
 

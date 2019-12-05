@@ -1,8 +1,7 @@
 package template.graph;
 
-import template.datastructure.IntDequeBeta;
+import template.datastructure.IntDequeImpl;
 import template.datastructure.IntIterator;
-import template.datastructure.MultiWayIntDeque;
 import template.datastructure.MultiWayIntStack;
 
 import java.util.Arrays;
@@ -14,7 +13,7 @@ public class TwoSatBeta {
     private int[] dfns;
     private int[] lows;
     private boolean[] instk;
-    private IntDequeBeta deque;
+    private IntDequeImpl deque;
     private int n;
 
     public TwoSatBeta(int n, int m) {
@@ -24,7 +23,7 @@ public class TwoSatBeta {
         dfns = new int[n * 2];
         lows = new int[n * 2];
         instk = new boolean[n * 2];
-        deque = new IntDequeBeta(n * 2);
+        deque = new IntDequeImpl(n * 2);
         this.n = n;
     }
 
@@ -115,8 +114,8 @@ public class TwoSatBeta {
     }
 
     public void deduce(int a, int b) {
-        edges.addFirst(a, b);
-        edges.addFirst(negate(b), negate(a));
+        edges.addLast(a, b);
+        edges.addLast(negate(b), negate(a));
     }
 
     public void or(int a, int b) {
@@ -124,16 +123,16 @@ public class TwoSatBeta {
     }
 
     public void isTrue(int a) {
-        edges.addFirst(negate(a), a);
+        edges.addLast(negate(a), a);
     }
 
     public void isFalse(int a) {
-        edges.addFirst(a, negate(a));
+        edges.addLast(a, negate(a));
     }
 
     public void same(int a, int b) {
-        edges.addFirst(a, b);
-        edges.addFirst(b, a);
+        edges.addLast(a, b);
+        edges.addLast(b, a);
     }
 
     public void xor(int a, int b) {

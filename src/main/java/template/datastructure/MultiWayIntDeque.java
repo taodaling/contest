@@ -29,6 +29,50 @@ public class MultiWayIntDeque {
         };
     }
 
+    public IntDeque getDeque(int qId) {
+        return new IntDeque() {
+            @Override
+            public void addFirst(int x) {
+                MultiWayIntDeque.this.addFirst(qId, x);
+            }
+
+            @Override
+            public int removeFirst() {
+                return MultiWayIntDeque.this.removeFirst(qId);
+            }
+
+            @Override
+            public int peekFirst() {
+                return MultiWayIntDeque.this.peekFirst(qId);
+            }
+
+            @Override
+            public void addLast(int x) {
+                MultiWayIntDeque.this.addLast(qId, x);
+            }
+
+            @Override
+            public int removeLast() {
+                return MultiWayIntDeque.this.removeLast(qId);
+            }
+
+            @Override
+            public int peekLast() {
+                return MultiWayIntDeque.this.peekLast(qId);
+            }
+
+            @Override
+            public IntIterator iterator() {
+                return MultiWayIntDeque.this.iterator(qId);
+            }
+
+            @Override
+            public boolean isEmpty() {
+                return MultiWayIntDeque.this.isEmpty(qId);
+            }
+        };
+    }
+
     private void doubleCapacity() {
         int newSize = Math.max(next.length + 10, next.length * 2);
         next = Arrays.copyOf(next, newSize);
@@ -44,8 +88,8 @@ public class MultiWayIntDeque {
         next[alloc] = 0;
     }
 
-    public int queueNumber() {
-        return heads.length;
+    public int numberOfQueue() {
+        return queueNum;
     }
 
     public void clear() {
@@ -140,12 +184,12 @@ public class MultiWayIntDeque {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        for(int i = 0; i < queueNum; i++){
+        for (int i = 0; i < queueNum; i++) {
             builder.append(i).append(": ");
-            for(IntIterator iterator = iterator(i); iterator.hasNext(); ){
+            for (IntIterator iterator = iterator(i); iterator.hasNext(); ) {
                 builder.append(iterator.next()).append(",");
             }
-            if(builder.charAt(builder.length() - 1) == ','){
+            if (builder.charAt(builder.length() - 1) == ',') {
                 builder.setLength(builder.length() - 1);
             }
             builder.append('\n');

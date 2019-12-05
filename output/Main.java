@@ -3,7 +3,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.io.Closeable;
@@ -29,254 +28,103 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            TaskG solver = new TaskG();
+            TaskE solver = new TaskE();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class TaskG {
-        MultiWayStack<Edge> edges;
-        int[] cnt;
-        int[] size;
+    static class TaskE {
+        MultiWayIntStack edges;
+        int[] a;
+        long[][] negDp;
+        long[] posDp;
+        int[] sizes;
 
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            int k = in.readInt();
-            edges = new MultiWayStack<>(n + 1, n * 2);
-            Edge[] es = new Edge[n];
-            cnt = new int[n + 1];
-            size = new int[n + 1];
-            for (int i = 1; i < n; i++) {
-                Edge e = new Edge();
-                es[i] = e;
-                e.a = in.readInt();
-                e.b = in.readInt();
-                edges.addFirst(e.a, e);
-                edges.addFirst(e.b, e);
-                size[e.a]++;
-                size[e.b]++;
+            a = new int[n + 1];
+            for (int i = 1; i <= n; i++) {
+                a[i] = in.readInt();
             }
-            IntBinarySearch bs = new IntBinarySearch() {
+            edges = new MultiWayIntStack(n + 1, n * 2);
+            for (int i = 1; i < n; i++) {
+                int a = in.readInt();
+                int b = in.readInt();
+                edges.addLast(a, b);
+                edges.addLast(b, a);
+            }
+            negDp = new long[n + 1][];
+            posDp = new long[n + 1];
+            sizes = new int[n + 1];
 
-                public boolean check(int mid) {
-                    dfs(1, null, mid);
-                    return cnt[1] <= k;
+            dfsForSize(1, 0);
+            dfs(1, 0);
+            long ans = posDp[1];
+            for (int i = 0; i < n; i++) {
+                if (negDp[1][i] < 0) {
+                    ans = Math.min(ans, i);
+                    break;
                 }
-            };
-            int ans = bs.binarySearch(1, n);
-            bs.check(ans);
+            }
             out.println(ans);
-            paint(1, null, ans);
-            for (int i = 1; i < n; i++) {
-                out.append(es[i].color + 1);
-                out.append(' ');
-            }
         }
 
-        public void paint(int root, Edge p, int c) {
-            int color = 0;
-            if (p != null) {
-                color = p.color + 1;
-            }
-            for (Edge e : edges.queue(root)) {
-                if (e == p) {
+        public void dfsForSize(int root, int p) {
+            sizes[root] = 1;
+            for (IntIterator iterator = edges.iterator(root); iterator.hasNext(); ) {
+                int node = iterator.next();
+                if (node == p) {
                     continue;
                 }
-                int node = e.other(root);
-                e.color = color % c;
-                color++;
-                paint(node, e, c);
+                dfsForSize(node, root);
+                sizes[root] += sizes[node];
             }
         }
 
-        public void dfs(int root, Edge p, int c) {
-            cnt[root] = 0;
-            if (size[root] > c) {
-                cnt[root]++;
-            }
-            for (Edge e : edges.queue(root)) {
-                if (e == p) {
+        public void dfs(int root, int p) {
+            posDp[root] = a[root] > 0 ? 0 : (long) 1e18;
+            int total = 1;
+
+            long[] last = new long[sizes[root]];
+            long[] next = new long[sizes[root]];
+            last[0] = a[root];
+            for (IntIterator iterator = edges.iterator(root); iterator.hasNext(); ) {
+                int node = iterator.next();
+                if (node == p) {
                     continue;
                 }
-                int node = e.other(root);
-                dfs(node, e, c);
-                cnt[root] += cnt[node];
-            }
-        }
-
-    }
-
-    static class MultiWayStack<T> {
-        private Object[] values;
-        private int[] next;
-        private int[] heads;
-        private int alloc;
-        private int queueNum;
-
-        public RevokeIterator iterator(final int queue) {
-            return new RevokeIterator<T>() {
-                int ele = heads[queue];
-                int pre = 0;
-
-
-                public boolean hasNext() {
-                    return ele != 0;
+                dfs(node, root);
+                long atLeastNeed = posDp[node];
+                long cutAtLeast = posDp[node] + 1;
+                for (int i = 0; i < sizes[node]; i++) {
+                    if (negDp[node][i] < 0) {
+                        atLeastNeed = Math.min(atLeastNeed, i + 1);
+                        cutAtLeast = Math.min(cutAtLeast, i + 1);
+                        break;
+                    }
+                }
+                posDp[root] += atLeastNeed;
+                for (int i = 0; i <= total + sizes[node] - 1; i++) {
+                    next[i] = (long) 1e18;
+                    if (i >= cutAtLeast) {
+                        next[i] = Math.min(next[i], last[(int) (i - cutAtLeast)]);
+                    }
+                }
+                for (int i = 0; i < total; i++) {
+                    for (int j = 0; j < sizes[node]; j++) {
+                        next[i + j] = Math.min(next[i + j], last[i] + negDp[node][j]);
+                    }
                 }
 
-
-                public T next() {
-                    T ans = (T) values[ele];
-                    pre = ele;
-                    ele = next[ele];
-                    return ans;
-                }
-
-
-                public void revoke() {
-                    ele = pre;
-                    pre = 0;
-                }
-            };
-        }
-
-        public Iterable<T> queue(int qId) {
-            return new Iterable<T>() {
-
-                public Iterator<T> iterator() {
-                    return MultiWayStack.this.iterator(qId);
-                }
-            };
-        }
-
-        private void doubleCapacity() {
-            int newSize = Math.max(next.length + 10, next.length * 2);
-            next = Arrays.copyOf(next, newSize);
-            values = Arrays.copyOf(values, newSize);
-        }
-
-        public void alloc() {
-            alloc++;
-            if (alloc >= next.length) {
-                doubleCapacity();
-            }
-            next[alloc] = 0;
-        }
-
-        public MultiWayStack(int qNum, int totalCapacity) {
-            values = (T[]) new Object[totalCapacity + 1];
-            next = new int[totalCapacity + 1];
-            heads = new int[qNum];
-            queueNum = qNum;
-        }
-
-        public void addFirst(int qId, T x) {
-            alloc();
-            values[alloc] = x;
-            next[alloc] = heads[qId];
-            heads[qId] = alloc;
-        }
-
-        public String toString() {
-            StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < queueNum; i++) {
-                builder.append(i).append(": ");
-                for (Iterator iterator = iterator(i); iterator.hasNext(); ) {
-                    builder.append(iterator.next()).append(",");
-                }
-                if (builder.charAt(builder.length() - 1) == ',') {
-                    builder.setLength(builder.length() - 1);
-                }
-                builder.append('\n');
-            }
-            return builder.toString();
-        }
-
-    }
-
-    static abstract class IntBinarySearch {
-        public abstract boolean check(int mid);
-
-        public int binarySearch(int l, int r) {
-            if (l > r) {
-                throw new IllegalArgumentException();
-            }
-            while (l < r) {
-                int mid = (l + r) >>> 1;
-                if (check(mid)) {
-                    r = mid;
-                } else {
-                    l = mid + 1;
+                total += sizes[node];
+                {
+                    long[] tmp = next;
+                    next = last;
+                    last = tmp;
                 }
             }
-            return l;
-        }
-
-    }
-
-    static interface RevokeIterator<E> extends Iterator<E> {
-    }
-
-    static class Edge {
-        int a;
-        int b;
-        int color;
-
-        int other(int x) {
-            return a ^ b ^ x;
-        }
-
-    }
-
-    static class FastOutput implements AutoCloseable, Closeable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
-
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput append(char c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput append(int c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput println(int c) {
-            cache.append(c).append('\n');
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        }
-
-        public String toString() {
-            return cache.toString();
+            negDp[root] = last;
         }
 
     }
@@ -336,6 +184,126 @@ public class Main {
             }
 
             return val;
+        }
+
+    }
+
+    static interface IntIterator {
+        boolean hasNext();
+
+        int next();
+
+    }
+
+    static class FastOutput implements AutoCloseable, Closeable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
+
+        public FastOutput(Writer os) {
+            this.os = os;
+        }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput println(long c) {
+            cache.append(c).append('\n');
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            return this;
+        }
+
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+
+        public String toString() {
+            return cache.toString();
+        }
+
+    }
+
+    static class MultiWayIntStack {
+        private int[] values;
+        private int[] next;
+        private int[] heads;
+        private int alloc;
+        private int stackNum;
+
+        public IntIterator iterator(final int queue) {
+            return new IntIterator() {
+                int ele = heads[queue];
+
+
+                public boolean hasNext() {
+                    return ele != 0;
+                }
+
+
+                public int next() {
+                    int ans = values[ele];
+                    ele = next[ele];
+                    return ans;
+                }
+            };
+        }
+
+        private void doubleCapacity() {
+            int newSize = Math.max(next.length + 10, next.length * 2);
+            next = Arrays.copyOf(next, newSize);
+            values = Arrays.copyOf(values, newSize);
+        }
+
+        public void alloc() {
+            alloc++;
+            if (alloc >= next.length) {
+                doubleCapacity();
+            }
+            next[alloc] = 0;
+        }
+
+        public MultiWayIntStack(int qNum, int totalCapacity) {
+            values = new int[totalCapacity + 1];
+            next = new int[totalCapacity + 1];
+            heads = new int[qNum];
+            stackNum = qNum;
+        }
+
+        public void addLast(int qId, int x) {
+            alloc();
+            values[alloc] = x;
+            next[alloc] = heads[qId];
+            heads[qId] = alloc;
+        }
+
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < stackNum; i++) {
+                builder.append(i).append(": ");
+                for (IntIterator iterator = iterator(i); iterator.hasNext(); ) {
+                    builder.append(iterator.next()).append(",");
+                }
+                if (builder.charAt(builder.length() - 1) == ',') {
+                    builder.setLength(builder.length() - 1);
+                }
+                builder.append('\n');
+            }
+            return builder.toString();
         }
 
     }

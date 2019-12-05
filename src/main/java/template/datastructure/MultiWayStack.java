@@ -10,9 +10,9 @@ public class MultiWayStack<T> {
     private int[] next;
     private int[] heads;
     private int alloc;
-    private int queueNum;
+    private int stackNum;
 
-    public RevokeIterator iterator(final int queue) {
+    public RevokeIterator<T> iterator(final int queue) {
         return new RevokeIterator<T>() {
             int ele = heads[queue];
             int pre = 0;
@@ -38,8 +38,28 @@ public class MultiWayStack<T> {
         };
     }
 
-    public Iterable<T> queue(int qId){
-        return new Iterable<T>() {
+    public SimplifiedStack<T> getStack(int qId) {
+        return new SimplifiedStack<T>() {
+            @Override
+            public boolean isEmpty() {
+                return MultiWayStack.this.isEmpty(qId);
+            }
+
+            @Override
+            public T peekLast() {
+                return MultiWayStack.this.peekLast(qId);
+            }
+
+            @Override
+            public void addLast(T x) {
+                MultiWayStack.this.addLast(qId, x);
+            }
+
+            @Override
+            public T removeLast() {
+                return MultiWayStack.this.removeLast(qId);
+            }
+
             @Override
             public Iterator<T> iterator() {
                 return MultiWayStack.this.iterator(qId);
@@ -61,38 +81,38 @@ public class MultiWayStack<T> {
         next[alloc] = 0;
     }
 
-    public int queueNumber() {
-        return queueNum;
+    public int numberOfQueue() {
+        return stackNum;
     }
 
     public void clear() {
         alloc = 0;
-        Arrays.fill(heads, 0, queueNum, 0);
+        Arrays.fill(heads, 0, stackNum, 0);
     }
 
     public boolean isEmpty(int qId) {
         return heads[qId] == 0;
     }
 
-    public void expandQueueNum(int qNum) {
-        if (qNum <= queueNum) {
+    public void expandStackNum(int qNum) {
+        if (qNum <= stackNum) {
         } else if (qNum <= heads.length) {
-            Arrays.fill(heads, queueNum, qNum, 0);
+            Arrays.fill(heads, stackNum, qNum, 0);
         } else {
-            Arrays.fill(heads, queueNum, heads.length, 0);
+            Arrays.fill(heads, stackNum, heads.length, 0);
             heads = Arrays.copyOf(heads, qNum);
         }
-        queueNum = qNum;
+        stackNum = qNum;
     }
 
     public MultiWayStack(int qNum, int totalCapacity) {
-        values = (T[])new Object[totalCapacity + 1];
+        values = new Object[totalCapacity + 1];
         next = new int[totalCapacity + 1];
         heads = new int[qNum];
-        queueNum = qNum;
+        stackNum = qNum;
     }
 
-    public void addFirst(int qId, T x) {
+    public void addLast(int qId, T x) {
         alloc();
         values[alloc] = x;
         next[alloc] = heads[qId];
@@ -100,12 +120,12 @@ public class MultiWayStack<T> {
     }
 
 
-    public T peekFirst(int qId) {
+    public T peekLast(int qId) {
         return (T) values[heads[qId]];
     }
 
 
-    public T removeFirst(int qId) {
+    public T removeLast(int qId) {
         T ans = (T) values[heads[qId]];
         heads[qId] = next[heads[qId]];
         return ans;
@@ -114,12 +134,12 @@ public class MultiWayStack<T> {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        for(int i = 0; i < queueNum; i++){
+        for (int i = 0; i < stackNum; i++) {
             builder.append(i).append(": ");
-            for(Iterator iterator = iterator(i); iterator.hasNext(); ){
+            for (Iterator iterator = iterator(i); iterator.hasNext(); ) {
                 builder.append(iterator.next()).append(",");
             }
-            if(builder.charAt(builder.length() - 1) == ','){
+            if (builder.charAt(builder.length() - 1) == ',') {
                 builder.setLength(builder.length() - 1);
             }
             builder.append('\n');

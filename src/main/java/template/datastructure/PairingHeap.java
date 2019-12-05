@@ -3,6 +3,9 @@ package template.datastructure;
 import java.util.Comparator;
 import java.util.Objects;
 
+/**
+ * Minimum heap
+ */
 public class PairingHeap<T> implements Cloneable {
     public static final PairingHeap NIL = new PairingHeap(null);
 

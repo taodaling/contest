@@ -1,6 +1,6 @@
 package template.rand;
 
-import template.datastructure.IntDequeBeta;
+import template.datastructure.IntDequeImpl;
 import template.math.Modular;
 import template.math.Power;
 
@@ -8,17 +8,17 @@ public class RollingHash {
     public static final Modular MOD = new Modular((int) (1e9 + 7));
     private int inverse;
     private int[] xs;
-    private IntDequeBeta deque;
+    private IntDequeImpl deque;
     private int hash;
 
     public RollingHash(RollingHash model) {
         inverse = model.inverse;
-        deque = new IntDequeBeta(0);
+        deque = new IntDequeImpl(0);
         xs = model.xs;
     }
 
     public RollingHash(int size, int x) {
-        deque = new IntDequeBeta(size);
+        deque = new IntDequeImpl(size);
         xs = new int[size + 1];
         inverse = new Power(MOD).inverse(x);
         xs[0] = 1;

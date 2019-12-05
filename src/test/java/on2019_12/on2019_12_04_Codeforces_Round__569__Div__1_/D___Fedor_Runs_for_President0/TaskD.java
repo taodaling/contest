@@ -4,10 +4,8 @@ package on2019_12.on2019_12_04_Codeforces_Round__569__Div__1_.D___Fedor_Runs_for
 
 
 import template.datastructure.IntIterator;
-import template.datastructure.MultiWayIntDeque;
 import template.datastructure.MultiWayIntStack;
 import template.geometry.ConvexHullTrick;
-import template.geometry.LongConvexHullTrick;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.math.DigitUtils;
@@ -28,8 +26,8 @@ public class TaskD {
         for (int i = 1; i < n; i++) {
             int a = in.readInt();
             int b = in.readInt();
-            edges.addFirst(a, b);
-            edges.addFirst(b, a);
+            edges.addLast(a, b);
+            edges.addLast(b, a);
         }
         dfs(1, 0);
         long ans = 0;

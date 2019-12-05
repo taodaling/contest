@@ -5,6 +5,9 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.Deque;
 
+/**
+ * Minimum heap
+ */
 public class LeftistTree<K> {
     public static final LeftistTree NIL = new LeftistTree<>(null);
 
@@ -64,7 +67,9 @@ public class LeftistTree<K> {
     }
 
     public static <K> LeftistTree<K> pop(LeftistTree<K> root, Comparator<K> cmp) {
-        return merge(root.left, root.right, cmp);
+        LeftistTree<K> ans = merge(root.left, root.right, cmp);
+        root.left = root.right = NIL;
+        return ans;
     }
 
     private void toStringDfs(StringBuilder builder) {

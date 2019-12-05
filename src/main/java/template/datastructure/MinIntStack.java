@@ -3,13 +3,13 @@ package template.datastructure;
 import template.utils.IntComparator;
 
 public class MinIntStack {
-    IntDequeBeta minDeque;
-    IntDequeBeta data;
+    IntDequeImpl minDeque;
+    IntDequeImpl data;
     IntComparator comparator;
 
     public MinIntStack(int cap, IntComparator comparator) {
-        minDeque = new IntDequeBeta(cap);
-        data = new IntDequeBeta(cap);
+        minDeque = new IntDequeImpl(cap);
+        data = new IntDequeImpl(cap);
         this.comparator = comparator;
     }
 

@@ -1,3 +1,2 @@
-65 src/main/java/contest/G - Privatization of Roads in Treeland.json
-1
+47 src/main/java/contest/E - Attack to a Tree.json
 0

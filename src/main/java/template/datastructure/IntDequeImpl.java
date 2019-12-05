@@ -1,18 +1,14 @@
 package template.datastructure;
 
-public class IntDequeBeta {
+public class IntDequeImpl implements IntDeque {
     private int[] data;
     private int bpos;
     private int epos;
-    private static final int[] EMPTY = new int[0];
     private int n;
 
-    public IntDequeBeta(int cap) {
-        if (cap == 0) {
-            data = EMPTY;
-        } else {
-            data = new int[cap];
-        }
+    public IntDequeImpl(int cap) {
+        cap++;
+        data = new int[cap];
         bpos = 0;
         epos = 0;
         n = cap;
@@ -48,19 +44,19 @@ public class IntDequeBeta {
             @Override
             public int next() {
                 int ans = data[index];
-                index = IntDequeBeta.this.next(index);
+                index = IntDequeImpl.this.next(index);
                 return ans;
             }
         };
     }
 
-    public int removeFirst(){
+    public int removeFirst() {
         int ans = data[bpos];
         bpos = next(bpos);
         return ans;
     }
 
-    public int removeLast(){
+    public int removeLast() {
         int ans = data[last(epos)];
         epos = last(epos);
         return ans;

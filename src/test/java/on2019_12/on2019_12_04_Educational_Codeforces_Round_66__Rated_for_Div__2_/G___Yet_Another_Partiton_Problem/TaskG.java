@@ -2,8 +2,7 @@ package on2019_12.on2019_12_04_Educational_Codeforces_Round_66__Rated_for_Div__2
 
 
 
-import template.datastructure.IntDequeBeta;
-import template.datastructure.LiChaoSegment;
+import template.datastructure.IntDequeImpl;
 import template.geometry.ConvexHullTrick;
 import template.io.FastInput;
 import template.io.FastOutput;
@@ -23,7 +22,7 @@ public class TaskG {
         SequenceUtils.deepFill(dp, (int) 1e9);
         dp[0][0] = 0;
         int[] leftUntil = new int[n + 1];
-        IntDequeBeta deque = new IntDequeBeta(n);
+        IntDequeImpl deque = new IntDequeImpl(n);
         for (int i = 1; i <= n; i++) {
             while (!deque.isEmpty() && a[deque.peekLast()] < a[i]) {
                 deque.removeLast();

@@ -6,10 +6,10 @@ import org.junit.Test;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-public class IntDequeBetaTest {
+public class IntDequeImplTest {
     @Test
     public void test1() {
-        IntDequeBeta deque = new IntDequeBeta(0);
+        IntDequeImpl deque = new IntDequeImpl(0);
         deque.addLast(1);
         deque.addFirst(2);
         deque.addLast(3);
@@ -51,7 +51,7 @@ public class IntDequeBetaTest {
     @Test
     public void test3() {
         int n = 10000000;
-        IntDequeBeta deque = new IntDequeBeta(n);
+        IntDequeImpl deque = new IntDequeImpl(n);
         for (int i = 0; i < n; i++) {
             deque.addLast(i);
         }
@@ -68,7 +68,7 @@ public class IntDequeBetaTest {
     @Test
     public void test4() {
         int n = 10000000;
-        IntDequeBeta deque = new IntDequeBeta(n);
+        IntDequeImpl deque = new IntDequeImpl(n);
         for (int i = 0; i < n; i++) {
             deque.addLast(i);
         }

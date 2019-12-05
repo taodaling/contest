@@ -8,11 +8,6 @@ import template.algo.IntBinarySearch;
 import template.datastructure.MultiWayStack;
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.math.DigitUtils;
-
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 
 public class TaskG {
     MultiWayStack<Edge> edges;
@@ -30,8 +25,8 @@ public class TaskG {
             es[i] = e;
             e.a = in.readInt();
             e.b = in.readInt();
-            edges.addFirst(e.a, e);
-            edges.addFirst(e.b, e);
+            edges.addLast(e.a, e);
+            edges.addLast(e.b, e);
             size[e.a]++;
             size[e.b]++;
         }
@@ -56,7 +51,7 @@ public class TaskG {
         if (p != null) {
             color = p.color + 1;
         }
-        for (Edge e : edges.queue(root)) {
+        for (Edge e : edges.getStack(root)) {
             if (e == p) {
                 continue;
             }
@@ -72,7 +67,7 @@ public class TaskG {
         if (size[root] > c) {
             cnt[root]++;
         }
-        for (Edge e : edges.queue(root)) {
+        for (Edge e : edges.getStack(root)) {
             if (e == p) {
                 continue;
             }
