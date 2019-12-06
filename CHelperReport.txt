@@ -1,2 +1,2 @@
-59 src/main/java/contest/F2 - Tree Cutting (Hard Version).json
+43 src/main/java/contest/F - Crisp String.json
 0
