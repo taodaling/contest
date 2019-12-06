@@ -16,9 +16,7 @@ import java.io.InputStream;
  */
 public class Main {
     public static void main(String[] args) throws Exception {
-        Thread thread = new Thread(null, new TaskAdapter(), "", 1 << 27);
-        thread.start();
-        thread.join();
+        new TaskAdapter().run();
     }
 
     static class TaskAdapter implements Runnable {
@@ -35,106 +33,123 @@ public class Main {
     }
 
     static class TaskF {
-        BitOperator bo = new BitOperator();
-        int p;
-        int[] charCnt;
-        int[] dp;
-        int[] cnts;
+        int[] allPrimes;
+        int k = 62;
+        Modular mod = new Modular(1e9 + 7);
+        Segment sumSeg;
+        int n;
+        Power power = new Power(mod);
+        int[] buf = new int[62];
 
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            int n = in.readInt();
-            p = in.readInt();
-            int[] s = new int[n];
-            for (int i = 0; i < n; i++) {
-                s[i] = in.readChar() - 'a';
+            n = in.readInt();
+            int q = in.readInt();
+            EulerSieve sieve = new EulerSieve(300);
+            allPrimes = new int[sieve.getPrimeCount()];
+            for (int i = 0; i < allPrimes.length; i++) {
+                allPrimes[i] = sieve.get(i);
             }
-            int[] mask = new int[p];
-
-            for (int i = 0; i < p; i++) {
-                for (int j = 0; j < p; j++) {
-                    mask[i] = bo.setBit(mask[i], j, in.readInt() == 0);
-                }
-            }
-            IntList[] next = new IntList[n];
-            IntList[] prev = new IntList[n];
-
-            prev[0] = new IntList();
-            for (int i = 1; i < n; i++) {
-                prev[i] = new IntList(prev[i - 1].size() + 1);
-                prev[i].addAll(prev[i - 1]);
-                int index = prev[i].indexOf(s[i - 1]);
-                if (index >= 0) {
-                    prev[i].remove(index);
-                }
-                prev[i].add(s[i - 1]);
-            }
-            next[n - 1] = new IntList();
-            for (int i = n - 2; i >= 0; i--) {
-                next[i] = new IntList(next[i + 1].size() + 1);
-                next[i].addAll(next[i + 1]);
-                int index = next[i].indexOf(s[i + 1]);
-                if (index >= 0) {
-                    next[i].remove(index);
-                }
-                next[i].add(s[i + 1]);
+            k = allPrimes.length;
+            sumSeg = new Segment(1, n);
+            for (int i = 1; i <= n; i++) {
+                mul(i, i, in.readInt());
             }
 
-            cnts = new int[1 << p];
-            for (int i = 0; i < n; i++) {
-                int v = s[i];
-                int m = 0;
-                for (int j = prev[i].size() - 1; j >= 0; j--) {
-                    int u = prev[i].get(j);
-                    if (bo.bitAt(mask[v], u) == 1) {
-                        cnts[m]++;
-                        cnts[m | (1 << u)]--;
-                        cnts[m | (1 << v)]--;
-                        cnts[m | (1 << u) | (1 << v)]++;
-                    }
-                    m = bo.setBit(m, u, true);
-                }
-                m = 0;
-                for (int j = next[i].size() - 1; j >= 0; j--) {
-                    int u = next[i].get(j);
-                    if (bo.bitAt(mask[v], u) == 1) {
-                        cnts[m]++;
-                        cnts[m | (1 << u)]--;
-                        cnts[m | (1 << v)]--;
-                        cnts[m | (1 << u) | (1 << v)]++;
-                    }
-                    m = bo.setBit(m, u, true);
+            char[] cmd = new char[100];
+            for (int i = 0; i < q; i++) {
+                in.readString(cmd, 0);
+                if (cmd[0] == 'M') {
+                    mul(in.readInt(), in.readInt(), in.readInt());
+                } else {
+                    int ans = query(in.readInt(), in.readInt());
+                    out.println(ans);
                 }
             }
-
-            FastWalshHadamardTransform.orFWT(cnts, 0, cnts.length - 1);
-            charCnt = new int[p];
-            for (int i = 0; i < n; i++) {
-                charCnt[s[i]]++;
-            }
-            dp = new int[1 << p];
-            SequenceUtils.deepFill(dp, -1);
-            int ans = dp(0);
-            out.println(ans);
         }
 
-        public int dp(int s) {
-            if (dp[s] == -1) {
-                dp[s] = 0;
-                if (cnts[s] > 0) {
-                    return dp[s] = (int) 1e8;
-                }
-                for (int i = 0; i < p; i++) {
-                    if (bo.bitAt(s, i) == 0) {
-                        dp[s] += charCnt[i];
-                    }
-                }
-                for (int i = 0; i < p; i++) {
-                    if (bo.bitAt(s, i) == 0) {
-                        dp[s] = Math.min(dp[s], dp(bo.setBit(s, i, true)));
-                    }
+        private void prepareBuf() {
+            Arrays.fill(buf, 0);
+        }
+
+        public void mul(int l, int r, int x) {
+            prepareBuf();
+            for (int i = 0; i < k; i++) {
+                int y = x;
+                while (y % allPrimes[i] == 0) {
+                    buf[i]++;
+                    y /= allPrimes[i];
                 }
             }
-            return dp[s];
+            sumSeg.update(l, r, 1, n, buf);
+        }
+
+        public int query(int l, int r) {
+            prepareBuf();
+            sumSeg.query(l, r, 1, n, buf);
+            int ans = 1;
+            for (int i = 0; i < k; i++) {
+                if (buf[i] == 0) {
+                    continue;
+                }
+                ans = mod.mul(ans, power.pow(allPrimes[i], buf[i] - 1));
+                ans = mod.mul(ans, mod.subtract(allPrimes[i], 1));
+            }
+            return ans;
+        }
+
+    }
+
+    static class Modular {
+        int m;
+
+        public Modular(int m) {
+            this.m = m;
+        }
+
+        public Modular(long m) {
+            this.m = (int) m;
+            if (this.m != m) {
+                throw new IllegalArgumentException();
+            }
+        }
+
+        public Modular(double m) {
+            this.m = (int) m;
+            if (this.m != m) {
+                throw new IllegalArgumentException();
+            }
+        }
+
+        public int valueOf(int x) {
+            x %= m;
+            if (x < 0) {
+                x += m;
+            }
+            return x;
+        }
+
+        public int valueOf(long x) {
+            x %= m;
+            if (x < 0) {
+                x += m;
+            }
+            return (int) x;
+        }
+
+        public int mul(int x, int y) {
+            return valueOf((long) x * y);
+        }
+
+        public int plus(int x, int y) {
+            return valueOf(x + y);
+        }
+
+        public int subtract(int x, int y) {
+            return valueOf(x - y);
+        }
+
+        public String toString() {
+            return "mod " + m;
         }
 
     }
@@ -196,140 +211,121 @@ public class Main {
             return val;
         }
 
-        public char readChar() {
+        public int readString(char[] data, int offset) {
             skipBlank();
-            char c = (char) next;
-            next = read();
-            return c;
-        }
 
-    }
-
-    static class BitOperator {
-        public int bitAt(int x, int i) {
-            return (x >> i) & 1;
-        }
-
-        public int setBit(int x, int i, boolean v) {
-            if (v) {
-                x |= 1 << i;
-            } else {
-                x &= ~(1 << i);
+            int originalOffset = offset;
+            while (next > 32) {
+                data[offset++] = (char) next;
+                next = read();
             }
-            return x;
+
+            return offset - originalOffset;
         }
 
     }
 
-    static class IntList {
+    static class Segment implements Cloneable {
+        private static final int K = 62;
+        private static Modular mod = new Modular(1e9 + 7);
+        private Segment left;
+        private Segment right;
         private int size;
-        private int cap;
-        private int[] data;
-        private static final int[] EMPTY = new int[0];
+        private int[] sum = new int[K];
+        private int[] dirty = new int[K];
 
-        public IntList(int cap) {
-            this.cap = cap;
-            if (cap == 0) {
-                data = EMPTY;
+        public void setDirty(int[] d) {
+            for (int i = 0; i < K; i++) {
+                if (d[i] == 0) {
+                    continue;
+                }
+                dirty[i] = mod.plus(dirty[i], d[i]);
+                sum[i] = mod.plus(sum[i], mod.mul(size, d[i]));
+            }
+        }
+
+        public void pushUp() {
+            size = left.size + right.size;
+            for (int i = 0; i < K; i++) {
+                sum[i] = mod.plus(left.sum[i], right.sum[i]);
+            }
+        }
+
+        public void pushDown() {
+            left.setDirty(dirty);
+            right.setDirty(dirty);
+            Arrays.fill(dirty, 0);
+        }
+
+        public Segment(int l, int r) {
+            if (l < r) {
+                int m = (l + r) >> 1;
+                left = new Segment(l, m);
+                right = new Segment(m + 1, r);
+                pushUp();
             } else {
-                data = new int[cap];
+                size = 1;
             }
         }
 
-        public IntList(IntList list) {
-            this.size = list.size;
-            this.cap = list.cap;
-            this.data = Arrays.copyOf(list.data, size);
+        private boolean covered(int ll, int rr, int l, int r) {
+            return ll <= l && rr >= r;
         }
 
-        public IntList() {
-            this(0);
+        private boolean noIntersection(int ll, int rr, int l, int r) {
+            return ll > r || rr < l;
         }
 
-        public void ensureSpace(int req) {
-            if (req > cap) {
-                while (cap < req) {
-                    cap = Math.max(cap + 10, 2 * cap);
-                }
-                data = Arrays.copyOf(data, cap);
-            }
-        }
-
-        private void checkRange(int i) {
-            if (i < 0 || i >= size) {
-                throw new ArrayIndexOutOfBoundsException();
-            }
-        }
-
-        public int get(int i) {
-            checkRange(i);
-            return data[i];
-        }
-
-        public void add(int x) {
-            ensureSpace(size + 1);
-            data[size++] = x;
-        }
-
-        public void addAll(int[] x, int offset, int len) {
-            ensureSpace(size + len);
-            System.arraycopy(x, offset, data, size, len);
-            size += len;
-        }
-
-        public void addAll(IntList list) {
-            addAll(list.data, 0, list.size);
-        }
-
-        public int indexOf(int x) {
-            for (int i = 0; i < size; i++) {
-                if (x == data[i]) {
-                    return i;
-                }
-            }
-            return -1;
-        }
-
-        public int pop() {
-            return data[--size];
-        }
-
-        public int size() {
-            return size;
-        }
-
-        public void remove(int index) {
-            checkRange(index);
-            if (index == size - 1) {
-                pop();
+        public void update(int ll, int rr, int l, int r, int[] d) {
+            if (noIntersection(ll, rr, l, r)) {
                 return;
             }
-            System.arraycopy(data, index + 1, data, index, size - index);
-            size--;
-        }
-
-        public int[] toArray() {
-            return Arrays.copyOf(data, size);
-        }
-
-        public String toString() {
-            return Arrays.toString(toArray());
-        }
-
-        public boolean equals(Object obj) {
-            if (!(obj instanceof IntList)) {
-                return false;
+            if (covered(ll, rr, l, r)) {
+                setDirty(d);
+                return;
             }
-            IntList other = (IntList) obj;
-            return SequenceUtils.equal(data, 0, size - 1, other.data, 0, other.size - 1);
+            pushDown();
+            int m = (l + r) >> 1;
+            left.update(ll, rr, l, m, d);
+            right.update(ll, rr, m + 1, r, d);
+            pushUp();
         }
 
-        public int hashCode() {
-            int h = 1;
-            for (int i = 0; i < size; i++) {
-                h = h * 31 + data[i];
+        public void query(int ll, int rr, int l, int r, int[] ans) {
+            if (noIntersection(ll, rr, l, r)) {
+                return;
             }
-            return h;
+            if (covered(ll, rr, l, r)) {
+                for (int i = 0; i < K; i++) {
+                    ans[i] = mod.plus(ans[i], sum[i]);
+                }
+                return;
+            }
+            pushDown();
+            int m = (l + r) >> 1;
+            left.query(ll, rr, l, m, ans);
+            right.query(ll, rr, m + 1, r, ans);
+        }
+
+    }
+
+    static class Power {
+        final Modular modular;
+
+        public Power(Modular modular) {
+            this.modular = modular;
+        }
+
+        public int pow(int x, long n) {
+            if (n == 0) {
+                return modular.valueOf(1);
+            }
+            long r = pow(x, n >> 1);
+            r = modular.valueOf(r * r);
+            if ((n & 1) == 1) {
+                r = modular.valueOf(r * x);
+            }
+            return (int) r;
         }
 
     }
@@ -377,49 +373,35 @@ public class Main {
 
     }
 
-    static class FastWalshHadamardTransform {
-        public static void orFWT(int[] p, int l, int r) {
-            if (l == r) {
-                return;
-            }
-            int m = (l + r) >> 1;
-            orFWT(p, l, m);
-            orFWT(p, m + 1, r);
-            for (int i = 0, until = m - l; i <= until; i++) {
-                int a = p[l + i];
-                int b = p[m + 1 + i];
-                p[m + 1 + i] = a + b;
-            }
+    static class EulerSieve {
+        private int[] primes;
+        private boolean[] isComp;
+        private int primeLength;
+
+        public int getPrimeCount() {
+            return primeLength;
         }
 
-    }
-
-    static class SequenceUtils {
-        public static void deepFill(Object array, int val) {
-            if (!array.getClass().isArray()) {
-                throw new IllegalArgumentException();
-            }
-            if (array instanceof int[]) {
-                int[] intArray = (int[]) array;
-                Arrays.fill(intArray, val);
-            } else {
-                Object[] objArray = (Object[]) array;
-                for (Object obj : objArray) {
-                    deepFill(obj, val);
-                }
-            }
+        public int get(int k) {
+            return primes[k];
         }
 
-        public static boolean equal(int[] a, int al, int ar, int[] b, int bl, int br) {
-            if ((ar - al) != (br - bl)) {
-                return false;
-            }
-            for (int i = al, j = bl; i <= ar; i++, j++) {
-                if (a[i] != b[j]) {
-                    return false;
+        public EulerSieve(int limit) {
+            isComp = new boolean[limit + 1];
+            primes = new int[limit + 1];
+            primeLength = 0;
+            for (int i = 2; i <= limit; i++) {
+                if (!isComp[i]) {
+                    primes[primeLength++] = i;
+                }
+                for (int j = 0, until = limit / i; j < primeLength && primes[j] <= until; j++) {
+                    int pi = primes[j] * i;
+                    isComp[pi] = true;
+                    if (i % primes[j] == 0) {
+                        break;
+                    }
                 }
             }
-            return true;
         }
 
     }
