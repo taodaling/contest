@@ -1,4 +1,8 @@
-package contest;
+package on2019_12.on2019_12_06_Codeforces_Round__604__Div__1_.D1___Beautiful_Bracket_Sequence__easy_version_;
+
+
+
+
 
 import template.algo.PreSum;
 import template.io.FastInput;

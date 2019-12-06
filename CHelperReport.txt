@@ -1,2 +1,2 @@
-73 src/main/java/contest/D1 - Beautiful Bracket Sequence (easy version).json
+59 src/main/java/contest/F2 - Tree Cutting (Hard Version).json
 0

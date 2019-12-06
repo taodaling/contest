@@ -2,6 +2,7 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.io.Closeable;
@@ -27,199 +28,207 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            TaskD1 solver = new TaskD1();
+            TaskF2 solver = new TaskF2();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class TaskD1 {
+    static class TaskF2 {
+        MultiWayIntStack edges;
+        int[][] dp;
+        int[] color;
+        int[] parent;
+        boolean[] visited;
         Modular mod = new Modular(998244353);
+        boolean valid = true;
 
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            char[] s = in.readString().toCharArray();
-            int n = s.length;
-            int[] lcnt = new int[n];
-            int[] rcnt = new int[n];
-            int[] qcnt = new int[n];
-            for (int i = 0; i < n; i++) {
-                if (s[i] == '(') {
-                    lcnt[i] = 1;
-                } else if (s[i] == ')') {
-                    rcnt[i] = 1;
-                } else {
-                    qcnt[i] = 1;
-                }
+            int n = in.readInt();
+            int k = in.readInt();
+            edges = new MultiWayIntStack(n + 1, n * 2);
+            dp = new int[n + 1][2];
+            color = new int[n + 1];
+            visited = new boolean[n + 1];
+            parent = new int[n + 1];
+
+            for (int i = 1; i <= n; i++) {
+                color[i] = in.readInt();
             }
 
-            PreSum lps = new PreSum(lcnt);
-            PreSum rps = new PreSum(rcnt);
-            PreSum qps = new PreSum(qcnt);
-            Composite comp = new Composite(1000000, mod);
-
-            int[] geq = new int[n + 1];
-            int[][] rGeq = new int[n + 1][n + 1];
-            rGeq[n][0] = 1;
-            for (int i = n - 1; i >= 0; i--) {
-                for (int j = 0; j <= n; j++) {
-                    if (s[i] == '(') {
-                        rGeq[i][j] = rGeq[i + 1][j];
-                    } else if (s[i] == ')') {
-                        rGeq[i][j] = j == 0 ? 0 : rGeq[i + 1][j - 1];
-                    } else {
-                        rGeq[i][j] = rGeq[i + 1][j];
-                        if (j > 0) {
-                            rGeq[i][j] = mod.plus(rGeq[i][j], rGeq[i + 1][j - 1]);
-                        }
-                    }
-                }
+            for (int i = 1; i <= n; i++) {
+                int a = in.readInt();
+                int b = in.readInt();
+                edges.addLast(a, b);
+                edges.addLast(b, a);
             }
-            for (int i = 0; i < n; i++) {
-                for (int j = n - 1; j >= 0; j--) {
-                    rGeq[i][j] = mod.plus(rGeq[i][j + 1], rGeq[i][j]);
-                }
-            }
-
-            for (int i = 0; i < n; i++) {
-                if (s[i] == ')') {
+            LcaOnTree lcaOnTree = new LcaOnTree(edges, 1);
+            int[] lca = new int[k + 1];
+            dfsForParent(1, 0);
+            for (int i = 1; i <= n; i++) {
+                if (color[i] == 0) {
                     continue;
                 }
-                int leftCnt = (int) lps.intervalSum(0, i);
-                int quesCnt = (int) qps.intervalSum(0, i);
-                if (s[i] == '?') {
-                    leftCnt++;
-                    quesCnt--;
+                if (lca[color[i]] == 0) {
+                    lca[color[i]] = i;
+                } else {
+                    lca[color[i]] = lcaOnTree.lca(lca[color[i]], i);
                 }
-                for (int j = 0; j <= quesCnt; j++) {
-                    geq[leftCnt + j] = mod.plus(geq[leftCnt + j],
-                            mod.mul(comp.composite(quesCnt, j), rGeq[i + 1][leftCnt + j]));
+            }
+            for (int i = 1; i <= n; i++) {
+                if (color[i] == 0) {
+                    continue;
+                }
+                if (i != lca[color[i]]) {
+                    paint(parent[i], lca[color[i]], color[i]);
                 }
             }
 
-            int ans = 0;
-            for (int i = 1; i <= n; i++) {
-                ans = mod.plus(geq[i], ans);
+
+            if (!valid) {
+                out.println(0);
+                return;
             }
+
+            int ans = 1;
+            for (int i = 1; i <= n; i++) {
+                if (visited[i] || color[i] != 0) {
+                    continue;
+                }
+                dfs(i, 0);
+                ans = mod.mul(ans, dp[i][1]);
+            }
+
             out.println(ans);
         }
 
-    }
-
-    static class InverseNumber {
-        int[] inv;
-
-        public InverseNumber(int[] inv, int limit, Modular modular) {
-            this.inv = inv;
-            inv[1] = 1;
-            int p = modular.getMod();
-            for (int i = 2; i <= limit; i++) {
-                int k = p / i;
-                int r = p % i;
-                inv[i] = modular.mul(-k, inv[r]);
+        public void dfsForParent(int root, int p) {
+            parent[root] = p;
+            for (IntIterator iterator = edges.iterator(root); iterator.hasNext(); ) {
+                int node = iterator.next();
+                if (node == p) {
+                    continue;
+                }
+                dfsForParent(node, root);
             }
         }
 
-        public InverseNumber(int limit, Modular modular) {
-            this(new int[limit + 1], limit, modular);
-        }
-
-    }
-
-    static class Composite {
-        final Factorial factorial;
-        final Modular modular;
-
-        public Composite(Factorial factorial) {
-            this.factorial = factorial;
-            this.modular = factorial.getModular();
-        }
-
-        public Composite(int limit, Modular modular) {
-            this(new Factorial(limit, modular));
-        }
-
-        public int composite(int m, int n) {
-            if (n > m) {
-                return 0;
+        public void paint(int root, int ancestor, int c) {
+            if (color[root] != 0) {
+                if (color[root] == c) {
+                    return;
+                }
+                valid = false;
+                return;
             }
-            return modular.mul(modular.mul(factorial.fact(m), factorial.invFact(n)), factorial.invFact(m - n));
-        }
-
-    }
-
-    static class PreSum {
-        private long[] pre;
-
-        public PreSum(long[] a) {
-            int n = a.length;
-            pre = new long[n];
-            pre[0] = a[0];
-            for (int i = 1; i < n; i++) {
-                pre[i] = pre[i - 1] + a[i];
+            color[root] = c;
+            if (root != ancestor) {
+                paint(parent[root], ancestor, c);
             }
         }
 
-        public PreSum(int[] a) {
-            int n = a.length;
-            pre = new long[n];
-            pre[0] = a[0];
-            for (int i = 1; i < n; i++) {
-                pre[i] = pre[i - 1] + a[i];
+        public void dfs(int root, int p) {
+            if (visited[root]) {
+                return;
             }
-        }
-
-        public long intervalSum(int l, int r) {
-            if (l > r) {
-                return 0;
+            visited[root] = true;
+            if (color[root] != 0) {
+                dp[root][0] = 0;
+                dp[root][1] = 1;
+                return;
             }
-            if (l == 0) {
-                return pre[r];
+            dp[root][0] = 1;
+            dp[root][1] = 0;
+            for (IntIterator iterator = edges.iterator(root); iterator.hasNext(); ) {
+                int node = iterator.next();
+                if (node == p) {
+                    continue;
+                }
+                dfs(node, root);
+                int total = mod.plus(dp[node][0], dp[node][1]);
+                dp[root][1] = mod.plus(mod.mul(dp[root][1], total), mod.mul(dp[root][0], dp[node][1]));
+                dp[root][0] = mod.mul(dp[root][0], total);
             }
-            return pre[r] - pre[l - 1];
         }
 
     }
 
-    static class Factorial {
-        int[] fact;
-        int[] inv;
-        Modular modular;
+    static class MultiWayIntStack {
+        private int[] values;
+        private int[] next;
+        private int[] heads;
+        private int alloc;
+        private int stackNum;
 
-        public Modular getModular() {
-            return modular;
+        public IntIterator iterator(final int queue) {
+            return new IntIterator() {
+                int ele = heads[queue];
+
+
+                public boolean hasNext() {
+                    return ele != 0;
+                }
+
+
+                public int next() {
+                    int ans = values[ele];
+                    ele = next[ele];
+                    return ans;
+                }
+            };
         }
 
-        public Factorial(int[] fact, int[] inv, InverseNumber in, int limit, Modular modular) {
-            this.modular = modular;
-            this.fact = fact;
-            this.inv = inv;
-            fact[0] = inv[0] = 1;
-            for (int i = 1; i <= limit; i++) {
-                fact[i] = modular.mul(fact[i - 1], i);
-                inv[i] = modular.mul(inv[i - 1], in.inv[i]);
+        private void doubleCapacity() {
+            int newSize = Math.max(next.length + 10, next.length * 2);
+            next = Arrays.copyOf(next, newSize);
+            values = Arrays.copyOf(values, newSize);
+        }
+
+        public void alloc() {
+            alloc++;
+            if (alloc >= next.length) {
+                doubleCapacity();
             }
+            next[alloc] = 0;
         }
 
-        public Factorial(int limit, Modular modular) {
-            this(new int[limit + 1], new int[limit + 1], new InverseNumber(limit, modular), limit, modular);
+        public int stackNumber() {
+            return stackNum;
         }
 
-        public int fact(int n) {
-            return fact[n];
+        public MultiWayIntStack(int qNum, int totalCapacity) {
+            values = new int[totalCapacity + 1];
+            next = new int[totalCapacity + 1];
+            heads = new int[qNum];
+            stackNum = qNum;
         }
 
-        public int invFact(int n) {
-            return inv[n];
+        public void addLast(int qId, int x) {
+            alloc();
+            values[alloc] = x;
+            next[alloc] = heads[qId];
+            heads[qId] = alloc;
+        }
+
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < stackNum; i++) {
+                builder.append(i).append(": ");
+                for (IntIterator iterator = iterator(i); iterator.hasNext(); ) {
+                    builder.append(iterator.next()).append(",");
+                }
+                if (builder.charAt(builder.length() - 1) == ',') {
+                    builder.setLength(builder.length() - 1);
+                }
+                builder.append('\n');
+            }
+            return builder.toString();
         }
 
     }
 
     static class Modular {
         int m;
-
-        public int getMod() {
-            return m;
-        }
 
         public Modular(int m) {
             this.m = m;
@@ -269,54 +278,70 @@ public class Main {
 
     }
 
-    static class FastInput {
-        private final InputStream is;
-        private StringBuilder defaultStringBuf = new StringBuilder(1 << 13);
-        private byte[] buf = new byte[1 << 13];
-        private int bufLen;
-        private int bufOffset;
-        private int next;
+    static class LcaOnTree {
+        int[] parent;
+        int[] preOrder;
+        int[] I;
+        int[] head;
+        int[] A;
+        int time;
 
-        public FastInput(InputStream is) {
-            this.is = is;
-        }
-
-        private int read() {
-            while (bufLen == bufOffset) {
-                bufOffset = 0;
-                try {
-                    bufLen = is.read(buf);
-                } catch (IOException e) {
-                    bufLen = -1;
-                }
-                if (bufLen == -1) {
-                    return -1;
+        void dfs1(MultiWayIntStack tree, int u, int p) {
+            parent[u] = p;
+            I[u] = preOrder[u] = time++;
+            for (IntIterator iterator = tree.iterator(u); iterator.hasNext(); ) {
+                int v = iterator.next();
+                if (v == p) continue;
+                dfs1(tree, v, u);
+                if (Integer.lowestOneBit(I[u]) < Integer.lowestOneBit(I[v])) {
+                    I[u] = I[v];
                 }
             }
-            return buf[bufOffset++];
+            head[I[u]] = u;
         }
 
-        public void skipBlank() {
-            while (next >= 0 && next <= 32) {
-                next = read();
+        void dfs2(MultiWayIntStack tree, int u, int p, int up) {
+            A[u] = up | Integer.lowestOneBit(I[u]);
+            for (IntIterator iterator = tree.iterator(u); iterator.hasNext(); ) {
+                int v = iterator.next();
+                if (v == p) continue;
+                dfs2(tree, v, u, A[u]);
             }
         }
 
-        public String readString(StringBuilder builder) {
-            skipBlank();
+        public LcaOnTree(MultiWayIntStack tree, int root) {
+            int n = tree.stackNumber();
+            preOrder = new int[n];
+            I = new int[n];
+            head = new int[n];
+            A = new int[n];
+            parent = new int[n];
 
-            while (next > 32) {
-                builder.append((char) next);
-                next = read();
-            }
-
-            return builder.toString();
+            dfs1(tree, root, -1);
+            dfs2(tree, root, -1, 0);
         }
 
-        public String readString() {
-            defaultStringBuf.setLength(0);
-            return readString(defaultStringBuf);
+        private int enterIntoStrip(int x, int hz) {
+            if (Integer.lowestOneBit(I[x]) == hz)
+                return x;
+            int hw = Integer.highestOneBit(A[x] & (hz - 1));
+            return parent[head[I[x] & -hw | hw]];
         }
+
+        public int lca(int x, int y) {
+            int hb = I[x] == I[y] ? Integer.lowestOneBit(I[x]) : Integer.highestOneBit(I[x] ^ I[y]);
+            int hz = Integer.lowestOneBit(A[x] & A[y] & -hb);
+            int ex = enterIntoStrip(x, hz);
+            int ey = enterIntoStrip(y, hz);
+            return preOrder[ex] < preOrder[ey] ? ex : ey;
+        }
+
+    }
+
+    static interface IntIterator {
+        boolean hasNext();
+
+        int next();
 
     }
 
@@ -359,6 +384,65 @@ public class Main {
 
         public String toString() {
             return cache.toString();
+        }
+
+    }
+
+    static class FastInput {
+        private final InputStream is;
+        private byte[] buf = new byte[1 << 13];
+        private int bufLen;
+        private int bufOffset;
+        private int next;
+
+        public FastInput(InputStream is) {
+            this.is = is;
+        }
+
+        private int read() {
+            while (bufLen == bufOffset) {
+                bufOffset = 0;
+                try {
+                    bufLen = is.read(buf);
+                } catch (IOException e) {
+                    bufLen = -1;
+                }
+                if (bufLen == -1) {
+                    return -1;
+                }
+            }
+            return buf[bufOffset++];
+        }
+
+        public void skipBlank() {
+            while (next >= 0 && next <= 32) {
+                next = read();
+            }
+        }
+
+        public int readInt() {
+            int sign = 1;
+
+            skipBlank();
+            if (next == '+' || next == '-') {
+                sign = next == '+' ? 1 : -1;
+                next = read();
+            }
+
+            int val = 0;
+            if (sign == 1) {
+                while (next >= '0' && next <= '9') {
+                    val = val * 10 + next - '0';
+                    next = read();
+                }
+            } else {
+                while (next >= '0' && next <= '9') {
+                    val = val * 10 - next + '0';
+                    next = read();
+                }
+            }
+
+            return val;
         }
 
     }
