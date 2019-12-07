@@ -24,6 +24,10 @@
     "output" : "345444\n",
     "index" : 2,
     "active" : true
+  }, {
+    "input" : "1000000 2 1000000 1",
+    "index" : 3,
+    "active" : true
   } ],
   "location" : "src/main/java/contest",
   "vmArgs" : "-Xmx256M",

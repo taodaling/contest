@@ -29,6 +29,18 @@ public class Power {
         return (int) r;
     }
 
+    public int pow(int x, int n) {
+        if (n == 0) {
+            return modular.valueOf(1);
+        }
+        long r = pow(x, n >> 1);
+        r = modular.valueOf(r * r);
+        if ((n & 1) == 1) {
+            r = modular.valueOf(r * x);
+        }
+        return (int) r;
+    }
+
     public int pow(int x, ByteList n) {
         return pow(x, n, n.size() - 1);
     }

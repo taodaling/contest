@@ -1,2 +1,2 @@
-57 src/main/java/contest/E - Sasha and a Very Easy Test.json
+75 src/main/java/contest/D - Sasha and Interesting Fact from Graph Theory.json
 0
