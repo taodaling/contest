@@ -14,11 +14,21 @@ public class ExtCRT {
      * modulus
      */
     long m;
-    ExtGCD gcd = new ExtGCD();
+    boolean valid = true;
+    static final ExtGCD gcd = new ExtGCD();
+
 
     public ExtCRT() {
         r = 0;
         m = 1;
+    }
+
+    public long getValue() {
+        return r;
+    }
+
+    public boolean isValid() {
+        return valid;
     }
 
     /**
@@ -32,11 +42,16 @@ public class ExtCRT {
         long g = gcd.extgcd(m1, m2);
         long a = gcd.getX();
         if ((x2 - x1) % g != 0) {
-            return false;
+            return valid = false;
         }
         this.m = m1 / g * m2;
         this.r = BigInteger.valueOf(a).multiply(BigInteger.valueOf((x2 - x1) / g)).multiply(BigInteger.valueOf(m1))
-                        .add(BigInteger.valueOf(x1)).mod(BigInteger.valueOf(this.m)).longValue();
+                .add(BigInteger.valueOf(x1)).mod(BigInteger.valueOf(this.m)).longValue();
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%d mod %d", r, m);
     }
 }

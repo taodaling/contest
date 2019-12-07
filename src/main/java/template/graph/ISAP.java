@@ -17,7 +17,6 @@ public class ISAP {
     int nodeNum;
     Map<Long, DirectChannel> channelMap = new HashMap();
     Deque<Node> deque;
-    private static final double PREC = 1e-12;
     private double totalFlow = 0;
 
 
