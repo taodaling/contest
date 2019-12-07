@@ -2,6 +2,7 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.io.Closeable;
@@ -15,9 +16,7 @@ import java.io.InputStream;
  */
 public class Main {
     public static void main(String[] args) throws Exception {
-        Thread thread = new Thread(null, new TaskAdapter(), "", 1 << 27);
-        thread.start();
-        thread.join();
+        new TaskAdapter().run();
     }
 
     static class TaskAdapter implements Runnable {
@@ -27,98 +26,130 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            TaskD solver = new TaskD();
+            TaskF solver = new TaskF();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class TaskD {
+    static class TaskF {
+        int[] allPrimes;
+        int k = 62;
         Modular mod = new Modular(1e9 + 7);
+        Segment sumSeg;
+        int n;
         Power power = new Power(mod);
-        InverseNumber inverseNumber = new InverseNumber(1000000, mod);
-        Factorial factorial = new Factorial(1000000, mod);
-        Composite comp = new Composite(factorial);
+        int[] buf = new int[62];
 
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            int n = in.readInt();
-            int m = in.readInt();
-            int a = in.readInt();
-            int b = in.readInt();
-
-            CachedPow cachedPow = new CachedPow(m, n, mod);
-            int ans = 0;
-            for (int i = 0; i <= n - 2; i++) {
-                int local = comp.composite(n - 2, i);
-                local = mod.mul(local, factorial.fact(i));
-                int total = i + 1;
-                local = mod.mul(local, comp.composite((m - total) + total - 1, total - 1));
-                local = mod.mul(local, cachedPow.pow(n - 1 - total));
-                local = mod.mul(local, countTree(n - 2 - i + 1, 2 + i));
-                ans = mod.plus(ans, local);
+            n = in.readInt();
+            int q = in.readInt();
+            EulerSieve sieve = new EulerSieve(300);
+            allPrimes = new int[sieve.getPrimeCount()];
+            for (int i = 0; i < allPrimes.length; i++) {
+                allPrimes[i] = sieve.get(i);
+            }
+            k = allPrimes.length;
+            sumSeg = new Segment(1, n);
+            for (int i = 1; i <= n; i++) {
+                mul(i, i, in.readInt());
             }
 
-            out.println(ans);
+            char[] cmd = new char[100];
+            for (int i = 0; i < q; i++) {
+                in.readString(cmd, 0);
+                if (cmd[0] == 'M') {
+                    mul(in.readInt(), in.readInt(), in.readInt());
+                } else {
+                    int ans = query(in.readInt(), in.readInt());
+                    out.println(ans);
+                }
+            }
         }
 
-        public int countTree(int n, int x) {
-            if (n == 1) {
-                return 1;
+        private void prepareBuf() {
+            Arrays.fill(buf, 0);
+        }
+
+        public void mul(int l, int r, int x) {
+            prepareBuf();
+            for (int i = 0; i < k; i++) {
+                int y = x;
+                while (y % allPrimes[i] == 0) {
+                    buf[i]++;
+                    y /= allPrimes[i];
+                }
             }
-            int p1 = x;
-            int p2 = power.pow(n - 1, n - 2);
-            int p3 = mod.plus(1, mod.mul(x, inverseNumber.inverse(n - 1)));
-            p3 = power.pow(p3, n - 2);
-            return mod.mul(p1, mod.mul(p2, p3));
+            sumSeg.update(l, r, 1, n, buf);
+        }
+
+        public int query(int l, int r) {
+            prepareBuf();
+            sumSeg.query(l, r, 1, n, buf);
+            int ans = 1;
+            for (int i = 0; i < k; i++) {
+                if (buf[i] == 0) {
+                    continue;
+                }
+                ans = mod.mul(ans, power.pow(allPrimes[i], buf[i] - 1));
+                ans = mod.mul(ans, mod.subtract(allPrimes[i], 1));
+            }
+            return ans;
         }
 
     }
 
-    static class Composite {
-        final Factorial factorial;
-        final Modular modular;
+    static class Modular {
+        int m;
 
-        public Composite(Factorial factorial) {
-            this.factorial = factorial;
-            this.modular = factorial.getModular();
+        public Modular(int m) {
+            this.m = m;
         }
 
-        public Composite(int limit, Modular modular) {
-            this(new Factorial(limit, modular));
-        }
-
-        public int composite(int m, int n) {
-            if (n > m) {
-                return 0;
-            }
-            return modular.mul(modular.mul(factorial.fact(m), factorial.invFact(n)), factorial.invFact(m - n));
-        }
-
-    }
-
-    static class CachedPow {
-        private int[] first;
-        private int[] second;
-        private Modular mod;
-
-        public CachedPow(int x, int maxExp, Modular mod) {
-            this.mod = mod;
-            int k = Math.max(1, (int) DigitUtils.round(Math.sqrt(maxExp)));
-            first = new int[k];
-            second = new int[maxExp / k + 1];
-            first[0] = 1;
-            for (int i = 1; i < k; i++) {
-                first[i] = mod.mul(x, first[i - 1]);
-            }
-            second[0] = 1;
-            int step = mod.mul(x, first[k - 1]);
-            for (int i = 1; i < second.length; i++) {
-                second[i] = mod.mul(second[i - 1], step);
+        public Modular(long m) {
+            this.m = (int) m;
+            if (this.m != m) {
+                throw new IllegalArgumentException();
             }
         }
 
-        public int pow(int exp) {
-            return mod.mul(first[exp % first.length], second[exp / first.length]);
+        public Modular(double m) {
+            this.m = (int) m;
+            if (this.m != m) {
+                throw new IllegalArgumentException();
+            }
+        }
+
+        public int valueOf(int x) {
+            x %= m;
+            if (x < 0) {
+                x += m;
+            }
+            return x;
+        }
+
+        public int valueOf(long x) {
+            x %= m;
+            if (x < 0) {
+                x += m;
+            }
+            return (int) x;
+        }
+
+        public int mul(int x, int y) {
+            return valueOf((long) x * y);
+        }
+
+        public int plus(int x, int y) {
+            return valueOf(x + y);
+        }
+
+        public int subtract(int x, int y) {
+            return valueOf(x - y);
+        }
+
+        public String toString() {
+            return "mod " + m;
         }
 
     }
@@ -180,76 +211,100 @@ public class Main {
             return val;
         }
 
+        public int readString(char[] data, int offset) {
+            skipBlank();
+
+            int originalOffset = offset;
+            while (next > 32) {
+                data[offset++] = (char) next;
+                next = read();
+            }
+
+            return offset - originalOffset;
+        }
+
     }
 
-    static class InverseNumber {
-        int[] inv;
+    static class Segment implements Cloneable {
+        private static final int K = 62;
+        private static Modular mod = new Modular(1e9 + 7);
+        private Segment left;
+        private Segment right;
+        private int size;
+        private int[] sum = new int[K];
+        private int[] dirty = new int[K];
 
-        public InverseNumber(int[] inv, int limit, Modular modular) {
-            this.inv = inv;
-            inv[1] = 1;
-            int p = modular.getMod();
-            for (int i = 2; i <= limit; i++) {
-                int k = p / i;
-                int r = p % i;
-                inv[i] = modular.mul(-k, inv[r]);
+        public void setDirty(int[] d) {
+            for (int i = 0; i < K; i++) {
+                if (d[i] == 0) {
+                    continue;
+                }
+                dirty[i] = mod.plus(dirty[i], d[i]);
+                sum[i] = mod.plus(sum[i], mod.mul(size, d[i]));
             }
         }
 
-        public InverseNumber(int limit, Modular modular) {
-            this(new int[limit + 1], limit, modular);
-        }
-
-        public int inverse(int x) {
-            return inv[x];
-        }
-
-    }
-
-    static class Factorial {
-        int[] fact;
-        int[] inv;
-        Modular modular;
-
-        public Modular getModular() {
-            return modular;
-        }
-
-        public Factorial(int[] fact, int[] inv, InverseNumber in, int limit, Modular modular) {
-            this.modular = modular;
-            this.fact = fact;
-            this.inv = inv;
-            fact[0] = inv[0] = 1;
-            for (int i = 1; i <= limit; i++) {
-                fact[i] = modular.mul(fact[i - 1], i);
-                inv[i] = modular.mul(inv[i - 1], in.inv[i]);
+        public void pushUp() {
+            size = left.size + right.size;
+            for (int i = 0; i < K; i++) {
+                sum[i] = mod.plus(left.sum[i], right.sum[i]);
             }
         }
 
-        public Factorial(int limit, Modular modular) {
-            this(new int[limit + 1], new int[limit + 1], new InverseNumber(limit, modular), limit, modular);
+        public void pushDown() {
+            left.setDirty(dirty);
+            right.setDirty(dirty);
+            Arrays.fill(dirty, 0);
         }
 
-        public int fact(int n) {
-            return fact[n];
-        }
-
-        public int invFact(int n) {
-            return inv[n];
-        }
-
-    }
-
-    static class DigitUtils {
-        private DigitUtils() {
-        }
-
-        public static long round(double x) {
-            if (x >= 0) {
-                return (long) (x + 0.5);
+        public Segment(int l, int r) {
+            if (l < r) {
+                int m = (l + r) >> 1;
+                left = new Segment(l, m);
+                right = new Segment(m + 1, r);
+                pushUp();
             } else {
-                return (long) (x - 0.5);
+                size = 1;
             }
+        }
+
+        private boolean covered(int ll, int rr, int l, int r) {
+            return ll <= l && rr >= r;
+        }
+
+        private boolean noIntersection(int ll, int rr, int l, int r) {
+            return ll > r || rr < l;
+        }
+
+        public void update(int ll, int rr, int l, int r, int[] d) {
+            if (noIntersection(ll, rr, l, r)) {
+                return;
+            }
+            if (covered(ll, rr, l, r)) {
+                setDirty(d);
+                return;
+            }
+            pushDown();
+            int m = (l + r) >> 1;
+            left.update(ll, rr, l, m, d);
+            right.update(ll, rr, m + 1, r, d);
+            pushUp();
+        }
+
+        public void query(int ll, int rr, int l, int r, int[] ans) {
+            if (noIntersection(ll, rr, l, r)) {
+                return;
+            }
+            if (covered(ll, rr, l, r)) {
+                for (int i = 0; i < K; i++) {
+                    ans[i] = mod.plus(ans[i], sum[i]);
+                }
+                return;
+            }
+            pushDown();
+            int m = (l + r) >> 1;
+            left.query(ll, rr, l, m, ans);
+            right.query(ll, rr, m + 1, r, ans);
         }
 
     }
@@ -261,7 +316,7 @@ public class Main {
             this.modular = modular;
         }
 
-        public int pow(int x, int n) {
+        public int pow(int x, long n) {
             if (n == 0) {
                 return modular.valueOf(1);
             }
@@ -271,61 +326,6 @@ public class Main {
                 r = modular.valueOf(r * x);
             }
             return (int) r;
-        }
-
-    }
-
-    static class Modular {
-        int m;
-
-        public int getMod() {
-            return m;
-        }
-
-        public Modular(int m) {
-            this.m = m;
-        }
-
-        public Modular(long m) {
-            this.m = (int) m;
-            if (this.m != m) {
-                throw new IllegalArgumentException();
-            }
-        }
-
-        public Modular(double m) {
-            this.m = (int) m;
-            if (this.m != m) {
-                throw new IllegalArgumentException();
-            }
-        }
-
-        public int valueOf(int x) {
-            x %= m;
-            if (x < 0) {
-                x += m;
-            }
-            return x;
-        }
-
-        public int valueOf(long x) {
-            x %= m;
-            if (x < 0) {
-                x += m;
-            }
-            return (int) x;
-        }
-
-        public int mul(int x, int y) {
-            return valueOf((long) x * y);
-        }
-
-        public int plus(int x, int y) {
-            return valueOf(x + y);
-        }
-
-        public String toString() {
-            return "mod " + m;
         }
 
     }
@@ -369,6 +369,39 @@ public class Main {
 
         public String toString() {
             return cache.toString();
+        }
+
+    }
+
+    static class EulerSieve {
+        private int[] primes;
+        private boolean[] isComp;
+        private int primeLength;
+
+        public int getPrimeCount() {
+            return primeLength;
+        }
+
+        public int get(int k) {
+            return primes[k];
+        }
+
+        public EulerSieve(int limit) {
+            isComp = new boolean[limit + 1];
+            primes = new int[limit + 1];
+            primeLength = 0;
+            for (int i = 2; i <= limit; i++) {
+                if (!isComp[i]) {
+                    primes[primeLength++] = i;
+                }
+                for (int j = 0, until = limit / i; j < primeLength && primes[j] <= until; j++) {
+                    int pi = primes[j] * i;
+                    isComp[pi] = true;
+                    if (i % primes[j] == 0) {
+                        break;
+                    }
+                }
+            }
         }
 
     }
