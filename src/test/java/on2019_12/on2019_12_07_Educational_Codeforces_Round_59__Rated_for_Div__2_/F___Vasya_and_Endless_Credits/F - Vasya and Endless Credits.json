@@ -1,0 +1,40 @@
+{
+  "name" : "F - Vasya and Endless Credits",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4\n10 9 2\n20 33 1\n30 115 1\n5 3 2\n",
+    "output" : "32\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "3\n40 1 2\n1000 1100 5\n300 2 1\n",
+    "output" : "1337\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2019_12.on2019_12_07_Educational_Codeforces_Round_59__Rated_for_Div__2_.F___Vasya_and_Endless_Credits.TaskF",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.12.07",
+  "contestName" : "Educational Codeforces Round 59 (Rated for Div. 2)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

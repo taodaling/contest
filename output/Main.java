@@ -2,11 +2,13 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.util.TreeMap;
 import java.io.Closeable;
+import java.util.Map;
 import java.io.Writer;
+import java.util.Map.Entry;
 import java.io.OutputStreamWriter;
 import java.io.InputStream;
 
@@ -16,7 +18,9 @@ import java.io.InputStream;
  */
 public class Main {
     public static void main(String[] args) throws Exception {
-        new TaskAdapter().run();
+        Thread thread = new Thread(null, new TaskAdapter(), "", 1 << 27);
+        thread.start();
+        thread.join();
     }
 
     static class TaskAdapter implements Runnable {
@@ -26,130 +30,176 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            TaskF solver = new TaskF();
+            IntervalBooleanMapTest solver = new IntervalBooleanMapTest();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class TaskF {
-        int[] allPrimes;
-        int k = 62;
-        Modular mod = new Modular(1e9 + 7);
-        Segment sumSeg;
-        int n;
-        Power power = new Power(mod);
-        int[] buf = new int[62];
-
+    static class IntervalBooleanMapTest {
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            n = in.readInt();
             int q = in.readInt();
-            EulerSieve sieve = new EulerSieve(300);
-            allPrimes = new int[sieve.getPrimeCount()];
-            for (int i = 0; i < allPrimes.length; i++) {
-                allPrimes[i] = sieve.get(i);
-            }
-            k = allPrimes.length;
-            sumSeg = new Segment(1, n);
-            for (int i = 1; i <= n; i++) {
-                mul(i, i, in.readInt());
-            }
-
-            char[] cmd = new char[100];
+            IntervalBooleanMap map = new IntervalBooleanMap();
             for (int i = 0; i < q; i++) {
-                in.readString(cmd, 0);
-                if (cmd[0] == 'M') {
-                    mul(in.readInt(), in.readInt(), in.readInt());
+                int cmd = in.readInt();
+                if (cmd == 0) {
+                    int l = in.readInt();
+                    int r = in.readInt();
+                    map.setTrue(l, r);
+                } else if (cmd == 1) {
+                    int l = in.readInt();
+                    int r = in.readInt();
+                    map.setFalse(l, r);
                 } else {
-                    int ans = query(in.readInt(), in.readInt());
-                    out.println(ans);
+                    out.println(map.countTrue());
                 }
             }
-        }
-
-        private void prepareBuf() {
-            Arrays.fill(buf, 0);
-        }
-
-        public void mul(int l, int r, int x) {
-            prepareBuf();
-            for (int i = 0; i < k; i++) {
-                int y = x;
-                while (y % allPrimes[i] == 0) {
-                    buf[i]++;
-                    y /= allPrimes[i];
-                }
-            }
-            sumSeg.update(l, r, 1, n, buf);
-        }
-
-        public int query(int l, int r) {
-            prepareBuf();
-            sumSeg.query(l, r, 1, n, buf);
-            int ans = 1;
-            for (int i = 0; i < k; i++) {
-                if (buf[i] == 0) {
-                    continue;
-                }
-                ans = mod.mul(ans, power.pow(allPrimes[i], buf[i] - 1));
-                ans = mod.mul(ans, mod.subtract(allPrimes[i], 1));
-            }
-            return ans;
         }
 
     }
 
-    static class Modular {
-        int m;
+    static class IntervalBooleanMap {
+        private TreeMap<Long, IntervalBooleanMap.Interval> map = new TreeMap<>();
+        private long total = 0;
 
-        public Modular(int m) {
-            this.m = m;
+        public long countTrue() {
+            return total;
         }
 
-        public Modular(long m) {
-            this.m = (int) m;
-            if (this.m != m) {
-                throw new IllegalArgumentException();
+        public void removeInterval(IntervalBooleanMap.Interval interval) {
+            map.remove(interval.l);
+            total -= interval.length();
+        }
+
+        public void addInterval(IntervalBooleanMap.Interval interval) {
+            if (interval.length() <= 0) {
+                return;
             }
+            map.put(interval.l, interval);
+            total += interval.length();
         }
 
-        public Modular(double m) {
-            this.m = (int) m;
-            if (this.m != m) {
-                throw new IllegalArgumentException();
+        public void setTrue(long l, long r) {
+            if (l > r) {
+                return;
             }
-        }
-
-        public int valueOf(int x) {
-            x %= m;
-            if (x < 0) {
-                x += m;
+            IntervalBooleanMap.Interval interval = new IntervalBooleanMap.Interval();
+            interval.l = l;
+            interval.r = r;
+            while (true) {
+                Map.Entry<Long, IntervalBooleanMap.Interval> floorEntry = map.floorEntry(interval.l);
+                if (floorEntry == null) {
+                    break;
+                }
+                IntervalBooleanMap.Interval floorInterval = floorEntry.getValue();
+                if (floorInterval.r >= interval.r) {
+                    return;
+                } else if (floorInterval.r < interval.l) {
+                    break;
+                } else {
+                    interval.l = Math.min(interval.l, floorInterval.l);
+                    removeInterval(floorInterval);
+                }
             }
-            return x;
-        }
-
-        public int valueOf(long x) {
-            x %= m;
-            if (x < 0) {
-                x += m;
+            while (true) {
+                Map.Entry<Long, IntervalBooleanMap.Interval> ceilEntry = map.ceilingEntry(interval.l);
+                if (ceilEntry == null) {
+                    break;
+                }
+                IntervalBooleanMap.Interval ceilInterval = ceilEntry.getValue();
+                if (ceilInterval.l <= interval.l) {
+                    return;
+                } else if (ceilInterval.l > interval.r) {
+                    break;
+                } else {
+                    interval.r = Math.max(interval.r, ceilInterval.r);
+                    removeInterval(ceilInterval);
+                }
             }
-            return (int) x;
+
+            addInterval(interval);
         }
 
-        public int mul(int x, int y) {
-            return valueOf((long) x * y);
-        }
-
-        public int plus(int x, int y) {
-            return valueOf(x + y);
-        }
-
-        public int subtract(int x, int y) {
-            return valueOf(x - y);
+        public void setFalse(long l, long r) {
+            while (true) {
+                Map.Entry<Long, IntervalBooleanMap.Interval> floorEntry = map.floorEntry(l);
+                if (floorEntry == null) {
+                    break;
+                }
+                IntervalBooleanMap.Interval floorInterval = floorEntry.getValue();
+                if (floorInterval.r < l) {
+                    break;
+                } else if (floorInterval.r > r) {
+                    removeInterval(floorInterval);
+                    IntervalBooleanMap.Interval lPart = floorInterval;
+                    IntervalBooleanMap.Interval rPart = new IntervalBooleanMap.Interval();
+                    rPart.l = r + 1;
+                    rPart.r = floorInterval.r;
+                    lPart.r = l - 1;
+                    addInterval(lPart);
+                    addInterval(rPart);
+                    return;
+                } else if (floorInterval.l >= l) {
+                    removeInterval(floorInterval);
+                } else {
+                    removeInterval(floorInterval);
+                    floorInterval.r = l - 1;
+                    addInterval(floorInterval);
+                    break;
+                }
+            }
+            while (true) {
+                Map.Entry<Long, IntervalBooleanMap.Interval> ceilEntry = map.ceilingEntry(l);
+                if (ceilEntry == null) {
+                    break;
+                }
+                IntervalBooleanMap.Interval ceilInterval = ceilEntry.getValue();
+                if (ceilInterval.l > r) {
+                    break;
+                } else if (ceilInterval.l < l) {
+                    removeInterval(ceilInterval);
+                    IntervalBooleanMap.Interval lPart = new IntervalBooleanMap.Interval();
+                    IntervalBooleanMap.Interval rPart = ceilInterval;
+                    lPart.l = ceilInterval.l;
+                    lPart.r = l - 1;
+                    rPart.l = r + 1;
+                    addInterval(lPart);
+                    addInterval(rPart);
+                    return;
+                } else if (ceilInterval.r <= r) {
+                    removeInterval(ceilInterval);
+                } else {
+                    removeInterval(ceilInterval);
+                    ceilInterval.l = r + 1;
+                    addInterval(ceilInterval);
+                    break;
+                }
+            }
         }
 
         public String toString() {
-            return "mod " + m;
+            StringBuilder builder = new StringBuilder();
+            for (IntervalBooleanMap.Interval interval : map.values()) {
+                builder.append(interval).append(',');
+            }
+            if (builder.length() > 0) {
+                builder.setLength(builder.length() - 1);
+            }
+            return builder.toString();
+        }
+
+        private static class Interval {
+            long l;
+            long r;
+
+            long length() {
+                return r - l + 1;
+            }
+
+            public String toString() {
+                return String.format("[%d, %d]", l, r);
+            }
+
         }
 
     }
@@ -211,123 +261,6 @@ public class Main {
             return val;
         }
 
-        public int readString(char[] data, int offset) {
-            skipBlank();
-
-            int originalOffset = offset;
-            while (next > 32) {
-                data[offset++] = (char) next;
-                next = read();
-            }
-
-            return offset - originalOffset;
-        }
-
-    }
-
-    static class Segment implements Cloneable {
-        private static final int K = 62;
-        private static Modular mod = new Modular(1e9 + 7);
-        private Segment left;
-        private Segment right;
-        private int size;
-        private int[] sum = new int[K];
-        private int[] dirty = new int[K];
-
-        public void setDirty(int[] d) {
-            for (int i = 0; i < K; i++) {
-                if (d[i] == 0) {
-                    continue;
-                }
-                dirty[i] = mod.plus(dirty[i], d[i]);
-                sum[i] = mod.plus(sum[i], mod.mul(size, d[i]));
-            }
-        }
-
-        public void pushUp() {
-            size = left.size + right.size;
-            for (int i = 0; i < K; i++) {
-                sum[i] = mod.plus(left.sum[i], right.sum[i]);
-            }
-        }
-
-        public void pushDown() {
-            left.setDirty(dirty);
-            right.setDirty(dirty);
-            Arrays.fill(dirty, 0);
-        }
-
-        public Segment(int l, int r) {
-            if (l < r) {
-                int m = (l + r) >> 1;
-                left = new Segment(l, m);
-                right = new Segment(m + 1, r);
-                pushUp();
-            } else {
-                size = 1;
-            }
-        }
-
-        private boolean covered(int ll, int rr, int l, int r) {
-            return ll <= l && rr >= r;
-        }
-
-        private boolean noIntersection(int ll, int rr, int l, int r) {
-            return ll > r || rr < l;
-        }
-
-        public void update(int ll, int rr, int l, int r, int[] d) {
-            if (noIntersection(ll, rr, l, r)) {
-                return;
-            }
-            if (covered(ll, rr, l, r)) {
-                setDirty(d);
-                return;
-            }
-            pushDown();
-            int m = (l + r) >> 1;
-            left.update(ll, rr, l, m, d);
-            right.update(ll, rr, m + 1, r, d);
-            pushUp();
-        }
-
-        public void query(int ll, int rr, int l, int r, int[] ans) {
-            if (noIntersection(ll, rr, l, r)) {
-                return;
-            }
-            if (covered(ll, rr, l, r)) {
-                for (int i = 0; i < K; i++) {
-                    ans[i] = mod.plus(ans[i], sum[i]);
-                }
-                return;
-            }
-            pushDown();
-            int m = (l + r) >> 1;
-            left.query(ll, rr, l, m, ans);
-            right.query(ll, rr, m + 1, r, ans);
-        }
-
-    }
-
-    static class Power {
-        final Modular modular;
-
-        public Power(Modular modular) {
-            this.modular = modular;
-        }
-
-        public int pow(int x, long n) {
-            if (n == 0) {
-                return modular.valueOf(1);
-            }
-            long r = pow(x, n >> 1);
-            r = modular.valueOf(r * r);
-            if ((n & 1) == 1) {
-                r = modular.valueOf(r * x);
-            }
-            return (int) r;
-        }
-
     }
 
     static class FastOutput implements AutoCloseable, Closeable {
@@ -342,7 +275,7 @@ public class Main {
             this(new OutputStreamWriter(os));
         }
 
-        public FastOutput println(int c) {
+        public FastOutput println(long c) {
             cache.append(c).append('\n');
             return this;
         }
@@ -369,39 +302,6 @@ public class Main {
 
         public String toString() {
             return cache.toString();
-        }
-
-    }
-
-    static class EulerSieve {
-        private int[] primes;
-        private boolean[] isComp;
-        private int primeLength;
-
-        public int getPrimeCount() {
-            return primeLength;
-        }
-
-        public int get(int k) {
-            return primes[k];
-        }
-
-        public EulerSieve(int limit) {
-            isComp = new boolean[limit + 1];
-            primes = new int[limit + 1];
-            primeLength = 0;
-            for (int i = 2; i <= limit; i++) {
-                if (!isComp[i]) {
-                    primes[primeLength++] = i;
-                }
-                for (int j = 0, until = limit / i; j < primeLength && primes[j] <= until; j++) {
-                    int pi = primes[j] * i;
-                    isComp[pi] = true;
-                    if (i % primes[j] == 0) {
-                        break;
-                    }
-                }
-            }
         }
 
     }

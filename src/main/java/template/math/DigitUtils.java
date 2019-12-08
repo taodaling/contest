@@ -157,4 +157,9 @@ public class DigitUtils {
         }
         return x;
     }
+
+    public static long mulMod(long a, long b, long mod) {
+        long k = DigitUtils.round((double) a / mod * b);
+        return DigitUtils.mod(a * b - k * mod, mod);
+    }
 }

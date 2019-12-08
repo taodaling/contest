@@ -10,8 +10,14 @@ public class MinCostFlowDijkstra {
 
     List<Edge>[] graph;
 
-    public MinCostFlowDijkstra(int nodes) {
-        graph = Stream.generate(ArrayList::new).limit(nodes).toArray(List[]::new);
+    public MinCostFlowDijkstra(int n) {
+        graph = Stream.generate(ArrayList::new).limit(n).toArray(List[]::new);
+        pot = new long[n];
+        dist = new long[n];
+        finished = new boolean[n];
+        curflow = new long[n];
+        prevedge = new int[n];
+        prevnode = new int[n];
     }
 
     static class Edge {
@@ -32,7 +38,7 @@ public class MinCostFlowDijkstra {
             return cost;
         }
 
-        Edge(int to, int rev, int cap, int cost) {
+        Edge(int to, int rev, long cap, long cost) {
             this.to = to;
             this.rev = rev;
             this.cap = cap;
@@ -40,7 +46,7 @@ public class MinCostFlowDijkstra {
         }
     }
 
-    public Edge addEdge(int s, int t, int cap, int cost) {
+    public Edge addEdge(int s, int t, long cap, long cost) {
         Edge ans = new Edge(t, graph[t].size(), cap, cost);
         graph[s].add(ans);
         graph[t].add(new Edge(s, graph[s].size() - 1, 0, -cost));
@@ -49,7 +55,7 @@ public class MinCostFlowDijkstra {
 
     void bellmanFord(int s, long[] dist) {
         int n = graph.length;
-        Arrays.fill(dist, (long)1e18);
+        Arrays.fill(dist, (long) 1e18);
         dist[s] = 0;
         boolean[] inqueue = new boolean[n];
         int[] q = new int[n];
@@ -75,7 +81,7 @@ public class MinCostFlowDijkstra {
         }
     }
 
-    void dijkstra(int s, int t, long[] pot, long[] dist, boolean[] finished, long[] curflow, int[] prevnode, int[] prevedge) {
+    void dijkstra(int s, int t) {
         PriorityQueue<Long> q = new PriorityQueue<>();
         q.add((long) s);
         Arrays.fill(dist, Integer.MAX_VALUE);
@@ -106,7 +112,7 @@ public class MinCostFlowDijkstra {
         }
     }
 
-    void dijkstra2(int s, int t, long[] pot, long[] dist, boolean[] finished, long[] curflow, int[] prevnode, int[] prevedge) {
+    void dijkstra2(int s, int t) {
         Arrays.fill(dist, Integer.MAX_VALUE);
         dist[s] = 0;
         int n = graph.length;
@@ -136,21 +142,28 @@ public class MinCostFlowDijkstra {
         }
     }
 
+    long[] pot;
+    long[] dist;
+    boolean[] finished;
+    long[] curflow;
+    int[] prevedge;
+    int[] prevnode;
+
     public long[] minCostFlow(int s, int t, long maxf) {
         int n = graph.length;
-        long[] pot = new long[n];
-        long[] dist = new long[n];
-        boolean[] finished = new boolean[n];
-        long[] curflow = new long[n];
-        int[] prevedge = new int[n];
-        int[] prevnode = new int[n];
+        Arrays.fill(pot, 0);
+        Arrays.fill(dist, 0);
+        Arrays.fill(finished, false);
+        Arrays.fill(curflow, 0);
+        Arrays.fill(prevedge, 0);
+        Arrays.fill(prevnode, 0);
 
         bellmanFord(s, pot); // this can be commented out if edges costs are non-negative
         int flow = 0;
         int flowCost = 0;
         while (flow < maxf) {
-            dijkstra(s, t, pot, dist, finished, curflow, prevnode, prevedge); // E*logV
-//            dijkstra2(s, t, pot, dist, finished, curflow, prevnode, prevedge); // V^2
+          //  dijkstra(s, t); // E*logV
+            dijkstra2(s, t); // V^2
             if (dist[t] == Integer.MAX_VALUE)
                 break;
             for (int i = 0; i < n; i++)
