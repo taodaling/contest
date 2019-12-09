@@ -1,0 +1,42 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+C:/Users/DALT/IdeaProjects/contest/c++/library/common.h
+bits/stdc++.h
+-
+chrono
+-
+random
+-
+
+C:/Users/DALT/IdeaProjects/contest/c++/library/modular.h
+
+C:/Users/DALT/IdeaProjects/contest/c++/tasks/Test.cpp
+../library/common.h
+C:/Users/DALT/IdeaProjects/contest/c++/library/common.h
+../library/modular.h
+C:/Users/DALT/IdeaProjects/contest/c++/library/modular.h
+
+C:/Users/DALT/IdeaProjects/contest/c++/testrunner/main.cpp
+C:/Users/DALT/IdeaProjects/contest/c++/tasks/Test.cpp
+-
+iostream
+-
+fstream
+-
+sstream
+-
+string
+-
+vector
+-
+cctype
+-
+ctime
+-
+

@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
+    <generated>
+      <config projectName="jhelper-example-project" targetName="testrunner" />
+      <config projectName="jhelper-example-project" targetName="jhelper_example_project" />
+      <config projectName="jhelper-example-project" targetName="output" />
+      <config projectName="jhelper-example-project" targetName="test" />
+    </generated>
+  </component>
+  <component name="CMakeSettings">
+    <configurations>
+      <configuration PROFILE_NAME="Debug" CONFIG_NAME="Debug" />
+    </configurations>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="e173ed55-e541-424a-82e1-b5da979c74d7" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/../archive/unsorted/2019.12/2019.12.09 - Educational Codeforces Round 59 (Rated for Div. 2)/F - Vasya and Endless Credits.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../archive/unsorted/2019.12/2019.12.09 - Educational Codeforces Round 59 (Rated for Div. 2)/TaskF.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CHelperReport.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../CHelperReport.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../output/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/../output/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/template/algo/ModPreSum.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/template/algo/ModPreSum.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="CreatePatchCommitExecutor">
+    <option name="PATCH_PATH" value="" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="name.admitriev.jhelper.configuration.TaskConfigurationExecutionTargetCMakeBuildProfile:Debug" />
+  <component name="FavoritesManager">
+    <favorites_list name="jhelper-example-project" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="OCResolveContextSettings">
+    <option name="configuration" value="0-Debug-test" />
+  </component>
+  <component name="ProjectId" id="1UkgXFg6wRcogdgwYuGbxR9VxNK" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="recentsLimit" value="5" />
+    <property name="FullScreen" value="true" />
+    <property name="CMAKE.AUTO_RELOAD_ENABLED" value="true" />
+    <property name="restartRequiresConfirmation" value="true" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/CMakeLists.txt" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+  </component>
+  <component name="RunManager" selected="Task.Test">
+    <configuration name="Build All" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" CONFIG_NAME="Debug" EXPLICIT_BUILD_TARGET_NAME="all">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="jhelper-example-project" TARGET_NAME="jhelper_example_project" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="output" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="jhelper-example-project" TARGET_NAME="output" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="test" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="jhelper-example-project" TARGET_NAME="test" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="testrunner" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="jhelper-example-project" TARGET_NAME="testrunner" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="jhelper-example-project" RUN_TARGET_NAME="testrunner">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Nosetests">
+      <module name="jhelper-example-project" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_regexPattern" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;.&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Unittests">
+      <module name="jhelper-example-project" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;.&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="py.test">
+      <module name="jhelper-example-project" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;.&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="CMake Application.Build All" />
+      <item itemvalue="CMake Application.output" />
+      <item itemvalue="CMake Application.test" />
+      <item itemvalue="CMake Application.testrunner" />
+      <item itemvalue="Task.Test" />
+    </list>
+  </component>
+  <component name="ServiceViewManager">
+    <option name="viewStates">
+      <list>
+        <serviceView>
+          <treeState>
+            <expand />
+            <select />
+          </treeState>
+        </serviceView>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="e173ed55-e541-424a-82e1-b5da979c74d7" name="Default" comment="" />
+      <created>1497465170172</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1497465170172</updated>
+      <workItem from="1575906048540" duration="1681000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.UiProperties">
+    <option name="RECENTLY_FILTERED_USER_GROUPS">
+      <collection />
+    </option>
+    <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
+      <collection />
+    </option>
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="1523" y="373" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1575906633360">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="1523" y="373" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.2560.1400@0.0.2560.1400" timestamp="1575906633360" />
+    <state width="1214" height="332" key="GridCell.Tab.0.bottom" timestamp="1575907151326">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="1214" height="332" key="GridCell.Tab.0.bottom/0.0.2560.1400@0.0.2560.1400" timestamp="1575907151326" />
+    <state width="1214" height="332" key="GridCell.Tab.0.center" timestamp="1575907151326">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="1214" height="332" key="GridCell.Tab.0.center/0.0.2560.1400@0.0.2560.1400" timestamp="1575907151326" />
+    <state width="1214" height="332" key="GridCell.Tab.0.left" timestamp="1575907151325">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="1214" height="332" key="GridCell.Tab.0.left/0.0.2560.1400@0.0.2560.1400" timestamp="1575907151325" />
+    <state width="1214" height="332" key="GridCell.Tab.0.right" timestamp="1575907151326">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="1214" height="332" key="GridCell.Tab.0.right/0.0.2560.1400@0.0.2560.1400" timestamp="1575907151326" />
+    <state width="1245" height="466" key="GridCell.Tab.1.bottom" timestamp="1575906180943">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="1245" height="466" key="GridCell.Tab.1.bottom/0.0.2560.1400@0.0.2560.1400" timestamp="1575906180943" />
+    <state width="1245" height="466" key="GridCell.Tab.1.center" timestamp="1575906180943">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="1245" height="466" key="GridCell.Tab.1.center/0.0.2560.1400@0.0.2560.1400" timestamp="1575906180943" />
+    <state width="1245" height="466" key="GridCell.Tab.1.left" timestamp="1575906180943">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="1245" height="466" key="GridCell.Tab.1.left/0.0.2560.1400@0.0.2560.1400" timestamp="1575906180943" />
+    <state width="1245" height="466" key="GridCell.Tab.1.right" timestamp="1575906180943">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="1245" height="466" key="GridCell.Tab.1.right/0.0.2560.1400@0.0.2560.1400" timestamp="1575906180943" />
+    <state x="887" y="474" key="com.intellij.ide.util.TipDialog" timestamp="1575906048663">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="887" y="474" key="com.intellij.ide.util.TipDialog/0.0.2560.1400@0.0.2560.1400" timestamp="1575906048663" />
+  </component>
+</project>

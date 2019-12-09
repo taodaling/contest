@@ -1,2 +1,2 @@
-49 src/main/java/contest/IntervalBooleanMapTest.json
+56 src/main/java/contest/F - Vasya and Endless Credits.json
 0

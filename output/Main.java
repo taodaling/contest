@@ -2,13 +2,11 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.util.TreeMap;
 import java.io.Closeable;
-import java.util.Map;
 import java.io.Writer;
-import java.util.Map.Entry;
 import java.io.OutputStreamWriter;
 import java.io.InputStream;
 
@@ -30,176 +28,93 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            IntervalBooleanMapTest solver = new IntervalBooleanMapTest();
+            TaskF solver = new TaskF();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class IntervalBooleanMapTest {
+    static class TaskF {
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            int q = in.readInt();
-            IntervalBooleanMap map = new IntervalBooleanMap();
-            for (int i = 0; i < q; i++) {
-                int cmd = in.readInt();
-                if (cmd == 0) {
-                    int l = in.readInt();
-                    int r = in.readInt();
-                    map.setTrue(l, r);
-                } else if (cmd == 1) {
-                    int l = in.readInt();
-                    int r = in.readInt();
-                    map.setFalse(l, r);
-                } else {
-                    out.println(map.countTrue());
+            int n = in.readInt();
+            Offer[] offers = new Offer[n];
+            for (int i = 0; i < n; i++) {
+                offers[i] = new Offer();
+                offers[i].a = in.readInt();
+                offers[i].b = in.readInt();
+                offers[i].k = in.readInt();
+            }
+            Arrays.sort(offers, (a, b) -> -Long.compare(a.b, b.b));
+            long[][] dp = new long[n + 1][n + 1];
+            SequenceUtils.deepFill(dp, (long) -1e18);
+            dp[0][0] = 0;
+            for (int i = 1; i <= n; i++) {
+                Offer offer = offers[i - 1];
+                for (int j = 0; j <= n; j++) {
+                    dp[i][j] = dp[i - 1][j];
+                    dp[i][j] = Math.max(dp[i][j], dp[i - 1][j] + offer.a - offer.b * offer.k);
+                    if (j > 0) {
+                        dp[i][j] = Math.max(dp[i][j], dp[i - 1][j - 1] + offer.a - offer.b * (j - 1));
+                    }
                 }
             }
+
+            long max = 0;
+            for (int i = 0; i <= n; i++) {
+                max = Math.max(dp[n][i], max);
+            }
+
+            out.println(max);
         }
 
     }
 
-    static class IntervalBooleanMap {
-        private TreeMap<Long, IntervalBooleanMap.Interval> map = new TreeMap<>();
-        private long total = 0;
+    static class Offer {
+        long a;
+        long b;
+        int k;
 
-        public long countTrue() {
-            return total;
+    }
+
+    static class FastOutput implements AutoCloseable, Closeable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
+
+        public FastOutput(Writer os) {
+            this.os = os;
         }
 
-        public void removeInterval(IntervalBooleanMap.Interval interval) {
-            map.remove(interval.l);
-            total -= interval.length();
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
         }
 
-        public void addInterval(IntervalBooleanMap.Interval interval) {
-            if (interval.length() <= 0) {
-                return;
-            }
-            map.put(interval.l, interval);
-            total += interval.length();
+        public FastOutput println(long c) {
+            cache.append(c).append('\n');
+            return this;
         }
 
-        public void setTrue(long l, long r) {
-            if (l > r) {
-                return;
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
             }
-            IntervalBooleanMap.Interval interval = new IntervalBooleanMap.Interval();
-            interval.l = l;
-            interval.r = r;
-            while (true) {
-                Map.Entry<Long, IntervalBooleanMap.Interval> floorEntry = map.floorEntry(interval.l);
-                if (floorEntry == null) {
-                    break;
-                }
-                IntervalBooleanMap.Interval floorInterval = floorEntry.getValue();
-                if (floorInterval.r >= interval.r) {
-                    return;
-                } else if (floorInterval.r < interval.l) {
-                    break;
-                } else {
-                    interval.l = Math.min(interval.l, floorInterval.l);
-                    removeInterval(floorInterval);
-                }
-            }
-            while (true) {
-                Map.Entry<Long, IntervalBooleanMap.Interval> ceilEntry = map.ceilingEntry(interval.l);
-                if (ceilEntry == null) {
-                    break;
-                }
-                IntervalBooleanMap.Interval ceilInterval = ceilEntry.getValue();
-                if (ceilInterval.l <= interval.l) {
-                    return;
-                } else if (ceilInterval.l > interval.r) {
-                    break;
-                } else {
-                    interval.r = Math.max(interval.r, ceilInterval.r);
-                    removeInterval(ceilInterval);
-                }
-            }
-
-            addInterval(interval);
+            return this;
         }
 
-        public void setFalse(long l, long r) {
-            while (true) {
-                Map.Entry<Long, IntervalBooleanMap.Interval> floorEntry = map.floorEntry(l);
-                if (floorEntry == null) {
-                    break;
-                }
-                IntervalBooleanMap.Interval floorInterval = floorEntry.getValue();
-                if (floorInterval.r < l) {
-                    break;
-                } else if (floorInterval.r > r) {
-                    removeInterval(floorInterval);
-                    IntervalBooleanMap.Interval lPart = floorInterval;
-                    IntervalBooleanMap.Interval rPart = new IntervalBooleanMap.Interval();
-                    rPart.l = r + 1;
-                    rPart.r = floorInterval.r;
-                    lPart.r = l - 1;
-                    addInterval(lPart);
-                    addInterval(rPart);
-                    return;
-                } else if (floorInterval.l >= l) {
-                    removeInterval(floorInterval);
-                } else {
-                    removeInterval(floorInterval);
-                    floorInterval.r = l - 1;
-                    addInterval(floorInterval);
-                    break;
-                }
-            }
-            while (true) {
-                Map.Entry<Long, IntervalBooleanMap.Interval> ceilEntry = map.ceilingEntry(l);
-                if (ceilEntry == null) {
-                    break;
-                }
-                IntervalBooleanMap.Interval ceilInterval = ceilEntry.getValue();
-                if (ceilInterval.l > r) {
-                    break;
-                } else if (ceilInterval.l < l) {
-                    removeInterval(ceilInterval);
-                    IntervalBooleanMap.Interval lPart = new IntervalBooleanMap.Interval();
-                    IntervalBooleanMap.Interval rPart = ceilInterval;
-                    lPart.l = ceilInterval.l;
-                    lPart.r = l - 1;
-                    rPart.l = r + 1;
-                    addInterval(lPart);
-                    addInterval(rPart);
-                    return;
-                } else if (ceilInterval.r <= r) {
-                    removeInterval(ceilInterval);
-                } else {
-                    removeInterval(ceilInterval);
-                    ceilInterval.l = r + 1;
-                    addInterval(ceilInterval);
-                    break;
-                }
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
             }
         }
 
         public String toString() {
-            StringBuilder builder = new StringBuilder();
-            for (IntervalBooleanMap.Interval interval : map.values()) {
-                builder.append(interval).append(',');
-            }
-            if (builder.length() > 0) {
-                builder.setLength(builder.length() - 1);
-            }
-            return builder.toString();
-        }
-
-        private static class Interval {
-            long l;
-            long r;
-
-            long length() {
-                return r - l + 1;
-            }
-
-            public String toString() {
-                return String.format("[%d, %d]", l, r);
-            }
-
+            return cache.toString();
         }
 
     }
@@ -263,45 +178,20 @@ public class Main {
 
     }
 
-    static class FastOutput implements AutoCloseable, Closeable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
-
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput println(long c) {
-            cache.append(c).append('\n');
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
+    static class SequenceUtils {
+        public static void deepFill(Object array, long val) {
+            if (!array.getClass().isArray()) {
+                throw new IllegalArgumentException();
             }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
+            if (array instanceof long[]) {
+                long[] longArray = (long[]) array;
+                Arrays.fill(longArray, val);
+            } else {
+                Object[] objArray = (Object[]) array;
+                for (Object obj : objArray) {
+                    deepFill(obj, val);
+                }
             }
-        }
-
-        public String toString() {
-            return cache.toString();
         }
 
     }

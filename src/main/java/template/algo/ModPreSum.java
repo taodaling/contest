@@ -18,7 +18,7 @@ public class ModPreSum {
     /**
      * get a[l] + a[l + 1] + ... + a[r]
      */
-    public long intervalSum(int l, int r) {
+    public int intervalSum(int l, int r) {
         if (l == 0) {
             return pre[r];
         }
@@ -28,14 +28,14 @@ public class ModPreSum {
     /**
      * get a[0] + a[1] + ... + a[i]
      */
-    public long prefix(int i) {
+    public int prefix(int i) {
         return pre[i];
     }
 
     /**
      * get a[i] + a[i + 1] + ... + a[n - 1]
      */
-    public long post(int i) {
+    public int post(int i) {
         if (i == 0) {
             return pre[pre.length - 1];
         }
