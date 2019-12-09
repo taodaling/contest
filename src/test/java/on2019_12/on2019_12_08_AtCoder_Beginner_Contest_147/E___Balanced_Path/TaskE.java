@@ -1,4 +1,8 @@
-package contest;
+package on2019_12.on2019_12_08_AtCoder_Beginner_Contest_147.E___Balanced_Path;
+
+
+
+
 
 import template.io.FastInput;
 import template.io.FastOutput;

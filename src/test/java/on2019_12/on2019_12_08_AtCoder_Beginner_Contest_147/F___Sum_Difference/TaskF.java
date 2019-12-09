@@ -1,4 +1,8 @@
-package contest;
+package on2019_12.on2019_12_08_AtCoder_Beginner_Contest_147.F___Sum_Difference;
+
+
+
+
 
 import template.datastructure.IntervalBooleanMap;
 import template.io.FastInput;
