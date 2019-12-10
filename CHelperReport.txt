@@ -1,2 +1,2 @@
-56 src/main/java/contest/F - Vasya and Endless Credits.json
+53 src/main/java/contest/E. Vasya and Binary String.json
 0

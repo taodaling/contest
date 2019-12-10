@@ -1,10 +1,11 @@
 package template.polynomial;
 
 import template.math.Power;
-import template.datastructure.ByteList;
 import template.datastructure.IntList;
 import template.math.Modular;
 import template.utils.Buffer;
+
+import java.util.BitSet;
 
 public class Polynomials {
     public static Buffer<IntList> listBuffer = new Buffer<>(IntList::new, list -> list.clear());
@@ -178,7 +179,7 @@ public class Polynomials {
     /**
      * Try find x^k % p = remainder
      */
-    public static void module(ByteList k, IntList p, IntList remainder, Power pow) {
+    public static void module(BitSet k, IntList p, IntList remainder, Power pow) {
         int rP = rankOf(p);
         if (rP == 0) {
             remainder.clear();
@@ -195,13 +196,13 @@ public class Polynomials {
         listBuffer.release(c);
     }
 
-    private static void module(ByteList k, IntList a, IntList b, IntList c, IntList remainder, Power pow) {
+    private static void module(BitSet k, IntList a, IntList b, IntList c, IntList remainder, Power pow) {
         Modular mod = pow.getModular();
         remainder.clear();
         remainder.expandWith(1, 1);
         for (int index = 0; index < k.size(); index++) {
             mul(remainder, remainder, a, mod);
-            if (k.get(index) == 1) {
+            if (k.get(index)) {
                 int ra = rankOf(a);
                 a.expandWith(0, ra + 2);
                 int[] aData = a.getData();

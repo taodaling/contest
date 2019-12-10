@@ -1,0 +1,22 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+C:/Users/daltao/IdeaProjects/contest/c++/output/main.cpp
+iostream
+-
+fstream
+-
+iomanip
+-
+bits/stdc++.h
+-
+chrono
+-
+random
+-
+

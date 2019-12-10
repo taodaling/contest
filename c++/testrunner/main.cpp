@@ -1,4 +1,4 @@
-#include "C:/Users/DALT/IdeaProjects/contest/c++/tasks/Test.cpp"
+#include "C:/Users/daltao/IdeaProjects/contest/c++/tasks/LUOGU4514.cpp"
 
 #include <iostream>
 #include <fstream>
@@ -29,7 +29,7 @@ bool check(std::string expected, std::string actual) {
 
 int main() {
 	std::vector<jhelper::Test> tests = {
-		{"1", "2", true, true},
+		{"X 4 4\nL 1 1 3 3 2\nL 2 2 4 4 1\nk 2 2 3 3", "12", true, true},{"X 4 4\nL 1 1 1 1 1\nK 1 1 1 1", "1", true, true},
 	};
 	bool allOK = true;
 	int testID = 0;
@@ -48,7 +48,7 @@ int main() {
 			std::stringstream in(test.input);
 			std::ostringstream out;
 			std::clock_t start = std::clock();
-			Test solver;
+			LUOGU4514 solver;
 			solver.solve(in, out);
 			std::clock_t finish = std::clock();
 			double currentTime = double(finish - start) / CLOCKS_PER_SEC;

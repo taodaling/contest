@@ -28,51 +28,91 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            TaskF solver = new TaskF();
+            EVasyaAndBinaryString solver = new EVasyaAndBinaryString();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class TaskF {
+    static class EVasyaAndBinaryString {
+        long[][][] dp;
+        long[] profits;
+        int[] flags;
+        int n;
+        long inf = (long) 1e18;
+
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            int n = in.readInt();
-            Offer[] offers = new Offer[n];
+            n = in.readInt();
+            flags = new int[n];
             for (int i = 0; i < n; i++) {
-                offers[i] = new Offer();
-                offers[i].a = in.readInt();
-                offers[i].b = in.readInt();
-                offers[i].k = in.readInt();
+                flags[i] = in.readChar() - '0';
             }
-            Arrays.sort(offers, (a, b) -> -Long.compare(a.b, b.b));
-            long[][] dp = new long[n + 1][n + 1];
-            SequenceUtils.deepFill(dp, (long) -1e18);
-            dp[0][0] = 0;
+
+            profits = new long[n + 1];
             for (int i = 1; i <= n; i++) {
-                Offer offer = offers[i - 1];
-                for (int j = 0; j <= n; j++) {
-                    dp[i][j] = dp[i - 1][j];
-                    dp[i][j] = Math.max(dp[i][j], dp[i - 1][j] + offer.a - offer.b * offer.k);
-                    if (j > 0) {
-                        dp[i][j] = Math.max(dp[i][j], dp[i - 1][j - 1] + offer.a - offer.b * (j - 1));
+                profits[i] = in.readInt();
+            }
+
+            dp = new long[n][n][n + 1];
+            SequenceUtils.deepFill(dp, -1L);
+
+            long ans = dp(0, n - 1, 0);
+            out.println(ans);
+        }
+
+        public long dp(int l, int r, int remain) {
+            if (l > r) {
+                return remain == 0 ? 0 : -inf;
+            }
+            if (dp[l][r][remain] == -1) {
+                dp[l][r][remain] = -inf;
+                for (int i = n; i > remain; i--) {
+                    dp[l][r][remain] = Math.max(dp[l][r][remain],
+                            dp(l, r, i) + profits[i - remain]);
+                }
+                if (remain == 0) {
+                    return dp[l][r][remain];
+                }
+                if (l == r) {
+                    dp[l][r][remain] = remain == 1 ? 0 : -inf;
+                    return dp[l][r][remain];
+                }
+                if (remain == 1) {
+                    dp[l][r][remain] = Math.max(dp[l][r][remain],
+                            dp(l, l, 1) + dp(l + 1, r, 0));
+                }
+                for (int i = l + 1; i <= r; i++) {
+                    if (flags[i] != flags[l]) {
+                        continue;
                     }
+                    dp[l][r][remain] = Math.max(dp[l][r][remain],
+                            dp(l, i - 1, 0) +
+                                    dp(i, r, remain));
+                    dp[l][r][remain] = Math.max(dp[l][r][remain],
+                            dp(l, i - 1, 1) +
+                                    dp(i, r, remain - 1));
                 }
             }
-
-            long max = 0;
-            for (int i = 0; i <= n; i++) {
-                max = Math.max(dp[n][i], max);
-            }
-
-            out.println(max);
+            return dp[l][r][remain];
         }
 
     }
 
-    static class Offer {
-        long a;
-        long b;
-        int k;
+    static class SequenceUtils {
+        public static void deepFill(Object array, long val) {
+            if (!array.getClass().isArray()) {
+                throw new IllegalArgumentException();
+            }
+            if (array instanceof long[]) {
+                long[] longArray = (long[]) array;
+                Arrays.fill(longArray, val);
+            } else {
+                Object[] objArray = (Object[]) array;
+                for (Object obj : objArray) {
+                    deepFill(obj, val);
+                }
+            }
+        }
 
     }
 
@@ -176,22 +216,11 @@ public class Main {
             return val;
         }
 
-    }
-
-    static class SequenceUtils {
-        public static void deepFill(Object array, long val) {
-            if (!array.getClass().isArray()) {
-                throw new IllegalArgumentException();
-            }
-            if (array instanceof long[]) {
-                long[] longArray = (long[]) array;
-                Arrays.fill(longArray, val);
-            } else {
-                Object[] objArray = (Object[]) array;
-                for (Object obj : objArray) {
-                    deepFill(obj, val);
-                }
-            }
+        public char readChar() {
+            skipBlank();
+            char c = (char) next;
+            next = read();
+            return c;
         }
 
     }

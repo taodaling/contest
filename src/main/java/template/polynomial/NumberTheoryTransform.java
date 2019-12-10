@@ -11,6 +11,7 @@ import template.utils.Buffer;
 import template.math.DigitUtils;
 
 import java.util.Arrays;
+import java.util.BitSet;
 
 public class NumberTheoryTransform {
     public static final NumberTheoryTransform STANDARD =
@@ -292,7 +293,7 @@ public class NumberTheoryTransform {
      * Get remainder = x^k % p, m >= 2 + ceil(log_2 max(|p|)), the smaller index, the more significant
      * bit in k.
      */
-    public void module(ByteList k, int[] p, int[] remainder, int m) {
+    public void module(BitSet k, int[] p, int[] remainder, int m) {
         int rankOfP = rankOf(p, m);
         if (rankOfP == 0) {
             Arrays.fill(remainder, 0);
@@ -313,7 +314,7 @@ public class NumberTheoryTransform {
         listBuffer.release(c);
     }
 
-    private void module(ByteList k, int i, int[] a, int[] b, int[] c, int[] remainder, int m) {
+    private void module(BitSet k, int i, int[] a, int[] b, int[] c, int[] remainder, int m) {
         if (i < 0) {
             Arrays.fill(remainder, 0);
             remainder[0] = modular.valueOf(1);
@@ -324,7 +325,7 @@ public class NumberTheoryTransform {
         dotMul(remainder, remainder, remainder, m);
         idft(remainder, m);
 
-        if (k.get(i) == 1) {
+        if (k.get(i)) {
             for (int j = (1 << m) - 1; j > 0; j--) {
                 remainder[j] = remainder[j - 1];
             }

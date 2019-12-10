@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-C:/Users/DALT/IdeaProjects/contest/c++/library/common.h
+C:/Users/daltao/IdeaProjects/contest/c++/library/common.h
 bits/stdc++.h
 -
 chrono
@@ -14,16 +14,12 @@ chrono
 random
 -
 
-C:/Users/DALT/IdeaProjects/contest/c++/library/modular.h
-
-C:/Users/DALT/IdeaProjects/contest/c++/tasks/Test.cpp
+C:/Users/daltao/IdeaProjects/contest/c++/tasks/LUOGU4514.cpp
 ../library/common.h
-C:/Users/DALT/IdeaProjects/contest/c++/library/common.h
-../library/modular.h
-C:/Users/DALT/IdeaProjects/contest/c++/library/modular.h
+C:/Users/daltao/IdeaProjects/contest/c++/library/common.h
 
-C:/Users/DALT/IdeaProjects/contest/c++/testrunner/main.cpp
-C:/Users/DALT/IdeaProjects/contest/c++/tasks/Test.cpp
+C:/Users/daltao/IdeaProjects/contest/c++/testrunner/main.cpp
+C:/Users/daltao/IdeaProjects/contest/c++/tasks/LUOGU4514.cpp
 -
 iostream
 -

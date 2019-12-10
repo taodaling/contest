@@ -40,7 +40,7 @@ public class MinCostMaxFlow {
         }
     }
 
-    Map<ID, DirectFeeChannel> channelMap = new HashMap();
+    private Map<ID, DirectFeeChannel> channelMap = new HashMap();
 
     public MinCostMaxFlow(int nodeNum, int s, int t) {
         this.nodeNum = nodeNum;

@@ -47,10 +47,10 @@ RM = "C:\Program Files\JetBrains\CLion 2019.3.1\bin\cmake\win\bin\cmake.exe" -E 
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = C:\Users\DALT\IdeaProjects\contest\c++
+CMAKE_SOURCE_DIR = C:\Users\daltao\IdeaProjects\contest\c++
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = C:\Users\DALT\IdeaProjects\contest\c++\cmake-build-debug
+CMAKE_BINARY_DIR = C:\Users\daltao\IdeaProjects\contest\c++\cmake-build-debug
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -79,9 +79,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\DALT\IdeaProjects\contest\c++\cmake-build-debug\CMakeFiles C:\Users\DALT\IdeaProjects\contest\c++\cmake-build-debug\CMakeFiles\progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\daltao\IdeaProjects\contest\c++\cmake-build-debug\CMakeFiles C:\Users\daltao\IdeaProjects\contest\c++\cmake-build-debug\CMakeFiles\progress.marks
 	$(MAKE) -f CMakeFiles\Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\DALT\IdeaProjects\contest\c++\cmake-build-debug\CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\daltao\IdeaProjects\contest\c++\cmake-build-debug\CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -175,33 +175,6 @@ output/main.cpp.s:
 	$(MAKE) -f CMakeFiles\output.dir\build.make CMakeFiles/output.dir/output/main.cpp.s
 .PHONY : output/main.cpp.s
 
-tasks/Test.obj: tasks/Test.cpp.obj
-
-.PHONY : tasks/Test.obj
-
-# target to build an object file
-tasks/Test.cpp.obj:
-	$(MAKE) -f CMakeFiles\test.dir\build.make CMakeFiles/test.dir/tasks/Test.cpp.obj
-.PHONY : tasks/Test.cpp.obj
-
-tasks/Test.i: tasks/Test.cpp.i
-
-.PHONY : tasks/Test.i
-
-# target to preprocess a source file
-tasks/Test.cpp.i:
-	$(MAKE) -f CMakeFiles\test.dir\build.make CMakeFiles/test.dir/tasks/Test.cpp.i
-.PHONY : tasks/Test.cpp.i
-
-tasks/Test.s: tasks/Test.cpp.s
-
-.PHONY : tasks/Test.s
-
-# target to generate assembly for a file
-tasks/Test.cpp.s:
-	$(MAKE) -f CMakeFiles\test.dir\build.make CMakeFiles/test.dir/tasks/Test.cpp.s
-.PHONY : tasks/Test.cpp.s
-
 testrunner/main.obj: testrunner/main.cpp.obj
 
 .PHONY : testrunner/main.obj
@@ -243,9 +216,6 @@ help:
 	@echo ... output/main.obj
 	@echo ... output/main.i
 	@echo ... output/main.s
-	@echo ... tasks/Test.obj
-	@echo ... tasks/Test.i
-	@echo ... tasks/Test.s
 	@echo ... testrunner/main.obj
 	@echo ... testrunner/main.i
 	@echo ... testrunner/main.s

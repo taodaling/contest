@@ -15,11 +15,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e173ed55-e541-424a-82e1-b5da979c74d7" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/../archive/unsorted/2019.12/2019.12.09 - Educational Codeforces Round 59 (Rated for Div. 2)/F - Vasya and Endless Credits.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../archive/unsorted/2019.12/2019.12.09 - Educational Codeforces Round 59 (Rated for Div. 2)/TaskF.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CHelperReport.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../CHelperReport.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../output/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/../output/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/main/java/template/algo/ModPreSum.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/template/algo/ModPreSum.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../src/main/java/template/datastructure/SparseSegment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/template/graph/MinCostMaxFlow.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/template/graph/MinCostMaxFlow.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,7 +29,6 @@
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="name.admitriev.jhelper.configuration.TaskConfigurationExecutionTargetCMakeBuildProfile:Debug" />
   <component name="FavoritesManager">
     <favorites_list name="jhelper-example-project" />
   </component>
@@ -50,15 +46,16 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
-    <property name="recentsLimit" value="5" />
-    <property name="FullScreen" value="true" />
     <property name="CMAKE.AUTO_RELOAD_ENABLED" value="true" />
-    <property name="restartRequiresConfirmation" value="true" />
-    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/CMakeLists.txt" />
+    <property name="FullScreen" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="recentsLimit" value="5" />
+    <property name="restartRequiresConfirmation" value="true" />
+    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.Console Font" />
   </component>
-  <component name="RunManager" selected="Task.Test">
+  <component name="RunManager">
     <configuration name="Build All" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" CONFIG_NAME="Debug" EXPLICIT_BUILD_TARGET_NAME="all">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -133,7 +130,6 @@
       <item itemvalue="CMake Application.output" />
       <item itemvalue="CMake Application.test" />
       <item itemvalue="CMake Application.testrunner" />
-      <item itemvalue="Task.Test" />
     </list>
   </component>
   <component name="ServiceViewManager">
@@ -159,6 +155,8 @@
       <option name="presentableId" value="Default" />
       <updated>1497465170172</updated>
       <workItem from="1575906048540" duration="1681000" />
+      <workItem from="1575941742717" duration="305000" />
+      <workItem from="1575942111094" duration="14632000" />
     </task>
     <servers />
   </component>
@@ -174,45 +172,74 @@
     </option>
   </component>
   <component name="WindowStateProjectService">
+    <state x="895" y="122" key="#com.intellij.ide.ui.customization.CustomizableActionsPanel.FindAvailableActionsDialog" timestamp="1575942403348">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="895" y="122" key="#com.intellij.ide.ui.customization.CustomizableActionsPanel.FindAvailableActionsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1575942403348" />
     <state x="1523" y="373" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1575906633360">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state x="1523" y="373" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.2560.1400@0.0.2560.1400" timestamp="1575906633360" />
-    <state width="1214" height="332" key="GridCell.Tab.0.bottom" timestamp="1575907151326">
-      <screen x="0" y="0" width="2560" height="1400" />
+    <state x="586" y="171" key="#output" timestamp="1575947113243">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
+    <state x="586" y="171" key="#output/0.0.1920.1040@0.0.1920.1040" timestamp="1575947113243" />
+    <state x="808" y="37" key="#xdebugger.evaluate" timestamp="1575959380083">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="808" y="37" key="#xdebugger.evaluate/0.0.1920.1040@0.0.1920.1040" timestamp="1575959380083" />
+    <state width="745" height="573" key="GridCell.Tab.0.bottom" timestamp="1575962289998">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="745" height="573" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1575962289998" />
     <state width="1214" height="332" key="GridCell.Tab.0.bottom/0.0.2560.1400@0.0.2560.1400" timestamp="1575907151326" />
-    <state width="1214" height="332" key="GridCell.Tab.0.center" timestamp="1575907151326">
-      <screen x="0" y="0" width="2560" height="1400" />
+    <state width="745" height="573" key="GridCell.Tab.0.center" timestamp="1575962289998">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
+    <state width="745" height="573" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1575962289998" />
     <state width="1214" height="332" key="GridCell.Tab.0.center/0.0.2560.1400@0.0.2560.1400" timestamp="1575907151326" />
-    <state width="1214" height="332" key="GridCell.Tab.0.left" timestamp="1575907151325">
-      <screen x="0" y="0" width="2560" height="1400" />
+    <state width="745" height="573" key="GridCell.Tab.0.left" timestamp="1575962289998">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
+    <state width="745" height="573" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1575962289998" />
     <state width="1214" height="332" key="GridCell.Tab.0.left/0.0.2560.1400@0.0.2560.1400" timestamp="1575907151325" />
-    <state width="1214" height="332" key="GridCell.Tab.0.right" timestamp="1575907151326">
-      <screen x="0" y="0" width="2560" height="1400" />
+    <state width="745" height="573" key="GridCell.Tab.0.right" timestamp="1575962289998">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
+    <state width="745" height="573" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1575962289998" />
     <state width="1214" height="332" key="GridCell.Tab.0.right/0.0.2560.1400@0.0.2560.1400" timestamp="1575907151326" />
-    <state width="1245" height="466" key="GridCell.Tab.1.bottom" timestamp="1575906180943">
-      <screen x="0" y="0" width="2560" height="1400" />
+    <state width="745" height="573" key="GridCell.Tab.1.bottom" timestamp="1575962289998">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
+    <state width="745" height="573" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1575962289998" />
     <state width="1245" height="466" key="GridCell.Tab.1.bottom/0.0.2560.1400@0.0.2560.1400" timestamp="1575906180943" />
-    <state width="1245" height="466" key="GridCell.Tab.1.center" timestamp="1575906180943">
-      <screen x="0" y="0" width="2560" height="1400" />
+    <state width="745" height="573" key="GridCell.Tab.1.center" timestamp="1575962289998">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
+    <state width="745" height="573" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1575962289998" />
     <state width="1245" height="466" key="GridCell.Tab.1.center/0.0.2560.1400@0.0.2560.1400" timestamp="1575906180943" />
-    <state width="1245" height="466" key="GridCell.Tab.1.left" timestamp="1575906180943">
-      <screen x="0" y="0" width="2560" height="1400" />
+    <state width="745" height="573" key="GridCell.Tab.1.left" timestamp="1575962289998">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
+    <state width="745" height="573" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1575962289998" />
     <state width="1245" height="466" key="GridCell.Tab.1.left/0.0.2560.1400@0.0.2560.1400" timestamp="1575906180943" />
-    <state width="1245" height="466" key="GridCell.Tab.1.right" timestamp="1575906180943">
-      <screen x="0" y="0" width="2560" height="1400" />
+    <state width="745" height="573" key="GridCell.Tab.1.right" timestamp="1575962289998">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
+    <state width="745" height="573" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1575962289998" />
     <state width="1245" height="466" key="GridCell.Tab.1.right/0.0.2560.1400@0.0.2560.1400" timestamp="1575906180943" />
-    <state x="887" y="474" key="com.intellij.ide.util.TipDialog" timestamp="1575906048663">
-      <screen x="0" y="0" width="2560" height="1400" />
+    <state x="463" y="139" key="SettingsEditor" timestamp="1575942455129">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
+    <state x="463" y="139" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1575942455129" />
+    <state x="665" y="352" key="com.intellij.ide.util.TipDialog" timestamp="1575942111110">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="665" y="352" key="com.intellij.ide.util.TipDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1575942111110" />
     <state x="887" y="474" key="com.intellij.ide.util.TipDialog/0.0.2560.1400@0.0.2560.1400" timestamp="1575906048663" />
+    <state x="532" y="-5" width="838" height="1032" key="search.everywhere.popup" timestamp="1575956992970">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="532" y="-5" width="838" height="1032" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1575956992970" />
   </component>
 </project>

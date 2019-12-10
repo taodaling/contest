@@ -18,6 +18,7 @@
 #include <bits/stdc++.h>
 #include <chrono>
 #include <random>
+
 using std::deque;
 using std::endl;
 using std::map;
@@ -33,6 +34,9 @@ using std::istream;
 using std::string;
 using std::fill;
 using std::sort;
+using std::numeric_limits;
+using std::make_pair;
+using std::priority_queue;
 
 typedef unsigned int ui;
 typedef long long ll;
@@ -42,137 +46,168 @@ std::mt19937 rng(std::chrono::steady_clock::now().time_since_epoch().count());
 
 #endif //JHELPER_EXAMPLE_PROJECT_COMMON_H
 
-//
-// Created by DALT on 12/9/2019.
-//
 
-#ifndef JHELPER_EXAMPLE_PROJECT_MODULAR_H
-#define JHELPER_EXAMPLE_PROJECT_MODULAR_H
-#define MOD(a, b) a %= b; if(a < 0) a += b;
-
-class IntModular
-{
+#define MAX 2048
+class segment {
 public:
-    typedef long long ll;
-    IntModular(int m): _m(m){}
-    int operator()(int x) const {		MOD(x, _m);		return x;	}
-    int operator()(ll x) const {		MOD(x, _m);		return x;}
-    int plus(int a, int b)const{		return (*this)(a + b);	}
-    int plus(ll a, ll b)const{		return (*this)(a + b);	}
-    int subtract(int a, int b)const{		return (*this)(a - b);	}
-    int subtract(ll a, ll b)const{		return (*this)(a - b);	}
-    int mul(int a, int b)const{		return (*this)((ll)a * b);	}
-    int mul(ll a, ll b)const{		return mul((*this)(a), (*this)(b));	}
+    segment(int l, int r): _l(0), _r(0),
+    _sum(0), _mod(0){
+        int m = (l + r) >> 1;
+        if(l < r){
+            _l = new segment(l, m);
+            _r = new segment(m + 1, r);
+            pushUp();
+        }else{
+
+        }
+    }
+
+#define NO_INTERSECTION ql > r || qr < l
+#define COVER ql <= l && qr >= r
+#define RANGE (min(qr, r) - max(l, ql) + 1)
+    void update(int ql, int qr, int l, int r, ll mod) {
+        if (NO_INTERSECTION) {
+            return;
+        }
+        if (COVER) {
+            _mod += mod;
+            return;
+        }
+        pushDown();
+        int m = (l + r) >> 1;
+        _l->update(ql, qr, l, m, mod);
+        _r->update(ql, qr, m + 1, r, mod);
+        _sum += mod * RANGE;
+        pushUp();
+    }
+
+    ll query(int ql, int qr, int l, int r) {
+        if (NO_INTERSECTION) {
+            return 0;
+        }
+        if (COVER) {
+            return _sum + _mod * RANGE;
+        }
+        pushDown();
+        int m = (l + r) >> 1;
+        return _l->query(ql, qr, l, m) +
+        _r->query(ql, qr, m + 1, r) +
+        _mod * RANGE;
+    }
+
+#undef NO_INTERSECTION
+#undef COVER
+
 private:
-    int _m;
+    segment *_l, *_r;
+
+    void pushDown() {
+    }
+
+    void pushUp() {
+    }
+
+    void modify() {
+    }
+
+    ll _sum;
+    ll _mod;
+};
+
+class segment2d {
+public:
+    segment2d(int l, int r): _mod(1, MAX),
+    _sum(1, MAX), _l(0), _r(0){
+        int m = (l + r) >> 1;
+        if(l < r){
+            _l = new segment2d(l, m);
+            _r = new segment2d(m + 1, r);
+            pushUp();
+        }else{
+        }
+    }
+
+#define NO_INTERSECTION ql > r || qr < l
+#define COVER ql <= l && qr >= r
+#define RANGE (min(qr, r) - max(l, ql) + 1)
+    void update(int ql, int qr, int qb, int qt, int l, int r, int b, int t, ll mod) {
+        if (NO_INTERSECTION) {
+            return;
+        }
+        if (COVER) {
+            _mod.update(qb, qt, b, t, mod);
+            return;
+        }
+        pushDown();
+        int m = (l + r) >> 1;
+        _l->update(ql, qr, qb, qt, l, m, b, t, mod);
+        _r->update(ql, qr, qb, qt, m + 1, r, b, t, mod);
+        _sum.update(qb, qt, b, t, RANGE * mod);
+        pushUp();
+    }
+
+    ll query(int ql, int qr, int qb, int qt, int l, int r, int b, int t) {
+        if (NO_INTERSECTION) {
+            return 0;
+        }
+        if (COVER) {
+            return _sum.query(qb, qt, b, t) +
+            _mod.query(qb, qt, b, t) * RANGE;
+        }
+        pushDown();
+        int m = (l + r) >> 1;
+        return _l->query(ql, qr, qb, qt, l, m, b, t) +
+        _r->query(ql, qr, qb, qt, m + 1, r, b, t) +
+        _mod.query(qb, qt, b, t) * RANGE;
+    }
+
+#undef NO_INTERSECTION
+#undef COVER
+
+private:
+    segment2d *_l, *_r;
+    segment _mod, _sum;
+
+    void pushDown() {
+    }
+
+    void pushUp() {
+    }
+
+    void modify() {
+    }
 };
 
 
-class LongModular
-{
+class LUOGU4514 {
 public:
-    typedef long long ll;
-    typedef long double ld;
-    ll operator()(ll x)    {    	MOD(x, _m);    	return x;    }
-    ll plus(ll a, ll b)    {    	return (*this)(a + b);    }
-    ll subtract(ll a, ll b)    {    	return (*this)(a - b);    }
-    ll mul(ll a, ll b)    {    	ll k = ll((ld) a * b / _m);    	ll ans = (a * b - k * _m);    	MOD(ans, _m);    	return ans;    }
+    void solve(std::istream &in, std::ostream &out) {
+        char cmd;
+        int n;
+        int m;
+        in >> cmd >> n >> m;
+
+        segment2d seg(1, MAX);
+        while(!in.eof()){
+            in >> cmd;
+            int a, b, c, d;
+            in >> a >> b >> c >> d;
+            int bot = min(b, d);
+            int top = max(b, d);
+            int left = min(a, c);
+            int right = max(a, c);
+            if(cmd == 'L'){
+                int delta;
+                in >> delta;
+                seg.update(left, right, bot, top, 1, MAX, 1, MAX, delta);
+            }else{
+                ll ans = seg.query(left, right, bot, top, 1, MAX, 1, MAX);
+                out << ans << endl;
+            }
+        }
+    }
+
 private:
-    ll _m;
-};
-
-template<int M>
-class Remainder
-{
-public:
-    typedef long long ll;
-    Remainder(): _v(0){}
-    Remainder(int v): _v(v){MOD(_v, M)}
-    Remainder(ll v)	{MOD(v, M);	_v = v;	}
-    Remainder(const Remainder<M>& x): _v(x._v){}
-    Remainder<M>& operator=(Remainder<M> &x){_v = x._v; return *this;}
-    Remainder<M>& operator=(const Remainder<M> &x){_v = x._v; return *this;}
-    Remainder<M> operator+(const Remainder<M> &x) const{return _v + x._v;}
-    Remainder<M> operator-(const Remainder<M> &x) const{return _v - x._v;}
-    Remainder<M> operator*(const Remainder<M> &x) const{return (ll)_v * x._v;}
-    Remainder<M> &operator+=(Remainder<M> &x){_v += x._v; MOD(_v, M); return *this;}
-    Remainder<M> &operator-=(Remainder<M> &x){_v -= x._v; MOD(_v, M); return *this;}
-    Remainder<M> &operator+=(const Remainder<M> &x){_v += x._v; MOD(_v, M); return *this;}
-    Remainder<M> &operator-=(const Remainder<M> &x){_v -= x._v; MOD(_v, M); return *this;}
-    Remainder<M> &operator*=(Remainder<M> &x){ll tmp = (ll)_v * x._v; MOD(tmp, M); _v = tmp; return *this;}
-    Remainder<M> &operator*=(const Remainder<M> &x){ll tmp = (ll)_v * x._v; MOD(tmp, M); _v = tmp; return *this;}
-    Remainder<M> operator^(int n) const {return pow(_v, n);}
-    Remainder<M> operator^(ll n) const {return pow(_v, n);}
-    Remainder<M> inverseByFermat() const {return pow(_v, M - 2);}
-    Remainder<M> inverseByExtgcd() const {return extgcd(M, _v).second;}
-    Remainder<M> operator/(const Remainder<M> &x)const{return (*this) * x.inverseByExtgcd();}
-    Remainder<M> &operator/=(Remainder<M> &x){ll tmp = (ll)_v * extgcd(M, _v).second; MOD(tmp, M); _v = tmp; return *this;}
-    Remainder<M> &operator/=(const Remainder<M> &x){ll tmp = (ll)_v * extgcd(M, _v).second; MOD(tmp, M); _v = tmp; return *this;}
-    int value() const {return _v;}
-    bool operator==(const Remainder<M> &x) const {return _v == x._v;}
-    bool operator!=(const Remainder<M> &x) const {return _v != x._v;}
-private:
-    int _v;
-
-    template<typename L>
-    static int pow(int x, L n)
-    {
-        if(n == 0)
-        {
-            return 1 % M;
-        }
-        ll ans = pow(x, n >> 1);
-        ans = ans * ans % M;
-        if(n & 1)
-        {
-            ans = ans * x % M;
-        }
-        return ans;
-    }
-    static pair<ll, ll> extgcd(ll a, ll b)
-    {
-        if(a >= b){return extgcd0(a, b);}
-        pair<ll, ll> xy = extgcd0(b, a);
-        swap(xy.first, xy.second);
-        return xy;
-    }
-    static pair<ll, ll> extgcd0(ll a, ll b)
-    {
-        if(b == 0)
-        {
-            return {1, 0};
-        }
-        pair<ll, ll> xy = extgcd0(b, a % b);
-        return {xy.second, xy.first - xy.second * (a / b)};
-    }
-};
-
-template<int M>
-inline ostream& operator<<(ostream &os, const Remainder<M> &x)
-{
-    return os << x.value();
-}
-template<int M>
-inline istream& operator>>(istream &is, Remainder<M> &x)
-{
-    ll val;
-    is >> val;
-    x = val;
-    return is;
-}
-
-#undef MOD
-
-#endif //JHELPER_EXAMPLE_PROJECT_MODULAR_H
-
-
-class Test {
-public:
-	void solve(std::istream& in, std::ostream& out) {
-        Remainder<(int)1e9 + 7> x;
-        in >> x;
-        out << x;
-	}
 };
 
 
@@ -182,7 +217,7 @@ int main() {
 	std::cout << std::setiosflags(std::ios::fixed);
 	std::cout << std::setprecision(15);
 
-	Test solver;
+	LUOGU4514 solver;
 	std::istream& in(std::cin);
 	std::ostream& out(std::cout);
 	solver.solve(in, out);

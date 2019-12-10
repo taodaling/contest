@@ -1,0 +1,53 @@
+{
+  "name" : "E. Vasya and Binary String",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "7\n1101001\n3 4 9 100 1 2 3\n",
+    "output" : "109\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "5\n10101\n3 10 15 15 15\n",
+    "output" : "23\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "4\n1011\n1 5 1 1",
+    "output" : "7",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "93\n010001011000011111111111001100111110111111101010010100011101101111101010101110101101010010100\n44 77 155 1 219 284 32 146 56 31 213 253 333 206 146 305 178 257 125 3 512 455 433 108 541 112 219 1 609 682 585 764 86 317 216 959 37 212 861 599 1176 1147 316 930 876 259 613 266 448 1845 1280 1570 2389 2799 3100 784 3392 542 3140 3371 1871 4723 680 812 334 7639 8168 6537 1652 8174 1807 9420 9013 117 2250 23272 2881 75 23885 4608 13637 49693 38953 255 91290 61084 116748 191611 103509 268545 ",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "100\n0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000\n",
+    "index" : 4,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2019_12.on2019_12_10_Educational_Codeforces_Round_59__Rated_for_Div__2_.E__Vasya_and_Binary_String.EVasyaAndBinaryString",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.12.10",
+  "contestName" : "Educational Codeforces Round 59 (Rated for Div. 2)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}
