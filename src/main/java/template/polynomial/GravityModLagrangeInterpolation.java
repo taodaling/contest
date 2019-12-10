@@ -1,5 +1,6 @@
 package template.polynomial;
 
+import template.datastructure.IntList;
 import template.math.Modular;
 import template.math.Power;
 
@@ -112,8 +113,14 @@ public class GravityModLagrangeInterpolation {
         private int[] coes;
         private int n;
 
-        public int[] toArray(){
+        public int[] toArray() {
             return Arrays.copyOf(coes, n);
+        }
+
+        public IntList toIntList() {
+            IntList list = new IntList();
+            list.addAll(coes, 0, n);
+            return list;
         }
 
         public int getCoefficient(int i) {

@@ -1,0 +1,60 @@
+{
+  "name" : "F. Lunar New Year and a Recursive Sequence",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3\n2 3 5\n4 16\n",
+    "output" : "4\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "5\n4 7 1 5 6\n7 14187219\n",
+    "output" : "6\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "8\n2 3 5 6 1 7 9 10\n23333 1\n",
+    "output" : "1\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "1\n2\n88888 66666\n",
+    "output" : "-1\n",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "3\n998244352 998244352 998244352\n4 2\n",
+    "output" : "-1\n",
+    "index" : 4,
+    "active" : true
+  }, {
+    "input" : "10\n283 463 213 777 346 201 463 283 102 999\n2333333 6263423\n",
+    "output" : "382480067\n",
+    "index" : 5,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2019_12.on2019_12_11_Codeforces_Round__536__Div__2_.F__Lunar_New_Year_and_a_Recursive_Sequence.FLunarNewYearAndARecursiveSequence",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.12.11",
+  "contestName" : "Codeforces Round #536 (Div. 2)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

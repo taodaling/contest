@@ -1,2 +1,2 @@
-53 src/main/java/contest/E. Vasya and Binary String.json
+37 src/main/java/contest/NOD51_1014.json
 0

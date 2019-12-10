@@ -66,7 +66,16 @@ public class LongHashMap {
         return h ^ (h >>> 16);
     }
 
+
     public void put(long x, long y) {
+        put(x, y, true);
+    }
+
+    public void putIfNotExist(long x, long y) {
+        put(x, y, false);
+    }
+
+    public void put(long x, long y, boolean cover) {
         int h = hash(x);
         int s = h & mask;
         if (slot[s] == 0) {
@@ -81,7 +90,7 @@ public class LongHashMap {
                 next[index] = alloc;
                 keys[alloc] = x;
                 values[alloc] = y;
-            } else {
+            } else if(cover){
                 values[index] = y;
             }
         }

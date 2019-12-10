@@ -5,6 +5,10 @@ public class CachedPow {
     private int[] second;
     private Modular mod;
 
+    public CachedPow(int x, Modular mod) {
+        this(x, mod.getMod(), mod);
+    }
+
     public CachedPow(int x, int maxExp, Modular mod) {
         this.mod = mod;
         int k = Math.max(1, (int) DigitUtils.round(Math.sqrt(maxExp)));
@@ -24,4 +28,5 @@ public class CachedPow {
     public int pow(int exp) {
         return mod.mul(first[exp % first.length], second[exp / first.length]);
     }
+
 }

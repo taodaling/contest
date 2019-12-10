@@ -68,6 +68,10 @@ public class Modular {
         return valueOf(x - y);
     }
 
+    public Modular getModularForPowerComputation() {
+        return new Modular(m - 1);
+    }
+
     @Override
     public String toString() {
         return "mod " + m;

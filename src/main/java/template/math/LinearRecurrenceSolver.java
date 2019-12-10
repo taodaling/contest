@@ -8,42 +8,36 @@ import java.util.BitSet;
 
 public class LinearRecurrenceSolver {
     Modular mod;
-    IntList a;
     IntList coe;
     IntList p;
     IntList remainder;
     Power pow;
     int n;
 
-    private void init(IntList a, IntList coe, Modular mod) {
-        if (a.size() < coe.size()) {
-            throw new IllegalArgumentException();
-        }
-        this.a = a;
+    private LinearRecurrenceSolver(IntList coe, Modular mod) {
         this.coe = coe;
         this.mod = mod;
         n = coe.size();
         pow = new Power(mod);
-        remainder = new IntList(a.size());
-        p = new IntList(a.size());
+        remainder = new IntList(coe.size());
+        p = new IntList(coe.size() + 1);
         for (int i = n - 1; i >= 0; i--) {
             p.add(mod.valueOf(-coe.get(i)));
         }
         p.add(1);
-
     }
 
     /**
      * a_i = coe(0) * (a_{i-1}) + ...
      */
-    public LinearRecurrenceSolver(IntList a, IntList coe, Modular mod) {
-        init(a, coe, mod);
+    public static LinearRecurrenceSolver newSolverFromLinearRecurrence(IntList coe, Modular mod) {
+        return new LinearRecurrenceSolver(coe, mod);
     }
 
     /**
      * Auto detect linear recurrence from given sequence
      */
-    public LinearRecurrenceSolver(IntList seq, Modular mod) {
+    public static LinearRecurrenceSolver newSolverFromSequence(IntList seq, Modular mod) {
         ModLinearFeedbackShiftRegister lfsr = new ModLinearFeedbackShiftRegister(mod, seq.size());
         for (int i = 0; i < seq.size(); i++) {
             lfsr.add(seq.get(i));
@@ -52,22 +46,10 @@ public class LinearRecurrenceSolver {
         for (int i = 1; i <= lfsr.length(); i++) {
             coes.add(lfsr.codeAt(i));
         }
-        init(seq, coes, mod);
+        return newSolverFromLinearRecurrence(coes, mod);
     }
 
-    /**
-     * Auto detect linear recurrence from given matrix and vec
-     */
-    public LinearRecurrenceSolver(ModMatrix mat, IntList vec, Modular mod) {
-        GravityModLagrangeInterpolation.Polynomial p = mat.getCharacteristicPolynomial(new Power(mod));
-        IntList coe = new IntList(p.getRank() + 1);
-        for (int i = p.getRank(); i >= 0; i--) {
-            coe.add(p.getCoefficient(i));
-        }
-        init(vec, coe, mod);
-    }
-
-    private int solve() {
+    private int solve(IntList a) {
         int ans = 0;
         remainder.expandWith(0, n);
         for (int i = 0; i < n; i++) {
@@ -79,19 +61,25 @@ public class LinearRecurrenceSolver {
     /**
      * Get a_k
      */
-    public int solve(long k) {
+    public int solve(long k, IntList a) {
         if (k < a.size()) {
             return a.get((int) k);
         }
         Polynomials.module(k, p, remainder, pow);
-        return solve();
+        return solve(a);
+    }
+
+    public IntList getRemainder(long k, IntList remainder) {
+        Polynomials.module(k, p, remainder, pow);
+        remainder.expandWith(0, n);
+        return remainder;
     }
 
     /**
      * Get a_k
      */
-    public int solve(BitSet k) {
+    public int solve(BitSet k, IntList a) {
         Polynomials.module(k, p, remainder, pow);
-        return solve();
+        return solve(a);
     }
 }

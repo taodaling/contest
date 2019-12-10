@@ -11,11 +11,15 @@ public class PrimitiveRoot {
     int phi;
     private static PollardRho rho = new PollardRho();
 
-    public PrimitiveRoot(int x) {
-        phi = x - 1;
-        mod = new Modular(x);
+    public PrimitiveRoot(Modular x) {
+        phi = x.getMod() - 1;
+        mod = x;
         pow = new Power(mod);
         factors = rho.findAllFactors(phi).keySet().stream().mapToInt(Integer::intValue).toArray();
+    }
+
+    public PrimitiveRoot(int x) {
+        this(new Modular(x));
     }
 
     public int findMinPrimitiveRoot() {

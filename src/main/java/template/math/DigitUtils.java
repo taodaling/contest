@@ -17,6 +17,10 @@ public class DigitUtils {
         return x;
     }
 
+    public static int roundToInt(double x) {
+        return (int)round(x);
+    }
+
     public static long round(double x) {
         if (x >= 0) {
             return (long) (x + 0.5);

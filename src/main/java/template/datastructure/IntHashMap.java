@@ -68,6 +68,14 @@ public class IntHashMap {
     }
 
     public void put(int x, int y) {
+        put(x, y, true);
+    }
+
+    public void putIfNotExist(int x, int y) {
+        put(x, y, false);
+    }
+
+    public void put(int x, int y, boolean cover) {
         int h = hash(x);
         int s = h & mask;
         if (slot[s] == 0) {
@@ -75,14 +83,14 @@ public class IntHashMap {
             slot[s] = alloc;
             keys[alloc] = x;
             values[alloc] = y;
-        }else {
+        } else {
             int index = findIndexOrLastEntry(s, x);
             if (keys[index] != x) {
                 alloc();
                 next[index] = alloc;
                 keys[alloc] = x;
                 values[alloc] = y;
-            } else {
+            } else if (cover) {
                 values[index] = y;
             }
         }
