@@ -1,0 +1,40 @@
+{
+  "name" : "F. Ivan and Burgers",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4\n7 2 3 4\n3\n1 4\n2 3\n1 3\n",
+    "output" : "7\n3\n7\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "5\n12 14 23 13 7\n15\n1 1\n1 2\n1 3\n1 4\n1 5\n2 2\n2 3\n2 4\n2 5\n3 3\n3 4\n3 5\n4 4\n4 5\n5 5\n",
+    "output" : "12\n14\n27\n27\n31\n14\n25\n26\n30\n23\n26\n29\n13\n13\n7\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.FIvanAndBurgers",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.12.11",
+  "contestName" : "Codeforces Round #532 (Div. 2)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

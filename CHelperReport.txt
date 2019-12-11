@@ -1,2 +1,2 @@
-47 src/main/java/contest/F. Trucks and Cities.json
+46 src/main/java/contest/F. Ivan and Burgers.json
 0
