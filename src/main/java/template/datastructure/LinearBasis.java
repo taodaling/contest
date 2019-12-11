@@ -43,11 +43,24 @@ public class LinearBasis {
         return false;
     }
 
+    /**
+     * Check whether val can be get by xor the numbers in basis
+     */
+    public boolean test(long val) {
+        for (int i = 63; i >= 0 && val != 0; i--) {
+            if (bitAt(val, i) == 0) {
+                continue;
+            }
+            val ^= map[i];
+        }
+        return val != 0;
+    }
+
     private long bitAt(long val, int i) {
         return (val >>> i) & 1;
     }
 
-    public long xorNumberCount(){
+    public long xorNumberCount() {
         return 1L << size;
     }
 

@@ -1,7 +1,6 @@
 package template.math;
 
 import template.datastructure.IntList;
-import template.polynomial.GravityModLagrangeInterpolation;
 import template.polynomial.Polynomials;
 
 import java.util.BitSet;

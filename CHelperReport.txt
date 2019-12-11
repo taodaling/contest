@@ -1,2 +1,2 @@
-36 src/main/java/contest/LUOGU3390.json
+47 src/main/java/contest/F. Trucks and Cities.json
 0
