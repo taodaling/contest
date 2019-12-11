@@ -59,6 +59,8 @@ public class LinearRecurrenceSolver {
     }
 
     /**
+     * when a_0 = a[0], a_1 = a[1], ...
+     * <br>
      * Get a_k
      */
     public int solve(long k, IntList a) {

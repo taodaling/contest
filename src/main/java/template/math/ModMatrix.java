@@ -41,16 +41,6 @@ public class ModMatrix {
         }
     }
 
-    public ModMatrix getTransposeMatrix() {
-        ModMatrix mat = new ModMatrix(m, n);
-        for(int i = 0; i < n; i++){
-            for(int j = 0; j < m; j++){
-                mat.mat[j][i] = this.mat[i][j];
-            }
-        }
-        return mat;
-    }
-
     public void asStandard(Modular mod) {
         fill(0);
         if (mod.getMod() == 1) {

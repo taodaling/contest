@@ -1,5 +1,5 @@
 {
-  "name" : "NOD51_1014",
+  "name" : "261. Discrete Roots",
   "testType" : "SINGLE",
   "input" : {
     "type" : "STANDARD",
@@ -10,20 +10,30 @@
     "fileName" : "output.txt"
   },
   "tests" : [ {
-    "input" : "13 3",
-    "output" : "4 9",
+    "input" : "11 3 8",
+    "output" : "1 \n2",
     "index" : 0,
+    "active" : true
+  }, {
+    "input" : "11 3 0",
+    "output" : "1 \n0",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "11 0 0",
+    "output" : "0",
+    "index" : 2,
     "active" : true
   } ],
   "location" : "src/main/java/contest",
-  "vmArgs" : "-Xmx256M",
+  "vmArgs" : "-Xmx65M",
   "mainClass" : "Main",
-  "taskClass" : "contest.NOD51_1014",
+  "taskClass" : "contest.DiscreteRoots",
   "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
   "checkerParameters" : "",
   "testClasses" : [ ],
   "date" : "2019.12.11",
-  "contestName" : "",
+  "contestName" : "Codeforces - acm.sgu.ru archive",
   "truncate" : true,
   "inputClass" : "template.io.FastInput",
   "outputClass" : "template.io.FastOutput",

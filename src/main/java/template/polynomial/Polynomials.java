@@ -1,5 +1,6 @@
 package template.polynomial;
 
+import template.math.ExtGCD;
 import template.math.Power;
 import template.datastructure.IntList;
 import template.math.Modular;
@@ -9,6 +10,7 @@ import java.util.BitSet;
 
 public class Polynomials {
     public static Buffer<IntList> listBuffer = new Buffer<>(IntList::new, list -> list.clear());
+    private static ExtGCD extGCD = new ExtGCD();
 
     public static int rankOf(IntList p) {
         int[] data = p.getData();
@@ -92,7 +94,7 @@ public class Polynomials {
     }
 
     /**
-     * a = b * c + remainder
+     * a = b * c + remainder, the first number of b should be relative prime with mod
      */
     public static void divide(IntList a, IntList b, IntList c, IntList remainder, Power pow) {
         Modular mod = pow.getModular();
@@ -117,7 +119,10 @@ public class Polynomials {
         int[] cData = c.getData();
         int[] rData = remainder.getData();
 
-        int inv = pow.inverse(b.get(rB));
+        if (extGCD.extgcd(b.get(rB), mod.getMod()) != 1) {
+            throw new IllegalArgumentException();
+        }
+        int inv = mod.valueOf(extGCD.getX());
         for (int i = rA, j = rC; i >= rB; i--, j--) {
             if (rData[i] == 0) {
                 continue;
@@ -177,7 +182,7 @@ public class Polynomials {
     }
 
     /**
-     * Try find x^k % p = remainder
+     * Try find x^k % p = remainder, the first number of b should be relative prime with mod
      */
     public static void module(BitSet k, IntList p, IntList remainder, Power pow) {
         int rP = rankOf(p);

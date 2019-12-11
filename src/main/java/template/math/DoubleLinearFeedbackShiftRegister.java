@@ -80,8 +80,6 @@ public class DoubleLinearFeedbackShiftRegister {
             cn = buf;
             buf = tmp;
         }
-
-
     }
 
     public int length() {

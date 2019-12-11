@@ -1,2 +1,2 @@
-37 src/main/java/contest/NOD51_1014.json
+36 src/main/java/contest/LUOGU3390.json
 0

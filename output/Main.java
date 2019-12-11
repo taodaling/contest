@@ -1,19 +1,18 @@
 import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.stream.IntStream;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Random;
-import java.util.Map;
-import java.io.OutputStreamWriter;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.Collection;
 import java.io.IOException;
+import java.util.Deque;
+import java.util.function.Supplier;
 import java.io.UncheckedIOException;
-import java.util.stream.Stream;
+import java.util.function.Consumer;
 import java.io.Closeable;
 import java.io.Writer;
+import java.io.OutputStreamWriter;
+import java.util.ArrayDeque;
 import java.io.InputStream;
 
 /**
@@ -32,313 +31,67 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            NOD51_1014 solver = new NOD51_1014();
-            solver.solve(1, in, out);
+            LUOGU3390 solver = new LUOGU3390();
+            int testCount = Integer.parseInt(in.next());
+            for (int i = 1; i <= testCount; i++)
+                solver.solve(i, in, out);
             out.close();
         }
     }
 
-    static class NOD51_1014 {
+    static class LUOGU3390 {
+        IntList a = new IntList();
+        Modular mod = new Modular(1e9 + 7);
+        LinearRecurrenceSolver solver;
+
+        {
+            a.expandWith(1, 3);
+            IntList seq = new IntList();
+            seq.addAll(new int[]{1, 1, 1, 2, 3, 4});
+            solver = LinearRecurrenceSolver.newSolverFromSequence(seq, mod);
+        }
+
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            int p = in.readInt();
-            int a = in.readInt();
-            ModPrimeRoot root = new ModPrimeRoot(new Modular(p));
-            IntList ans = new IntList();
-            root.allRoot(a, 2, ans);
-            ans.unique();
-            for (int i = 0; i < ans.size(); i++) {
-                out.append(ans.get(i)).append(' ');
-            }
+            int n = in.readInt();
+            int ans = solver.solve(n - 1, a);
+            out.println(ans);
         }
 
     }
 
-    static class RelativePrimeModLog {
-        Modular mod;
-        Modular powMod;
-        int x;
-        int invX;
-        int phi;
-        IntHashMap map;
-        int m;
-        CachedPow pow;
-        private static ExtGCD extGCD = new ExtGCD();
+    static class ExtGCD {
+        private long x;
+        private long y;
+        private long g;
 
-        public RelativePrimeModLog(int x, Modular mod) {
-            this.x = x;
-            this.mod = mod;
-            phi = mod.getMod();
-            powMod = new Modular(phi);
-            if (extGCD.extgcd(x, mod.getMod()) != 1) {
-                throw new IllegalArgumentException();
-            }
-            invX = mod.valueOf(extGCD.getX());
-            pow = new CachedPow(invX, mod);
-
-            m = (int) Math.ceil(Math.sqrt(phi));
-            map = new IntHashMap(m, false);
-
-            int prod = mod.valueOf(1);
-            for (int i = 0; i < m; i++) {
-                map.putIfNotExist(prod, i);
-                prod = mod.mul(prod, x);
-            }
+        public long getX() {
+            return x;
         }
 
-        public int log(int y) {
-            y = mod.valueOf(y);
-            int start = 0;
-            while (start * m < phi) {
-                int inverse = pow.pow(powMod.valueOf(start * m));
-                int val = map.getOrDefault(mod.mul(inverse, y), -1);
-                if (val >= 0) {
-                    return powMod.valueOf(val + start * m);
-                }
-                start++;
-            }
-            return -1;
-        }
-
-    }
-
-    static class IntHashSet {
-        private int[] slot;
-        private int[] next;
-        private int[] keys;
-        private int alloc;
-        private boolean[] removed;
-        private int mask;
-        private int size;
-        private boolean rehash;
-
-        public IntHashSet(int cap, boolean rehash) {
-            this.mask = (1 << (32 - Integer.numberOfLeadingZeros(cap - 1))) - 1;
-            this.rehash = rehash;
-            slot = new int[mask + 1];
-            next = new int[cap + 1];
-            keys = new int[cap + 1];
-            removed = new boolean[cap + 1];
-        }
-
-        private void doubleCapacity() {
-            int newSize = Math.max(next.length + 10, next.length * 2);
-            next = Arrays.copyOf(next, newSize);
-            keys = Arrays.copyOf(keys, newSize);
-            removed = Arrays.copyOf(removed, newSize);
-        }
-
-        public void alloc() {
-            alloc++;
-            if (alloc >= next.length) {
-                doubleCapacity();
-            }
-            next[alloc] = 0;
-            removed[alloc] = false;
-            size++;
-        }
-
-        private int hash(int x) {
-            int h = Long.hashCode(x);
-            return h ^ (h >>> 16);
-        }
-
-        public void add(int x) {
-            int h = hash(x);
-            int s = h & mask;
-            if (slot[s] == 0) {
-                alloc();
-                slot[s] = alloc;
-                keys[alloc] = x;
-                return;
+        public long extgcd(long a, long b) {
+            if (a >= b) {
+                g = extgcd0(a, b);
             } else {
-                int index = findIndexOrLastEntry(s, x);
-                if (keys[index] != x) {
-                    alloc();
-                    next[index] = alloc;
-                    keys[alloc] = x;
-                }
+                g = extgcd0(b, a);
+                long tmp = x;
+                x = y;
+                y = tmp;
             }
-            if (rehash && size >= slot.length) {
-                rehash();
-            }
+            return g;
         }
 
-        private void rehash() {
-            int[] newSlots = new int[Math.max(16, slot.length * 2)];
-            int newMask = newSlots.length - 1;
-            for (int i = 0; i < slot.length; i++) {
-                if (slot[i] == 0) {
-                    continue;
-                }
-                int head = slot[i];
-                while (head != 0) {
-                    int n = next[head];
-                    int s = hash(keys[head]) & newMask;
-                    next[head] = newSlots[s];
-                    newSlots[s] = head;
-                    head = n;
-                }
+        private long extgcd0(long a, long b) {
+            if (b == 0) {
+                x = 1;
+                y = 0;
+                return a;
             }
-            this.slot = newSlots;
-            this.mask = newMask;
-        }
-
-        public boolean contain(int x) {
-            int h = hash(x);
-            int s = h & mask;
-            if (slot[s] == 0) {
-                return false;
-            }
-            return keys[findIndexOrLastEntry(s, x)] == x;
-        }
-
-        private int findIndexOrLastEntry(int s, int x) {
-            int iter = slot[s];
-            while (keys[iter] != x) {
-                if (next[iter] != 0) {
-                    iter = next[iter];
-                } else {
-                    return iter;
-                }
-            }
-            return iter;
-        }
-
-        public IntIterator iterator() {
-            return new IntIterator() {
-                int index = 1;
-
-
-                public boolean hasNext() {
-                    while (index <= alloc && removed[index]) {
-                        index++;
-                    }
-                    return index <= alloc;
-                }
-
-
-                public int next() {
-                    if (!hasNext()) {
-                        throw new IllegalStateException();
-                    }
-                    return keys[index++];
-                }
-            };
-        }
-
-        public String toString() {
-            IntIterator iterator = iterator();
-            StringBuilder builder = new StringBuilder("{");
-            while (iterator.hasNext()) {
-                builder.append(iterator.next()).append(',');
-            }
-            if (builder.charAt(builder.length() - 1) == ',') {
-                builder.setLength(builder.length() - 1);
-            }
-            builder.append('}');
-            return builder.toString();
-        }
-
-    }
-
-    static class Randomized {
-        static Random random = new Random();
-
-        public static void randomizedArray(int[] data, int from, int to) {
-            to--;
-            for (int i = from; i <= to; i++) {
-                int s = nextInt(i, to);
-                int tmp = data[i];
-                data[i] = data[s];
-                data[s] = tmp;
-            }
-        }
-
-        public static int nextInt(int l, int r) {
-            return random.nextInt(r - l + 1) + l;
-        }
-
-    }
-
-    static class Power {
-        final Modular modular;
-
-        public Power(Modular modular) {
-            this.modular = modular;
-        }
-
-        public int pow(int x, int n) {
-            if (n == 0) {
-                return modular.valueOf(1);
-            }
-            long r = pow(x, n >> 1);
-            r = modular.valueOf(r * r);
-            if ((n & 1) == 1) {
-                r = modular.valueOf(r * x);
-            }
-            return (int) r;
-        }
-
-    }
-
-    static class PollardRho {
-        MillerRabin mr = new MillerRabin();
-        Gcd gcd = new Gcd();
-        Random random = new Random();
-
-        public int findFactor(int n) {
-            if (mr.mr(n, 10)) {
-                return n;
-            }
-            while (true) {
-                int f = findFactor0(random.nextInt(n), random.nextInt(n), n);
-                if (f != -1) {
-                    return f;
-                }
-            }
-        }
-
-        public Map<Integer, Integer> findAllFactors(int n) {
-            Map<Integer, Integer> map = new HashMap();
-            findAllFactors(map, n);
-            return map;
-        }
-
-        private void findAllFactors(Map<Integer, Integer> map, int n) {
-            if (n == 1) {
-                return;
-            }
-            int f = findFactor(n);
-            if (f == n) {
-                Integer value = map.get(f);
-                if (value == null) {
-                    value = 1;
-                }
-                map.put(f, value * f);
-                return;
-            }
-            findAllFactors(map, f);
-            findAllFactors(map, n / f);
-        }
-
-        private int findFactor0(int x, int c, int n) {
-            int xi = x;
-            int xj = x;
-            int j = 2;
-            int i = 1;
-            while (i < n) {
-                i++;
-                xi = (int) ((long) xi * xi + c) % n;
-                int g = gcd.gcd(n, Math.abs(xi - xj));
-                if (g != 1 && g != n) {
-                    return g;
-                }
-                if (i == j) {
-                    j = j << 1;
-                    xj = xi;
-                }
-            }
-            return -1;
+            long g = extgcd0(b, a % b);
+            long n = x;
+            long m = y;
+            x = m;
+            y = n - m * (a / b);
+            return g;
         }
 
     }
@@ -348,6 +101,10 @@ public class Main {
         private int cap;
         private int[] data;
         private static final int[] EMPTY = new int[0];
+
+        public int[] getData() {
+            return data;
+        }
 
         public IntList(int cap) {
             this.cap = cap;
@@ -393,27 +150,40 @@ public class Main {
             data[size++] = x;
         }
 
-        public void sort() {
-            if (size <= 1) {
-                return;
-            }
-            Randomized.randomizedArray(data, 0, size);
-            Arrays.sort(data, 0, size);
+        public void addAll(int[] x) {
+            addAll(x, 0, x.length);
         }
 
-        public void unique() {
-            if (size <= 1) {
+        public void addAll(int[] x, int offset, int len) {
+            ensureSpace(size + len);
+            System.arraycopy(x, offset, data, size, len);
+            size += len;
+        }
+
+        public void addAll(IntList list) {
+            addAll(list.data, 0, list.size);
+        }
+
+        public void expandWith(int x, int len) {
+            ensureSpace(len);
+            while (size < len) {
+                data[size++] = x;
+            }
+        }
+
+        public void retain(int n) {
+            if (n < 0) {
+                throw new IllegalArgumentException();
+            }
+            if (n >= size) {
                 return;
             }
+            size = n;
+        }
 
-            sort();
-            int wpos = 1;
-            for (int i = 1; i < size; i++) {
-                if (data[i] != data[wpos - 1]) {
-                    data[wpos++] = data[i];
-                }
-            }
-            size = wpos;
+        public void set(int i, int x) {
+            checkRange(i);
+            data[i] = x;
         }
 
         public int size() {
@@ -422,6 +192,10 @@ public class Main {
 
         public int[] toArray() {
             return Arrays.copyOf(data, size);
+        }
+
+        public void clear() {
+            size = 0;
         }
 
         public String toString() {
@@ -446,37 +220,109 @@ public class Main {
 
     }
 
-    static class SequenceUtils {
-        public static boolean equal(int[] a, int al, int ar, int[] b, int bl, int br) {
-            if ((ar - al) != (br - bl)) {
-                return false;
-            }
-            for (int i = al, j = bl; i <= ar; i++, j++) {
-                if (a[i] != b[j]) {
-                    return false;
-                }
-            }
-            return true;
+    static class ModLinearFeedbackShiftRegister {
+        private IntList cm;
+        int m = -1;
+        int dm;
+        private IntList cn;
+        private IntList buf;
+        private IntList seq;
+        private Modular mod;
+        private Power pow;
+
+        public ModLinearFeedbackShiftRegister(Modular mod, int cap) {
+            cm = new IntList(cap + 1);
+            cn = new IntList(cap + 1);
+            seq = new IntList(cap + 1);
+            buf = new IntList(cap + 1);
+            cn.add(1);
+
+            this.mod = mod;
+            this.pow = new Power(mod);
         }
 
-    }
-
-    static class DigitUtils {
-        private DigitUtils() {
+        public ModLinearFeedbackShiftRegister(Modular mod) {
+            this(mod, 0);
         }
 
-        public static long round(double x) {
-            if (x >= 0) {
-                return (long) (x + 0.5);
-            } else {
-                return (long) (x - 0.5);
+        private int estimateDelta() {
+            int n = seq.size() - 1;
+            int ans = 0;
+            int[] cnData = cn.getData();
+            int[] seqData = seq.getData();
+            for (int i = 0, until = cn.size(); i < until; i++) {
+                ans = mod.plus(ans, mod.mul(cnData[i], seqData[n - i]));
             }
+            return ans;
+        }
+
+        public void add(int x) {
+            x = mod.valueOf(x);
+            int n = seq.size();
+
+            seq.add(x);
+            int dn = estimateDelta();
+            if (dn == 0) {
+                return;
+            }
+
+            if (m < 0) {
+                cm.clear();
+                cm.addAll(cn);
+                dm = dn;
+                m = n;
+
+                cn.expandWith(0, n + 2);
+                return;
+            }
+
+            int ln = cn.size() - 1;
+            int len = Math.max(ln, n + 1 - ln);
+            buf.clear();
+            buf.addAll(cn);
+            buf.expandWith(0, len + 1);
+
+            int factor = mod.mul(dn, pow.inverse(dm));
+
+            int[] bufData = buf.getData();
+            int[] cmData = cm.getData();
+            for (int i = n - m, until = n - m + cm.size(); i < until; i++) {
+                bufData[i] = mod.subtract(bufData[i], mod.mul(factor, cmData[i - (n - m)]));
+            }
+
+            if (cn.size() < buf.size()) {
+                IntList tmp = cm;
+                cm = cn;
+                cn = tmp;
+                m = n;
+                dm = dn;
+            }
+            {
+                IntList tmp = cn;
+                cn = buf;
+                buf = tmp;
+            }
+
+
+        }
+
+        public int length() {
+            return cn.size() - 1;
+        }
+
+        public String toString() {
+            return cn.toString();
+        }
+
+        public int codeAt(int i) {
+            return mod.valueOf(-cn.get(i));
         }
 
     }
 
     static class FastInput {
         private final InputStream is;
+        private StringBuilder defaultStringBuf = new StringBuilder(1 << 13);
         private byte[] buf = new byte[1 << 13];
         private int bufLen;
         private int bufOffset;
@@ -507,6 +353,10 @@ public class Main {
             }
         }
 
+        public String next() {
+            return readString();
+        }
+
         public int readInt() {
             int sign = 1;
 
@@ -530,6 +380,281 @@ public class Main {
             }
 
             return val;
+        }
+
+        public String readString(StringBuilder builder) {
+            skipBlank();
+
+            while (next > 32) {
+                builder.append((char) next);
+                next = read();
+            }
+
+            return builder.toString();
+        }
+
+        public String readString() {
+            defaultStringBuf.setLength(0);
+            return readString(defaultStringBuf);
+        }
+
+    }
+
+    static class SequenceUtils {
+        public static boolean equal(int[] a, int al, int ar, int[] b, int bl, int br) {
+            if ((ar - al) != (br - bl)) {
+                return false;
+            }
+            for (int i = al, j = bl; i <= ar; i++, j++) {
+                if (a[i] != b[j]) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+    }
+
+    static class LinearRecurrenceSolver {
+        Modular mod;
+        IntList coe;
+        IntList p;
+        IntList remainder;
+        Power pow;
+        int n;
+
+        private LinearRecurrenceSolver(IntList coe, Modular mod) {
+            this.coe = coe;
+            this.mod = mod;
+            n = coe.size();
+            pow = new Power(mod);
+            remainder = new IntList(coe.size());
+            p = new IntList(coe.size() + 1);
+            for (int i = n - 1; i >= 0; i--) {
+                p.add(mod.valueOf(-coe.get(i)));
+            }
+            p.add(1);
+        }
+
+        public static LinearRecurrenceSolver newSolverFromLinearRecurrence(IntList coe, Modular mod) {
+            return new LinearRecurrenceSolver(coe, mod);
+        }
+
+        public static LinearRecurrenceSolver newSolverFromSequence(IntList seq, Modular mod) {
+            ModLinearFeedbackShiftRegister lfsr = new ModLinearFeedbackShiftRegister(mod, seq.size());
+            for (int i = 0; i < seq.size(); i++) {
+                lfsr.add(seq.get(i));
+            }
+            IntList coes = new IntList(lfsr.length());
+            for (int i = 1; i <= lfsr.length(); i++) {
+                coes.add(lfsr.codeAt(i));
+            }
+            return newSolverFromLinearRecurrence(coes, mod);
+        }
+
+        private int solve(IntList a) {
+            int ans = 0;
+            remainder.expandWith(0, n);
+            for (int i = 0; i < n; i++) {
+                ans = mod.plus(ans, mod.mul(remainder.get(i), a.get(i)));
+            }
+            return ans;
+        }
+
+        public int solve(long k, IntList a) {
+            if (k < a.size()) {
+                return a.get((int) k);
+            }
+            Polynomials.module(k, p, remainder, pow);
+            return solve(a);
+        }
+
+    }
+
+    static class Buffer<T> {
+        private Deque<T> deque;
+        private Supplier<T> supplier;
+        private Consumer<T> cleaner;
+
+        public Buffer(Supplier<T> supplier) {
+            this(supplier, (x) -> {
+            });
+        }
+
+        public Buffer(Supplier<T> supplier, Consumer<T> cleaner) {
+            this(supplier, cleaner, 0);
+        }
+
+        public Buffer(Supplier<T> supplier, Consumer<T> cleaner, int exp) {
+            this.supplier = supplier;
+            this.cleaner = cleaner;
+            deque = new ArrayDeque<>(exp);
+        }
+
+        public T alloc() {
+            return deque.isEmpty() ? supplier.get() : deque.removeFirst();
+        }
+
+        public void release(T e) {
+            cleaner.accept(e);
+            deque.addLast(e);
+        }
+
+    }
+
+    static class FastOutput implements AutoCloseable, Closeable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
+
+        public FastOutput(Writer os) {
+            this.os = os;
+        }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput println(int c) {
+            cache.append(c).append('\n');
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            return this;
+        }
+
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+
+        public String toString() {
+            return cache.toString();
+        }
+
+    }
+
+    static class Polynomials {
+        public static Buffer<IntList> listBuffer = new Buffer<>(IntList::new, list -> list.clear());
+        private static ExtGCD extGCD = new ExtGCD();
+
+        public static int rankOf(IntList p) {
+            int[] data = p.getData();
+            int r = p.size() - 1;
+            while (r >= 0 && data[r] == 0) {
+                r--;
+            }
+            return Math.max(0, r);
+        }
+
+        public static void normalize(IntList list) {
+            list.retain(rankOf(list) + 1);
+        }
+
+        public static void mul(IntList a, IntList b, IntList c, Modular mod) {
+            int rA = rankOf(a);
+            int rB = rankOf(b);
+            c.clear();
+            c.expandWith(0, rA + rB + 1);
+            int[] aData = a.getData();
+            int[] bData = b.getData();
+            int[] cData = c.getData();
+            for (int i = 0; i <= rA; i++) {
+                for (int j = 0; j <= rB; j++) {
+                    cData[i + j] = mod.plus(cData[i + j], mod.mul(aData[i], bData[j]));
+                }
+            }
+        }
+
+        public static void divide(IntList a, IntList b, IntList c, IntList remainder, Power pow) {
+            Modular mod = pow.getModular();
+            int rA = rankOf(a);
+            int rB = rankOf(b);
+
+            if (rA < rB) {
+                c.clear();
+                c.add(0);
+                remainder.clear();
+                remainder.addAll(a);
+                return;
+            }
+
+            int rC = Math.max(0, rA - rB);
+            c.clear();
+            c.expandWith(0, rC + 1);
+            remainder.clear();
+            remainder.addAll(a);
+
+            int[] bData = b.getData();
+            int[] cData = c.getData();
+            int[] rData = remainder.getData();
+
+            if (extGCD.extgcd(b.get(rB), mod.getMod()) != 1) {
+                throw new IllegalArgumentException();
+            }
+            int inv = mod.valueOf(extGCD.getX());
+            for (int i = rA, j = rC; i >= rB; i--, j--) {
+                if (rData[i] == 0) {
+                    continue;
+                }
+                int factor = mod.mul(-rData[i], inv);
+                cData[j] = mod.valueOf(-factor);
+                for (int k = rB; k >= 0; k--) {
+                    rData[k + j] = mod.plus(rData[k + j], mod.mul(factor, bData[k]));
+                }
+            }
+
+            normalize(remainder);
+        }
+
+        public static void module(long k, IntList p, IntList remainder, Power pow) {
+            int rP = rankOf(p);
+            if (rP == 0) {
+                remainder.clear();
+                remainder.add(0);
+                return;
+            }
+
+            IntList a = listBuffer.alloc();
+            IntList c = listBuffer.alloc();
+
+            module(k, a, p, c, remainder, rP, pow);
+
+            listBuffer.release(a);
+            listBuffer.release(c);
+        }
+
+        private static void module(long k, IntList a, IntList b, IntList c, IntList remainder, int rb, Power pow) {
+            Modular mod = pow.getModular();
+            if (k < rb) {
+                remainder.clear();
+                remainder.expandWith(0, (int) k + 1);
+                remainder.set((int) k, 1);
+                return;
+            }
+            module(k / 2, a, b, c, remainder, rb, pow);
+            mul(remainder, remainder, a, mod);
+            if (k % 2 == 1) {
+                int ra = rankOf(a);
+                a.expandWith(0, ra + 2);
+                int[] aData = a.getData();
+                for (int i = ra; i >= 0; i--) {
+                    aData[i + 1] = aData[i];
+                }
+                aData[0] = 0;
+            }
+            divide(a, b, c, remainder, pow);
         }
 
     }
@@ -579,8 +704,12 @@ public class Main {
             return valueOf((long) x * y);
         }
 
-        public Modular getModularForPowerComputation() {
-            return new Modular(m - 1);
+        public int plus(int x, int y) {
+            return valueOf(x + y);
+        }
+
+        public int subtract(int x, int y) {
+            return valueOf(x - y);
         }
 
         public String toString() {
@@ -589,451 +718,31 @@ public class Main {
 
     }
 
-    static class MillerRabin {
-        Modular modular;
-        Power power;
-        Random random = new Random();
+    static class Power {
+        final Modular modular;
 
-        public boolean mr(int n, int s) {
-            if (n == 2) {
-                return true;
+        public Modular getModular() {
+            return modular;
+        }
+
+        public Power(Modular modular) {
+            this.modular = modular;
+        }
+
+        public int pow(int x, int n) {
+            if (n == 0) {
+                return modular.valueOf(1);
             }
-            if (n % 2 == 0) {
-                return false;
+            long r = pow(x, n >> 1);
+            r = modular.valueOf(r * r);
+            if ((n & 1) == 1) {
+                r = modular.valueOf(r * x);
             }
-            modular = new Modular(n);
-            power = new Power(modular);
-            for (int i = 0; i < s; i++) {
-                int x = random.nextInt(n - 2) + 2;
-                if (!mr0(x, n)) {
-                    return false;
-                }
-            }
-            return true;
+            return (int) r;
         }
 
-        private boolean mr0(int x, int n) {
-            int exp = n - 1;
-            while (true) {
-                int y = power.pow(x, exp);
-                if (y != 1 && y != n - 1) {
-                    return false;
-                }
-                if (y != 1 || exp % 2 == 1) {
-                    break;
-                }
-                exp = exp / 2;
-            }
-            return true;
-        }
-
-    }
-
-    static class ExtGCD {
-        private long x;
-        private long y;
-        private long g;
-
-        public long getX() {
-            return x;
-        }
-
-        public long extgcd(long a, long b) {
-            if (a >= b) {
-                g = extgcd0(a, b);
-            } else {
-                g = extgcd0(b, a);
-                long tmp = x;
-                x = y;
-                y = tmp;
-            }
-            return g;
-        }
-
-        private long extgcd0(long a, long b) {
-            if (b == 0) {
-                x = 1;
-                y = 0;
-                return a;
-            }
-            long g = extgcd0(b, a % b);
-            long n = x;
-            long m = y;
-            x = m;
-            y = n - m * (a / b);
-            return g;
-        }
-
-    }
-
-    static interface IntIterator {
-        boolean hasNext();
-
-        int next();
-
-    }
-
-    static interface IntEntryIterator {
-        boolean hasNext();
-
-        void next();
-
-        int getEntryKey();
-
-        int getEntryValue();
-
-    }
-
-    static class CachedPow {
-        private int[] first;
-        private int[] second;
-        private Modular mod;
-
-        public CachedPow(int x, Modular mod) {
-            this(x, mod.getMod(), mod);
-        }
-
-        public CachedPow(int x, int maxExp, Modular mod) {
-            this.mod = mod;
-            int k = Math.max(1, (int) DigitUtils.round(Math.sqrt(maxExp)));
-            first = new int[k];
-            second = new int[maxExp / k + 1];
-            first[0] = 1;
-            for (int i = 1; i < k; i++) {
-                first[i] = mod.mul(x, first[i - 1]);
-            }
-            second[0] = 1;
-            int step = mod.mul(x, first[k - 1]);
-            for (int i = 1; i < second.length; i++) {
-                second[i] = mod.mul(second[i - 1], step);
-            }
-        }
-
-        public int pow(int exp) {
-            return mod.mul(first[exp % first.length], second[exp / first.length]);
-        }
-
-    }
-
-    static class Gcd {
-        public int gcd(int a, int b) {
-            return a >= b ? gcd0(a, b) : gcd0(b, a);
-        }
-
-        private int gcd0(int a, int b) {
-            return b == 0 ? a : gcd0(b, a % b);
-        }
-
-    }
-
-    static class ModPrimeRoot {
-        private RelativePrimeModLog log;
-        private Modular mod;
-        private Modular powMod;
-        private static ExtGCD extGCD = new ExtGCD();
-        private static Gcd gcd = new Gcd();
-        private Power power;
-        private int primitiveRoot;
-
-        public ModPrimeRoot(Modular p) {
-            this(p, new PrimitiveRoot(p).findMinPrimitiveRoot());
-        }
-
-        public ModPrimeRoot(Modular p, int g) {
-            mod = p;
-            log = new RelativePrimeModLog(g, mod);
-            powMod = mod.getModularForPowerComputation();
-            power = new Power(mod);
-            primitiveRoot = g;
-        }
-
-        public void allRoot(int x, int k, IntList list) {
-            x = mod.valueOf(x);
-            k = powMod.valueOf(k);
-            if (x == 0) {
-                if (k == 0) {
-                    return;
-                }
-                list.add(0);
-                return;
-            }
-            if (k == 0) {
-                if (x == 1) {
-                    for (int i = 0, end = mod.getMod(); i < end; i++) {
-                        list.add(i);
-                    }
-                    return;
-                }
-                return;
-            }
-
-            int logx = log.log(x);
-            int gcd = (int) extGCD.extgcd(k, powMod.getMod());
-            if (logx % gcd != 0) {
-                return;
-            }
-            int loga = powMod.mul(logx / gcd, powMod.valueOf(extGCD.getX()));
-            int phi = powMod.getMod();
-            phi = phi / ModPrimeRoot.gcd.gcd(phi, k);
-            loga %= phi;
-            int first = power.pow(primitiveRoot, loga);
-            int step = power.pow(primitiveRoot, phi);
-            IntHashSet set = new IntHashSet(1, true);
-            for (; !set.contain(first); first = mod.mul(first, step)) {
-                set.add(first);
-                list.add(first);
-            }
-        }
-
-    }
-
-    static class IntHashMap {
-        private int[] slot;
-        private int[] next;
-        private int[] keys;
-        private int[] values;
-        private int alloc;
-        private boolean[] removed;
-        private int mask;
-        private int size;
-        private boolean rehash;
-
-        public IntHashMap(int cap, boolean rehash) {
-            this.mask = (1 << (32 - Integer.numberOfLeadingZeros(cap - 1))) - 1;
-            slot = new int[mask + 1];
-            next = new int[cap + 1];
-            keys = new int[cap + 1];
-            values = new int[cap + 1];
-            removed = new boolean[cap + 1];
-            this.rehash = rehash;
-        }
-
-        private void doubleCapacity() {
-            int newSize = Math.max(next.length + 10, next.length * 2);
-            next = Arrays.copyOf(next, newSize);
-            keys = Arrays.copyOf(keys, newSize);
-            values = Arrays.copyOf(values, newSize);
-            removed = Arrays.copyOf(removed, newSize);
-        }
-
-        public void alloc() {
-            alloc++;
-            if (alloc >= next.length) {
-                doubleCapacity();
-            }
-            next[alloc] = 0;
-            removed[alloc] = false;
-            size++;
-        }
-
-        private void rehash() {
-            int[] newSlots = new int[Math.max(16, slot.length * 2)];
-            int newMask = newSlots.length - 1;
-            for (int i = 0; i < slot.length; i++) {
-                if (slot[i] == 0) {
-                    continue;
-                }
-                int head = slot[i];
-                while (head != 0) {
-                    int n = next[head];
-                    int s = hash(keys[head]) & newMask;
-                    next[head] = newSlots[s];
-                    newSlots[s] = head;
-                    head = n;
-                }
-            }
-            this.slot = newSlots;
-            this.mask = newMask;
-        }
-
-        private int hash(int x) {
-            return x ^ (x >>> 16);
-        }
-
-        public void putIfNotExist(int x, int y) {
-            put(x, y, false);
-        }
-
-        public void put(int x, int y, boolean cover) {
-            int h = hash(x);
-            int s = h & mask;
-            if (slot[s] == 0) {
-                alloc();
-                slot[s] = alloc;
-                keys[alloc] = x;
-                values[alloc] = y;
-            } else {
-                int index = findIndexOrLastEntry(s, x);
-                if (keys[index] != x) {
-                    alloc();
-                    next[index] = alloc;
-                    keys[alloc] = x;
-                    values[alloc] = y;
-                } else if (cover) {
-                    values[index] = y;
-                }
-            }
-            if (rehash && size >= slot.length) {
-                rehash();
-            }
-        }
-
-        public int getOrDefault(int x, int def) {
-            int h = hash(x);
-            int s = h & mask;
-            if (slot[s] == 0) {
-                return def;
-            }
-            int index = findIndexOrLastEntry(s, x);
-            return keys[index] == x ? values[index] : def;
-        }
-
-        private int findIndexOrLastEntry(int s, int x) {
-            int iter = slot[s];
-            while (keys[iter] != x) {
-                if (next[iter] != 0) {
-                    iter = next[iter];
-                } else {
-                    return iter;
-                }
-            }
-            return iter;
-        }
-
-        public IntEntryIterator iterator() {
-            return new IntEntryIterator() {
-                int index = 1;
-                int readIndex = -1;
-
-
-                public boolean hasNext() {
-                    while (index <= alloc && removed[index]) {
-                        index++;
-                    }
-                    return index <= alloc;
-                }
-
-
-                public int getEntryKey() {
-                    return keys[readIndex];
-                }
-
-
-                public int getEntryValue() {
-                    return values[readIndex];
-                }
-
-
-                public void next() {
-                    if (!hasNext()) {
-                        throw new IllegalStateException();
-                    }
-                    readIndex = index;
-                    index++;
-                }
-            };
-        }
-
-        public String toString() {
-            IntEntryIterator iterator = iterator();
-            StringBuilder builder = new StringBuilder("{");
-            while (iterator.hasNext()) {
-                iterator.next();
-                builder.append(iterator.getEntryKey()).append("->").append(iterator.getEntryValue()).append(',');
-            }
-            if (builder.charAt(builder.length() - 1) == ',') {
-                builder.setLength(builder.length() - 1);
-            }
-            builder.append('}');
-            return builder.toString();
-        }
-
-    }
-
-    static class FastOutput implements AutoCloseable, Closeable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
-
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput append(char c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput append(int c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        }
-
-        public String toString() {
-            return cache.toString();
-        }
-
-    }
-
-    static class PrimitiveRoot {
-        private int[] factors;
-        private Modular mod;
-        private Power pow;
-        int phi;
-        private static PollardRho rho = new PollardRho();
-
-        public PrimitiveRoot(Modular x) {
-            phi = x.getMod() - 1;
-            mod = x;
-            pow = new Power(mod);
-            factors = rho.findAllFactors(phi).keySet().stream().mapToInt(Integer::intValue).toArray();
-        }
-
-        public PrimitiveRoot(int x) {
-            this(new Modular(x));
-        }
-
-        public int findMinPrimitiveRoot() {
-            return findMinPrimitiveRoot(2);
-        }
-
-        public int findMinPrimitiveRoot(int since) {
-            for (int i = since; i < mod.m; i++) {
-                boolean flag = true;
-                for (int f : factors) {
-                    if (pow.pow(i, phi / f) == 1) {
-                        flag = false;
-                        break;
-                    }
-                }
-                if (flag) {
-                    return i;
-                }
-            }
-            return -1;
+        public int inverse(int x) {
+            return pow(x, modular.m - 2);
         }
 
     }
