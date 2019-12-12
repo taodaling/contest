@@ -1,2 +1,2 @@
-46 src/main/java/contest/F. Ivan and Burgers.json
+34 src/main/java/contest/D. Eels.json
 0
