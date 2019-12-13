@@ -1,8 +1,6 @@
 package template.math;
 
-import template.datastructure.IntHashMap;
 import template.datastructure.IntHashSet;
-import template.datastructure.IntIterator;
 import template.datastructure.IntList;
 
 public class ModPrimeRoot {
@@ -10,7 +8,6 @@ public class ModPrimeRoot {
     private Modular mod;
     private Modular powMod;
     private static ExtGCD extGCD = new ExtGCD();
-    private static Gcd gcd = new Gcd();
     private Power power;
     private int primitiveRoot;
 
@@ -53,7 +50,7 @@ public class ModPrimeRoot {
         }
         int loga = powMod.mul(logx / gcd, powMod.valueOf(extGCD.getX()));
         int phi = powMod.getMod();
-        phi = phi / ModPrimeRoot.gcd.gcd(phi, k);
+        phi = phi / GCDs.gcd(phi, k);
         loga %= phi;
         int first = power.pow(primitiveRoot, loga);
         int step = power.pow(primitiveRoot, phi);

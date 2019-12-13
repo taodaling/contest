@@ -11,14 +11,13 @@ public class GenericModLog {
     private int a;
     private Modular original;
     private Modular modular;
-    private static Gcd gcd = new Gcd();
     private static ExtGCD extGCD = new ExtGCD();
 
     public GenericModLog(int a, int p) {
         a = DigitUtils.mod(a, p);
         original = new Modular(p);
         int g;
-        while ((g = gcd.gcd(a, p)) != 1) {
+        while ((g = GCDs.gcd(a, p)) != 1) {
             mul = original.mul(mul, a / g);
             div *= g;
             p /= g;

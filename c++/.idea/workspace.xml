@@ -15,8 +15,254 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e173ed55-e541-424a-82e1-b5da979c74d7" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/../src/main/java/template/datastructure/SparseSegment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/main/java/template/graph/MinCostMaxFlow.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/template/graph/MinCostMaxFlow.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../archive/unsorted/2019.12/2019.12.13 - Codeforces Round #604 (Div. 1)/CBeautifulMirrorsWithQueries.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../src/main/java/template/math/CatTree.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../src/main/java/template/math/LCMs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CHelperReport.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../CHelperReport.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../output/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/../output/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/template/datastructure/SparseTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/template/datastructure/SparseTable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/template/graph/LcaOnTree.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/template/graph/LcaOnTree.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/template/math/BitOperator.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/template/math/Bits.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/template/math/CachedLog2.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/template/math/CachedLog2.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/template/math/CachedPow.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/template/math/CachedPow.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/template/math/ExpressionSolver.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/template/math/ExpressionSolver.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/template/math/Gcd.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/template/math/GCDs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/template/math/GenericModLog.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/template/math/GenericModLog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/template/math/Lcm.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/template/math/LongPollardRho.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/template/math/LongPollardRho.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/template/math/ModPrimeRoot.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/template/math/ModPrimeRoot.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/template/math/PollardRho.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/template/math/PollardRho.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/template/math/QuadraticResidue.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/template/math/QuadraticResidue.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_02_Codeforces_Round__571__Div__2_/E___Vus_the_Cossack_and_a_Field/E - Vus the Cossack and a Field.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_02_Codeforces_Round__571__Div__2_/E___Vus_the_Cossack_and_a_Field/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_02_Codeforces_Round__571__Div__2_/E___Vus_the_Cossack_and_a_Field/TaskE.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_02_Codeforces_Round__575__Div__3_/F___K_th_Path/F - K-th Path.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_02_Codeforces_Round__575__Div__3_/F___K_th_Path/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_02_Codeforces_Round__575__Div__3_/F___K_th_Path/TaskF.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_02_Educational_Codeforces_Round_67__Rated_for_Div__2_/F___Expected_Square_Beauty/F - Expected Square Beauty.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_02_Educational_Codeforces_Round_67__Rated_for_Div__2_/F___Expected_Square_Beauty/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_02_Educational_Codeforces_Round_67__Rated_for_Div__2_/F___Expected_Square_Beauty/TaskF.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Codeforces_Round__570__Div__3_/F___Topforces_Strikes_Back/F - Topforces Strikes Back.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Codeforces_Round__570__Div__3_/F___Topforces_Strikes_Back/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Codeforces_Round__570__Div__3_/F___Topforces_Strikes_Back/TaskF.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/A___Frog_1/A - Frog 1.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/A___Frog_1/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/A___Frog_1/TaskA.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/B___Frog_2/B - Frog 2.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/B___Frog_2/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/B___Frog_2/TaskB.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/C___Vacation/C - Vacation.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/C___Vacation/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/C___Vacation/TaskC.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/D___Knapsack_1/D - Knapsack 1.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/D___Knapsack_1/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/D___Knapsack_1/TaskD.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/E___Knapsack_2/E - Knapsack 2.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/E___Knapsack_2/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/E___Knapsack_2/TaskE.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/F___LCS/F - LCS.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/F___LCS/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/F___LCS/TaskF.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/F___LCS/TaskFChecker.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/G___Longest_Path/G - Longest Path.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/G___Longest_Path/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/G___Longest_Path/TaskG.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/H___Grid_1/H - Grid 1.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/H___Grid_1/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/H___Grid_1/TaskH.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/I___Coins/I - Coins.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/I___Coins/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/I___Coins/TaskI.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/J___Sushi/J - Sushi.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/J___Sushi/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/J___Sushi/TaskJ.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/K___Stones/K - Stones.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/K___Stones/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/K___Stones/TaskK.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/L___Deque/L - Deque.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/L___Deque/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/L___Deque/TaskL.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/M___Candies/M - Candies.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/M___Candies/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/M___Candies/TaskM.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/N___Slimes/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/N___Slimes/N - Slimes.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/N___Slimes/TaskN.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/O___Matching/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/O___Matching/O - Matching.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/O___Matching/TaskO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/P___Independent_Set/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/P___Independent_Set/P - Independent Set.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/P___Independent_Set/TaskP.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/Q___Flowers/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/Q___Flowers/Q - Flowers.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/Q___Flowers/TaskQ.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/R___Walk/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/R___Walk/R - Walk.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/R___Walk/TaskR.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/S___Digit_Sum/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/S___Digit_Sum/S - Digit Sum.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/S___Digit_Sum/TaskS.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/T___Permutation/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/T___Permutation/T - Permutation.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/T___Permutation/TaskT.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/U___Grouping/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/U___Grouping/TaskU.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/U___Grouping/U - Grouping.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/V___Subtree/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/V___Subtree/TaskV.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/V___Subtree/V - Subtree.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/W___Intervals/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/W___Intervals/TaskW.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/W___Intervals/W - Intervals.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/X___Tower/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/X___Tower/TaskX.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/X___Tower/X - Tower.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/Y___Grid_2/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/Y___Grid_2/TaskY.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/Y___Grid_2/Y - Grid 2.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/Z___Frog_3/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/Z___Frog_3/TaskZ.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_03_Educational_DP_Contest/Z___Frog_3/Z - Frog 3.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_04_/LOJ101/LOJ101.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_04_/LOJ101/LOJ101.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_04_/LOJ101/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_04_Codeforces_Round__547__Div__3_/G___Privatization_of_Roads_in_Treeland/G - Privatization of Roads in Treeland.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_04_Codeforces_Round__547__Div__3_/G___Privatization_of_Roads_in_Treeland/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_04_Codeforces_Round__547__Div__3_/G___Privatization_of_Roads_in_Treeland/TaskG.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_04_Codeforces_Round__547__Div__3_/G___Privatization_of_Roads_in_Treeland0/G - Privatization of Roads in Treeland.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_04_Codeforces_Round__547__Div__3_/G___Privatization_of_Roads_in_Treeland0/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_04_Codeforces_Round__547__Div__3_/G___Privatization_of_Roads_in_Treeland0/TaskG.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_04_Codeforces_Round__547__Div__3_/G___Privatization_of_Roads_in_Treeland1/G - Privatization of Roads in Treeland.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_04_Codeforces_Round__547__Div__3_/G___Privatization_of_Roads_in_Treeland1/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_04_Codeforces_Round__547__Div__3_/G___Privatization_of_Roads_in_Treeland1/TaskG.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_04_Codeforces_Round__550__Div__3_/G___Two_Merged_Sequences/G - Two Merged Sequences.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_04_Codeforces_Round__550__Div__3_/G___Two_Merged_Sequences/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_04_Codeforces_Round__550__Div__3_/G___Two_Merged_Sequences/TaskG.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_04_Codeforces_Round__569__Div__1_/D___Fedor_Runs_for_President/D - Fedor Runs for President.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_04_Codeforces_Round__569__Div__1_/D___Fedor_Runs_for_President/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_04_Codeforces_Round__569__Div__1_/D___Fedor_Runs_for_President/TaskD.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_04_Codeforces_Round__569__Div__1_/D___Fedor_Runs_for_President0/D - Fedor Runs for President.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_04_Codeforces_Round__569__Div__1_/D___Fedor_Runs_for_President0/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_04_Codeforces_Round__569__Div__1_/D___Fedor_Runs_for_President0/TaskD.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_04_Codeforces_Round__585__Div__2_/F___Radio_Stations/F - Radio Stations.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_04_Codeforces_Round__585__Div__2_/F___Radio_Stations/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_04_Codeforces_Round__585__Div__2_/F___Radio_Stations/TaskF.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_04_Educational_Codeforces_Round_66__Rated_for_Div__2_/G___Yet_Another_Partiton_Problem/G - Yet Another Partiton Problem.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_04_Educational_Codeforces_Round_66__Rated_for_Div__2_/G___Yet_Another_Partiton_Problem/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_04_Educational_Codeforces_Round_66__Rated_for_Div__2_/G___Yet_Another_Partiton_Problem/TaskG.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_05_AISing_Programming_Contest_2019/E___Attack_to_a_Tree/E - Attack to a Tree.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_05_AISing_Programming_Contest_2019/E___Attack_to_a_Tree/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_05_AISing_Programming_Contest_2019/E___Attack_to_a_Tree/TaskE.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_05_Codeforces_Round__545__Div__1_/D___Cooperative_Game/D - Cooperative Game.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_05_Codeforces_Round__545__Div__1_/D___Cooperative_Game/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_05_Codeforces_Round__545__Div__1_/D___Cooperative_Game/TaskD.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_05_Codeforces_Round__546__Div__2_/E___Nastya_Hasn_t_Written_a_Legend/E - Nastya Hasn't Written a Legend.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_05_Codeforces_Round__546__Div__2_/E___Nastya_Hasn_t_Written_a_Legend/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_05_Codeforces_Round__546__Div__2_/E___Nastya_Hasn_t_Written_a_Legend/TaskE.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_05_Codeforces_Round__604__Div__1_/A___Beautiful_Regional_Contest/A - Beautiful Regional Contest.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_05_Codeforces_Round__604__Div__1_/A___Beautiful_Regional_Contest/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_05_Codeforces_Round__604__Div__1_/A___Beautiful_Regional_Contest/TaskA.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_05_Codeforces_Round__604__Div__1_/B___Beautiful_Sequence/B - Beautiful Sequence.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_05_Codeforces_Round__604__Div__1_/B___Beautiful_Sequence/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_05_Codeforces_Round__604__Div__1_/B___Beautiful_Sequence/TaskB.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_05_Educational_Codeforces_Round_61__Rated_for_Div__2_/E___Knapsack/E - Knapsack.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_05_Educational_Codeforces_Round_61__Rated_for_Div__2_/E___Knapsack/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_05_Educational_Codeforces_Round_61__Rated_for_Div__2_/E___Knapsack/TaskE.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_05_Educational_Codeforces_Round_61__Rated_for_Div__2_/G___Greedy_Subsequences/G - Greedy Subsequences.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_05_Educational_Codeforces_Round_61__Rated_for_Div__2_/G___Greedy_Subsequences/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_05_Educational_Codeforces_Round_61__Rated_for_Div__2_/G___Greedy_Subsequences/TaskG.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_05_Educational_Codeforces_Round_61__Rated_for_Div__2_/G___Greedy_Subsequences/TaskGTestCase.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_06_Codeforces_Round__538__Div__2_/F___Please__another_Queries_on_Array_/F - Please, another Queries on Array-.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_06_Codeforces_Round__538__Div__2_/F___Please__another_Queries_on_Array_/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_06_Codeforces_Round__538__Div__2_/F___Please__another_Queries_on_Array_/TaskF.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_06_Codeforces_Round__540__Div__3_/F2___Tree_Cutting__Hard_Version_/F2 - Tree Cutting (Hard Version).json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_06_Codeforces_Round__540__Div__3_/F2___Tree_Cutting__Hard_Version_/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_06_Codeforces_Round__540__Div__3_/F2___Tree_Cutting__Hard_Version_/TaskF2.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_06_Codeforces_Round__604__Div__1_/C___Beautiful_Mirrors_with_queries/C - Beautiful Mirrors with queries.json" beforeDir="false" afterPath="$PROJECT_DIR$/../archive/unsorted/2019.12/2019.12.13 - Codeforces Round #604 (Div. 1)/C. Beautiful Mirrors with queries.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_06_Codeforces_Round__604__Div__1_/C___Beautiful_Mirrors_with_queries/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_06_Codeforces_Round__604__Div__1_/C___Beautiful_Mirrors_with_queries/TaskC.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_06_Codeforces_Round__604__Div__1_/D1___Beautiful_Bracket_Sequence__easy_version_/D1 - Beautiful Bracket Sequence (easy version).json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_06_Codeforces_Round__604__Div__1_/D1___Beautiful_Bracket_Sequence__easy_version_/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_06_Codeforces_Round__604__Div__1_/D1___Beautiful_Bracket_Sequence__easy_version_/TaskD1.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_06_Codeforces_Round__604__Div__1_/E___Beautiful_League/E - Beautiful League.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_06_Codeforces_Round__604__Div__1_/E___Beautiful_League/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_06_Codeforces_Round__604__Div__1_/E___Beautiful_League/TaskE.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_06_Educational_Codeforces_Round_60__Rated_for_Div__2_/F___Crisp_String/F - Crisp String.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_06_Educational_Codeforces_Round_60__Rated_for_Div__2_/F___Crisp_String/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_06_Educational_Codeforces_Round_60__Rated_for_Div__2_/F___Crisp_String/TaskF.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_07_/IntExtCRTTest/IntExtCRTTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_07_/IntExtCRTTest/IntExtCRTTest.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_07_/IntExtCRTTest/IntExtCRTTestTestCase.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_07_/IntExtCRTTest/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_07_Codeforces_Round__539__Div__1_/D___Sasha_and_Interesting_Fact_from_Graph_Theory/D - Sasha and Interesting Fact from Graph Theory.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_07_Codeforces_Round__539__Div__1_/D___Sasha_and_Interesting_Fact_from_Graph_Theory/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_07_Codeforces_Round__539__Div__1_/D___Sasha_and_Interesting_Fact_from_Graph_Theory/TaskD.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_07_Codeforces_Round__539__Div__1_/D___Sasha_and_Interesting_Fact_from_Graph_Theory0/D - Sasha and Interesting Fact from Graph Theory.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_07_Codeforces_Round__539__Div__1_/D___Sasha_and_Interesting_Fact_from_Graph_Theory0/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_07_Codeforces_Round__539__Div__1_/D___Sasha_and_Interesting_Fact_from_Graph_Theory0/TaskD.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_07_Codeforces_Round__539__Div__1_/E___Sasha_and_a_Very_Easy_Test/E - Sasha and a Very Easy Test.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_07_Codeforces_Round__539__Div__1_/E___Sasha_and_a_Very_Easy_Test/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_07_Codeforces_Round__539__Div__1_/E___Sasha_and_a_Very_Easy_Test/TaskE.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_07_Educational_Codeforces_Round_59__Rated_for_Div__2_/F___Vasya_and_Endless_Credits/F - Vasya and Endless Credits.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_07_Educational_Codeforces_Round_59__Rated_for_Div__2_/F___Vasya_and_Endless_Credits/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_07_Educational_Codeforces_Round_59__Rated_for_Div__2_/F___Vasya_and_Endless_Credits/TaskF.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_07_Educational_Codeforces_Round_59__Rated_for_Div__2_/G___Vasya_and_Maximum_Profit/G - Vasya and Maximum Profit.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_07_Educational_Codeforces_Round_59__Rated_for_Div__2_/G___Vasya_and_Maximum_Profit/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_07_Educational_Codeforces_Round_59__Rated_for_Div__2_/G___Vasya_and_Maximum_Profit/TaskG.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_08_AtCoder_Beginner_Contest_147/A___Blackjack/A - Blackjack.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_08_AtCoder_Beginner_Contest_147/A___Blackjack/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_08_AtCoder_Beginner_Contest_147/A___Blackjack/TaskA.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_08_AtCoder_Beginner_Contest_147/B___Palindrome_philia/B - Palindrome-philia.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_08_AtCoder_Beginner_Contest_147/B___Palindrome_philia/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_08_AtCoder_Beginner_Contest_147/B___Palindrome_philia/TaskB.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_08_AtCoder_Beginner_Contest_147/C___HonestOrUnkind2/C - HonestOrUnkind2.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_08_AtCoder_Beginner_Contest_147/C___HonestOrUnkind2/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_08_AtCoder_Beginner_Contest_147/C___HonestOrUnkind2/TaskC.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_08_AtCoder_Beginner_Contest_147/D___Xor_Sum_4/D - Xor Sum 4.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_08_AtCoder_Beginner_Contest_147/D___Xor_Sum_4/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_08_AtCoder_Beginner_Contest_147/D___Xor_Sum_4/TaskD.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_08_AtCoder_Beginner_Contest_147/E___Balanced_Path/E - Balanced Path.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_08_AtCoder_Beginner_Contest_147/E___Balanced_Path/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_08_AtCoder_Beginner_Contest_147/E___Balanced_Path/TaskE.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_08_AtCoder_Beginner_Contest_147/F___Sum_Difference/F - Sum Difference.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_08_AtCoder_Beginner_Contest_147/F___Sum_Difference/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_08_AtCoder_Beginner_Contest_147/F___Sum_Difference/TaskF.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_08_AtCoder_Beginner_Contest_147/IntervalBooleanMapTest/IntervalBooleanMapTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_08_AtCoder_Beginner_Contest_147/IntervalBooleanMapTest/IntervalBooleanMapTest.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_08_AtCoder_Beginner_Contest_147/IntervalBooleanMapTest/IntervalBooleanMapTestTestCase.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_08_AtCoder_Beginner_Contest_147/IntervalBooleanMapTest/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_09_Educational_Codeforces_Round_59__Rated_for_Div__2_/F___Vasya_and_Endless_Credits/F - Vasya and Endless Credits.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_09_Educational_Codeforces_Round_59__Rated_for_Div__2_/F___Vasya_and_Endless_Credits/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_09_Educational_Codeforces_Round_59__Rated_for_Div__2_/F___Vasya_and_Endless_Credits/TaskF.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_10_/LUOGU4195/LUOGU4195.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_10_/LUOGU4195/LUOGU4195.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_10_/LUOGU4195/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_10_Codeforces_Round__536__Div__2_/F__Lunar_New_Year_and_a_Recursive_Sequence/F. Lunar New Year and a Recursive Sequence.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_10_Codeforces_Round__536__Div__2_/F__Lunar_New_Year_and_a_Recursive_Sequence/FLunarNewYearAndARecursiveSequence.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_10_Codeforces_Round__536__Div__2_/F__Lunar_New_Year_and_a_Recursive_Sequence/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_10_Educational_Codeforces_Round_59__Rated_for_Div__2_/E__Vasya_and_Binary_String/E. Vasya and Binary String.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_10_Educational_Codeforces_Round_59__Rated_for_Div__2_/E__Vasya_and_Binary_String/EVasyaAndBinaryString.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_10_Educational_Codeforces_Round_59__Rated_for_Div__2_/E__Vasya_and_Binary_String/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_11_Codeforces_Round__531__Div__3_/F__Elongated_Matrix/F. Elongated Matrix.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_11_Codeforces_Round__531__Div__3_/F__Elongated_Matrix/FElongatedMatrix.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_11_Codeforces_Round__531__Div__3_/F__Elongated_Matrix/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_11_Codeforces_Round__536__Div__2_/F__Lunar_New_Year_and_a_Recursive_Sequence/F. Lunar New Year and a Recursive Sequence.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_11_Codeforces_Round__536__Div__2_/F__Lunar_New_Year_and_a_Recursive_Sequence/FLunarNewYearAndARecursiveSequence.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_11_Codeforces_Round__536__Div__2_/F__Lunar_New_Year_and_a_Recursive_Sequence/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_11_Codeforces_Round__536__Div__2_/F___Lunar_New_Year_and_a_Recursive_Sequence/F - Lunar New Year and a Recursive Sequence.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_11_Codeforces_Round__536__Div__2_/F___Lunar_New_Year_and_a_Recursive_Sequence/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_11_Codeforces_Round__536__Div__2_/F___Lunar_New_Year_and_a_Recursive_Sequence/TaskF.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_11_Codeforces_Round__536__Div__2_/LUOGU3390/LUOGU3390.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_11_Codeforces_Round__536__Div__2_/LUOGU3390/LUOGU3390.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_11_Codeforces_Round__536__Div__2_/LUOGU3390/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_11_Educational_Codeforces_Round_58__Rated_for_Div__2_/F__Trucks_and_Cities/F. Trucks and Cities.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_11_Educational_Codeforces_Round_58__Rated_for_Div__2_/F__Trucks_and_Cities/FTrucksAndCities.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_11_Educational_Codeforces_Round_58__Rated_for_Div__2_/F__Trucks_and_Cities/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_11_Educational_Codeforces_Round_58__Rated_for_Div__2_/G____Zero_XOR_Subset__less/G - (Zero XOR Subset)-less.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_11_Educational_Codeforces_Round_58__Rated_for_Div__2_/G____Zero_XOR_Subset__less/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_11_Educational_Codeforces_Round_58__Rated_for_Div__2_/G____Zero_XOR_Subset__less/TaskG.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../target/test-classes/META-INF/contest.kotlin_module" beforeDir="false" afterPath="$PROJECT_DIR$/../target/test-classes/META-INF/contest.kotlin_module" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,6 +275,7 @@
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
   </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="name.admitriev.jhelper.configuration.TaskConfigurationExecutionTargetCMakeBuildProfile:Debug" />
   <component name="FavoritesManager">
     <favorites_list name="jhelper-example-project" />
   </component>
@@ -55,7 +302,7 @@
     <property name="restartRequiresConfirmation" value="true" />
     <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.Console Font" />
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Task.LUOGU4719">
     <configuration name="Build All" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" CONFIG_NAME="Debug" EXPLICIT_BUILD_TARGET_NAME="all">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -130,6 +377,7 @@
       <item itemvalue="CMake Application.output" />
       <item itemvalue="CMake Application.test" />
       <item itemvalue="CMake Application.testrunner" />
+      <item itemvalue="Task.LUOGU4719" />
     </list>
   </component>
   <component name="ServiceViewManager">
@@ -157,6 +405,7 @@
       <workItem from="1575906048540" duration="1681000" />
       <workItem from="1575941742717" duration="305000" />
       <workItem from="1575942111094" duration="14632000" />
+      <workItem from="1576214760916" duration="10365000" />
     </task>
     <servers />
   </component>
@@ -188,58 +437,66 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="808" y="37" key="#xdebugger.evaluate/0.0.1920.1040@0.0.1920.1040" timestamp="1575959380083" />
-    <state width="745" height="573" key="GridCell.Tab.0.bottom" timestamp="1575962289998">
+    <state width="486" height="759" key="DebuggerActiveHint" timestamp="1576229054741">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="745" height="573" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1575962289998" />
+    <state width="486" height="759" key="DebuggerActiveHint/0.0.1920.1040@0.0.1920.1040" timestamp="1576229054741" />
+    <state width="745" height="573" key="GridCell.Tab.0.bottom" timestamp="1576230625753">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="745" height="573" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1576230625753" />
     <state width="1214" height="332" key="GridCell.Tab.0.bottom/0.0.2560.1400@0.0.2560.1400" timestamp="1575907151326" />
-    <state width="745" height="573" key="GridCell.Tab.0.center" timestamp="1575962289998">
+    <state width="745" height="573" key="GridCell.Tab.0.center" timestamp="1576230625753">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="745" height="573" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1575962289998" />
+    <state width="745" height="573" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1576230625753" />
     <state width="1214" height="332" key="GridCell.Tab.0.center/0.0.2560.1400@0.0.2560.1400" timestamp="1575907151326" />
-    <state width="745" height="573" key="GridCell.Tab.0.left" timestamp="1575962289998">
+    <state width="745" height="573" key="GridCell.Tab.0.left" timestamp="1576230625753">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="745" height="573" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1575962289998" />
+    <state width="745" height="573" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1576230625753" />
     <state width="1214" height="332" key="GridCell.Tab.0.left/0.0.2560.1400@0.0.2560.1400" timestamp="1575907151325" />
-    <state width="745" height="573" key="GridCell.Tab.0.right" timestamp="1575962289998">
+    <state width="745" height="573" key="GridCell.Tab.0.right" timestamp="1576230625753">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="745" height="573" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1575962289998" />
+    <state width="745" height="573" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1576230625753" />
     <state width="1214" height="332" key="GridCell.Tab.0.right/0.0.2560.1400@0.0.2560.1400" timestamp="1575907151326" />
-    <state width="745" height="573" key="GridCell.Tab.1.bottom" timestamp="1575962289998">
+    <state width="745" height="573" key="GridCell.Tab.1.bottom" timestamp="1576230625753">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="745" height="573" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1575962289998" />
+    <state width="745" height="573" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1576230625753" />
     <state width="1245" height="466" key="GridCell.Tab.1.bottom/0.0.2560.1400@0.0.2560.1400" timestamp="1575906180943" />
-    <state width="745" height="573" key="GridCell.Tab.1.center" timestamp="1575962289998">
+    <state width="745" height="573" key="GridCell.Tab.1.center" timestamp="1576230625753">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="745" height="573" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1575962289998" />
+    <state width="745" height="573" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1576230625753" />
     <state width="1245" height="466" key="GridCell.Tab.1.center/0.0.2560.1400@0.0.2560.1400" timestamp="1575906180943" />
-    <state width="745" height="573" key="GridCell.Tab.1.left" timestamp="1575962289998">
+    <state width="745" height="573" key="GridCell.Tab.1.left" timestamp="1576230625753">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="745" height="573" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1575962289998" />
+    <state width="745" height="573" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1576230625753" />
     <state width="1245" height="466" key="GridCell.Tab.1.left/0.0.2560.1400@0.0.2560.1400" timestamp="1575906180943" />
-    <state width="745" height="573" key="GridCell.Tab.1.right" timestamp="1575962289998">
+    <state width="745" height="573" key="GridCell.Tab.1.right" timestamp="1576230625753">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="745" height="573" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1575962289998" />
+    <state width="745" height="573" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1576230625753" />
     <state width="1245" height="466" key="GridCell.Tab.1.right/0.0.2560.1400@0.0.2560.1400" timestamp="1575906180943" />
     <state x="463" y="139" key="SettingsEditor" timestamp="1575942455129">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="463" y="139" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1575942455129" />
-    <state x="665" y="352" key="com.intellij.ide.util.TipDialog" timestamp="1575942111110">
+    <state x="614" y="198" width="675" height="665" key="StructurePopup" timestamp="1576227487576">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="665" y="352" key="com.intellij.ide.util.TipDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1575942111110" />
+    <state x="614" y="198" width="675" height="665" key="StructurePopup/0.0.1920.1040@0.0.1920.1040" timestamp="1576227487576" />
+    <state x="665" y="352" key="com.intellij.ide.util.TipDialog" timestamp="1576214800077">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="665" y="352" key="com.intellij.ide.util.TipDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1576214800077" />
     <state x="887" y="474" key="com.intellij.ide.util.TipDialog/0.0.2560.1400@0.0.2560.1400" timestamp="1575906048663" />
-    <state x="532" y="-5" width="838" height="1032" key="search.everywhere.popup" timestamp="1575956992970">
+    <state x="532" y="-5" width="840" height="1032" key="search.everywhere.popup" timestamp="1576220786242">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="532" y="-5" width="838" height="1032" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1575956992970" />
+    <state x="532" y="-5" width="840" height="1032" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1576220786242" />
   </component>
 </project>

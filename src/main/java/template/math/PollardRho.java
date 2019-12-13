@@ -1,8 +1,5 @@
 package template.math;
 
-import template.math.Gcd;
-import template.math.MillerRabin;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -12,7 +9,6 @@ import java.util.Random;
  */
 public class PollardRho {
     MillerRabin mr = new MillerRabin();
-    Gcd gcd = new Gcd();
     Random random = new Random();
 
     public int findFactor(int n) {
@@ -64,7 +60,7 @@ public class PollardRho {
         while (i < n) {
             i++;
             xi = (int) ((long) xi * xi + c) % n;
-            int g = gcd.gcd(n, Math.abs(xi - xj));
+            int g = GCDs.gcd(n, Math.abs(xi - xj));
             if (g != 1 && g != n) {
                 return g;
             }

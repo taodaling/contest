@@ -5,7 +5,6 @@ import java.util.Random;
 
 public class QuadraticResidue {
     final Modular modular;
-    final BitOperator bitOperator = new BitOperator();
     Power power;
     final PollardRho rho = new PollardRho();
     Random random = new Random();
@@ -45,7 +44,7 @@ public class QuadraticResidue {
                 int nImg = modular.mul(modular.mul(real, img), 2);
                 real = nReal;
                 img = nImg;
-                if (bitOperator.bitAt(pow, i) == 1) {
+                if (Bits.bitAt(pow, i) == 1) {
                     nReal = modular.plus(modular.mul(real, a), modular.mul(img, w));
                     nImg = modular.plus(modular.mul(img, a), real);
                     real = nReal;

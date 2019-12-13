@@ -14,12 +14,9 @@ public class SparseTable<T> {
     // so st[i][j] equals to merge(st[i][j - 1], st[i + 2^(j - 1)][j - 1])
     private Object[][] st;
     private BiFunction<T, T, T> merger;
-    private CachedLog2 log2;
 
     public SparseTable(Object[] data, int length, BiFunction<T, T, T> merger) {
-        log2 = new CachedLog2(length);
-        int m = log2.floorLog(length);
-
+        int m = CachedLog2.floorLog(length);
         st = new Object[m + 1][length];
         this.merger = merger;
         for (int i = 0; i < length; i++) {
@@ -46,7 +43,7 @@ public class SparseTable<T> {
      */
     public T query(int left, int right) {
         int queryLen = right - left + 1;
-        int bit = log2.floorLog(queryLen);
+        int bit = CachedLog2.floorLog(queryLen);
         // x + 2^bit == right + 1
         // So x should be right + 1 - 2^bit - left=queryLen - 2^bit
         return merge((T) st[bit][left], (T) st[bit][right + 1 - (1 << bit)]);

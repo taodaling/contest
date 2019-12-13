@@ -4,6 +4,7 @@ public class CachedPow {
     private int[] first;
     private int[] second;
     private Modular mod;
+    private Modular powMod;
 
     public CachedPow(int x, Modular mod) {
         this(x, mod.getMod(), mod);
@@ -11,6 +12,7 @@ public class CachedPow {
 
     public CachedPow(int x, int maxExp, Modular mod) {
         this.mod = mod;
+        this.powMod = mod.getModularForPowerComputation();
         int k = Math.max(1, (int) DigitUtils.round(Math.sqrt(maxExp)));
         first = new int[k];
         second = new int[maxExp / k + 1];
@@ -29,4 +31,10 @@ public class CachedPow {
         return mod.mul(first[exp % first.length], second[exp / first.length]);
     }
 
+    /**
+     * return x^{-exp}
+     */
+    public int inverse(int exp) {
+        return pow(powMod.valueOf(-exp));
+    }
 }

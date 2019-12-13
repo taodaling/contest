@@ -175,6 +175,33 @@ output/main.cpp.s:
 	$(MAKE) -f CMakeFiles\output.dir\build.make CMakeFiles/output.dir/output/main.cpp.s
 .PHONY : output/main.cpp.s
 
+tasks/LUOGU4719.obj: tasks/LUOGU4719.cpp.obj
+
+.PHONY : tasks/LUOGU4719.obj
+
+# target to build an object file
+tasks/LUOGU4719.cpp.obj:
+	$(MAKE) -f CMakeFiles\test.dir\build.make CMakeFiles/test.dir/tasks/LUOGU4719.cpp.obj
+.PHONY : tasks/LUOGU4719.cpp.obj
+
+tasks/LUOGU4719.i: tasks/LUOGU4719.cpp.i
+
+.PHONY : tasks/LUOGU4719.i
+
+# target to preprocess a source file
+tasks/LUOGU4719.cpp.i:
+	$(MAKE) -f CMakeFiles\test.dir\build.make CMakeFiles/test.dir/tasks/LUOGU4719.cpp.i
+.PHONY : tasks/LUOGU4719.cpp.i
+
+tasks/LUOGU4719.s: tasks/LUOGU4719.cpp.s
+
+.PHONY : tasks/LUOGU4719.s
+
+# target to generate assembly for a file
+tasks/LUOGU4719.cpp.s:
+	$(MAKE) -f CMakeFiles\test.dir\build.make CMakeFiles/test.dir/tasks/LUOGU4719.cpp.s
+.PHONY : tasks/LUOGU4719.cpp.s
+
 testrunner/main.obj: testrunner/main.cpp.obj
 
 .PHONY : testrunner/main.obj
@@ -216,6 +243,9 @@ help:
 	@echo ... output/main.obj
 	@echo ... output/main.i
 	@echo ... output/main.s
+	@echo ... tasks/LUOGU4719.obj
+	@echo ... tasks/LUOGU4719.i
+	@echo ... tasks/LUOGU4719.s
 	@echo ... testrunner/main.obj
 	@echo ... testrunner/main.i
 	@echo ... testrunner/main.s

@@ -201,6 +201,9 @@
 		<Unit filename="C:/Users/daltao/IdeaProjects/contest/c++/output/main.cpp">
 			<Option target="output"/>
 		</Unit>
+		<Unit filename="C:/Users/daltao/IdeaProjects/contest/c++/tasks/LUOGU4719.cpp">
+			<Option target="test"/>
+		</Unit>
 		<Unit filename="C:/Users/daltao/IdeaProjects/contest/c++/testrunner/main.cpp">
 			<Option target="testrunner"/>
 		</Unit>

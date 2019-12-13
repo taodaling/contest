@@ -1,16 +1,11 @@
 package template.math;
 
-import template.math.Gcd;
-import template.math.LongMillerRabin;
-import template.math.LongModular;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
 public class LongPollardRho {
     LongMillerRabin mr = new LongMillerRabin();
-    Gcd gcd = new Gcd();
     LongModular modular;
     Random random = new Random();
 
@@ -38,7 +33,7 @@ public class LongPollardRho {
         while (i < n) {
             i++;
             xi = modular.plus(modular.mul(xi, xi), c);
-            long g = gcd.gcd(n, Math.abs(xi - xj));
+            long g = GCDs.gcd(n, Math.abs(xi - xj));
             if (g != 1 && g != n) {
                 return g;
             }

@@ -1,2 +1,2 @@
-47 src/main/java/contest/F. Trucks and Cities.json
+60 src/main/java/contest/C. Beautiful Mirrors with queries.json
 0
