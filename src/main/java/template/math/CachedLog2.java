@@ -8,7 +8,7 @@ import template.datastructure.BIT;
 public class CachedLog2 {
     private static final int BITS = 16;
     private static final int LIMIT = 1 << BITS;
-    private static final int[] CACHE = new int[LIMIT];
+    private static final byte[] CACHE = new byte[LIMIT];
 
     static {
         int b = 0;
@@ -16,7 +16,7 @@ public class CachedLog2 {
             while ((1 << (b + 1)) <= i) {
                 b++;
             }
-            CACHE[i] = b;
+            CACHE[i] = (byte) b;
         }
     }
 
