@@ -1,17 +1,13 @@
 package template.polynomial;
 
-import template.math.Log2;
-import template.math.Power;
-import template.math.PrimitiveRoot;
+import template.math.*;
 import template.utils.SequenceUtils;
 import template.datastructure.ByteList;
 import template.datastructure.IntList;
-import template.math.Modular;
 import template.utils.Buffer;
-import template.math.DigitUtils;
 
-import java.util.Arrays;
-import java.util.BitSet;
+import java.lang.reflect.Array;
+import java.util.*;
 
 public class NumberTheoryTransform {
     public static final NumberTheoryTransform STANDARD =
@@ -45,27 +41,16 @@ public class NumberTheoryTransform {
         }
     }
 
-    public void prepareReverse(int[] r, int b) {
-        int n = 1 << b;
-        r[0] = 0;
-        for (int i = 1; i < n; i++) {
-            r[i] = (r[i >> 1] >> 1) | ((1 & i) << (b - 1));
-        }
-    }
-
     public void dft(int[] p, int m) {
         int n = 1 << m;
 
-        IntList rev = listBuffer.alloc();
-        rev.expandWith(0, 1 << m);
-        int[] r = rev.getData();
-        prepareReverse(r, m);
-
-        for (int i = 0; i < n; i++) {
-            if (r[i] > i) {
-                int tmp = p[i];
-                p[i] = p[r[i]];
-                p[r[i]] = tmp;
+        int shift = 32 - Integer.numberOfTrailingZeros(n);
+        for (int i = 1; i < n; i++) {
+            int j = Integer.reverse(i << shift);
+            if (i < j) {
+                int temp = p[i];
+                p[i] = p[j];
+                p[j] = temp;
             }
         }
 
@@ -88,7 +73,6 @@ public class NumberTheoryTransform {
             }
         }
 
-        listBuffer.release(rev);
     }
 
     public void idft(int[] p, int m) {
@@ -184,6 +168,57 @@ public class NumberTheoryTransform {
         return;
     }
 
+    /**
+     * calculate lists[0] * lists[1] * ... * lists[lists.length - 1]
+     * by dividing and conquer technology.
+     * <br>
+     * The total time complexity is O(mlogn) while m = lists.length and
+     * n = lists[0].length + lists[1].length + ... + lists[m - 1].length.
+     */
+    public void mulByPQ(IntList[] lists, IntList ans) {
+        PriorityQueue<IntList> pqs = new PriorityQueue<>(lists.length, (a, b) -> a.size() - b.size());
+        for (IntList list : lists) {
+            IntList clone = listBuffer.alloc();
+            clone.addAll(list);
+            pqs.add(clone);
+        }
+        while (pqs.size() > 1) {
+            IntList a = pqs.remove();
+            IntList b = pqs.remove();
+            multiplyAndStoreAnswerIntoA(a, b);
+            listBuffer.release(b);
+            pqs.add(a);
+        }
+
+        IntList last = pqs.remove();
+        ans.clear();
+        ans.addAll(last);
+        listBuffer.release(last);
+        return;
+    }
+
+    public void pow2(IntList a) {
+        int rankAns = (a.size() - 1) * 2;
+        int proper = log2.ceilLog(rankAns + 1);
+        a.expandWith(0, (1 << proper));
+        dft(a.getData(), proper);
+        dotMul(a.getData(), a.getData(), a.getData(), proper);
+        idft(a.getData(), proper);
+        Polynomials.normalize(a);
+    }
+
+    private void multiplyAndStoreAnswerIntoA(IntList a, IntList b) {
+        int rankAns = a.size() - 1 + b.size() - 1;
+        int proper = log2.ceilLog(rankAns + 1);
+        a.expandWith(0, (1 << proper));
+        b.expandWith(0, (1 << proper));
+        dft(a.getData(), proper);
+        dft(b.getData(), proper);
+        dotMul(a.getData(), b.getData(), a.getData(), proper);
+        idft(a.getData(), proper);
+        Polynomials.normalize(a);
+    }
+
     private static final int NTT_THRESHOLD = 128;
 
     private IntList dacMul(IntList[] lists, int l, int r) {
@@ -204,15 +239,7 @@ public class NumberTheoryTransform {
             listBuffer.release(b);
             return ans;
         } else {
-            int rankAns = a.size() - 1 + b.size() - 1;
-            int proper = log2.ceilLog(rankAns + 1);
-            a.expandWith(0, (1 << proper));
-            b.expandWith(0, (1 << proper));
-            dft(a.getData(), proper);
-            dft(b.getData(), proper);
-            dotMul(a.getData(), b.getData(), a.getData(), proper);
-            idft(a.getData(), proper);
-            Polynomials.normalize(a);
+            multiplyAndStoreAnswerIntoA(a, b);
             listBuffer.release(b);
             return a;
         }
@@ -239,7 +266,7 @@ public class NumberTheoryTransform {
         for (int i = 0; i < n; i++) {
             inv[i] = modular.mul(inv[i], 2 - modular.mul(bufData[i], inv[i]));
         }
-        idft(inv, m + 1);
+        idft(inv, (m + 1));
         for (int i = 1 << m; i < n; i++) {
             inv[i] = 0;
         }

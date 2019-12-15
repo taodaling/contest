@@ -3,26 +3,34 @@ package template.algo;
 public class PreXor {
     private long[] pre;
 
-    public PreXor(long[] a) {
-        int n = a.length;
+    public PreXor(int n) {
         pre = new long[n];
+    }
+
+    public void populate(long[] a){
+        int n = a.length;
         pre[0] = a[0];
         for (int i = 1; i < n; i++) {
             pre[i] = pre[i - 1] ^ a[i];
         }
     }
 
-    public int length() {
-        return pre.length;
+    public void populate(int[] a){
+        int n = a.length;
+        pre[0] = a[0];
+        for (int i = 1; i < n; i++) {
+            pre[i] = pre[i - 1] ^ a[i];
+        }
+    }
+
+    public PreXor(long[] a) {
+        this(a.length);
+        populate(a);
     }
 
     public PreXor(int[] a) {
-        int n = a.length;
-        pre = new long[n];
-        pre[0] = a[0];
-        for (int i = 1; i < n; i++) {
-            pre[i] = pre[i - 1] ^ a[i];
-        }
+        this(a.length);
+        populate(a);
     }
 
     /**

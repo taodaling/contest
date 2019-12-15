@@ -1,0 +1,40 @@
+{
+  "name" : "A. As Simple as One and Two",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4\nonetwone\ntestme\noneoneone\ntwotwo\n",
+    "output" : "2\n6 3\n0\n\n3\n4 1 7 \n2\n1 4\n",
+    "index" : 0,
+    "active" : false
+  }, {
+    "input" : "10\nonetwonetwooneooonetwooo\ntwo\none\ntwooooo\nttttwo\nttwwoo\nooone\nonnne\noneeeee\noneeeeeeetwooooo\n",
+    "output" : "6\n18 11 12 1 6 21 \n1\n1 \n1\n3 \n1\n2 \n1\n6 \n0\n\n1\n4 \n0\n\n1\n1 \n2\n1 11 \n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.AAsSimpleAsOneAndTwo",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.12.14",
+  "contestName" : "Codeforces Round #606 (Div. 1, based on Technocup 2020 Elimination Round 4)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

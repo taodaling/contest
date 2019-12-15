@@ -7,6 +7,38 @@ import java.util.Comparator;
 import java.util.List;
 
 public class SequenceUtils {
+    public static int leftBound(int[] data, int x, int l, int r) {
+        while (l < r) {
+            int m = (l + r) >>> 1;
+            if (data[m] < x) {
+                l = m + 1;
+            } else {
+                r = m;
+            }
+        }
+        return l;
+    }
+
+    public static int rightBound(int[] data, int x, int l, int r) {
+        while (l < r) {
+            int m = (l + r + 1) >>> 1;
+            if (data[m] <= x) {
+                l = m;
+            } else {
+                r = m - 1;
+            }
+        }
+        return l;
+    }
+
+    public static int countElementOccurrenceInSortedArray(int[] data, int x, int l, int r) {
+        int lBound = leftBound(data, x, l, r);
+        if (data[lBound] != x) {
+            return 0;
+        }
+        return rightBound(data, x, l, r) - lBound + 1;
+    }
+
     public static int floorIndex(int[] data, int x, int l, int r) {
         int index = Arrays.binarySearch(data, l, r + 1, x);
         if (index < 0) {

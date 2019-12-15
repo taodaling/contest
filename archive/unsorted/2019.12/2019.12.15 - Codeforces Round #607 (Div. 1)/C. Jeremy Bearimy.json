@@ -1,0 +1,57 @@
+{
+  "name" : "C. Jeremy Bearimy",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2\n3\n1 2 3\n3 2 4\n2 4 3\n4 5 6\n5 6 5\n2\n1 2 1\n1 3 2\n1 4 3\n",
+    "output" : "15 33\n6 6\n",
+    "index" : 0,
+    "active" : false
+  }, {
+    "input" : "1\n2\n1 2 1000000\n2 3 2\n3 4 4",
+    "output" : "1000004 1000008",
+    "index" : 1,
+    "active" : false
+  }, {
+    "input" : "1\n3\n1 2 1\n2 3 1\n2 4 100\n4 5 1\n4 6 1",
+    "output" : "104 304",
+    "index" : 2,
+    "active" : false
+  }, {
+    "input" : "1\n3\n1 3 1\n3 2 2\n3 4 3\n4 5 3\n5 6 1",
+    "index" : 3,
+    "active" : false
+  }, {
+    "input" : "1\n4\n1 2 1\n2 3 2\n2 4 3\n1 5 10\n5 6 1\n5 7 2\n5 8 3",
+    "index" : 4,
+    "active" : false
+  }, {
+    "input" : "1\n3\n1 2 1\n1 3 10\n3 4 1\n3 5 2 \n3 6 3",
+    "index" : 5,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.CJeremyBearimy",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.12.15",
+  "contestName" : "Codeforces Round #607 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

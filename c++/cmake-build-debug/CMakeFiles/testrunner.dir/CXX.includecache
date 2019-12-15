@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-C:/Users/daltao/IdeaProjects/contest/c++/library/common.h
+C:/Users/DALT/IdeaProjects/contest/c++/library/common.h
 bits/stdc++.h
 -
 chrono
@@ -14,12 +14,18 @@ chrono
 random
 -
 
-C:/Users/daltao/IdeaProjects/contest/c++/tasks/LUOGU4719.cpp
-../library/common.h
-C:/Users/daltao/IdeaProjects/contest/c++/library/common.h
+C:/Users/DALT/IdeaProjects/contest/c++/library/presum.h
+common.h
+C:/Users/DALT/IdeaProjects/contest/c++/library/common.h
 
-C:/Users/daltao/IdeaProjects/contest/c++/testrunner/main.cpp
-C:/Users/daltao/IdeaProjects/contest/c++/tasks/LUOGU4719.cpp
+C:/Users/DALT/IdeaProjects/contest/c++/tasks/tenka1_2018_e.cpp
+../library/common.h
+C:/Users/DALT/IdeaProjects/contest/c++/library/common.h
+../library/presum.h
+C:/Users/DALT/IdeaProjects/contest/c++/library/presum.h
+
+C:/Users/DALT/IdeaProjects/contest/c++/testrunner/main.cpp
+C:/Users/DALT/IdeaProjects/contest/c++/tasks/tenka1_2018_e.cpp
 -
 iostream
 -

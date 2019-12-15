@@ -1,2 +1,2 @@
-60 src/main/java/contest/C. Beautiful Mirrors with queries.json
+70 src/main/java/contest/E. New Year and the Acquaintance Estimation.json
 0

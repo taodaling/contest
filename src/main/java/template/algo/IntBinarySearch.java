@@ -1,5 +1,6 @@
 package template.algo;
 
+
 public abstract class IntBinarySearch {
     public abstract boolean check(int mid);
 

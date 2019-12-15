@@ -2,12 +2,12 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.io.IOException;
+import java.util.Random;
 import java.io.UncheckedIOException;
-import java.util.TreeMap;
-import java.util.Map;
+import java.util.function.LongUnaryOperator;
 import java.io.Closeable;
-import java.util.Map.Entry;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
 import java.io.InputStream;
@@ -30,307 +30,289 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            CBeautifulMirrorsWithQueries solver = new CBeautifulMirrorsWithQueries();
+            ENewYearAndTheAcquaintanceEstimation solver = new ENewYearAndTheAcquaintanceEstimation();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class CBeautifulMirrorsWithQueries {
-        Modular mod = new Modular(998244353);
-        Power pow = new Power(mod);
-
+    static class ENewYearAndTheAcquaintanceEstimation {
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            int q = in.readInt();
-
-            int[] prob = new int[n];
-            int inv100 = pow.inverse(100);
+            int[] a = new int[n];
             for (int i = 0; i < n; i++) {
-                prob[i] = mod.mul(in.readInt(), inv100);
+                a[i] = in.readInt();
             }
-            Transform[] transforms = new Transform[n];
+            Randomized.randomizedArray(a);
+            Arrays.sort(a);
+            SequenceUtils.reverse(a, 0, n - 1);
+            IntList buf = new IntList(a.length);
+            IntList buf2 = new IntList(a.length);
+            long sum = 0;
+            int zeroCnt = 0;
             for (int i = 0; i < n; i++) {
-                transforms[i] = new Transform();
-                transforms[i].a = 1;
-                transforms[i].b = mod.valueOf(1 - prob[i]);
-            }
-
-            CatTree<Transform, Transform> catTree = new CatTree<>(transforms, n,
-                    new CatTree.SetHandler<Transform, Transform>() {
-
-                        public Transform insertLeft(Transform element, Transform set) {
-                            return mergeSet(element, set);
-                        }
-
-
-                        public Transform insertRight(Transform set, Transform element) {
-                            return mergeSet(set, element);
-                        }
-
-
-                        public Transform makeSet(Transform element) {
-                            return element;
-                        }
-
-
-                        public Transform mergeSet(Transform a, Transform b) {
-                            return merge(a, b);
-                        }
-                    });
-
-            //expect(transforms[0]);
-            TreeMap<Integer, Integer> map = new TreeMap<>();
-            Transform whole = catTree.query(0, n - 1);
-            int total = expect(whole);
-            map.put(0, total);
-            map.put(n, 0);
-            for (int i = 0; i < q; i++) {
-                Integer u = in.readInt() - 1;
-                if (map.containsKey(u)) {
-                    total = mod.subtract(total, map.remove(u));
-                    Map.Entry<Integer, Integer> floor = map.floorEntry(u);
-                    Integer ceilKey = map.ceilingKey(u);
-                    total = mod.subtract(total, floor.getValue());
-                    Transform t = catTree.query(floor.getKey(), ceilKey - 1);
-                    int exp = expect(t);
-                    total = mod.plus(total, exp);
-                    map.put(floor.getKey(), exp);
-                } else {
-                    Map.Entry<Integer, Integer> floor = map.floorEntry(u);
-                    total = mod.subtract(total, floor.getValue());
-                    Transform left = catTree.query(floor.getKey(), u - 1);
-                    int leftExp = expect(left);
-                    total = mod.plus(total, leftExp);
-                    map.put(floor.getKey(), leftExp);
-
-                    Integer ceil = map.ceilingKey(u);
-                    Transform t = catTree.query(u, ceil - 1);
-                    int exp = expect(t);
-                    total = mod.plus(total, exp);
-                    map.put(u, exp);
+                sum += a[i];
+                if (a[i] == 0) {
+                    zeroCnt++;
                 }
-
-                out.println(total);
             }
-        }
+            int parity = (int) (sum % 2);
+            int limit = (n - zeroCnt - parity) / 2;
 
-        public int expect(Transform t) {
-            return mod.mul(t.a, pow.inverse(1 - t.b));
-        }
-
-        public Transform merge(Transform a, Transform b) {
-            Transform t = new Transform();
-            t.a = mod.plus(a.a, mod.mul(b.a, 1 - a.b));
-            t.b = mod.plus(a.b, mod.mul(b.b, 1 - a.b));
-            return t;
-        }
-
-    }
-
-    static class FastOutput implements AutoCloseable, Closeable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
-
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput println(int c) {
-            cache.append(c).append('\n');
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        }
-
-        public String toString() {
-            return cache.toString();
-        }
-
-    }
-
-    static class CachedLog2 {
-        private static final int BITS = 16;
-        private static final int LIMIT = 1 << BITS;
-        private static final int[] CACHE = new int[LIMIT];
-
-        static {
-            int b = 0;
-            for (int i = 0; i < LIMIT; i++) {
-                while ((1 << (b + 1)) <= i) {
-                    b++;
+            LongUnaryOperator function = (mid) -> {
+                mid = mid * 2 + parity;
+                buf.clear();
+                buf.addAll(a);
+                int[] data = buf.getData();
+                for (int i = 0; i < mid; i++) {
+                    data[i]--;
                 }
-                CACHE[i] = b;
-            }
-        }
+                int[] newData = buf2.getData();
+                CompareUtils.mergeDescending(data, 0, (int) mid - 1, data, (int) mid, n - 1, newData, 0);
+                return ErdosGallaiTheorem.maxOnAllK(newData);
+            };
 
-        public static int ceilLog(int x) {
-            int ans = floorLog(x);
-            if ((1 << ans) < x) {
-                ans++;
-            }
-            return ans;
-        }
-
-        public static int floorLog(int x) {
-            return x < LIMIT ? CACHE[x] : (BITS + CACHE[x >>> BITS]);
-        }
-
-    }
-
-    static class Modular {
-        int m;
-
-        public Modular(int m) {
-            this.m = m;
-        }
-
-        public Modular(long m) {
-            this.m = (int) m;
-            if (this.m != m) {
-                throw new IllegalArgumentException();
-            }
-        }
-
-        public Modular(double m) {
-            this.m = (int) m;
-            if (this.m != m) {
-                throw new IllegalArgumentException();
-            }
-        }
-
-        public int valueOf(int x) {
-            x %= m;
-            if (x < 0) {
-                x += m;
-            }
-            return x;
-        }
-
-        public int valueOf(long x) {
-            x %= m;
-            if (x < 0) {
-                x += m;
-            }
-            return (int) x;
-        }
-
-        public int mul(int x, int y) {
-            return valueOf((long) x * y);
-        }
-
-        public int plus(int x, int y) {
-            return valueOf(x + y);
-        }
-
-        public int subtract(int x, int y) {
-            return valueOf(x - y);
-        }
-
-        public String toString() {
-            return "mod " + m;
-        }
-
-    }
-
-    static class Bits {
-        private Bits() {
-        }
-
-        public static int theFirstDifferentBit(int x, int y) {
-            return CachedLog2.floorLog(x ^ y);
-        }
-
-    }
-
-    static class CatTree<S, E> {
-        Object[][] levels;
-        private CatTree.SetHandler<S, E> handler;
-
-        public CatTree(E[] data, int len, CatTree.SetHandler<S, E> handler) {
-            this.handler = handler;
-            int level = CachedLog2.ceilLog(len) + 1;
-            levels = new Object[level][len];
-            for (int i = 0; i < len; i++) {
-                levels[0][i] = handler.makeSet(data[i]);
-            }
-            build(data, len, level - 1);
-        }
-
-        public S query(int l, int r) {
-            if (l == r) {
-                return (S) levels[0][l];
-            }
-            int level = Bits.theFirstDifferentBit(l, r) + 1;
-            return handler.mergeSet((S) levels[level][l], (S) levels[level][r]);
-        }
-
-        private void build(E[] data, int len, int level) {
-            if (level <= 0) {
+            LongTernarySearch ts = new LongTernarySearch(function);
+            int center = ts.find(0, limit);
+            if (function.applyAsLong(center) > 0) {
+                out.println(-1);
                 return;
             }
-            build(data, len, level - 1);
+            IntBinarySearch lbs = new IntBinarySearch() {
 
-            int bit = level - 1;
-            int mask = (1 << bit) - 1;
-            int step = 1 << level;
+                public boolean check(int mid) {
+                    return function.applyAsLong(mid) <= 0;
+                }
+            };
+            IntBinarySearch rbs = new IntBinarySearch() {
 
-            for (int i = mask; i < len; i += step) {
-                levels[level][i] = levels[0][i];
-                for (int j = i - 1; (j & mask) != mask; j--) {
-                    levels[level][j] = handler.insertLeft(data[j], (S) levels[level][j + 1]);
+                public boolean check(int mid) {
+                    return function.applyAsLong(mid) > 0;
                 }
-                if (i + 1 >= len) {
-                    continue;
-                }
-                levels[level][i + 1] = levels[0][i + 1];
-                for (int j = i + 2; j < len && (j & mask) != 0; j++) {
-                    levels[level][j] = handler.insertRight((S) levels[level][j - 1], data[j]);
-                }
+            };
+            int left = lbs.binarySearch(0, center);
+            int right = rbs.binarySearch(center, limit);
+            if (function.applyAsLong(right) > 0) {
+                right--;
             }
-        }
 
-        public static interface SetHandler<S, E> {
-            S insertLeft(E element, S set);
-
-            S insertRight(S set, E element);
-
-            S makeSet(E element);
-
-            S mergeSet(S a, S b);
-
+            for (int i = left; i <= right; i++) {
+                out.println(i * 2 + parity);
+            }
         }
 
     }
 
-    static class Transform {
-        int a;
-        int b;
+    static abstract class IntBinarySearch {
+        public abstract boolean check(int mid);
+
+        public int binarySearch(int l, int r) {
+            if (l > r) {
+                throw new IllegalArgumentException();
+            }
+            while (l < r) {
+                int mid = (l + r) >>> 1;
+                if (check(mid)) {
+                    r = mid;
+                } else {
+                    l = mid + 1;
+                }
+            }
+            return l;
+        }
+
+    }
+
+    static class LongTernarySearch {
+        private LongUnaryOperator operator;
+
+        public LongTernarySearch(LongUnaryOperator operator) {
+            this.operator = operator;
+        }
+
+        public int find(int l, int r) {
+            while (r - l > 2) {
+                int ml = l + DigitUtils.floorDiv(r - l, 3);
+                int mr = r - DigitUtils.ceilDiv(r - l, 3);
+                if (operator.applyAsLong(ml) >= operator.applyAsLong(mr)) {
+                    l = ml;
+                } else {
+                    r = mr;
+                }
+            }
+            while (l < r) {
+                if (operator.applyAsLong(l) < operator.applyAsLong(r)) {
+                    r--;
+                } else {
+                    l++;
+                }
+            }
+            return l;
+        }
+
+    }
+
+    static class ErdosGallaiTheorem {
+        public static long maxOnAllK(int[] degs) {
+//        long sum = 0;
+//        int min = 0;
+//        for (int i = 0; i < degs.length; i++) {
+//            sum += degs[i];
+//            min = Math.min(min, degs[i]);
+//        }
+//        if (sum % 2 == 1 || min < 0) {
+//            throw new IllegalArgumentException();
+//        }
+//        CompareUtils.radixSort(degs, 0, degs.length - 1);
+//        SequenceUtils.reverse(degs, 0, degs.length - 1);
+            int n = degs.length;
+            PreSum ps = new PreSum(degs);
+            long[] ss = new long[n + 1];
+            int rIter = n;
+            for (int i = n - 1; i >= 0; i--) {
+                int l = i;
+                int r = n - 1;
+                if (rIter - 1 >= l && degs[rIter - 1] < i) {
+                    rIter--;
+                }
+                while (rIter < n && degs[rIter] > i) {
+                    rIter++;
+                }
+                ss[i] = (long) (rIter - l) * i + ps.intervalSum(rIter, r);
+            }
+
+            long max = Long.MIN_VALUE;
+            for (int i = 1; i <= n; i++) {
+                max = Math.max(max, ps.intervalSum(0, i - 1) - (long) i * (i - 1) - ss[i]);
+            }
+            return max;
+        }
+
+    }
+
+    static class CompareUtils {
+        private CompareUtils() {
+        }
+
+        public static void mergeDescending(int[] a, int al, int ar, int[] b, int bl, int br, int[] c, int cl) {
+            while (al <= ar || bl <= br) {
+                if (bl > br || (al <= ar && a[al] >= b[bl])) {
+                    c[cl++] = a[al++];
+                } else {
+                    c[cl++] = b[bl++];
+                }
+            }
+        }
+
+    }
+
+    static class Randomized {
+        static Random random = new Random();
+
+        public static void randomizedArray(int[] data) {
+            randomizedArray(data, 0, data.length - 1);
+        }
+
+        public static void randomizedArray(int[] data, int from, int to) {
+            to--;
+            for (int i = from; i <= to; i++) {
+                int s = nextInt(i, to);
+                int tmp = data[i];
+                data[i] = data[s];
+                data[s] = tmp;
+            }
+        }
+
+        public static int nextInt(int l, int r) {
+            return random.nextInt(r - l + 1) + l;
+        }
+
+    }
+
+    static class IntList implements Cloneable {
+        private int size;
+        private int cap;
+        private int[] data;
+        private static final int[] EMPTY = new int[0];
+
+        public int[] getData() {
+            return data;
+        }
+
+        public IntList(int cap) {
+            this.cap = cap;
+            if (cap == 0) {
+                data = EMPTY;
+            } else {
+                data = new int[cap];
+            }
+        }
+
+        public IntList(IntList list) {
+            this.size = list.size;
+            this.cap = list.cap;
+            this.data = Arrays.copyOf(list.data, size);
+        }
+
+        public IntList() {
+            this(0);
+        }
+
+        public void ensureSpace(int req) {
+            if (req > cap) {
+                while (cap < req) {
+                    cap = Math.max(cap + 10, 2 * cap);
+                }
+                data = Arrays.copyOf(data, cap);
+            }
+        }
+
+        public void addAll(int[] x) {
+            addAll(x, 0, x.length);
+        }
+
+        public void addAll(int[] x, int offset, int len) {
+            ensureSpace(size + len);
+            System.arraycopy(x, offset, data, size, len);
+            size += len;
+        }
+
+        public void addAll(IntList list) {
+            addAll(list.data, 0, list.size);
+        }
+
+        public int[] toArray() {
+            return Arrays.copyOf(data, size);
+        }
+
+        public void clear() {
+            size = 0;
+        }
 
         public String toString() {
-            return String.format("a = %d, b = %d", a, b);
+            return Arrays.toString(toArray());
+        }
+
+        public boolean equals(Object obj) {
+            if (!(obj instanceof IntList)) {
+                return false;
+            }
+            IntList other = (IntList) obj;
+            return SequenceUtils.equal(data, 0, size - 1, other.data, 0, other.size - 1);
+        }
+
+        public int hashCode() {
+            int h = 1;
+            for (int i = 0; i < size; i++) {
+                h = h * 31 + data[i];
+            }
+            return h;
+        }
+
+        public IntList clone() {
+            IntList ans = new IntList();
+            ans.addAll(this);
+            return ans;
         }
 
     }
@@ -394,27 +376,140 @@ public class Main {
 
     }
 
-    static class Power {
-        final Modular modular;
-
-        public Power(Modular modular) {
-            this.modular = modular;
+    static class DigitUtils {
+        private DigitUtils() {
         }
 
-        public int pow(int x, int n) {
-            if (n == 0) {
-                return modular.valueOf(1);
-            }
-            long r = pow(x, n >> 1);
-            r = modular.valueOf(r * r);
-            if ((n & 1) == 1) {
-                r = modular.valueOf(r * x);
-            }
-            return (int) r;
+        public static int floorDiv(int a, int b) {
+            return a < 0 ? -ceilDiv(-a, b) : a / b;
         }
 
-        public int inverse(int x) {
-            return pow(x, modular.m - 2);
+        public static int ceilDiv(int a, int b) {
+            if (a < 0) {
+                return -floorDiv(-a, b);
+            }
+            int c = a / b;
+            if (c * b < a) {
+                return c + 1;
+            }
+            return c;
+        }
+
+    }
+
+    static class SequenceUtils {
+        public static void swap(int[] data, int i, int j) {
+            int tmp = data[i];
+            data[i] = data[j];
+            data[j] = tmp;
+        }
+
+        public static void reverse(int[] data, int l, int r) {
+            while (l < r) {
+                swap(data, l, r);
+                l++;
+                r--;
+            }
+        }
+
+        public static boolean equal(int[] a, int al, int ar, int[] b, int bl, int br) {
+            if ((ar - al) != (br - bl)) {
+                return false;
+            }
+            for (int i = al, j = bl; i <= ar; i++, j++) {
+                if (a[i] != b[j]) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+    }
+
+    static class PreSum {
+        private long[] pre;
+
+        public PreSum(int n) {
+            pre = new long[n];
+        }
+
+        public void populate(long[] a) {
+            int n = a.length;
+            pre[0] = a[0];
+            for (int i = 1; i < n; i++) {
+                pre[i] = pre[i - 1] + a[i];
+            }
+        }
+
+        public void populate(int[] a) {
+            int n = a.length;
+            pre[0] = a[0];
+            for (int i = 1; i < n; i++) {
+                pre[i] = pre[i - 1] + a[i];
+            }
+        }
+
+        public PreSum(long[] a) {
+            this(a.length);
+            populate(a);
+        }
+
+        public PreSum(int[] a) {
+            this(a.length);
+            populate(a);
+        }
+
+        public long intervalSum(int l, int r) {
+            if (l > r) {
+                return 0;
+            }
+            if (l == 0) {
+                return pre[r];
+            }
+            return pre[r] - pre[l - 1];
+        }
+
+    }
+
+    static class FastOutput implements AutoCloseable, Closeable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
+
+        public FastOutput(Writer os) {
+            this.os = os;
+        }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput println(int c) {
+            cache.append(c).append('\n');
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            return this;
+        }
+
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+
+        public String toString() {
+            return cache.toString();
         }
 
     }
