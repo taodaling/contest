@@ -23,7 +23,15 @@ public class GeqSlopeOptimizer {
         }
     }
 
-    Deque<Point> deque = new ArrayDeque();
+    public GeqSlopeOptimizer(){
+        this(0);
+    }
+
+    public GeqSlopeOptimizer(int exp){
+        deque = new ArrayDeque<>(exp);
+    }
+
+    Deque<Point> deque;
 
     private double slope(Point a, Point b) {
         if (b.x == a.x) {
@@ -38,7 +46,7 @@ public class GeqSlopeOptimizer {
         return (double) (b.y - a.y) / (b.x - a.x);
     }
 
-    Point add(long y, long x, int id) {
+    public Point add(long y, long x, int id) {
         Point t1 = new Point(x, y, id);
         while (deque.size() >= 2) {
             Point t2 = deque.removeLast();
@@ -53,7 +61,7 @@ public class GeqSlopeOptimizer {
     }
 
 
-    int getBestChoice(long s) {
+    public int getBestChoice(long s) {
         while (deque.size() >= 2) {
             Point h1 = deque.removeFirst();
             Point h2 = deque.peekFirst();

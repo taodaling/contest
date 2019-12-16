@@ -1,2 +1,2 @@
-49 src/main/java/contest/E. Vasya and Templates.json
+57 src/main/java/contest/E. Kuro and Topological Parity.json
 0

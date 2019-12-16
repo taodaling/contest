@@ -2,7 +2,6 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.io.Closeable;
@@ -28,137 +27,228 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            EVasyaAndTemplates solver = new EVasyaAndTemplates();
-            int testCount = Integer.parseInt(in.next());
-            for (int i = 1; i <= testCount; i++)
-                solver.solve(i, in, out);
+            EKuroAndTopologicalParity solver = new EKuroAndTopologicalParity();
+            solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class EVasyaAndTemplates {
-        int[] s = new int[1000000];
-        int[] a = new int[1000000];
-        int[] b = new int[1000000];
-        int[] perm = new int[26];
-        int[] used = new int[26];
-        int n;
-        int m;
-        boolean valid;
-
+    static class EKuroAndTopologicalParity {
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            n = in.readInt();
-            m = in.readString(s, 0);
-            in.readString(a, 0);
-            in.readString(b, 0);
+            int n = in.readInt();
+            int p = in.readInt();
 
-            for (int i = 0; i < m; i++) {
-                s[i] -= 'a';
-                a[i] -= 'a';
-                b[i] -= 'a';
+            Modular mod = new Modular(1e9 + 7);
+            CachedPow pow = new CachedPow(2, n, mod);
+
+            int[][][][] dp = new int[n + 1][2][2][2];
+            dp[0][0][0][0] = 1;
+
+            for (int i = 1; i <= n; i++) {
+                int c = in.readInt();
+
+                for (int j = 0; j < 2; j++) {
+                    for (int k = 0; k < 2; k++) {
+                        for (int t = 0; t < 2; t++) {
+                            int cnt = i - 2 >= 0 ? pow.pow(i - 2) : 1;
+                            if (c != 1) {
+                                if (t == 1) {
+                                    //pick odd
+                                    dp[i][j][k][t] = mod.plus(dp[i][j][k][t], mod.mul(dp[i - 1][j][k][t], cnt));
+                                    if (k == 1) {
+                                        //pick even
+                                        dp[i][j][k][t] = mod.plus(dp[i][j][k][t], mod.mul(mod.plus(dp[i - 1][1 - j][1][t], dp[i - 1][1 - j][0][t]), cnt));
+                                    }
+                                } else {
+                                    if (k == 1) {
+                                        dp[i][j][k][t] = mod.plus(dp[i][j][k][t], mod.mul(mod.plus(dp[i - 1][1 - j][0][t], dp[i - 1][1 - j][1][t]), pow.pow(i - 1)));
+                                    }
+                                }
+                            }
+                            if (c != 0) {
+                                //pick odd
+                                if (k == 1) {
+                                    dp[i][j][k][t] = mod.plus(dp[i][j][k][t], mod.mul(dp[i - 1][j][k][t], cnt));
+                                    if (t == 1) {
+                                        //pick even
+                                        dp[i][j][k][t] = mod.plus(dp[i][j][k][t], mod.mul(mod.plus(dp[i - 1][1 - j][k][1], dp[i - 1][1 - j][k][0]), cnt));
+                                    }
+                                } else {
+                                    if (t == 1) {
+                                        //pick even
+                                        dp[i][j][k][t] = mod.plus(dp[i][j][k][t], mod.mul(mod.plus(dp[i - 1][1 - j][k][1], dp[i - 1][1 - j][k][0]), pow.pow(i - 1)));
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+                }
             }
 
-            Arrays.fill(perm, -1);
-            Arrays.fill(used, -1);
-            valid = true;
-            handle(0, true, true, true);
-            if (!valid) {
-                Arrays.fill(perm, -1);
-                Arrays.fill(used, -1);
-                valid = true;
-                handle(0, true, true, false);
+            int ans = 0;
+            for (int i = 0; i < 2; i++) {
+                for (int j = 0; j < 2; j++) {
+                    ans = mod.plus(dp[n][p][i][j], ans);
+                }
             }
 
-            if (!valid) {
-                out.println("NO");
-                return;
-            }
-
-            out.println("YES");
-            for (int i = 0; i < n; i++) {
-                out.append((char) (perm[i] + 'a'));
-            }
-            out.println();
+            out.println(ans);
         }
 
-        private void check(int i, boolean bot, boolean top) {
-            if (bot && perm[s[i]] < a[i]) {
-                valid = false;
+    }
+
+    static class FastOutput implements AutoCloseable, Closeable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
+
+        public FastOutput(Writer os) {
+            this.os = os;
+        }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput println(int c) {
+            cache.append(c).append('\n');
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
             }
-            if (top && perm[s[i]] > b[i]) {
-                valid = false;
+            return this;
+        }
+
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
             }
         }
 
-        public void handle(int i, boolean bot, boolean top, boolean pickUp) {
-            if (!valid) {
-                return;
-            }
-            if (i >= m || (!bot && !top)) {
-                int usedIter = 0;
-                for (int j = 0; j < n; j++) {
-                    if (perm[j] != -1) {
-                        continue;
-                    }
-                    while (usedIter < n && used[usedIter] != -1) {
-                        usedIter++;
-                    }
-                    perm[j] = usedIter++;
-                }
-                return;
-            }
+        public String toString() {
+            return cache.toString();
+        }
 
-            if (perm[s[i]] != -1) {
-                check(i, bot, top);
-                handle(i + 1, perm[s[i]] == a[i] && bot, perm[s[i]] == b[i] && top, pickUp);
-                return;
-            }
+    }
 
-            if (bot != top) {
-                int j;
-                if (bot) {
-                    j = n - 1;
-                    for (; used[j] != -1; j--) ;
-                } else {
-                    j = 0;
-                    for (; used[j] != -1; j++) ;
-                }
-                perm[s[i]] = j;
-                used[j] = s[i];
-                check(i, bot, top);
-                handle(i + 1, perm[s[i]] == a[i] && bot, perm[s[i]] == b[i] && top, pickUp);
-                return;
-            }
+    static class Modular {
+        int m;
 
-            int j = -1;
-            if (pickUp) {
-                for (int k = a[i]; k <= b[i]; k++) {
-                    if (used[k] == -1 && (j == -1 || j == a[i])) {
-                        j = k;
-                    }
-                }
+        public int getMod() {
+            return m;
+        }
+
+        public Modular(int m) {
+            this.m = m;
+        }
+
+        public Modular(long m) {
+            this.m = (int) m;
+            if (this.m != m) {
+                throw new IllegalArgumentException();
+            }
+        }
+
+        public Modular(double m) {
+            this.m = (int) m;
+            if (this.m != m) {
+                throw new IllegalArgumentException();
+            }
+        }
+
+        public int valueOf(int x) {
+            x %= m;
+            if (x < 0) {
+                x += m;
+            }
+            return x;
+        }
+
+        public int valueOf(long x) {
+            x %= m;
+            if (x < 0) {
+                x += m;
+            }
+            return (int) x;
+        }
+
+        public int mul(int x, int y) {
+            return valueOf((long) x * y);
+        }
+
+        public int plus(int x, int y) {
+            return valueOf(x + y);
+        }
+
+        public Modular getModularForPowerComputation() {
+            return new Modular(m - 1);
+        }
+
+        public String toString() {
+            return "mod " + m;
+        }
+
+    }
+
+    static class DigitUtils {
+        private DigitUtils() {
+        }
+
+        public static long round(double x) {
+            if (x >= 0) {
+                return (long) (x + 0.5);
             } else {
-                for (int k = b[i]; k >= a[i]; k--) {
-                    if (used[k] == -1 && (j == -1 || j == b[i])) {
-                        j = k;
-                    }
-                }
+                return (long) (x - 0.5);
             }
-            if (j == -1) {
-                valid = false;
-                return;
-            }
-            perm[s[i]] = j;
-            used[j] = s[i];
+        }
 
-            handle(i + 1, perm[s[i]] == a[i] && bot, perm[s[i]] == b[i] && top, pickUp);
+    }
+
+    static class CachedPow {
+        private int[] first;
+        private int[] second;
+        private Modular mod;
+        private Modular powMod;
+
+        public CachedPow(int x, Modular mod) {
+            this(x, mod.getMod(), mod);
+        }
+
+        public CachedPow(int x, int maxExp, Modular mod) {
+            this.mod = mod;
+            this.powMod = mod.getModularForPowerComputation();
+            int k = Math.max(1, (int) DigitUtils.round(Math.sqrt(maxExp)));
+            first = new int[k];
+            second = new int[maxExp / k + 1];
+            first[0] = 1;
+            for (int i = 1; i < k; i++) {
+                first[i] = mod.mul(x, first[i - 1]);
+            }
+            second[0] = 1;
+            int step = mod.mul(x, first[k - 1]);
+            for (int i = 1; i < second.length; i++) {
+                second[i] = mod.mul(second[i - 1], step);
+            }
+        }
+
+        public int pow(int exp) {
+            return mod.mul(first[exp % first.length], second[exp / first.length]);
         }
 
     }
 
     static class FastInput {
         private final InputStream is;
-        private StringBuilder defaultStringBuf = new StringBuilder(1 << 13);
         private byte[] buf = new byte[1 << 13];
         private int bufLen;
         private int bufOffset;
@@ -189,10 +279,6 @@ public class Main {
             }
         }
 
-        public String next() {
-            return readString();
-        }
-
         public int readInt() {
             int sign = 1;
 
@@ -216,87 +302,6 @@ public class Main {
             }
 
             return val;
-        }
-
-        public String readString(StringBuilder builder) {
-            skipBlank();
-
-            while (next > 32) {
-                builder.append((char) next);
-                next = read();
-            }
-
-            return builder.toString();
-        }
-
-        public String readString() {
-            defaultStringBuf.setLength(0);
-            return readString(defaultStringBuf);
-        }
-
-        public int readString(int[] data, int offset) {
-            skipBlank();
-
-            int originalOffset = offset;
-            while (next > 32) {
-                data[offset++] = (char) next;
-                next = read();
-            }
-
-            return offset - originalOffset;
-        }
-
-    }
-
-    static class FastOutput implements AutoCloseable, Closeable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
-
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput append(char c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput println(String c) {
-            cache.append(c).append('\n');
-            return this;
-        }
-
-        public FastOutput println() {
-            cache.append('\n');
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        }
-
-        public String toString() {
-            return cache.toString();
         }
 
     }
