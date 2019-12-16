@@ -1,4 +1,6 @@
 #include "../library/common.h"
+#include "../library/debug.h"
+using namespace dalt;
 
 class %ClassName% {
 public:

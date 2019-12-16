@@ -47,10 +47,10 @@ RM = "C:\Program Files\JetBrains\CLion 2019.3.1\bin\cmake\win\bin\cmake.exe" -E 
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = C:\Users\DALT\IdeaProjects\contest\c++
+CMAKE_SOURCE_DIR = C:\Users\daltao\IdeaProjects\contest\c++
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = C:\Users\DALT\IdeaProjects\contest\c++\cmake-build-debug
+CMAKE_BINARY_DIR = C:\Users\daltao\IdeaProjects\contest\c++\cmake-build-debug
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -79,9 +79,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\DALT\IdeaProjects\contest\c++\cmake-build-debug\CMakeFiles C:\Users\DALT\IdeaProjects\contest\c++\cmake-build-debug\CMakeFiles\progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\daltao\IdeaProjects\contest\c++\cmake-build-debug\CMakeFiles C:\Users\daltao\IdeaProjects\contest\c++\cmake-build-debug\CMakeFiles\progress.marks
 	$(MAKE) -f CMakeFiles\Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\DALT\IdeaProjects\contest\c++\cmake-build-debug\CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\daltao\IdeaProjects\contest\c++\cmake-build-debug\CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -175,32 +175,32 @@ output/main.cpp.s:
 	$(MAKE) -f CMakeFiles\output.dir\build.make CMakeFiles/output.dir/output/main.cpp.s
 .PHONY : output/main.cpp.s
 
-tasks/tenka1_2018_e.obj: tasks/tenka1_2018_e.cpp.obj
+tasks/UOJ88.obj: tasks/UOJ88.cpp.obj
 
-.PHONY : tasks/tenka1_2018_e.obj
+.PHONY : tasks/UOJ88.obj
 
 # target to build an object file
-tasks/tenka1_2018_e.cpp.obj:
-	$(MAKE) -f CMakeFiles\test.dir\build.make CMakeFiles/test.dir/tasks/tenka1_2018_e.cpp.obj
-.PHONY : tasks/tenka1_2018_e.cpp.obj
+tasks/UOJ88.cpp.obj:
+	$(MAKE) -f CMakeFiles\test.dir\build.make CMakeFiles/test.dir/tasks/UOJ88.cpp.obj
+.PHONY : tasks/UOJ88.cpp.obj
 
-tasks/tenka1_2018_e.i: tasks/tenka1_2018_e.cpp.i
+tasks/UOJ88.i: tasks/UOJ88.cpp.i
 
-.PHONY : tasks/tenka1_2018_e.i
+.PHONY : tasks/UOJ88.i
 
 # target to preprocess a source file
-tasks/tenka1_2018_e.cpp.i:
-	$(MAKE) -f CMakeFiles\test.dir\build.make CMakeFiles/test.dir/tasks/tenka1_2018_e.cpp.i
-.PHONY : tasks/tenka1_2018_e.cpp.i
+tasks/UOJ88.cpp.i:
+	$(MAKE) -f CMakeFiles\test.dir\build.make CMakeFiles/test.dir/tasks/UOJ88.cpp.i
+.PHONY : tasks/UOJ88.cpp.i
 
-tasks/tenka1_2018_e.s: tasks/tenka1_2018_e.cpp.s
+tasks/UOJ88.s: tasks/UOJ88.cpp.s
 
-.PHONY : tasks/tenka1_2018_e.s
+.PHONY : tasks/UOJ88.s
 
 # target to generate assembly for a file
-tasks/tenka1_2018_e.cpp.s:
-	$(MAKE) -f CMakeFiles\test.dir\build.make CMakeFiles/test.dir/tasks/tenka1_2018_e.cpp.s
-.PHONY : tasks/tenka1_2018_e.cpp.s
+tasks/UOJ88.cpp.s:
+	$(MAKE) -f CMakeFiles\test.dir\build.make CMakeFiles/test.dir/tasks/UOJ88.cpp.s
+.PHONY : tasks/UOJ88.cpp.s
 
 testrunner/main.obj: testrunner/main.cpp.obj
 
@@ -243,9 +243,9 @@ help:
 	@echo ... output/main.obj
 	@echo ... output/main.i
 	@echo ... output/main.s
-	@echo ... tasks/tenka1_2018_e.obj
-	@echo ... tasks/tenka1_2018_e.i
-	@echo ... tasks/tenka1_2018_e.s
+	@echo ... tasks/UOJ88.obj
+	@echo ... tasks/UOJ88.i
+	@echo ... tasks/UOJ88.s
 	@echo ... testrunner/main.obj
 	@echo ... testrunner/main.i
 	@echo ... testrunner/main.s

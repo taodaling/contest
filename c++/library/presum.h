@@ -14,6 +14,9 @@ namespace dalt {
         presum(int cap) : _vec(cap) {
         }
 
+        presum() {
+        }
+
         presum(const presum<T> &vec) : _vec(vec._vec), _n(vec._n) {
         }
 

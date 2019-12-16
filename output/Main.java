@@ -4,9 +4,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.io.IOException;
-import java.util.Random;
 import java.io.UncheckedIOException;
-import java.util.function.LongUnaryOperator;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
@@ -30,295 +28,137 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            ENewYearAndTheAcquaintanceEstimation solver = new ENewYearAndTheAcquaintanceEstimation();
-            solver.solve(1, in, out);
+            EVasyaAndTemplates solver = new EVasyaAndTemplates();
+            int testCount = Integer.parseInt(in.next());
+            for (int i = 1; i <= testCount; i++)
+                solver.solve(i, in, out);
             out.close();
         }
     }
 
-    static class ENewYearAndTheAcquaintanceEstimation {
+    static class EVasyaAndTemplates {
+        int[] s = new int[1000000];
+        int[] a = new int[1000000];
+        int[] b = new int[1000000];
+        int[] perm = new int[26];
+        int[] used = new int[26];
+        int n;
+        int m;
+        boolean valid;
+
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            int n = in.readInt();
-            int[] a = new int[n];
-            for (int i = 0; i < n; i++) {
-                a[i] = in.readInt();
-            }
-            Randomized.randomizedArray(a);
-            Arrays.sort(a);
-            SequenceUtils.reverse(a, 0, n - 1);
-            IntList buf = new IntList(a.length);
-            IntList buf2 = new IntList(a.length);
-            long sum = 0;
-            int zeroCnt = 0;
-            for (int i = 0; i < n; i++) {
-                sum += a[i];
-                if (a[i] == 0) {
-                    zeroCnt++;
-                }
-            }
-            int parity = (int) (sum % 2);
-            int limit = (n - zeroCnt - parity) / 2;
+            n = in.readInt();
+            m = in.readString(s, 0);
+            in.readString(a, 0);
+            in.readString(b, 0);
 
-            LongUnaryOperator function = (mid) -> {
-                mid = mid * 2 + parity;
-                buf.clear();
-                buf.addAll(a);
-                int[] data = buf.getData();
-                for (int i = 0; i < mid; i++) {
-                    data[i]--;
-                }
-                int[] newData = buf2.getData();
-                CompareUtils.mergeDescending(data, 0, (int) mid - 1, data, (int) mid, n - 1, newData, 0);
-                return ErdosGallaiTheorem.maxOnAllK(newData);
-            };
+            for (int i = 0; i < m; i++) {
+                s[i] -= 'a';
+                a[i] -= 'a';
+                b[i] -= 'a';
+            }
 
-            LongTernarySearch ts = new LongTernarySearch(function);
-            int center = ts.find(0, limit);
-            if (function.applyAsLong(center) > 0) {
-                out.println(-1);
+            Arrays.fill(perm, -1);
+            Arrays.fill(used, -1);
+            valid = true;
+            handle(0, true, true, true);
+            if (!valid) {
+                Arrays.fill(perm, -1);
+                Arrays.fill(used, -1);
+                valid = true;
+                handle(0, true, true, false);
+            }
+
+            if (!valid) {
+                out.println("NO");
                 return;
             }
-            IntBinarySearch lbs = new IntBinarySearch() {
 
-                public boolean check(int mid) {
-                    return function.applyAsLong(mid) <= 0;
-                }
-            };
-            IntBinarySearch rbs = new IntBinarySearch() {
-
-                public boolean check(int mid) {
-                    return function.applyAsLong(mid) > 0;
-                }
-            };
-            int left = lbs.binarySearch(0, center);
-            int right = rbs.binarySearch(center, limit);
-            if (function.applyAsLong(right) > 0) {
-                right--;
+            out.println("YES");
+            for (int i = 0; i < n; i++) {
+                out.append((char) (perm[i] + 'a'));
             }
+            out.println();
+        }
 
-            for (int i = left; i <= right; i++) {
-                out.println(i * 2 + parity);
+        private void check(int i, boolean bot, boolean top) {
+            if (bot && perm[s[i]] < a[i]) {
+                valid = false;
+            }
+            if (top && perm[s[i]] > b[i]) {
+                valid = false;
             }
         }
 
-    }
-
-    static abstract class IntBinarySearch {
-        public abstract boolean check(int mid);
-
-        public int binarySearch(int l, int r) {
-            if (l > r) {
-                throw new IllegalArgumentException();
+        public void handle(int i, boolean bot, boolean top, boolean pickUp) {
+            if (!valid) {
+                return;
             }
-            while (l < r) {
-                int mid = (l + r) >>> 1;
-                if (check(mid)) {
-                    r = mid;
+            if (i >= m || (!bot && !top)) {
+                int usedIter = 0;
+                for (int j = 0; j < n; j++) {
+                    if (perm[j] != -1) {
+                        continue;
+                    }
+                    while (usedIter < n && used[usedIter] != -1) {
+                        usedIter++;
+                    }
+                    perm[j] = usedIter++;
+                }
+                return;
+            }
+
+            if (perm[s[i]] != -1) {
+                check(i, bot, top);
+                handle(i + 1, perm[s[i]] == a[i] && bot, perm[s[i]] == b[i] && top, pickUp);
+                return;
+            }
+
+            if (bot != top) {
+                int j;
+                if (bot) {
+                    j = n - 1;
+                    for (; used[j] != -1; j--) ;
                 } else {
-                    l = mid + 1;
+                    j = 0;
+                    for (; used[j] != -1; j++) ;
                 }
+                perm[s[i]] = j;
+                used[j] = s[i];
+                check(i, bot, top);
+                handle(i + 1, perm[s[i]] == a[i] && bot, perm[s[i]] == b[i] && top, pickUp);
+                return;
             }
-            return l;
-        }
 
-    }
-
-    static class LongTernarySearch {
-        private LongUnaryOperator operator;
-
-        public LongTernarySearch(LongUnaryOperator operator) {
-            this.operator = operator;
-        }
-
-        public int find(int l, int r) {
-            while (r - l > 2) {
-                int ml = l + DigitUtils.floorDiv(r - l, 3);
-                int mr = r - DigitUtils.ceilDiv(r - l, 3);
-                if (operator.applyAsLong(ml) >= operator.applyAsLong(mr)) {
-                    l = ml;
-                } else {
-                    r = mr;
+            int j = -1;
+            if (pickUp) {
+                for (int k = a[i]; k <= b[i]; k++) {
+                    if (used[k] == -1 && (j == -1 || j == a[i])) {
+                        j = k;
+                    }
                 }
-            }
-            while (l < r) {
-                if (operator.applyAsLong(l) < operator.applyAsLong(r)) {
-                    r--;
-                } else {
-                    l++;
-                }
-            }
-            return l;
-        }
-
-    }
-
-    static class ErdosGallaiTheorem {
-        public static long maxOnAllK(int[] degs) {
-//        long sum = 0;
-//        int min = 0;
-//        for (int i = 0; i < degs.length; i++) {
-//            sum += degs[i];
-//            min = Math.min(min, degs[i]);
-//        }
-//        if (sum % 2 == 1 || min < 0) {
-//            throw new IllegalArgumentException();
-//        }
-//        CompareUtils.radixSort(degs, 0, degs.length - 1);
-//        SequenceUtils.reverse(degs, 0, degs.length - 1);
-            int n = degs.length;
-            PreSum ps = new PreSum(degs);
-            long[] ss = new long[n + 1];
-            int rIter = n;
-            for (int i = n - 1; i >= 0; i--) {
-                int l = i;
-                int r = n - 1;
-                if (rIter - 1 >= l && degs[rIter - 1] < i) {
-                    rIter--;
-                }
-                while (rIter < n && degs[rIter] > i) {
-                    rIter++;
-                }
-                ss[i] = (long) (rIter - l) * i + ps.intervalSum(rIter, r);
-            }
-
-            long max = Long.MIN_VALUE;
-            for (int i = 1; i <= n; i++) {
-                max = Math.max(max, ps.intervalSum(0, i - 1) - (long) i * (i - 1) - ss[i]);
-            }
-            return max;
-        }
-
-    }
-
-    static class CompareUtils {
-        private CompareUtils() {
-        }
-
-        public static void mergeDescending(int[] a, int al, int ar, int[] b, int bl, int br, int[] c, int cl) {
-            while (al <= ar || bl <= br) {
-                if (bl > br || (al <= ar && a[al] >= b[bl])) {
-                    c[cl++] = a[al++];
-                } else {
-                    c[cl++] = b[bl++];
-                }
-            }
-        }
-
-    }
-
-    static class Randomized {
-        static Random random = new Random();
-
-        public static void randomizedArray(int[] data) {
-            randomizedArray(data, 0, data.length - 1);
-        }
-
-        public static void randomizedArray(int[] data, int from, int to) {
-            to--;
-            for (int i = from; i <= to; i++) {
-                int s = nextInt(i, to);
-                int tmp = data[i];
-                data[i] = data[s];
-                data[s] = tmp;
-            }
-        }
-
-        public static int nextInt(int l, int r) {
-            return random.nextInt(r - l + 1) + l;
-        }
-
-    }
-
-    static class IntList implements Cloneable {
-        private int size;
-        private int cap;
-        private int[] data;
-        private static final int[] EMPTY = new int[0];
-
-        public int[] getData() {
-            return data;
-        }
-
-        public IntList(int cap) {
-            this.cap = cap;
-            if (cap == 0) {
-                data = EMPTY;
             } else {
-                data = new int[cap];
-            }
-        }
-
-        public IntList(IntList list) {
-            this.size = list.size;
-            this.cap = list.cap;
-            this.data = Arrays.copyOf(list.data, size);
-        }
-
-        public IntList() {
-            this(0);
-        }
-
-        public void ensureSpace(int req) {
-            if (req > cap) {
-                while (cap < req) {
-                    cap = Math.max(cap + 10, 2 * cap);
+                for (int k = b[i]; k >= a[i]; k--) {
+                    if (used[k] == -1 && (j == -1 || j == b[i])) {
+                        j = k;
+                    }
                 }
-                data = Arrays.copyOf(data, cap);
             }
-        }
-
-        public void addAll(int[] x) {
-            addAll(x, 0, x.length);
-        }
-
-        public void addAll(int[] x, int offset, int len) {
-            ensureSpace(size + len);
-            System.arraycopy(x, offset, data, size, len);
-            size += len;
-        }
-
-        public void addAll(IntList list) {
-            addAll(list.data, 0, list.size);
-        }
-
-        public int[] toArray() {
-            return Arrays.copyOf(data, size);
-        }
-
-        public void clear() {
-            size = 0;
-        }
-
-        public String toString() {
-            return Arrays.toString(toArray());
-        }
-
-        public boolean equals(Object obj) {
-            if (!(obj instanceof IntList)) {
-                return false;
+            if (j == -1) {
+                valid = false;
+                return;
             }
-            IntList other = (IntList) obj;
-            return SequenceUtils.equal(data, 0, size - 1, other.data, 0, other.size - 1);
-        }
+            perm[s[i]] = j;
+            used[j] = s[i];
 
-        public int hashCode() {
-            int h = 1;
-            for (int i = 0; i < size; i++) {
-                h = h * 31 + data[i];
-            }
-            return h;
-        }
-
-        public IntList clone() {
-            IntList ans = new IntList();
-            ans.addAll(this);
-            return ans;
+            handle(i + 1, perm[s[i]] == a[i] && bot, perm[s[i]] == b[i] && top, pickUp);
         }
 
     }
 
     static class FastInput {
         private final InputStream is;
+        private StringBuilder defaultStringBuf = new StringBuilder(1 << 13);
         private byte[] buf = new byte[1 << 13];
         private int bufLen;
         private int bufOffset;
@@ -349,6 +189,10 @@ public class Main {
             }
         }
 
+        public String next() {
+            return readString();
+        }
+
         public int readInt() {
             int sign = 1;
 
@@ -374,99 +218,32 @@ public class Main {
             return val;
         }
 
-    }
+        public String readString(StringBuilder builder) {
+            skipBlank();
 
-    static class DigitUtils {
-        private DigitUtils() {
-        }
-
-        public static int floorDiv(int a, int b) {
-            return a < 0 ? -ceilDiv(-a, b) : a / b;
-        }
-
-        public static int ceilDiv(int a, int b) {
-            if (a < 0) {
-                return -floorDiv(-a, b);
+            while (next > 32) {
+                builder.append((char) next);
+                next = read();
             }
-            int c = a / b;
-            if (c * b < a) {
-                return c + 1;
+
+            return builder.toString();
+        }
+
+        public String readString() {
+            defaultStringBuf.setLength(0);
+            return readString(defaultStringBuf);
+        }
+
+        public int readString(int[] data, int offset) {
+            skipBlank();
+
+            int originalOffset = offset;
+            while (next > 32) {
+                data[offset++] = (char) next;
+                next = read();
             }
-            return c;
-        }
 
-    }
-
-    static class SequenceUtils {
-        public static void swap(int[] data, int i, int j) {
-            int tmp = data[i];
-            data[i] = data[j];
-            data[j] = tmp;
-        }
-
-        public static void reverse(int[] data, int l, int r) {
-            while (l < r) {
-                swap(data, l, r);
-                l++;
-                r--;
-            }
-        }
-
-        public static boolean equal(int[] a, int al, int ar, int[] b, int bl, int br) {
-            if ((ar - al) != (br - bl)) {
-                return false;
-            }
-            for (int i = al, j = bl; i <= ar; i++, j++) {
-                if (a[i] != b[j]) {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-    }
-
-    static class PreSum {
-        private long[] pre;
-
-        public PreSum(int n) {
-            pre = new long[n];
-        }
-
-        public void populate(long[] a) {
-            int n = a.length;
-            pre[0] = a[0];
-            for (int i = 1; i < n; i++) {
-                pre[i] = pre[i - 1] + a[i];
-            }
-        }
-
-        public void populate(int[] a) {
-            int n = a.length;
-            pre[0] = a[0];
-            for (int i = 1; i < n; i++) {
-                pre[i] = pre[i - 1] + a[i];
-            }
-        }
-
-        public PreSum(long[] a) {
-            this(a.length);
-            populate(a);
-        }
-
-        public PreSum(int[] a) {
-            this(a.length);
-            populate(a);
-        }
-
-        public long intervalSum(int l, int r) {
-            if (l > r) {
-                return 0;
-            }
-            if (l == 0) {
-                return pre[r];
-            }
-            return pre[r] - pre[l - 1];
+            return offset - originalOffset;
         }
 
     }
@@ -483,8 +260,18 @@ public class Main {
             this(new OutputStreamWriter(os));
         }
 
-        public FastOutput println(int c) {
+        public FastOutput append(char c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput println(String c) {
             cache.append(c).append('\n');
+            return this;
+        }
+
+        public FastOutput println() {
+            cache.append('\n');
             return this;
         }
 

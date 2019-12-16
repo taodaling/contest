@@ -1,0 +1,44 @@
+{
+  "name" : "E. Vasya and Templates",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2\n4\nbbcb\naada\naada\n3\nabc\nbbb\nbbb\n",
+    "output" : "YES\nbadc\nNO\n",
+    "index" : 0,
+    "active" : false
+  }, {
+    "input" : "1\n1\na\na\na",
+    "output" : "YES\na",
+    "index" : 1,
+    "active" : false
+  }, {
+    "input" : "9\n5\nbcdbccc\nadaedae\neecdaca\n5\ndbeedcbcbaccdddbdcbcabacecbe\ndcaeaabaadacddcdecbbebcbadcb\nddbacaaabdaeedaacbabebccebbd\n5\nbdbedbb\ncccacdc\ncdcbccc\n3\nccacb\ncbaaa\nccbaa\n4\nccbbb\naaabc\nacbcc\n3\nccbcccbacbbabbcccb\nbbabcccbacaaccbaab\nbcccabcbabbacbcccb\n26\nb\na\na\n1\na\na\na\n7\nfffbaegccd\naaagebfccd\naaagebfccd",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.EVasyaAndTemplates",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.12.16",
+  "contestName" : "Technocup 2019 - Elimination Round 4",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

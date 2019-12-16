@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-C:/Users/DALT/IdeaProjects/contest/c++/library/common.h
+C:/Users/daltao/IdeaProjects/contest/c++/library/common.h
 bits/stdc++.h
 -
 chrono
@@ -14,18 +14,22 @@ chrono
 random
 -
 
-C:/Users/DALT/IdeaProjects/contest/c++/library/presum.h
+C:/Users/daltao/IdeaProjects/contest/c++/library/debug.h
+
+C:/Users/daltao/IdeaProjects/contest/c++/library/lichao_segment.h
 common.h
-C:/Users/DALT/IdeaProjects/contest/c++/library/common.h
+C:/Users/daltao/IdeaProjects/contest/c++/library/common.h
 
-C:/Users/DALT/IdeaProjects/contest/c++/tasks/tenka1_2018_e.cpp
+C:/Users/daltao/IdeaProjects/contest/c++/tasks/UOJ88.cpp
 ../library/common.h
-C:/Users/DALT/IdeaProjects/contest/c++/library/common.h
-../library/presum.h
-C:/Users/DALT/IdeaProjects/contest/c++/library/presum.h
+C:/Users/daltao/IdeaProjects/contest/c++/library/common.h
+../library/debug.h
+C:/Users/daltao/IdeaProjects/contest/c++/library/debug.h
+../library/lichao_segment.h
+C:/Users/daltao/IdeaProjects/contest/c++/library/lichao_segment.h
 
-C:/Users/DALT/IdeaProjects/contest/c++/testrunner/main.cpp
-C:/Users/DALT/IdeaProjects/contest/c++/tasks/tenka1_2018_e.cpp
+C:/Users/daltao/IdeaProjects/contest/c++/testrunner/main.cpp
+C:/Users/daltao/IdeaProjects/contest/c++/tasks/UOJ88.cpp
 -
 iostream
 -

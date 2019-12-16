@@ -28,11 +28,15 @@ using std::numeric_limits;
 using std::make_pair;
 using std::priority_queue;
 using std::iterator;
+using std::cerr;
 
 typedef unsigned int ui;
 typedef long long ll;
 typedef long double ld;
 typedef unsigned long long ull;
 std::mt19937 rng(std::chrono::steady_clock::now().time_since_epoch().count());
+
+namespace dalt{};
+namespace other{};
 
 #endif //JHELPER_EXAMPLE_PROJECT_COMMON_H

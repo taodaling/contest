@@ -1,4 +1,4 @@
-#include "C:/Users/DALT/IdeaProjects/contest/c++/tasks/tenka1_2018_e.cpp"
+#include "C:/Users/daltao/IdeaProjects/contest/c++/tasks/UOJ88.cpp"
 
 #include <iostream>
 #include <fstream>
@@ -29,7 +29,7 @@ bool check(std::string expected, std::string actual) {
 
 int main() {
 	std::vector<jhelper::Test> tests = {
-		{"5 4\n#.##\n.##.\n#...\n..##\n...#", "3\n", false, true},{"2 2\n##\n##", "0", false, true},{"13 27\n......#.........#.......#..\n#############...#.....###..\n..............#####...##...\n...#######......#...#######\n...#.....#.....###...#...#.\n...#######....#.#.#.#.###.#\n..............#.#.#...#.#..\n#############.#.#.#...###..\n#...........#...#...#######\n#..#######..#...#...#.....#\n#..#.....#..#...#...#.###.#\n#..#######..#...#...#.#.#.#\n#..........##...#...#.#####", "870", true, true},{"4 2\n#.\n.#\n#.\n.#", "2", false, true},
+		{"4 5\n-20 0 20 100\n10 command 1 10\n20 command 3 -10\n30 query\n40 command 1 -30\n50 query\n", "180\n280\n", true, true},
 	};
 	bool allOK = true;
 	int testID = 0;
@@ -48,7 +48,7 @@ int main() {
 			std::stringstream in(test.input);
 			std::ostringstream out;
 			std::clock_t start = std::clock();
-			tenka1_2018_e solver;
+			UOJ88 solver;
 			solver.solve(in, out);
 			std::clock_t finish = std::clock();
 			double currentTime = double(finish - start) / CLOCKS_PER_SEC;

@@ -38,6 +38,7 @@ using std::numeric_limits;
 using std::make_pair;
 using std::priority_queue;
 using std::iterator;
+using std::cerr;
 
 typedef unsigned int ui;
 typedef long long ll;
@@ -45,136 +46,162 @@ typedef long double ld;
 typedef unsigned long long ull;
 std::mt19937 rng(std::chrono::steady_clock::now().time_since_epoch().count());
 
+namespace dalt{};
+namespace other{};
+
 #endif //JHELPER_EXAMPLE_PROJECT_COMMON_H
 
 //
-// Created by DALT on 12/15/2019.
+// Created by daltao on 2019/12/16.
 //
 
-#ifndef JHELPER_EXAMPLE_PROJECT_PRESUM_H
-#define JHELPER_EXAMPLE_PROJECT_PRESUM_H
+#ifndef JHELPER_EXAMPLE_PROJECT_DEBUG_H
+#define JHELPER_EXAMPLE_PROJECT_DEBUG_H
+
+#endif //JHELPER_EXAMPLE_PROJECT_DEBUG_H
+
+//
+// Created by daltao on 2019/12/16.
+//
+
+#ifndef JHELPER_EXAMPLE_PROJECT_LICHAO_SEGMENT_H
+#define JHELPER_EXAMPLE_PROJECT_LICHAO_SEGMENT_H
 
 
 
-namespace dalt {
-    template<typename T>
-    class presum {
-    public:
-        presum(int cap) : _vec(cap) {
+namespace other {
+#define INF 1e18
+
+    template<class T>
+    struct lichao_line {
+        T k, m;
+
+        lichao_line(T _k, T _m) { k = _k, m = _m; }
+
+        lichao_line() : lichao_line((T)0, (T)-INF) {}
+
+        T get(T x) { return k * x + m; }
+
+        bool majorize(lichao_line X, ll L, ll R) {
+            return get(L) >= X.get(L) && get(R) >= X.get(R);
         }
-
-        presum(const presum<T> &vec) : _vec(vec._vec), _n(vec._n) {
-        }
-
-        void populate(vector<T> vec) {
-            _vec.begin();
-            _vec.clear();
-            _vec.insert(_vec.end(), vec.begin(), vec.end());
-            _n = _vec.size();
-            for (int i = 1; i < _n; i++) {
-                _vec[i] += _vec[i - 1];
-            }
-        };
-
-        T interval(int l, int r){
-            if(l > r){
-                return 0;
-            }
-            T ans = _vec[r];
-            if(l > 0){
-                ans -= _vec[l - 1];
-            }
-            return ans;
-        }
-    private:
-        vector<T> _vec;
-        int _n;
     };
+
+    template<class T>
+    struct lichao_segment {
+        lichao_segment<T> *c[2];
+        lichao_line<T> S;
+
+        lichao_segment() {
+            c[0] = c[1] = NULL;
+            S = lichao_line<T>();
+        }
+
+        void rm() {
+            if (c[0]) c[0]->rm();
+            if (c[1]) c[1]->rm();
+            delete this;
+        }
+
+        void mc(int i) {
+            if (!c[i]) c[i] = new lichao_segment<T>();
+        }
+
+        ll query(ll X, ll L, ll R) {
+            ll ans = S.get(X), M = (L + R) / 2;
+            if (X <= M) return max(ans, c[0] ? c[0]->query(X, L, M) : (T)-INF);
+            return max(ans, c[1] ? c[1]->query(X, M + 1, R) : (T)-INF);
+        }
+
+        void modify(const lichao_line<T> &X, ll L, ll R) {
+            if (X.majorize(S, L, R)) swap(X, S);
+            if (S.majorize(X, L, R)) return;
+            if (S.get(L) < X.get(L)) swap(X, S);
+
+            ll M = (L + R) / 2;
+            if (X.get(M) >= S.get(M)) swap(X, S), mc(0), c[0]->modify(X, L, M);
+            else mc(1), c[1]->modify(X, M + 1, R);
+        }
+
+        void upd(const lichao_line<T> &X, ll lo, ll hi, ll L, ll R) { // untested
+            if (R < lo || L > hi) return;
+            if (lo <= L && R <= hi) {
+                modify(X, L, R);
+                return;
+            }
+            ll M = (L + R) / 2;
+            mc(0), c[0]->upd(X, lo, hi, L, M);
+            mc(1), c[1]->upd(X, lo, hi, M + 1, R);
+        }
+    };
+
+#undef INF
 }
 
-#endif //JHELPER_EXAMPLE_PROJECT_PRESUM_H
+#endif //JHELPER_EXAMPLE_PROJECT_LICHAO_SEGMENT_H
 
 
-using namespace dalt;
+using namespace other;
+typedef lichao_line<ll> dlc_line;
+typedef lichao_segment<ll> dlc_seg;
 
-#define MAX_H_W 600
-vector<vector<int>> grids(MAX_H_W, vector<int>(MAX_H_W));
-vector<presum<int>> rows(MAX_H_W, presum<int>(MAX_H_W));
-vector<presum<int>> cols(MAX_H_W, presum<int>(MAX_H_W));
-vector<vector<int>> colPoints(MAX_H_W, vector<int>(MAX_H_W));
-vector<presum<int>> colSums(MAX_H_W, presum<int>(MAX_H_W));
+vector<int> queries;
+vector<dlc_line> status;
+vector<int> since;
 
+#define MAX_TIME (ll)1e9
 
-class tenka1_2018_e {
+dlc_line reverse(const dlc_line &line){
+    return dlc_line(-line.k, -line.m);
+}
+
+class UOJ88 {
 public:
+
     void solve(std::istream &in, std::ostream &out) {
-        int h, w;
-        in >> h >> w;
-        for (int i = 0; i < h; i++) {
-            for (int j = 0; j < w; j++) {
-                char c;
-                in >> c;
-                if (c == '#') {
-                    grids[i + j][i + w - j] = 1;
-                }
+        int n, m;
+        in >> n >> m;
+        status.reserve(n);
+        queries.reserve(m);
+        since.resize(n, 0);
+        for (int i = 0; i < n; i++) {
+            int a;
+            in >> a;
+            status.push_back(dlc_line(0, a));
+        }
+        dlc_seg upper;
+        dlc_seg bot;
+        for(int i = 0; i < m; i++){
+            int time;
+            string type;
+            in >> time >> type;
+            if(type == "query"){
+                queries.push_back(time);
+            }else{
+                int which, dir;
+                in >> which >> dir;
+                which--;
+                upper.upd(status[which], since[which], time, 0, MAX_TIME);
+                bot.upd(reverse(status[which]), since[which], time, 0, MAX_TIME);
+                ll x = status[which].get(time);
+                status[which] = dlc_line(dir, x - (ll)dir * time);
+                since[which] = time;
             }
         }
 
-        for (int i = 0; i < MAX_H_W; i++) {
-            rows[i].populate(grids[i]);
-        }
-        vector<int> col(MAX_H_W);
-        for (int i = 0; i < MAX_H_W; i++) {
-            for (int j = 0; j < MAX_H_W; j++) {
-                col[j] = grids[j][i];
-            }
-            colSums[i].populate(col);
+        for(int i = 0; i < n; i++){
+            upper.upd(status[i], since[i], MAX_TIME, 0, MAX_TIME);
+            bot.upd(reverse(status[i]), since[i], MAX_TIME, 0, MAX_TIME);
+//            std::cerr << i <<  "=" << status[i].k << "x" << "+" << status[i].m
+//            << "(" << since[i] << ")" << endl;
         }
 
-        ll ans = 0;
-        for (int i = 1; i < MAX_H_W; i++) {
-            for (int j = 0; j < MAX_H_W; j++) {
-                for (int k = 0; k < MAX_H_W; k++) {
-                    if (grids[j][k] && j + i < MAX_H_W && grids[j + i][k]) {
-                        colPoints[k][j] = 1;
-                    } else {
-                        colPoints[k][j] = 0;
-                    }
-                }
-            }
-
-            for (int j = 0; j < MAX_H_W; j++) {
-                cols[j].populate(colPoints[j]);
-            }
-
-            for (int j = 0; j < MAX_H_W; j++) {
-                for (int k = 0; k < MAX_H_W; k++) {
-                    if (grids[j][k] == 0) {
-                        continue;
-                    }
-
-                    int origin = ans;
-                    if (j - i >= 0 && k + i < MAX_H_W) {
-                        ans += rows[j - i].interval(k + 1, k + i - 1) * grids[j][k + i];
-                    }
-                    if (k + i < MAX_H_W) {
-                        ans += cols[k + i].interval(max(0, j - i), j);
-                    }
-                    if (j + i < MAX_H_W && k + i < MAX_H_W) {
-                        ans += grids[j][k + i] * rows[j + i].interval(k, k + i - 1);
-                    }
-                    if (j + i < MAX_H_W && k + i < MAX_H_W) {
-                        ans += grids[j + i][k] * colSums[k + i].interval(j + 1, j + i);
-                    }
-
-//                    if (origin < ans) {
-//                        std::cerr << "i=" << i << ", j=" << j << ", k=" << k << ": " << ans - origin << endl;
-//                    }
-                }
-            }
+        for(int q : queries){
+            ll pos = upper.query(q, 0, MAX_TIME);
+            ll neg = bot.query(q, 0, MAX_TIME);
+            ll ans = max(abs(pos), abs(neg));
+            out << ans << endl;
         }
-
-        out << ans;
     }
 
 private:
@@ -187,7 +214,7 @@ int main() {
 	std::cout << std::setiosflags(std::ios::fixed);
 	std::cout << std::setprecision(15);
 
-	tenka1_2018_e solver;
+	UOJ88 solver;
 	std::istream& in(std::cin);
 	std::ostream& out(std::cout);
 	solver.solve(in, out);
