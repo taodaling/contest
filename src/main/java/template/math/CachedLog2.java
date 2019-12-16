@@ -31,4 +31,21 @@ public class CachedLog2 {
     public static int floorLog(int x) {
         return x < LIMIT ? CACHE[x] : (BITS + CACHE[x >>> BITS]);
     }
+
+    public static int ceilLog(long x) {
+        int ans = floorLog(x);
+        if ((1L << ans) < x) {
+            ans++;
+        }
+        return ans;
+    }
+
+    public static int floorLog(long x) {
+        int ans = 0;
+        while (x < LIMIT) {
+            ans += BITS;
+            x >>>= LIMIT;
+        }
+        return ans + CACHE[(int) x];
+    }
 }
