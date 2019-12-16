@@ -3,22 +3,34 @@ package template.algo;
 public class PreSum {
     private long[] pre;
 
-    public PreSum(long[] a) {
-        int n = a.length;
+    public PreSum(int n) {
         pre = new long[n];
+    }
+
+    public void populate(long[] a){
+        int n = a.length;
         pre[0] = a[0];
         for (int i = 1; i < n; i++) {
             pre[i] = pre[i - 1] + a[i];
         }
     }
 
-    public PreSum(int[] a) {
+    public void populate(int[] a){
         int n = a.length;
-        pre = new long[n];
         pre[0] = a[0];
         for (int i = 1; i < n; i++) {
             pre[i] = pre[i - 1] + a[i];
         }
+    }
+
+    public PreSum(long[] a) {
+        this(a.length);
+        populate(a);
+    }
+
+    public PreSum(int[] a) {
+        this(a.length);
+        populate(a);
     }
 
     /**

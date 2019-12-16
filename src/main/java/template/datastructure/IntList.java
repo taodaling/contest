@@ -5,7 +5,7 @@ import java.util.Arrays;
 import template.rand.Randomized;
 import template.utils.SequenceUtils;
 
-public class IntList {
+public class IntList implements Cloneable{
     private int size;
     private int cap;
     private int[] data;
@@ -274,5 +274,12 @@ public class IntList {
             h = h * 31 + data[i];
         }
         return h;
+    }
+
+    @Override
+    public IntList clone() {
+        IntList ans = new IntList();
+        ans.addAll(this);
+        return ans;
     }
 }

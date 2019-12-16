@@ -15,7 +15,7 @@ public class CatTree<S, E> {
         if (l == r) {
             return (S) levels[0][l];
         }
-        int level = Bits.theFirstDifferentBit(l, r) + 1;
+        int level = Bits.theFirstDifferentIndex(l, r) + 1;
         return handler.mergeSet((S) levels[level][l], (S) levels[level][r]);
     }
 

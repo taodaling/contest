@@ -15,7 +15,9 @@ public class NTT {
 
     // a.length == b.length == 2^x
     public static void ntt(int[] a, boolean invert, int mod, int root) {
-        int n = a.length;
+        ntt(a, a.length, invert, mod, root);
+    }
+    public static void ntt(int[] a, int n, boolean invert, int mod, int root) {
         int shift = 32 - Integer.numberOfTrailingZeros(n);
         for (int i = 1; i < n; i++) {
             int j = Integer.reverse(i << shift);

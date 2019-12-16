@@ -83,7 +83,15 @@ public class Bits {
         return x >>> CachedLog2.floorLog(x ^ y);
     }
 
-    public static int theFirstDifferentBit(int x, int y){
+    public static int theFirstDifferentIndex(int x, int y) {
         return CachedLog2.floorLog(x ^ y);
+    }
+
+    public static int lowestBit(int x) {
+        return x & -x;
+    }
+
+    public static int highestBit(int x) {
+        return 1 << CachedLog2.floorLog(x);
     }
 }

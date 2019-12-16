@@ -1,0 +1,67 @@
+{
+  "name" : "C. Beautiful Rectangle",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "12\n3 1 4 1 5 9 2 6 5 3 5 8\n",
+    "output" : "12\n3 4\n1 2 3 5\n3 1 5 4\n5 6 8 9\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "5\n1 1 1 1 1\n",
+    "output" : "1\n1 1\n1\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "1 1\n1",
+    "output" : "1\n1 1\n1",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "1\n1000000",
+    "output" : "1\n1 1\n1000000",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "2\n1 1",
+    "output" : "1\n1 1\n1",
+    "index" : 4,
+    "active" : true
+  }, {
+    "input" : "3\n1 2 3",
+    "index" : 5,
+    "active" : true
+  }, {
+    "input" : "4\n100 100 10000 10000",
+    "index" : 6,
+    "active" : true
+  }, {
+    "input" : "5\n1 1 1 1 1",
+    "index" : 7,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2019_12.on2019_12_14_Codeforces_Round__606__Div__1__based_on_Technocup_2020_Elimination_Round_4_.C__Beautiful_Rectangle.CBeautifulRectangle",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.12.14",
+  "contestName" : "Codeforces Round #606 (Div. 1, based on Technocup 2020 Elimination Round 4)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

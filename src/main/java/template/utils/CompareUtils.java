@@ -7,6 +7,7 @@ import template.rand.Randomized;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.function.IntUnaryOperator;
 import java.util.function.ToIntFunction;
 
 /**
@@ -250,28 +251,28 @@ public class CompareUtils {
         }
     }
 
-    public static void radixSort(int[] data, int l, int r, IntToIntFunction indexFetcher) {
+    public static void radixSort(int[] data, int l, int r, IntUnaryOperator indexFetcher) {
         INT_LIST.clear();
         INT_LIST.expandWith(0, r - l + 1);
         int[] output = INT_LIST.getData();
         for (int i = 0; i < 4; i++) {
             int rightShift = i * 8;
             int mask = BUF8.length - 1;
-            radixSort0(data, output, BUF8, l, r, (x) -> (indexFetcher.apply(x) >>> rightShift) & mask);
+            radixSort0(data, output, BUF8, l, r, (x) -> (indexFetcher.applyAsInt(x) >>> rightShift) & mask);
             System.arraycopy(output, 0, data, l, r - l + 1);
         }
     }
 
-    private static void radixSort0(int[] data, int[] output, int[] buf, int l, int r, IntToIntFunction indexFetcher) {
+    private static void radixSort0(int[] data, int[] output, int[] buf, int l, int r, IntUnaryOperator indexFetcher) {
         Arrays.fill(buf, 0);
         for (int i = l; i <= r; i++) {
-            buf[indexFetcher.apply(data[i])]++;
+            buf[indexFetcher.applyAsInt(data[i])]++;
         }
         for (int i = 1; i < buf.length; i++) {
             buf[i] += buf[i - 1];
         }
         for (int i = r; i >= l; i--) {
-            output[--buf[indexFetcher.apply(data[i])]] = data[i];
+            output[--buf[indexFetcher.applyAsInt(data[i])]] = data[i];
         }
     }
 
@@ -309,6 +310,26 @@ public class CompareUtils {
             int mask = BUF8.length - 1;
             radixSort0(data, output, BUF8, l, r, (x) -> (indexFetcher.applyAsInt(x) >>> rightShift) & mask);
             System.arraycopy(output, 0, data, l, r - l + 1);
+        }
+    }
+
+    public static void mergeAscending(int[] a, int al, int ar, int[] b, int bl, int br, int[] c, int cl) {
+        while (al <= ar || bl <= br) {
+            if (bl > br || (al <= ar && a[al] <= b[bl])) {
+                c[cl++] = a[al++];
+            } else {
+                c[cl++] = b[bl++];
+            }
+        }
+    }
+
+    public static void mergeDescending(int[] a, int al, int ar, int[] b, int bl, int br, int[] c, int cl) {
+        while (al <= ar || bl <= br) {
+            if (bl > br || (al <= ar && a[al] >= b[bl])) {
+                c[cl++] = a[al++];
+            } else {
+                c[cl++] = b[bl++];
+            }
         }
     }
 

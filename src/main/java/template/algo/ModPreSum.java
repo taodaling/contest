@@ -6,13 +6,22 @@ public class ModPreSum {
     private int[] pre;
     private Modular mod;
 
-    public ModPreSum(int[] a, Modular mod) {
-        int n = a.length;
+    public ModPreSum(int n, Modular mod) {
         pre = new int[n];
-        pre[0] = mod.valueOf(a[0]);
+        this.mod = mod;
+    }
+
+    public void populate(int[] a){
+        int n = a.length;
+        pre[0] = a[0];
         for (int i = 1; i < n; i++) {
             pre[i] = mod.plus(pre[i - 1], a[i]);
         }
+    }
+
+    public ModPreSum(int[] a, Modular mod) {
+        this(a.length, mod);
+        populate(a);
     }
 
     /**

@@ -2,10 +2,10 @@
 <project version="4">
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
     <generated>
-      <config projectName="jhelper-example-project" targetName="jhelper_example_project" />
-      <config projectName="jhelper-example-project" targetName="test" />
       <config projectName="jhelper-example-project" targetName="testrunner" />
+      <config projectName="jhelper-example-project" targetName="jhelper_example_project" />
       <config projectName="jhelper-example-project" targetName="output" />
+      <config projectName="jhelper-example-project" targetName="test" />
     </generated>
   </component>
   <component name="CMakeSettings">
@@ -15,7 +15,53 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e173ed55-e541-424a-82e1-b5da979c74d7" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/../src/main/java/template/math/CachedLog2.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/template/math/CachedLog2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../archive/unsorted/2019.12/2019.12.13 - Educational Codeforces Round 57 (Rated for Div. 2)/E. The Top Scorer.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../archive/unsorted/2019.12/2019.12.13 - Educational Codeforces Round 57 (Rated for Div. 2)/ETheTopScorer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../archive/unsorted/2019.12/2019.12.13 - Educational Codeforces Round 57 (Rated for Div. 2)/G - Lucky Tickets.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../archive/unsorted/2019.12/2019.12.13 - Educational Codeforces Round 57 (Rated for Div. 2)/TaskG.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../archive/unsorted/2019.12/2019.12.14 - Codeforces Round #527 (Div. 3)/E. Minimal Diameter Forest.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../archive/unsorted/2019.12/2019.12.14 - Codeforces Round #527 (Div. 3)/EMinimalDiameterForest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../archive/unsorted/2019.12/2019.12.14 - Codeforces Round #606 (Div. 1, based on Technocup 2020 Elimination Round 4)/A. As Simple as One and Two.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../archive/unsorted/2019.12/2019.12.14 - Codeforces Round #606 (Div. 1, based on Technocup 2020 Elimination Round 4)/AAsSimpleAsOneAndTwo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../archive/unsorted/2019.12/2019.12.14 - Codeforces Round #606 (Div. 1, based on Technocup 2020 Elimination Round 4)/B. Two Fairs.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../archive/unsorted/2019.12/2019.12.14 - Codeforces Round #606 (Div. 1, based on Technocup 2020 Elimination Round 4)/BTwoFairs.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../archive/unsorted/2019.12/2019.12.14 - Codeforces Round #606 (Div. 1, based on Technocup 2020 Elimination Round 4)/C. Beautiful Rectangle.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../archive/unsorted/2019.12/2019.12.14 - Codeforces Round #606 (Div. 1, based on Technocup 2020 Elimination Round 4)/CBeautifulRectangle.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../archive/unsorted/2019.12/2019.12.14 - Educational Codeforces Round 56 (Rated for Div. 2)/F. Vasya and Array.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../archive/unsorted/2019.12/2019.12.14 - Educational Codeforces Round 56 (Rated for Div. 2)/FVasyaAndArray.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../archive/unsorted/2019.12/2019.12.14 - Good Bye 2018/E. New Year and the Acquaintance Estimation.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../archive/unsorted/2019.12/2019.12.14 - Good Bye 2018/ENewYearAndTheAcquaintanceEstimation.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../archive/unsorted/2019.12/2019.12.15 - Codeforces Round #607 (Div. 1)/A. Cut and Paste.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../archive/unsorted/2019.12/2019.12.15 - Codeforces Round #607 (Div. 1)/ACutAndPaste.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../archive/unsorted/2019.12/2019.12.15 - Codeforces Round #607 (Div. 1)/B. Beingawesomeism.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../archive/unsorted/2019.12/2019.12.15 - Codeforces Round #607 (Div. 1)/BBeingawesomeism.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../archive/unsorted/2019.12/2019.12.15 - Codeforces Round #607 (Div. 1)/C. Jeremy Bearimy.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../archive/unsorted/2019.12/2019.12.15 - Codeforces Round #607 (Div. 1)/CJeremyBearimy.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../archive/unsorted/2019.12/2019.12.15 - Good Bye 2018/E. New Year and the Acquaintance Estimation.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../archive/unsorted/2019.12/2019.12.15 - Good Bye 2018/ENewYearAndTheAcquaintanceEstimation.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../src/main/java/template/algo/IntTernarySearch.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../src/main/java/template/algo/LongTernarySearch.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../src/main/java/template/datastructure/PrefixIncrementOnePriorityQueue.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../src/main/java/template/graph/ErdosGallaiTheorem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../src/main/java/template/graph/ForestDiameter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../src/main/java/template/graph/TreeDiameter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../src/main/java/template/math/Rational.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CHelperReport.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../CHelperReport.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/codelibrary/java/numeric/NTT.java" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/codelibrary/java/numeric/NTT.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../output/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/../output/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/template/algo/IntBinarySearch.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/template/algo/IntBinarySearch.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/template/algo/MinimumNumberWithMaximumFactors.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/template/algo/MinimumNumberWithMaximumFactors.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/template/algo/ModPreSum.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/template/algo/ModPreSum.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/template/algo/PreSum.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/template/algo/PreSum.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/template/algo/PreXor.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/template/algo/PreXor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/template/datastructure/IntList.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/template/datastructure/IntList.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/template/math/Bits.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/template/math/Bits.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/template/math/CatTree.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/template/math/CatTree.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/template/math/MultiplicativeFunctionCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/template/math/MultiplicativeFunctionCalculator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/template/polynomial/NumberTheoryTransform.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/template/polynomial/NumberTheoryTransform.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/template/utils/CompareUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/template/utils/CompareUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/template/utils/IntToIntFunction.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/template/utils/SequenceUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/template/utils/SequenceUtils.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,7 +74,6 @@
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="name.admitriev.jhelper.configuration.TaskConfigurationExecutionTargetCMakeBuildProfile:Debug" />
   <component name="FavoritesManager">
     <favorites_list name="jhelper-example-project" />
   </component>
@@ -55,7 +100,7 @@
     <property name="restartRequiresConfirmation" value="true" />
     <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.Console Font" />
   </component>
-  <component name="RunManager" selected="Task.LUOGU4719">
+  <component name="RunManager">
     <configuration name="Build All" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" CONFIG_NAME="Debug" EXPLICIT_BUILD_TARGET_NAME="all">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -130,7 +175,6 @@
       <item itemvalue="CMake Application.output" />
       <item itemvalue="CMake Application.test" />
       <item itemvalue="CMake Application.testrunner" />
-      <item itemvalue="Task.LUOGU4719" />
     </list>
   </component>
   <component name="ServiceViewManager">
@@ -159,7 +203,7 @@
       <workItem from="1575941742717" duration="305000" />
       <workItem from="1575942111094" duration="14632000" />
       <workItem from="1576214760916" duration="10365000" />
-      <workItem from="1576459060884" duration="251000" />
+      <workItem from="1576398736304" duration="10245000" />
     </task>
     <servers />
   </component>
@@ -195,46 +239,46 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="486" height="759" key="DebuggerActiveHint/0.0.1920.1040@0.0.1920.1040" timestamp="1576229054741" />
-    <state width="745" height="573" key="GridCell.Tab.0.bottom" timestamp="1576230625753">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="2505" height="472" key="GridCell.Tab.0.bottom" timestamp="1576421601102">
+      <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state width="745" height="573" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1576230625753" />
-    <state width="1214" height="332" key="GridCell.Tab.0.bottom/0.0.2560.1400@0.0.2560.1400" timestamp="1575907151326" />
-    <state width="745" height="573" key="GridCell.Tab.0.center" timestamp="1576230625753">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="2505" height="472" key="GridCell.Tab.0.bottom/0.0.2560.1400@0.0.2560.1400" timestamp="1576421601102" />
+    <state width="2505" height="472" key="GridCell.Tab.0.center" timestamp="1576421601102">
+      <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state width="745" height="573" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1576230625753" />
-    <state width="1214" height="332" key="GridCell.Tab.0.center/0.0.2560.1400@0.0.2560.1400" timestamp="1575907151326" />
-    <state width="745" height="573" key="GridCell.Tab.0.left" timestamp="1576230625753">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="2505" height="472" key="GridCell.Tab.0.center/0.0.2560.1400@0.0.2560.1400" timestamp="1576421601102" />
+    <state width="2505" height="472" key="GridCell.Tab.0.left" timestamp="1576421601102">
+      <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state width="745" height="573" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1576230625753" />
-    <state width="1214" height="332" key="GridCell.Tab.0.left/0.0.2560.1400@0.0.2560.1400" timestamp="1575907151325" />
-    <state width="745" height="573" key="GridCell.Tab.0.right" timestamp="1576230625753">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="2505" height="472" key="GridCell.Tab.0.left/0.0.2560.1400@0.0.2560.1400" timestamp="1576421601102" />
+    <state width="2505" height="472" key="GridCell.Tab.0.right" timestamp="1576421601102">
+      <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state width="745" height="573" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1576230625753" />
-    <state width="1214" height="332" key="GridCell.Tab.0.right/0.0.2560.1400@0.0.2560.1400" timestamp="1575907151326" />
-    <state width="745" height="573" key="GridCell.Tab.1.bottom" timestamp="1576230625753">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="2505" height="472" key="GridCell.Tab.0.right/0.0.2560.1400@0.0.2560.1400" timestamp="1576421601102" />
+    <state width="2505" height="472" key="GridCell.Tab.1.bottom" timestamp="1576421601102">
+      <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state width="745" height="573" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1576230625753" />
-    <state width="1245" height="466" key="GridCell.Tab.1.bottom/0.0.2560.1400@0.0.2560.1400" timestamp="1575906180943" />
-    <state width="745" height="573" key="GridCell.Tab.1.center" timestamp="1576230625753">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="2505" height="472" key="GridCell.Tab.1.bottom/0.0.2560.1400@0.0.2560.1400" timestamp="1576421601102" />
+    <state width="2505" height="472" key="GridCell.Tab.1.center" timestamp="1576421601102">
+      <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state width="745" height="573" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1576230625753" />
-    <state width="1245" height="466" key="GridCell.Tab.1.center/0.0.2560.1400@0.0.2560.1400" timestamp="1575906180943" />
-    <state width="745" height="573" key="GridCell.Tab.1.left" timestamp="1576230625753">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="2505" height="472" key="GridCell.Tab.1.center/0.0.2560.1400@0.0.2560.1400" timestamp="1576421601102" />
+    <state width="2505" height="472" key="GridCell.Tab.1.left" timestamp="1576421601102">
+      <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state width="745" height="573" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1576230625753" />
-    <state width="1245" height="466" key="GridCell.Tab.1.left/0.0.2560.1400@0.0.2560.1400" timestamp="1575906180943" />
-    <state width="745" height="573" key="GridCell.Tab.1.right" timestamp="1576230625753">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="2505" height="472" key="GridCell.Tab.1.left/0.0.2560.1400@0.0.2560.1400" timestamp="1576421601102" />
+    <state width="2505" height="472" key="GridCell.Tab.1.right" timestamp="1576421601102">
+      <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state width="745" height="573" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1576230625753" />
-    <state width="1245" height="466" key="GridCell.Tab.1.right/0.0.2560.1400@0.0.2560.1400" timestamp="1575906180943" />
+    <state width="2505" height="472" key="GridCell.Tab.1.right/0.0.2560.1400@0.0.2560.1400" timestamp="1576421601102" />
     <state x="463" y="139" key="SettingsEditor" timestamp="1575942455129">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -243,14 +287,23 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="614" y="198" width="675" height="665" key="StructurePopup/0.0.1920.1040@0.0.1920.1040" timestamp="1576227487576" />
-    <state x="665" y="352" key="com.intellij.ide.util.TipDialog" timestamp="1576459065009">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state x="887" y="474" key="com.intellij.ide.util.TipDialog" timestamp="1576398736188">
+      <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state x="665" y="352" key="com.intellij.ide.util.TipDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1576459065009" />
-    <state x="887" y="474" key="com.intellij.ide.util.TipDialog/0.0.2560.1400@0.0.2560.1400" timestamp="1575906048663" />
-    <state x="532" y="-5" width="840" height="1032" key="search.everywhere.popup" timestamp="1576220786242">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state x="665" y="352" key="com.intellij.ide.util.TipDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1576214800077" />
+    <state x="887" y="474" key="com.intellij.ide.util.TipDialog/0.0.2560.1400@0.0.2560.1400" timestamp="1576398736188" />
+    <state x="709" y="-7" width="1120" height="1390" key="search.everywhere.popup" timestamp="1576420508290">
+      <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state x="532" y="-5" width="840" height="1032" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1576220786242" />
+    <state x="709" y="-7" width="1120" height="1390" key="search.everywhere.popup/0.0.2560.1400@0.0.2560.1400" timestamp="1576420508290" />
+  </component>
+  <component name="XDebuggerManager">
+    <watches-manager>
+      <configuration name="CMakeRunConfiguration">
+        <watch expression="i + j" language="ObjectiveC" />
+        <watch expression="i + w - j" language="ObjectiveC" />
+      </configuration>
+    </watches-manager>
   </component>
 </project>

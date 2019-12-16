@@ -1,9 +1,6 @@
 package template.math;
 
-import template.utils.IntToIntFunction;
-
 import java.util.Map;
-import java.util.function.BiFunction;
 import java.util.function.ToIntBiFunction;
 
 public class MultiplicativeFunctionCalculator {
