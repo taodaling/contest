@@ -1,9 +1,6 @@
 package template.math;
 
-/**
- * Modular operation for long version
- */
-public class LongModular implements ILongModular {
+public class LongModularDanger implements ILongModular {
     final long m;
 
     @Override
@@ -11,12 +8,12 @@ public class LongModular implements ILongModular {
         return m;
     }
 
-    public LongModular(long m) {
+    public LongModularDanger(long m) {
         this.m = m;
     }
 
     public long mul(long a, long b) {
-        return b == 0 ? 0 : ((mul(a, b >> 1) << 1) % m + a * (b & 1)) % m;
+        return DigitUtils.mulMod(a, b, m);
     }
 
     public long plus(long a, long b) {

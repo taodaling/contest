@@ -1,9 +1,13 @@
 import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.io.OutputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Random;
 import java.io.UncheckedIOException;
+import java.util.Map;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
@@ -15,9 +19,7 @@ import java.io.InputStream;
  */
 public class Main {
     public static void main(String[] args) throws Exception {
-        Thread thread = new Thread(null, new TaskAdapter(), "", 1 << 27);
-        thread.start();
-        thread.join();
+        new TaskAdapter().run();
     }
 
     static class TaskAdapter implements Runnable {
@@ -27,228 +29,41 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            EKuroAndTopologicalParity solver = new EKuroAndTopologicalParity();
-            solver.solve(1, in, out);
+            LUOGU4118 solver = new LUOGU4118();
+            int testCount = Integer.parseInt(in.next());
+            for (int i = 1; i <= testCount; i++)
+                solver.solve(i, in, out);
             out.close();
         }
     }
 
-    static class EKuroAndTopologicalParity {
+    static class LUOGU4118 {
+        LongPollardRho pollardRho = new LongPollardRho();
+
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            int n = in.readInt();
-            int p = in.readInt();
-
-            Modular mod = new Modular(1e9 + 7);
-            CachedPow pow = new CachedPow(2, n, mod);
-
-            int[][][][] dp = new int[n + 1][2][2][2];
-            dp[0][0][0][0] = 1;
-
-            for (int i = 1; i <= n; i++) {
-                int c = in.readInt();
-
-                for (int j = 0; j < 2; j++) {
-                    for (int k = 0; k < 2; k++) {
-                        for (int t = 0; t < 2; t++) {
-                            int cnt = i - 2 >= 0 ? pow.pow(i - 2) : 1;
-                            if (c != 1) {
-                                if (t == 1) {
-                                    //pick odd
-                                    dp[i][j][k][t] = mod.plus(dp[i][j][k][t], mod.mul(dp[i - 1][j][k][t], cnt));
-                                    if (k == 1) {
-                                        //pick even
-                                        dp[i][j][k][t] = mod.plus(dp[i][j][k][t], mod.mul(mod.plus(dp[i - 1][1 - j][1][t], dp[i - 1][1 - j][0][t]), cnt));
-                                    }
-                                } else {
-                                    if (k == 1) {
-                                        dp[i][j][k][t] = mod.plus(dp[i][j][k][t], mod.mul(mod.plus(dp[i - 1][1 - j][0][t], dp[i - 1][1 - j][1][t]), pow.pow(i - 1)));
-                                    }
-                                }
-                            }
-                            if (c != 0) {
-                                //pick odd
-                                if (k == 1) {
-                                    dp[i][j][k][t] = mod.plus(dp[i][j][k][t], mod.mul(dp[i - 1][j][k][t], cnt));
-                                    if (t == 1) {
-                                        //pick even
-                                        dp[i][j][k][t] = mod.plus(dp[i][j][k][t], mod.mul(mod.plus(dp[i - 1][1 - j][k][1], dp[i - 1][1 - j][k][0]), cnt));
-                                    }
-                                } else {
-                                    if (t == 1) {
-                                        //pick even
-                                        dp[i][j][k][t] = mod.plus(dp[i][j][k][t], mod.mul(mod.plus(dp[i - 1][1 - j][k][1], dp[i - 1][1 - j][k][0]), pow.pow(i - 1)));
-                                    }
-                                }
-
-                            }
-                        }
-                    }
-                }
+            System.err.println(testNumber);
+            long n = in.readLong();
+            Map<Long, Long> map = pollardRho.findAllFactors(n);
+            long max = 1;
+            for (long key : map.keySet()) {
+                max = Math.max(max, key);
             }
-
-            int ans = 0;
-            for (int i = 0; i < 2; i++) {
-                for (int j = 0; j < 2; j++) {
-                    ans = mod.plus(dp[n][p][i][j], ans);
-                }
+            if (max == 1) {
+                out.println(1);
+                return;
             }
-
-            out.println(ans);
-        }
-
-    }
-
-    static class FastOutput implements AutoCloseable, Closeable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
-
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput println(int c) {
-            cache.append(c).append('\n');
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
+            if (max == n) {
+                out.println("Prime");
+                return;
             }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        }
-
-        public String toString() {
-            return cache.toString();
-        }
-
-    }
-
-    static class Modular {
-        int m;
-
-        public int getMod() {
-            return m;
-        }
-
-        public Modular(int m) {
-            this.m = m;
-        }
-
-        public Modular(long m) {
-            this.m = (int) m;
-            if (this.m != m) {
-                throw new IllegalArgumentException();
-            }
-        }
-
-        public Modular(double m) {
-            this.m = (int) m;
-            if (this.m != m) {
-                throw new IllegalArgumentException();
-            }
-        }
-
-        public int valueOf(int x) {
-            x %= m;
-            if (x < 0) {
-                x += m;
-            }
-            return x;
-        }
-
-        public int valueOf(long x) {
-            x %= m;
-            if (x < 0) {
-                x += m;
-            }
-            return (int) x;
-        }
-
-        public int mul(int x, int y) {
-            return valueOf((long) x * y);
-        }
-
-        public int plus(int x, int y) {
-            return valueOf(x + y);
-        }
-
-        public Modular getModularForPowerComputation() {
-            return new Modular(m - 1);
-        }
-
-        public String toString() {
-            return "mod " + m;
-        }
-
-    }
-
-    static class DigitUtils {
-        private DigitUtils() {
-        }
-
-        public static long round(double x) {
-            if (x >= 0) {
-                return (long) (x + 0.5);
-            } else {
-                return (long) (x - 0.5);
-            }
-        }
-
-    }
-
-    static class CachedPow {
-        private int[] first;
-        private int[] second;
-        private Modular mod;
-        private Modular powMod;
-
-        public CachedPow(int x, Modular mod) {
-            this(x, mod.getMod(), mod);
-        }
-
-        public CachedPow(int x, int maxExp, Modular mod) {
-            this.mod = mod;
-            this.powMod = mod.getModularForPowerComputation();
-            int k = Math.max(1, (int) DigitUtils.round(Math.sqrt(maxExp)));
-            first = new int[k];
-            second = new int[maxExp / k + 1];
-            first[0] = 1;
-            for (int i = 1; i < k; i++) {
-                first[i] = mod.mul(x, first[i - 1]);
-            }
-            second[0] = 1;
-            int step = mod.mul(x, first[k - 1]);
-            for (int i = 1; i < second.length; i++) {
-                second[i] = mod.mul(second[i - 1], step);
-            }
-        }
-
-        public int pow(int exp) {
-            return mod.mul(first[exp % first.length], second[exp / first.length]);
+            out.println(max);
         }
 
     }
 
     static class FastInput {
         private final InputStream is;
+        private StringBuilder defaultStringBuf = new StringBuilder(1 << 13);
         private byte[] buf = new byte[1 << 13];
         private int bufLen;
         private int bufOffset;
@@ -279,7 +94,11 @@ public class Main {
             }
         }
 
-        public int readInt() {
+        public String next() {
+            return readString();
+        }
+
+        public long readLong() {
             int sign = 1;
 
             skipBlank();
@@ -288,7 +107,7 @@ public class Main {
                 next = read();
             }
 
-            int val = 0;
+            long val = 0;
             if (sign == 1) {
                 while (next >= '0' && next <= '9') {
                     val = val * 10 + next - '0';
@@ -302,6 +121,305 @@ public class Main {
             }
 
             return val;
+        }
+
+        public String readString(StringBuilder builder) {
+            skipBlank();
+
+            while (next > 32) {
+                builder.append((char) next);
+                next = read();
+            }
+
+            return builder.toString();
+        }
+
+        public String readString() {
+            defaultStringBuf.setLength(0);
+            return readString(defaultStringBuf);
+        }
+
+    }
+
+    static class FastOutput implements AutoCloseable, Closeable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
+
+        public FastOutput(Writer os) {
+            this.os = os;
+        }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput println(String c) {
+            cache.append(c).append('\n');
+            return this;
+        }
+
+        public FastOutput println(int c) {
+            cache.append(c).append('\n');
+            return this;
+        }
+
+        public FastOutput println(long c) {
+            cache.append(c).append('\n');
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            return this;
+        }
+
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+
+        public String toString() {
+            return cache.toString();
+        }
+
+    }
+
+    static class LongMillerRabin {
+        ILongModular modular;
+        LongPower power;
+        Random random = new Random();
+
+        public boolean mr(long n, int s) {
+            if (n <= 1) {
+                return false;
+            }
+            if (n == 2) {
+                return true;
+            }
+            if (n % 2 == 0) {
+                return false;
+            }
+            modular = ILongModular.getInstance(n);
+            power = new LongPower(modular);
+            for (int i = 0; i < s; i++) {
+                long x = (long) (random.nextDouble() * (n - 2) + 2);
+                if (!mr0(x, n)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private boolean mr0(long x, long n) {
+            long exp = n - 1;
+            while (true) {
+                long y = power.pow(x, exp);
+                if (y != 1 && y != n - 1) {
+                    return false;
+                }
+                if (y != 1 || exp % 2 == 1) {
+                    break;
+                }
+                exp = exp / 2;
+            }
+            return true;
+        }
+
+    }
+
+    static class LongPollardRho {
+        LongMillerRabin mr = new LongMillerRabin();
+        ILongModular modular;
+        Random random = new Random();
+
+        public long findFactor(long n) {
+            if (mr.mr(n, 3)) {
+                return n;
+            }
+            modular = ILongModular.getInstance(n);
+            while (true) {
+                long f = findFactor0((long) (random.nextDouble() * n), (long) (random.nextDouble() * n), n);
+                if (f != -1) {
+                    return f;
+                }
+            }
+        }
+
+        private long findFactor0(long x, long c, long n) {
+            long xi = x;
+            long xj = x;
+            int j = 2;
+            int i = 1;
+            while (i < n) {
+                i++;
+                xi = modular.plus(modular.mul(xi, xi), c);
+                long g = GCDs.gcd(n, Math.abs(xi - xj));
+                if (g != 1 && g != n) {
+                    return g;
+                }
+                if (i == j) {
+                    j = j << 1;
+                    xj = xi;
+                }
+            }
+            return -1;
+        }
+
+        public Map<Long, Long> findAllFactors(long n) {
+            Map<Long, Long> map = new HashMap();
+            findAllFactors(map, n);
+            return map;
+        }
+
+        private void findAllFactors(Map<Long, Long> map, long n) {
+            if (n == 1) {
+                return;
+            }
+            long f = findFactor(n);
+            if (f == n) {
+                Long value = map.get(f);
+                if (value == null) {
+                    value = 1L;
+                }
+                map.put(f, value * f);
+                return;
+            }
+            findAllFactors(map, f);
+            findAllFactors(map, n / f);
+        }
+
+    }
+
+    static interface ILongModular {
+        long plus(long a, long b);
+
+        long mul(long a, long b);
+
+        static ILongModular getInstance(long mod) {
+            //return new LongModularDanger(mod);
+            return mod <= (1L << 54) ? new LongModularDanger(mod) : new LongModular(mod);
+        }
+
+    }
+
+    static class GCDs {
+        private GCDs() {
+        }
+
+        public static long gcd(long a, long b) {
+            return a >= b ? gcd0(a, b) : gcd0(b, a);
+        }
+
+        private static long gcd0(long a, long b) {
+            return b == 0 ? a : gcd0(b, a % b);
+        }
+
+    }
+
+    static class LongModular implements ILongModular {
+        final long m;
+
+        public LongModular(long m) {
+            this.m = m;
+        }
+
+        public long mul(long a, long b) {
+            return b == 0 ? 0 : ((mul(a, b >> 1) << 1) % m + a * (b & 1)) % m;
+        }
+
+        public long plus(long a, long b) {
+            return valueOf(a + b);
+        }
+
+        public long valueOf(long a) {
+            a %= m;
+            if (a < 0) {
+                a += m;
+            }
+            return a;
+        }
+
+    }
+
+    static class LongPower {
+        final ILongModular modular;
+
+        public LongPower(ILongModular modular) {
+            this.modular = modular;
+        }
+
+        public long pow(long x, long n) {
+            if (n == 0) {
+                return 1;
+            }
+            long r = pow(x, n >> 1);
+            r = modular.mul(r, r);
+            if ((n & 1) == 1) {
+                r = modular.mul(r, x);
+            }
+            return r;
+        }
+
+    }
+
+    static class LongModularDanger implements ILongModular {
+        final long m;
+
+        public LongModularDanger(long m) {
+            this.m = m;
+        }
+
+        public long mul(long a, long b) {
+            return DigitUtils.mulMod(a, b, m);
+        }
+
+        public long plus(long a, long b) {
+            return valueOf(a + b);
+        }
+
+        public long valueOf(long a) {
+            a %= m;
+            if (a < 0) {
+                a += m;
+            }
+            return a;
+        }
+
+    }
+
+    static class DigitUtils {
+        private DigitUtils() {
+        }
+
+        public static long round(double x) {
+            if (x >= 0) {
+                return (long) (x + 0.5);
+            } else {
+                return (long) (x - 0.5);
+            }
+        }
+
+        public static long mod(long x, long mod) {
+            x %= mod;
+            if (x < 0) {
+                x += mod;
+            }
+            return x;
+        }
+
+        public static long mulMod(long a, long b, long mod) {
+            long k = DigitUtils.round((double) a / mod * b);
+            return DigitUtils.mod(a * b - k * mod, mod);
         }
 
     }

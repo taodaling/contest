@@ -1,4 +1,8 @@
-package contest;
+package on2019_12.on2019_12_16_Codeforces_Round__482__Div__2_.E__Kuro_and_Topological_Parity0;
+
+
+
+
 
 import template.io.FastInput;
 import template.io.FastOutput;

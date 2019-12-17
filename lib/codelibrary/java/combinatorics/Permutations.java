@@ -5,9 +5,9 @@ import java.util.*;
 public class Permutations {
 
     public static boolean nextPermutation(int[] p) {
-        for (int a = p.length - 2; a >= 0; --a)
-            if (p[a] < p[a + 1])
-                for (int b = p.length - 1; ; --b)
+        for (int a = p.length - 2; a >= 0; --a) {
+            if (p[a] < p[a + 1]) {
+                for (int b = p.length - 1; ; --b) {
                     if (p[b] > p[a]) {
                         int t = p[a];
                         p[a] = p[b];
@@ -19,6 +19,9 @@ public class Permutations {
                         }
                         return true;
                     }
+                }
+            }
+        }
         return false;
     }
 

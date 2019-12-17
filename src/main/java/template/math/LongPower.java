@@ -1,15 +1,13 @@
 package template.math;
 
-import template.math.LongModular;
-
 public class LongPower {
-    public LongModular getModular() {
+    public ILongModular getModular() {
         return modular;
     }
 
-    final LongModular modular;
+    final ILongModular modular;
 
-    public LongPower(LongModular modular) {
+    public LongPower(ILongModular modular) {
         this.modular = modular;
     }
 
@@ -26,6 +24,6 @@ public class LongPower {
     }
 
     public long inverse(long x) {
-        return pow(x, modular.m - 2);
+        return pow(x, modular.getMod() - 2);
     }
 }

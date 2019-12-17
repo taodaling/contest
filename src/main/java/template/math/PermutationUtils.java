@@ -1,5 +1,7 @@
 package template.math;
 
+import template.datastructure.IntList;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -15,6 +17,27 @@ public class PermutationUtils {
         for (int i = 1; i <= 20; i++) {
             PERMUTATION_CNT[i] = PERMUTATION_CNT[i - 1] * i;
         }
+    }
+
+    public static boolean nextPermutation(int[] p) {
+        for (int a = p.length - 2; a >= 0; --a) {
+            if (p[a] < p[a + 1]) {
+                for (int b = p.length - 1; ; --b) {
+                    if (p[b] > p[a]) {
+                        int t = p[a];
+                        p[a] = p[b];
+                        p[b] = t;
+                        for (++a, b = p.length - 1; a < b; ++a, --b) {
+                            t = p[a];
+                            p[a] = p[b];
+                            p[b] = t;
+                        }
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     public static List<int[]> generateAllPermutations(int n) {
@@ -122,7 +145,7 @@ public class PermutationUtils {
             if (e < offset) {
                 return e;
             }
-            for (int i = 0;; i++) {
+            for (int i = 0; ; i++) {
                 if (e == p[i]) {
                     return i + offset;
                 }
@@ -139,6 +162,19 @@ public class PermutationUtils {
         int[] l;
         int[] r;
         int n;
+
+        public List<IntList> extractCircles() {
+            List<IntList> ans = new ArrayList<>(n);
+            for (int i = 0; i < n; i++) {
+                IntList list = new IntList(r[i] - l[i] + 1);
+                for (int j = l[i]; j <= r[i]; j++) {
+                    list.add(g[j]);
+                }
+                ans.add(list);
+                i = r[i];
+            }
+            return ans;
+        }
 
         public PowerPermutation(int[] p) {
             this(p, p.length);

@@ -6,8 +6,9 @@ import java.util.Random;
 
 public class LongPollardRho {
     LongMillerRabin mr = new LongMillerRabin();
-    LongModular modular;
+    ILongModular modular;
     Random random = new Random();
+
 
     /**
      * Find a factor of n, if n is returned, it means n is 1 or a prime
@@ -16,7 +17,7 @@ public class LongPollardRho {
         if (mr.mr(n, 3)) {
             return n;
         }
-        modular = new LongModular(n);
+        modular = ILongModular.getInstance(n);
         while (true) {
             long f = findFactor0((long) (random.nextDouble() * n), (long) (random.nextDouble() * n), n);
             if (f != -1) {
@@ -71,5 +72,4 @@ public class LongPollardRho {
         findAllFactors(map, f);
         findAllFactors(map, n / f);
     }
-
 }

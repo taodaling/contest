@@ -5,7 +5,7 @@ import template.math.LongPollardRho;
 
 public class MinimumNumberWithMaximumFactors {
     public static void main(String[] args) {
-        System.out.println(MinimumNumberWithMaximumFactors.find((long) 5e3));
+        System.out.println(MinimumNumberWithMaximumFactors.find((long) 1e15));
        // System.out.println(new LongPollardRho().findAllFactors(978217616376000L));
     }
 

@@ -6,9 +6,10 @@ import java.util.Random;
  * Test whether a number is primes
  */
 public class LongMillerRabin {
-    LongModular modular;
+    ILongModular modular;
     LongPower power;
     Random random = new Random();
+
 
     /**
      * Check whether n is a prime s times
@@ -23,7 +24,7 @@ public class LongMillerRabin {
         if (n % 2 == 0) {
             return false;
         }
-        modular = new LongModular(n);
+        modular = ILongModular.getInstance(n);
         power = new LongPower(modular);
         for (int i = 0; i < s; i++) {
             long x = (long) (random.nextDouble() * (n - 2) + 2);

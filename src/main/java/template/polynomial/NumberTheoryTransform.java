@@ -172,7 +172,7 @@ public class NumberTheoryTransform {
      * calculate lists[0] * lists[1] * ... * lists[lists.length - 1]
      * by dividing and conquer technology.
      * <br>
-     * The total time complexity is O(mlogn) while m = lists.length and
+     * The total time complexity is O(nlog nlog m) while m = lists.length and
      * n = lists[0].length + lists[1].length + ... + lists[m - 1].length.
      */
     public void mulByPQ(IntList[] lists, IntList ans) {

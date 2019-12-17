@@ -18,7 +18,7 @@ public class DigitUtils {
     }
 
     public static int roundToInt(double x) {
-        return (int)round(x);
+        return (int) round(x);
     }
 
     public static long round(double x) {
@@ -74,6 +74,7 @@ public class DigitUtils {
         if (a == 0 || b == 0) {
             return false;
         }
+        //a * b > limit => a > limit / b
         return a > limit / b;
     }
 
@@ -162,6 +163,9 @@ public class DigitUtils {
         return x;
     }
 
+    /**
+     * If mod <= 10^16(2^52), this method is pretty safe
+     */
     public static long mulMod(long a, long b, long mod) {
         long k = DigitUtils.round((double) a / mod * b);
         return DigitUtils.mod(a * b - k * mod, mod);

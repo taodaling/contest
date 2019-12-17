@@ -47,7 +47,7 @@ public class LongModMatrix {
         mat[i][j] = val;
     }
 
-    public void normalize(LongModular mod) {
+    public void normalize(ILongModular mod) {
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
                 mat[i][j] = mod.valueOf(mat[i][j]);
@@ -107,7 +107,7 @@ public class LongModMatrix {
         if (x.n != x.m) {
             throw new RuntimeException("Matrix is not square");
         }
-        LongModular modular = power.getModular();
+        ILongModular modular = power.getModular();
         int n = x.n;
         LongModMatrix l = new LongModMatrix(x);
         l.normalize(modular);
@@ -150,7 +150,7 @@ public class LongModMatrix {
         if (x.n != x.m) {
             throw new RuntimeException("Matrix is not square");
         }
-        LongModular modular = power.getModular();
+        ILongModular modular = power.getModular();
         int n = x.n;
         LongModMatrix l = new LongModMatrix(x);
         l.normalize(modular);
@@ -196,19 +196,19 @@ public class LongModMatrix {
         mat[j] = row;
     }
 
-    void subtractRow(int i, int j, long f, LongModular modular) {
+    void subtractRow(int i, int j, long f, ILongModular modular) {
         for (int k = 0; k < m; k++) {
             mat[i][k] = modular.subtract(mat[i][k], modular.mul(mat[j][k], f));
         }
     }
 
-    void mulRow(int i, long f, LongModular modular) {
+    void mulRow(int i, long f, ILongModular modular) {
         for (int k = 0; k < m; k++) {
             mat[i][k] = modular.mul(mat[i][k], f);
         }
     }
 
-    public static LongModMatrix mul(LongModMatrix a, LongModMatrix b, LongModular modular) {
+    public static LongModMatrix mul(LongModMatrix a, LongModMatrix b, ILongModular modular) {
         LongModMatrix c = new LongModMatrix(a.n, b.m);
         for (int i = 0; i < c.n; i++) {
             for (int j = 0; j < c.m; j++) {
@@ -220,7 +220,7 @@ public class LongModMatrix {
         return c;
     }
 
-    public static LongModMatrix pow(LongModMatrix x, long n, LongModular modular) {
+    public static LongModMatrix pow(LongModMatrix x, long n, ILongModular modular) {
         if (n == 0) {
             LongModMatrix r = new LongModMatrix(x.n, x.m);
             r.asStandard();

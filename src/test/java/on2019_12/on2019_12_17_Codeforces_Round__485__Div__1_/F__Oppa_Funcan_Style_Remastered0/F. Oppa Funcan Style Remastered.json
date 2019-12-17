@@ -1,0 +1,77 @@
+{
+  "name" : "F. Oppa Funcan Style Remastered",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3\n7 7\n3 8\n5 6\n",
+    "output" : "YES\nNO\nYES\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "7\n4 8\n5 24\n10 24\n15 24\n17 24\n21 24\n23 24",
+    "output" : "YES\nYES\nYES\nYES\nYES\nYES\nYES",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "2\n19 385\n18 385",
+    "output" : "YES\nYES",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "1\n3629 19\n",
+    "output" : "YES",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "1\n1863 2257\n",
+    "output" : "NO",
+    "index" : 4,
+    "active" : true
+  }, {
+    "input" : "14\n312029972894833127 840189948895669\n952769774260879484 282726514981201\n608171586176169285 958115664994991\n88623267497954796 219281243333749\n274358699525645234 279844780167731\n868154653722218363 811780512070093\n50085164465918688 267349819256099\n846087818801586210 72875781119861\n870764119188136588 847046808548771\n384855561687960343 921874025263129\n385626107071133318 279844780167731\n9158975683984797 277544717696509\n923991035290189331 643758030495989\n629344629314915409 978132065082373\n",
+    "index" : 5,
+    "active" : true
+  }, {
+    "input" : "15\n132333031586942 135139034805221\n568755084212794 958938326785573\n152740384309686 511324168320391\n259663318846946 788022979146661\n31298960827114 87563582082133\n34509602322462 411703090628873\n48719268404439 51710825629361\n17383026257858 38101354414763\n35726179320421 285593450530963\n105503806495944 274210093345277\n209003408561347 606910722826711\n161284139270839 958938326785573\n28796438916730 127147293951347\n58715822899335 274210093345277\n64873650218963 326034122185907\n",
+    "index" : 6,
+    "active" : true
+  }, {
+    "input" : "1\n178 235\n",
+    "output" : "NO\n",
+    "index" : 7,
+    "active" : true
+  }, {
+    "input" : "21\n4172906 6030579279811\n3722308 19531101720349\n10726438 39863917441609\n6154602 38640943564739\n5099669 7372394712283\n2388463 20681044954463\n1961242 46586163003439\n456321 14915800613489\n2015075 32359848279779\n2451677 10148768297651\n8765447 45271371884987\n12009994 54986814665833\n5922016 10563809636357\n5023924 93059220722977\n1535399 5241227950421\n659422 15449946806417\n5192713 10563809636357\n38157959 225703177127101\n4536888 38640943564739\n589015 5241227950421\n3224418 38640943564739\n",
+    "index" : 8,
+    "active" : true
+  }, {
+    "input" : "1\n1188 267623\n",
+    "output" : "YES",
+    "index" : 9,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2019_12.on2019_12_17_Codeforces_Round__485__Div__1_.F__Oppa_Funcan_Style_Remastered0.FOppaFuncanStyleRemastered",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.12.17",
+  "contestName" : "Codeforces Round #485 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

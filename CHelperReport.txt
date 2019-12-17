@@ -1,2 +1,2 @@
-57 src/main/java/contest/E. Kuro and Topological Parity.json
+36 src/main/java/contest/LUOGU4118.json
 0
