@@ -1,2 +1,2 @@
-36 src/main/java/contest/LUOGU4118.json
+50 src/main/java/contest/F. Almost Same Distance.json
 0

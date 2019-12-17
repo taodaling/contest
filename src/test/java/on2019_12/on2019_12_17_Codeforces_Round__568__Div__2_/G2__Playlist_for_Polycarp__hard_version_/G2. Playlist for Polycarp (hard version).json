@@ -24,11 +24,15 @@
     "output" : "10\n",
     "index" : 2,
     "active" : true
+  }, {
+    "input" : "50 2000\n48 1\n49 1\n49 1\n49 3\n49 2\n50 3\n48 2\n48 2\n50 1\n50 1\n49 1\n49 1\n49 3\n50 2\n50 1\n50 2\n50 2\n48 1\n48 3\n48 1\n50 1\n49 2\n49 2\n49 2\n48 1\n48 1\n48 3\n49 3\n50 2\n48 3\n48 1\n50 2\n48 1\n48 1\n50 3\n48 3\n48 1\n50 1\n49 2\n48 1\n50 3\n49 3\n49 2\n48 1\n49 1\n48 3\n49 1\n48 2\n48 2\n49 1",
+    "index" : 3,
+    "active" : true
   } ],
   "location" : "src/main/java/contest",
   "vmArgs" : "-Xmx256M",
   "mainClass" : "Main",
-  "taskClass" : "contest.G2PlaylistForPolycarpHardVersion",
+  "taskClass" : "on2019_12.on2019_12_17_Codeforces_Round__568__Div__2_.G2__Playlist_for_Polycarp__hard_version_.G2PlaylistForPolycarpHardVersion",
   "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
   "checkerParameters" : "",
   "testClasses" : [ ],

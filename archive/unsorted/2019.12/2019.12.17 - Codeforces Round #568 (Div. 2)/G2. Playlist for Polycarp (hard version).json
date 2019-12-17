@@ -1,0 +1,49 @@
+{
+  "name" : "G2. Playlist for Polycarp (hard version)",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 3\n1 1\n1 2\n1 3\n",
+    "output" : "6\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "3 3\n1 1\n1 1\n1 3\n",
+    "output" : "2\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "4 10\n5 3\n2 1\n3 2\n5 1\n",
+    "output" : "10\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "50 2000\n48 1\n49 1\n49 1\n49 3\n49 2\n50 3\n48 2\n48 2\n50 1\n50 1\n49 1\n49 1\n49 3\n50 2\n50 1\n50 2\n50 2\n48 1\n48 3\n48 1\n50 1\n49 2\n49 2\n49 2\n48 1\n48 1\n48 3\n49 3\n50 2\n48 3\n48 1\n50 2\n48 1\n48 1\n50 3\n48 3\n48 1\n50 1\n49 2\n48 1\n50 3\n49 3\n49 2\n48 1\n49 1\n48 3\n49 1\n48 2\n48 2\n49 1",
+    "index" : 3,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.G2PlaylistForPolycarpHardVersion",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.12.17",
+  "contestName" : "Codeforces Round #568 (Div. 2)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}
