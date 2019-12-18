@@ -2,8 +2,8 @@
 // Created by DALT on 12/9/2019.
 //
 
-#ifndef JHELPER_EXAMPLE_PROJECT_MODULAR_H
-#define JHELPER_EXAMPLE_PROJECT_MODULAR_H
+#ifndef MODULAR_H
+#define MODULAR_H
 #include "common.h"
 #include "gcd.h"
 
@@ -216,4 +216,4 @@ namespace dalt {
 
 #undef MOD
 }
-#endif //JHELPER_EXAMPLE_PROJECT_MODULAR_H
+#endif //MODULAR_H

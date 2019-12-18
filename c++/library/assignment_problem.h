@@ -2,8 +2,8 @@
 // Created by daltao on 2019/12/10.
 //
 
-#ifndef JHELPER_EXAMPLE_PROJECT_ASSIGNMENT_PROBLEM_H
-#define JHELPER_EXAMPLE_PROJECT_ASSIGNMENT_PROBLEM_H
+#ifndef ASSIGNMENT_PROBLEM_H
+#define ASSIGNMENT_PROBLEM_H
 
 #include "common.h"
 #include "min_cost_max_flow.h"
@@ -54,4 +54,4 @@ namespace other {
 
 }
 
-#endif //JHELPER_EXAMPLE_PROJECT_ASSIGNMENT_PROBLEM_H
+#endif //ASSIGNMENT_PROBLEM_H

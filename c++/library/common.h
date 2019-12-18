@@ -2,8 +2,8 @@
 // Created by DALT on 12/9/2019.
 //
 
-#ifndef JHELPER_EXAMPLE_PROJECT_COMMON_H
-#define JHELPER_EXAMPLE_PROJECT_COMMON_H
+#ifndef COMMON_H
+#define COMMON_H
 
 #include <bits/stdc++.h>
 #include <chrono>
@@ -39,4 +39,4 @@ std::mt19937 rng(std::chrono::steady_clock::now().time_since_epoch().count());
 namespace dalt{};
 namespace other{};
 
-#endif //JHELPER_EXAMPLE_PROJECT_COMMON_H
+#endif //COMMON_H

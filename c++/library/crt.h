@@ -2,8 +2,8 @@
 // Created by daltao on 2019/12/10.
 //
 
-#ifndef JHELPER_EXAMPLE_PROJECT_CRT_H
-#define JHELPER_EXAMPLE_PROJECT_CRT_H
+#ifndef CRT_H
+#define CRT_H
 #include "gcd.h"
 
 namespace dalt{
@@ -12,4 +12,4 @@ namespace dalt{
     };
 }
 
-#endif //JHELPER_EXAMPLE_PROJECT_CRT_H
+#endif //CRT_H

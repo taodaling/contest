@@ -1,10 +1,12 @@
 package contest;
 
+
 import template.datastructure.IntList;
 import template.datastructure.MultiWayIntStack;
 import template.graph.TreeDiameter;
 import template.io.FastInput;
 import template.io.FastOutput;
+import template.utils.SequenceUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,7 +16,6 @@ import java.util.List;
 public class FAlmostSameDistance {
     Node[] nodes;
     int[] ans;
-    Segment segment;
     int n;
 
     public void solve(int testNumber, FastInput in, FastOutput out) {
@@ -43,7 +44,6 @@ public class FAlmostSameDistance {
             nodes[i].next.sort(Node.sortById);
         }
 
-        segment = new Segment(0, 2 * n);
         dfsForMaxDepth(nodes[1], null, 0);
         prepareForMax(nodes[1], null, 0);
         type1(nodes[1], null);
@@ -60,44 +60,35 @@ public class FAlmostSameDistance {
     IntList list = new IntList(500000);
 
     public void type2(Node root, Node p) {
-        list.clear();
         for (Node node : root.next) {
             if (node == p) {
                 continue;
             }
-            list.add(node.maxDepth - root.depth);
-        }
-        ans[1] = Math.max(ans[1], 2);
-        list.sort();
-        int m = list.size();
-        for (int i = m - 1; i >= 0; i--) {
-            int cur = list.get(i);
-            ans[cur * 2] = Math.max(ans[cur * 2], segment.query(cur + n - root.depth, 2 * n, 0, 2 * n) + m - i);
-        }
-        for (Node node : root.next) {
-            if (node == p) {
-                continue;
-            }
-            int x = node.maxDepth - root.depth + n - root.depth;
-            segment.update(x, x, 0, 2 * n, 1);
-        }
-
-        for (Node node : root.next) {
-            if (node == p) {
-                continue;
-            }
-            int x = node.maxDepth - root.depth + n - root.depth;
-            segment.update(x, x, 0, 2 * n, -1);
             type2(node, root);
-            segment.update(x, x, 0, 2 * n, 1);
         }
 
-        for (Node node : root.next) {
-            if (node == p) {
-                continue;
+        if (p == null) {
+            return;
+        }
+
+        int distInFather = maxDepthRegardless(root, p) + 1;
+        int distOfFather = maxDepthRegardless(p, root) + 1;
+        int encounter = 0;
+        for (int i = root.dists.length - 1; i >= 0; i--) {
+            int cur = root.dists[i];
+            if (encounter == 0 && cur <= distOfFather) {
+                encounter++;
             }
-            int x = node.maxDepth - root.depth + n - root.depth;
-            segment.update(x, x, 0, 2 * n, -1);
+            int index = SequenceUtils.leftBound(p.dists, cur, 0, p.dists.length - 1);
+            if (index < 0) {
+                index = p.dists.length;
+            } else if (cur <= distInFather) {
+                index++;
+            }
+            int cnt = root.dists.length - i - encounter + p.dists.length - index;
+            if (cnt > 1) {
+                ans[2 * cur] = Math.max(ans[2 * cur], cnt);
+            }
         }
     }
 
@@ -116,6 +107,7 @@ public class FAlmostSameDistance {
                 ans[cur * 2] = Math.max(ans[cur * 2], cnt);
             }
         }
+        root.dists = list.toArray();
 
         for (Node node : root.next) {
             if (node == p) {
@@ -189,67 +181,14 @@ class Node {
     int[] postMax;
     int maxDepth;
     int depth;
+    int[] dists;
     int id;
 
     static Comparator<Node> sortById = (a, b) -> a.id - b.id;
-}
 
-class Segment implements Cloneable {
-    private Segment left;
-    private Segment right;
-    private int cnt;
-
-    public void pushUp() {
-        cnt = left.cnt + right.cnt;
-    }
-
-    public void pushDown() {
-    }
-
-    public Segment(int l, int r) {
-        if (l < r) {
-            int m = (l + r) >> 1;
-            left = new Segment(l, m);
-            right = new Segment(m + 1, r);
-            pushUp();
-        } else {
-
-        }
-    }
-
-    private boolean covered(int ll, int rr, int l, int r) {
-        return ll <= l && rr >= r;
-    }
-
-    private boolean noIntersection(int ll, int rr, int l, int r) {
-        return ll > r || rr < l;
-    }
-
-    public void update(int ll, int rr, int l, int r, int x) {
-        if (noIntersection(ll, rr, l, r)) {
-            return;
-        }
-        if (covered(ll, rr, l, r)) {
-            cnt += x;
-            return;
-        }
-        pushDown();
-        int m = (l + r) >> 1;
-        left.update(ll, rr, l, m, x);
-        right.update(ll, rr, m + 1, r, x);
-        pushUp();
-    }
-
-    public int query(int ll, int rr, int l, int r) {
-        if (noIntersection(ll, rr, l, r)) {
-            return 0;
-        }
-        if (covered(ll, rr, l, r)) {
-            return cnt;
-        }
-        pushDown();
-        int m = (l + r) >> 1;
-        return left.query(ll, rr, l, m) +
-                right.query(ll, rr, m + 1, r);
+    @Override
+    public String toString() {
+        return "" + id;
     }
 }
+

@@ -1,4 +1,4 @@
-#include "C:/Users/daltao/IdeaProjects/contest/c++/tasks/UOJ88.cpp"
+#include "C:/Users/daltao/IdeaProjects/contest/c++/tasks/FStringSetQueries.cpp"
 
 #include <iostream>
 #include <fstream>
@@ -29,7 +29,7 @@ bool check(std::string expected, std::string actual) {
 
 int main() {
 	std::vector<jhelper::Test> tests = {
-		{"4 5\n-20 0 20 100\n10 command 1 10\n20 command 3 -10\n30 query\n40 command 1 -30\n50 query\n", "180\n280\n", true, true},
+		{"5\n1 abc\n3 abcabc\n2 abc\n1 aba\n3 abababc\n", "2\n2\n", true, true},{"10\n1 abc\n1 bcd\n1 abcd\n3 abcd\n2 abcd\n3 abcd\n2 bcd\n3 abcd\n2 abc\n3 abcd\n", "3\n2\n1\n0\n", true, true},
 	};
 	bool allOK = true;
 	int testID = 0;
@@ -48,7 +48,7 @@ int main() {
 			std::stringstream in(test.input);
 			std::ostringstream out;
 			std::clock_t start = std::clock();
-			UOJ88 solver;
+			FStringSetQueries solver;
 			solver.solve(in, out);
 			std::clock_t finish = std::clock();
 			double currentTime = double(finish - start) / CLOCKS_PER_SEC;

@@ -2,8 +2,8 @@
 // Created by daltao on 2019/12/10.
 //
 
-#ifndef JHELPER_EXAMPLE_PROJECT_SEGMENT_H
-#define JHELPER_EXAMPLE_PROJECT_SEGMENT_H
+#ifndef SEGMENT_H
+#define SEGMENT_H
 namespace dalt {
     class segment {
     public:
@@ -67,4 +67,4 @@ namespace dalt {
     };
 }
 
-#endif //JHELPER_EXAMPLE_PROJECT_SEGMENT_H
+#endif //SEGMENT_H

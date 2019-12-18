@@ -2,8 +2,8 @@
 // Created by daltao on 2019/12/10.
 //
 
-#ifndef JHELPER_EXAMPLE_PROJECT_BIT_H
-#define JHELPER_EXAMPLE_PROJECT_BIT_H
+#ifndef BIT_H
+#define BIT_H
 
 /**
  * Description: $N$-S range sum query with point update
@@ -32,4 +32,4 @@ template <class T, int N, int... Ns> struct BIT<T, N, Ns...> {
     args) { return sum(r,args...)-sum(l-1,args...); }
 };
 
-#endif //JHELPER_EXAMPLE_PROJECT_BIT_H
+#endif //BIT_H

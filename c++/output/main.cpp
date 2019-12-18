@@ -12,8 +12,8 @@
 // Created by DALT on 12/9/2019.
 //
 
-#ifndef JHELPER_EXAMPLE_PROJECT_COMMON_H
-#define JHELPER_EXAMPLE_PROJECT_COMMON_H
+#ifndef COMMON_H
+#define COMMON_H
 
 #include <bits/stdc++.h>
 #include <chrono>
@@ -49,160 +49,309 @@ std::mt19937 rng(std::chrono::steady_clock::now().time_since_epoch().count());
 namespace dalt{};
 namespace other{};
 
-#endif //JHELPER_EXAMPLE_PROJECT_COMMON_H
+#endif //COMMON_H
 
 //
 // Created by daltao on 2019/12/16.
 //
 
-#ifndef JHELPER_EXAMPLE_PROJECT_DEBUG_H
-#define JHELPER_EXAMPLE_PROJECT_DEBUG_H
+#ifndef DEBUG_H
+#define DEBUG_H
 
-#endif //JHELPER_EXAMPLE_PROJECT_DEBUG_H
+#endif //DEBUG_H
 
 //
-// Created by daltao on 2019/12/16.
+// Created by daltao on 2019/12/18.
 //
 
-#ifndef JHELPER_EXAMPLE_PROJECT_LICHAO_SEGMENT_H
-#define JHELPER_EXAMPLE_PROJECT_LICHAO_SEGMENT_H
+#ifndef BIT_DECOMPOSE_FRAMEWORK_H
+#define BIT_DECOMPOSE_FRAMEWORK_H
 
 
+namespace dalt {
+    template<class E, class M>
+    class BitDecomposeFramework {
+    private:
+        vector<E *> _data;
+        M _merger;
 
-namespace other {
-#define INF 1e18
-
-    template<class T>
-    struct lichao_line {
-        T k, m;
-
-        lichao_line(T _k, T _m) { k = _k, m = _m; }
-
-        lichao_line() : lichao_line((T)0, (T)-INF) {}
-
-        T get(T x) { return k * x + m; }
-
-        bool majorize(lichao_line X, ll L, ll R) {
-            return get(L) >= X.get(L) && get(R) >= X.get(R);
-        }
-    };
-
-    template<class T>
-    struct lichao_segment {
-        lichao_segment<T> *c[2];
-        lichao_line<T> S;
-
-        lichao_segment() {
-            c[0] = c[1] = NULL;
-            S = lichao_line<T>();
-        }
-
-        void rm() {
-            if (c[0]) c[0]->rm();
-            if (c[1]) c[1]->rm();
-            delete this;
-        }
-
-        void mc(int i) {
-            if (!c[i]) c[i] = new lichao_segment<T>();
-        }
-
-        ll query(ll X, ll L, ll R) {
-            ll ans = S.get(X), M = (L + R) / 2;
-            if (X <= M) return max(ans, c[0] ? c[0]->query(X, L, M) : (T)-INF);
-            return max(ans, c[1] ? c[1]->query(X, M + 1, R) : (T)-INF);
-        }
-
-        void modify(const lichao_line<T> &X, ll L, ll R) {
-            if (X.majorize(S, L, R)) swap(X, S);
-            if (S.majorize(X, L, R)) return;
-            if (S.get(L) < X.get(L)) swap(X, S);
-
-            ll M = (L + R) / 2;
-            if (X.get(M) >= S.get(M)) swap(X, S), mc(0), c[0]->modify(X, L, M);
-            else mc(1), c[1]->modify(X, M + 1, R);
-        }
-
-        void upd(const lichao_line<T> &X, ll lo, ll hi, ll L, ll R) { // untested
-            if (R < lo || L > hi) return;
-            if (lo <= L && R <= hi) {
-                modify(X, L, R);
+        void add(E *e, int index) {
+            if (_data.size() == index) {
+                _data.push_back(e);
                 return;
             }
-            ll M = (L + R) / 2;
-            mc(0), c[0]->upd(X, lo, hi, L, M);
-            mc(1), c[1]->upd(X, lo, hi, M + 1, R);
+            if(_data[index] == NULL){
+                _data[index] = e;
+                return;
+            }
+            add(_merger(_data[index], e), index + 1);
+            _data[index] = NULL;
+        }
+
+    public:
+
+        void add(E *e) {
+            add(e, 0);
+        }
+
+        template<class C>
+        void consume(C &c){
+            for(E *e : _data){
+                if(e){
+                    c(e);
+                }
+            }
+        }
+    };
+}
+
+#endif //BIT_DECOMPOSE_FRAMEWORK_H
+
+//
+// Created by daltao on 2019/12/18.
+//
+
+#ifndef ACAUTOMATON_H
+#define ACAUTOMATON_H
+
+
+
+namespace dalt {
+    template<int L, int R>
+    class ACNode {
+    public:
+        ACNode *next[R - L + 1];
+        ACNode *fail;
+        ACNode *father;
+        int index;
+        int id;
+        int cnt;
+        int preSum;
+
+        ACNode(){
+            memset(next, 0, sizeof(next));
+            fail = father = 0;
+            index = id = cnt = preSum = 0;
+        }
+
+        int getId() {
+            return id;
+        }
+
+        int getCnt() {
+            return cnt;
+        }
+
+        void decreaseCnt() {
+            cnt--;
+        }
+
+        void increaseCnt() {
+            cnt++;
+        }
+
+        int getPreSum() {
+            return preSum;
         }
     };
 
-#undef INF
+    template<int L, int R>
+    class ACAutomaton {
+    private:
+        ACNode<L, R> *root;
+        ACNode<L, R> *buildLast;
+        ACNode<L, R> *matchLast;
+        vector<ACNode<L, R> *> allNodes;
+
+        ACNode<L, R> *addNode() {
+            ACNode<L, R> *node = new ACNode<L, R>();
+            node->id = allNodes.size();
+            allNodes.push_back(node);
+            return node;
+        }
+
+    public:
+
+        ACNode<L, R> *getBuildLast() {
+            return buildLast;
+        }
+
+
+        ACNode<L, R> *getMatchLast() {
+            return matchLast;
+        }
+
+
+        vector<ACNode<L, R> *> getAllNodes() {
+            return allNodes;
+        }
+
+
+        ACAutomaton() {
+            root = buildLast = matchLast = 0;
+            root = addNode();
+        }
+
+        void beginBuilding() {
+            buildLast = root;
+        }
+
+        void endBuilding() {
+            deque<ACNode<L, R> *> que;
+            for (int i = 0; i < (R - L + 1); i++) {
+                if (root->next[i] != NULL) {
+                    que.push_back(root->next[i]);
+                }
+            }
+
+            while (!que.empty()) {
+                ACNode<L, R> *head = que.front();
+                que.pop_front();
+                ACNode<L, R> *fail = visit(head->father->fail, head->index);
+                if (fail == NULL) {
+                    head->fail = root;
+                } else {
+                    head->fail = fail->next[head->index];
+                }
+                head->preSum = head->cnt + head->fail->preSum;
+                for (int i = 0; i < (R - L + 1); i++) {
+                    if (head->next[i] != NULL) {
+                        que.push_back(head->next[i]);
+                    }
+                }
+            }
+
+            for (int i = 0; i < (R - L + 1); i++) {
+                if (root->next[i] != NULL) {
+                    que.push_back(root->next[i]);
+                } else {
+                    root->next[i] = root;
+                }
+            }
+            while (!que.empty()) {
+                ACNode<L, R> *head = que.front();
+                que.pop_front();
+                for (int i = 0; i < (R - L + 1); i++) {
+                    if (head->next[i] != NULL) {
+                        que.push_back(head->next[i]);
+                    } else {
+                        head->next[i] = head->fail->next[i];
+                    }
+                }
+            }
+        }
+
+
+        ACNode<L, R> *visit(ACNode<L, R> *trace, int index) {
+            while (trace != NULL && trace->next[index] == NULL) {
+                trace = trace->fail;
+            }
+            return trace;
+        }
+
+        void build(char c) {
+            int index = c - L;
+            if (buildLast->next[index] == NULL) {
+                ACNode<L, R> *node = addNode();
+                node->father = buildLast;
+                node->index = index;
+                buildLast->next[index] = node;
+            }
+            buildLast = buildLast->next[index];
+        }
+
+
+        void beginMatching() {
+            matchLast = root;
+        }
+
+
+        void match(char c) {
+            int index = c - L;
+            matchLast = matchLast->next[index];
+        }
+
+    };
 }
 
-#endif //JHELPER_EXAMPLE_PROJECT_LICHAO_SEGMENT_H
+#endif //ACAUTOMATON_H
 
 
-using namespace other;
-typedef lichao_line<ll> dlc_line;
-typedef lichao_segment<ll> dlc_seg;
+using namespace dalt;
+typedef pair<vector<string *>, ACAutomaton<'a', 'z'>> pva;
 
-vector<int> queries;
-vector<dlc_line> status;
-vector<int> since;
-
-#define MAX_TIME (ll)1e9
-
-dlc_line reverse(const dlc_line &line){
-    return dlc_line(-line.k, -line.m);
+void prepare(pva *ans){
+    for(string *s : ans->first){
+        ans->second.beginBuilding();
+        for(char c : (*s))
+        {
+            ans->second.build(c);
+        }
+        ans->second.getBuildLast()->increaseCnt();
+    }
+    ans->second.endBuilding();
 }
 
-class UOJ88 {
+struct Merger{
+    pva *operator()(pva *a, pva * b) {
+        pva *ans = new pva();
+        ans->first.insert(ans->first.end(), a->first.begin(), a->first.end());
+        ans->first.insert(ans->first.end(), b->first.begin(), b->first.end());
+        prepare(ans);
+        return ans;
+    }
+};
+
+struct Consumer{
+    ll ans;
+    string *s;
+    Consumer(string *str):ans(0), s(str){
+    }
+    void operator()(pva *a){
+        a->second.beginMatching();
+        for(char c : (*s))
+        {
+            a->second.match(c);
+            ans += a->second.getMatchLast()->getPreSum();
+        }
+    }
+};
+
+class FStringSetQueries {
 public:
 
     void solve(std::istream &in, std::ostream &out) {
-        int n, m;
-        in >> n >> m;
-        status.reserve(n);
-        queries.reserve(m);
-        since.resize(n, 0);
-        for (int i = 0; i < n; i++) {
-            int a;
-            in >> a;
-            status.push_back(dlc_line(0, a));
-        }
-        dlc_seg upper;
-        dlc_seg bot;
+        int m;
+        in >> m;
+
+        BitDecomposeFramework<pva, Merger> addF;
+        BitDecomposeFramework<pva, Merger> subF;
+
         for(int i = 0; i < m; i++){
-            int time;
-            string type;
-            in >> time >> type;
-            if(type == "query"){
-                queries.push_back(time);
+            int t;
+            string *s = new string();
+            in >> t >> (*s);
+            if(t == 1){
+                pva *p = new pva();
+                p->first.push_back(s);
+                prepare(p);
+                addF.add(p);
+            }else if(t == 2){
+                pva *p = new pva();
+                p->first.push_back(s);
+                prepare(p);
+                subF.add(p);
             }else{
-                int which, dir;
-                in >> which >> dir;
-                which--;
-                upper.upd(status[which], since[which], time, 0, MAX_TIME);
-                bot.upd(reverse(status[which]), since[which], time, 0, MAX_TIME);
-                ll x = status[which].get(time);
-                status[which] = dlc_line(dir, x - (ll)dir * time);
-                since[which] = time;
+                Consumer pos(s), neg(s);
+                addF.consume(pos);
+                subF.consume(neg);
+
+                out << pos.ans - neg.ans << endl;
+                out.flush();
             }
         }
-
-        for(int i = 0; i < n; i++){
-            upper.upd(status[i], since[i], MAX_TIME, 0, MAX_TIME);
-            bot.upd(reverse(status[i]), since[i], MAX_TIME, 0, MAX_TIME);
-//            std::cerr << i <<  "=" << status[i].k << "x" << "+" << status[i].m
-//            << "(" << since[i] << ")" << endl;
-        }
-
-        for(int q : queries){
-            ll pos = upper.query(q, 0, MAX_TIME);
-            ll neg = bot.query(q, 0, MAX_TIME);
-            ll ans = max(abs(pos), abs(neg));
-            out << ans << endl;
-        }
     }
+
 
 private:
 };
@@ -214,7 +363,7 @@ int main() {
 	std::cout << std::setiosflags(std::ios::fixed);
 	std::cout << std::setprecision(15);
 
-	UOJ88 solver;
+	FStringSetQueries solver;
 	std::istream& in(std::cin);
 	std::ostream& out(std::cout);
 	solver.solve(in, out);

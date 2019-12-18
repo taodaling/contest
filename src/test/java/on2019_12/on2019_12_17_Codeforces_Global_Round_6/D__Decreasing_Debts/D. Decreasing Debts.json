@@ -1,0 +1,50 @@
+{
+  "name" : "D. Decreasing Debts",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 2\n1 2 10\n2 3 5\n",
+    "output" : "2\n1 2 5\n1 3 5\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "3 3\n1 2 10\n2 3 15\n3 1 10\n",
+    "output" : "1\n2 3 5\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "4 2\n1 2 12\n3 4 8\n",
+    "output" : "2\n1 2 12\n3 4 8\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "3 4\n2 3 1\n2 3 2\n2 3 4\n2 3 8\n",
+    "output" : "1\n2 3 15\n",
+    "index" : 3,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2019_12.on2019_12_17_Codeforces_Global_Round_6.D__Decreasing_Debts.DDecreasingDebts",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.12.17",
+  "contestName" : "Codeforces Global Round 6",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

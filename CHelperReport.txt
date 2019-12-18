@@ -1,2 +1,2 @@
-50 src/main/java/contest/F. Almost Same Distance.json
+47 src/main/java/contest/F. Maximum Reduction.json
 0

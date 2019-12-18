@@ -2,8 +2,8 @@
 // Created by DALT on 12/15/2019.
 //
 
-#ifndef JHELPER_EXAMPLE_PROJECT_PRESUM_H
-#define JHELPER_EXAMPLE_PROJECT_PRESUM_H
+#ifndef PRESUM_H
+#define PRESUM_H
 
 #include "common.h"
 
@@ -46,4 +46,4 @@ namespace dalt {
     };
 }
 
-#endif //JHELPER_EXAMPLE_PROJECT_PRESUM_H
+#endif //PRESUM_H

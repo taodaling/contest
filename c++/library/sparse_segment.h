@@ -2,8 +2,8 @@
 // Created by daltao on 2019/12/10.
 //
 
-#ifndef JHELPER_EXAMPLE_PROJECT_SPARSE_SEGMENT_H
-#define JHELPER_EXAMPLE_PROJECT_SPARSE_SEGMENT_H
+#ifndef SPARSE_SEGMENT_H
+#define SPARSE_SEGMENT_H
 namespace dalt {
     template<typename R=int>
     class sparse_segment {
@@ -76,4 +76,4 @@ namespace dalt {
 }
 
 
-#endif //JHELPER_EXAMPLE_PROJECT_SPARSE_SEGMENT_H
+#endif //SPARSE_SEGMENT_H

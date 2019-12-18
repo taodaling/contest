@@ -164,11 +164,19 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="C:/Users/daltao/IdeaProjects/contest/c++/library/acautomaton.h">
+			<Option target="output"/>
+			<Option target="test"/>
+		</Unit>
 		<Unit filename="C:/Users/daltao/IdeaProjects/contest/c++/library/assignment_problem.h">
 			<Option target="output"/>
 			<Option target="test"/>
 		</Unit>
 		<Unit filename="C:/Users/daltao/IdeaProjects/contest/c++/library/bit.h">
+			<Option target="output"/>
+			<Option target="test"/>
+		</Unit>
+		<Unit filename="C:/Users/daltao/IdeaProjects/contest/c++/library/bit_decompose_framework.h">
 			<Option target="output"/>
 			<Option target="test"/>
 		</Unit>
@@ -184,10 +192,6 @@
 			<Option target="test"/>
 		</Unit>
 		<Unit filename="C:/Users/daltao/IdeaProjects/contest/c++/library/gcd.h">
-			<Option target="output"/>
-			<Option target="test"/>
-		</Unit>
-		<Unit filename="C:/Users/daltao/IdeaProjects/contest/c++/library/lichao_segment.h">
 			<Option target="output"/>
 			<Option target="test"/>
 		</Unit>
@@ -212,7 +216,7 @@
 		<Unit filename="C:/Users/daltao/IdeaProjects/contest/c++/output/main.cpp">
 			<Option target="output"/>
 		</Unit>
-		<Unit filename="C:/Users/daltao/IdeaProjects/contest/c++/tasks/UOJ88.cpp">
+		<Unit filename="C:/Users/daltao/IdeaProjects/contest/c++/tasks/FEmployment.cpp">
 			<Option target="test"/>
 		</Unit>
 		<Unit filename="C:/Users/daltao/IdeaProjects/contest/c++/testrunner/main.cpp">

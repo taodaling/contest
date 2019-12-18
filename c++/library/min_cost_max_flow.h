@@ -2,8 +2,8 @@
 // Created by daltao on 2019/12/10.
 //
 
-#ifndef JHELPER_EXAMPLE_PROJECT_MIN_COST_MAX_FLOW_H
-#define JHELPER_EXAMPLE_PROJECT_MIN_COST_MAX_FLOW_H
+#ifndef MIN_COST_MAX_FLOW_H
+#define MIN_COST_MAX_FLOW_H
 
 #include "common.h"
 
@@ -173,4 +173,4 @@ namespace other {
 
 }
 
-#endif //JHELPER_EXAMPLE_PROJECT_MIN_COST_MAX_FLOW_H
+#endif //MIN_COST_MAX_FLOW_H

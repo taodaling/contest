@@ -2,17 +2,15 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
+import java.util.Collection;
 import java.io.IOException;
-import java.util.Random;
-import java.util.ArrayList;
+import java.util.Deque;
 import java.io.UncheckedIOException;
-import java.util.List;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
+import java.util.ArrayDeque;
 import java.util.Comparator;
-import java.util.Collections;
 import java.io.InputStream;
 
 /**
@@ -33,469 +31,191 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            FAlmostSameDistance solver = new FAlmostSameDistance();
+            FMaximumReduction solver = new FMaximumReduction();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class FAlmostSameDistance {
-        Node[] nodes;
-        int[] ans;
-        Segment segment;
+    static class FMaximumReduction {
+        int[] as;
+        int k;
         int n;
-        IntList list = new IntList(500000);
+        Modular mod = new Modular(1e9 + 7);
+        int ans = 0;
 
         public void solve(int testNumber, FastInput in, FastOutput out) {
             n = in.readInt();
-            ans = new int[n + 1];
-            nodes = new Node[n + 1];
-            for (int i = 1; i <= n; i++) {
-                nodes[i] = new Node();
-                nodes[i].id = i;
+            k = in.readInt() - 1;
+
+            as = new int[n];
+            for (int i = 0; i < n; i++) {
+                as[i] = in.readInt();
             }
 
-            MultiWayIntStack edges = new MultiWayIntStack(n + 1, n * 2);
-            for (int i = 1; i < n; i++) {
-                int a = in.readInt();
-                int b = in.readInt();
-                nodes[a].next.add(nodes[b]);
-                nodes[b].next.add(nodes[a]);
-                edges.addLast(a - 1, b - 1);
-                edges.addLast(b - 1, a - 1);
-            }
-            TreeDiameter diameter = new TreeDiameter(edges, n);
-            ans[diameter.getDiameter()] = 2;
-            ans[n] = 1;
+            DescartesTree tree = new DescartesTree(as, 0, n - 1, (a, b) -> -Integer.compare(a, b));
+            dfs(tree.getRoot(), 0, n - 1);
 
-            for (int i = 1; i <= n; i++) {
-                nodes[i].next.sort(Node.sortById);
-            }
-
-            segment = new Segment(0, 2 * n);
-            dfsForMaxDepth(nodes[1], null, 0);
-            prepareForMax(nodes[1], null, 0);
-            type1(nodes[1], null);
-            type2(nodes[1], null);
-            for (int i = n - 1; i >= 1; i--) {
-                ans[i] = Math.max(ans[i], ans[i + 1]);
-            }
-
-            for (int i = 1; i <= n; i++) {
-                out.println(ans[i]);
-            }
+            out.println(ans);
         }
 
-        public void type2(Node root, Node p) {
-            list.clear();
-            for (Node node : root.next) {
-                if (node == p) {
-                    continue;
-                }
-                list.add(node.maxDepth - root.depth);
-            }
-            ans[1] = Math.max(ans[1], 2);
-            list.sort();
-            int m = list.size();
-            for (int i = m - 1; i >= 0; i--) {
-                int cur = list.get(i);
-                ans[cur * 2] = Math.max(ans[cur * 2], segment.query(cur + n - root.depth, 2 * n, 0, 2 * n) + m - i);
-            }
-            for (Node node : root.next) {
-                if (node == p) {
-                    continue;
-                }
-                int x = node.maxDepth - root.depth + n - root.depth;
-                segment.update(x, x, 0, 2 * n, 1);
+        public void dfs(DescartesTree.Node root, int l, int r) {
+            if (root == null) {
+                return;
             }
 
-            for (Node node : root.next) {
-                if (node == p) {
-                    continue;
-                }
-                int x = node.maxDepth - root.depth + n - root.depth;
-                segment.update(x, x, 0, 2 * n, -1);
-                type2(node, root);
-                segment.update(x, x, 0, 2 * n, 1);
+            if (l + k > r) {
+                return;
             }
 
-            for (Node node : root.next) {
-                if (node == p) {
-                    continue;
-                }
-                int x = node.maxDepth - root.depth + n - root.depth;
-                segment.update(x, x, 0, 2 * n, -1);
+            int rightLen = r - (root.index + 1) + 1 + 1;
+            int leftLen = root.index - l;
+            int l0 = DigitUtils.ceilDiv(rightLen, k) * k - rightLen;
+            int l1 = k - l0;
+            if (l0 == 0) {
+                l0 = l1;
+                l1 = 0;
             }
-        }
+            int d = rightLen / k;
 
-        public void type1(Node root, Node p) {
-            int m = root.next.size();
-            list.clear();
-            for (Node node : root.next) {
-                int depth = maxDepthRegardless(node, root) + 1;
-                list.add(depth);
-            }
-            list.sort();
-            for (int i = m - 1; i >= 0; i--) {
-                int cur = list.get(i);
-                int cnt = m - i;
-                if (cnt > 1) {
-                    ans[cur * 2] = Math.max(ans[cur * 2], cnt);
-                }
-            }
+            int blockContri = mod.mul(leftLen / k, mod.plus(mod.mul(l0, d), mod.mul(l1, d + 1)));
 
-            for (Node node : root.next) {
-                if (node == p) {
-                    continue;
-                }
-                type1(node, root);
-            }
-
-            ans[1] = Math.max(ans[1], m + 1);
-        }
-
-        public static int maxDepthRegardless(Node root, Node node) {
-            int index = Collections.binarySearch(root.next, node, Node.sortById);
-            return maxRegardless(root, index);
-        }
-
-        public static void prepareForMax(Node root, Node p, int maxDepth) {
-            int m = root.next.size();
-            root.preMax = new int[m];
-            root.postMax = new int[m];
-            for (int i = 0; i < m; i++) {
-                Node node = root.next.get(i);
-                root.preMax[i] = node == p ? maxDepth : (node.maxDepth - root.depth);
-                if (i > 0) {
-                    root.preMax[i] = Math.max(root.preMax[i], root.preMax[i - 1]);
-                }
-            }
-            for (int i = m - 1; i >= 0; i--) {
-                Node node = root.next.get(i);
-                root.postMax[i] = node == p ? maxDepth : (node.maxDepth - root.depth);
-                if (i + 1 < m) {
-                    root.postMax[i] = Math.max(root.postMax[i], root.postMax[i + 1]);
-                }
-            }
-
-            for (int i = 0; i < m; i++) {
-                Node node = root.next.get(i);
-                if (node == p) {
-                    continue;
-                }
-                prepareForMax(node, root, maxRegardless(root, i) + 1);
-            }
-        }
-
-        public static int maxRegardless(Node root, int i) {
-            int max = 0;
-            if (i > 0) {
-                max = Math.max(max, root.preMax[i - 1]);
-            }
-            if (i + 1 < root.next.size()) {
-                max = Math.max(max, root.postMax[i + 1]);
-            }
-            return max;
-        }
-
-        public static void dfsForMaxDepth(Node root, Node p, int depth) {
-            root.depth = root.maxDepth = depth;
-            for (Node node : root.next) {
-                if (node == p) {
-                    continue;
-                }
-                dfsForMaxDepth(node, root, depth + 1);
-                root.maxDepth = Math.max(root.maxDepth, node.maxDepth);
-            }
-        }
-
-    }
-
-    static class SequenceUtils {
-        public static boolean equal(int[] a, int al, int ar, int[] b, int bl, int br) {
-            if ((ar - al) != (br - bl)) {
-                return false;
-            }
-            for (int i = al, j = bl; i <= ar; i++, j++) {
-                if (a[i] != b[j]) {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-    }
-
-    static interface IntIterator {
-        boolean hasNext();
-
-        int next();
-
-    }
-
-    static class FastOutput implements AutoCloseable, Closeable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
-
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput println(int c) {
-            cache.append(c).append('\n');
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        }
-
-        public String toString() {
-            return cache.toString();
-        }
-
-    }
-
-    static class Node {
-        List<Node> next = new ArrayList<>();
-        int[] preMax;
-        int[] postMax;
-        int maxDepth;
-        int depth;
-        int id;
-        static Comparator<Node> sortById = (a, b) -> a.id - b.id;
-
-    }
-
-    static class MultiWayIntStack {
-        private int[] values;
-        private int[] next;
-        private int[] heads;
-        private int alloc;
-        private int stackNum;
-
-        public IntIterator iterator(final int queue) {
-            return new IntIterator() {
-                int ele = heads[queue];
-
-
-                public boolean hasNext() {
-                    return ele != 0;
-                }
-
-
-                public int next() {
-                    int ans = values[ele];
-                    ele = next[ele];
-                    return ans;
-                }
-            };
-        }
-
-        private void doubleCapacity() {
-            int newSize = Math.max(next.length + 10, next.length * 2);
-            next = Arrays.copyOf(next, newSize);
-            values = Arrays.copyOf(values, newSize);
-        }
-
-        public void alloc() {
-            alloc++;
-            if (alloc >= next.length) {
-                doubleCapacity();
-            }
-            next[alloc] = 0;
-        }
-
-        public MultiWayIntStack(int qNum, int totalCapacity) {
-            values = new int[totalCapacity + 1];
-            next = new int[totalCapacity + 1];
-            heads = new int[qNum];
-            stackNum = qNum;
-        }
-
-        public void addLast(int qId, int x) {
-            alloc();
-            values[alloc] = x;
-            next[alloc] = heads[qId];
-            heads[qId] = alloc;
-        }
-
-        public String toString() {
-            StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < stackNum; i++) {
-                builder.append(i).append(": ");
-                for (IntIterator iterator = iterator(i); iterator.hasNext(); ) {
-                    builder.append(iterator.next()).append(",");
-                }
-                if (builder.charAt(builder.length() - 1) == ',') {
-                    builder.setLength(builder.length() - 1);
-                }
-                builder.append('\n');
-            }
-            return builder.toString();
-        }
-
-    }
-
-    static class Segment implements Cloneable {
-        private Segment left;
-        private Segment right;
-        private int cnt;
-
-        public void pushUp() {
-            cnt = left.cnt + right.cnt;
-        }
-
-        public void pushDown() {
-        }
-
-        public Segment(int l, int r) {
-            if (l < r) {
-                int m = (l + r) >> 1;
-                left = new Segment(l, m);
-                right = new Segment(m + 1, r);
-                pushUp();
+            int extraContri = 0;
+            if (leftLen % k <= l0) {
+                extraContri = mod.mul(leftLen % k, d);
             } else {
-
+                extraContri = mod.plus(mod.mul(l0, d), mod.mul(leftLen % k - l0, d + 1));
             }
-        }
 
-        private boolean covered(int ll, int rr, int l, int r) {
-            return ll <= l && rr >= r;
-        }
+            //index + kt <= r => t <= (r - index) / k
+            if (root.index + k <= r) {
+                extraContri = mod.plus(extraContri, (r - root.index) / k);
+            }
 
-        private boolean noIntersection(int ll, int rr, int l, int r) {
-            return ll > r || rr < l;
-        }
+            int localContri = mod.plus(blockContri, extraContri);
+            //System.err.println("f(" + as[root.index] + ") = " + localContri);
+            localContri = mod.mul(localContri, as[root.index]);
+            ans = mod.plus(ans, localContri);
 
-        public void update(int ll, int rr, int l, int r, int x) {
-            if (noIntersection(ll, rr, l, r)) {
-                return;
-            }
-            if (covered(ll, rr, l, r)) {
-                cnt += x;
-                return;
-            }
-            pushDown();
-            int m = (l + r) >> 1;
-            left.update(ll, rr, l, m, x);
-            right.update(ll, rr, m + 1, r, x);
-            pushUp();
-        }
-
-        public int query(int ll, int rr, int l, int r) {
-            if (noIntersection(ll, rr, l, r)) {
-                return 0;
-            }
-            if (covered(ll, rr, l, r)) {
-                return cnt;
-            }
-            pushDown();
-            int m = (l + r) >> 1;
-            return left.query(ll, rr, l, m) +
-                    right.query(ll, rr, m + 1, r);
+            dfs(root.left, l, root.index - 1);
+            dfs(root.right, root.index + 1, r);
         }
 
     }
 
-    static class Randomized {
-        static Random random = new Random();
+    static class Modular {
+        int m;
 
-        public static void randomizedArray(int[] data, int from, int to) {
-            to--;
-            for (int i = from; i <= to; i++) {
-                int s = nextInt(i, to);
-                int tmp = data[i];
-                data[i] = data[s];
-                data[s] = tmp;
+        public Modular(int m) {
+            this.m = m;
+        }
+
+        public Modular(long m) {
+            this.m = (int) m;
+            if (this.m != m) {
+                throw new IllegalArgumentException();
             }
         }
 
-        public static int nextInt(int l, int r) {
-            return random.nextInt(r - l + 1) + l;
+        public Modular(double m) {
+            this.m = (int) m;
+            if (this.m != m) {
+                throw new IllegalArgumentException();
+            }
+        }
+
+        public int valueOf(int x) {
+            x %= m;
+            if (x < 0) {
+                x += m;
+            }
+            return x;
+        }
+
+        public int valueOf(long x) {
+            x %= m;
+            if (x < 0) {
+                x += m;
+            }
+            return (int) x;
+        }
+
+        public int mul(int x, int y) {
+            return valueOf((long) x * y);
+        }
+
+        public int plus(int x, int y) {
+            return valueOf(x + y);
+        }
+
+        public String toString() {
+            return "mod " + m;
         }
 
     }
 
-    static class TreeDiameter {
-        private MultiWayIntStack edges;
-        private int[] depth;
-        private int[] parents;
-        private int diameter;
-        private IntList centers;
-        private IntList ends;
+    static class DescartesTree {
+        DescartesTree.Node root;
 
-        public int getDiameter() {
-            return diameter;
+        public <T> DescartesTree(T[] data, int l, int r, Comparator<T> comp) {
+            int len = r - l + 1;
+            DescartesTree.Node[] nodes = new DescartesTree.Node[len];
+            for (int i = 0; i < len; i++) {
+                nodes[i] = new DescartesTree.Node();
+                nodes[i].index = i + l;
+            }
+            Deque<DescartesTree.Node> deque = new ArrayDeque<>(len);
+            for (int i = 0; i < len; i++) {
+                while (!deque.isEmpty() && comp.compare(data[deque.peekLast().index], data[nodes[i].index]) > 0) {
+                    DescartesTree.Node tail = deque.removeLast();
+                    tail.right = nodes[i].left;
+                    nodes[i].left = tail;
+                }
+                deque.addLast(nodes[i]);
+            }
+            while (deque.size() > 1) {
+                DescartesTree.Node tail = deque.removeLast();
+                deque.peekLast().right = tail;
+            }
+            root = deque.removeLast();
         }
 
-        public TreeDiameter(MultiWayIntStack edges, int n) {
-            this.edges = edges;
-            depth = new int[n];
-            centers = new IntList(2);
-            ends = new IntList(2);
-            parents = new int[n];
-
-            dfsForDepth(0, -1);
-            int end = 0;
-            for (int i = 0; i < n; i++) {
-                if (depth[i] > depth[end]) {
-                    end = i;
-                }
+        public DescartesTree(int[] data, int l, int r, IntComparator comparator) {
+            int len = r - l + 1;
+            DescartesTree.Node[] nodes = new DescartesTree.Node[len];
+            for (int i = 0; i < len; i++) {
+                nodes[i] = new DescartesTree.Node();
+                nodes[i].index = i + l;
             }
-            dfsForDepth(end, -1);
-            int another = 0;
-            for (int i = 0; i < n; i++) {
-                if (depth[i] > depth[another]) {
-                    another = i;
+            Deque<DescartesTree.Node> deque = new ArrayDeque<>(len);
+            for (int i = 0; i < len; i++) {
+                while (!deque.isEmpty() && comparator.compare(data[deque.peekLast().index], data[nodes[i].index]) > 0) {
+                    DescartesTree.Node tail = deque.removeLast();
+                    tail.right = nodes[i].left;
+                    nodes[i].left = tail;
                 }
+                deque.addLast(nodes[i]);
             }
-
-            ends.add(end);
-            ends.add(another);
-
-            diameter = depth[another];
-            for (int i = another; i != -1; i = parents[i]) {
-                if (depth[i] == DigitUtils.ceilDiv(diameter, 2) ||
-                        depth[i] == DigitUtils.floorDiv(diameter, 2)) {
-                    centers.add(i);
-                }
+            while (deque.size() > 1) {
+                DescartesTree.Node tail = deque.removeLast();
+                deque.peekLast().right = tail;
             }
-
-            ends.unique();
-            centers.unique();
+            root = deque.removeLast();
         }
 
-        private void dfsForDepth(int root, int p) {
-            parents[root] = p;
-            depth[root] = p != -1 ? depth[p] + 1 : 0;
-            for (IntIterator iterator = edges.iterator(root); iterator.hasNext(); ) {
-                int node = iterator.next();
-                if (node == p) {
-                    continue;
-                }
-                dfsForDepth(node, root);
+        public DescartesTree.Node getRoot() {
+            return root;
+        }
+
+        public static class Node {
+            public int index;
+            public DescartesTree.Node left;
+            public DescartesTree.Node right;
+
+            public String toString() {
+                return "" + index;
             }
+
         }
 
     }
@@ -580,125 +300,50 @@ public class Main {
 
     }
 
-    static class IntList implements Cloneable {
-        private int size;
-        private int cap;
-        private int[] data;
-        private static final int[] EMPTY = new int[0];
+    static interface IntComparator {
+        public int compare(int a, int b);
 
-        public IntList(int cap) {
-            this.cap = cap;
-            if (cap == 0) {
-                data = EMPTY;
-            } else {
-                data = new int[cap];
+    }
+
+    static class FastOutput implements AutoCloseable, Closeable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
+
+        public FastOutput(Writer os) {
+            this.os = os;
+        }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput println(int c) {
+            cache.append(c).append('\n');
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
             }
+            return this;
         }
 
-        public IntList(IntList list) {
-            this.size = list.size;
-            this.cap = list.cap;
-            this.data = Arrays.copyOf(list.data, size);
-        }
-
-        public IntList() {
-            this(0);
-        }
-
-        public void ensureSpace(int req) {
-            if (req > cap) {
-                while (cap < req) {
-                    cap = Math.max(cap + 10, 2 * cap);
-                }
-                data = Arrays.copyOf(data, cap);
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
             }
-        }
-
-        private void checkRange(int i) {
-            if (i < 0 || i >= size) {
-                throw new ArrayIndexOutOfBoundsException();
-            }
-        }
-
-        public int get(int i) {
-            checkRange(i);
-            return data[i];
-        }
-
-        public void add(int x) {
-            ensureSpace(size + 1);
-            data[size++] = x;
-        }
-
-        public void addAll(int[] x, int offset, int len) {
-            ensureSpace(size + len);
-            System.arraycopy(x, offset, data, size, len);
-            size += len;
-        }
-
-        public void addAll(IntList list) {
-            addAll(list.data, 0, list.size);
-        }
-
-        public void sort() {
-            if (size <= 1) {
-                return;
-            }
-            Randomized.randomizedArray(data, 0, size);
-            Arrays.sort(data, 0, size);
-        }
-
-        public void unique() {
-            if (size <= 1) {
-                return;
-            }
-
-            sort();
-            int wpos = 1;
-            for (int i = 1; i < size; i++) {
-                if (data[i] != data[wpos - 1]) {
-                    data[wpos++] = data[i];
-                }
-            }
-            size = wpos;
-        }
-
-        public int size() {
-            return size;
-        }
-
-        public int[] toArray() {
-            return Arrays.copyOf(data, size);
-        }
-
-        public void clear() {
-            size = 0;
         }
 
         public String toString() {
-            return Arrays.toString(toArray());
-        }
-
-        public boolean equals(Object obj) {
-            if (!(obj instanceof IntList)) {
-                return false;
-            }
-            IntList other = (IntList) obj;
-            return SequenceUtils.equal(data, 0, size - 1, other.data, 0, other.size - 1);
-        }
-
-        public int hashCode() {
-            int h = 1;
-            for (int i = 0; i < size; i++) {
-                h = h * 31 + data[i];
-            }
-            return h;
-        }
-
-        public IntList clone() {
-            IntList ans = new IntList();
-            ans.addAll(this);
-            return ans;
+            return cache.toString();
         }
 
     }

@@ -7,7 +7,11 @@ import java.util.Comparator;
 import java.util.List;
 
 public class SequenceUtils {
+    /**
+     * Find a index k while data[k] >= x and data[k - 1] < x. If it doesn't exist, -1 will return.
+     */
     public static int leftBound(int[] data, int x, int l, int r) {
+        int excess = r + 1;
         while (l < r) {
             int m = (l + r) >>> 1;
             if (data[m] < x) {
@@ -16,10 +20,30 @@ public class SequenceUtils {
                 r = m;
             }
         }
-        return l;
+        return data[l] >= x ? l : excess;
     }
 
+    /**
+     * Find a index k while data[k] >= x and data[k - 1] < x. If it doesn't exist, -1 will return.
+     */
+    public static <T> int leftBound(T[] data, T x, int l, int r, Comparator<T> comp) {
+        int excess = r + 1;
+        while (l < r) {
+            int m = (l + r) >>> 1;
+            if (comp.compare(data[m], x) < 0) {
+                l = m + 1;
+            } else {
+                r = m;
+            }
+        }
+        return comp.compare(data[l], x) >= 0 ? l : excess;
+    }
+
+    /**
+     * Find a index k while data[k] <= x and data[k + 1] > x. If it doesn't exist, -1 will return.
+     */
     public static int rightBound(int[] data, int x, int l, int r) {
+        int excess = l - 1;
         while (l < r) {
             int m = (l + r + 1) >>> 1;
             if (data[m] <= x) {
@@ -28,7 +52,23 @@ public class SequenceUtils {
                 r = m - 1;
             }
         }
-        return l;
+        return data[l] <= x ? l : excess;
+    }
+
+    /**
+     * Find a index k while data[k] <= x and data[k + 1] > x. If it doesn't exist, -1 will return.
+     */
+    public static <T> int rightBound(T[] data, T x, int l, int r, Comparator<T> comp) {
+        int excess = l - 1;
+        while (l < r) {
+            int m = (l + r + 1) >>> 1;
+            if (comp.compare(data[m], x) <= 0) {
+                l = m;
+            } else {
+                r = m - 1;
+            }
+        }
+        return comp.compare(data[l], x) <= 0 ? l : excess;
     }
 
     public static int countElementOccurrenceInSortedArray(int[] data, int x, int l, int r) {
@@ -166,7 +206,6 @@ public class SequenceUtils {
     public static <T> T[] wrapObjectArray(T... x) {
         return x;
     }
-
 
     public static <T> void swap(T[] data, int i, int j) {
         T tmp = data[i];

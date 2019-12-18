@@ -14,7 +14,50 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e173ed55-e541-424a-82e1-b5da979c74d7" name="Default" comment="" />
+    <list default="true" id="e173ed55-e541-424a-82e1-b5da979c74d7" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/../archive/unsorted/2019.12/2019.12.18 - Manthan, Codefest 18 (rated, Div. 1 + Div. 2)/F. Maximum Reduction.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../archive/unsorted/2019.12/2019.12.18 - Manthan, Codefest 18 (rated, Div. 1 + Div. 2)/FMaximumReduction.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../src/main/java/template/graph/DescartesTree.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_17_Codeforces_Global_Round_6/A__Competitive_Programmer/A. Competitive Programmer.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_17_Codeforces_Global_Round_6/A__Competitive_Programmer/ACompetitiveProgrammer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_17_Codeforces_Global_Round_6/A__Competitive_Programmer/Main.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_17_Codeforces_Global_Round_6/B___Dice_Tower/B - Dice Tower.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_17_Codeforces_Global_Round_6/B___Dice_Tower/Main.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_17_Codeforces_Global_Round_6/B___Dice_Tower/TaskB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_17_Codeforces_Global_Round_6/C__Diverse_Matrix/C. Diverse Matrix.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_17_Codeforces_Global_Round_6/C__Diverse_Matrix/CDiverseMatrix.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_17_Codeforces_Global_Round_6/C__Diverse_Matrix/Main.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_17_Codeforces_Global_Round_6/D__Decreasing_Debts/D. Decreasing Debts.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_17_Codeforces_Global_Round_6/D__Decreasing_Debts/DDecreasingDebts.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_17_Codeforces_Global_Round_6/D__Decreasing_Debts/Main.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_18_Codeforces_Global_Round_6/E__Spaceship_Solitaire/E. Spaceship Solitaire.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_18_Codeforces_Global_Round_6/E__Spaceship_Solitaire/ESpaceshipSolitaire.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_18_Codeforces_Global_Round_6/E__Spaceship_Solitaire/Main.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_18_Codeforces_Global_Round_6/F__Almost_Same_Distance/F. Almost Same Distance.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_18_Codeforces_Global_Round_6/F__Almost_Same_Distance/FAlmostSameDistance.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_18_Codeforces_Global_Round_6/F__Almost_Same_Distance/Main.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_18_Codeforces_Global_Round_6/F__Almost_Same_Distance0/F. Almost Same Distance.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_18_Codeforces_Global_Round_6/F__Almost_Same_Distance0/FAlmostSameDistance.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_18_Codeforces_Global_Round_6/F__Almost_Same_Distance0/Main.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_18_Manthan__Codefest_18__rated__Div__1___Div__2_/F__Maximum_Reduction/F. Maximum Reduction.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_18_Manthan__Codefest_18__rated__Div__1___Div__2_/F__Maximum_Reduction/FMaximumReduction.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_18_Manthan__Codefest_18__rated__Div__1___Div__2_/F__Maximum_Reduction/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CHelperReport.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../CHelperReport.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../output/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/../output/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/contest/A. Competitive Programmer.json" beforeDir="false" afterPath="$PROJECT_DIR$/../archive/unsorted/2019.12/2019.12.17 - Codeforces Global Round 6/A. Competitive Programmer.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/contest/ACompetitiveProgrammer.java" beforeDir="false" afterPath="$PROJECT_DIR$/../archive/unsorted/2019.12/2019.12.17 - Codeforces Global Round 6/ACompetitiveProgrammer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/contest/B - Dice Tower.json" beforeDir="false" afterPath="$PROJECT_DIR$/../archive/unsorted/2019.12/2019.12.17 - Codeforces Global Round 6/B - Dice Tower.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/contest/C. Diverse Matrix.json" beforeDir="false" afterPath="$PROJECT_DIR$/../archive/unsorted/2019.12/2019.12.17 - Codeforces Global Round 6/C. Diverse Matrix.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/contest/CDiverseMatrix.java" beforeDir="false" afterPath="$PROJECT_DIR$/../archive/unsorted/2019.12/2019.12.17 - Codeforces Global Round 6/CDiverseMatrix.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/contest/D. Decreasing Debts.json" beforeDir="false" afterPath="$PROJECT_DIR$/../archive/unsorted/2019.12/2019.12.17 - Codeforces Global Round 6/D. Decreasing Debts.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/contest/DDecreasingDebts.java" beforeDir="false" afterPath="$PROJECT_DIR$/../archive/unsorted/2019.12/2019.12.17 - Codeforces Global Round 6/DDecreasingDebts.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/contest/E. Spaceship Solitaire.json" beforeDir="false" afterPath="$PROJECT_DIR$/../archive/unsorted/2019.12/2019.12.18 - Codeforces Global Round 6/E. Spaceship Solitaire.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/contest/ESpaceshipSolitaire.java" beforeDir="false" afterPath="$PROJECT_DIR$/../archive/unsorted/2019.12/2019.12.18 - Codeforces Global Round 6/ESpaceshipSolitaire.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/contest/F. Almost Same Distance.json" beforeDir="false" afterPath="$PROJECT_DIR$/../archive/unsorted/2019.12/2019.12.18 - Codeforces Global Round 6/F. Almost Same Distance.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/contest/FAlmostSameDistance.java" beforeDir="false" afterPath="$PROJECT_DIR$/../archive/unsorted/2019.12/2019.12.18 - Codeforces Global Round 6/FAlmostSameDistance.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/contest/TaskB.java" beforeDir="false" afterPath="$PROJECT_DIR$/../archive/unsorted/2019.12/2019.12.17 - Codeforces Global Round 6/TaskB.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/template/utils/SequenceUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/template/utils/SequenceUtils.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -156,6 +199,8 @@
       <workItem from="1575942111094" duration="14632000" />
       <workItem from="1576214760916" duration="10365000" />
       <workItem from="1576398736304" duration="10245000" />
+      <workItem from="1576650980379" duration="44000" />
+      <workItem from="1576651039632" duration="4922000" />
     </task>
     <servers />
   </component>
@@ -188,49 +233,49 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="808" y="37" key="#xdebugger.evaluate/0.0.1920.1040@0.0.1920.1040" timestamp="1576462811281" />
-    <state width="486" height="759" key="DebuggerActiveHint" timestamp="1576229054741">
+    <state width="568" height="759" key="DebuggerActiveHint" timestamp="1576655084649">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="486" height="759" key="DebuggerActiveHint/0.0.1920.1040@0.0.1920.1040" timestamp="1576229054741" />
-    <state width="805" height="525" key="GridCell.Tab.0.bottom" timestamp="1576490847492">
+    <state width="568" height="759" key="DebuggerActiveHint/0.0.1920.1040@0.0.1920.1040" timestamp="1576655084649" />
+    <state width="304" height="477" key="GridCell.Tab.0.bottom" timestamp="1576656432824">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="805" height="525" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1576490847492" />
+    <state width="304" height="477" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1576656432824" />
     <state width="2505" height="472" key="GridCell.Tab.0.bottom/0.0.2560.1400@0.0.2560.1400" timestamp="1576421601102" />
-    <state width="805" height="525" key="GridCell.Tab.0.center" timestamp="1576490847492">
+    <state width="304" height="477" key="GridCell.Tab.0.center" timestamp="1576656432824">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="805" height="525" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1576490847492" />
+    <state width="304" height="477" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1576656432824" />
     <state width="2505" height="472" key="GridCell.Tab.0.center/0.0.2560.1400@0.0.2560.1400" timestamp="1576421601102" />
-    <state width="805" height="525" key="GridCell.Tab.0.left" timestamp="1576490847492">
+    <state width="304" height="477" key="GridCell.Tab.0.left" timestamp="1576656432824">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="805" height="525" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1576490847492" />
+    <state width="304" height="477" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1576656432824" />
     <state width="2505" height="472" key="GridCell.Tab.0.left/0.0.2560.1400@0.0.2560.1400" timestamp="1576421601102" />
-    <state width="805" height="525" key="GridCell.Tab.0.right" timestamp="1576490847492">
+    <state width="304" height="477" key="GridCell.Tab.0.right" timestamp="1576656432824">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="805" height="525" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1576490847492" />
+    <state width="304" height="477" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1576656432824" />
     <state width="2505" height="472" key="GridCell.Tab.0.right/0.0.2560.1400@0.0.2560.1400" timestamp="1576421601102" />
-    <state width="805" height="525" key="GridCell.Tab.1.bottom" timestamp="1576490847492">
+    <state width="304" height="477" key="GridCell.Tab.1.bottom" timestamp="1576656432826">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="805" height="525" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1576490847492" />
+    <state width="304" height="477" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1576656432826" />
     <state width="2505" height="472" key="GridCell.Tab.1.bottom/0.0.2560.1400@0.0.2560.1400" timestamp="1576421601102" />
-    <state width="805" height="525" key="GridCell.Tab.1.center" timestamp="1576490847492">
+    <state width="304" height="477" key="GridCell.Tab.1.center" timestamp="1576656432825">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="805" height="525" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1576490847492" />
+    <state width="304" height="477" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1576656432825" />
     <state width="2505" height="472" key="GridCell.Tab.1.center/0.0.2560.1400@0.0.2560.1400" timestamp="1576421601102" />
-    <state width="805" height="525" key="GridCell.Tab.1.left" timestamp="1576490847492">
+    <state width="304" height="477" key="GridCell.Tab.1.left" timestamp="1576656432825">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="805" height="525" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1576490847492" />
+    <state width="304" height="477" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1576656432825" />
     <state width="2505" height="472" key="GridCell.Tab.1.left/0.0.2560.1400@0.0.2560.1400" timestamp="1576421601102" />
-    <state width="805" height="525" key="GridCell.Tab.1.right" timestamp="1576490847492">
+    <state width="304" height="477" key="GridCell.Tab.1.right" timestamp="1576656432825">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="805" height="525" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1576490847492" />
+    <state width="304" height="477" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1576656432825" />
     <state width="2505" height="472" key="GridCell.Tab.1.right/0.0.2560.1400@0.0.2560.1400" timestamp="1576421601102" />
     <state x="463" y="139" key="SettingsEditor" timestamp="1575942455129">
       <screen x="0" y="0" width="1920" height="1040" />
@@ -244,11 +289,15 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="968" height="528" key="XDebugger.FullValuePopup/0.0.1920.1040@0.0.1920.1040" timestamp="1576482023181" />
-    <state x="887" y="474" key="com.intellij.ide.util.TipDialog" timestamp="1576398736188">
-      <screen x="0" y="0" width="2560" height="1400" />
+    <state x="665" y="352" key="com.intellij.ide.util.TipDialog" timestamp="1576651055668">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="665" y="352" key="com.intellij.ide.util.TipDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1576214800077" />
+    <state x="665" y="352" key="com.intellij.ide.util.TipDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1576651055668" />
     <state x="887" y="474" key="com.intellij.ide.util.TipDialog/0.0.2560.1400@0.0.2560.1400" timestamp="1576398736188" />
+    <state x="562" y="0" width="1012" height="1040" key="find.popup" timestamp="1576655336306">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="562" y="0" width="1012" height="1040" key="find.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1576655336306" />
     <state x="532" y="-5" width="840" height="1032" key="search.everywhere.popup" timestamp="1576480234650">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

@@ -2,8 +2,8 @@
 // Created by daltao on 2019/12/10.
 //
 
-#ifndef JHELPER_EXAMPLE_PROJECT_GCD_H
-#define JHELPER_EXAMPLE_PROJECT_GCD_H
+#ifndef GCD_H
+#define GCD_H
 
 #include "common.h"
 
@@ -47,4 +47,4 @@ namespace dalt {
     }
 }
 
-#endif //JHELPER_EXAMPLE_PROJECT_GCD_H
+#endif //GCD_H

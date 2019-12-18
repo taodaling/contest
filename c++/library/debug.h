@@ -2,7 +2,7 @@
 // Created by daltao on 2019/12/16.
 //
 
-#ifndef JHELPER_EXAMPLE_PROJECT_DEBUG_H
-#define JHELPER_EXAMPLE_PROJECT_DEBUG_H
+#ifndef DEBUG_H
+#define DEBUG_H
 
-#endif //JHELPER_EXAMPLE_PROJECT_DEBUG_H
+#endif //DEBUG_H

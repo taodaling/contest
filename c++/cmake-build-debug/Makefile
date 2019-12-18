@@ -175,32 +175,32 @@ output/main.cpp.s:
 	$(MAKE) -f CMakeFiles\output.dir\build.make CMakeFiles/output.dir/output/main.cpp.s
 .PHONY : output/main.cpp.s
 
-tasks/UOJ88.obj: tasks/UOJ88.cpp.obj
+tasks/FEmployment.obj: tasks/FEmployment.cpp.obj
 
-.PHONY : tasks/UOJ88.obj
+.PHONY : tasks/FEmployment.obj
 
 # target to build an object file
-tasks/UOJ88.cpp.obj:
-	$(MAKE) -f CMakeFiles\test.dir\build.make CMakeFiles/test.dir/tasks/UOJ88.cpp.obj
-.PHONY : tasks/UOJ88.cpp.obj
+tasks/FEmployment.cpp.obj:
+	$(MAKE) -f CMakeFiles\test.dir\build.make CMakeFiles/test.dir/tasks/FEmployment.cpp.obj
+.PHONY : tasks/FEmployment.cpp.obj
 
-tasks/UOJ88.i: tasks/UOJ88.cpp.i
+tasks/FEmployment.i: tasks/FEmployment.cpp.i
 
-.PHONY : tasks/UOJ88.i
+.PHONY : tasks/FEmployment.i
 
 # target to preprocess a source file
-tasks/UOJ88.cpp.i:
-	$(MAKE) -f CMakeFiles\test.dir\build.make CMakeFiles/test.dir/tasks/UOJ88.cpp.i
-.PHONY : tasks/UOJ88.cpp.i
+tasks/FEmployment.cpp.i:
+	$(MAKE) -f CMakeFiles\test.dir\build.make CMakeFiles/test.dir/tasks/FEmployment.cpp.i
+.PHONY : tasks/FEmployment.cpp.i
 
-tasks/UOJ88.s: tasks/UOJ88.cpp.s
+tasks/FEmployment.s: tasks/FEmployment.cpp.s
 
-.PHONY : tasks/UOJ88.s
+.PHONY : tasks/FEmployment.s
 
 # target to generate assembly for a file
-tasks/UOJ88.cpp.s:
-	$(MAKE) -f CMakeFiles\test.dir\build.make CMakeFiles/test.dir/tasks/UOJ88.cpp.s
-.PHONY : tasks/UOJ88.cpp.s
+tasks/FEmployment.cpp.s:
+	$(MAKE) -f CMakeFiles\test.dir\build.make CMakeFiles/test.dir/tasks/FEmployment.cpp.s
+.PHONY : tasks/FEmployment.cpp.s
 
 testrunner/main.obj: testrunner/main.cpp.obj
 
@@ -243,9 +243,9 @@ help:
 	@echo ... output/main.obj
 	@echo ... output/main.i
 	@echo ... output/main.s
-	@echo ... tasks/UOJ88.obj
-	@echo ... tasks/UOJ88.i
-	@echo ... tasks/UOJ88.s
+	@echo ... tasks/FEmployment.obj
+	@echo ... tasks/FEmployment.i
+	@echo ... tasks/FEmployment.s
 	@echo ... testrunner/main.obj
 	@echo ... testrunner/main.i
 	@echo ... testrunner/main.s
