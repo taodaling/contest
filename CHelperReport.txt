@@ -1,2 +1,3 @@
-47 src/main/java/contest/F. Maximum Reduction.json
-0
+40 src/main/java/contest/F. Employment.json
+1
+2

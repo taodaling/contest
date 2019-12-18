@@ -2,21 +2,15 @@ package on2019_12.on2019_12_14_Good_Bye_2018.E__New_Year_and_the_Acquaintance_Es
 
 
 
-import template.algo.IntBinarySearch;
 import template.algo.LongBinarySearch;
 import template.algo.LongTernarySearch;
-import template.algo.PreSum;
-import template.datastructure.IntList;
-import template.datastructure.PrefixIncrementOnePriorityQueue;
-import template.graph.ErdosGallaiTheorem;
+import template.datastructure.PreSum;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.rand.Randomized;
 import template.utils.SequenceUtils;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
-import java.util.function.BinaryOperator;
 import java.util.function.LongUnaryOperator;
 
 public class ENewYearAndTheAcquaintanceEstimation {

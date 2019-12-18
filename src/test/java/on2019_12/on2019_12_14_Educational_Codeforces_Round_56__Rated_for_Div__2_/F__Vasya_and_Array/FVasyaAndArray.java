@@ -2,13 +2,10 @@ package on2019_12.on2019_12_14_Educational_Codeforces_Round_56__Rated_for_Div__2
 
 
 
-import template.algo.PreSum;
 import template.datastructure.IntVersionArray;
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.math.CachedPow;
 import template.math.Modular;
-import template.string.SAIS;
 
 public class FVasyaAndArray {
     Modular mod = new Modular(998244353);

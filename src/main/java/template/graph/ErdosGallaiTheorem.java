@@ -1,6 +1,6 @@
 package template.graph;
 
-import template.algo.PreSum;
+import template.datastructure.PreSum;
 import template.utils.CompareUtils;
 import template.utils.SequenceUtils;
 

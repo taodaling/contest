@@ -9,7 +9,7 @@ public class ExpressionSolver {
      * <br>
      * The time complexity of this method is O(log2(max(a,b)))
      */
-    public long findMinimumKForModEquation(long a, long b, long c) {
+    public static long findMinimumKForModEquation(long a, long b, long c) {
         a = DigitUtils.mod(a, c);
         b = DigitUtils.mod(b, c);
         int g = (int) extGCD.extgcd((int) a, c);
@@ -22,7 +22,7 @@ public class ExpressionSolver {
 
 
     /**
-     * Find how many pair xy exists while following constraints obeyed.
+     * Find how many pair (x,y) exists while following constraints obeyed.
      *
      * <pre>
      * ax+by=c
@@ -34,7 +34,7 @@ public class ExpressionSolver {
      * <p>
      * The time complexity of this method is O(log2(max(a,b)))
      */
-    public long findWaysToAssignXYSatisfyEquation(long a, long b, long c, long xl, long xr, long yl, long yr) {
+    public static long findWaysToAssignXYSatisfyEquation(long a, long b, long c, long xl, long xr, long yl, long yr) {
         if (c < 0) {
             a = -a;
             b = -b;

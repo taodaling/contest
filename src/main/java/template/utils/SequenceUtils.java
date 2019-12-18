@@ -8,7 +8,7 @@ import java.util.List;
 
 public class SequenceUtils {
     /**
-     * Find a index k while data[k] >= x and data[k - 1] < x. If it doesn't exist, -1 will return.
+     * Find a index k while data[k] >= x and data[k - 1] < x. If it doesn't exist, r+1 will return.
      */
     public static int leftBound(int[] data, int x, int l, int r) {
         int excess = r + 1;
@@ -24,7 +24,7 @@ public class SequenceUtils {
     }
 
     /**
-     * Find a index k while data[k] >= x and data[k - 1] < x. If it doesn't exist, -1 will return.
+     * Find a index k while data[k] >= x and data[k - 1] < x. If it doesn't exist, r+1 will return.
      */
     public static <T> int leftBound(T[] data, T x, int l, int r, Comparator<T> comp) {
         int excess = r + 1;
@@ -40,7 +40,7 @@ public class SequenceUtils {
     }
 
     /**
-     * Find a index k while data[k] <= x and data[k + 1] > x. If it doesn't exist, -1 will return.
+     * Find a index k while data[k] <= x and data[k + 1] > x. If it doesn't exist, l-1 will return.
      */
     public static int rightBound(int[] data, int x, int l, int r) {
         int excess = l - 1;
@@ -56,7 +56,7 @@ public class SequenceUtils {
     }
 
     /**
-     * Find a index k while data[k] <= x and data[k + 1] > x. If it doesn't exist, -1 will return.
+     * Find a index k while data[k] <= x and data[k + 1] > x. If it doesn't exist, l-1 will return.
      */
     public static <T> int rightBound(T[] data, T x, int l, int r, Comparator<T> comp) {
         int excess = l - 1;
@@ -73,7 +73,7 @@ public class SequenceUtils {
 
     public static int countElementOccurrenceInSortedArray(int[] data, int x, int l, int r) {
         int lBound = leftBound(data, x, l, r);
-        if (data[lBound] != x) {
+        if (lBound > r || data[lBound] != x) {
             return 0;
         }
         return rightBound(data, x, l, r) - lBound + 1;

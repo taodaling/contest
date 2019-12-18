@@ -1,4 +1,4 @@
-package template.algo;
+package template.problem;
 
 import template.math.DigitUtils;
 

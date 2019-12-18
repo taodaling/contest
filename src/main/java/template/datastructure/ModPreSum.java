@@ -1,4 +1,4 @@
-package template.algo;
+package template.datastructure;
 
 import template.math.Modular;
 

@@ -1,7 +1,6 @@
-package template.algo;
+package template.problem;
 
 import template.math.DigitUtils;
-import template.math.LongPollardRho;
 
 public class MinimumNumberWithMaximumFactors {
     public static void main(String[] args) {

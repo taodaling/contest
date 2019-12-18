@@ -1,4 +1,4 @@
-package template.algo;
+package template.graph;
 
 import java.util.ArrayDeque;
 import java.util.Arrays;

@@ -1,5 +1,5 @@
 {
-  "name" : "F. Employment",
+  "name" : "BZOJ3293",
   "testType" : "SINGLE",
   "input" : {
     "type" : "STANDARD",
@@ -10,29 +10,15 @@
     "fileName" : "output.txt"
   },
   "tests" : [ {
-    "input" : "10 3\n1 5 5\n10 4 6\n",
-    "output" : "3\n1 2 3 \n",
+    "input" : "4\n\n1\n\n2\n\n5\n\n4",
+    "output" : "4",
     "index" : 0,
-    "active" : true
-  }, {
-    "input" : "10 3\n1 4 8\n8 3 6\n",
-    "output" : "4\n2 3 1 \n",
-    "index" : 1,
-    "active" : true
-  }, {
-    "input" : "1000000000 10\n442563005 340856122 976401485 384819624 276461577 596575002 761915448 610658126 805104914 265406505\n952332071 564042045 267524644 699393024 887146753 665314425 58009995 639179665 907097342 449702701",
-    "output" : "1102348979\n2 3 9 10 7 8 4 6 5 1 ",
-    "index" : 2,
-    "active" : true
-  }, {
-    "input" : "100000000 3 \n100 300000 200\n100000000 10 10000",
-    "index" : 3,
     "active" : true
   } ],
   "location" : "src/main/java/contest",
   "vmArgs" : "-Xmx512M",
   "mainClass" : "Main",
-  "taskClass" : "contest.FEmployment",
+  "taskClass" : "contest.BZOJ3293",
   "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
   "checkerParameters" : "",
   "testClasses" : [ ],
@@ -45,5 +31,5 @@
   "failOnOverflow" : false,
   "interactive" : false,
   "interactor" : "net.egork.chelper.tester.Interactor",
-  "newThread" : true
+  "newThread" : false
 }

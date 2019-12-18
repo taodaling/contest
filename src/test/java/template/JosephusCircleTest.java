@@ -2,7 +2,7 @@ package template;
 
 import org.junit.Assert;
 import org.junit.Test;
-import template.algo.JosephusCircle;
+import template.problem.JosephusCircle;
 
 public class JosephusCircleTest {
     @Test

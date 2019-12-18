@@ -1,9 +1,9 @@
-package template.algo;
+package template.datastructure;
 
-public class PreSum {
+public class PreXor {
     private long[] pre;
 
-    public PreSum(int n) {
+    public PreXor(int n) {
         pre = new long[n];
     }
 
@@ -11,7 +11,7 @@ public class PreSum {
         int n = a.length;
         pre[0] = a[0];
         for (int i = 1; i < n; i++) {
-            pre[i] = pre[i - 1] + a[i];
+            pre[i] = pre[i - 1] ^ a[i];
         }
     }
 
@@ -19,16 +19,16 @@ public class PreSum {
         int n = a.length;
         pre[0] = a[0];
         for (int i = 1; i < n; i++) {
-            pre[i] = pre[i - 1] + a[i];
+            pre[i] = pre[i - 1] ^ a[i];
         }
     }
 
-    public PreSum(long[] a) {
+    public PreXor(long[] a) {
         this(a.length);
         populate(a);
     }
 
-    public PreSum(int[] a) {
+    public PreXor(int[] a) {
         this(a.length);
         populate(a);
     }
@@ -37,13 +37,13 @@ public class PreSum {
      * get a[l] + a[l + 1] + ... + a[r]
      */
     public long intervalSum(int l, int r) {
-        if (l > r) {
+        if (r < l) {
             return 0;
         }
         if (l == 0) {
             return pre[r];
         }
-        return pre[r] - pre[l - 1];
+        return pre[r] ^ pre[l - 1];
     }
 
     /**
@@ -60,6 +60,6 @@ public class PreSum {
         if (i == 0) {
             return pre[pre.length - 1];
         }
-        return pre[pre.length - 1] - pre[i - 1];
+        return pre[pre.length - 1] ^ pre[i - 1];
     }
 }
