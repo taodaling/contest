@@ -56,27 +56,27 @@ include CMakeFiles/test.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/test.dir/flags.make
 
-CMakeFiles/test.dir/tasks/FEmployment.cpp.obj: CMakeFiles/test.dir/flags.make
-CMakeFiles/test.dir/tasks/FEmployment.cpp.obj: ../tasks/FEmployment.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\daltao\IdeaProjects\contest\c++\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/test.dir/tasks/FEmployment.cpp.obj"
-	C:\PROGRA~1\MINGW-~1\X86_64~1.0-P\mingw64\bin\G__~1.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\test.dir\tasks\FEmployment.cpp.obj -c C:\Users\daltao\IdeaProjects\contest\c++\tasks\FEmployment.cpp
+CMakeFiles/test.dir/tasks/GRecursiveQueries.cpp.obj: CMakeFiles/test.dir/flags.make
+CMakeFiles/test.dir/tasks/GRecursiveQueries.cpp.obj: ../tasks/GRecursiveQueries.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\daltao\IdeaProjects\contest\c++\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/test.dir/tasks/GRecursiveQueries.cpp.obj"
+	C:\PROGRA~1\MINGW-~1\X86_64~1.0-P\mingw64\bin\G__~1.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\test.dir\tasks\GRecursiveQueries.cpp.obj -c C:\Users\daltao\IdeaProjects\contest\c++\tasks\GRecursiveQueries.cpp
 
-CMakeFiles/test.dir/tasks/FEmployment.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/test.dir/tasks/FEmployment.cpp.i"
-	C:\PROGRA~1\MINGW-~1\X86_64~1.0-P\mingw64\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\daltao\IdeaProjects\contest\c++\tasks\FEmployment.cpp > CMakeFiles\test.dir\tasks\FEmployment.cpp.i
+CMakeFiles/test.dir/tasks/GRecursiveQueries.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/test.dir/tasks/GRecursiveQueries.cpp.i"
+	C:\PROGRA~1\MINGW-~1\X86_64~1.0-P\mingw64\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\daltao\IdeaProjects\contest\c++\tasks\GRecursiveQueries.cpp > CMakeFiles\test.dir\tasks\GRecursiveQueries.cpp.i
 
-CMakeFiles/test.dir/tasks/FEmployment.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/test.dir/tasks/FEmployment.cpp.s"
-	C:\PROGRA~1\MINGW-~1\X86_64~1.0-P\mingw64\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\daltao\IdeaProjects\contest\c++\tasks\FEmployment.cpp -o CMakeFiles\test.dir\tasks\FEmployment.cpp.s
+CMakeFiles/test.dir/tasks/GRecursiveQueries.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/test.dir/tasks/GRecursiveQueries.cpp.s"
+	C:\PROGRA~1\MINGW-~1\X86_64~1.0-P\mingw64\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\daltao\IdeaProjects\contest\c++\tasks\GRecursiveQueries.cpp -o CMakeFiles\test.dir\tasks\GRecursiveQueries.cpp.s
 
 # Object files for target test
 test_OBJECTS = \
-"CMakeFiles/test.dir/tasks/FEmployment.cpp.obj"
+"CMakeFiles/test.dir/tasks/GRecursiveQueries.cpp.obj"
 
 # External object files for target test
 test_EXTERNAL_OBJECTS =
 
-test.exe: CMakeFiles/test.dir/tasks/FEmployment.cpp.obj
+test.exe: CMakeFiles/test.dir/tasks/GRecursiveQueries.cpp.obj
 test.exe: CMakeFiles/test.dir/build.make
 test.exe: CMakeFiles/test.dir/linklibs.rsp
 test.exe: CMakeFiles/test.dir/objects1.rsp

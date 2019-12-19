@@ -1,5 +1,5 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/test.dir/tasks/FEmployment.cpp.obj"
+  "CMakeFiles/test.dir/tasks/GRecursiveQueries.cpp.obj"
   "libtest.dll.a"
   "test.exe"
   "test.exe.manifest"

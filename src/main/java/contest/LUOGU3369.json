@@ -1,0 +1,40 @@
+{
+  "name" : "LUOGU3369",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "10\n1 106465\n4 1\n1 317721\n1 460929\n1 644985\n1 84185\n1 89851\n6 81968\n1 492737\n5 493598",
+    "output" : "106465\n84185\n492737",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "20\n1 964673\n5 968705\n4 1\n3 964673\n5 965257\n1 915269\n1 53283\n3 964673\n3 53283\n3 53283\n1 162641\n5 973984\n1 948119\n2 915269\n2 53283\n6 959161\n1 531821\n1 967521\n2 531821\n1 343410\n",
+    "output" : "964673\n964673\n1\n964673\n3\n1\n1\n964673\n964673\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.LUOGU3369",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.12.19",
+  "contestName" : "LUOGU3369",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : false
+}

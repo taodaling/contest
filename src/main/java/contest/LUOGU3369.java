@@ -1,9 +1,62 @@
-package template.datastructure;
+package contest;
+
+import template.io.FastInput;
+import template.io.FastOutput;
 
 import java.util.Random;
 
+public class LUOGU3369 {
+    public void solve(int testNumber, FastInput in, FastOutput out) {
+        int n = in.readInt();
+        Treap root = Treap.NIL;
 
-public class Treap implements Cloneable {
+        for (int i = 0; i < n; i++) {
+            System.err.println(i);
+            int op = in.readInt();
+            int x = in.readInt();
+            switch (op) {
+                case 1: {
+                    Treap[] splitted = Treap.splitByKey(root, x);
+                    Treap newNode = new Treap();
+                    newNode.key = x;
+                    splitted[0] = Treap.merge(splitted[0], newNode);
+                    root = Treap.merge(splitted[0], splitted[1]);
+                    break;
+                }
+                case 2: {
+                    Treap[] splitted = Treap.splitByKey(root, x);
+                    splitted[0] = Treap.splitByRank(splitted[0], splitted[0].size - 1)[0];
+                    root = Treap.merge(splitted[0], splitted[1]);
+                    break;
+                }
+                case 3: {
+                    Treap[] splitted = Treap.splitByKey(root, x - 1);
+                    out.println(splitted[0].size + 1);
+                    root = Treap.merge(splitted[0], splitted[1]);
+                    break;
+                }
+                case 4:
+                    int key = Treap.getKeyByRank(root, x);
+                    out.println(key);
+                    break;
+                case 5: {
+                    Treap[] splitted = Treap.splitByKey(root, x - 1);
+                    out.println(Treap.getKeyByRank(splitted[0], splitted[0].size));
+                    root = Treap.merge(splitted[0], splitted[1]);
+                    break;
+                }
+                case 6:{
+                    Treap[] splitted = Treap.splitByKey(root, x);
+                    out.println(Treap.getKeyByRank(splitted[1], 1));
+                    root = Treap.merge(splitted[0], splitted[1]);
+                    break;
+                }
+            }
+        }
+    }
+}
+
+class Treap implements Cloneable {
     private static Random random = new Random();
 
     static Treap NIL = new Treap();
@@ -104,9 +157,6 @@ public class Treap implements Cloneable {
         return builder.toString();
     }
 
-    /**
-     * nodes with key <= arguments will stored at result[0]
-     */
     public static Treap[] splitByKey(Treap root, int key) {
         if (root == NIL) {
             return new Treap[]{NIL, NIL};

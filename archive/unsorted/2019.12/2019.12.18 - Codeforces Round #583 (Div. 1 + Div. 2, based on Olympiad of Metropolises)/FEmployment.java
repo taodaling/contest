@@ -3,13 +3,7 @@ package contest;
 
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.math.DigitUtils;
 import template.problem.OnCircleMinCostMatchProblem;
-import template.utils.SequenceUtils;
-
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.PriorityQueue;
 
 public class FEmployment {
     public void solve(int testNumber, FastInput in, FastOutput out) {
