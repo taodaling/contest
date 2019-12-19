@@ -6,17 +6,7 @@
 
 #IncludeRegexTransform: 
 
-C:/Users/daltao/IdeaProjects/contest/c++/library/acautomaton.h
-common.h
-C:/Users/daltao/IdeaProjects/contest/c++/library/common.h
-
-C:/Users/daltao/IdeaProjects/contest/c++/library/bit_decompose_framework.h
-common.h
-C:/Users/daltao/IdeaProjects/contest/c++/library/common.h
-iterator
-C:/Users/daltao/IdeaProjects/contest/c++/library/iterator
-
-C:/Users/daltao/IdeaProjects/contest/c++/library/common.h
+C:/Users/DALT/IdeaProjects/contest/c++/library/common.h
 bits/stdc++.h
 -
 chrono
@@ -24,20 +14,16 @@ chrono
 random
 -
 
-C:/Users/daltao/IdeaProjects/contest/c++/library/debug.h
+C:/Users/DALT/IdeaProjects/contest/c++/library/debug.h
 
-C:/Users/daltao/IdeaProjects/contest/c++/tasks/FStringSetQueries.cpp
+C:/Users/DALT/IdeaProjects/contest/c++/tasks/GRecursiveQueries.cpp
 ../library/common.h
-C:/Users/daltao/IdeaProjects/contest/c++/library/common.h
+C:/Users/DALT/IdeaProjects/contest/c++/library/common.h
 ../library/debug.h
-C:/Users/daltao/IdeaProjects/contest/c++/library/debug.h
-../library/bit_decompose_framework.h
-C:/Users/daltao/IdeaProjects/contest/c++/library/bit_decompose_framework.h
-../library/acautomaton.h
-C:/Users/daltao/IdeaProjects/contest/c++/library/acautomaton.h
+C:/Users/DALT/IdeaProjects/contest/c++/library/debug.h
 
-C:/Users/daltao/IdeaProjects/contest/c++/testrunner/main.cpp
-C:/Users/daltao/IdeaProjects/contest/c++/tasks/FStringSetQueries.cpp
+C:/Users/DALT/IdeaProjects/contest/c++/testrunner/main.cpp
+C:/Users/DALT/IdeaProjects/contest/c++/tasks/GRecursiveQueries.cpp
 -
 iostream
 -

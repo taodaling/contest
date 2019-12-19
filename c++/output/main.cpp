@@ -60,298 +60,249 @@ namespace other{};
 
 #endif //DEBUG_H
 
-//
-// Created by daltao on 2019/12/18.
-//
-
-#ifndef BIT_DECOMPOSE_FRAMEWORK_H
-#define BIT_DECOMPOSE_FRAMEWORK_H
-
-
-namespace dalt {
-    template<class E, class M>
-    class BitDecomposeFramework {
-    private:
-        vector<E *> _data;
-        M _merger;
-
-        void add(E *e, int index) {
-            if (_data.size() == index) {
-                _data.push_back(e);
-                return;
-            }
-            if(_data[index] == NULL){
-                _data[index] = e;
-                return;
-            }
-            add(_merger(_data[index], e), index + 1);
-            _data[index] = NULL;
-        }
-
-    public:
-
-        void add(E *e) {
-            add(e, 0);
-        }
-
-        template<class C>
-        void consume(C &c){
-            for(E *e : _data){
-                if(e){
-                    c(e);
-                }
-            }
-        }
-    };
-}
-
-#endif //BIT_DECOMPOSE_FRAMEWORK_H
-
-//
-// Created by daltao on 2019/12/18.
-//
-
-#ifndef ACAUTOMATON_H
-#define ACAUTOMATON_H
-
-
-
-namespace dalt {
-    template<int L, int R>
-    class ACNode {
-    public:
-        ACNode *next[R - L + 1];
-        ACNode *fail;
-        ACNode *father;
-        int index;
-        int id;
-        int cnt;
-        int preSum;
-
-        ACNode(){
-            memset(next, 0, sizeof(next));
-            fail = father = 0;
-            index = id = cnt = preSum = 0;
-        }
-
-        int getId() {
-            return id;
-        }
-
-        int getCnt() {
-            return cnt;
-        }
-
-        void decreaseCnt() {
-            cnt--;
-        }
-
-        void increaseCnt() {
-            cnt++;
-        }
-
-        int getPreSum() {
-            return preSum;
-        }
-    };
-
-    template<int L, int R>
-    class ACAutomaton {
-    private:
-        ACNode<L, R> *root;
-        ACNode<L, R> *buildLast;
-        ACNode<L, R> *matchLast;
-        vector<ACNode<L, R> *> allNodes;
-
-        ACNode<L, R> *addNode() {
-            ACNode<L, R> *node = new ACNode<L, R>();
-            node->id = allNodes.size();
-            allNodes.push_back(node);
-            return node;
-        }
-
-    public:
-
-        ACNode<L, R> *getBuildLast() {
-            return buildLast;
-        }
-
-
-        ACNode<L, R> *getMatchLast() {
-            return matchLast;
-        }
-
-
-        vector<ACNode<L, R> *> getAllNodes() {
-            return allNodes;
-        }
-
-
-        ACAutomaton() {
-            root = buildLast = matchLast = 0;
-            root = addNode();
-        }
-
-        void beginBuilding() {
-            buildLast = root;
-        }
-
-        void endBuilding() {
-            deque<ACNode<L, R> *> que;
-            for (int i = 0; i < (R - L + 1); i++) {
-                if (root->next[i] != NULL) {
-                    que.push_back(root->next[i]);
-                }
-            }
-
-            while (!que.empty()) {
-                ACNode<L, R> *head = que.front();
-                que.pop_front();
-                ACNode<L, R> *fail = visit(head->father->fail, head->index);
-                if (fail == NULL) {
-                    head->fail = root;
-                } else {
-                    head->fail = fail->next[head->index];
-                }
-                head->preSum = head->cnt + head->fail->preSum;
-                for (int i = 0; i < (R - L + 1); i++) {
-                    if (head->next[i] != NULL) {
-                        que.push_back(head->next[i]);
-                    }
-                }
-            }
-
-            for (int i = 0; i < (R - L + 1); i++) {
-                if (root->next[i] != NULL) {
-                    que.push_back(root->next[i]);
-                } else {
-                    root->next[i] = root;
-                }
-            }
-            while (!que.empty()) {
-                ACNode<L, R> *head = que.front();
-                que.pop_front();
-                for (int i = 0; i < (R - L + 1); i++) {
-                    if (head->next[i] != NULL) {
-                        que.push_back(head->next[i]);
-                    } else {
-                        head->next[i] = head->fail->next[i];
-                    }
-                }
-            }
-        }
-
-
-        ACNode<L, R> *visit(ACNode<L, R> *trace, int index) {
-            while (trace != NULL && trace->next[index] == NULL) {
-                trace = trace->fail;
-            }
-            return trace;
-        }
-
-        void build(char c) {
-            int index = c - L;
-            if (buildLast->next[index] == NULL) {
-                ACNode<L, R> *node = addNode();
-                node->father = buildLast;
-                node->index = index;
-                buildLast->next[index] = node;
-            }
-            buildLast = buildLast->next[index];
-        }
-
-
-        void beginMatching() {
-            matchLast = root;
-        }
-
-
-        void match(char c) {
-            int index = c - L;
-            matchLast = matchLast->next[index];
-        }
-
-    };
-}
-
-#endif //ACAUTOMATON_H
-
 
 using namespace dalt;
-typedef pair<vector<string *>, ACAutomaton<'a', 'z'>> pva;
 
-void prepare(pva *ans){
-    for(string *s : ans->first){
-        ans->second.beginBuilding();
-        for(char c : (*s))
-        {
-            ans->second.build(c);
+namespace dalt {
+    class enhanced_segment {
+    public:
+        enhanced_segment(int l, int r) {
+            _cnt = 0;
+            _l = _r = 0;
+            _v = 0;
+            _index = 0;
+
+            int m = (l + r) >> 1;
+            if (l < r) {
+                _l = new enhanced_segment(l, m);
+                _r = new enhanced_segment(m + 1, r);
+                pushUp();
+            } else {
+                _index = l;
+            }
         }
-        ans->second.getBuildLast()->increaseCnt();
-    }
-    ans->second.endBuilding();
+
+#define NO_INTERSECTION ql > r || qr < l
+#define COVER ql <= l && qr >= r
+#define RANGE (min(qr, r) - max(l, ql) + 1)
+
+        void update(int ql, int qr, int l, int r, ll x, ll cnt) {
+            if (NO_INTERSECTION) {
+                return;
+            }
+            if (COVER) {
+                modify(x, cnt);
+                return;
+            }
+            pushDown();
+            int m = (l + r) >> 1;
+            _l->update(ql, qr, l, m, x, cnt);
+            _r->update(ql, qr, m + 1, r, x, cnt);
+            pushUp();
+        }
+
+        ll query(int ql, int qr, int l, int r) {
+            if (NO_INTERSECTION) {
+                return 0;
+            }
+            if (COVER) {
+                return _v + _cnt * _index;
+            }
+            pushDown();
+            int m = (l + r) >> 1;
+            return _l->query(ql, qr, l, m) +
+                   _r->query(ql, qr, m + 1, r);
+        }
+
+#undef NO_INTERSECTION
+#undef COVER
+
+    private:
+        enhanced_segment *_l, *_r;
+        ll _v;
+        int _index;
+        ll _cnt;
+
+        void pushDown() {
+            if (_v || _cnt) {
+                _l->modify(_v, _cnt);
+                _r->modify(_v, _cnt);
+                _v = _cnt = 0;
+
+            }
+        }
+
+        void pushUp() {
+        }
+
+        void modify(ll d, ll cnt) {
+            _v += d;
+            _cnt += cnt;
+        }
+    };
 }
 
-struct Merger{
-    pva *operator()(pva *a, pva * b) {
-        pva *ans = new pva();
-        ans->first.insert(ans->first.end(), a->first.begin(), a->first.end());
-        ans->first.insert(ans->first.end(), b->first.begin(), b->first.end());
-        prepare(ans);
-        return ans;
-    }
-};
+namespace dalt {
+    struct segment_query_result {
+        int index;
+        int val;
 
-struct Consumer{
-    ll ans;
-    string *s;
-    Consumer(string *str):ans(0), s(str){
-    }
-    void operator()(pva *a){
-        a->second.beginMatching();
-        for(char c : (*s))
-        {
-            a->second.match(c);
-            ans += a->second.getMatchLast()->getPreSum();
+        segment_query_result() {
+            init();
         }
-    }
+
+        void init() {
+            index = -1;
+            val = -1;
+        }
+
+        void update(int i, int v) {
+            if (v > val) {
+                val = v;
+                index = i;
+            }
+        }
+    };
+
+    class segment {
+    public:
+        segment(int l, int r, vector<int> &vec) {
+            int m = (l + r) >> 1;
+            if (l < r) {
+                _l = new segment(l, m, vec);
+                _r = new segment(m + 1, r, vec);
+                pushUp();
+            } else {
+                _v = vec[l];
+                _index = l;
+            }
+        }
+
+#define NO_INTERSECTION ql > r || qr < l
+#define COVER ql <= l && qr >= r
+#define RANGE (min(qr, r) - max(l, ql) + 1)
+
+        void query(int ql, int qr, int l, int r, segment_query_result &ans) {
+            if (NO_INTERSECTION) {
+                return;
+            }
+            if (COVER) {
+                ans.update(_index, _v);
+                return;
+            }
+            pushDown();
+            int m = (l + r) >> 1;
+            _l->query(ql, qr, l, m, ans);
+            _r->query(ql, qr, m + 1, r, ans);
+        }
+
+#undef NO_INTERSECTION
+#undef COVER
+
+    private:
+        segment *_l, *_r;
+        int _v;
+        int _index;
+
+        void pushDown() {
+        }
+
+        void pushUp() {
+            if (_l->_v >= _r->_v) {
+                _v = _l->_v;
+                _index = _l->_index;
+            } else {
+                _v = _r->_v;
+                _index = _r->_index;
+            }
+        }
+
+        void modify() {
+        }
+    };
+}
+
+struct Query {
+    int l;
+    int r;
+    ll ans;
+    Query *next;
 };
 
-class FStringSetQueries {
+int n;
+segment *rmq;
+enhanced_segment *lSeg;
+enhanced_segment *rSeg;
+vector<Query *> queryBindToElement;
+
+void dfs(int l, int r) {
+    if (l > r) {
+        return;
+    }
+
+    segment_query_result rmqResult;
+    rmq->query(l, r, 0, n, rmqResult);
+    int mid = rmqResult.index;
+    dfs(l, mid - 1);
+    dfs(mid + 1, r);
+
+    for (Query *q = queryBindToElement[mid]; q; q = q->next) {
+        q->ans = (q->r - q->l + 1);
+        q->ans += lSeg->query(q->r, q->r, 0, n);
+        q->ans += rSeg->query(q->l, q->l, 0, n);
+    }
+
+    ll lPart = 0;
+    if (l < mid) {
+        lPart = lSeg->query(mid - 1, mid - 1, 0, n);
+    }
+    lSeg->update(mid, r, 0, n, lPart - (l - 1), 1);
+
+    ll rPart = 0;
+    if (r > mid) {
+        rPart = rSeg->query(mid + 1, mid + 1, 0, n);
+    }
+    rSeg->update(l, mid, 0, n, rPart + (r + 1), -1);
+}
+
+
+class GRecursiveQueries {
 public:
 
     void solve(std::istream &in, std::ostream &out) {
-        int m;
-        in >> m;
+        int q;
+        in >> n >> q;
+        vector<int> ps(n + 1);
+        for (int i = 0; i < n; i++) {
+            in >> ps[i];
+        }
+        vector<Query> queries(q);
+        for (int i = 0; i < q; i++) {
+            in >> queries[i].l;
+            queries[i].l--;
+        }
+        for (int i = 0; i < q; i++) {
+            in >> queries[i].r;
+            queries[i].r--;
+        }
 
-        BitDecomposeFramework<pva, Merger> addF;
-        BitDecomposeFramework<pva, Merger> subF;
+        rmq = new segment(0, n, ps);
+        lSeg = new enhanced_segment(0, n);
+        rSeg = new enhanced_segment(0, n);
 
-        for(int i = 0; i < m; i++){
-            int t;
-            string *s = new string();
-            in >> t >> (*s);
-            if(t == 1){
-                pva *p = new pva();
-                p->first.push_back(s);
-                prepare(p);
-                addF.add(p);
-            }else if(t == 2){
-                pva *p = new pva();
-                p->first.push_back(s);
-                prepare(p);
-                subF.add(p);
-            }else{
-                Consumer pos(s), neg(s);
-                addF.consume(pos);
-                subF.consume(neg);
+        queryBindToElement.resize(n);
+        for (int i = 0; i < q; i++) {
+            segment_query_result result;
+            rmq->query(queries[i].l, queries[i].r, 0, n, result);
+            queries[i].next = queryBindToElement[result.index];
+            queryBindToElement[result.index] = &queries[i];
+        }
 
-                out << pos.ans - neg.ans << endl;
-                out.flush();
-            }
+        dfs(0, n - 1);
+        for (int i = 0; i < q; i++) {
+            out << queries[i].ans << endl;
         }
     }
-
 
 private:
 };
@@ -363,7 +314,7 @@ int main() {
 	std::cout << std::setiosflags(std::ios::fixed);
 	std::cout << std::setprecision(15);
 
-	FStringSetQueries solver;
+	GRecursiveQueries solver;
 	std::istream& in(std::cin);
 	std::ostream& out(std::cout);
 	solver.solve(in, out);

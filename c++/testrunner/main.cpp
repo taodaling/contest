@@ -1,4 +1,4 @@
-#include "C:/Users/daltao/IdeaProjects/contest/c++/tasks/FStringSetQueries.cpp"
+#include "C:/Users/DALT/IdeaProjects/contest/c++/tasks/GRecursiveQueries.cpp"
 
 #include <iostream>
 #include <fstream>
@@ -29,7 +29,7 @@ bool check(std::string expected, std::string actual) {
 
 int main() {
 	std::vector<jhelper::Test> tests = {
-		{"5\n1 abc\n3 abcabc\n2 abc\n1 aba\n3 abababc\n", "2\n2\n", true, true},{"10\n1 abc\n1 bcd\n1 abcd\n3 abcd\n2 abcd\n3 abcd\n2 bcd\n3 abcd\n2 abc\n3 abcd\n", "3\n2\n1\n0\n", true, true},
+		{"4 5\n3 1 4 2\n2 1 1 2 1\n2 3 4 4 1\n", "1 6 8 5 1 \n", true, true},
 	};
 	bool allOK = true;
 	int testID = 0;
@@ -48,7 +48,7 @@ int main() {
 			std::stringstream in(test.input);
 			std::ostringstream out;
 			std::clock_t start = std::clock();
-			FStringSetQueries solver;
+			GRecursiveQueries solver;
 			solver.solve(in, out);
 			std::clock_t finish = std::clock();
 			double currentTime = double(finish - start) / CLOCKS_PER_SEC;

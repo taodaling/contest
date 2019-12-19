@@ -1,29 +1,70 @@
 package contest;
 
-import template.graph.DescartesTree;
 import template.io.FastInput;
 import template.io.FastOutput;
 
-public class GRecursiveQueries {
+import java.util.ArrayList;
+import java.util.List;
+
+public class ETestsForProblemD {
     public void solve(int testNumber, FastInput in, FastOutput out) {
         int n = in.readInt();
-        int q = in.readInt();
-        int[] p = new int[n + 1];
-        for (int i = 1; i <= n; i++) {
-            p[i] = in.readInt();
+        Node[] nodes = new Node[n];
+        for (int i = 0; i < n; i++) {
+            nodes[i] = new Node();
+        }
+        for (int i = 1; i < n; i++) {
+            Node a = nodes[in.readInt() - 1];
+            Node b = nodes[in.readInt() - 1];
+            a.next.add(b);
+            b.next.add(a);
         }
 
-        DescartesTree tree = new DescartesTree(p, 1, n, (a, b) -> -Integer.compare(a, b));
+        dfs(nodes[0], null);
+        for (int i = 0; i < n; i++) {
+            Splay.splay(nodes[i].left);
+            out.append(nodes[i].left.size - nodes[i].left.right.size).append(' ');
+            Splay.splay(nodes[i].right);
+            out.println(nodes[i].right.size - nodes[i].right.right.size);
+        }
+    }
 
+    public Splay dfs(Node root, Node p) {
+        root.next.remove(p);
+        Splay splay = Splay.NIL;
+        for (int i = 0; i < root.next.size(); i++) {
+            Node node = root.next.get(i);
+            Splay child = dfs(node, root);
+            if (splay == Splay.NIL) {
+                splay = child;
+                continue;
+            }
+            splay = Splay.selectKthAsRoot(splay, i);
+            Splay right = Splay.splitRight(splay);
+            splay = Splay.merge(splay, child);
+            splay = Splay.merge(splay, right);
+        }
+
+        splay = Splay.merge(root.left, splay);
+        splay = Splay.selectKthAsRoot(splay, root.next.size() + 1);
+        Splay right = Splay.splitRight(splay);
+        splay = Splay.merge(splay, root.right);
+        splay = Splay.merge(splay, right);
+
+        return splay;
     }
 }
 
-class Query {
-    int l;
-    int r;
-    long ans;
+class Node {
+    List<Node> next = new ArrayList<>();
+    Splay left = new Splay();
+    Splay right = new Splay();
 }
 
+
+/**
+ * Created by dalt on 2018/5/20.
+ */
 class Splay implements Cloneable {
     public static final Splay NIL = new Splay();
 
@@ -39,7 +80,6 @@ class Splay implements Cloneable {
     Splay father = NIL;
     int size = 1;
     int key;
-    long val;
 
     public static void splay(Splay x) {
         if (x == NIL) {

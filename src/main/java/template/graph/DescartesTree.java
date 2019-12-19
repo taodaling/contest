@@ -11,10 +11,11 @@ import java.util.Deque;
  */
 public class DescartesTree {
     private Node root;
+    private Node[] nodes;
 
     public <T> DescartesTree(T[] data, int l, int r, Comparator<T> comp) {
         int len = r - l + 1;
-        Node[] nodes = new Node[len];
+        nodes = new Node[len];
         for (int i = 0; i < len; i++) {
             nodes[i] = new Node();
             nodes[i].index = i + l;
@@ -37,7 +38,7 @@ public class DescartesTree {
 
     public DescartesTree(int[] data, int l, int r, IntComparator comparator) {
         int len = r - l + 1;
-        Node[] nodes = new Node[len];
+        nodes = new Node[len];
         for (int i = 0; i < len; i++) {
             nodes[i] = new Node();
             nodes[i].index = i + l;

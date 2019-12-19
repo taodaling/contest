@@ -1,11 +1,11 @@
 import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintStream;
 import java.io.OutputStream;
 import java.io.IOException;
-import java.util.Random;
+import java.util.ArrayList;
 import java.io.UncheckedIOException;
+import java.util.List;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
@@ -17,7 +17,9 @@ import java.io.InputStream;
  */
 public class Main {
     public static void main(String[] args) throws Exception {
-        new TaskAdapter().run();
+        Thread thread = new Thread(null, new TaskAdapter(), "", 1 << 27);
+        thread.start();
+        thread.join();
     }
 
     static class TaskAdapter implements Runnable {
@@ -27,60 +29,58 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            LUOGU3369 solver = new LUOGU3369();
+            ETestsForProblemD solver = new ETestsForProblemD();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class LUOGU3369 {
+    static class ETestsForProblemD {
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            Treap root = Treap.NIL;
-
+            Node[] nodes = new Node[n];
             for (int i = 0; i < n; i++) {
-                System.err.println(i);
-                int op = in.readInt();
-                int x = in.readInt();
-                switch (op) {
-                    case 1: {
-                        Treap[] splitted = Treap.splitByKey(root, x);
-                        Treap newNode = new Treap();
-                        newNode.key = x;
-                        splitted[0] = Treap.merge(splitted[0], newNode);
-                        root = Treap.merge(splitted[0], splitted[1]);
-                        break;
-                    }
-                    case 2: {
-                        Treap[] splitted = Treap.splitByKey(root, x);
-                        splitted[0] = Treap.splitByRank(splitted[0], splitted[0].size - 1)[0];
-                        root = Treap.merge(splitted[0], splitted[1]);
-                        break;
-                    }
-                    case 3: {
-                        Treap[] splitted = Treap.splitByKey(root, x - 1);
-                        out.println(splitted[0].size + 1);
-                        root = Treap.merge(splitted[0], splitted[1]);
-                        break;
-                    }
-                    case 4:
-                        int key = Treap.getKeyByRank(root, x);
-                        out.println(key);
-                        break;
-                    case 5: {
-                        Treap[] splitted = Treap.splitByKey(root, x - 1);
-                        out.println(Treap.getKeyByRank(splitted[0], splitted[0].size));
-                        root = Treap.merge(splitted[0], splitted[1]);
-                        break;
-                    }
-                    case 6: {
-                        Treap[] splitted = Treap.splitByKey(root, x);
-                        out.println(Treap.getKeyByRank(splitted[1], 1));
-                        root = Treap.merge(splitted[0], splitted[1]);
-                        break;
-                    }
-                }
+                nodes[i] = new Node();
             }
+            for (int i = 1; i < n; i++) {
+                Node a = nodes[in.readInt() - 1];
+                Node b = nodes[in.readInt() - 1];
+                a.next.add(b);
+                b.next.add(a);
+            }
+
+            dfs(nodes[0], null);
+            for (int i = 0; i < n; i++) {
+                Splay.splay(nodes[i].left);
+                out.append(nodes[i].left.size - nodes[i].left.right.size).append(' ');
+                Splay.splay(nodes[i].right);
+                out.println(nodes[i].right.size - nodes[i].right.right.size);
+            }
+        }
+
+        public Splay dfs(Node root, Node p) {
+            root.next.remove(p);
+            Splay splay = Splay.NIL;
+            for (int i = 0; i < root.next.size(); i++) {
+                Node node = root.next.get(i);
+                Splay child = dfs(node, root);
+                if (splay == Splay.NIL) {
+                    splay = child;
+                    continue;
+                }
+                splay = Splay.selectKthAsRoot(splay, i);
+                Splay right = Splay.splitRight(splay);
+                splay = Splay.merge(splay, child);
+                splay = Splay.merge(splay, right);
+            }
+
+            splay = Splay.merge(root.left, splay);
+            splay = Splay.selectKthAsRoot(splay, root.next.size() + 1);
+            Splay right = Splay.splitRight(splay);
+            splay = Splay.merge(splay, root.right);
+            splay = Splay.merge(splay, right);
+
+            return splay;
         }
 
     }
@@ -144,6 +144,214 @@ public class Main {
 
     }
 
+    static class Node {
+        List<Node> next = new ArrayList<>();
+        Splay left = new Splay();
+        Splay right = new Splay();
+
+    }
+
+    static class Splay implements Cloneable {
+        public static final Splay NIL = new Splay();
+        Splay left = NIL;
+        Splay right = NIL;
+        Splay father = NIL;
+        int size = 1;
+        int key;
+
+        static {
+            NIL.left = NIL;
+            NIL.right = NIL;
+            NIL.father = NIL;
+            NIL.size = 0;
+        }
+
+        public static void splay(Splay x) {
+            if (x == NIL) {
+                return;
+            }
+            Splay y, z;
+            while ((y = x.father) != NIL) {
+                if ((z = y.father) == NIL) {
+                    y.pushDown();
+                    x.pushDown();
+                    if (x == y.left) {
+                        zig(x);
+                    } else {
+                        zag(x);
+                    }
+                } else {
+                    z.pushDown();
+                    y.pushDown();
+                    x.pushDown();
+                    if (x == y.left) {
+                        if (y == z.left) {
+                            zig(y);
+                            zig(x);
+                        } else {
+                            zig(x);
+                            zag(x);
+                        }
+                    } else {
+                        if (y == z.left) {
+                            zag(x);
+                            zig(x);
+                        } else {
+                            zag(y);
+                            zag(x);
+                        }
+                    }
+                }
+            }
+
+            x.pushDown();
+            x.pushUp();
+        }
+
+        public static void zig(Splay x) {
+            Splay y = x.father;
+            Splay z = y.father;
+            Splay b = x.right;
+
+            y.setLeft(b);
+            x.setRight(y);
+            z.changeChild(y, x);
+
+            y.pushUp();
+        }
+
+        public static void zag(Splay x) {
+            Splay y = x.father;
+            Splay z = y.father;
+            Splay b = x.left;
+
+            y.setRight(b);
+            x.setLeft(y);
+            z.changeChild(y, x);
+
+            y.pushUp();
+        }
+
+        public void setLeft(Splay x) {
+            left = x;
+            x.father = this;
+        }
+
+        public void setRight(Splay x) {
+            right = x;
+            x.father = this;
+        }
+
+        public void changeChild(Splay y, Splay x) {
+            if (left == y) {
+                setLeft(x);
+            } else {
+                setRight(x);
+            }
+        }
+
+        public void pushUp() {
+            size = left.size + right.size + 1;
+        }
+
+        public void pushDown() {
+        }
+
+        public static void toString(Splay root, StringBuilder builder) {
+            if (root == NIL) {
+                return;
+            }
+            root.pushDown();
+            toString(root.left, builder);
+            builder.append(root.key).append(',');
+            toString(root.right, builder);
+        }
+
+        public Splay clone() {
+            try {
+                return (Splay) super.clone();
+            } catch (CloneNotSupportedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        public static Splay cloneTree(Splay splay) {
+            if (splay == NIL) {
+                return NIL;
+            }
+            splay = splay.clone();
+            splay.left = cloneTree(splay.left);
+            splay.right = cloneTree(splay.right);
+            return splay;
+        }
+
+        public static Splay selectMaxAsRoot(Splay root) {
+            if (root == NIL) {
+                return root;
+            }
+            root.pushDown();
+            while (root.right != NIL) {
+                root = root.right;
+                root.pushDown();
+            }
+            splay(root);
+            return root;
+        }
+
+        public static Splay splitRight(Splay root) {
+            root.pushDown();
+            Splay right = root.right;
+            right.father = NIL;
+            root.setRight(NIL);
+            root.pushUp();
+            return right;
+        }
+
+        public static Splay merge(Splay a, Splay b) {
+            if (a == NIL) {
+                return b;
+            }
+            if (b == NIL) {
+                return a;
+            }
+            a = selectMaxAsRoot(a);
+            a.setRight(b);
+            a.pushUp();
+            return a;
+        }
+
+        public static Splay selectKthAsRoot(Splay root, int k) {
+            if (root == NIL) {
+                return NIL;
+            }
+            Splay trace = root;
+            Splay father = NIL;
+            while (trace != NIL) {
+                father = trace;
+                trace.pushDown();
+                if (trace.left.size >= k) {
+                    trace = trace.left;
+                } else {
+                    k -= trace.left.size + 1;
+                    if (k == 0) {
+                        break;
+                    } else {
+                        trace = trace.right;
+                    }
+                }
+            }
+            splay(father);
+            return father;
+        }
+
+        public String toString() {
+            StringBuilder builder = new StringBuilder().append(key).append(":");
+            toString(cloneTree(this), builder);
+            return builder.toString();
+        }
+
+    }
+
     static class FastOutput implements AutoCloseable, Closeable {
         private StringBuilder cache = new StringBuilder(10 << 20);
         private final Writer os;
@@ -154,6 +362,16 @@ public class Main {
 
         public FastOutput(OutputStream os) {
             this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput append(char c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput append(int c) {
+            cache.append(c);
+            return this;
         }
 
         public FastOutput println(int c) {
@@ -183,138 +401,6 @@ public class Main {
 
         public String toString() {
             return cache.toString();
-        }
-
-    }
-
-    static class Treap implements Cloneable {
-        private static Random random = new Random();
-        static Treap NIL = new Treap();
-        Treap left = NIL;
-        Treap right = NIL;
-        int size = 1;
-        int key;
-        int w = random.nextInt();
-
-        static {
-            NIL.left = NIL.right = NIL;
-            NIL.size = 0;
-        }
-
-        public Treap clone() {
-            try {
-                return (Treap) super.clone();
-            } catch (CloneNotSupportedException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        public void pushDown() {
-        }
-
-        public void pushUp() {
-            size = left.size + right.size + 1;
-        }
-
-        public static Treap[] splitByRank(Treap root, int rank) {
-            if (root == NIL) {
-                return new Treap[]{NIL, NIL};
-            }
-            root.pushDown();
-            Treap[] result;
-            if (root.left.size >= rank) {
-                result = splitByRank(root.left, rank);
-                root.left = result[1];
-                result[1] = root;
-            } else {
-                result = splitByRank(root.right, rank - (root.size - root.right.size));
-                root.right = result[0];
-                result[0] = root;
-            }
-            root.pushUp();
-            return result;
-        }
-
-        public static Treap merge(Treap a, Treap b) {
-            if (a == NIL) {
-                return b;
-            }
-            if (b == NIL) {
-                return a;
-            }
-            if (a.w <= b.w) {
-                a.pushDown();
-                a.right = merge(a.right, b);
-                a.pushUp();
-                return a;
-            } else {
-                b.pushDown();
-                b.left = merge(a, b.left);
-                b.pushUp();
-                return b;
-            }
-        }
-
-        public static void toString(Treap root, StringBuilder builder) {
-            if (root == NIL) {
-                return;
-            }
-            root.pushDown();
-            toString(root.left, builder);
-            builder.append(root.key).append(',');
-            toString(root.right, builder);
-        }
-
-        public static Treap clone(Treap root) {
-            if (root == NIL) {
-                return NIL;
-            }
-            Treap clone = root.clone();
-            clone.left = clone(root.left);
-            clone.right = clone(root.right);
-            return clone;
-        }
-
-        public String toString() {
-            StringBuilder builder = new StringBuilder().append(key).append(":");
-            toString(clone(this), builder);
-            return builder.toString();
-        }
-
-        public static Treap[] splitByKey(Treap root, int key) {
-            if (root == NIL) {
-                return new Treap[]{NIL, NIL};
-            }
-            root.pushDown();
-            Treap[] result;
-            if (root.key > key) {
-                result = splitByKey(root.left, key);
-                root.left = result[1];
-                result[1] = root;
-            } else {
-                result = splitByKey(root.right, key);
-                root.right = result[0];
-                result[0] = root;
-            }
-            root.pushUp();
-            return result;
-        }
-
-        public static int getKeyByRank(Treap treap, int k) {
-            while (treap.size > 1) {
-                treap.pushDown();
-                if (treap.left.size >= k) {
-                    treap = treap.left;
-                } else {
-                    k -= treap.left.size;
-                    if (k == 1) {
-                        break;
-                    }
-                    k--;
-                    treap = treap.right;
-                }
-            }
-            return treap.key;
         }
 
     }
