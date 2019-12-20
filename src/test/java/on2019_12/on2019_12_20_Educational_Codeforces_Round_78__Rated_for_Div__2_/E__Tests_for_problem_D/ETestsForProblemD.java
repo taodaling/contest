@@ -1,4 +1,8 @@
-package contest;
+package on2019_12.on2019_12_20_Educational_Codeforces_Round_78__Rated_for_Div__2_.E__Tests_for_problem_D;
+
+
+
+
 
 import template.io.FastInput;
 import template.io.FastOutput;

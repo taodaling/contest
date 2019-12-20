@@ -1,0 +1,45 @@
+{
+  "name" : "G. Inverse of Rows and Columns",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2 2\n1 1\n0 1\n",
+    "output" : "YES\n00\n10\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "3 4\n0 0 0 1\n0 0 0 0\n1 1 1 1\n",
+    "output" : "YES\n010\n0000\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "3 3\n0 0 0\n1 0 1\n1 1 0\n",
+    "output" : "NO\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2019_12.on2019_12_20_Codeforces_Round__555__Div__3_.G__Inverse_of_Rows_and_Columns.GInverseOfRowsAndColumns",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.12.20",
+  "contestName" : "Codeforces Round #555 (Div. 3)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

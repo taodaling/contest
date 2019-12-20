@@ -2,10 +2,11 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Random;
 import java.io.UncheckedIOException;
-import java.util.List;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
@@ -29,58 +30,252 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            ETestsForProblemD solver = new ETestsForProblemD();
+            FDishShopping solver = new FDishShopping();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class ETestsForProblemD {
+    static class FDishShopping {
+        BIT bit;
+
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            Node[] nodes = new Node[n];
+            int m = in.readInt();
+
+            Point[] ps = new Point[n];
+            IntList list = new IntList(2 * n);
+
             for (int i = 0; i < n; i++) {
-                nodes[i] = new Node();
+                ps[i] = new Point();
             }
-            for (int i = 1; i < n; i++) {
-                Node a = nodes[in.readInt() - 1];
-                Node b = nodes[in.readInt() - 1];
-                a.next.add(b);
-                b.next.add(a);
+            for (int i = 0; i < n; i++) {
+                ps[i].x = in.readInt();
+            }
+            for (int i = 0; i < n; i++) {
+                ps[i].y = in.readInt();
+            }
+            for (int i = 0; i < n; i++) {
+                ps[i].z = in.readInt();
             }
 
-            dfs(nodes[0], null);
             for (int i = 0; i < n; i++) {
-                Splay.splay(nodes[i].left);
-                out.append(nodes[i].left.size - nodes[i].left.right.size).append(' ');
-                Splay.splay(nodes[i].right);
-                out.println(nodes[i].right.size - nodes[i].right.right.size);
+                int x = ps[i].x;
+                int y = ps[i].z;
+                ps[i].z = ps[i].y;
+
+                ps[i].x = x + y;
+                ps[i].y = y - x;
+                ps[i].val = 1;
+                ps[i].id = "p" + i;
+                list.add(ps[i].x);
+            }
+
+            Point[] qs = new Point[m];
+            for (int i = 0; i < m; i++) {
+                qs[i] = new Point();
+            }
+
+            for (int i = 0; i < m; i++) {
+                qs[i].x = in.readInt();
+            }
+
+            for (int i = 0; i < m; i++) {
+                qs[i].y = in.readInt();
+            }
+
+            for (int i = 0; i < m; i++) {
+                int x = qs[i].x;
+                int y = qs[i].y;
+                qs[i].x = x + y;
+                qs[i].y = y - x;
+                qs[i].z = x;
+                qs[i].id = "q" + i;
+                list.add(qs[i].x);
+            }
+
+            DiscreteMap dm = new DiscreteMap(list.getData());
+            Point[] allPts = new Point[n + m];
+            System.arraycopy(ps, 0, allPts, 0, n);
+            System.arraycopy(qs, 0, allPts, n, m);
+            for (Point pt : allPts) {
+                pt.x = dm.rankOf(pt.x) + 1;
+            }
+            bit = new BIT(dm.maxRank() + 1);
+
+            Arrays.sort(allPts, (a, b) -> {
+                int ans = -Integer.compare(a.z, b.z);
+                if (ans == 0) {
+                    ans = -Integer.compare(a.y, b.y);
+                }
+                if (ans == 0) {
+                    ans = Integer.compare(a.x, b.x);
+                }
+                if (ans == 0) {
+                    ans = -Integer.compare(a.val, b.val);
+                }
+                return ans;
+            });
+
+            dac(allPts, 0, n + m - 1);
+
+            for (int i = 0; i < m; i++) {
+                out.println(qs[i].ans);
             }
         }
 
-        public Splay dfs(Node root, Node p) {
-            root.next.remove(p);
-            Splay splay = Splay.NIL;
-            for (int i = 0; i < root.next.size(); i++) {
-                Node node = root.next.get(i);
-                Splay child = dfs(node, root);
-                if (splay == Splay.NIL) {
-                    splay = child;
+        public void dac(Point[] pts, int l, int r) {
+            if (l >= r) {
+                pts[l].ans += pts[l].val;
+                return;
+            }
+            int m = (l + r) >> 1;
+            dac(pts, l, m);
+            dac(pts, m + 1, r);
+
+            Arrays.sort(pts, l, m + 1, (a, b) -> -Integer.compare(a.y, b.y));
+            Arrays.sort(pts, m + 1, r + 1, (a, b) -> -Integer.compare(a.y, b.y));
+
+            Array2DequeAdapter<Point> lDeque = new Array2DequeAdapter<>(pts, l, m);
+            Array2DequeAdapter<Point> rDeque = new Array2DequeAdapter<>(pts, m + 1, r);
+            for (int i = m + 1; i <= r; i++) {
+                Point first = rDeque.removeFirst();
+                while (!lDeque.isEmpty() && lDeque.peekFirst().y >= first.y) {
+                    Point head = lDeque.removeFirst();
+                    bit.update(head.x, head.val);
+                }
+                first.ans += bit.query(first.x);
+            }
+            while (!lDeque.isEmpty()) {
+                Point head = lDeque.removeFirst();
+                bit.update(head.x, head.val);
+            }
+            for (int i = l; i <= m; i++) {
+                bit.update(pts[i].x, -pts[i].val);
+            }
+        }
+
+    }
+
+    static class IntList implements Cloneable {
+        private int size;
+        private int cap;
+        private int[] data;
+        private static final int[] EMPTY = new int[0];
+
+        public int[] getData() {
+            return data;
+        }
+
+        public IntList(int cap) {
+            this.cap = cap;
+            if (cap == 0) {
+                data = EMPTY;
+            } else {
+                data = new int[cap];
+            }
+        }
+
+        public IntList(IntList list) {
+            this.size = list.size;
+            this.cap = list.cap;
+            this.data = Arrays.copyOf(list.data, size);
+        }
+
+        public IntList() {
+            this(0);
+        }
+
+        public void ensureSpace(int req) {
+            if (req > cap) {
+                while (cap < req) {
+                    cap = Math.max(cap + 10, 2 * cap);
+                }
+                data = Arrays.copyOf(data, cap);
+            }
+        }
+
+        public void add(int x) {
+            ensureSpace(size + 1);
+            data[size++] = x;
+        }
+
+        public void addAll(int[] x, int offset, int len) {
+            ensureSpace(size + len);
+            System.arraycopy(x, offset, data, size, len);
+            size += len;
+        }
+
+        public void addAll(IntList list) {
+            addAll(list.data, 0, list.size);
+        }
+
+        public int[] toArray() {
+            return Arrays.copyOf(data, size);
+        }
+
+        public String toString() {
+            return Arrays.toString(toArray());
+        }
+
+        public boolean equals(Object obj) {
+            if (!(obj instanceof IntList)) {
+                return false;
+            }
+            IntList other = (IntList) obj;
+            return SequenceUtils.equal(data, 0, size - 1, other.data, 0, other.size - 1);
+        }
+
+        public int hashCode() {
+            int h = 1;
+            for (int i = 0; i < size; i++) {
+                h = h * 31 + data[i];
+            }
+            return h;
+        }
+
+        public IntList clone() {
+            IntList ans = new IntList();
+            ans.addAll(this);
+            return ans;
+        }
+
+    }
+
+    static class DiscreteMap {
+        int[] val;
+        int f;
+        int t;
+
+        public DiscreteMap(int[] val) {
+            this(val, 0, val.length);
+        }
+
+        public DiscreteMap(int[] val, int f, int t) {
+            Randomized.randomizedArray(val, f, t);
+            Arrays.sort(val, f, t);
+            int wpos = f + 1;
+            for (int i = f + 1; i < t; i++) {
+                if (val[i] == val[i - 1]) {
                     continue;
                 }
-                splay = Splay.selectKthAsRoot(splay, i);
-                Splay right = Splay.splitRight(splay);
-                splay = Splay.merge(splay, child);
-                splay = Splay.merge(splay, right);
+                val[wpos++] = val[i];
             }
+            this.val = val;
+            this.f = f;
+            this.t = wpos;
+        }
 
-            splay = Splay.merge(root.left, splay);
-            splay = Splay.selectKthAsRoot(splay, root.next.size() + 1);
-            Splay right = Splay.splitRight(splay);
-            splay = Splay.merge(splay, root.right);
-            splay = Splay.merge(splay, right);
+        public int rankOf(int x) {
+            return Arrays.binarySearch(val, f, t, x) - f;
+        }
 
-            return splay;
+        public int maxRank() {
+            return t - f - 1;
+        }
+
+        public String toString() {
+            return Arrays.toString(Arrays.copyOfRange(val, f, t));
         }
 
     }
@@ -144,214 +339,6 @@ public class Main {
 
     }
 
-    static class Node {
-        List<Node> next = new ArrayList<>();
-        Splay left = new Splay();
-        Splay right = new Splay();
-
-    }
-
-    static class Splay implements Cloneable {
-        public static final Splay NIL = new Splay();
-        Splay left = NIL;
-        Splay right = NIL;
-        Splay father = NIL;
-        int size = 1;
-        int key;
-
-        static {
-            NIL.left = NIL;
-            NIL.right = NIL;
-            NIL.father = NIL;
-            NIL.size = 0;
-        }
-
-        public static void splay(Splay x) {
-            if (x == NIL) {
-                return;
-            }
-            Splay y, z;
-            while ((y = x.father) != NIL) {
-                if ((z = y.father) == NIL) {
-                    y.pushDown();
-                    x.pushDown();
-                    if (x == y.left) {
-                        zig(x);
-                    } else {
-                        zag(x);
-                    }
-                } else {
-                    z.pushDown();
-                    y.pushDown();
-                    x.pushDown();
-                    if (x == y.left) {
-                        if (y == z.left) {
-                            zig(y);
-                            zig(x);
-                        } else {
-                            zig(x);
-                            zag(x);
-                        }
-                    } else {
-                        if (y == z.left) {
-                            zag(x);
-                            zig(x);
-                        } else {
-                            zag(y);
-                            zag(x);
-                        }
-                    }
-                }
-            }
-
-            x.pushDown();
-            x.pushUp();
-        }
-
-        public static void zig(Splay x) {
-            Splay y = x.father;
-            Splay z = y.father;
-            Splay b = x.right;
-
-            y.setLeft(b);
-            x.setRight(y);
-            z.changeChild(y, x);
-
-            y.pushUp();
-        }
-
-        public static void zag(Splay x) {
-            Splay y = x.father;
-            Splay z = y.father;
-            Splay b = x.left;
-
-            y.setRight(b);
-            x.setLeft(y);
-            z.changeChild(y, x);
-
-            y.pushUp();
-        }
-
-        public void setLeft(Splay x) {
-            left = x;
-            x.father = this;
-        }
-
-        public void setRight(Splay x) {
-            right = x;
-            x.father = this;
-        }
-
-        public void changeChild(Splay y, Splay x) {
-            if (left == y) {
-                setLeft(x);
-            } else {
-                setRight(x);
-            }
-        }
-
-        public void pushUp() {
-            size = left.size + right.size + 1;
-        }
-
-        public void pushDown() {
-        }
-
-        public static void toString(Splay root, StringBuilder builder) {
-            if (root == NIL) {
-                return;
-            }
-            root.pushDown();
-            toString(root.left, builder);
-            builder.append(root.key).append(',');
-            toString(root.right, builder);
-        }
-
-        public Splay clone() {
-            try {
-                return (Splay) super.clone();
-            } catch (CloneNotSupportedException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        public static Splay cloneTree(Splay splay) {
-            if (splay == NIL) {
-                return NIL;
-            }
-            splay = splay.clone();
-            splay.left = cloneTree(splay.left);
-            splay.right = cloneTree(splay.right);
-            return splay;
-        }
-
-        public static Splay selectMaxAsRoot(Splay root) {
-            if (root == NIL) {
-                return root;
-            }
-            root.pushDown();
-            while (root.right != NIL) {
-                root = root.right;
-                root.pushDown();
-            }
-            splay(root);
-            return root;
-        }
-
-        public static Splay splitRight(Splay root) {
-            root.pushDown();
-            Splay right = root.right;
-            right.father = NIL;
-            root.setRight(NIL);
-            root.pushUp();
-            return right;
-        }
-
-        public static Splay merge(Splay a, Splay b) {
-            if (a == NIL) {
-                return b;
-            }
-            if (b == NIL) {
-                return a;
-            }
-            a = selectMaxAsRoot(a);
-            a.setRight(b);
-            a.pushUp();
-            return a;
-        }
-
-        public static Splay selectKthAsRoot(Splay root, int k) {
-            if (root == NIL) {
-                return NIL;
-            }
-            Splay trace = root;
-            Splay father = NIL;
-            while (trace != NIL) {
-                father = trace;
-                trace.pushDown();
-                if (trace.left.size >= k) {
-                    trace = trace.left;
-                } else {
-                    k -= trace.left.size + 1;
-                    if (k == 0) {
-                        break;
-                    } else {
-                        trace = trace.right;
-                    }
-                }
-            }
-            splay(father);
-            return father;
-        }
-
-        public String toString() {
-            StringBuilder builder = new StringBuilder().append(key).append(":");
-            toString(cloneTree(this), builder);
-            return builder.toString();
-        }
-
-    }
-
     static class FastOutput implements AutoCloseable, Closeable {
         private StringBuilder cache = new StringBuilder(10 << 20);
         private final Writer os;
@@ -362,16 +349,6 @@ public class Main {
 
         public FastOutput(OutputStream os) {
             this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput append(char c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput append(int c) {
-            cache.append(c);
-            return this;
         }
 
         public FastOutput println(int c) {
@@ -403,6 +380,141 @@ public class Main {
             return cache.toString();
         }
 
+    }
+
+    static class Point {
+        int x;
+        int y;
+        int z;
+        int val;
+        int ans;
+        String id;
+
+        public String toString() {
+            return id;
+        }
+
+    }
+
+    static class SequenceUtils {
+        public static boolean equal(int[] a, int al, int ar, int[] b, int bl, int br) {
+            if ((ar - al) != (br - bl)) {
+                return false;
+            }
+            for (int i = al, j = bl; i <= ar; i++, j++) {
+                if (a[i] != b[j]) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+    }
+
+    static class BIT {
+        private int[] data;
+        private int n;
+
+        public BIT(int n) {
+            this.n = n;
+            data = new int[n + 1];
+        }
+
+        public int query(int i) {
+            int sum = 0;
+            for (; i > 0; i -= i & -i) {
+                sum += data[i];
+            }
+            return sum;
+        }
+
+        public void update(int i, int mod) {
+            if (i <= 0) {
+                return;
+            }
+            for (; i <= n; i += i & -i) {
+                data[i] += mod;
+            }
+        }
+
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            for (int i = 1; i <= n; i++) {
+                builder.append(query(i) - query(i - 1)).append(' ');
+            }
+            return builder.toString();
+        }
+
+    }
+
+    static interface SimplifiedDeque<T> extends SimplifiedStack<T> {
+    }
+
+    static class Randomized {
+        static Random random = new Random();
+
+        public static void randomizedArray(int[] data, int from, int to) {
+            to--;
+            for (int i = from; i <= to; i++) {
+                int s = nextInt(i, to);
+                int tmp = data[i];
+                data[i] = data[s];
+                data[s] = tmp;
+            }
+        }
+
+        public static int nextInt(int l, int r) {
+            return random.nextInt(r - l + 1) + l;
+        }
+
+    }
+
+    static class Array2DequeAdapter<T> implements SimplifiedDeque<T> {
+        T[] data;
+        int l;
+        int r;
+
+        public Array2DequeAdapter(T[] data) {
+            this(data, 0, data.length - 1);
+        }
+
+        public Array2DequeAdapter(T[] data, int l, int r) {
+            this.data = data;
+            this.l = l;
+            this.r = r;
+        }
+
+        public boolean isEmpty() {
+            return l > r;
+        }
+
+        public T peekFirst() {
+            return data[l];
+        }
+
+        public T removeFirst() {
+            return data[l++];
+        }
+
+        public Iterator<T> iterator() {
+            return new Iterator<T>() {
+                int iter = l;
+
+
+                public boolean hasNext() {
+                    return iter <= r;
+                }
+
+
+                public T next() {
+                    return data[iter++];
+                }
+            };
+        }
+
+    }
+
+    static interface SimplifiedStack<T> extends Iterable<T> {
     }
 }
 

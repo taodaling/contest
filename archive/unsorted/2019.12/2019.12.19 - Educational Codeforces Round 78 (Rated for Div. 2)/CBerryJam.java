@@ -1,5 +1,7 @@
 package contest;
 
+
+
 import template.datastructure.IntHashMap;
 import template.datastructure.PreSum;
 import template.io.FastInput;

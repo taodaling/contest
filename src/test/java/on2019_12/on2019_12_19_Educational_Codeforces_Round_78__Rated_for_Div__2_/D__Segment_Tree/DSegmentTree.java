@@ -1,4 +1,8 @@
-package contest;
+package on2019_12.on2019_12_19_Educational_Codeforces_Round_78__Rated_for_Div__2_.D__Segment_Tree;
+
+
+
+
 
 import template.io.FastInput;
 import template.io.FastOutput;
