@@ -1,29 +1,29 @@
 package template.graph;
 
-import template.datastructure.IntDequeImpl;
-import template.datastructure.IntIterator;
-import template.datastructure.MultiWayIntStack;
+import template.primitve.generated.IntegerDequeImpl;
+import template.primitve.generated.IntegerIterator;
+import template.primitve.generated.MultiWayIntegerStack;
 
 import java.util.Arrays;
 
 public class TwoSatBeta {
-    private MultiWayIntStack edges;
+    private MultiWayIntegerStack edges;
     private boolean[] values;
     private int[] sets;
     private int[] dfns;
     private int[] lows;
     private boolean[] instk;
-    private IntDequeImpl deque;
+    private IntegerDequeImpl deque;
     private int n;
 
     public TwoSatBeta(int n, int m) {
         values = new boolean[n * 2];
         sets = new int[n * 2];
-        edges = new MultiWayIntStack(n * 2, m * 2);
+        edges = new MultiWayIntegerStack(n * 2, m * 2);
         dfns = new int[n * 2];
         lows = new int[n * 2];
         instk = new boolean[n * 2];
-        deque = new IntDequeImpl(n * 2);
+        deque = new IntegerDequeImpl(n * 2);
         this.n = n;
     }
 
@@ -66,7 +66,7 @@ public class TwoSatBeta {
             return;
         }
         dfns[root] = 1;
-        for (IntIterator iterator = edges.iterator(root); iterator.hasNext(); ) {
+        for (IntegerIterator iterator = edges.iterator(root); iterator.hasNext(); ) {
             int node = iterator.next();
             assign(node);
         }
@@ -84,7 +84,7 @@ public class TwoSatBeta {
         lows[root] = dfns[root] = ++dfn;
         instk[root] = true;
         deque.addLast(root);
-        for (IntIterator iterator = edges.iterator(root); iterator.hasNext(); ) {
+        for (IntegerIterator iterator = edges.iterator(root); iterator.hasNext(); ) {
             int node = iterator.next();
             tarjan(node);
             if (instk[node] && lows[node] < lows[root]) {

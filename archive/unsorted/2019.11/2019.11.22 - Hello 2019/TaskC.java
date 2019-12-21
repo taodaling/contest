@@ -1,8 +1,5 @@
 package contest;
 
-import template.datastructure.IntEntryIterator;
-import template.datastructure.IntHashMap;
-import template.datastructure.LongObjectHashMap;
 import template.io.FastInput;
 import template.io.FastOutput;
 
@@ -10,7 +7,7 @@ public class TaskC {
     public void solve(int testNumber, FastInput in, FastOutput out) {
         int n = in.readInt();
         char[] s = new char[1000000];
-        IntHashMap map = new IntHashMap(n, true);
+        IntegerHashMap map = new IntegerHashMap(n, true);
         for (int i = 0; i < n; i++) {
             int m = in.readString(s, 0);
             int cnt = 0;

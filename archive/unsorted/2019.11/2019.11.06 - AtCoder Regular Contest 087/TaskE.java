@@ -2,7 +2,7 @@ package contest;
 
 import template.FastInput;
 import template.FastOutput;
-import template.IntList;
+import template.IntegerList;
 
 public class TaskE {
     int n;
@@ -15,7 +15,7 @@ public class TaskE {
         l = in.readLong();
 
         char[] seq = new char[100000];
-        IntList list = new IntList(100000);
+        IntegerList list = new IntegerList(100000);
 
         Node root = new Node();
         for (int i = 0; i < n; i++) {
@@ -59,7 +59,7 @@ public class TaskE {
         dfs(root.next[1]);
     }
 
-    public void addNode(Node root, IntList seq, int i) {
+    public void addNode(Node root, IntegerList seq, int i) {
         if (seq.size() == i) {
             root.tag = true;
             return;

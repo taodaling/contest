@@ -1,13 +1,12 @@
 package contest;
 
-import template.datastructure.IntList;
 import template.io.FastInput;
 import template.io.FastOutput;
 
 public class TaskC {
     public void solve(int testNumber, FastInput in, FastOutput out) {
         long n = in.readLong();
-        IntList list = new IntList();
+        IntegerList list = new IntegerList();
         while (n > 0) {
             int i;
             for (i = 0; i < list.size(); i++) {

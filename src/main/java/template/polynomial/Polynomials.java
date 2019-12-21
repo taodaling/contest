@@ -2,17 +2,17 @@ package template.polynomial;
 
 import template.math.ExtGCD;
 import template.math.Power;
-import template.datastructure.IntList;
 import template.math.Modular;
+import template.primitve.generated.IntegerList;
 import template.utils.Buffer;
 
 import java.util.BitSet;
 
 public class Polynomials {
-    public static Buffer<IntList> listBuffer = new Buffer<>(IntList::new, list -> list.clear());
+    public static Buffer<IntegerList> listBuffer = new Buffer<>(IntegerList::new, list -> list.clear());
     private static ExtGCD extGCD = new ExtGCD();
 
-    public static int rankOf(IntList p) {
+    public static int rankOf(IntegerList p) {
         int[] data = p.getData();
         int r = p.size() - 1;
         while (r >= 0 && data[r] == 0) {
@@ -21,11 +21,11 @@ public class Polynomials {
         return Math.max(0, r);
     }
 
-    public static void normalize(IntList list) {
+    public static void normalize(IntegerList list) {
         list.retain(rankOf(list) + 1);
     }
 
-    public static void mul(IntList a, IntList b, IntList c, Modular mod) {
+    public static void mul(IntegerList a, IntegerList b, IntegerList c, Modular mod) {
         int rA = rankOf(a);
         int rB = rankOf(b);
         c.clear();
@@ -40,7 +40,7 @@ public class Polynomials {
         }
     }
 
-    public static void plus(IntList a, IntList b, IntList c, Modular mod) {
+    public static void plus(IntegerList a, IntegerList b, IntegerList c, Modular mod) {
         int rA = rankOf(a);
         int rB = rankOf(b);
         c.clear();
@@ -56,7 +56,7 @@ public class Polynomials {
         }
     }
 
-    public static void subtract(IntList a, IntList b, IntList c, Modular mod) {
+    public static void subtract(IntegerList a, IntegerList b, IntegerList c, Modular mod) {
         int rA = rankOf(a);
         int rB = rankOf(b);
         c.clear();
@@ -72,14 +72,14 @@ public class Polynomials {
         }
     }
 
-    public static void mul(IntList a, int k, Modular mod) {
+    public static void mul(IntegerList a, int k, Modular mod) {
         int[] aData = a.getData();
         for (int i = a.size() - 1; i >= 0; i--) {
             aData[i] = mod.mul(aData[i], k);
         }
     }
 
-    public static void dotMul(IntList a, IntList b, IntList c, Modular mod) {
+    public static void dotMul(IntegerList a, IntegerList b, IntegerList c, Modular mod) {
         int rA = rankOf(a);
         int rB = rankOf(b);
         int rC = Math.min(rA, rB);
@@ -96,7 +96,7 @@ public class Polynomials {
     /**
      * a = b * c + remainder, the first number of b should be relative prime with mod
      */
-    public static void divide(IntList a, IntList b, IntList c, IntList remainder, Power pow) {
+    public static void divide(IntegerList a, IntegerList b, IntegerList c, IntegerList remainder, Power pow) {
         Modular mod = pow.getModular();
         int rA = rankOf(a);
         int rB = rankOf(b);
@@ -142,7 +142,7 @@ public class Polynomials {
      * <br>
      * This brute force run in O(n^2log_2k) while n is the length of p.
      */
-    public static void module(long k, IntList p, IntList remainder, Power pow) {
+    public static void module(long k, IntegerList p, IntegerList remainder, Power pow) {
         int rP = rankOf(p);
         if (rP == 0) {
             remainder.clear();
@@ -150,8 +150,8 @@ public class Polynomials {
             return;
         }
 
-        IntList a = listBuffer.alloc();
-        IntList c = listBuffer.alloc();
+        IntegerList a = listBuffer.alloc();
+        IntegerList c = listBuffer.alloc();
 
         module(k, a, p, c, remainder, rP, pow);
 
@@ -159,7 +159,7 @@ public class Polynomials {
         listBuffer.release(c);
     }
 
-    private static void module(long k, IntList a, IntList b, IntList c, IntList remainder, int rb, Power pow) {
+    private static void module(long k, IntegerList a, IntegerList b, IntegerList c, IntegerList remainder, int rb, Power pow) {
         Modular mod = pow.getModular();
         if (k < rb) {
             remainder.clear();
@@ -184,7 +184,7 @@ public class Polynomials {
     /**
      * Try find x^k % p = remainder, the first number of b should be relative prime with mod
      */
-    public static void module(BitSet k, IntList p, IntList remainder, Power pow) {
+    public static void module(BitSet k, IntegerList p, IntegerList remainder, Power pow) {
         int rP = rankOf(p);
         if (rP == 0) {
             remainder.clear();
@@ -192,8 +192,8 @@ public class Polynomials {
             return;
         }
 
-        IntList a = listBuffer.alloc();
-        IntList c = listBuffer.alloc();
+        IntegerList a = listBuffer.alloc();
+        IntegerList c = listBuffer.alloc();
 
         module(k, a, p, c, remainder, pow);
 
@@ -201,7 +201,7 @@ public class Polynomials {
         listBuffer.release(c);
     }
 
-    private static void module(BitSet k, IntList a, IntList b, IntList c, IntList remainder, Power pow) {
+    private static void module(BitSet k, IntegerList a, IntegerList b, IntegerList c, IntegerList remainder, Power pow) {
         Modular mod = pow.getModular();
         remainder.clear();
         remainder.expandWith(1, 1);

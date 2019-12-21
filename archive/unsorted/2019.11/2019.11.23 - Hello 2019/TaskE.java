@@ -2,9 +2,6 @@ package contest;
 
 import template.algo.IntBinarySearch;
 import template.algo.LongBinarySearch;
-import template.datastructure.IntIterator;
-import template.datastructure.IntList;
-import template.datastructure.MultiWayIntDeque;
 import template.io.FastInput;
 import template.io.FastOutput;
 
@@ -22,10 +19,10 @@ public class TaskE {
         for (int i = 0; i < n; i++) {
             a[i] = in.readInt();
         }
-        MultiWayIntDeque deque = new MultiWayIntDeque(n + 2, n + 1);
+        MultiWayIntegerDeque deque = new MultiWayIntegerDeque(n + 2, n + 1);
         FindCeilElementInDeque bs = new FindCeilElementInDeque(deque, a);
 
-        List<IntList> ans = new ArrayList<>();
+        List<IntegerList> ans = new ArrayList<>();
         while (remain > 0) {
             int k = findK(remain);
             deque.expandQueueNum(remain + 2);
@@ -47,7 +44,7 @@ public class TaskE {
             }
 
             if (lis >= k) {
-                IntList list = new IntList(lis);
+                IntegerList list = new IntegerList(lis);
                 int trace = deque.peekLast(lis);
                 while (trace != -1) {
                     list.add(trace);
@@ -60,7 +57,7 @@ public class TaskE {
                 continue;
             }
             for (int i = 1; i <= lis; i++) {
-                IntList list = new IntList();
+                IntegerList list = new IntegerList();
                 while (!deque.isEmpty(i)) {
                     list.add(deque.removeFirst(i));
                 }
@@ -70,9 +67,9 @@ public class TaskE {
         }
 
         out.println(ans.size());
-        for (IntList list : ans) {
+        for (IntegerList list : ans) {
             out.append(list.size()).append(' ');
-            for (IntIterator iterator = list.iterator(); iterator.hasNext(); ) {
+            for (IntegerIterator iterator = list.iterator(); iterator.hasNext(); ) {
                 out.append(a[iterator.next()]).append(' ');
             }
             out.println();
@@ -89,7 +86,7 @@ public class TaskE {
 }
 
 class FindCeilElementInDeque extends IntBinarySearch {
-    private MultiWayIntDeque deque;
+    private MultiWayIntegerDeque deque;
     private int[] a;
 
     public void setElement(int element) {
@@ -98,7 +95,7 @@ class FindCeilElementInDeque extends IntBinarySearch {
 
     private int element;
 
-    FindCeilElementInDeque(MultiWayIntDeque deque, int[] a) {
+    FindCeilElementInDeque(MultiWayIntegerDeque deque, int[] a) {
         this.deque = deque;
         this.a = a;
     }

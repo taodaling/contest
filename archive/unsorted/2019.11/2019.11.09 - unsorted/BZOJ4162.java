@@ -24,9 +24,9 @@ public class BZOJ4162 {
 
         ModMatrix matrix = new ModMatrix(matArray);
         GravityModLagrangeInterpolation.Polynomial p = matrix.getCharacteristicPolynomial(pow);
-        IntList pList = new IntList();
+        IntegerList pList = new IntegerList();
         pList.addAll(p.toArray());
-        IntList remainder = new IntList();
+        IntegerList remainder = new IntegerList();
 
         Polynomials.module(n, pList, remainder, pow);
         Polynomials.normalize(remainder);

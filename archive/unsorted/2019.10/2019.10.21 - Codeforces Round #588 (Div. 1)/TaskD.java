@@ -8,7 +8,7 @@ import template.ArrayUtils;
 import template.DigitUtils;
 import template.FastInput;
 import template.FastOutput;
-import template.IntList;
+import template.IntegerList;
 
 public class TaskD {
     int[] perms;
@@ -22,7 +22,7 @@ public class TaskD {
         int n = in.readInt();
         int k = in.readInt();
 
-        IntList list = new IntList(120);
+        IntegerList list = new IntegerList(120);
         genAllPerm(new boolean[k], 0, 0, list);
         perms = list.toArray();
 
@@ -120,7 +120,7 @@ public class TaskD {
         out.println(ans);
     }
 
-    IntList queue = new IntList(120);
+    IntegerList queue = new IntegerList(120);
 
     public Group merge(Group a, Group b) {
         queue.clear();
@@ -186,7 +186,7 @@ public class TaskD {
         }
     }
 
-    void genAllPerm(boolean[] used, int seq, int i, IntList perm) {
+    void genAllPerm(boolean[] used, int seq, int i, IntegerList perm) {
         if (i == used.length) {
             perm.add(seq);
             return;

@@ -1,6 +1,6 @@
 package template.math;
 
-import template.datastructure.IntList;
+import template.primitve.generated.IntegerList;
 
 /**
  * For given sequence a1, a2, ... , an.
@@ -10,20 +10,20 @@ import template.datastructure.IntList;
  * satisfy for any i > k that ai=\sum_{j=1}^k a_{i-j}c_j
  */
 public class ModLinearFeedbackShiftRegister {
-    private IntList cm;
+    private IntegerList cm;
     int m = -1;
     int dm;
-    private IntList cn;
-    private IntList buf;
-    private IntList seq;
+    private IntegerList cn;
+    private IntegerList buf;
+    private IntegerList seq;
     private Modular mod;
     private Power pow;
 
     public ModLinearFeedbackShiftRegister(Modular mod, int cap) {
-        cm = new IntList(cap + 1);
-        cn = new IntList(cap + 1);
-        seq = new IntList(cap + 1);
-        buf = new IntList(cap + 1);
+        cm = new IntegerList(cap + 1);
+        cn = new IntegerList(cap + 1);
+        seq = new IntegerList(cap + 1);
+        buf = new IntegerList(cap + 1);
         cn.add(1);
 
         this.mod = mod;
@@ -80,14 +80,14 @@ public class ModLinearFeedbackShiftRegister {
         }
 
         if (cn.size() < buf.size()) {
-            IntList tmp = cm;
+            IntegerList tmp = cm;
             cm = cn;
             cn = tmp;
             m = n;
             dm = dn;
         }
         {
-            IntList tmp = cn;
+            IntegerList tmp = cn;
             cn = buf;
             buf = tmp;
         }

@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import template.FastInput;
 import template.FastOutput;
-import template.IntList;
+import template.IntegerList;
 import template.SequenceUtils;
 
 public class TaskE {
@@ -22,9 +22,9 @@ public class TaskE {
             order[i].val = i;
             order[i].last = -i;
         }
-        IntList[] list = new IntList[n + 1];
+        IntegerList[] list = new IntegerList[n + 1];
         for (int i = 1; i <= n; i++) {
-            list[i] = new IntList();
+            list[i] = new IntegerList();
         }
         for (int i = 1; i <= q; i++) {
             list[a[i]].add(i);
@@ -42,7 +42,7 @@ public class TaskE {
             SequenceUtils.reverse(list[i].getData(), 0, list[i].size());
         }
 
-        IntList tmp = new IntList(n);
+        IntegerList tmp = new IntegerList(n);
         for (int i = 1; i < incUntil; i++) {
             int x = order[i].val;
             int y = order[i + 1].val;

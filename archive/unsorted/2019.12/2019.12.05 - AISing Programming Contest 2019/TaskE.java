@@ -2,8 +2,6 @@ package contest;
 
 
 
-import template.datastructure.IntIterator;
-import template.datastructure.MultiWayIntStack;
 import template.datastructure.MultiWayStack;
 import template.io.FastInput;
 import template.io.FastOutput;
@@ -11,7 +9,7 @@ import template.io.FastOutput;
 import java.util.Arrays;
 
 public class TaskE {
-    MultiWayIntStack edges;
+    MultiWayIntegerStack edges;
     int[] a;
     long[][] negDp;
     long[] posDp;
@@ -23,7 +21,7 @@ public class TaskE {
         for (int i = 1; i <= n; i++) {
             a[i] = in.readInt();
         }
-        edges = new MultiWayIntStack(n + 1, n * 2);
+        edges = new MultiWayIntegerStack(n + 1, n * 2);
         for (int i = 1; i < n; i++) {
             int a = in.readInt();
             int b = in.readInt();
@@ -48,7 +46,7 @@ public class TaskE {
 
     public void dfsForSize(int root, int p) {
         sizes[root] = 1;
-        for (IntIterator iterator = edges.iterator(root); iterator.hasNext(); ) {
+        for (IntegerIterator iterator = edges.iterator(root); iterator.hasNext(); ) {
             int node = iterator.next();
             if (node == p) {
                 continue;
@@ -65,7 +63,7 @@ public class TaskE {
         long[] last = new long[sizes[root]];
         long[] next = new long[sizes[root]];
         last[0] = a[root];
-        for (IntIterator iterator = edges.iterator(root); iterator.hasNext(); ) {
+        for (IntegerIterator iterator = edges.iterator(root); iterator.hasNext(); ) {
             int node = iterator.next();
             if (node == p) {
                 continue;

@@ -1,2 +1,2 @@
-43 src/main/java/contest/F. Dish Shopping.json
+31 src/main/java/contest/Task.json
 0

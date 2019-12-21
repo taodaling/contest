@@ -1,6 +1,6 @@
 package template.math;
 
-import template.datastructure.IntHashMap;
+import template.primitve.generated.IntegerHashMap;
 
 /**
  * Used to find k while x^k = y % p and p is a prime
@@ -9,7 +9,7 @@ public class ModPrimeLog {
     Modular mod;
     Modular powMod;
     int x;
-    IntHashMap map;
+    IntegerHashMap map;
     int m;
     CachedPow pow;
 
@@ -19,7 +19,7 @@ public class ModPrimeLog {
         pow = new CachedPow(x, mod.getMod() - 1, mod);
         powMod = new Modular(mod.getMod() - 1);
         m = (int) Math.ceil(Math.sqrt(mod.getMod()));
-        map = new IntHashMap(m, false);
+        map = new IntegerHashMap(m, false);
         for (int i = m - 1; i >= 0; i--) {
             map.put(pow.pow(i), i);
         }

@@ -1,7 +1,5 @@
 package contest;
 
-import template.datastructure.IntIterator;
-import template.datastructure.MultiWayIntDeque;
 import template.geometry.LongConvexHullTrick;
 import template.io.FastInput;
 import template.io.FastOutput;
@@ -10,7 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class TaskD {
-    MultiWayIntDeque edges;
+    MultiWayIntegerDeque edges;
     long[] dp0;
     long[] dp1;
     int n;
@@ -21,7 +19,7 @@ public class TaskD {
         dp0 = new long[n + 1];
         dp1 = new long[n + 1];
         size = new int[n + 1];
-        edges = new MultiWayIntDeque(n + 1, 2 * n);
+        edges = new MultiWayIntegerDeque(n + 1, 2 * n);
         for (int i = 1; i < n; i++) {
             int a = in.readInt();
             int b = in.readInt();
@@ -41,7 +39,7 @@ public class TaskD {
 
     public void dfs(int root, int p) {
         size[root] = 1;
-        for (IntIterator iterator = edges.iterator(root); iterator.hasNext(); ) {
+        for (IntegerIterator iterator = edges.iterator(root); iterator.hasNext(); ) {
             int node = iterator.next();
             if(node == p){
                 continue;
@@ -50,7 +48,7 @@ public class TaskD {
             size[root] += size[node];
         }
         LongConvexHullTrick cht = new LongConvexHullTrick();
-        for (IntIterator iterator = edges.iterator(root); iterator.hasNext(); ) {
+        for (IntegerIterator iterator = edges.iterator(root); iterator.hasNext(); ) {
             int node = iterator.next();
             if(node == p){
                 continue;

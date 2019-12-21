@@ -3,7 +3,7 @@ package contest;
 import template.DigitUtils;
 import template.FastInput;
 import template.FastOutput;
-import template.IntVersionArray;
+import template.IntegerVersionArray;
 import template.JosephusCircle;
 
 public class StrangeNim {
@@ -34,7 +34,7 @@ public class StrangeNim {
 
     public int[] sgOf(int n, int k) {
         int[] mex = new int[n + 1];
-        IntVersionArray iva = new IntVersionArray(n + 1);
+        IntegerVersionArray iva = new IntegerVersionArray(n + 1);
         for (int i = 0; i <= n; i++) {
             iva.clear();
             for (int j = 1; j <= i / k; j++) {

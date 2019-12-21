@@ -1,6 +1,5 @@
 package contest;
 
-import template.datastructure.IntList;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.math.ModPrimeRoot;
@@ -12,7 +11,7 @@ public class DiscreteRoots {
         int k = in.readInt();
         int a = in.readInt();
         ModPrimeRoot root = new ModPrimeRoot(new Modular(p));
-        IntList ans = new IntList();
+        IntegerList ans = new IntegerList();
         root.allRoot(a, k, ans);
         ans.unique();
         out.println(ans.size());

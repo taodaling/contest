@@ -2,10 +2,6 @@ package contest;
 
 
 
-import template.datastructure.BIT;
-import template.datastructure.DiscreteMap;
-import template.datastructure.IntHashMap;
-import template.datastructure.LongHashMap;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.rand.Randomized;

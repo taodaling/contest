@@ -1,9 +1,6 @@
 package contest;
 
 import template.datastructure.Array2DequeAdapter;
-import template.datastructure.BIT;
-import template.datastructure.DiscreteMap;
-import template.datastructure.IntList;
 import template.io.FastInput;
 import template.io.FastOutput;
 
@@ -15,7 +12,7 @@ public class FDishShopping {
         int m = in.readInt();
 
         Point[] ps = new Point[n];
-        IntList list = new IntList(2 * n);
+        IntegerList list = new IntegerList(2 * n);
 
         for(int i = 0; i < n; i++){
             ps[i] = new Point();

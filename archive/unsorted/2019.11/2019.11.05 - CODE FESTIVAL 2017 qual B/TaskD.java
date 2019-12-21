@@ -2,7 +2,7 @@ package contest;
 
 import template.FastInput;
 import template.FastOutput;
-import template.IntList;
+import template.IntegerList;
 
 public class TaskD {
 
@@ -13,7 +13,7 @@ public class TaskD {
         char[] s = new char[n];
         in.readString(s, 0);
 
-        IntList list = new IntList(n);
+        IntegerList list = new IntegerList(n);
         for (int i = 0; i < n; i++) {
             int j = i;
             while (j + 1 < n && s[j + 1] == s[i]) {
@@ -27,7 +27,7 @@ public class TaskD {
         }
 
         int ans = 0;
-        IntList cnts = new IntList(n);
+        IntegerList cnts = new IntegerList(n);
         while (!list.isEmpty()) {
             cnts.clear();
             while (!list.isEmpty()) {

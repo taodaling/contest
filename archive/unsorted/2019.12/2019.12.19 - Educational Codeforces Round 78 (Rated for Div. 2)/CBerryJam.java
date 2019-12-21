@@ -2,8 +2,6 @@ package contest;
 
 
 
-import template.datastructure.IntHashMap;
-import template.datastructure.PreSum;
 import template.io.FastInput;
 import template.io.FastOutput;
 
@@ -19,7 +17,7 @@ public class CBerryJam {
             b[i] = in.readInt() == 1 ? 1 : -1;
         }
 
-        IntHashMap map = new IntHashMap(n, false);
+        IntegerHashMap map = new IntegerHashMap(n, false);
         PreSum psOfA = new PreSum(a);
         PreSum psOfB = new PreSum(b);
 

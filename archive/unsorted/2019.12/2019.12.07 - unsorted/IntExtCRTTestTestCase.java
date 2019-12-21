@@ -7,7 +7,6 @@ import java.util.Random;
 
 import net.egork.chelper.task.Test;
 import net.egork.chelper.tester.TestCase;
-import template.datastructure.IntList;
 import template.math.ExtCRT;
 import template.rand.RandomWrapper;
 

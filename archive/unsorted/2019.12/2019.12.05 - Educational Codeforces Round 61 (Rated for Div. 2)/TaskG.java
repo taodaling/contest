@@ -14,8 +14,8 @@ public class TaskG {
         for (int i = 0; i < n; i++) {
             a[i] = in.readInt();
         }
-        MultiWayIntStack stack = new MultiWayIntStack(n, n);
-        IntDeque deque = new IntDequeImpl(n);
+        MultiWayIntegerStack stack = new MultiWayIntegerStack(n, n);
+        IntDeque deque = new IntegerDequeImpl(n);
         for (int i = n - 1; i >= 0; i--) {
             while (!deque.isEmpty() && a[deque.peekFirst()] <= a[i]) {
                 deque.removeFirst();
@@ -39,7 +39,7 @@ public class TaskG {
                 x.key == y.key ? x.index - y.index : x.key - y.key);
         for (int i = 0; i < n; i++) {
             IntLeftistTree tree = IntLeftistTree.NIL;
-            for (IntIterator iterator = stack.iterator(i); iterator.hasNext(); ) {
+            for (IntegerIterator iterator = stack.iterator(i); iterator.hasNext(); ) {
                 int next = iterator.next();
                 set.remove(trees[next]);
                 tree = IntLeftistTree.merge(tree, trees[next]);

@@ -1,7 +1,5 @@
 package contest;
 
-import template.datastructure.IntHashMap;
-import template.datastructure.IntList;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.math.Modular;
@@ -17,20 +15,20 @@ public class TaskG {
         for (int i = 0; i < n; i++) {
             cnts[in.readInt()]++;
         }
-        List<IntList> polynomials = new ArrayList<>();
+        List<IntegerList> polynomials = new ArrayList<>();
         for (int i = 0; i <= 3000000; i++) {
             if (cnts[i] == 0) {
                 continue;
             }
-            IntList list = new IntList(cnts[i] + 1);
+            IntegerList list = new IntegerList(cnts[i] + 1);
             list.expandWith(1, cnts[i] + 1);
             polynomials.add(list);
         }
 
         Modular mod = new Modular(998244353);
-        IntList ans = new IntList();
+        IntegerList ans = new IntegerList();
         NumberTheoryTransform ntt = new NumberTheoryTransform(mod);
-        ntt.dacMul(polynomials.toArray(new IntList[0]), ans);
+        ntt.dacMul(polynomials.toArray(new IntegerList[0]), ans);
         out.println(ans.get(n / 2));
     }
 }

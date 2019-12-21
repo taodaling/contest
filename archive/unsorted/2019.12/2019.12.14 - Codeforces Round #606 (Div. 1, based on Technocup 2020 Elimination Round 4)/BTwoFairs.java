@@ -1,7 +1,5 @@
 package contest;
 
-import template.datastructure.IntIterator;
-import template.datastructure.MultiWayIntStack;
 import template.io.FastInput;
 import template.io.FastOutput;
 
@@ -10,7 +8,7 @@ import java.util.Arrays;
 
 public class BTwoFairs {
 
-    MultiWayIntStack edges;
+    MultiWayIntegerStack edges;
     boolean[] visited;
 
     public void solve(int testNumber, FastInput in, FastOutput out) {
@@ -18,7 +16,7 @@ public class BTwoFairs {
         int m = in.readInt();
         int a = in.readInt() - 1;
         int b = in.readInt() - 1;
-        edges = new MultiWayIntStack(n, m * 2);
+        edges = new MultiWayIntegerStack(n, m * 2);
         int[] aCnt = new int[n];
         int[] bCnt = new int[n];
         visited = new boolean[n];
@@ -58,7 +56,7 @@ public class BTwoFairs {
         }
         visited[root] = true;
         cnt[root]++;
-        for (IntIterator iterator = edges.iterator(root); iterator.hasNext(); ) {
+        for (IntegerIterator iterator = edges.iterator(root); iterator.hasNext(); ) {
             int node = iterator.next();
             dfs(node, cnt, forbiden);
         }

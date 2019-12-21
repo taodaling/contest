@@ -2,7 +2,6 @@ package contest;
 
 
 
-import template.datastructure.IntVersionArray;
 import template.datastructure.SparseTable;
 import template.graph.MultiWayDeque;
 import template.io.FastInput;
@@ -34,7 +33,7 @@ public class TaskE {
         dfs(nodes[0], levels, 0, trace);
         SparseTable<Node> st = new SparseTable<>(trace.toArray(), trace.size(), (a, b) -> a.dfn <= b.dfn ? a : b);
         Deque<Node> deque = new ArrayDeque<>(n + 1);
-        IntVersionArray va = new IntVersionArray(n + 1);
+        IntegerVersionArray va = new IntegerVersionArray(n + 1);
 
         int ans = 0;
         for (int i = 0; i <= n; i++) {

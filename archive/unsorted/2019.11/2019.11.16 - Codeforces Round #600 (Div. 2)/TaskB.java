@@ -2,7 +2,7 @@ package contest;
 
 import template.FastInput;
 import template.FastOutput;
-import template.IntVersionArray;
+import template.IntegerVersionArray;
 
 import java.util.ArrayList;
 import java.util.Arrays;

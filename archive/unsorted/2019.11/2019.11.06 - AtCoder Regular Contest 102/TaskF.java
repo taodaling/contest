@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import template.FastInput;
 import template.FastOutput;
-import template.IntList;
+import template.IntegerList;
 
 public class TaskF {
     public void solve(int testNumber, FastInput in, FastOutput out) {
@@ -16,7 +16,7 @@ public class TaskF {
         boolean[][] forbiden = new boolean[n][n];
         int[] used = new int[n];
 
-        IntList picked = new IntList(k);
+        IntegerList picked = new IntegerList(k);
         boolean[] localForbiden = new boolean[n];
         for (int i = 0; i < n; i++) {
             picked.clear();

@@ -1,7 +1,6 @@
 package contest;
 
 import template.algo.IntBinarySearch;
-import template.datastructure.IntList;
 import template.graph.ErdosGallaiTheorem;
 import template.io.FastInput;
 import template.io.FastOutput;
@@ -23,8 +22,8 @@ public class ENewYearAndTheAcquaintanceEstimation {
         Randomized.randomizedArray(a);
         Arrays.sort(a);
         SequenceUtils.reverse(a, 0, n - 1);
-        IntList buf = new IntList(a.length);
-        IntList buf2 = new IntList(a.length);
+        IntegerList buf = new IntegerList(a.length);
+        IntegerList buf2 = new IntegerList(a.length);
         long sum = 0;
         int zeroCnt = 0;
         for(int i = 0; i < n; i++){

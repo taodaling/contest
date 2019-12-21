@@ -1,7 +1,5 @@
 package contest;
 
-import template.datastructure.IntDeque;
-import template.datastructure.IntDequeImpl;
 import template.graph.UndirectedEulerTrace;
 import template.io.FastInput;
 import template.io.FastOutput;
@@ -37,8 +35,8 @@ public class TaskB {
             return;
         }
 
-        IntDeque leftDeque = new IntDequeImpl(a + b);
-        IntDeque rightDeque = new IntDequeImpl(c + d);
+        IntDeque leftDeque = new IntegerDequeImpl(a + b);
+        IntDeque rightDeque = new IntegerDequeImpl(c + d);
         for(int i = 0; i < a; i++){
             leftDeque.addLast(0);
             leftDeque.addLast(1);

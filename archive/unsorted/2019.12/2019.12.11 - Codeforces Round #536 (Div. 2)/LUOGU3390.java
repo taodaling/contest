@@ -1,6 +1,5 @@
 package contest;
 
-import template.datastructure.IntList;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.math.LinearRecurrenceSolver;
@@ -9,13 +8,13 @@ import template.math.ModMatrixLinearRecurrenceSolver;
 import template.math.Modular;
 
 public class LUOGU3390 {
-    IntList a = new IntList();
+    IntegerList a = new IntegerList();
     Modular mod = new Modular(1e9 + 7);
     LinearRecurrenceSolver solver;
 
     {
         a.expandWith(1, 3);
-        IntList seq = new IntList();
+        IntegerList seq = new IntegerList();
         seq.addAll(new int[]{1, 1, 1, 2, 3, 4});
         solver = LinearRecurrenceSolver.newSolverFromSequence(seq, mod);
     }

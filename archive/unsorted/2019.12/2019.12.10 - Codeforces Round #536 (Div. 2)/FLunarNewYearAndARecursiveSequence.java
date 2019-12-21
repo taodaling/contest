@@ -2,7 +2,6 @@ package contest;
 
 
 import com.sun.org.apache.xpath.internal.operations.Mod;
-import template.datastructure.IntList;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.math.*;

@@ -2,7 +2,7 @@ package contest;
 
 import template.FastInput;
 import template.FastOutput;
-import template.IntList;
+import template.IntegerList;
 import template.SequenceUtils;
 
 public class BothSidesMerger {
@@ -38,11 +38,11 @@ public class BothSidesMerger {
 
         trace(vals, maxI, n - 1, maxK);
 
-        IntList valDeque = new IntList();
+        IntegerList valDeque = new IntegerList();
         valDeque.addAll(vals, maxI, n - maxI);
 
 
-        IntList op = new IntList(n);
+        IntegerList op = new IntegerList(n);
         for (int i = 0; i < maxI; i++) {
             op.add(1);
         }

@@ -3,13 +3,13 @@ package contest;
 import template.DigitUtils;
 import template.FastInput;
 import template.FastOutput;
-import template.IntList;
+import template.IntegerList;
 
 public class TaskE {
     public void solve(int testNumber, FastInput in, FastOutput out) {
         int k = in.readInt();
         int n = in.readInt();
-        IntList list = new IntList(n);
+        IntegerList list = new IntegerList(n);
         if (k % 2 == 0) {
             list.add(k / 2);
             for (int i = 1; i < n; i++) {
@@ -43,7 +43,7 @@ public class TaskE {
         output(out, list);
     }
 
-    public void output(FastOutput out, IntList list) {
+    public void output(FastOutput out, IntegerList list) {
         for (int i = 0; i < list.size(); i++) {
             out.append(list.get(i)).append(' ');
         }

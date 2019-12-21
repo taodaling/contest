@@ -1,7 +1,6 @@
 package contest;
 
 import numeric.NTT;
-import template.datastructure.IntList;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.math.CachedLog2;
@@ -23,13 +22,13 @@ public class TaskG {
         for (int i = 0; i < k; i++) {
             allow[in.readInt()] = 1;
         }
-        IntList p = new IntList();
+        IntegerList p = new IntegerList();
         p.addAll(allow);
 
         int m = n / 2;
-        IntList last = p.clone();
+        IntegerList last = p.clone();
         NumberTheoryTransform ntt = new NumberTheoryTransform(mod, 3);
-        List<IntList> lists = new ArrayList<>();
+        List<IntegerList> lists = new ArrayList<>();
         while (m > 1) {
             if (m % 2 == 1) {
                 lists.add(last.clone());
@@ -40,8 +39,8 @@ public class TaskG {
         }
         lists.add(last);
 
-        IntList prod = new IntList();
-        ntt.mulByPQ(lists.toArray(new IntList[0]), prod);
+        IntegerList prod = new IntegerList();
+        ntt.mulByPQ(lists.toArray(new IntegerList[0]), prod);
 
         int ans = 0;
         for (int i = 0; i < prod.size(); i++) {

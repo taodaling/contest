@@ -3,7 +3,7 @@ package contest;
 import template.DigitUtils;
 import template.FastInput;
 import template.FastOutput;
-import template.IntList;
+import template.IntegerList;
 
 public class TaskD {
     public void solve(int testNumber, FastInput in, FastOutput out) {
@@ -13,7 +13,7 @@ public class TaskD {
         Modular mod = new Modular(1e9 + 7);
         Power pow = new Power(mod);
 
-        IntList factors = new IntList();
+        IntegerList factors = new IntegerList();
         for (int i = 1; i * i <= n; i++) {
             if (n % i != 0) {
                 continue;
@@ -25,7 +25,7 @@ public class TaskD {
         }
 
         factors.sort();
-        IntList cnt = new IntList();
+        IntegerList cnt = new IntegerList();
         cnt.expandWith(0, factors.size());
 
         int ans = 0;

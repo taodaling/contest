@@ -1,6 +1,6 @@
 package template.math;
 
-import template.datastructure.DoubleList;
+import template.primitve.generated.DoubleList;
 
 public class DoubleLinearFeedbackShiftRegister {
     private DoubleList cm;

@@ -1,27 +1,27 @@
 package template.graph;
 
-import template.datastructure.IntIterator;
-import template.datastructure.IntList;
-import template.datastructure.MultiWayIntStack;
 import template.math.DigitUtils;
+import template.primitve.generated.IntegerIterator;
+import template.primitve.generated.IntegerList;
+import template.primitve.generated.MultiWayIntegerStack;
 
 import java.util.Arrays;
 
 public class ForestDiameter {
-    private MultiWayIntStack edges;
+    private MultiWayIntegerStack edges;
     private int[] depth;
     private int[] parents;
     private int[] diameters;
-    private IntList[] centers;
-    private IntList[] ends;
+    private IntegerList[] centers;
+    private IntegerList[] ends;
     private int[] treeIds;
-    private IntList collector;
+    private IntegerList collector;
 
-    public IntList getCenters(int i) {
+    public IntegerList getCenters(int i) {
         return centers[i];
     }
 
-    public IntList getEnds(int i) {
+    public IntegerList getEnds(int i) {
         return ends[i];
     }
 
@@ -33,15 +33,15 @@ public class ForestDiameter {
         return treeIds[i];
     }
 
-    public ForestDiameter(MultiWayIntStack edges, int n) {
+    public ForestDiameter(MultiWayIntegerStack edges, int n) {
         this.edges = edges;
         depth = new int[n];
         parents = new int[n];
-        centers = new IntList[n];
-        ends = new IntList[n];
+        centers = new IntegerList[n];
+        ends = new IntegerList[n];
         treeIds = new int[n];
         diameters = new int[n];
-        collector = new IntList(n);
+        collector = new IntegerList(n);
         int idAllocator = 0;
         Arrays.fill(treeIds, -1);
 
@@ -49,13 +49,13 @@ public class ForestDiameter {
             if (treeIds[j] != -1) {
                 continue;
             }
-            IntList endList = new IntList(2);
-            IntList centerList = new IntList(2);
+            IntegerList endList = new IntegerList(2);
+            IntegerList centerList = new IntegerList(2);
             collector.clear();
             dfsForCollect(j, -1);
             dfsForDepth(j, -1);
             int end = collector.get(0);
-            for (IntIterator iterator = collector.iterator(); iterator.hasNext(); ) {
+            for (IntegerIterator iterator = collector.iterator(); iterator.hasNext(); ) {
                 int node = iterator.next();
                 if (depth[node] > depth[end]) {
                     end = node;
@@ -63,7 +63,7 @@ public class ForestDiameter {
             }
             dfsForDepth(end, -1);
             int another = collector.get(0);
-            for (IntIterator iterator = collector.iterator(); iterator.hasNext(); ) {
+            for (IntegerIterator iterator = collector.iterator(); iterator.hasNext(); ) {
                 int node = iterator.next();
                 if (depth[node] > depth[another]) {
                     another = node;
@@ -84,7 +84,7 @@ public class ForestDiameter {
             endList.unique();
             centerList.unique();
 
-            for (IntIterator iterator = collector.iterator(); iterator.hasNext(); ) {
+            for (IntegerIterator iterator = collector.iterator(); iterator.hasNext(); ) {
                 int node = iterator.next();
                 treeIds[node] = idAllocator;
                 diameters[node] = diameter;
@@ -97,7 +97,7 @@ public class ForestDiameter {
 
     private void dfsForCollect(int root, int p) {
         collector.add(root);
-        for (IntIterator iterator = edges.iterator(root); iterator.hasNext(); ) {
+        for (IntegerIterator iterator = edges.iterator(root); iterator.hasNext(); ) {
             int node = iterator.next();
             if (node == p) {
                 continue;
@@ -109,7 +109,7 @@ public class ForestDiameter {
     private void dfsForDepth(int root, int p) {
         parents[root] = p;
         depth[root] = p != -1 ? depth[p] + 1 : 0;
-        for (IntIterator iterator = edges.iterator(root); iterator.hasNext(); ) {
+        for (IntegerIterator iterator = edges.iterator(root); iterator.hasNext(); ) {
             int node = iterator.next();
             if (node == p) {
                 continue;

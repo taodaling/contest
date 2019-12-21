@@ -1,6 +1,5 @@
 package contest;
 
-import template.datastructure.IntList;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.math.DigitBase;
@@ -20,7 +19,7 @@ public class TaskF {
         int ans = 0;
 
         // differ for zero
-        IntList list = new IntList();
+        IntegerList list = new IntegerList();
         for (int i = 1; i * i <= s; i++) {
             if (s % i != 0) {
                 continue;

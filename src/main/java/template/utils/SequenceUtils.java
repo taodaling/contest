@@ -1,6 +1,6 @@
 package template.utils;
 
-import template.datastructure.IntList;
+import template.primitve.generated.IntegerList;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -43,6 +43,70 @@ public class SequenceUtils {
      * Find a index k while data[k] <= x and data[k + 1] > x. If it doesn't exist, l-1 will return.
      */
     public static int rightBound(int[] data, int x, int l, int r) {
+        int excess = l - 1;
+        while (l < r) {
+            int m = (l + r + 1) >>> 1;
+            if (data[m] <= x) {
+                l = m;
+            } else {
+                r = m - 1;
+            }
+        }
+        return data[l] <= x ? l : excess;
+    }
+
+    /**
+     * Find a index k while data[k] >= x and data[k - 1] < x. If it doesn't exist, r+1 will return.
+     */
+    public static int leftBound(long[] data, long x, int l, int r) {
+        int excess = r + 1;
+        while (l < r) {
+            int m = (l + r) >>> 1;
+            if (data[m] < x) {
+                l = m + 1;
+            } else {
+                r = m;
+            }
+        }
+        return data[l] >= x ? l : excess;
+    }
+
+    /**
+     * Find a index k while data[k] <= x and data[k + 1] > x. If it doesn't exist, l-1 will return.
+     */
+    public static int rightBound(long[] data, long x, int l, int r) {
+        int excess = l - 1;
+        while (l < r) {
+            int m = (l + r + 1) >>> 1;
+            if (data[m] <= x) {
+                l = m;
+            } else {
+                r = m - 1;
+            }
+        }
+        return data[l] <= x ? l : excess;
+    }
+
+    /**
+     * Find a index k while data[k] >= x and data[k - 1] < x. If it doesn't exist, r+1 will return.
+     */
+    public static int leftBound(double[] data, double x, int l, int r) {
+        int excess = r + 1;
+        while (l < r) {
+            int m = (l + r) >>> 1;
+            if (data[m] < x) {
+                l = m + 1;
+            } else {
+                r = m;
+            }
+        }
+        return data[l] >= x ? l : excess;
+    }
+
+    /**
+     * Find a index k while data[k] <= x and data[k + 1] > x. If it doesn't exist, l-1 will return.
+     */
+    public static int rightBound(double[] data, double x, int l, int r) {
         int excess = l - 1;
         while (l < r) {
             int m = (l + r + 1) >>> 1;
@@ -213,7 +277,7 @@ public class SequenceUtils {
         data[j] = tmp;
     }
 
-    public static void swap(IntList data, int i, int j) {
+    public static void swap(IntegerList data, int i, int j) {
         int tmp = data.get(i);
         data.set(i, data.get(j));
         data.set(j, tmp);
@@ -500,6 +564,14 @@ public class SequenceUtils {
         }
     }
 
+    public static void reverse(double[] data, int l, int r) {
+        while (l < r) {
+            swap(data, l, r);
+            l++;
+            r--;
+        }
+    }
+
     public static void reverse(byte[] data, int l, int r) {
         while (l < r) {
             swap(data, l, r);
@@ -564,6 +636,30 @@ public class SequenceUtils {
     }
 
     public static boolean equal(int[] a, int al, int ar, int[] b, int bl, int br) {
+        if ((ar - al) != (br - bl)) {
+            return false;
+        }
+        for (int i = al, j = bl; i <= ar; i++, j++) {
+            if (a[i] != b[j]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean equal(long[] a, int al, int ar, long[] b, int bl, int br) {
+        if ((ar - al) != (br - bl)) {
+            return false;
+        }
+        for (int i = al, j = bl; i <= ar; i++, j++) {
+            if (a[i] != b[j]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean equal(double[] a, int al, int ar, double[] b, int bl, int br) {
         if ((ar - al) != (br - bl)) {
             return false;
         }

@@ -1,8 +1,6 @@
 package contest;
 
 
-import template.datastructure.IntList;
-import template.datastructure.MultiWayIntStack;
 import template.graph.TreeDiameter;
 import template.io.FastInput;
 import template.io.FastOutput;
@@ -27,7 +25,7 @@ public class FAlmostSameDistance {
             nodes[i].id = i;
         }
 
-        MultiWayIntStack edges = new MultiWayIntStack(n + 1, n * 2);
+        MultiWayIntegerStack edges = new MultiWayIntegerStack(n + 1, n * 2);
         for (int i = 1; i < n; i++) {
             int a = in.readInt();
             int b = in.readInt();
@@ -57,7 +55,7 @@ public class FAlmostSameDistance {
         }
     }
 
-    IntList list = new IntList(500000);
+    IntegerList list = new IntegerList(500000);
 
     public void type2(Node root, Node p) {
         for (Node node : root.next) {

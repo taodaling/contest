@@ -1,6 +1,5 @@
 package contest;
 
-import template.datastructure.IntList;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.rand.RandomWrapper;
@@ -29,7 +28,7 @@ public class TaskE {
         this.in = in;
         this.out = out;
 
-        IntList question = new IntList(n);
+        IntegerList question = new IntegerList(n);
         boolean state;
         for (int i = 1; i <= n; i++) {
             question.add(i);
@@ -114,13 +113,13 @@ public class TaskE {
         out.flush();
     }
 
-    public void replace(IntList x, int a, int b) {
+    public void replace(IntegerList x, int a, int b) {
         x.set(x.indexOf(a), b);
     }
 
 
 
-    public boolean redMore(IntList a) {
+    public boolean redMore(IntegerList a) {
         out.append("? ");
         for (int i = 0; i < a.size(); i++) {
             out.append(a.get(i)).append(' ');

@@ -1,6 +1,6 @@
 package template.math;
 
-import template.datastructure.IntList;
+import template.primitve.generated.IntegerList;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -163,10 +163,10 @@ public class PermutationUtils {
         int[] r;
         int n;
 
-        public List<IntList> extractCircles() {
-            List<IntList> ans = new ArrayList<>(n);
+        public List<IntegerList> extractCircles() {
+            List<IntegerList> ans = new ArrayList<>(n);
             for (int i = 0; i < n; i++) {
-                IntList list = new IntList(r[i] - l[i] + 1);
+                IntegerList list = new IntegerList(r[i] - l[i] + 1);
                 for (int j = l[i]; j <= r[i]; j++) {
                     list.add(g[j]);
                 }

@@ -2,6 +2,9 @@ package template.graph;
 
 import template.datastructure.*;
 import template.math.DigitUtils;
+import template.primitve.generated.IntegerDequeImpl;
+import template.primitve.generated.IntegerList;
+import template.primitve.generated.LongObjectHashMap;
 import template.utils.RevokeIterator;
 
 import java.util.Arrays;
@@ -13,7 +16,7 @@ public class LongHLPPBeta {
     private LongObjectHashMap<ChannelImpl> map;
     private int[] heights;
     private long[] excess;
-    private IntDequeImpl deque;
+    private IntegerDequeImpl deque;
     private int vertexNumber;
     private long totalFlow;
     Node[] nodes;
@@ -25,7 +28,7 @@ public class LongHLPPBeta {
         map = new LongObjectHashMap<>(expectedChannelNumber, true);
         this.sink = sink;
         this.source = source;
-        deque = new IntDequeImpl(vertexNumber);
+        deque = new IntegerDequeImpl(vertexNumber);
         heights = new int[vertexNumber];
         excess = new long[vertexNumber];
         nodes = new Node[vertexNumber];
@@ -39,9 +42,9 @@ public class LongHLPPBeta {
     private int sink;
     private int source;
 
-    public IntList getComponentS() {
+    public IntegerList getComponentS() {
         Arrays.fill(heights, 0);
-        IntList list = new IntList(vertexNumber);
+        IntegerList list = new IntegerList(vertexNumber);
         deque.addLast(source);
         while (!deque.isEmpty()) {
             int head = deque.removeFirst();

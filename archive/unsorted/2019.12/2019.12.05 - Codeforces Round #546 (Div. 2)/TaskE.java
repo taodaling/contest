@@ -1,8 +1,6 @@
 package contest;
 
 import template.algo.PreSum;
-import template.datastructure.IntHashMap;
-import template.datastructure.LongHashMap;
 import template.io.FastInput;
 import template.io.FastOutput;
 

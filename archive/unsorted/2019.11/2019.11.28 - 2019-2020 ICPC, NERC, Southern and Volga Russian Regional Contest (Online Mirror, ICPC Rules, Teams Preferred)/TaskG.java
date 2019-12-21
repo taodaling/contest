@@ -1,7 +1,5 @@
 package contest;
 
-import template.datastructure.IntList;
-import template.datastructure.LongHashMap;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.utils.CompareUtils;
@@ -75,7 +73,7 @@ public class TaskG {
             return;
         }
         int index = winLast[SequenceUtils.indexOf(winReq, 0, n - 1, minWinCost)];
-        IntList chain = new IntList(n);
+        IntegerList chain = new IntegerList(n);
         while (index != -1) {
             chain.add(index);
             index = dpLast[index];

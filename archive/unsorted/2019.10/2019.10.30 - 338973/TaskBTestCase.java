@@ -7,7 +7,7 @@ import java.util.Random;
 
 import net.egork.chelper.task.Test;
 import net.egork.chelper.tester.TestCase;
-import template.IntList;
+import template.IntegerList;
 import template.RandomWrapper;
 
 public class TaskBTestCase {
@@ -25,7 +25,7 @@ public class TaskBTestCase {
     public Test create() {
         int x = random.nextInt(1, 100000000);
         int k = random.nextInt(1, 200);
-        IntList list = new IntList();
+        IntegerList list = new IntegerList();
         for (int i = 0; i < k; i++) {
             list.add(random.nextInt(1, x));
         }

@@ -7,7 +7,7 @@ import java.util.List;
 
 import template.FastInput;
 import template.FastOutput;
-import template.IntList;
+import template.IntegerList;
 
 public class TaskF {
     public void solve(int testNumber, FastInput in, FastOutput out) {

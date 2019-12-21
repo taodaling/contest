@@ -1,6 +1,5 @@
 package contest;
 
-import template.datastructure.LongList;
 import template.datastructure.PairingHeap;
 import template.io.FastInput;
 import template.io.FastOutput;

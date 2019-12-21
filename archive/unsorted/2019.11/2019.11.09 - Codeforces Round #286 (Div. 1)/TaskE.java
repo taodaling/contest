@@ -69,12 +69,12 @@ public class TaskE {
         }
 
        ModLinearFeedbackShiftRegister.Estimator estimator =  bm.newEstimator(1);
-        IntList p = new IntList(bm.length());
+        IntegerList p = new IntegerList(bm.length());
         for (int i = bm.length(); i >= 1; i--) {
             p.add(mod.valueOf(-bm.codeAt(i)));
         }
 
-        IntList remainder = new IntList();
+        IntegerList remainder = new IntegerList();
         Polynomials.module(n / 2, p, remainder, new Power(mod));
         Polynomials.normalize(remainder);
 

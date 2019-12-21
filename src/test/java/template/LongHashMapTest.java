@@ -1,14 +1,13 @@
 package template;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
-import template.datastructure.LongEntryIterator;
-import template.datastructure.LongHashMap;
+import template.primitve.generated.LongEntryIterator;
+import template.primitve.generated.LongHashMap;
 
 public class LongHashMapTest {
 

@@ -7,7 +7,7 @@ import java.util.Set;
 import net.egork.chelper.checkers.Checker;
 import net.egork.chelper.tester.Verdict;
 import template.FastInput;
-import template.IntList;
+import template.IntegerList;
 
 public class TaskFChecker implements Checker {
     public TaskFChecker(String parameters) {}
@@ -22,9 +22,9 @@ public class TaskFChecker implements Checker {
             return Verdict.WA;
         }
 
-        IntList[] cnts = new IntList[n + 1];
+        IntegerList[] cnts = new IntegerList[n + 1];
         for (int i = 1; i <= n; i++) {
-            cnts[i] = new IntList();
+            cnts[i] = new IntegerList();
         }
         Set<Integer>[] sets = new Set[n + 1];
         int[][] intersection = new int[n + 1][n + 1];

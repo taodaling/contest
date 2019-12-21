@@ -3,7 +3,7 @@ package contest;
 import template.DigitUtils;
 import template.FastInput;
 import template.FastOutput;
-import template.IntList;
+import template.IntegerList;
 import template.NumberTheoryTransform;
 
 public class LUOGU4705 {
@@ -26,8 +26,8 @@ public class LUOGU4705 {
         }
 
         int t = in.readInt();
-        IntList A = generate(a, t);
-        IntList B = generate(b, t);
+        IntegerList A = generate(a, t);
+        IntegerList B = generate(b, t);
 
         Factorial fact = new Factorial(t, mod);
         for(int i = 0; i <= t; i++){
@@ -52,19 +52,19 @@ public class LUOGU4705 {
         }
     }
 
-    public IntList generate(int[] a, int m) {
+    public IntegerList generate(int[] a, int m) {
         int n = a.length;
-        IntList[] segs = new IntList[n];
+        IntegerList[] segs = new IntegerList[n];
         for (int i = 0; i < n; i++) {
-            segs[i] = new IntList(2);
+            segs[i] = new IntegerList(2);
             segs[i].add(1);
             segs[i].add(mod.valueOf(-a[i]));
         }
 
-        IntList f = NumberTheoryTransform.listBuffer.alloc();
+        IntegerList f = NumberTheoryTransform.listBuffer.alloc();
         ntt.dacMul(segs, f);
 
-        IntList g = new IntList(f.size());
+        IntegerList g = new IntegerList(f.size());
         for (int i = 0; i < f.size(); i++) {
             g.add(mod.mul(f.get(i), n - i));
         }
@@ -74,7 +74,7 @@ public class LUOGU4705 {
         g.retain(m + 1);
         f.expandWith(0, 1 << proper);
         g.expandWith(0, 1 << proper);
-        IntList inv = NumberTheoryTransform.listBuffer.alloc();
+        IntegerList inv = NumberTheoryTransform.listBuffer.alloc();
         inv.expandWith(0, 1 << proper);
         ntt.inverse(f.getData(), inv.getData(), proper - 1);
         ntt.dft(g.getData(), proper);

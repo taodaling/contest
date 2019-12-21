@@ -1,6 +1,6 @@
 package template.graph;
 
-import template.datastructure.PreSum;
+import template.primitve.generated.IntegerPreSum;
 import template.utils.CompareUtils;
 import template.utils.SequenceUtils;
 
@@ -29,7 +29,7 @@ public class ErdosGallaiTheorem {
         CompareUtils.radixSort(degs, 0, degs.length - 1);
         SequenceUtils.reverse(degs, 0, degs.length - 1);
         int n = degs.length;
-        PreSum ps = new PreSum(degs);
+        IntegerPreSum ps = new IntegerPreSum(degs);
         long[] ss = new long[n + 1];
         int rIter = n;
         for (int i = n - 1; i >= 0; i--) {

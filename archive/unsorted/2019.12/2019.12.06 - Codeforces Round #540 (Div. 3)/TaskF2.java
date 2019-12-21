@@ -1,14 +1,12 @@
 package contest;
 
-import template.datastructure.IntIterator;
-import template.datastructure.MultiWayIntStack;
 import template.graph.LcaOnTree;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.math.Modular;
 
 public class TaskF2 {
-    MultiWayIntStack edges;
+    MultiWayIntegerStack edges;
     int[][] dp;
     int[] color;
     int[] parent;
@@ -19,7 +17,7 @@ public class TaskF2 {
     public void solve(int testNumber, FastInput in, FastOutput out) {
         int n = in.readInt();
         int k = in.readInt();
-        edges = new MultiWayIntStack(n + 1, n * 2);
+        edges = new MultiWayIntegerStack(n + 1, n * 2);
         dp = new int[n + 1][2];
         color = new int[n + 1];
         visited = new boolean[n + 1];
@@ -79,7 +77,7 @@ public class TaskF2 {
 
     public void dfsForParent(int root, int p) {
         parent[root] = p;
-        for (IntIterator iterator = edges.iterator(root); iterator.hasNext(); ) {
+        for (IntegerIterator iterator = edges.iterator(root); iterator.hasNext(); ) {
             int node = iterator.next();
             if (node == p) {
                 continue;
@@ -114,7 +112,7 @@ public class TaskF2 {
         }
         dp[root][0] = 1;
         dp[root][1] = 0;
-        for(IntIterator iterator = edges.iterator(root); iterator.hasNext(); ){
+        for(IntegerIterator iterator = edges.iterator(root); iterator.hasNext(); ){
             int node = iterator.next();
             if(node == p){
                 continue;

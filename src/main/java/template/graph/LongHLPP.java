@@ -1,6 +1,6 @@
 package template.graph;
 
-import template.datastructure.IntDequeImpl;
+import template.primitve.generated.IntegerDequeImpl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,7 +28,7 @@ public class LongHLPP {
     }
 
     private void init() {
-        deque = new IntDequeImpl(maxV);
+        deque = new IntegerDequeImpl(maxV);
         adj = new ArrayList[maxV + 5];
         lst = new ArrayList[maxV + 5];
         gap = new ArrayList[maxV + 5];
@@ -64,7 +64,7 @@ public class LongHLPP {
         }
     }
 
-    IntDequeImpl deque;
+    IntegerDequeImpl deque;
 
     private void globalRelabel() {
         work = 0;

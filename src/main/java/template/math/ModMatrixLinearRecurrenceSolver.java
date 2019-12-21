@@ -1,32 +1,32 @@
 package template.math;
 
-import template.datastructure.IntList;
 import template.polynomial.GravityModLagrangeInterpolation;
 import template.polynomial.Polynomials;
+import template.primitve.generated.IntegerList;
 
 import java.util.BitSet;
 
 public class ModMatrixLinearRecurrenceSolver {
     Modular mod;
-    IntList[] a;
-    IntList p;
-    IntList remainder;
+    IntegerList[] a;
+    IntegerList p;
+    IntegerList remainder;
     Power pow;
     int n;
     int m;
 
-    private void init(IntList[] a, IntList coe, Modular mod) {
+    private void init(IntegerList[] a, IntegerList coe, Modular mod) {
         this.a = a;
         this.mod = mod;
         n = coe.size();
         m = a[0].size();
         pow = new Power(mod);
-        remainder = new IntList(coe.size());
+        remainder = new IntegerList(coe.size());
         p = coe;
     }
 
-    private IntList solve() {
-        IntList ans = new IntList(m);
+    private IntegerList solve() {
+        IntegerList ans = new IntegerList(m);
         remainder.expandWith(0, n);
         for (int i = 0; i < m; i++) {
             int val = 0;
@@ -38,12 +38,12 @@ public class ModMatrixLinearRecurrenceSolver {
         return ans;
     }
 
-    public IntList solve(long k) {
+    public IntegerList solve(long k) {
         Polynomials.module(k, p, remainder, pow);
         return solve();
     }
 
-    public IntList solve(BitSet k) {
+    public IntegerList solve(BitSet k) {
         Polynomials.module(k, p, remainder, pow);
         return solve();
     }
@@ -51,12 +51,12 @@ public class ModMatrixLinearRecurrenceSolver {
     /**
      * Auto detect linear recurrence from given matrix and vec
      */
-    public ModMatrixLinearRecurrenceSolver(ModMatrix mat, IntList vec, Modular mod) {
+    public ModMatrixLinearRecurrenceSolver(ModMatrix mat, IntegerList vec, Modular mod) {
         GravityModLagrangeInterpolation.Polynomial p = mat.getCharacteristicPolynomial(new Power(mod));
-        IntList coe = p.toIntList();
+        IntegerList coe = p.toIntegerList();
         ModMatrix transpose = ModMatrix.transposition(mat);
         int m = coe.size();
-        IntList[] lists = new IntList[m];
+        IntegerList[] lists = new IntegerList[m];
         ModMatrix vector = new ModMatrix(1, vec.size());
         for (int i = 0; i < vec.size(); i++) {
             vector.set(0, i, vec.get(i));
@@ -64,7 +64,7 @@ public class ModMatrixLinearRecurrenceSolver {
         lists[0] = vec;
         for (int i = 1; i < m; i++) {
             vector = ModMatrix.mul(vector, transpose, mod);
-            lists[i] = new IntList(vec.size());
+            lists[i] = new IntegerList(vec.size());
             for (int j = 0; j < vec.size(); j++) {
                 lists[i].add(vector.get(0, j));
             }

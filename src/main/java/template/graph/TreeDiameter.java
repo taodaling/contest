@@ -1,23 +1,23 @@
 package template.graph;
 
-import template.datastructure.IntIterator;
-import template.datastructure.IntList;
-import template.datastructure.MultiWayIntStack;
 import template.math.DigitUtils;
+import template.primitve.generated.IntegerIterator;
+import template.primitve.generated.IntegerList;
+import template.primitve.generated.MultiWayIntegerStack;
 
 public class TreeDiameter {
-    private MultiWayIntStack edges;
+    private MultiWayIntegerStack edges;
     private int[] depth;
     private int[] parents;
     private int diameter;
-    private IntList centers;
-    private IntList ends;
+    private IntegerList centers;
+    private IntegerList ends;
 
-    public IntList getCenters() {
+    public IntegerList getCenters() {
         return centers;
     }
 
-    public IntList getEnds() {
+    public IntegerList getEnds() {
         return ends;
     }
 
@@ -25,11 +25,11 @@ public class TreeDiameter {
         return diameter;
     }
 
-    public TreeDiameter(MultiWayIntStack edges, int n) {
+    public TreeDiameter(MultiWayIntegerStack edges, int n) {
         this.edges = edges;
         depth = new int[n];
-        centers = new IntList(2);
-        ends = new IntList(2);
+        centers = new IntegerList(2);
+        ends = new IntegerList(2);
         parents = new int[n];
 
         dfsForDepth(0, -1);
@@ -65,7 +65,7 @@ public class TreeDiameter {
     private void dfsForDepth(int root, int p) {
         parents[root] = p;
         depth[root] = p != -1 ? depth[p] + 1 : 0;
-        for (IntIterator iterator = edges.iterator(root); iterator.hasNext(); ) {
+        for (IntegerIterator iterator = edges.iterator(root); iterator.hasNext(); ) {
             int node = iterator.next();
             if (node == p) {
                 continue;

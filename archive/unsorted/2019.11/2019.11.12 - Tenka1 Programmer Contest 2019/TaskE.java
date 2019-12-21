@@ -5,7 +5,7 @@ import java.util.Arrays;
 import template.DigitUtils;
 import template.FastInput;
 import template.FastOutput;
-import template.IntList;
+import template.IntegerList;
 
 public class TaskE {
     public void solve(int testNumber, FastInput in, FastOutput out) {
@@ -16,7 +16,7 @@ public class TaskE {
             coe[i] = in.readInt();
         }
         EulerSieve es = new EulerSieve(n);
-        IntList ans = new IntList();
+        IntegerList ans = new IntegerList();
         Gcd gcd = new Gcd();
         int num = 0;
         for (int i = 0; i <= n; i++) {

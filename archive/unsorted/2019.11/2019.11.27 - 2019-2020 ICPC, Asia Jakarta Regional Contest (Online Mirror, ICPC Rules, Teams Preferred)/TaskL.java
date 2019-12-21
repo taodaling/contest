@@ -1,8 +1,5 @@
 package contest;
 
-import template.datastructure.DiscreteMap;
-import template.datastructure.IntIterator;
-import template.datastructure.IntList;
 import template.graph.LongISAP;
 import template.graph.MultiWayDeque;
 import template.io.FastInput;
@@ -49,7 +46,7 @@ public class TaskL {
             edges[i].a.next.add(edges[i]);
             edges[i].b.next.add(edges[i]);
             int m = in.readInt();
-            edges[i].color = new IntList(m);
+            edges[i].color = new IntegerList(m);
             for (int j = 0; j < m; j++) {
                 edges[i].color.add(in.readInt());
             }
@@ -71,7 +68,7 @@ public class TaskL {
             isap.getChannel(idOfSrc(), idOfRoad(i)).modify(1, 0);
         }
 
-        IntList allColor = new IntList(10000);
+        IntegerList allColor = new IntegerList(10000);
         for (int i = 0; i < n; i++) {
             allColor.addAll(edges[i].color);
         }
@@ -94,7 +91,7 @@ public class TaskL {
                 continue;
             }
             addedEdge++;
-            for (IntIterator iterator = edges[i].color.iterator(); iterator.hasNext(); ) {
+            for (IntegerIterator iterator = edges[i].color.iterator(); iterator.hasNext(); ) {
                 isap.getChannel(idOfRoad(edges[i].a.id), idOfColor(iterator.next())).modify(1, 0);
             }
         }
@@ -113,7 +110,7 @@ public class TaskL {
             if (!edges[i].circle) {
                 continue;
             }
-            for (IntIterator iterator = edges[i].color.iterator(); iterator.hasNext(); ) {
+            for (IntegerIterator iterator = edges[i].color.iterator(); iterator.hasNext(); ) {
                 isap.getChannel(idOfRoad(i), idOfColor(iterator.next())).modify(1, 0);
             }
         }
@@ -128,7 +125,7 @@ public class TaskL {
         MultiWayDeque<Edge> edgeDeque = new MultiWayDeque<>(10001, n);
         MultiWayDeque<Worker> workerDeque = new MultiWayDeque<>(10001, k);
         for (int i = 0; i < n; i++) {
-            for (IntIterator iterator = edges[i].color.iterator(); iterator.hasNext(); ) {
+            for (IntegerIterator iterator = edges[i].color.iterator(); iterator.hasNext(); ) {
                 int c = iterator.next();
                 if (isap.getChannel(idOfRoad(i), idOfColor(c)).getFlow() == 1) {
                     edgeDeque.addLast(c, edges[i]);
@@ -195,7 +192,7 @@ public class TaskL {
 }
 
 class Edge {
-    IntList color;
+    IntegerList color;
     Node a;
     Node b;
     boolean circle;

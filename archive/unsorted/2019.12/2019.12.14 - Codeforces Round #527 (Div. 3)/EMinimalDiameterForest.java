@@ -1,8 +1,5 @@
 package contest;
 
-import template.datastructure.IntEntryIterator;
-import template.datastructure.IntHashMap;
-import template.datastructure.MultiWayIntStack;
 import template.graph.ForestDiameter;
 import template.graph.TreeDiameter;
 import template.io.FastInput;
@@ -17,7 +14,7 @@ public class EMinimalDiameterForest {
         int n = in.readInt();
         int m = in.readInt();
 
-        MultiWayIntStack edges = new MultiWayIntStack(n, 2 * n);
+        MultiWayIntegerStack edges = new MultiWayIntegerStack(n, 2 * n);
         for (int i = 0; i < m; i++) {
             int a = in.readInt() - 1;
             int b = in.readInt() - 1;
@@ -26,7 +23,7 @@ public class EMinimalDiameterForest {
         }
 
         ForestDiameter forestDiameter = new ForestDiameter(edges, n);
-        IntHashMap map = new IntHashMap(n, false);
+        IntegerHashMap map = new IntegerHashMap(n, false);
         for (int i = 0; i < n; i++) {
             map.putIfNotExist(forestDiameter.getCenters(i).get(0),
                     forestDiameter.getDiameter(i));

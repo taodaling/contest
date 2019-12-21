@@ -1,6 +1,5 @@
 package contest;
 
-import template.datastructure.IntList;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.math.*;
@@ -24,8 +23,8 @@ public class TaskE {
         Map<Integer, Integer> factors = new PollardRho()
                 .findAllFactors(m);
 
-        IntList primeList = new IntList();
-        IntList primeExpList = new IntList();
+        IntegerList primeList = new IntegerList();
+        IntegerList primeExpList = new IntegerList();
         for (Map.Entry<Integer, Integer> e : factors.entrySet()) {
             primeList.add(e.getKey());
             primeExpList.add(e.getValue());

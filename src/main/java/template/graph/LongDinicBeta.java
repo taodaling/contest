@@ -1,10 +1,10 @@
 package template.graph;
 
-import template.datastructure.IntDequeImpl;
-import template.datastructure.IntList;
-import template.datastructure.LongObjectHashMap;
 import template.datastructure.MultiWayStack;
 import template.math.DigitUtils;
+import template.primitve.generated.IntegerDequeImpl;
+import template.primitve.generated.IntegerList;
+import template.primitve.generated.LongObjectHashMap;
 import template.utils.RevokeIterator;
 
 import java.util.Arrays;
@@ -14,7 +14,7 @@ public class LongDinicBeta {
     private MultiWayStack<Channel> edges;
     private RevokeIterator<Channel>[] iterators;
     private LongObjectHashMap<ChannelImpl> map;
-    private IntDequeImpl deque;
+    private IntegerDequeImpl deque;
     private int[] dists;
     private int vertexNumber;
     private long totalFlow;
@@ -26,7 +26,7 @@ public class LongDinicBeta {
         map = new LongObjectHashMap<>(expectedChannelNumber, true);
         this.sink = sink;
         this.source = source;
-        deque = new IntDequeImpl(vertexNumber);
+        deque = new IntegerDequeImpl(vertexNumber);
         dists = new int[vertexNumber];
         this.vertexNumber = vertexNumber;
     }
@@ -34,9 +34,9 @@ public class LongDinicBeta {
     private int sink;
     private int source;
 
-    public IntList getComponentS() {
+    public IntegerList getComponentS() {
         Arrays.fill(dists, 0);
-        IntList list = new IntList(vertexNumber);
+        IntegerList list = new IntegerList(vertexNumber);
         deque.addLast(source);
         while (!deque.isEmpty()) {
             int head = deque.removeFirst();

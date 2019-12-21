@@ -2,7 +2,7 @@ package contest;
 
 import template.FastInput;
 import template.FastOutput;
-import template.IntList;
+import template.IntegerList;
 
 import java.util.TreeSet;
 
@@ -41,7 +41,7 @@ public class TaskE {
             orderByMin.add(ball);
         }
 
-        IntList seq = new IntList(n * 2);
+        IntegerList seq = new IntegerList(n * 2);
         for (int i = 0; i < n; i++) {
             seq.add(balls[i][0]);
             seq.add(balls[i][1]);

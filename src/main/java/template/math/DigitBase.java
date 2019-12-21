@@ -1,8 +1,8 @@
 package template.math;
 
-import java.util.Arrays;
+import template.primitve.generated.LongList;
 
-import template.datastructure.LongList;
+import java.util.Arrays;
 
 public class DigitBase {
     private long[] pow;

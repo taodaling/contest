@@ -4,7 +4,7 @@ package contest;
 import template.DiscreteMap;
 import template.FastInput;
 import template.FastOutput;
-import template.IntList;
+import template.IntegerList;
 import template.SequenceUtils;
 
 public class TaskD {
@@ -69,7 +69,7 @@ public class TaskD {
             heights[i] = in.readInt();
         }
 
-        IntList list = new IntList();
+        IntegerList list = new IntegerList();
         list.addAll(heights);
         list.add(0);
         dm = new DiscreteMap(list.toArray());

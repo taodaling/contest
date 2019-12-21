@@ -2,7 +2,6 @@ package contest;
 
 
 
-import template.datastructure.IntList;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.math.ModLinearFeedbackShiftRegister;
@@ -29,13 +28,13 @@ public class TaskD {
         for (int i = 0; i < 2 * m; i++) {
             lfsr.add(dp[i][0]);
         }
-        IntList p = new IntList(lfsr.length() + 1);
+        IntegerList p = new IntegerList(lfsr.length() + 1);
         for (int i = 0; i < lfsr.length(); i++) {
             p.add(mod.valueOf(-lfsr.codeAt(lfsr.length() - i)));
         }
         p.add(1);
 
-        IntList remainder = new IntList(m * 2);
+        IntegerList remainder = new IntegerList(m * 2);
         Polynomials.module(n, p, remainder, new Power(mod));
 
         long ans = 0;

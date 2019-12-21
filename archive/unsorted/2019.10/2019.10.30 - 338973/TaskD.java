@@ -2,7 +2,7 @@ package contest;
 
 import template.FastInput;
 import template.FastOutput;
-import template.IntList;
+import template.IntegerList;
 import template.KMAlgo;
 
 public class TaskD {
@@ -11,7 +11,7 @@ public class TaskD {
     public void solve(int testNumber, FastInput in, FastOutput out) {
         int n = in.readInt();
 
-        IntList oneList = new IntList();
+        IntegerList oneList = new IntegerList();
         int last = in.readInt();
         oneList.add(last - 1);
         for (int i = 1; i < n; i++) {
@@ -27,8 +27,8 @@ public class TaskD {
         oneList.unique();
 
 
-        IntList oddList = new IntList();
-        IntList evenList = new IntList();
+        IntegerList oddList = new IntegerList();
+        IntegerList evenList = new IntegerList();
         for (int i = 0; i < oneList.size(); i++) {
             int v = oneList.get(i);
             if (v % 2 == 0) {

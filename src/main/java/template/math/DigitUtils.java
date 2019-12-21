@@ -1,10 +1,5 @@
 package template.math;
 
-import template.datastructure.LongList;
-import template.math.Log2;
-
-import java.util.Arrays;
-
 public class DigitUtils {
 
     private DigitUtils() {

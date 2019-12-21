@@ -1,8 +1,5 @@
 package template.math;
 
-import template.datastructure.ByteList;
-import template.math.Modular;
-
 import java.util.BitSet;
 
 /**

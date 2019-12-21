@@ -1,9 +1,6 @@
 package contest;
 
 
-import template.datastructure.BIT;
-import template.datastructure.IntRMQ;
-import template.datastructure.LongBIT;
 import template.datastructure.RMQ;
 import template.io.FastInput;
 import template.io.FastOutput;

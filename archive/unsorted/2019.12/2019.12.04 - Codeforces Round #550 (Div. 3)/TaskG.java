@@ -1,6 +1,5 @@
 package contest;
 
-import template.datastructure.IntList;
 import template.io.FastInput;
 import template.io.FastOutput;
 
@@ -11,8 +10,8 @@ public class TaskG {
         for (int i = 0; i < n; i++) {
             a[i] = in.readInt();
         }
-        IntList inc = new IntList();
-        IntList dec = new IntList();
+        IntegerList inc = new IntegerList();
+        IntegerList dec = new IntegerList();
         for (int i = 0; i < n; i++) {
             boolean putInc = inc.isEmpty() ||
                     a[inc.tail()] < a[i];

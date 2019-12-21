@@ -1,6 +1,6 @@
 package template.math;
 
-import template.datastructure.IntHashMap;
+import template.primitve.generated.IntegerHashMap;
 
 class RelativePrimeModLog {
     Modular mod;
@@ -8,7 +8,7 @@ class RelativePrimeModLog {
     int x;
     int invX;
     int phi;
-    IntHashMap map;
+    IntegerHashMap map;
     int m;
     CachedPow pow;
     private static ExtGCD extGCD = new ExtGCD();
@@ -25,7 +25,7 @@ class RelativePrimeModLog {
         pow = new CachedPow(invX, mod);
 
         m = (int) Math.ceil(Math.sqrt(phi));
-        map = new IntHashMap(m, false);
+        map = new IntegerHashMap(m, false);
 
         int prod = mod.valueOf(1);
         for (int i = 0; i < m; i++) {

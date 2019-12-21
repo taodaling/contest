@@ -4,7 +4,6 @@ import template.algo.IntBinarySearch;
 import template.algo.LongBinarySearch;
 import template.algo.LongTernarySearch;
 import template.algo.PreSum;
-import template.datastructure.IntList;
 import template.datastructure.PrefixIncrementOnePriorityQueue;
 import template.graph.ErdosGallaiTheorem;
 import template.io.FastInput;
@@ -69,7 +68,7 @@ public class ENewYearAndTheAcquaintanceEstimation {
 
 //                // if(mid > 10)
 //                {
-//                    IntList list = new IntList();
+//                    IntegerList list = new IntegerList();
 //                    list.addAll(a, 1, n);
 //                    int[] b = list.toArray();
 //                    Arrays.sort(b);

@@ -2,7 +2,6 @@ package contest;
 
 import sun.rmi.runtime.Log;
 import template.datastructure.Array2DequeAdapter;
-import template.datastructure.IntList;
 import template.datastructure.SimplifiedDeque;
 import template.io.FastInput;
 import template.io.FastOutput;
@@ -28,8 +27,8 @@ public class FIvanAndBurgers {
         Arrays.sort(qsSorted, (a, b) -> a.l == b.l ? a.r - b.r : b.l - a.l);
         SimplifiedDeque<Query> deque = new Array2DequeAdapter<>(qsSorted);
         LinearBasis basis = new LinearBasis();
-        IntList last = new IntList();
-        IntList next = new IntList();
+        IntegerList last = new IntegerList();
+        IntegerList next = new IntegerList();
         for (int i = n - 1; i >= 0; i--) {
             basis.clear();
             next.clear();
@@ -52,7 +51,7 @@ public class FIvanAndBurgers {
                     next.pop();
                 }
             }
-            IntList tmp = last;
+            IntegerList tmp = last;
             last = next;
             next = tmp;
         }

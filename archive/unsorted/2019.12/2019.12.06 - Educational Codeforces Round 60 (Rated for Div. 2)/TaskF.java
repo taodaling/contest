@@ -1,6 +1,5 @@
 package contest;
 
-import template.datastructure.IntList;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.math.BitOperator;
@@ -24,12 +23,12 @@ public class TaskF {
                 mask[i] = bo.setBit(mask[i], j, in.readInt() == 0);
             }
         }
-        IntList[] next = new IntList[n];
-        IntList[] prev = new IntList[n];
+        IntegerList[] next = new IntegerList[n];
+        IntegerList[] prev = new IntegerList[n];
 
-        prev[0] = new IntList();
+        prev[0] = new IntegerList();
         for (int i = 1; i < n; i++) {
-            prev[i] = new IntList(prev[i - 1].size() + 1);
+            prev[i] = new IntegerList(prev[i - 1].size() + 1);
             prev[i].addAll(prev[i - 1]);
             int index = prev[i].indexOf(s[i - 1]);
             if (index >= 0) {
@@ -37,9 +36,9 @@ public class TaskF {
             }
             prev[i].add(s[i - 1]);
         }
-        next[n - 1] = new IntList();
+        next[n - 1] = new IntegerList();
         for (int i = n - 2; i >= 0; i--) {
-            next[i] = new IntList(next[i + 1].size() + 1);
+            next[i] = new IntegerList(next[i + 1].size() + 1);
             next[i].addAll(next[i + 1]);
             int index = next[i].indexOf(s[i + 1]);
             if (index >= 0) {

@@ -1,6 +1,5 @@
 package contest;
 
-import template.datastructure.IntList;
 import template.io.FastInput;
 import template.io.FastOutput;
 
@@ -9,7 +8,7 @@ public class AAsSimpleAsOneAndTwo {
 
     public void solve(int testNumber, FastInput in, FastOutput out) {
         int len = in.readString(s, 0);
-        IntList indexes = new IntList(len);
+        IntegerList indexes = new IntegerList(len);
         for (int i = 0; i < len; i++) {
             boolean prefix = s[i] == 'o' && i >= 2 && s[i - 1] == 'w' && s[i - 2] == 't';
             boolean suffix = s[i] == 'o' && i + 2 < len && s[i + 1] == 'n' && s[i + 2] == 'e';

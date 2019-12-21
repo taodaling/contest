@@ -42,7 +42,7 @@ public class TaskA {
         int n = in.readInt();
 
         int[][] pts = new int[n][4];
-        IntList allInts = new IntList(4 + n * 4);
+        IntegerList allInts = new IntegerList(4 + n * 4);
         allInts.add(0);
         allInts.add(r);
         allInts.add(c);

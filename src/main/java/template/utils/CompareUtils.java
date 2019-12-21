@@ -1,8 +1,8 @@
 package template.utils;
 
-import template.datastructure.IntList;
-import template.datastructure.LongList;
 import template.datastructure.ObjectList;
+import template.primitve.generated.IntegerList;
+import template.primitve.generated.LongList;
 import template.rand.Randomized;
 
 import java.util.Arrays;
@@ -222,7 +222,7 @@ public class CompareUtils {
 
     private static final int[] BUF8 = new int[1 << 8];
     private static final ObjectList OBJECT_LIST = new ObjectList();
-    private static final IntList INT_LIST = new IntList();
+    private static final IntegerList INT_LIST = new IntegerList();
     private static final LongList LONG_LIST = new LongList();
 
     public static void radixSort(long[] data, int l, int r) {

@@ -1,8 +1,6 @@
 package contest;
 
 import jdk.internal.org.objectweb.asm.tree.FrameNode;
-import template.datastructure.DiscreteMap;
-import template.datastructure.IntList;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.math.Composite;

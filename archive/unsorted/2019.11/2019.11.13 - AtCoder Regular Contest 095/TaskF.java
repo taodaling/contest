@@ -6,7 +6,7 @@ import java.util.List;
 import template.CompareUtils;
 import template.FastInput;
 import template.FastOutput;
-import template.IntList;
+import template.IntegerList;
 import template.SequenceUtils;
 
 public class TaskF {
@@ -76,15 +76,15 @@ public class TaskF {
             }
         }
 
-        IntList p1 = new IntList(n);
-        IntList p2 = new IntList(n);
+        IntegerList p1 = new IntegerList(n);
+        IntegerList p2 = new IntegerList(n);
 
         genPerm(trace, p1);
         SequenceUtils.reverse(trace, 0, trace.size() - 1);
         genPerm(trace, p2);
 
         if (CompareUtils.compareArray(p1.getData(), p2.getData(), 0, p1.size() - 1, 0, p2.size() - 1) > 0) {
-            IntList tmp = p1;
+            IntegerList tmp = p1;
             p1 = p2;
             p2 = tmp;
         }
@@ -94,7 +94,7 @@ public class TaskF {
         }
     }
 
-    public void genPerm(List<Node> nodes, IntList perm) {
+    public void genPerm(List<Node> nodes, IntegerList perm) {
         for (Node node : nodes) {
             int val = perm.size() + 1;
             for (int i = 1; i <= node.childrenNum; i++) {

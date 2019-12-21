@@ -1,7 +1,5 @@
 package template.math;
 
-import template.datastructure.BIT;
-
 /**
  * Log operations
  */

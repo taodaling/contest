@@ -1,8 +1,8 @@
 package template.polynomial;
 
-import template.datastructure.IntList;
 import template.math.Modular;
 import template.math.Power;
+import template.primitve.generated.IntegerList;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -117,8 +117,8 @@ public class GravityModLagrangeInterpolation {
             return Arrays.copyOf(coes, n);
         }
 
-        public IntList toIntList() {
-            IntList list = new IntList();
+        public IntegerList toIntegerList() {
+            IntegerList list = new IntegerList();
             list.addAll(coes, 0, n);
             return list;
         }

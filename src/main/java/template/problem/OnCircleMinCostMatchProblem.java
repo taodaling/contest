@@ -1,8 +1,8 @@
 package template.problem;
 
-import template.datastructure.IntList;
-import template.datastructure.LongObjectHashMap;
 import template.math.DigitUtils;
+import template.primitve.generated.IntegerList;
+import template.primitve.generated.LongObjectHashMap;
 
 /**
  * There is c points on a circle, points are enumerated as 0, 1, ... , c - 1.
@@ -16,8 +16,8 @@ import template.math.DigitUtils;
 public class OnCircleMinCostMatchProblem {
     int[] matching;
     long minimumCost;
-    LongObjectHashMap<IntList> peopleMap;
-    LongObjectHashMap<IntList> houseMap;
+    LongObjectHashMap<IntegerList> peopleMap;
+    LongObjectHashMap<IntegerList> houseMap;
     CandyAssignProblem problem;
 
     public long getMinimumCost(){
@@ -28,10 +28,10 @@ public class OnCircleMinCostMatchProblem {
         return matching[i];
     }
 
-    private IntList getIntList(LongObjectHashMap<IntList> map, long key) {
-        IntList list = map.get(key);
+    private IntegerList getIntegerList(LongObjectHashMap<IntegerList> map, long key) {
+        IntegerList list = map.get(key);
         if (list == null) {
-            list = new IntList(1);
+            list = new IntegerList(1);
             map.put(key, list);
         }
         return list;
@@ -47,11 +47,11 @@ public class OnCircleMinCostMatchProblem {
         peopleMap = new LongObjectHashMap<>(n, false);
         houseMap = new LongObjectHashMap<>(n, false);
         matching = new int[n];
-        pending = new IntList(n);
+        pending = new IntegerList(n);
 
         for (int i = 0; i < n; i++) {
-            getIntList(peopleMap, people[i]).add(i);
-            getIntList(houseMap, houses[i]).add(i);
+            getIntegerList(peopleMap, people[i]).add(i);
+            getIntegerList(houseMap, houses[i]).add(i);
         }
 
         for (int i = 0; i < n; i++) {
@@ -73,11 +73,11 @@ public class OnCircleMinCostMatchProblem {
         }
     }
 
-    IntList pending;
+    IntegerList pending;
 
     private void buildMatching(int i) {
-        IntList people = peopleMap.get(problem.candies[i].location);
-        IntList houses = houseMap.get(problem.candies[i].location);
+        IntegerList people = peopleMap.get(problem.candies[i].location);
+        IntegerList houses = houseMap.get(problem.candies[i].location);
 
         if (people != null && houses != null) {
             while (!people.isEmpty() && !houses.isEmpty()) {

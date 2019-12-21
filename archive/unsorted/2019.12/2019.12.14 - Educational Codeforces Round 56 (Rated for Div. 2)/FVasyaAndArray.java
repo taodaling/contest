@@ -1,7 +1,6 @@
 package contest;
 
 import template.algo.PreSum;
-import template.datastructure.IntVersionArray;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.math.CachedPow;
@@ -89,11 +88,11 @@ public class FVasyaAndArray {
 
 class RotateVersionArray {
     private int offset;
-    private IntVersionArray va;
+    private IntegerVersionArray va;
     private int n;
 
     public RotateVersionArray(int n) {
-        va = new IntVersionArray(n);
+        va = new IntegerVersionArray(n);
         this.n = n;
     }
 

@@ -1,6 +1,5 @@
 package contest;
 
-import template.datastructure.IntList;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.math.LinearRecurrenceSolver;
@@ -19,9 +18,9 @@ public class TaskF {
         int n = in.readInt();
         int m = in.readInt();
 
-        IntList coes = new IntList();
+        IntegerList coes = new IntegerList();
         coes.addAll(b);
-        IntList a = new IntList();
+        IntegerList a = new IntegerList();
         a.expandWith(0, k);
         a.set(k - 1, 1);
         LinearRecurrenceSolver solver = LinearRecurrenceSolver
