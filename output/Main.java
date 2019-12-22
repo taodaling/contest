@@ -4,10 +4,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.io.IOException;
+import java.util.TreeSet;
 import java.io.UncheckedIOException;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
+import java.util.Comparator;
 import java.io.InputStream;
 
 /**
@@ -16,9 +18,7 @@ import java.io.InputStream;
  */
 public class Main {
     public static void main(String[] args) throws Exception {
-        Thread thread = new Thread(null, new TaskAdapter(), "", 1 << 27);
-        thread.start();
-        thread.join();
+        new TaskAdapter().run();
     }
 
     static class TaskAdapter implements Runnable {
@@ -28,16 +28,27 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            Task solver = new Task();
+            BZOJ1150 solver = new BZOJ1150();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class Task {
+    static class BZOJ1150 {
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            DoubleList list = new DoubleList(100);
-            list.push(1.0);
+            int n = in.readInt();
+            int k = in.readInt();
+            int[] xs = new int[n];
+            for (int i = 0; i < n; i++) {
+                xs[i] = in.readInt();
+            }
+            long[] ws = new long[n];
+            for (int i = 0; i < n - 1; i++) {
+                ws[i] = xs[i] - xs[i + 1];
+            }
+            ws[n - 1] = (long) -1e18;
+            PlantTreeProblem problem = new PlantTreeProblem(ws, k);
+            out.println(-problem.getAnswer());
         }
 
     }
@@ -52,6 +63,11 @@ public class Main {
 
         public FastOutput(OutputStream os) {
             this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput println(long c) {
+            cache.append(c).append('\n');
+            return this;
         }
 
         public FastOutput flush() {
@@ -80,111 +96,188 @@ public class Main {
 
     }
 
-    static class DoubleList implements Cloneable {
-        private int size;
-        private int cap;
-        private double[] data;
-        private static final double[] EMPTY = new double[0];
+    static class IntegerBIT {
+        private int[] data;
+        private int n;
 
-        public DoubleList(int cap) {
-            this.cap = cap;
-            if (cap == 0) {
-                data = EMPTY;
-            } else {
-                data = new double[cap];
+        public IntegerBIT(int n) {
+            this.n = n;
+            data = new int[n + 1];
+        }
+
+        public int query(int i) {
+            int sum = 0;
+            for (; i > 0; i -= i & -i) {
+                sum += data[i];
             }
+            return sum;
         }
 
-        public DoubleList(DoubleList list) {
-            this.size = list.size;
-            this.cap = list.cap;
-            this.data = Arrays.copyOf(list.data, size);
-        }
-
-        public DoubleList() {
-            this(0);
-        }
-
-        public void ensureSpace(int req) {
-            if (req > cap) {
-                while (cap < req) {
-                    cap = Math.max(cap + 10, 2 * cap);
-                }
-                data = Arrays.copyOf(data, cap);
+        public void update(int i, int mod) {
+            if (i <= 0) {
+                return;
             }
-        }
-
-        public void add(double x) {
-            ensureSpace(size + 1);
-            data[size++] = x;
-        }
-
-        public void addAll(double[] x, int offset, int len) {
-            ensureSpace(size + len);
-            System.arraycopy(x, offset, data, size, len);
-            size += len;
-        }
-
-        public void addAll(DoubleList list) {
-            addAll(list.data, 0, list.size);
-        }
-
-        public void push(double x) {
-            add(x);
-        }
-
-        public double[] toArray() {
-            return Arrays.copyOf(data, size);
+            for (; i <= n; i += i & -i) {
+                data[i] += mod;
+            }
         }
 
         public String toString() {
-            return Arrays.toString(toArray());
-        }
-
-        public boolean equals(Object obj) {
-            if (!(obj instanceof DoubleList)) {
-                return false;
+            StringBuilder builder = new StringBuilder();
+            for (int i = 1; i <= n; i++) {
+                builder.append(query(i) - query(i - 1)).append(' ');
             }
-            DoubleList other = (DoubleList) obj;
-            return SequenceUtils.equal(data, 0, size - 1, other.data, 0, other.size - 1);
-        }
-
-        public int hashCode() {
-            int h = 1;
-            for (int i = 0; i < size; i++) {
-                h = h * 31 + Double.hashCode(data[i]);
-            }
-            return h;
-        }
-
-        public DoubleList clone() {
-            DoubleList ans = new DoubleList();
-            ans.addAll(this);
-            return ans;
+            return builder.toString();
         }
 
     }
 
     static class FastInput {
         private final InputStream is;
+        private byte[] buf = new byte[1 << 13];
+        private int bufLen;
+        private int bufOffset;
+        private int next;
 
         public FastInput(InputStream is) {
             this.is = is;
         }
 
-    }
-
-    static class SequenceUtils {
-        public static boolean equal(double[] a, int al, int ar, double[] b, int bl, int br) {
-            if ((ar - al) != (br - bl)) {
-                return false;
-            }
-            for (int i = al, j = bl; i <= ar; i++, j++) {
-                if (a[i] != b[j]) {
-                    return false;
+        private int read() {
+            while (bufLen == bufOffset) {
+                bufOffset = 0;
+                try {
+                    bufLen = is.read(buf);
+                } catch (IOException e) {
+                    bufLen = -1;
+                }
+                if (bufLen == -1) {
+                    return -1;
                 }
             }
-            return true;
+            return buf[bufOffset++];
+        }
+
+        public void skipBlank() {
+            while (next >= 0 && next <= 32) {
+                next = read();
+            }
+        }
+
+        public int readInt() {
+            int sign = 1;
+
+            skipBlank();
+            if (next == '+' || next == '-') {
+                sign = next == '+' ? 1 : -1;
+                next = read();
+            }
+
+            int val = 0;
+            if (sign == 1) {
+                while (next >= '0' && next <= '9') {
+                    val = val * 10 + next - '0';
+                    next = read();
+                }
+            } else {
+                while (next >= '0' && next <= '9') {
+                    val = val * 10 - next + '0';
+                    next = read();
+                }
+            }
+
+            return val;
+        }
+
+    }
+
+    static class PlantTreeProblem {
+        IntegerBIT bit;
+        long ans;
+        int n;
+
+        public PlantTreeProblem(long[] weights, int m) {
+            n = weights.length;
+            bit = new IntegerBIT(n + 1);
+            TreeSet<PlantTreeProblem.Node> set = new TreeSet<>(PlantTreeProblem.Node.sortByW);
+            PlantTreeProblem.Node[] nodes = new PlantTreeProblem.Node[n];
+            for (int i = 0; i < n; i++) {
+                nodes[i] = new PlantTreeProblem.Node();
+                nodes[i].w = weights[i];
+                nodes[i].l = nodes[i].r = i;
+            }
+            for (int i = 0; i < n; i++) {
+                if (i > 0) {
+                    nodes[i].prev = nodes[i - 1];
+                } else {
+                    nodes[i].prev = nodes[n - 1];
+                }
+                if (i + 1 < n) {
+                    nodes[i].next = nodes[i + 1];
+                } else {
+                    nodes[i].next = nodes[0];
+                }
+            }
+            set.addAll(Arrays.asList(nodes));
+
+            for (int i = 0; i < m; i++) {
+                PlantTreeProblem.Node last = set.pollLast();
+                ans += last.w;
+                if (last.l <= last.r) {
+                    bit.update(last.l + 1, 1);
+                    bit.update(last.r + 2, 1);
+                } else {
+                    bit.update(1, 1);
+                    bit.update(last.r + 2, 1);
+                    bit.update(last.l + 1, 1);
+                    bit.update(n, 1);
+                }
+
+                if (last.next == last.prev) {
+                    continue;
+                }
+                PlantTreeProblem.Node prev = last.prev;
+                set.remove(last.next);
+                set.remove(last.prev);
+                prev.r = last.next.r;
+                prev.w += last.next.w - last.w;
+                prev.next = last.next.next;
+                prev.next.prev = prev;
+                set.add(prev);
+            }
+        }
+
+        public long getAnswer() {
+            return ans;
+        }
+
+        public boolean chooseOrNot(int i) {
+            return bit.query(i + 1) % 2 == 1;
+        }
+
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < n; i++) {
+                builder.append(chooseOrNot(i)).append(',');
+            }
+            if (builder.length() > 0) {
+                builder.setLength(builder.length() - 1);
+            }
+            return builder.toString();
+        }
+
+        private static class Node {
+            PlantTreeProblem.Node prev;
+            PlantTreeProblem.Node next;
+            long w;
+            int l;
+            int r;
+            static Comparator<PlantTreeProblem.Node> sortByW = (a, b) -> a.w == b.w ? a.l - b.l : Long.compare(a.w, b.w);
+
+            public String toString() {
+                return String.format("[%d, %d] => %d", l, r, w);
+            }
+
         }
 
     }

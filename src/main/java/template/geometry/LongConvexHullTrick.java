@@ -1,32 +1,20 @@
 package template.geometry;
 
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.TreeSet;
+import template.math.DigitUtils;
+
+import java.util.*;
 
 /**
  * Maintain lots of lines and support querying the max y overall lines inserted at some point x.
  */
 public class LongConvexHullTrick implements Iterable<LongConvexHullTrick.Line> {
+    static final long INF = (long) 2e18;
+
     public static class Line {
-        // y = ax + b
         long a;
         long b;
-        long lx;
-        long rx;
-
-        static Comparator<Line> orderByA = new Comparator<Line>() {
-            @Override
-            public int compare(Line o1, Line o2) {
-                return Double.compare(o1.a, o2.a);
-            }
-        };
-        static Comparator<Line> orderByLx = new Comparator<Line>() {
-            @Override
-            public int compare(Line o1, Line o2) {
-                return Long.compare(o1.lx, o2.lx);
-            }
-        };
+        long l;
+        long r;
 
         public Line(long a, long b) {
             this.a = a;
@@ -37,136 +25,115 @@ public class LongConvexHullTrick implements Iterable<LongConvexHullTrick.Line> {
             return a * x + b;
         }
 
-        //a1x+b1=a2x+b2=>(a1-a2)x=b2-b1=>x=(b2-b1)/(a1-a2)
-        public static double intersectAt(Line a, Line b) {
-            return (double)(b.b - a.b) / (a.a - b.a);
-        }
+        static Comparator<Line> sortByA = (x, y) -> Long.compare(x.a, y.a);
+        static Comparator<Line> sortByL = (x, y) -> Long.compare(x.l, y.l);
 
-        @Override
-        public int hashCode() {
-            return (int) (Double.doubleToLongBits(a) * 31 + Double.doubleToLongBits(b));
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            Line line = (Line) obj;
-            return a == line.a && b == line.b;
-        }
-
-        @Override
-        public String toString() {
-            return a + "x+" + b;
+        public boolean isEmpty() {
+            return r < l;
         }
     }
 
-    private TreeSet<Line> setOrderByA = new TreeSet(Line.orderByA);
-    private TreeSet<Line> setOrderByLx = new TreeSet(Line.orderByLx);
+    TreeSet<Line> setSortedByA = new TreeSet<>(Line.sortByA);
+    TreeSet<Line> setSortedByL = new TreeSet<>(Line.sortByL);
 
-    private Line queryLine = new Line(0, 0);
+    //y.a > x.a
+    private long rightBoundOfXPrefX(Line x, Line y) {
+        //x.a * r + x.b >= y.a * r + y.b
+        //x.a * (r + 1) + x.b < y.a * (r + 1) + y.b
+        //r * (y.a - x.a) <= x.b - y.b
+        //r <= (x.b - y.b) / (y.a - x.a)
+        return (x.b - y.b) / (y.a - x.a);
+    }
 
-    public boolean isEmpty(){
-        return setOrderByA.isEmpty();
+    private long rightBoundOfXPrefY(Line x, Line y) {
+        return DigitUtils.floorDiv(x.b - y.b - 1, y.a - x.a);
+    }
+
+    private void removeLine(Line line) {
+        setSortedByA.remove(line);
+        setSortedByL.remove(line);
+    }
+
+    private void addLine(Line line) {
+        setSortedByA.add(line);
+        setSortedByL.add(line);
+    }
+
+    private Line qBody = new Line(0, 0);
+
+    public Line queryLine(long x) {
+        qBody.l = x;
+        return setSortedByL.floor(qBody);
     }
 
     public long query(long x) {
-        queryLine.lx = x;
-        Line line = setOrderByLx.floor(queryLine);
-        return line.y(x);
+        return queryLine(x).y(x);
     }
 
     public Line insert(long a, long b) {
-        Line newLine = new Line(a, b);
-        boolean add = true;
-        while (add) {
-            Line prev = setOrderByA.floor(newLine);
-            if (prev == null) {
-                newLine.lx = Long.MIN_VALUE;
+        Line line = new Line(a, b);
+
+        while (true) {
+            Line floor = setSortedByA.floor(line);
+            if (floor == null) {
+                line.l = -INF;
                 break;
             }
-            if (prev.a == newLine.a) {
-                if (prev.b >= newLine.b) {
-                    add = false;
-                    break;
+            if (floor.a == line.a) {
+                if (floor.b >= line.b) {
+                    return line;
                 } else {
-                    setOrderByA.remove(prev);
-                    setOrderByLx.remove(prev);
-                }
-            } else {
-                double lx = Line.intersectAt(prev, newLine);
-                if (lx <= prev.lx) {
-                    setOrderByA.remove(prev);
-                    setOrderByLx.remove(prev);
-                } else if (lx > prev.rx) {
-                    add = false;
-                    break;
-                } else {
-                    prev.rx = (long)Math.floor(lx);
-                    newLine.lx = (long)Math.ceil(lx);
-                    break;
+                    removeLine(floor);
+                    continue;
                 }
             }
+
+            long r = rightBoundOfXPrefX(floor, line);
+            if (r > floor.r + 1) {
+                return line;
+            }
+            if (r < floor.l) {
+                setSortedByA.remove(floor);
+                continue;
+            }
+            floor.r = r;
+            line.l = r + 1;
+            break;
         }
 
-        while (add) {
-            Line next = setOrderByA.ceiling(newLine);
-            if (next == null) {
-                newLine.rx = Long.MAX_VALUE;
+        while (true) {
+            Line ceil = setSortedByA.ceiling(line);
+            if (ceil == null) {
+                line.r = INF;
                 break;
             }
-            double rx = Line.intersectAt(newLine, next);
-            if (rx >= next.rx) {
-                setOrderByA.remove(next);
-                setOrderByLx.remove(next);
-            } else if (rx < next.lx || (newLine.lx >= rx)) {
-                Line lastLine = setOrderByA.floor(newLine);
-                if (lastLine != null) {
-                    lastLine.rx = next.lx;
-                }
-                add = false;
-                break;
-            } else {
-                next.lx = (long)Math.floor(rx);
-                newLine.rx = (long)Math.ceil(rx);
-                break;
+            long r = rightBoundOfXPrefY(line, ceil);
+            if (r < ceil.l - 1) {
+                return line;
             }
+            removeLine(ceil);
+            if (r >= ceil.r) {
+                continue;
+            }
+            ceil.l = r + 1;
+            line.r = r;
+            addLine(ceil);
+            break;
         }
 
-        if (add) {
-            setOrderByA.add(newLine);
-            setOrderByLx.add(newLine);
+        if (!line.isEmpty()) {
+            addLine(line);
         }
+        return line;
+    }
 
-        return newLine;
+    public void clear() {
+        setSortedByL.clear();
+        setSortedByA.clear();
     }
 
     @Override
     public Iterator<Line> iterator() {
-        return setOrderByA.iterator();
-    }
-
-    public static LongConvexHullTrick merge(LongConvexHullTrick a, LongConvexHullTrick b) {
-        if (a.setOrderByA.size() > b.setOrderByA.size()) {
-            LongConvexHullTrick tmp = a;
-            a = b;
-            b = tmp;
-        }
-        for (Line line : a) {
-            b.insert(line.a, line.b);
-        }
-        return b;
-    }
-
-    public void clear(){
-        setOrderByA.clear();
-        setOrderByLx.clear();
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        for (Line line : this) {
-            builder.append(line).append('\n');
-        }
-        return builder.toString();
+        return setSortedByA.iterator();
     }
 }

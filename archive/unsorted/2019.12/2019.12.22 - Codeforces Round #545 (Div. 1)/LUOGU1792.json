@@ -1,0 +1,45 @@
+{
+  "name" : "LUOGU1792",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "7 3\n1 2 3 4 5 6 7",
+    "output" : "15",
+    "index" : 0,
+    "active" : false
+  }, {
+    "input" : "7 4\n1 2 3 4 5 6 7",
+    "output" : "Error!",
+    "index" : 1,
+    "active" : false
+  }, {
+    "input" : "30 15\n166 -994 -440 -865 1000 744 396 -998 707 528 816 207 628 225 309 -339 207 -871 -77 -692 162 374 -370 -49 592 114 -756 541 946 -68 ",
+    "output" : "4286\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx512M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.LUOGU1792",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.12.22",
+  "contestName" : "Codeforces Round #545 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : false
+}
