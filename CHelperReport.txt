@@ -1,2 +1,2 @@
-39 src/main/java/contest/D. Isolation.json
+36 src/main/java/contest/LUOGU4245.json
 0

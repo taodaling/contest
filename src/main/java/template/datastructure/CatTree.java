@@ -1,4 +1,7 @@
-package template.math;
+package template.datastructure;
+
+import template.math.Bits;
+import template.math.CachedLog2;
 
 public class CatTree<S, E> {
     public CatTree(E[] data, int len, SetHandler<S, E> handler) {

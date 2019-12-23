@@ -11,7 +11,7 @@ public class SecondStirlingNumber {
     private Modular mod;
     private Factorial factorial;
     private Log2 log2 = new Log2();
-    private Power power = new Power(mod);
+    private Power power;
     private int[] stirling;
 
     public int stirling(int i) {
@@ -22,6 +22,7 @@ public class SecondStirlingNumber {
         this.ntt = ntt;
         this.mod = factorial.getModular();
         this.factorial = factorial;
+        power = new Power(factorial.getModular());
         stirling = getStirling(n);
     }
 

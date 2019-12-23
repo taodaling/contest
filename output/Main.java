@@ -2,7 +2,6 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.io.Closeable;
@@ -16,9 +15,7 @@ import java.io.InputStream;
  */
 public class Main {
     public static void main(String[] args) throws Exception {
-        Thread thread = new Thread(null, new TaskAdapter(), "", 1 << 27);
-        thread.start();
-        thread.join();
+        new TaskAdapter().run();
     }
 
     static class TaskAdapter implements Runnable {
@@ -28,70 +25,79 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            DIsolation solver = new DIsolation();
+            LUOGU4245 solver = new LUOGU4245();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class DIsolation {
-        static Modular mod = new Modular(998244353);
-
+    static class LUOGU4245 {
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            int k = in.readInt();
+            int m = in.readInt();
+            int p = in.readInt();
+
             int[] a = new int[n + 1];
-            for (int i = 1; i <= n; i++) {
+            for (int i = 0; i <= n; i++) {
                 a[i] = in.readInt();
             }
-            int[] registries = new int[n + 1];
-            int[] last = new int[n + 1];
-            for (int i = 1; i <= n; i++) {
-                last[i] = registries[a[i]];
-                registries[a[i]] = i;
+            int[] b = new int[m + 1];
+            for (int i = 0; i <= m; i++) {
+                b[i] = in.readInt();
             }
-
-            int[] dp = new int[n + 1];
-            BlockManager bm = new BlockManager(n, k);
-            bm.append(0, new Element(0, 1));
-
-            for (int i = 1; i <= n; i++) {
-                if (last[i] == 0) {
-                    bm.add(0, i - 1, 1);
-                } else {
-                    int l = last[last[i]] + 1;
-                    int m = last[i];
-                    bm.add(l - 1, m - 1, -1);
-                    bm.add(m, i - 1, 1);
-                }
-                dp[i] = mod.valueOf(bm.sumOf());
-                bm.append(i, new Element(0, dp[i]));
+            int[] res = FFT.multiplyMod(a, b, p);
+            for (int i = 0; i < res.length; i++) {
+                out.append(res[i]).append(' ');
             }
-
-            out.println(dp[n]);
         }
 
     }
 
-    static class Element {
-        int k;
-        int val;
+    static class FastOutput implements AutoCloseable, Closeable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
 
-        public Element(int k, int val) {
-            this.k = k;
-            this.val = val;
+        public FastOutput(Writer os) {
+            this.os = os;
         }
 
-    }
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
 
-    static interface LongEntryIterator {
-        boolean hasNext();
+        public FastOutput append(char c) {
+            cache.append(c);
+            return this;
+        }
 
-        void next();
+        public FastOutput append(int c) {
+            cache.append(c);
+            return this;
+        }
 
-        long getEntryKey();
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            return this;
+        }
 
-        long getEntryValue();
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+
+        public String toString() {
+            return cache.toString();
+        }
 
     }
 
@@ -154,378 +160,108 @@ public class Main {
 
     }
 
-    static class Modular {
-        int m;
-
-        public Modular(int m) {
-            this.m = m;
-        }
-
-        public Modular(long m) {
-            this.m = (int) m;
-            if (this.m != m) {
-                throw new IllegalArgumentException();
-            }
-        }
-
-        public Modular(double m) {
-            this.m = (int) m;
-            if (this.m != m) {
-                throw new IllegalArgumentException();
-            }
-        }
-
-        public int valueOf(long x) {
-            x %= m;
-            if (x < 0) {
-                x += m;
-            }
-            return (int) x;
-        }
-
-        public String toString() {
-            return "mod " + m;
-        }
-
-    }
-
-    static class DigitUtils {
-        private DigitUtils() {
-        }
-
-        public static int floorDiv(int a, int b) {
-            return a < 0 ? -ceilDiv(-a, b) : a / b;
-        }
-
-        public static int ceilDiv(int a, int b) {
-            if (a < 0) {
-                return -floorDiv(-a, b);
-            }
-            int c = a / b;
-            if (c * b < a) {
-                return c + 1;
-            }
-            return c;
-        }
-
-    }
-
-    static class BlockManager {
-        Block[] blocks;
-        int bSize;
-
-        public BlockManager(int n, int k) {
-            bSize = (int) Math.ceil(Math.sqrt(n + 1));
-            int m = DigitUtils.ceilDiv(n + 1, bSize);
-            blocks = new Block[m];
-            for (int i = 0; i < m; i++) {
-                blocks[i] = new Block(bSize, k);
-            }
-        }
-
-        public void append(int i, Element e) {
-            blocks[i / bSize].append(e);
-        }
-
-        public void add(int ll, int rr, int x) {
-            for (int i = 0; i < blocks.length; i++) {
-                int l = i * bSize;
-                int r = l + bSize - 1;
-                if (r < ll || l > rr) {
-                    continue;
-                }
-                if (ll <= l && r <= rr) {
-                    blocks[i].add(x);
-                } else {
-                    blocks[i].add(Math.max(ll, l) - l, Math.min(rr, r) - l, x);
+    static class FFT {
+        public static void fft(double[] a, double[] b, boolean inverse) {
+            int n = a.length;
+            int shift = 32 - Integer.numberOfTrailingZeros(n);
+            for (int i = 1; i < n; i++) {
+                int j = Integer.reverse(i << shift);
+                if (i < j) {
+                    double temp = a[i];
+                    a[i] = a[j];
+                    a[j] = temp;
+                    temp = b[i];
+                    b[i] = b[j];
+                    b[j] = temp;
                 }
             }
-        }
-
-        public long sumOf() {
-            long ans = 0;
-            for (Block b : blocks) {
-                ans += b.sum;
-            }
-            return ans;
-        }
-
-    }
-
-    static class Block {
-        Element[] elements;
-        LongHashMap map;
-        int size;
-        int add;
-        long sum;
-        int k;
-
-        public Block(int n, int k) {
-            elements = new Element[n];
-            this.k = k;
-            map = new LongHashMap(n, true);
-        }
-
-        public void add(int x) {
-            if (x > 0) {
-                sum -= map.getOrDefault(k - add, 0);
-                add++;
-            } else {
-                add--;
-                sum += map.getOrDefault(k - add, 0);
-            }
-        }
-
-        public void add(int l, int r, int x) {
-            pushDown();
-            for (int i = l; i <= r; i++) {
-                map.put(elements[i].k, map.getOrDefault(elements[i].k, 0) - elements[i].val);
-                if (x > 0) {
-                    if (elements[i].k == k) {
-                        sum -= elements[i].val;
-                    }
-                    elements[i].k++;
-                } else {
-                    elements[i].k--;
-                    if (elements[i].k == k) {
-                        sum += elements[i].val;
+            for (int len = 2; len <= n; len <<= 1) {
+                int halfLen = len >> 1;
+                double[] cs = new double[halfLen];
+                double[] sn = new double[halfLen];
+                for (int i = 0; i < halfLen; i++) {
+                    double angle = 2 * Math.PI * i / len * (inverse ? -1 : 1);
+                    cs[i] = Math.cos(angle);
+                    sn[i] = Math.sin(angle);
+                }
+                for (int i = 0; i < n; i += len) {
+                    for (int j = 0; j < halfLen; j++) {
+                        double uA = a[i + j];
+                        double uB = b[i + j];
+                        double vA = a[i + j + halfLen] * cs[j] - b[i + j + halfLen] * sn[j];
+                        double vB = a[i + j + halfLen] * sn[j] + b[i + j + halfLen] * cs[j];
+                        a[i + j] = uA + vA;
+                        b[i + j] = uB + vB;
+                        a[i + j + halfLen] = uA - vA;
+                        b[i + j + halfLen] = uB - vB;
                     }
                 }
-                map.put(elements[i].k, map.getOrDefault(elements[i].k, 0) + elements[i].val);
             }
-        }
-
-        private void pushDown() {
-            if (add != 0) {
-                map.clear();
-                for (int i = 0; i < size; i++) {
-                    elements[i].k += add;
-                    map.put(elements[i].k, map.getOrDefault(elements[i].k, 0L) + elements[i].val);
-                }
-                add = 0;
-            }
-        }
-
-        public void append(Element e) {
-            pushDown();
-            elements[size++] = e;
-            map.put(e.k, map.getOrDefault(e.k, 0) + e.val);
-            if (e.k <= k) {
-                sum += e.val;
-            }
-        }
-
-    }
-
-    static class LongHashMap {
-        private int[] slot;
-        private int[] next;
-        private long[] keys;
-        private long[] values;
-        private int alloc;
-        private boolean[] removed;
-        private int mask;
-        private int size;
-        private boolean rehash;
-
-        public LongHashMap(int cap, boolean rehash) {
-            this.mask = (1 << (32 - Integer.numberOfLeadingZeros(cap - 1))) - 1;
-            slot = new int[mask + 1];
-            next = new int[cap + 1];
-            keys = new long[cap + 1];
-            values = new long[cap + 1];
-            removed = new boolean[cap + 1];
-            this.rehash = rehash;
-        }
-
-        private void doubleCapacity() {
-            int newSize = Math.max(next.length + 10, next.length * 2);
-            next = Arrays.copyOf(next, newSize);
-            keys = Arrays.copyOf(keys, newSize);
-            values = Arrays.copyOf(values, newSize);
-            removed = Arrays.copyOf(removed, newSize);
-        }
-
-        public void alloc() {
-            alloc++;
-            if (alloc >= next.length) {
-                doubleCapacity();
-            }
-            next[alloc] = 0;
-            removed[alloc] = false;
-            size++;
-        }
-
-        private void rehash() {
-            int[] newSlots = new int[Math.max(16, slot.length * 2)];
-            int newMask = newSlots.length - 1;
-            for (int i = 0; i < slot.length; i++) {
-                if (slot[i] == 0) {
-                    continue;
-                }
-                int head = slot[i];
-                while (head != 0) {
-                    int n = next[head];
-                    int s = hash(keys[head]) & newMask;
-                    next[head] = newSlots[s];
-                    newSlots[s] = head;
-                    head = n;
+            if (inverse) {
+                for (int i = 0; i < n; i++) {
+                    a[i] /= n;
+                    b[i] /= n;
                 }
             }
-            this.slot = newSlots;
-            this.mask = newMask;
         }
 
-        private int hash(long x) {
-            int h = Long.hashCode(x);
-            return h ^ (h >>> 16);
-        }
+        public static int[] multiplyMod(int[] a, int[] b, int m) {
+            int need = a.length + b.length - 1;
+            int n = Math.max(1, Integer.highestOneBit(need - 1) << 1);
 
-        public void put(long x, long y) {
-            put(x, y, true);
-        }
-
-        public void put(long x, long y, boolean cover) {
-            int h = hash(x);
-            int s = h & mask;
-            if (slot[s] == 0) {
-                alloc();
-                slot[s] = alloc;
-                keys[alloc] = x;
-                values[alloc] = y;
-            } else {
-                int index = findIndexOrLastEntry(s, x);
-                if (keys[index] != x) {
-                    alloc();
-                    next[index] = alloc;
-                    keys[alloc] = x;
-                    values[alloc] = y;
-                } else if (cover) {
-                    values[index] = y;
-                }
+            double[] aReal = new double[n];
+            double[] aImag = new double[n];
+            for (int i = 0; i < a.length; i++) {
+                int x = (a[i] % m + m) % m;
+                aReal[i] = x & ((1 << 15) - 1);
+                aImag[i] = x >> 15;
             }
-            if (rehash && size >= slot.length) {
-                rehash();
+            fft(aReal, aImag, false);
+
+            double[] bReal = new double[n];
+            double[] bImag = new double[n];
+            for (int i = 0; i < b.length; i++) {
+                int x = (b[i] % m + m) % m;
+                bReal[i] = x & ((1 << 15) - 1);
+                bImag[i] = x >> 15;
             }
-        }
+            fft(bReal, bImag, false);
 
-        public long getOrDefault(long x, long def) {
-            int h = hash(x);
-            int s = h & mask;
-            if (slot[s] == 0) {
-                return def;
+            double[] faReal = new double[n];
+            double[] faImag = new double[n];
+            double[] fbReal = new double[n];
+            double[] fbImag = new double[n];
+
+            for (int i = 0; i < n; i++) {
+                int j = (n - i) & (n - 1);
+
+                double a1r = (aReal[i] + aReal[j]) / 2;
+                double a1i = (aImag[i] - aImag[j]) / 2;
+                double a2r = (aImag[i] + aImag[j]) / 2;
+                double a2i = (aReal[j] - aReal[i]) / 2;
+
+                double b1r = (bReal[i] + bReal[j]) / 2;
+                double b1i = (bImag[i] - bImag[j]) / 2;
+                double b2r = (bImag[i] + bImag[j]) / 2;
+                double b2i = (bReal[j] - bReal[i]) / 2;
+
+                faReal[i] = a1r * b1r - a1i * b1i - a2r * b2i - a2i * b2r;
+                faImag[i] = a1r * b1i + a1i * b1r + a2r * b2r - a2i * b2i;
+
+                fbReal[i] = a1r * b2r - a1i * b2i + a2r * b1r - a2i * b1i;
+                fbImag[i] = a1r * b2i + a1i * b2r + a2r * b1i + a2i * b1r;
             }
-            int index = findIndexOrLastEntry(s, x);
-            return keys[index] == x ? values[index] : def;
-        }
 
-        private int findIndexOrLastEntry(int s, long x) {
-            int iter = slot[s];
-            while (keys[iter] != x) {
-                if (next[iter] != 0) {
-                    iter = next[iter];
-                } else {
-                    return iter;
-                }
+            fft(faReal, faImag, true);
+            fft(fbReal, fbImag, true);
+            int[] res = new int[need];
+            for (int i = 0; i < need; i++) {
+                long aa = (long) (faReal[i] + 0.5);
+                long bb = (long) (fbReal[i] + 0.5);
+                long cc = (long) (faImag[i] + 0.5);
+                res[i] = (int) ((aa % m + (bb % m << 15) + (cc % m << 30)) % m);
             }
-            return iter;
-        }
-
-        public void clear() {
-            alloc = 0;
-            Arrays.fill(slot, 0);
-            size = 0;
-        }
-
-        public LongEntryIterator iterator() {
-            return new LongEntryIterator() {
-                int index = 1;
-                int readIndex = -1;
-
-
-                public boolean hasNext() {
-                    while (index <= alloc && removed[index]) {
-                        index++;
-                    }
-                    return index <= alloc;
-                }
-
-
-                public long getEntryKey() {
-                    return keys[readIndex];
-                }
-
-
-                public long getEntryValue() {
-                    return values[readIndex];
-                }
-
-
-                public void next() {
-                    if (!hasNext()) {
-                        throw new IllegalStateException();
-                    }
-                    readIndex = index;
-                    index++;
-                }
-            };
-        }
-
-        public String toString() {
-            LongEntryIterator iterator = iterator();
-            StringBuilder builder = new StringBuilder("{");
-            while (iterator.hasNext()) {
-                iterator.next();
-                builder.append(iterator.getEntryKey()).append("->").append(iterator.getEntryValue()).append(',');
-            }
-            if (builder.charAt(builder.length() - 1) == ',') {
-                builder.setLength(builder.length() - 1);
-            }
-            builder.append('}');
-            return builder.toString();
-        }
-
-    }
-
-    static class FastOutput implements AutoCloseable, Closeable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
-
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput println(int c) {
-            cache.append(c).append('\n');
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        }
-
-        public String toString() {
-            return cache.toString();
+            return res;
         }
 
     }
