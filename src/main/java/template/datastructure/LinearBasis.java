@@ -2,7 +2,7 @@ package template.datastructure;
 
 import java.util.Arrays;
 
-public class LinearBasis {
+public class LinearBasis implements Cloneable {
     private long[] map = new long[64];
     private int size;
 
@@ -102,7 +102,7 @@ public class LinearBasis {
     }
 
     /**
-     * Find the maximun value x ^ v where v is generated
+     * Find the maximum value x ^ v where v is generated
      */
     public long theMaximumNumberXor(long x) {
         for (int i = 0; i < 64; i++) {
@@ -114,5 +114,16 @@ public class LinearBasis {
             }
         }
         return x;
+    }
+
+    @Override
+    public LinearBasis clone() {
+        try {
+            LinearBasis ans = (LinearBasis) super.clone();
+            ans.map = ans.map.clone();
+            return ans;
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

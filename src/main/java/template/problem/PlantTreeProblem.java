@@ -51,7 +51,7 @@ public class PlantTreeProblem {
             } else {
                 bit.update(1, 1);
                 bit.update(last.r + 2, 1);
-                bit.update(last.l + 1, 1);
+                bit.update(last.l + 1, n + 1);
                 bit.update(n, 1);
             }
 

@@ -32,7 +32,7 @@ public class DigitBase {
 
     public int ceilLog(long x) {
         int ans = 0;
-        while (x > 0) {
+        while (x > 1) {
             x /= base;
             ans++;
         }

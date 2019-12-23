@@ -333,6 +333,17 @@ public class CompareUtils {
         }
     }
 
+    public static<T> void mergeAscending(T[] a, int al, int ar, T[] b, int bl, int br, T[] c, int cl, Comparator<T> comp) {
+        while (al <= ar || bl <= br) {
+            if (bl > br || (al <= ar && comp.compare(a[al], b[bl]) <= 0)) {
+                c[cl++] = a[al++];
+            } else {
+                c[cl++] = b[bl++];
+            }
+        }
+    }
+
+
     private static <T> void radixSort0(T[] data, Object[] output, int[] buf, int l, int r,
                                        ToIntFunction<T> indexFetcher) {
         Arrays.fill(buf, 0);

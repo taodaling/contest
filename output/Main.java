@@ -4,12 +4,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.io.IOException;
-import java.util.TreeSet;
 import java.io.UncheckedIOException;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
-import java.util.Comparator;
 import java.io.InputStream;
 
 /**
@@ -18,7 +16,9 @@ import java.io.InputStream;
  */
 public class Main {
     public static void main(String[] args) throws Exception {
-        new TaskAdapter().run();
+        Thread thread = new Thread(null, new TaskAdapter(), "", 1 << 27);
+        thread.start();
+        thread.join();
     }
 
     static class TaskAdapter implements Runnable {
@@ -28,107 +28,70 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            BZOJ1150 solver = new BZOJ1150();
+            DIsolation solver = new DIsolation();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class BZOJ1150 {
+    static class DIsolation {
+        static Modular mod = new Modular(998244353);
+
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
             int k = in.readInt();
-            int[] xs = new int[n];
-            for (int i = 0; i < n; i++) {
-                xs[i] = in.readInt();
-            }
-            long[] ws = new long[n];
-            for (int i = 0; i < n - 1; i++) {
-                ws[i] = xs[i] - xs[i + 1];
-            }
-            ws[n - 1] = (long) -1e18;
-            PlantTreeProblem problem = new PlantTreeProblem(ws, k);
-            out.println(-problem.getAnswer());
-        }
-
-    }
-
-    static class FastOutput implements AutoCloseable, Closeable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
-
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput println(long c) {
-            cache.append(c).append('\n');
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        }
-
-        public String toString() {
-            return cache.toString();
-        }
-
-    }
-
-    static class IntegerBIT {
-        private int[] data;
-        private int n;
-
-        public IntegerBIT(int n) {
-            this.n = n;
-            data = new int[n + 1];
-        }
-
-        public int query(int i) {
-            int sum = 0;
-            for (; i > 0; i -= i & -i) {
-                sum += data[i];
-            }
-            return sum;
-        }
-
-        public void update(int i, int mod) {
-            if (i <= 0) {
-                return;
-            }
-            for (; i <= n; i += i & -i) {
-                data[i] += mod;
-            }
-        }
-
-        public String toString() {
-            StringBuilder builder = new StringBuilder();
+            int[] a = new int[n + 1];
             for (int i = 1; i <= n; i++) {
-                builder.append(query(i) - query(i - 1)).append(' ');
+                a[i] = in.readInt();
             }
-            return builder.toString();
+            int[] registries = new int[n + 1];
+            int[] last = new int[n + 1];
+            for (int i = 1; i <= n; i++) {
+                last[i] = registries[a[i]];
+                registries[a[i]] = i;
+            }
+
+            int[] dp = new int[n + 1];
+            BlockManager bm = new BlockManager(n, k);
+            bm.append(0, new Element(0, 1));
+
+            for (int i = 1; i <= n; i++) {
+                if (last[i] == 0) {
+                    bm.add(0, i - 1, 1);
+                } else {
+                    int l = last[last[i]] + 1;
+                    int m = last[i];
+                    bm.add(l - 1, m - 1, -1);
+                    bm.add(m, i - 1, 1);
+                }
+                dp[i] = mod.valueOf(bm.sumOf());
+                bm.append(i, new Element(0, dp[i]));
+            }
+
+            out.println(dp[n]);
         }
+
+    }
+
+    static class Element {
+        int k;
+        int val;
+
+        public Element(int k, int val) {
+            this.k = k;
+            this.val = val;
+        }
+
+    }
+
+    static interface LongEntryIterator {
+        boolean hasNext();
+
+        void next();
+
+        long getEntryKey();
+
+        long getEntryValue();
 
     }
 
@@ -191,93 +154,378 @@ public class Main {
 
     }
 
-    static class PlantTreeProblem {
-        IntegerBIT bit;
-        long ans;
-        int n;
+    static class Modular {
+        int m;
 
-        public PlantTreeProblem(long[] weights, int m) {
-            n = weights.length;
-            bit = new IntegerBIT(n + 1);
-            TreeSet<PlantTreeProblem.Node> set = new TreeSet<>(PlantTreeProblem.Node.sortByW);
-            PlantTreeProblem.Node[] nodes = new PlantTreeProblem.Node[n];
-            for (int i = 0; i < n; i++) {
-                nodes[i] = new PlantTreeProblem.Node();
-                nodes[i].w = weights[i];
-                nodes[i].l = nodes[i].r = i;
-            }
-            for (int i = 0; i < n; i++) {
-                if (i > 0) {
-                    nodes[i].prev = nodes[i - 1];
-                } else {
-                    nodes[i].prev = nodes[n - 1];
-                }
-                if (i + 1 < n) {
-                    nodes[i].next = nodes[i + 1];
-                } else {
-                    nodes[i].next = nodes[0];
-                }
-            }
-            set.addAll(Arrays.asList(nodes));
+        public Modular(int m) {
+            this.m = m;
+        }
 
-            for (int i = 0; i < m; i++) {
-                PlantTreeProblem.Node last = set.pollLast();
-                ans += last.w;
-                if (last.l <= last.r) {
-                    bit.update(last.l + 1, 1);
-                    bit.update(last.r + 2, 1);
-                } else {
-                    bit.update(1, 1);
-                    bit.update(last.r + 2, 1);
-                    bit.update(last.l + 1, 1);
-                    bit.update(n, 1);
-                }
-
-                if (last.next == last.prev) {
-                    continue;
-                }
-                PlantTreeProblem.Node prev = last.prev;
-                set.remove(last.next);
-                set.remove(last.prev);
-                prev.r = last.next.r;
-                prev.w += last.next.w - last.w;
-                prev.next = last.next.next;
-                prev.next.prev = prev;
-                set.add(prev);
+        public Modular(long m) {
+            this.m = (int) m;
+            if (this.m != m) {
+                throw new IllegalArgumentException();
             }
         }
 
-        public long getAnswer() {
-            return ans;
+        public Modular(double m) {
+            this.m = (int) m;
+            if (this.m != m) {
+                throw new IllegalArgumentException();
+            }
         }
 
-        public boolean chooseOrNot(int i) {
-            return bit.query(i + 1) % 2 == 1;
+        public int valueOf(long x) {
+            x %= m;
+            if (x < 0) {
+                x += m;
+            }
+            return (int) x;
         }
 
         public String toString() {
-            StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < n; i++) {
-                builder.append(chooseOrNot(i)).append(',');
+            return "mod " + m;
+        }
+
+    }
+
+    static class DigitUtils {
+        private DigitUtils() {
+        }
+
+        public static int floorDiv(int a, int b) {
+            return a < 0 ? -ceilDiv(-a, b) : a / b;
+        }
+
+        public static int ceilDiv(int a, int b) {
+            if (a < 0) {
+                return -floorDiv(-a, b);
             }
-            if (builder.length() > 0) {
+            int c = a / b;
+            if (c * b < a) {
+                return c + 1;
+            }
+            return c;
+        }
+
+    }
+
+    static class BlockManager {
+        Block[] blocks;
+        int bSize;
+
+        public BlockManager(int n, int k) {
+            bSize = (int) Math.ceil(Math.sqrt(n + 1));
+            int m = DigitUtils.ceilDiv(n + 1, bSize);
+            blocks = new Block[m];
+            for (int i = 0; i < m; i++) {
+                blocks[i] = new Block(bSize, k);
+            }
+        }
+
+        public void append(int i, Element e) {
+            blocks[i / bSize].append(e);
+        }
+
+        public void add(int ll, int rr, int x) {
+            for (int i = 0; i < blocks.length; i++) {
+                int l = i * bSize;
+                int r = l + bSize - 1;
+                if (r < ll || l > rr) {
+                    continue;
+                }
+                if (ll <= l && r <= rr) {
+                    blocks[i].add(x);
+                } else {
+                    blocks[i].add(Math.max(ll, l) - l, Math.min(rr, r) - l, x);
+                }
+            }
+        }
+
+        public long sumOf() {
+            long ans = 0;
+            for (Block b : blocks) {
+                ans += b.sum;
+            }
+            return ans;
+        }
+
+    }
+
+    static class Block {
+        Element[] elements;
+        LongHashMap map;
+        int size;
+        int add;
+        long sum;
+        int k;
+
+        public Block(int n, int k) {
+            elements = new Element[n];
+            this.k = k;
+            map = new LongHashMap(n, true);
+        }
+
+        public void add(int x) {
+            if (x > 0) {
+                sum -= map.getOrDefault(k - add, 0);
+                add++;
+            } else {
+                add--;
+                sum += map.getOrDefault(k - add, 0);
+            }
+        }
+
+        public void add(int l, int r, int x) {
+            pushDown();
+            for (int i = l; i <= r; i++) {
+                map.put(elements[i].k, map.getOrDefault(elements[i].k, 0) - elements[i].val);
+                if (x > 0) {
+                    if (elements[i].k == k) {
+                        sum -= elements[i].val;
+                    }
+                    elements[i].k++;
+                } else {
+                    elements[i].k--;
+                    if (elements[i].k == k) {
+                        sum += elements[i].val;
+                    }
+                }
+                map.put(elements[i].k, map.getOrDefault(elements[i].k, 0) + elements[i].val);
+            }
+        }
+
+        private void pushDown() {
+            if (add != 0) {
+                map.clear();
+                for (int i = 0; i < size; i++) {
+                    elements[i].k += add;
+                    map.put(elements[i].k, map.getOrDefault(elements[i].k, 0L) + elements[i].val);
+                }
+                add = 0;
+            }
+        }
+
+        public void append(Element e) {
+            pushDown();
+            elements[size++] = e;
+            map.put(e.k, map.getOrDefault(e.k, 0) + e.val);
+            if (e.k <= k) {
+                sum += e.val;
+            }
+        }
+
+    }
+
+    static class LongHashMap {
+        private int[] slot;
+        private int[] next;
+        private long[] keys;
+        private long[] values;
+        private int alloc;
+        private boolean[] removed;
+        private int mask;
+        private int size;
+        private boolean rehash;
+
+        public LongHashMap(int cap, boolean rehash) {
+            this.mask = (1 << (32 - Integer.numberOfLeadingZeros(cap - 1))) - 1;
+            slot = new int[mask + 1];
+            next = new int[cap + 1];
+            keys = new long[cap + 1];
+            values = new long[cap + 1];
+            removed = new boolean[cap + 1];
+            this.rehash = rehash;
+        }
+
+        private void doubleCapacity() {
+            int newSize = Math.max(next.length + 10, next.length * 2);
+            next = Arrays.copyOf(next, newSize);
+            keys = Arrays.copyOf(keys, newSize);
+            values = Arrays.copyOf(values, newSize);
+            removed = Arrays.copyOf(removed, newSize);
+        }
+
+        public void alloc() {
+            alloc++;
+            if (alloc >= next.length) {
+                doubleCapacity();
+            }
+            next[alloc] = 0;
+            removed[alloc] = false;
+            size++;
+        }
+
+        private void rehash() {
+            int[] newSlots = new int[Math.max(16, slot.length * 2)];
+            int newMask = newSlots.length - 1;
+            for (int i = 0; i < slot.length; i++) {
+                if (slot[i] == 0) {
+                    continue;
+                }
+                int head = slot[i];
+                while (head != 0) {
+                    int n = next[head];
+                    int s = hash(keys[head]) & newMask;
+                    next[head] = newSlots[s];
+                    newSlots[s] = head;
+                    head = n;
+                }
+            }
+            this.slot = newSlots;
+            this.mask = newMask;
+        }
+
+        private int hash(long x) {
+            int h = Long.hashCode(x);
+            return h ^ (h >>> 16);
+        }
+
+        public void put(long x, long y) {
+            put(x, y, true);
+        }
+
+        public void put(long x, long y, boolean cover) {
+            int h = hash(x);
+            int s = h & mask;
+            if (slot[s] == 0) {
+                alloc();
+                slot[s] = alloc;
+                keys[alloc] = x;
+                values[alloc] = y;
+            } else {
+                int index = findIndexOrLastEntry(s, x);
+                if (keys[index] != x) {
+                    alloc();
+                    next[index] = alloc;
+                    keys[alloc] = x;
+                    values[alloc] = y;
+                } else if (cover) {
+                    values[index] = y;
+                }
+            }
+            if (rehash && size >= slot.length) {
+                rehash();
+            }
+        }
+
+        public long getOrDefault(long x, long def) {
+            int h = hash(x);
+            int s = h & mask;
+            if (slot[s] == 0) {
+                return def;
+            }
+            int index = findIndexOrLastEntry(s, x);
+            return keys[index] == x ? values[index] : def;
+        }
+
+        private int findIndexOrLastEntry(int s, long x) {
+            int iter = slot[s];
+            while (keys[iter] != x) {
+                if (next[iter] != 0) {
+                    iter = next[iter];
+                } else {
+                    return iter;
+                }
+            }
+            return iter;
+        }
+
+        public void clear() {
+            alloc = 0;
+            Arrays.fill(slot, 0);
+            size = 0;
+        }
+
+        public LongEntryIterator iterator() {
+            return new LongEntryIterator() {
+                int index = 1;
+                int readIndex = -1;
+
+
+                public boolean hasNext() {
+                    while (index <= alloc && removed[index]) {
+                        index++;
+                    }
+                    return index <= alloc;
+                }
+
+
+                public long getEntryKey() {
+                    return keys[readIndex];
+                }
+
+
+                public long getEntryValue() {
+                    return values[readIndex];
+                }
+
+
+                public void next() {
+                    if (!hasNext()) {
+                        throw new IllegalStateException();
+                    }
+                    readIndex = index;
+                    index++;
+                }
+            };
+        }
+
+        public String toString() {
+            LongEntryIterator iterator = iterator();
+            StringBuilder builder = new StringBuilder("{");
+            while (iterator.hasNext()) {
+                iterator.next();
+                builder.append(iterator.getEntryKey()).append("->").append(iterator.getEntryValue()).append(',');
+            }
+            if (builder.charAt(builder.length() - 1) == ',') {
                 builder.setLength(builder.length() - 1);
             }
+            builder.append('}');
             return builder.toString();
         }
 
-        private static class Node {
-            PlantTreeProblem.Node prev;
-            PlantTreeProblem.Node next;
-            long w;
-            int l;
-            int r;
-            static Comparator<PlantTreeProblem.Node> sortByW = (a, b) -> a.w == b.w ? a.l - b.l : Long.compare(a.w, b.w);
+    }
 
-            public String toString() {
-                return String.format("[%d, %d] => %d", l, r, w);
+    static class FastOutput implements AutoCloseable, Closeable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
+
+        public FastOutput(Writer os) {
+            this.os = os;
+        }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput println(int c) {
+            cache.append(c).append('\n');
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
             }
+            return this;
+        }
 
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+
+        public String toString() {
+            return cache.toString();
         }
 
     }

@@ -1,15 +1,13 @@
 package template.primitve.generator;
 
-import template.utils.IntComparator;
+public class MinLongStack {
+    LongDequeImpl minDeque;
+    LongDequeImpl data;
+    LongComparator comparator;
 
-public class MinIntStack {
-    IntDequeImpl minDeque;
-    IntDequeImpl data;
-    IntComparator comparator;
-
-    public MinIntStack(int cap, IntComparator comparator) {
-        minDeque = new IntDequeImpl(cap);
-        data = new IntDequeImpl(cap);
+    public MinLongStack(int cap, LongComparator comparator) {
+        minDeque = new LongDequeImpl(cap);
+        data = new LongDequeImpl(cap);
         this.comparator = comparator;
     }
 
@@ -28,12 +26,12 @@ public class MinIntStack {
         data.addLast(val);
     }
 
-    public int peek() {
+    public long peek() {
         return data.peekLast();
     }
 
-    public int pop() {
-        int val = data.removeLast();
+    public long pop() {
+        long val = data.removeLast();
         if (minDeque.peekLast() == val) {
             minDeque.removeLast();
         }

@@ -2,47 +2,56 @@ package template.datastructure;
 
 import java.util.Random;
 
-
-public class Treap implements Cloneable {
+public class PersistentTreap implements Cloneable {
     private static Random random = new Random();
-
-    static Treap NIL = new Treap();
+    static PersistentTreap NIL = new PersistentTreap();
 
     static {
         NIL.left = NIL.right = NIL;
         NIL.size = 0;
     }
 
-    Treap left = NIL;
-    Treap right = NIL;
+    PersistentTreap left = NIL;
+    PersistentTreap right = NIL;
     int size = 1;
     int key;
 
     @Override
-    public Treap clone() {
+    public PersistentTreap clone() {
+        if (this == NIL) {
+            return this;
+        }
         try {
-            return (Treap) super.clone();
+            return (PersistentTreap) super.clone();
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException(e);
         }
     }
 
     public void pushDown() {
+        if (this == NIL) {
+            return;
+        }
+        left = left.clone();
+        right = right.clone();
     }
 
     public void pushUp() {
+        if (this == NIL) {
+            return;
+        }
         size = left.size + right.size + 1;
     }
 
     /**
      * split by rank and the node whose rank is argument will stored at result[0]
      */
-    public static Treap[] splitByRank(Treap root, int rank) {
+    public static PersistentTreap[] splitByRank(PersistentTreap root, int rank) {
         if (root == NIL) {
-            return new Treap[]{NIL, NIL};
+            return new PersistentTreap[]{NIL, NIL};
         }
         root.pushDown();
-        Treap[] result;
+        PersistentTreap[] result;
         if (root.left.size >= rank) {
             result = splitByRank(root.left, rank);
             root.left = result[1];
@@ -56,7 +65,7 @@ public class Treap implements Cloneable {
         return result;
     }
 
-    public static Treap merge(Treap a, Treap b) {
+    public static PersistentTreap merge(PersistentTreap a, PersistentTreap b) {
         if (a == NIL) {
             return b;
         }
@@ -76,7 +85,7 @@ public class Treap implements Cloneable {
         }
     }
 
-    public static void toString(Treap root, StringBuilder builder) {
+    public static void toString(PersistentTreap root, StringBuilder builder) {
         if (root == NIL) {
             return;
         }
@@ -86,11 +95,11 @@ public class Treap implements Cloneable {
         toString(root.right, builder);
     }
 
-    public static Treap clone(Treap root) {
+    public static PersistentTreap clone(PersistentTreap root) {
         if (root == NIL) {
             return NIL;
         }
-        Treap clone = root.clone();
+        PersistentTreap clone = root.clone();
         clone.left = clone(root.left);
         clone.right = clone(root.right);
         return clone;
@@ -106,12 +115,12 @@ public class Treap implements Cloneable {
     /**
      * nodes with key <= arguments will stored at result[0]
      */
-    public static Treap[] splitByKey(Treap root, int key) {
+    public static PersistentTreap[] splitByKey(PersistentTreap root, int key) {
         if (root == NIL) {
-            return new Treap[]{NIL, NIL};
+            return new PersistentTreap[]{NIL, NIL};
         }
         root.pushDown();
-        Treap[] result;
+        PersistentTreap[] result;
         if (root.key > key) {
             result = splitByKey(root.left, key);
             root.left = result[1];
@@ -125,20 +134,20 @@ public class Treap implements Cloneable {
         return result;
     }
 
-    public static int getKeyByRank(Treap treap, int k) {
-        while (treap.size > 1) {
-            treap.pushDown();
-            if (treap.left.size >= k) {
-                treap = treap.left;
+    public static int getKeyByRank(PersistentTreap PersistentTreap, int k) {
+        while (PersistentTreap.size > 1) {
+            PersistentTreap.pushDown();
+            if (PersistentTreap.left.size >= k) {
+                PersistentTreap = PersistentTreap.left;
             } else {
-                k -= treap.left.size;
+                k -= PersistentTreap.left.size;
                 if (k == 1) {
                     break;
                 }
                 k--;
-                treap = treap.right;
+                PersistentTreap = PersistentTreap.right;
             }
         }
-        return treap.key;
+        return PersistentTreap.key;
     }
 }
