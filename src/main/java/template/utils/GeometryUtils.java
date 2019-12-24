@@ -1,7 +1,7 @@
 package template.utils;
 
 public class GeometryUtils {
-    public static final double PREC = 1e-12;
+    public static final double PREC = 1e-15;
     public static final double INF = 1e30;
 
     public static double valueOf(double x) {
@@ -42,4 +42,6 @@ public class GeometryUtils {
         }
         return theta;
     }
+
+
 }

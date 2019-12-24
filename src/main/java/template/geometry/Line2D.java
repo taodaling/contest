@@ -8,23 +8,32 @@ public class Line2D {
     public final Point2D a;
     public final Point2D b;
     public final Point2D d;
-    public final double theta;
+    private double theta = -1e50;
     /**
      * 按照[0,2pi)极角对线排序
      */
     static final Comparator<Line2D> SORT_BY_ANGLE = new Comparator<Line2D>() {
         @Override
         public int compare(Line2D a, Line2D b) {
-            return Double.compare(a.theta, b.theta);
+            return Double.compare(a.getTheta(), b.getTheta());
         }
     };
 
+    public double getTheta() {
+        if (theta == -1e50) {
+            theta = Math.atan2(d.y, d.x);
+        }
+        return theta;
+    }
 
     public Line2D(Point2D a, Point2D b) {
         this.a = a;
         this.b = b;
         d = new Point2D(b.x - a.x, b.y - a.y);
-        theta = Math.atan2(d.y, d.x);
+    }
+
+    public Point2D getVector(){
+        return d;
     }
 
     /**

@@ -7,15 +7,21 @@ public class Segment2D extends Line2D {
         super(a, b);
     }
 
+    public Line2D getPerpendicularBisector() {
+        Point2D center = new Point2D((a.x + b.x) / 2, (a.y + b.y) / 2);
+        Point2D apeak = d.getApeak();
+        return new Line2D(center, center.add(apeak));
+    }
+
     /**
      * 判断p是否落在线段section上
      */
     public boolean contain(Point2D p) {
         return GeometryUtils.cross(p.x - a.x, p.y - a.y, d.x, d.y) == 0
-                        && GeometryUtils.valueOf(p.x - Math.min(a.x, b.x)) >= 0
-                        && GeometryUtils.valueOf(p.x - Math.max(a.x, b.x)) <= 0
-                        && GeometryUtils.valueOf(p.y - Math.min(a.y, b.y)) >= 0
-                        && GeometryUtils.valueOf(p.y - Math.max(a.y, b.y)) <= 0;
+                && GeometryUtils.valueOf(p.x - Math.min(a.x, b.x)) >= 0
+                && GeometryUtils.valueOf(p.x - Math.max(a.x, b.x)) <= 0
+                && GeometryUtils.valueOf(p.y - Math.min(a.y, b.y)) >= 0
+                && GeometryUtils.valueOf(p.y - Math.max(a.y, b.y)) <= 0;
     }
 
     public boolean containWithoutEndpoint(Point2D p) {

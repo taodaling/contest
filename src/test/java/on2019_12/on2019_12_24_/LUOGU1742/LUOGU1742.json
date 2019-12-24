@@ -1,5 +1,5 @@
 {
-  "name" : "LUOGU4245",
+  "name" : "LUOGU1742",
   "testType" : "SINGLE",
   "input" : {
     "type" : "STANDARD",
@@ -10,19 +10,31 @@
     "fileName" : "output.txt"
   },
   "tests" : [ {
-    "input" : "5 8 28\n19 32 0 182 99 95\n77 54 15 3 98 66 21 20 38",
-    "output" : "7 18 25 19 5 13 12 2 9 22 5 27 6 26",
+    "input" : "6\n8.0 9.0\n4.0 7.5\n1.0 2.0\n5.1 8.7\n9.0 2.0\n4.5 1.0",
+    "output" : "5.0000000000\n5.0000000000 5.0000000000",
     "index" : 0,
+    "active" : true
+  }, {
+    "input" : "3\n0 0\n1 0\n2 0",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "2\n1 0\n0 0",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "2\n1 1\n1 1",
+    "index" : 3,
     "active" : true
   } ],
   "location" : "src/main/java/contest",
-  "vmArgs" : "-Xmx256M",
+  "vmArgs" : "-Xmx256m -Xss64m",
   "mainClass" : "Main",
-  "taskClass" : "contest.LUOGU4245",
+  "taskClass" : "on2019_12.on2019_12_24_.LUOGU1742.LUOGU1742",
   "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
   "checkerParameters" : "",
   "testClasses" : [ ],
-  "date" : "2019.12.23",
+  "date" : "2019.12.24",
   "contestName" : "",
   "truncate" : true,
   "inputClass" : "template.io.FastInput",

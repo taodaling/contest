@@ -15,7 +15,7 @@ public class HalfPlaneIntersection {
         return convex;
     }
 
-    public boolean isHasSolution() {
+    public boolean hasSolution() {
         return hasSolution;
     }
 
@@ -34,7 +34,7 @@ public class HalfPlaneIntersection {
         Deque<Line2D> deque = new ArrayDeque(n);
         for (int i = 0; i < n; i++) {
             Line2D line = lines[i];
-            while (i + 1 < n && GeometryUtils.valueOf(line.theta - lines[i + 1].theta) == 0) {
+            while (i + 1 < n && GeometryUtils.valueOf(line.getTheta() - lines[i + 1].getTheta()) == 0) {
                 i++;
                 if (line.whichSideIs(lines[i].b) == 1) {
                     line = lines[i];

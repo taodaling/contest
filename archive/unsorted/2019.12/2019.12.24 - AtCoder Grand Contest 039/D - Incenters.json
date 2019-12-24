@@ -1,0 +1,45 @@
+{
+  "name" : "D - Incenters",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 4\n0\n1\n3\n",
+    "output" : "0.414213562373095 0.000000000000000\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "4 8\n1\n3\n5\n6\n",
+    "output" : "-0.229401949926902 -0.153281482438188\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "10 100\n2\n11\n35\n42\n54\n69\n89\n91\n93\n99\n",
+    "output" : "0.352886583546338 -0.109065017701873\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.TaskD",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.12.24",
+  "contestName" : "AtCoder Grand Contest 039",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

@@ -1,5 +1,5 @@
 {
-  "name" : "LUOGU1919",
+  "name" : "C. Sasha and a Patient Friend",
   "testType" : "SINGLE",
   "input" : {
     "type" : "STANDARD",
@@ -10,30 +10,30 @@
     "fileName" : "output.txt"
   },
   "tests" : [ {
-    "input" : "114514 \n1919810",
-    "output" : "219845122340",
+    "input" : "6\n1 2 1\n1 4 -3\n3 1 6 1\n3 1 6 3\n3 1 6 4\n3 1 6 5\n",
+    "output" : "5\n5.666667\n6\n-1\n",
     "index" : 0,
     "active" : true
   }, {
-    "input" : "11\n11",
-    "output" : "121",
+    "input" : "10\n1 2 2\n1 4 4\n1 7 -10\n3 2 4 1\n3 5 6 0\n3 1 15 1\n2 4\n3 1 15 1\n1 8 1\n3 1 15 1\n",
+    "output" : "-1\n5\n8.7\n8.1\n-1\n",
     "index" : 1,
     "active" : true
   }, {
-    "input" : "4\n3",
-    "output" : "12",
+    "input" : "5\n1 1000 9999999\n1 2000 -9999\n3 1000 2000 0\n2 1000\n3 1000 2002 1\n",
+    "output" : "1000\n2000.0001\n",
     "index" : 2,
     "active" : true
   } ],
   "location" : "src/main/java/contest",
   "vmArgs" : "-Xmx256M",
   "mainClass" : "Main",
-  "taskClass" : "contest.LUOGU1919",
+  "taskClass" : "contest.CSashaAndAPatientFriend",
   "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
   "checkerParameters" : "",
   "testClasses" : [ ],
-  "date" : "2019.12.23",
-  "contestName" : "",
+  "date" : "2019.12.24",
+  "contestName" : "Codeforces Round #539 (Div. 1)",
   "truncate" : true,
   "inputClass" : "template.io.FastInput",
   "outputClass" : "template.io.FastOutput",
@@ -41,5 +41,5 @@
   "failOnOverflow" : false,
   "interactive" : false,
   "interactor" : "net.egork.chelper.tester.Interactor",
-  "newThread" : false
+  "newThread" : true
 }

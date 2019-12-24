@@ -7,14 +7,14 @@ import java.util.Comparator;
 public class Point2D {
     public final double x;
     public final double y;
-    static final Point2D ORIGIN = new Point2D(0, 0);
-    static final Comparator<Point2D> SORT_BY_X_AND_Y = new Comparator<Point2D>() {
+    public static final Point2D ORIGIN = new Point2D(0, 0);
+    public static final Comparator<Point2D> SORT_BY_X_AND_Y = new Comparator<Point2D>() {
         @Override
         public int compare(Point2D a, Point2D b) {
             return a.x == b.x ? Double.compare(a.y, b.y) : Double.compare(a.x, b.x);
         }
     };
-    static final Comparator<Point2D> SORT_BY_Y_AND_X = new Comparator<Point2D>() {
+    public static final Comparator<Point2D> SORT_BY_Y_AND_X = new Comparator<Point2D>() {
         @Override
         public int compare(Point2D a, Point2D b) {
             return a.y == b.y ? Double.compare(a.x, b.x) : Double.compare(a.y, b.y);
