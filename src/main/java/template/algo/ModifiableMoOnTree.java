@@ -9,7 +9,7 @@ import java.util.List;
 
 public class ModifiableMoOnTree {
     private static class Node {
-        List<Node> next = new ArrayList(2);
+        List<Node> next = new ArrayList();
         int id;
         int close;
         int open;

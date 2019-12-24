@@ -2,6 +2,7 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.io.Closeable;
@@ -27,38 +28,111 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            TaskD solver = new TaskD();
+            DEnchantedArtifact solver = new DEnchantedArtifact();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class TaskD {
+    static class DEnchantedArtifact {
+        FastOutput out;
+        FastInput in;
+
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            double xExp = 0;
-            double yExp = 0;
-
-            int n = in.readInt();
-            double l = in.readInt();
-            double ways = (double) n * (n - 1) * (n - 2) / 6;
-
-            double[] ts = new double[n];
-            for (int i = 0; i < n; i++) {
-                ts[i] = in.readInt() / l * 2 * Math.PI;
+            this.out = out;
+            this.in = in;
+            char[] allA = new char[300];
+            char[] allB = new char[300];
+            for (int i = 0; i < 300; i++) {
+                allA[i] = 'a';
+                allB[i] = 'b';
             }
-
-            for (int i = 0; i < n; i++) {
-                for (int j = i + 1; j < n; j++) {
-                    double half = (ts[i] + ts[j]) / 2D;
-                    double cos = Math.cos(half);
-                    double sin = Math.sin(half);
-                    double prob = ((n - 1 - j) - (j - 1 - i) + i) / ways;
-                    xExp += prob * cos;
-                    yExp += prob * sin;
+            int aCnt = 300 - cast(allA);
+            if (aCnt == 300) {
+                return;
+            }
+            int bCnt = 300 - cast(allB);
+            if (bCnt == 300) {
+                return;
+            }
+            int n = aCnt + bCnt;
+            char[] data = new char[n];
+            Arrays.fill(data, 'a');
+            int status = n - aCnt;
+            for (int i = 0; i < n - 1; i++) {
+                data[i] = 'b';
+                int newStatus = cast(data);
+                if (newStatus > status) {
+                    data[i] = 'a';
+                    continue;
                 }
+                status = newStatus;
             }
 
-            out.printf("%.15f %.15f", xExp, yExp);
+            if (status == 0) {
+                cast(data);
+                return;
+            } else {
+                data[n - 1] = 'b';
+                cast(data);
+            }
+        }
+
+        public int cast(char[] s) {
+            for (char c : s) {
+                out.append(c);
+            }
+            out.println();
+            out.flush();
+            return in.readInt();
+        }
+
+    }
+
+    static class FastOutput implements AutoCloseable, Closeable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
+
+        public FastOutput(Writer os) {
+            this.os = os;
+        }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput append(char c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput println() {
+            cache.append('\n');
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            return this;
+        }
+
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+
+        public String toString() {
+            return cache.toString();
         }
 
     }
@@ -118,49 +192,6 @@ public class Main {
             }
 
             return val;
-        }
-
-    }
-
-    static class FastOutput implements AutoCloseable, Closeable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
-
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput printf(String format, Object... args) {
-            cache.append(String.format(format, args));
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        }
-
-        public String toString() {
-            return cache.toString();
         }
 
     }

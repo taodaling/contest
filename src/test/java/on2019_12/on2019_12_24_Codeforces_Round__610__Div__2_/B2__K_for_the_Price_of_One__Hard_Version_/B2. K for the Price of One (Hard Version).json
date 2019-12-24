@@ -1,0 +1,35 @@
+{
+  "name" : "B2. K for the Price of One (Hard Version)",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "8\n5 6 2\n2 4 3 5 7\n5 11 2\n2 4 3 5 7\n3 2 3\n4 2 6\n5 2 3\n10 1 3 9 2\n2 10000 2\n10000 10000\n2 9999 2\n10000 10000\n4 6 4\n3 2 3 2\n5 5 3\n1 2 2 1 2\n",
+    "output" : "3\n4\n1\n1\n2\n0\n4\n5\n",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2019_12.on2019_12_24_Codeforces_Round__610__Div__2_.B2__K_for_the_Price_of_One__Hard_Version_.B2KForThePriceOfOneHardVersion",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.12.24",
+  "contestName" : "Codeforces Round #610 (Div. 2)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

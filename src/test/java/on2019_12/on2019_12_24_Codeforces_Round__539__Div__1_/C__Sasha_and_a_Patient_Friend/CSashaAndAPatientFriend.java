@@ -1,8 +1,12 @@
-package contest;
+package on2019_12.on2019_12_24_Codeforces_Round__539__Div__1_.C__Sasha_and_a_Patient_Friend;
+
+
+
 
 import template.algo.IntBinarySearch;
 import template.io.FastInput;
 import template.io.FastOutput;
+import template.math.DigitUtils;
 import template.primitve.generated.IntegerDiscreteMap;
 import template.primitve.generated.IntegerList;
 
@@ -52,6 +56,7 @@ public class CSashaAndAPatientFriend {
                     long contrib = (long) (dm.iThElement(ceil.getKey()) - dm.iThElement(t)) * s;
                     segment.update(ceil.getKey(), ceil.getKey(), dm.minRank(), dm.maxRank(), contrib);
                 }
+                events.put(t, s);
             } else if (qs[i][0] == 2) {
                 int t = dm.rankOf(qs[i][1]);
                 int s = events.remove(t);
@@ -82,8 +87,14 @@ public class CSashaAndAPatientFriend {
                     out.println(-1);
                     continue;
                 }
-                l = ceilingKey;
+                l = ceilingKey + 1;
                 int finalL = l;
+
+                if(l > r){
+                    out.println(-1);
+                    continue;
+                }
+
                 IntBinarySearch ibs = new IntBinarySearch() {
                     @Override
                     public boolean check(int mid) {
@@ -95,8 +106,32 @@ public class CSashaAndAPatientFriend {
                 int time = ibs.binarySearch(l, r);
 
                 if (!ibs.check(time)) {
-                    if()
+                    Map.Entry<Integer, Integer> entry = events.floorEntry(r);
+                    if (entry == null || entry.getValue() >= 0) {
+                        out.println(-1);
+                        continue;
+                    }
+                    interval.init();
+                    segment.query(finalL, entry.getKey(), dm.minRank(), dm.maxRank(), interval);
+                    long remain = v + interval.total;
+                    if (dm.iThElement(entry.getKey()) + DigitUtils.ceilDiv(remain, -entry.getValue()) > dm.iThElement(r)) {
+                        out.println(-1);
+                    } else {
+                        out.println(dm.iThElement(entry.getKey()) + (double) remain / -entry.getValue());
+                    }
+                    continue;
                 }
+
+                Map.Entry<Integer, Integer> entry = events.floorEntry(time - 1);
+                interval.init();
+                segment.query(finalL, entry.getKey(), dm.minRank(), dm.maxRank(), interval);
+                long remain = v + interval.total;
+                if (dm.iThElement(entry.getKey()) + DigitUtils.ceilDiv(remain, -entry.getValue()) > dm.iThElement(r)) {
+                    out.println(-1);
+                } else {
+                    out.println(dm.iThElement(entry.getKey()) + (double) remain / -entry.getValue());
+                }
+                continue;
             }
         }
     }
@@ -127,8 +162,8 @@ class Segment implements Cloneable {
     private Interval interval = new Interval();
 
     private void modify(long x) {
-        interval.min = Math.min(0, x);
-        interval.total = x;
+        interval.total += x;
+        interval.min = Math.min(0, interval.total);
     }
 
     public void pushUp() {
@@ -177,7 +212,7 @@ class Segment implements Cloneable {
             return;
         }
         if (covered(ll, rr, l, r)) {
-            interval.rightMerge(interval);
+            interval.rightMerge(this.interval);
             return;
         }
         pushDown();

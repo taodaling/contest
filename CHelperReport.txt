@@ -1,2 +1,2 @@
-40 src/main/java/contest/D - Incenters.json
+48 src/main/java/contest/D. Enchanted Artifact.json
 0
