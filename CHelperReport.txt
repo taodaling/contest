@@ -1,2 +1,2 @@
-35 src/main/java/contest/BZOJ1146.json
+58 src/main/java/contest/F. Rock-Paper-Scissors Champion.json
 0

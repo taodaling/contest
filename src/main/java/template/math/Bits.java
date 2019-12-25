@@ -63,6 +63,10 @@ public class Bits {
         return x | y;
     }
 
+    public static int merge(int x, int y) {
+        return x | y;
+    }
+
     public static long intersect(long x, long y) {
         return x & y;
     }
