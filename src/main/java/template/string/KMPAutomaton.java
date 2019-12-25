@@ -3,7 +3,7 @@ package template.string;
 /**
  * Created by dalt on 2018/5/25.
  */
-public class KMPAutomaton  {
+public class KMPAutomaton {
     char[] data;
     int[] fail;
     int buildLast;
@@ -16,6 +16,13 @@ public class KMPAutomaton  {
         fail[0] = -1;
         buildLast = 0;
         length = cap;
+    }
+
+    /**
+     * Get the border of s[1...i]
+     */
+    public int maxBorder(int i) {
+        return fail[i];
     }
 
     public KMPAutomaton(KMPAutomaton automaton) {

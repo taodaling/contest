@@ -1,196 +1,450 @@
 package template.algo;
 
-import template.datastructure.SparseTable;
+import template.graph.LcaOnTree;
+import template.primitve.generated.IntegerIterator;
+import template.primitve.generated.MultiWayIntegerStack;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
 
 public class MoOnTree {
-    private static class Node {
-        List<Node> next = new ArrayList(2);
-        int id;
-        int close;
-        int open;
-        boolean added;
-        int dfn;
+    private MultiWayIntegerStack edges;
+    private boolean[] odd;
+    private int[] eulerTour;
+    private int eulerTourTail = 0;
+    private int[] begin;
+    private int[] end;
+    private LcaOnTree lcaOnTree;
 
-        @Override
-        public String toString() {
-            return "" + id;
-        }
+    public MoOnTree(MultiWayIntegerStack edges) {
+        this.edges = edges;
+        odd = new boolean[edges.stackNumber()];
+        eulerTour = new int[edges.stackNumber() * 2];
+        begin = new int[edges.stackNumber()];
+        end = new int[edges.stackNumber()];
+        dfs(0, -1);
+        lcaOnTree = new LcaOnTree(edges, 0);
     }
 
-    Node[] nodes;
+    private void dfs(int root, int p) {
+        begin[root] = eulerTourTail;
+        eulerTour[eulerTourTail++] = root;
 
-    public MoOnTree(int n) {
-        nodes = new Node[n];
-        for (int i = 0; i < n; i++) {
-            nodes[i] = new Node();
-            nodes[i].id = i;
-        }
-    }
-
-    public void addEdge(int a, int b) {
-        nodes[a].next.add(nodes[b]);
-        nodes[b].next.add(nodes[a]);
-    }
-
-    private boolean preHandled = false;
-
-    private void preHandle() {
-        if (preHandled) {
-            return;
-        }
-        preHandled = true;
-        eulerTrace = new Node[nodes.length * 2];
-        lcaTrace = new Node[nodes.length * 2 - 1];
-        dfs(nodes[0], null);
-        sparseTable = new SparseTable<Node>(lcaTrace, lcaTraceTail, (a, b) -> a.dfn < b.dfn ? a : b);
-    }
-
-    Node[] eulerTrace;
-    int eulerTraceTail = 0;
-    Node[] lcaTrace;
-    int lcaTraceTail = 0;
-    SparseTable<Node> sparseTable;
-
-    private void dfs(Node root, Node father) {
-        root.open = eulerTraceTail;
-        eulerTrace[eulerTraceTail++] = root;
-        root.dfn = lcaTraceTail;
-        lcaTrace[lcaTraceTail++] = root;
-        for (Node node : root.next) {
-            if (node == father) {
+        for (IntegerIterator iterator = edges.iterator(root); iterator.hasNext(); ) {
+            int node = iterator.next();
+            if (node == p) {
                 continue;
             }
             dfs(node, root);
-            lcaTrace[lcaTraceTail++] = root;
         }
-        root.close = eulerTraceTail;
-        eulerTrace[eulerTraceTail++] = root;
+
+        end[root] = eulerTourTail;
+        eulerTour[eulerTourTail++] = root;
     }
 
-    public void solve(Query[] queries, Assistant assistant) {
-        preHandle();
+    public <T, Q extends Query> void handle(T[] data, Q[] queries, Handler<T, Q> handler) {
+        handle(data, queries, handler, (int) Math.ceil(Math.sqrt(eulerTour.length)));
+    }
 
-        final int blockSize = nodes.length / Math.max((int) Math.sqrt(queries.length), 1);
-
-        for (Query q : queries) {
-            Node u = nodes[q.u];
-            Node v = nodes[q.v];
-            if (u.open > v.open) {
-                Node tmp = u;
-                u = v;
-                v = tmp;
-            }
-            if (u.close <= v.open) {
-                q.l = u.close;
-                q.r = v.open;
-            } else {
-                q.l = v.close;
-                q.r = u.close - 1;
-            }
-            q.lca = sparseTable.query(Math.min(u.dfn, v.dfn), Math.max(u.dfn, v.dfn)).id;
+    public <T, Q extends Query> void handle(T[] data, Q[] queries, Handler<T, Q> handler,
+                                            int blockSize) {
+        if (data.length == 0 || queries.length == 0) {
+            return;
         }
 
-        Arrays.sort(queries, new Comparator<Query>() {
-            @Override
-            public int compare(Query a, Query b) {
-                int r = a.l / blockSize - b.l / blockSize;
-                if (r == 0) {
-                    r = a.r - b.r;
-                }
-                return r;
+        QueryWrapper<Q>[] wrappers = new QueryWrapper[queries.length];
+        for (int i = 0; i < queries.length; i++) {
+            Q q = queries[i];
+            wrappers[i] = new QueryWrapper<Q>();
+            wrappers[i].q = q;
+            int u = q.getU();
+            int v = q.getV();
+            int ul = begin[u];
+            int ur = end[u];
+            int vl = begin[v];
+            int vr = end[v];
+
+            if (ur > vr) {
+                int tmp = ul;
+                ul = vl;
+                vl = tmp;
+
+                tmp = ur;
+                ur = vr;
+                vr = tmp;
             }
+
+            if (ur < vl) {
+                wrappers[i].l = ur;
+                wrappers[i].r = vl;
+                wrappers[i].extra = end[lcaOnTree.lca(u, v)];
+            } else {
+                wrappers[i].l = ur;
+                wrappers[i].r = vr - 1;
+                wrappers[i].extra = vr;
+            }
+        }
+
+        Arrays.fill(odd, false);
+        Arrays.sort(wrappers, (a, b) -> {
+            int ans = a.l / blockSize - b.l / blockSize;
+            if (ans == 0) {
+                ans = a.r - b.r;
+            }
+            return ans;
         });
 
-        int l = 0;
-        int r = -1;
-        for (Node node : nodes) {
-            node.added = false;
-        }
-
-        for (Query q : queries) {
-            while (r < q.r) {
-                r++;
-                Node x = eulerTrace[r];
-                if (x.added) {
-                    assistant.remove(x.id);
-                } else {
-                    assistant.add(x.id);
-                }
-                x.added = !x.added;
-            }
-            while (l > q.l) {
+        int l = wrappers[0].l;
+        int r = l - 1;
+        for (QueryWrapper<Q> wrapper : wrappers) {
+            int ll = wrapper.l;
+            int rr = wrapper.r;
+            while (l > ll) {
                 l--;
-                Node x = eulerTrace[l];
-                if (x.added) {
-                    assistant.remove(x.id);
-                } else {
-                    assistant.add(x.id);
-                }
-                x.added = !x.added;
+                invert(eulerTour[l], data[eulerTour[l]], handler);
             }
-            while (r > q.r) {
-                Node x = eulerTrace[r];
-                if (x.added) {
-                    assistant.remove(x.id);
-                } else {
-                    assistant.add(x.id);
-                }
-                x.added = !x.added;
-                r--;
+            while (r < rr) {
+                r++;
+                invert(eulerTour[r], data[eulerTour[r]], handler);
             }
-            while (l < q.l) {
-                Node x = eulerTrace[l];
-                if (x.added) {
-                    assistant.remove(x.id);
-                } else {
-                    assistant.add(x.id);
-                }
-                x.added = !x.added;
+            while (l < ll) {
+                invert(eulerTour[l], data[eulerTour[l]], handler);
                 l++;
             }
-
-            Node lca = nodes[q.lca];
-            if (lca.added) {
-                assistant.remove(q.lca);
-            } else {
-                assistant.add(q.lca);
+            while (r > rr) {
+                invert(eulerTour[r], data[eulerTour[r]], handler);
+                r--;
             }
-            lca.added = !lca.added;
-            assistant.query(q);
-            if (lca.added) {
-                assistant.remove(q.lca);
-            } else {
-                assistant.add(q.lca);
-            }
-            lca.added = !lca.added;
-        }
-
-    }
-
-    public static class Query {
-        public int l;
-        public int r;
-        public int u;
-        public int v;
-        public int answer;
-        public int lca;
-
-        @Override
-        public String toString() {
-            return "(" + u + "," + v + ")";
+            invert(eulerTour[wrapper.extra], data[eulerTour[wrapper.extra]], handler);
+            handler.answer(wrapper.q);
+            invert(eulerTour[wrapper.extra], data[eulerTour[wrapper.extra]], handler);
         }
     }
 
-    public interface Assistant {
-        void add(int i);
+    public <Q extends Query> void handle(int[] data, Q[] queries, IntHandler<Q> handler) {
+        handle(data, queries, handler, (int) Math.ceil(Math.sqrt(eulerTour.length)));
+    }
 
-        void remove(int i);
+    public <Q extends Query> void handle(int[] data, Q[] queries, IntHandler<Q> handler,
+                                         int blockSize) {
+        if (data.length == 0 || queries.length == 0) {
+            return;
+        }
 
-        void query(Query q);
+        QueryWrapper<Q>[] wrappers = new QueryWrapper[queries.length];
+        for (int i = 0; i < queries.length; i++) {
+            Q q = queries[i];
+            wrappers[i] = new QueryWrapper<Q>();
+            wrappers[i].q = q;
+            int u = q.getU();
+            int v = q.getV();
+            int ul = begin[u];
+            int ur = end[u];
+            int vl = begin[v];
+            int vr = end[v];
+
+            if (ur > vr) {
+                int tmp = ul;
+                ul = vl;
+                vl = tmp;
+
+                tmp = ur;
+                ur = vr;
+                vr = tmp;
+            }
+
+            if (ur < vl) {
+                wrappers[i].l = ur;
+                wrappers[i].r = vl;
+                wrappers[i].extra = end[lcaOnTree.lca(u, v)];
+            } else {
+                wrappers[i].l = ur;
+                wrappers[i].r = vr - 1;
+                wrappers[i].extra = vr;
+            }
+        }
+
+        Arrays.fill(odd, false);
+        Arrays.sort(wrappers, (a, b) -> {
+            int ans = a.l / blockSize - b.l / blockSize;
+            if (ans == 0) {
+                ans = a.r - b.r;
+            }
+            return ans;
+        });
+
+        int l = wrappers[0].l;
+        int r = l - 1;
+        for (QueryWrapper<Q> wrapper : wrappers) {
+            int ll = wrapper.l;
+            int rr = wrapper.r;
+            while (l > ll) {
+                l--;
+                invert(eulerTour[l], data[eulerTour[l]], handler);
+            }
+            while (r < rr) {
+                r++;
+                invert(eulerTour[r], data[eulerTour[r]], handler);
+            }
+            while (l < ll) {
+                invert(eulerTour[l], data[eulerTour[l]], handler);
+                l++;
+            }
+            while (r > rr) {
+                invert(eulerTour[r], data[eulerTour[r]], handler);
+                r--;
+            }
+            invert(eulerTour[wrapper.extra], data[eulerTour[wrapper.extra]], handler);
+            handler.answer(wrapper.q);
+            invert(eulerTour[wrapper.extra], data[eulerTour[wrapper.extra]], handler);
+        }
+    }
+
+    private <T, Q extends Query> void invert(int i, T x, Handler<T, Q> handler) {
+        odd[i] = !odd[i];
+        if (odd[i]) {
+            handler.add(i, x);
+        } else {
+            handler.remove(i, x);
+        }
+    }
+
+    private <Q extends Query> void invert(int node, int x, IntHandler<Q> handler) {
+        odd[node] = !odd[node];
+        if (odd[node]) {
+            handler.add(node, x);
+        } else {
+            handler.remove(node, x);
+        }
+    }
+
+    public <T, Q extends VersionQuery> void handle(T[] data, Modify<T>[] modifies, Q[] queries, Handler<T, Q> handler) {
+        handle(data, modifies, queries, handler, (int) Math.ceil(Math.pow(eulerTour.length, 2.0 / 3)));
+    }
+
+    public <T, Q extends VersionQuery> void handle(T[] data, Modify<T>[] modifies, Q[] queries, Handler<T, Q> handler,
+                                                   int blockSize) {
+        if (data.length == 0 || queries.length == 0) {
+            return;
+        }
+
+        QueryWrapper<Q>[] wrappers = new QueryWrapper[queries.length];
+        for (int i = 0; i < queries.length; i++) {
+            Q q = queries[i];
+            wrappers[i] = new QueryWrapper<Q>();
+            wrappers[i].q = q;
+            int u = q.getU();
+            int v = q.getV();
+            int ul = begin[u];
+            int ur = end[u];
+            int vl = begin[v];
+            int vr = end[v];
+
+            if (ur > vr) {
+                int tmp = ul;
+                ul = vl;
+                vl = tmp;
+
+                tmp = ur;
+                ur = vr;
+                vr = tmp;
+            }
+
+            if (ur < vl) {
+                wrappers[i].l = ur;
+                wrappers[i].r = vl;
+                wrappers[i].extra = end[lcaOnTree.lca(u, v)];
+            } else {
+                wrappers[i].l = ur;
+                wrappers[i].r = vr - 1;
+                wrappers[i].extra = vr;
+            }
+        }
+
+        Arrays.fill(odd, false);
+        Arrays.sort(wrappers, (a, b) -> {
+            int ans = a.l / blockSize - b.l / blockSize;
+            if (ans == 0) {
+                ans = a.q.getVersion() / blockSize - b.q.getVersion() / blockSize;
+            }
+            if (ans == 0) {
+                ans = a.r - b.r;
+            }
+            return ans;
+        });
+
+        int l = wrappers[0].l;
+        int r = l - 1;
+        int v = 0;
+        for (QueryWrapper<Q> wrapper : wrappers) {
+            int ll = wrapper.l;
+            int rr = wrapper.r;
+            int vv = wrapper.q.getVersion();
+
+            while (v < vv) {
+                modifies[v].apply(data, handler, odd);
+                v++;
+            }
+            while (v > vv) {
+                v--;
+                modifies[v].revoke(data, handler, odd);
+            }
+            while (l > ll) {
+                l--;
+                invert(eulerTour[l], data[eulerTour[l]], handler);
+            }
+            while (r < rr) {
+                r++;
+                invert(eulerTour[r], data[eulerTour[r]], handler);
+            }
+            while (l < ll) {
+                invert(eulerTour[l], data[eulerTour[l]], handler);
+                l++;
+            }
+            while (r > rr) {
+                invert(eulerTour[r], data[eulerTour[r]], handler);
+                r--;
+            }
+            invert(eulerTour[wrapper.extra], data[eulerTour[wrapper.extra]], handler);
+            handler.answer(wrapper.q);
+            invert(eulerTour[wrapper.extra], data[eulerTour[wrapper.extra]], handler);
+        }
+    }
+
+    public <Q extends VersionQuery> void handle(int[] data, IntModify[] modifies, Q[] queries, IntHandler<Q> handler) {
+        handle(data, modifies, queries, handler, (int) Math.ceil(Math.pow(eulerTour.length, 2.0 / 3)));
+    }
+
+    public <Q extends VersionQuery> void handle(int[] data, IntModify[] modifies, Q[] queries, IntHandler<Q> handler,
+                                                int blockSize) {
+        if (data.length == 0 || queries.length == 0) {
+            return;
+        }
+
+        QueryWrapper<Q>[] wrappers = new QueryWrapper[queries.length];
+        for (int i = 0; i < queries.length; i++) {
+            Q q = queries[i];
+            wrappers[i] = new QueryWrapper<Q>();
+            wrappers[i].q = q;
+            int u = q.getU();
+            int v = q.getV();
+            int ul = begin[u];
+            int ur = end[u];
+            int vl = begin[v];
+            int vr = end[v];
+
+            if (ur > vr) {
+                int tmp = ul;
+                ul = vl;
+                vl = tmp;
+
+                tmp = ur;
+                ur = vr;
+                vr = tmp;
+            }
+
+            if (ur < vl) {
+                wrappers[i].l = ur;
+                wrappers[i].r = vl;
+                wrappers[i].extra = end[lcaOnTree.lca(u, v)];
+            } else {
+                wrappers[i].l = ur;
+                wrappers[i].r = vr - 1;
+                wrappers[i].extra = vr;
+            }
+        }
+
+        Arrays.fill(odd, false);
+        Arrays.sort(wrappers, (a, b) -> {
+            int ans = a.l / blockSize - b.l / blockSize;
+            if (ans == 0) {
+                ans = a.q.getVersion() / blockSize - b.q.getVersion() / blockSize;
+            }
+            if (ans == 0) {
+                ans = a.r - b.r;
+            }
+            return ans;
+        });
+
+        int l = wrappers[0].l;
+        int r = l - 1;
+        int v = 0;
+        for (QueryWrapper<Q> wrapper : wrappers) {
+            int ll = wrapper.l;
+            int rr = wrapper.r;
+            int vv = wrapper.q.getVersion();
+
+            while (v < vv) {
+                modifies[v].apply(data, handler, odd);
+                v++;
+            }
+            while (v > vv) {
+                v--;
+                modifies[v].revoke(data, handler, odd);
+            }
+            while (l > ll) {
+                l--;
+                invert(eulerTour[l], data[eulerTour[l]], handler);
+            }
+            while (r < rr) {
+                r++;
+                invert(eulerTour[r], data[eulerTour[r]], handler);
+            }
+            while (l < ll) {
+                invert(eulerTour[l], data[eulerTour[l]], handler);
+                l++;
+            }
+            while (r > rr) {
+                invert(eulerTour[r], data[eulerTour[r]], handler);
+                r--;
+            }
+            invert(eulerTour[wrapper.extra], data[eulerTour[wrapper.extra]], handler);
+            handler.answer(wrapper.q);
+            invert(eulerTour[wrapper.extra], data[eulerTour[wrapper.extra]], handler);
+        }
+    }
+
+    private static class QueryWrapper<Q extends Query> {
+        int l;
+        int r;
+        int extra;
+        Q q;
+    }
+
+    public interface Query {
+        int getU();
+
+        int getV();
+    }
+
+    public interface Handler<T, Q extends Query> {
+        void add(int node, T x);
+
+        void remove(int node, T x);
+
+        void answer(Q q);
+    }
+
+    public interface IntHandler<Q extends Query> {
+        void add(int node, int x);
+
+        void remove(int node, int x);
+
+        void answer(Q q);
+    }
+
+    public interface VersionQuery extends Query {
+        int getVersion();
+    }
+
+    public interface Modify<T> {
+        <Q extends VersionQuery> void apply(T[] data, Handler<T, Q> handler, boolean[] exists);
+
+        <Q extends VersionQuery> void revoke(T[] data, Handler<T, Q> handler, boolean[] exists);
+    }
+
+    public interface IntModify {
+        <Q extends VersionQuery> void apply(int[] data, IntHandler<Q> handler, boolean[] exists);
+
+        <Q extends VersionQuery> void revoke(int[] data, IntHandler<Q> handler, boolean[] exists);
     }
 }

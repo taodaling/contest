@@ -1,2 +1,2 @@
-48 src/main/java/contest/D. Enchanted Artifact.json
+35 src/main/java/contest/BZOJ1146.json
 0
