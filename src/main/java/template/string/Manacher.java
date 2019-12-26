@@ -2,7 +2,7 @@ package template.string;
 
 public class Manacher {
     /**
-     * O(n)找到以i作为中心的奇数长度回文最长长度，并存储于ans[i]
+     * O(n)找到以i作为中心的奇数长度回文最长长度ans[i]*2-1
      */
     public static void oddPalindrome(int[] s, int n, int[] ans) {
         int c = -1;
@@ -25,7 +25,7 @@ public class Manacher {
     }
 
     /**
-     * O(n)找到以i-1和i作为中心的奇数长度回文最长长度，并存储于ans[i]
+     * O(n)找到以i-1和i作为中心的奇数长度回文最长长度ans[i]*2
      */
     public static void evenPalindrome(int[] s, int n, int[] ans) {
         int c = -1;
