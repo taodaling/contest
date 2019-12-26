@@ -2,9 +2,9 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.Arrays;
 import java.io.IOException;
-import java.util.TreeSet;
 import java.io.UncheckedIOException;
 import java.io.Closeable;
 import java.io.Writer;
@@ -29,171 +29,251 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            FRockPaperScissorsChampion solver = new FRockPaperScissorsChampion();
+            FTrickyInteractor solver = new FTrickyInteractor();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class FRockPaperScissorsChampion {
+    static class FTrickyInteractor {
+        FastInput in;
+        FastOutput out;
         int n;
-        Segment[] segs;
-        TreeSet<Integer>[] sets;
-        int maskLeftWin = 1 << 0;
-        int maskLeftLose = 1 << 1;
-        int maskRightWin = 1 << 2;
-        int maskRightLose = 1 << 3;
+        int t;
 
         public void solve(int testNumber, FastInput in, FastOutput out) {
+            this.in = in;
+            this.out = out;
+
             n = in.readInt();
-            int q = in.readInt();
+            t = in.readInt();
 
-            char[] s = new char[n + 1];
-            in.readString(s, 1);
-
-            segs = new Segment[3];
-            sets = new TreeSet[3];
-            for (int i = 0; i < 3; i++) {
-                segs[i] = new Segment(1, n);
-                sets[i] = new TreeSet<>();
-            }
-
+            int[] ans = new int[n + 1];
+            int preSum = 0;
             for (int i = 1; i <= n; i++) {
-                int t = typeOf(s[i]);
-                sets[t].add(i);
-                segs[t].updateReplace(i, i, 1, n, 0, 1);
-            }
-
-            for (int i = 0; i < 3; i++) {
-                if (sets[i].isEmpty()) {
-                    continue;
-                }
-                int first = sets[i].first();
-                int last = sets[i].last();
-
-                for (int j = 0; j < 3; j++) {
-                    if (i == j) {
-                        continue;
-                    }
-                    segs[j].updateSetBit(first, n, 1, n, maskFor(i, j, true));
-                    segs[j].updateSetBit(1, last, 1, n, maskFor(i, j, false));
+                int total = (i + t - queryPrefix(i)) / 2;
+                if (total > preSum) {
+                    ans[i] = 1;
+                    preSum++;
                 }
             }
 
-            out.println(query());
-            for (int i = 1; i <= q; i++) {
-                int index = in.readInt();
-                char sign = in.readChar();
-                remove(index, typeOf(s[index]));
-                s[index] = sign;
-                add(index, typeOf(s[index]));
-                out.println(query());
+            out.append("! ");
+            for (int i = 1; i <= n; i++) {
+                out.append(ans[i]);
             }
+            out.println();
+            out.flush();
         }
 
-        public void add(int i, int t) {
-            sets[t].add(i);
-
-            int mask = 0;
-            for (int j = 0; j < 3; j++) {
-                if (j == t || sets[j].isEmpty()) {
-                    continue;
-                }
-                int first = sets[j].first();
-                int last = sets[j].last();
-                if (first < i) {
-                    mask |= maskFor(j, t, true);
-                }
-                if (last > i) {
-                    mask |= maskFor(j, t, false);
-                }
+        public int queryPrefix(int p) {
+            IntegerHashMap map = new IntegerHashMap(100, true);
+            int total = 10;
+            for (int i = 1; i <= p && total > 0; i++, total--) {
+                int ans = query(i, p);
+                query(i, p);
+                map.put(ans, map.getOrDefault(ans, 0) + 1);
+            }
+            for (int i = p + 1; i <= n && total > 0; i++, total--) {
+                int ans = n - query(p + 1, i);
+                query(p + 1, i);
+                map.put(ans, map.getOrDefault(ans, 0) + 1);
             }
 
-            segs[t].updateReplace(i, i, 1, n, mask, 1);
-
-            if (sets[t].first() == i) {
-                Integer next = sets[t].ceiling(i + 1);
-                if (next == null) {
-                    next = n + 1;
-                }
-                for (int j = 0; j < 3; j++) {
-                    if (j == t) {
-                        continue;
-                    }
-                    segs[j].updateSetBit(i, next - 1, 1, n, maskFor(t, j, true));
-                }
-            }
-            if (sets[t].last() == i) {
-                Integer last = sets[t].floor(i - 1);
-                if (last == null) {
-                    last = 0;
-                }
-                for (int j = 0; j < 3; j++) {
-                    if (j == t) {
-                        continue;
-                    }
-                    segs[j].updateSetBit(last + 1, i, 1, n, maskFor(t, j, false));
-                }
-            }
-        }
-
-        public void remove(int i, int t) {
-            sets[t].remove(i);
-            segs[t].updateReplace(i, i, 1, n, 0, 0);
-            if (sets[t].isEmpty() || sets[t].first() > i) {
-                int first = sets[t].isEmpty() ? n + 1 : sets[t].first();
-                for (int j = 0; j < 3; j++) {
-                    if (j == t) {
-                        continue;
-                    }
-                    segs[j].updateRemoveBit(i, first - 1, 1, n, maskFor(t, j, true));
-                }
-            }
-
-            if (sets[t].isEmpty() || sets[t].last() < i) {
-                int last = sets[t].isEmpty() ? 0 : sets[t].last();
-                for (int j = 0; j < 3; j++) {
-                    if (j == t) {
-                        continue;
-                    }
-                    segs[j].updateRemoveBit(last + 1, i, 1, n, maskFor(t, j, false));
-                }
-            }
-        }
-
-        public int query() {
             int ans = 0;
-            for (int i = 0; i < 16; i++) {
-                if ((i & maskLeftWin) > 0 && (i & maskLeftLose) == 0) {
-                    continue;
-                }
-                if ((i & maskRightWin) > 0 && (i & maskRightLose) == 0) {
-                    continue;
-                }
-                for (int j = 0; j < 3; j++) {
-                    ans += segs[j].cnts[i];
+            int cnt = 0;
+            for (IntegerEntryIterator iterator = map.iterator();
+                 iterator.hasNext(); ) {
+                iterator.next();
+                if (cnt < iterator.getEntryValue()) {
+                    cnt = iterator.getEntryValue();
+                    ans = iterator.getEntryKey();
                 }
             }
+            System.err.println(p + "=" + ans);
             return ans;
         }
 
-        public int typeOf(char c) {
-            return c == 'R' ? 0 : c == 'P' ? 1 : 2;
+        public int query(int l, int r) {
+            out.append("? ").append(l).append(' ').append(r).println();
+            out.flush();
+            return in.readInt();
         }
 
-        public boolean win(int a, int b) {
-            return (b + 1) % 3 == a;
+    }
+
+    static class IntegerHashMap {
+        private int[] slot;
+        private int[] next;
+        private int[] keys;
+        private int[] values;
+        private int alloc;
+        private boolean[] removed;
+        private int mask;
+        private int size;
+        private boolean rehash;
+
+        public IntegerHashMap(int cap, boolean rehash) {
+            this.mask = (1 << (32 - Integer.numberOfLeadingZeros(cap - 1))) - 1;
+            slot = new int[mask + 1];
+            next = new int[cap + 1];
+            keys = new int[cap + 1];
+            values = new int[cap + 1];
+            removed = new boolean[cap + 1];
+            this.rehash = rehash;
         }
 
-        public int maskFor(int a, int b, boolean left) {
-            if (a == b) {
-                return 0;
-            }
-            if (win(a, b)) {
-                return left ? maskLeftWin : maskRightWin;
-            }
-            return left ? maskLeftLose : maskRightLose;
+        private void doubleCapacity() {
+            int newSize = Math.max(next.length + 10, next.length * 2);
+            next = Arrays.copyOf(next, newSize);
+            keys = Arrays.copyOf(keys, newSize);
+            values = Arrays.copyOf(values, newSize);
+            removed = Arrays.copyOf(removed, newSize);
         }
+
+        public void alloc() {
+            alloc++;
+            if (alloc >= next.length) {
+                doubleCapacity();
+            }
+            next[alloc] = 0;
+            removed[alloc] = false;
+            size++;
+        }
+
+        private void rehash() {
+            int[] newSlots = new int[Math.max(16, slot.length * 2)];
+            int newMask = newSlots.length - 1;
+            for (int i = 0; i < slot.length; i++) {
+                if (slot[i] == 0) {
+                    continue;
+                }
+                int head = slot[i];
+                while (head != 0) {
+                    int n = next[head];
+                    int s = hash(keys[head]) & newMask;
+                    next[head] = newSlots[s];
+                    newSlots[s] = head;
+                    head = n;
+                }
+            }
+            this.slot = newSlots;
+            this.mask = newMask;
+        }
+
+        private int hash(int x) {
+            int h = Integer.hashCode(x);
+            return h ^ (h >>> 16);
+        }
+
+        public void put(int x, int y) {
+            put(x, y, true);
+        }
+
+        public void put(int x, int y, boolean cover) {
+            int h = hash(x);
+            int s = h & mask;
+            if (slot[s] == 0) {
+                alloc();
+                slot[s] = alloc;
+                keys[alloc] = x;
+                values[alloc] = y;
+            } else {
+                int index = findIndexOrLastEntry(s, x);
+                if (keys[index] != x) {
+                    alloc();
+                    next[index] = alloc;
+                    keys[alloc] = x;
+                    values[alloc] = y;
+                } else if (cover) {
+                    values[index] = y;
+                }
+            }
+            if (rehash && size >= slot.length) {
+                rehash();
+            }
+        }
+
+        public int getOrDefault(int x, int def) {
+            int h = hash(x);
+            int s = h & mask;
+            if (slot[s] == 0) {
+                return def;
+            }
+            int index = findIndexOrLastEntry(s, x);
+            return keys[index] == x ? values[index] : def;
+        }
+
+        private int findIndexOrLastEntry(int s, int x) {
+            int iter = slot[s];
+            while (keys[iter] != x) {
+                if (next[iter] != 0) {
+                    iter = next[iter];
+                } else {
+                    return iter;
+                }
+            }
+            return iter;
+        }
+
+        public IntegerEntryIterator iterator() {
+            return new IntegerEntryIterator() {
+                int index = 1;
+                int readIndex = -1;
+
+
+                public boolean hasNext() {
+                    while (index <= alloc && removed[index]) {
+                        index++;
+                    }
+                    return index <= alloc;
+                }
+
+
+                public int getEntryKey() {
+                    return keys[readIndex];
+                }
+
+
+                public int getEntryValue() {
+                    return values[readIndex];
+                }
+
+
+                public void next() {
+                    if (!hasNext()) {
+                        throw new IllegalStateException();
+                    }
+                    readIndex = index;
+                    index++;
+                }
+            };
+        }
+
+        public String toString() {
+            IntegerEntryIterator iterator = iterator();
+            StringBuilder builder = new StringBuilder("{");
+            while (iterator.hasNext()) {
+                iterator.next();
+                builder.append(iterator.getEntryKey()).append("->").append(iterator.getEntryValue()).append(',');
+            }
+            if (builder.charAt(builder.length() - 1) == ',') {
+                builder.setLength(builder.length() - 1);
+            }
+            builder.append('}');
+            return builder.toString();
+        }
+
+    }
+
+    static interface IntegerEntryIterator {
+        boolean hasNext();
+
+        void next();
+
+        int getEntryKey();
+
+        int getEntryValue();
 
     }
 
@@ -254,43 +334,6 @@ public class Main {
             return val;
         }
 
-        public char readChar() {
-            skipBlank();
-            char c = (char) next;
-            next = read();
-            return c;
-        }
-
-        public int readString(char[] data, int offset) {
-            skipBlank();
-
-            int originalOffset = offset;
-            while (next > 32) {
-                data[offset++] = (char) next;
-                next = read();
-            }
-
-            return offset - originalOffset;
-        }
-
-    }
-
-    static class Bits {
-        private Bits() {
-        }
-
-        public static int merge(int x, int y) {
-            return x | y;
-        }
-
-        public static int intersect(int x, int y) {
-            return x & y;
-        }
-
-        public static int differ(int x, int y) {
-            return x - intersect(x, y);
-        }
-
     }
 
     static class FastOutput implements AutoCloseable, Closeable {
@@ -305,8 +348,23 @@ public class Main {
             this(new OutputStreamWriter(os));
         }
 
-        public FastOutput println(int c) {
-            cache.append(c).append('\n');
+        public FastOutput append(char c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput append(int c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput append(String c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput println() {
+            cache.append('\n');
             return this;
         }
 
@@ -332,131 +390,6 @@ public class Main {
 
         public String toString() {
             return cache.toString();
-        }
-
-    }
-
-    static class Segment implements Cloneable {
-        private Segment left;
-        private Segment right;
-        private static int statusNum = 1 << 4;
-        private static int[] buf = new int[statusNum];
-        int[] cnts = new int[statusNum];
-        int setBit;
-        int removeBit;
-
-        public void swap() {
-            int[] tmp = buf;
-            buf = cnts;
-            cnts = tmp;
-        }
-
-        public void replace(int s, int c) {
-            Arrays.fill(cnts, 0);
-            cnts[s] = c;
-        }
-
-        public void setBit(int s) {
-            setBit = Bits.merge(setBit, s);
-            removeBit = Bits.differ(removeBit, s);
-            Arrays.fill(buf, 0);
-            for (int j = 0; j < statusNum; j++) {
-                buf[Bits.merge(j, s)] += cnts[j];
-            }
-            swap();
-        }
-
-        public void removeBit(int s) {
-            setBit = Bits.differ(setBit, s);
-            removeBit = Bits.merge(removeBit, s);
-            Arrays.fill(buf, 0);
-            for (int j = 0; j < statusNum; j++) {
-                buf[Bits.differ(j, s)] += cnts[j];
-            }
-            swap();
-        }
-
-        public void pushUp() {
-            for (int i = 0; i < statusNum; i++) {
-                cnts[i] = left.cnts[i] + right.cnts[i];
-            }
-        }
-
-        public void pushDown() {
-            if (setBit != 0) {
-                left.setBit(setBit);
-                right.setBit(setBit);
-                setBit = 0;
-            }
-            if (removeBit != 0) {
-                left.removeBit(removeBit);
-                right.removeBit(removeBit);
-                removeBit = 0;
-            }
-        }
-
-        public Segment(int l, int r) {
-            if (l < r) {
-                int m = (l + r) >> 1;
-                left = new Segment(l, m);
-                right = new Segment(m + 1, r);
-                pushUp();
-            } else {
-
-            }
-        }
-
-        private boolean covered(int ll, int rr, int l, int r) {
-            return ll <= l && rr >= r;
-        }
-
-        private boolean noIntersection(int ll, int rr, int l, int r) {
-            return ll > r || rr < l;
-        }
-
-        public void updateReplace(int ll, int rr, int l, int r, int s, int c) {
-            if (noIntersection(ll, rr, l, r)) {
-                return;
-            }
-            if (covered(ll, rr, l, r)) {
-                replace(s, c);
-                return;
-            }
-            pushDown();
-            int m = (l + r) >> 1;
-            left.updateReplace(ll, rr, l, m, s, c);
-            right.updateReplace(ll, rr, m + 1, r, s, c);
-            pushUp();
-        }
-
-        public void updateSetBit(int ll, int rr, int l, int r, int s) {
-            if (noIntersection(ll, rr, l, r)) {
-                return;
-            }
-            if (covered(ll, rr, l, r)) {
-                setBit(s);
-                return;
-            }
-            pushDown();
-            int m = (l + r) >> 1;
-            left.updateSetBit(ll, rr, l, m, s);
-            right.updateSetBit(ll, rr, m + 1, r, s);
-            pushUp();
-        }
-
-        public void updateRemoveBit(int ll, int rr, int l, int r, int s) {
-            if (noIntersection(ll, rr, l, r)) {
-                return;
-            }
-            if (covered(ll, rr, l, r)) {
-                removeBit(s);
-                return;
-            }
-            pushDown();
-            int m = (l + r) >> 1;
-            left.updateRemoveBit(ll, rr, l, m, s);
-            right.updateRemoveBit(ll, rr, m + 1, r, s);
-            pushUp();
         }
 
     }

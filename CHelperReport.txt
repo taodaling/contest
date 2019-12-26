@@ -1,2 +1,3 @@
-58 src/main/java/contest/F. Rock-Paper-Scissors Champion.json
-0
+47 src/main/java/contest/F. Tricky Interactor.json
+1
+6
