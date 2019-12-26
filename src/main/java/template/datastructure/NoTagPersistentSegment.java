@@ -1,7 +1,7 @@
 package template.datastructure;
 
 public class NoTagPersistentSegment  implements Cloneable{
-    private static final NoTagPersistentSegment NIL = new NoTagPersistentSegment();
+    public static final NoTagPersistentSegment NIL = new NoTagPersistentSegment();
 
     static {
         NIL.left = NIL.right = NIL;

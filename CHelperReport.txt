@@ -1,3 +1,2 @@
-47 src/main/java/contest/F. Tricky Interactor.json
-1
-6
+53 src/main/java/contest/E. Sonya and Matrix Beauty.json
+0

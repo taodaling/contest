@@ -2,8 +2,6 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintStream;
-import java.util.Arrays;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.io.Closeable;
@@ -29,251 +27,89 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            FTrickyInteractor solver = new FTrickyInteractor();
+            ESonyaAndMatrixBeauty solver = new ESonyaAndMatrixBeauty();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class FTrickyInteractor {
-        FastInput in;
-        FastOutput out;
-        int n;
-        int t;
+    static class ESonyaAndMatrixBeauty {
+        int[] d1 = new int[300];
+        int[] d2 = new int[300];
 
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            this.in = in;
-            this.out = out;
-
-            n = in.readInt();
-            t = in.readInt();
-
-            int[] ans = new int[n + 1];
-            int preSum = 0;
-            for (int i = 1; i <= n; i++) {
-                int total = (i + t - queryPrefix(i)) / 2;
-                if (total > preSum) {
-                    ans[i] = 1;
-                    preSum++;
+            int n = in.readInt();
+            int m = in.readInt();
+            int[][] mat = new int[n][m];
+            int[][] bits = new int[n][m];
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < m; j++) {
+                    mat[i][j] = in.readChar() - 'a';
+                    bits[i][j] = 1 << mat[i][j];
                 }
-            }
-
-            out.append("! ");
-            for (int i = 1; i <= n; i++) {
-                out.append(ans[i]);
-            }
-            out.println();
-            out.flush();
-        }
-
-        public int queryPrefix(int p) {
-            IntegerHashMap map = new IntegerHashMap(100, true);
-            int total = 10;
-            for (int i = 1; i <= p && total > 0; i++, total--) {
-                int ans = query(i, p);
-                query(i, p);
-                map.put(ans, map.getOrDefault(ans, 0) + 1);
-            }
-            for (int i = p + 1; i <= n && total > 0; i++, total--) {
-                int ans = n - query(p + 1, i);
-                query(p + 1, i);
-                map.put(ans, map.getOrDefault(ans, 0) + 1);
             }
 
             int ans = 0;
-            int cnt = 0;
-            for (IntegerEntryIterator iterator = map.iterator();
-                 iterator.hasNext(); ) {
-                iterator.next();
-                if (cnt < iterator.getEntryValue()) {
-                    cnt = iterator.getEntryValue();
-                    ans = iterator.getEntryKey();
+            int limit = 'z' - 'a' + 1;
+            ModifiableWholeHash[][] wholeHashes = new ModifiableWholeHash[n][2];
+            for (int i = 0; i < n; i++) {
+                if (i == 0) {
+                    wholeHashes[i][0] = new ModifiableWholeHash(31, limit);
+                    //wholeHashes[i][1] = new ModifiableWholeHash(61, limit);
+                } else {
+                    wholeHashes[i][0] = new ModifiableWholeHash(wholeHashes[i - 1][0]);
+                    //wholeHashes[i][1] = new ModifiableWholeHash(wholeHashes[i - 1][1]);
                 }
             }
-            System.err.println(p + "=" + ans);
-            return ans;
-        }
-
-        public int query(int l, int r) {
-            out.append("? ").append(l).append(' ').append(r).println();
-            out.flush();
-            return in.readInt();
-        }
-
-    }
-
-    static class IntegerHashMap {
-        private int[] slot;
-        private int[] next;
-        private int[] keys;
-        private int[] values;
-        private int alloc;
-        private boolean[] removed;
-        private int mask;
-        private int size;
-        private boolean rehash;
-
-        public IntegerHashMap(int cap, boolean rehash) {
-            this.mask = (1 << (32 - Integer.numberOfLeadingZeros(cap - 1))) - 1;
-            slot = new int[mask + 1];
-            next = new int[cap + 1];
-            keys = new int[cap + 1];
-            values = new int[cap + 1];
-            removed = new boolean[cap + 1];
-            this.rehash = rehash;
-        }
-
-        private void doubleCapacity() {
-            int newSize = Math.max(next.length + 10, next.length * 2);
-            next = Arrays.copyOf(next, newSize);
-            keys = Arrays.copyOf(keys, newSize);
-            values = Arrays.copyOf(values, newSize);
-            removed = Arrays.copyOf(removed, newSize);
-        }
-
-        public void alloc() {
-            alloc++;
-            if (alloc >= next.length) {
-                doubleCapacity();
+            PreXor[] xors = new PreXor[n];
+            for (int i = 0; i < n; i++) {
+                xors[i] = new PreXor(bits[i]);
             }
-            next[alloc] = 0;
-            removed[alloc] = false;
-            size++;
+            int[] hashes = new int[n];
+            for (int l = 0; l < m; l++) {
+                for (int i = 0; i < n; i++) {
+                    wholeHashes[i][0].clear();
+                    //wholeHashes[i][1].clear();
+                }
+                for (int r = l; r < m; r++) {
+                    int invalidCnt = 0;
+                    for (int i = 0; i < n; i++) {
+                        wholeHashes[i][0].modify(mat[i][r], 1);
+                        //wholeHashes[i][1].modify(mat[i][r], 1);
+                        int interval = (int) xors[i].intervalSum(l, r);
+                        if (interval != Integer.lowestOneBit(interval)) {
+                            invalidCnt++;
+                            hashes[i] = -invalidCnt;
+                            continue;
+                        }
+                        hashes[i] = wholeHashes[i][0].hash();//DigitUtils.asLong(wholeHashes[i][0].hash(), wholeHashes[i][1].hash());
+                    }
+                    int contrib = howMany(hashes, n);
+                    //System.err.printf("[%d,%d]=>%d\n", l, r, contrib);
+                    ans += contrib;
+                }
+            }
+
+            //System.err.println(invoke);
+            out.println(ans);
         }
 
-        private void rehash() {
-            int[] newSlots = new int[Math.max(16, slot.length * 2)];
-            int newMask = newSlots.length - 1;
-            for (int i = 0; i < slot.length; i++) {
-                if (slot[i] == 0) {
+        public int howMany(int[] hash, int n) {
+            int ans = 0;
+//        Arrays.fill(d1, 0);
+//        Arrays.fill(d2, 0);
+            Manacher.oddPalindrome(hash, n, d1);
+            Manacher.evenPalindrome(hash, n, d2);
+            for (int i = 0; i < n; i++) {
+                if (hash[i] < 0) {
                     continue;
                 }
-                int head = slot[i];
-                while (head != 0) {
-                    int n = next[head];
-                    int s = hash(keys[head]) & newMask;
-                    next[head] = newSlots[s];
-                    newSlots[s] = head;
-                    head = n;
-                }
+                ans += d1[i] + d2[i];
+                //invoke++;
             }
-            this.slot = newSlots;
-            this.mask = newMask;
+
+            return ans;
         }
-
-        private int hash(int x) {
-            int h = Integer.hashCode(x);
-            return h ^ (h >>> 16);
-        }
-
-        public void put(int x, int y) {
-            put(x, y, true);
-        }
-
-        public void put(int x, int y, boolean cover) {
-            int h = hash(x);
-            int s = h & mask;
-            if (slot[s] == 0) {
-                alloc();
-                slot[s] = alloc;
-                keys[alloc] = x;
-                values[alloc] = y;
-            } else {
-                int index = findIndexOrLastEntry(s, x);
-                if (keys[index] != x) {
-                    alloc();
-                    next[index] = alloc;
-                    keys[alloc] = x;
-                    values[alloc] = y;
-                } else if (cover) {
-                    values[index] = y;
-                }
-            }
-            if (rehash && size >= slot.length) {
-                rehash();
-            }
-        }
-
-        public int getOrDefault(int x, int def) {
-            int h = hash(x);
-            int s = h & mask;
-            if (slot[s] == 0) {
-                return def;
-            }
-            int index = findIndexOrLastEntry(s, x);
-            return keys[index] == x ? values[index] : def;
-        }
-
-        private int findIndexOrLastEntry(int s, int x) {
-            int iter = slot[s];
-            while (keys[iter] != x) {
-                if (next[iter] != 0) {
-                    iter = next[iter];
-                } else {
-                    return iter;
-                }
-            }
-            return iter;
-        }
-
-        public IntegerEntryIterator iterator() {
-            return new IntegerEntryIterator() {
-                int index = 1;
-                int readIndex = -1;
-
-
-                public boolean hasNext() {
-                    while (index <= alloc && removed[index]) {
-                        index++;
-                    }
-                    return index <= alloc;
-                }
-
-
-                public int getEntryKey() {
-                    return keys[readIndex];
-                }
-
-
-                public int getEntryValue() {
-                    return values[readIndex];
-                }
-
-
-                public void next() {
-                    if (!hasNext()) {
-                        throw new IllegalStateException();
-                    }
-                    readIndex = index;
-                    index++;
-                }
-            };
-        }
-
-        public String toString() {
-            IntegerEntryIterator iterator = iterator();
-            StringBuilder builder = new StringBuilder("{");
-            while (iterator.hasNext()) {
-                iterator.next();
-                builder.append(iterator.getEntryKey()).append("->").append(iterator.getEntryValue()).append(',');
-            }
-            if (builder.charAt(builder.length() - 1) == ',') {
-                builder.setLength(builder.length() - 1);
-            }
-            builder.append('}');
-            return builder.toString();
-        }
-
-    }
-
-    static interface IntegerEntryIterator {
-        boolean hasNext();
-
-        void next();
-
-        int getEntryKey();
-
-        int getEntryValue();
 
     }
 
@@ -334,6 +170,141 @@ public class Main {
             return val;
         }
 
+        public char readChar() {
+            skipBlank();
+            char c = (char) next;
+            next = read();
+            return c;
+        }
+
+    }
+
+    static class Modular {
+        int m;
+
+        public Modular(int m) {
+            this.m = m;
+        }
+
+        public Modular(long m) {
+            this.m = (int) m;
+            if (this.m != m) {
+                throw new IllegalArgumentException();
+            }
+        }
+
+        public Modular(double m) {
+            this.m = (int) m;
+            if (this.m != m) {
+                throw new IllegalArgumentException();
+            }
+        }
+
+        public int valueOf(long x) {
+            x %= m;
+            if (x < 0) {
+                x += m;
+            }
+            return (int) x;
+        }
+
+        public int mul(int x, int y) {
+            return valueOf((long) x * y);
+        }
+
+        public String toString() {
+            return "mod " + m;
+        }
+
+    }
+
+    static class Manacher {
+        public static void oddPalindrome(int[] s, int n, int[] ans) {
+            int c = -1;
+            int mx = -1;
+            for (int i = 0; i < n; i++) {
+                int len = 0;
+                if (mx > i) {
+                    int mirror = c - (i - c);
+                    len = Math.min(ans[mirror] - 1, mx - i);
+                }
+                while (i - (len + 1) >= 0 && i + (len + 1) < n && s[i - (len + 1)] == s[i + (len + 1)]) {
+                    len++;
+                }
+                ans[i] = len + 1;
+                if (mx < i + len) {
+                    mx = i + len;
+                    c = i;
+                }
+            }
+        }
+
+        public static void evenPalindrome(int[] s, int n, int[] ans) {
+            int c = -1;
+            int mx = -1;
+            ans[0] = 0;
+            for (int i = 1; i < n; i++) {
+                int len = 0;
+                if (mx >= i) {
+                    int mirror = c - (i - c);
+                    len = Math.min(ans[mirror], mx - (i - 1));
+                }
+                while (i - (len + 1) >= 0 && i - 1 + (len + 1) < n && s[i - (len + 1)] == s[i - 1 + (len + 1)]) {
+                    len++;
+                }
+                ans[i] = len;
+                if (mx < i - 1 + len) {
+                    mx = i - 1 + len;
+                    c = i;
+                }
+            }
+        }
+
+    }
+
+    static class PreXor {
+        private long[] pre;
+
+        public PreXor(int n) {
+            pre = new long[n];
+        }
+
+        public void populate(long[] a) {
+            int n = a.length;
+            pre[0] = a[0];
+            for (int i = 1; i < n; i++) {
+                pre[i] = pre[i - 1] ^ a[i];
+            }
+        }
+
+        public void populate(int[] a) {
+            int n = a.length;
+            pre[0] = a[0];
+            for (int i = 1; i < n; i++) {
+                pre[i] = pre[i - 1] ^ a[i];
+            }
+        }
+
+        public PreXor(long[] a) {
+            this(a.length);
+            populate(a);
+        }
+
+        public PreXor(int[] a) {
+            this(a.length);
+            populate(a);
+        }
+
+        public long intervalSum(int l, int r) {
+            if (r < l) {
+                return 0;
+            }
+            if (l == 0) {
+                return pre[r];
+            }
+            return pre[r] ^ pre[l - 1];
+        }
+
     }
 
     static class FastOutput implements AutoCloseable, Closeable {
@@ -348,23 +319,8 @@ public class Main {
             this(new OutputStreamWriter(os));
         }
 
-        public FastOutput append(char c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput append(int c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput append(String c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput println() {
-            cache.append('\n');
+        public FastOutput println(int c) {
+            cache.append(c).append('\n');
             return this;
         }
 
@@ -390,6 +346,39 @@ public class Main {
 
         public String toString() {
             return cache.toString();
+        }
+
+    }
+
+    static class ModifiableWholeHash {
+        public static final Modular MOD = new Modular((int) (1e9 + 7));
+        private int[] xs;
+        private int hash;
+
+        public ModifiableWholeHash(int x, int n) {
+            xs = new int[n + 1];
+            xs[0] = 1;
+            for (int i = 1; i <= n; i++) {
+                xs[i] = MOD.mul(xs[i - 1], x);
+            }
+            clear();
+        }
+
+        public ModifiableWholeHash(ModifiableWholeHash hash) {
+            xs = hash.xs;
+            clear();
+        }
+
+        public void clear() {
+            hash = 0;
+        }
+
+        public void modify(int i, int v) {
+            hash = MOD.valueOf(hash + (long) v * xs[i]);
+        }
+
+        public int hash() {
+            return hash;
         }
 
     }

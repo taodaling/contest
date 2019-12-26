@@ -1,0 +1,35 @@
+{
+  "name" : "F. Katya and Segments Sets",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5 5 9\n3 6 3\n1 3 1\n2 4 2\n1 2 3\n4 6 5\n2 5 3\n7 9 4\n2 3 1\n4 10 4\n1 2 2 3\n1 2 2 4\n1 3 1 5\n2 3 3 6\n2 4 2 9\n",
+    "output" : "no\nyes\nyes\nno\nyes\n",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx512M",
+  "mainClass" : "Main",
+  "taskClass" : "on2019_12.on2019_12_26_Codeforces_Round__524__Div__2_.F__Katya_and_Segments_Sets.FKatyaAndSegmentsSets",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.12.26",
+  "contestName" : "Codeforces Round #524 (Div. 2)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

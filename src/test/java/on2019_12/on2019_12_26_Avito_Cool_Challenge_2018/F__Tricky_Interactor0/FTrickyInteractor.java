@@ -1,4 +1,6 @@
-package contest;
+package on2019_12.on2019_12_26_Avito_Cool_Challenge_2018.F__Tricky_Interactor0;
+
+
 
 
 import template.io.FastInput;

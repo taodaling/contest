@@ -32,28 +32,28 @@ public class Hash {
     public <T> void populate(T[] data, int n, ToHash<T> toHash) {
         hash[0] = toHash.hash(data[0]);
         for (int i = 1; i < n; i++) {
-            hash[i] = MOD.plus(hash[i - 1], MOD.mul(toHash.hash(data[i]), xs[i]));
+            hash[i] = MOD.valueOf(hash[i - 1] + (long)toHash.hash(data[i]) * xs[i]);
         }
     }
 
     public void populate(Object[] data, int n) {
         hash[0] = data[0].hashCode();
         for (int i = 1; i < n; i++) {
-            hash[i] = MOD.plus(hash[i - 1], MOD.mul(data[i].hashCode(), xs[i]));
+            hash[i] = MOD.valueOf(hash[i - 1] + (long)data[i].hashCode() * xs[i]);
         }
     }
 
     public void populate(int[] data, int n) {
         hash[0] = data[0];
         for (int i = 1; i < n; i++) {
-            hash[i] = MOD.plus(hash[i - 1], MOD.mul(data[i], xs[i]));
+            hash[i] = MOD.valueOf(hash[i - 1] + (long)data[i] * xs[i]);
         }
     }
 
     public void populate(char[] data, int n) {
         hash[0] = data[0];
         for (int i = 1; i < n; i++) {
-            hash[i] = MOD.plus(hash[i - 1], MOD.mul(data[i], xs[i]));
+            hash[i] = MOD.valueOf(hash[i - 1] + (long)data[i] * xs[i]);
         }
     }
 

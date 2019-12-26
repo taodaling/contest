@@ -47,7 +47,7 @@
   "location" : "src/main/java/contest",
   "vmArgs" : "-Xmx256M",
   "mainClass" : "Main",
-  "taskClass" : "contest.FTrickyInteractor",
+  "taskClass" : "on2019_12.on2019_12_26_Avito_Cool_Challenge_2018.F__Tricky_Interactor0.FTrickyInteractor",
   "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
   "checkerParameters" : "",
   "testClasses" : [ ],
@@ -59,6 +59,6 @@
   "includeLocale" : false,
   "failOnOverflow" : false,
   "interactive" : true,
-  "interactor" : "contest.FInteractor",
+  "interactor" : "on2019_12.on2019_12_26_Avito_Cool_Challenge_2018.F__Tricky_Interactor0.FInteractor",
   "newThread" : true
 }
