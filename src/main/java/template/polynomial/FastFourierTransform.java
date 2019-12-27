@@ -1,17 +1,22 @@
 package template.polynomial;
 
 import template.math.CachedLog2;
+import template.primitve.generated.DoubleList;
 import template.utils.SequenceUtils;
 
 public class FastFourierTransform {
-    private static double[][] wCache = new double[31][2];
     private static double eps = 1e-12;
+    private static double[][] realLevels = new double[30][];
+    private static double[][] imgLevels = new double[30][];
 
-    static {
-        for (int i = 0, until = wCache.length; i < until; i++) {
-            double s = 1 << i;
-            wCache[i][0] = Math.cos(Math.PI / s);
-            wCache[i][1] = Math.sin(Math.PI / s);
+    private static void prepareLevel(int i) {
+        if (realLevels[i] == null) {
+            realLevels[i] = new double[1 << i];
+            imgLevels[i] = new double[1 << i];
+            for (int j = 0, s = 1 << i; j < s; j++) {
+                realLevels[i][j] = Math.cos(Math.PI / s * j);
+                imgLevels[i][j] = Math.sin(Math.PI / s * j);
+            }
         }
     }
 
@@ -33,23 +38,18 @@ public class FastFourierTransform {
             }
         }
 
-        double[][] w = new double[2][1];
         double[][] t = new double[2][1];
         for (int d = 0; d < m; d++) {
-            double[] w1 = wCache[d];
             int s = 1 << d;
             int s2 = s << 1;
+            prepareLevel(d);
             for (int i = 0; i < n; i += s2) {
-                w[0][0] = 1;
-                w[1][0] = 0;
-
                 for (int j = 0; j < s; j++) {
                     int a = i + j;
                     int b = a + s;
-                    mul(w[0][0], w[1][0], p[0][b], p[1][b], t, 0);
+                    mul(realLevels[d][j], imgLevels[d][j], p[0][b], p[1][b], t, 0);
                     sub(p[0][a], p[1][a], t[0][0], t[1][0], p, b);
                     add(p[0][a], p[1][a], t[0][0], t[1][0], p, a);
-                    mul(w[0][0], w[1][0], w1[0], w1[1], w, 0);
                 }
             }
         }

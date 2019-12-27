@@ -1,4 +1,8 @@
-package contest;
+package on2019_12.on2019_12_26_Codeforces_Round__524__Div__2_.E__Sonya_and_Matrix_Beauty;
+
+
+
+
 
 import java.util.ArrayList;
 import java.util.Collection;

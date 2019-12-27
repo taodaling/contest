@@ -2,10 +2,10 @@
 <project version="4">
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
     <generated>
-      <config projectName="jhelper-example-project" targetName="testrunner" />
       <config projectName="jhelper-example-project" targetName="jhelper_example_project" />
-      <config projectName="jhelper-example-project" targetName="output" />
       <config projectName="jhelper-example-project" targetName="test" />
+      <config projectName="jhelper-example-project" targetName="testrunner" />
+      <config projectName="jhelper-example-project" targetName="output" />
     </generated>
   </component>
   <component name="CMakeSettings">
@@ -14,7 +14,11 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e173ed55-e541-424a-82e1-b5da979c74d7" name="Default" comment="" />
+    <list default="true" id="e173ed55-e541-424a-82e1-b5da979c74d7" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/../src/main/java/contest/E. Sonya and Matrix Beauty.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/contest/ESonyaAndMatrixBeauty.java" beforeDir="false" afterPath="$PROJECT_DIR$/../archive/unsorted/2019.12/2019.12.26 - Codeforces Round #524 (Div. 2)/ESonyaAndMatrixBeauty.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/contest/ESonyaAndMatrixBeautyTestCase.java" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -26,7 +30,7 @@
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="name.admitriev.jhelper.configuration.TaskConfigurationExecutionTargetCMakeBuildProfile:Debug" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
   <component name="FavoritesManager">
     <favorites_list name="jhelper-example-project" />
   </component>
@@ -53,7 +57,7 @@
     <property name="restartRequiresConfirmation" value="true" />
     <property name="settings.editor.selected.configurable" value="reference.settings.ide.settings.notifications" />
   </component>
-  <component name="RunManager" selected="Task.G. Recursive Queries">
+  <component name="RunManager" selected="CMake Application.Build All">
     <configuration name="Build All" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" CONFIG_NAME="Debug" EXPLICIT_BUILD_TARGET_NAME="all">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -128,7 +132,6 @@
       <item itemvalue="CMake Application.output" />
       <item itemvalue="CMake Application.test" />
       <item itemvalue="CMake Application.testrunner" />
-      <item itemvalue="Task.G. Recursive Queries" />
     </list>
   </component>
   <component name="ServiceViewManager">
@@ -162,6 +165,7 @@
       <workItem from="1576651039632" duration="4922000" />
       <workItem from="1576719233506" duration="1278000" />
       <workItem from="1576735687009" duration="2204000" />
+      <workItem from="1577409435117" duration="248000" />
     </task>
     <servers />
   </component>
@@ -250,10 +254,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="968" height="528" key="XDebugger.FullValuePopup/0.0.1920.1040@0.0.1920.1040" timestamp="1576482023181" />
-    <state x="665" y="352" key="com.intellij.ide.util.TipDialog" timestamp="1576735689355">
+    <state x="665" y="352" key="com.intellij.ide.util.TipDialog" timestamp="1577409467994">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="665" y="352" key="com.intellij.ide.util.TipDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1576735689355" />
+    <state x="665" y="352" key="com.intellij.ide.util.TipDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1577409467994" />
     <state x="887" y="474" key="com.intellij.ide.util.TipDialog/0.0.2560.1400@0.0.2560.1400" timestamp="1576398736188" />
     <state x="562" y="0" width="1012" height="1040" key="find.popup" timestamp="1576655336306">
       <screen x="0" y="0" width="1920" height="1040" />

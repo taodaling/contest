@@ -1,2 +1,2 @@
-53 src/main/java/contest/E. Sonya and Matrix Beauty.json
+53 src/main/java/contest/G. Yet Another LCP Problem.json
 0

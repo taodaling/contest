@@ -1,0 +1,50 @@
+{
+  "name" : "G. Array Game",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5 2 4\n1 2 3 4 5\n1 3 5 6\n2 2 5\n1 1 2 3\n2 1 5\n",
+    "output" : "1\n1\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "5 1 3\n1 1 3 3 4\n2 1 5\n2 2 5\n2 3 5\n",
+    "output" : "1\n2\n1\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "2 1 6\n1 1\n2 1 2\n2 1 1\n1 2 2 1\n2 1 2\n1 1 1 1\n2 1 2",
+    "output" : "1\n1\n1\n2",
+    "index" : 2,
+    "active" : false
+  }, {
+    "input" : "2 1 2\n2 2\n2 1 2\n2 1 1",
+    "output" : "2\n2",
+    "index" : 3,
+    "active" : false
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx512M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.GArrayGame",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2019.12.27",
+  "contestName" : "Educational Codeforces Round 54 (Rated for Div. 2)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

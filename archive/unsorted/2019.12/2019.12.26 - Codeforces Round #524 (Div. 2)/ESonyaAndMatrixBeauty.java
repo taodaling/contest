@@ -1,5 +1,7 @@
 package contest;
 
+
+
 import template.datastructure.PreXor;
 import template.io.FastInput;
 import template.io.FastOutput;
