@@ -14,11 +14,7 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e173ed55-e541-424a-82e1-b5da979c74d7" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/../src/main/java/contest/E. Sonya and Matrix Beauty.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/main/java/contest/ESonyaAndMatrixBeauty.java" beforeDir="false" afterPath="$PROJECT_DIR$/../archive/unsorted/2019.12/2019.12.26 - Codeforces Round #524 (Div. 2)/ESonyaAndMatrixBeauty.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../src/main/java/contest/ESonyaAndMatrixBeautyTestCase.java" beforeDir="false" />
-    </list>
+    <list default="true" id="e173ed55-e541-424a-82e1-b5da979c74d7" name="Default" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -166,6 +162,8 @@
       <workItem from="1576719233506" duration="1278000" />
       <workItem from="1576735687009" duration="2204000" />
       <workItem from="1577409435117" duration="248000" />
+      <workItem from="1577508852339" duration="48000" />
+      <workItem from="1577508908526" duration="8587000" />
     </task>
     <servers />
   </component>
@@ -254,11 +252,11 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="968" height="528" key="XDebugger.FullValuePopup/0.0.1920.1040@0.0.1920.1040" timestamp="1576482023181" />
-    <state x="665" y="352" key="com.intellij.ide.util.TipDialog" timestamp="1577409467994">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state x="887" y="474" key="com.intellij.ide.util.TipDialog" timestamp="1577508855939">
+      <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state x="665" y="352" key="com.intellij.ide.util.TipDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1577409467994" />
-    <state x="887" y="474" key="com.intellij.ide.util.TipDialog/0.0.2560.1400@0.0.2560.1400" timestamp="1576398736188" />
+    <state x="887" y="474" key="com.intellij.ide.util.TipDialog/0.0.2560.1400@0.0.2560.1400" timestamp="1577508855939" />
     <state x="562" y="0" width="1012" height="1040" key="find.popup" timestamp="1576655336306">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

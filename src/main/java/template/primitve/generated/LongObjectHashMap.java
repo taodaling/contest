@@ -58,6 +58,7 @@ public class LongObjectHashMap<V> {
         }
         next[alloc] = 0;
         removed[alloc] = false;
+        values[alloc] = null;
         size++;
     }
 

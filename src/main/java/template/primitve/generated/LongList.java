@@ -222,7 +222,7 @@ public class LongList implements Cloneable{
             pop();
             return;
         }
-        System.arraycopy(data, index + 1, data, index, size - index);
+        System.arraycopy(data, index + 1, data, index, size - (index + 1));
         size--;
     }
 

@@ -10,13 +10,13 @@ import java.util.Deque;
  * </pre>
  * while k < j < i and S(i) is an increasing function.
  */
-public class LeqSlopeOptimizer {
+public class DoubleLeqSlopeOptimizer {
     private static class Point {
-        final long x;
-        final long y;
+        final double x;
+        final double y;
         final int id;
 
-        private Point(long x, long y, int id) {
+        private Point(double x, double y, int id) {
             this.x = x;
             this.y = y;
             this.id = id;
@@ -25,11 +25,11 @@ public class LeqSlopeOptimizer {
 
     Deque<Point> deque;
 
-    public LeqSlopeOptimizer() {
+    public DoubleLeqSlopeOptimizer() {
         deque = new ArrayDeque<>(0);
     }
 
-    public LeqSlopeOptimizer(int exp) {
+    public DoubleLeqSlopeOptimizer(int exp) {
         deque = new ArrayDeque<>(exp);
     }
 
@@ -43,10 +43,10 @@ public class LeqSlopeOptimizer {
                 return 1e-50;
             }
         }
-        return (double) (b.y - a.y) / (b.x - a.x);
+        return (b.y - a.y) / (b.x - a.x);
     }
 
-    public Point add(long y, long x, int id) {
+    public Point add(double y, double x, int id) {
         Point t1 = new Point(x, y, id);
         while (deque.size() >= 2) {
             Point t2 = deque.removeLast();
@@ -60,7 +60,7 @@ public class LeqSlopeOptimizer {
         return t1;
     }
 
-    public int getBestChoice(long s) {
+    public int getBestChoice(double s) {
         while (deque.size() >= 2) {
             Point h1 = deque.removeFirst();
             Point h2 = deque.peekFirst();
@@ -76,3 +76,4 @@ public class LeqSlopeOptimizer {
         deque.clear();
     }
 }
+
