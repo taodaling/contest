@@ -22,18 +22,18 @@ public class Point2D {
     };
 
     public Point2D(double x, double y) {
-        this.x = GeometryUtils.valueOf(x);
-        this.y = GeometryUtils.valueOf(y);
+        this.x = x;//GeometryUtils.valueOf(x);
+        this.y = y;//GeometryUtils.valueOf(y);
     }
 
     public double distance2Between(Point2D another) {
         double dx = x - another.x;
         double dy = y - another.y;
-        return GeometryUtils.valueOf(dx * dx + dy * dy);
+        return dx * dx + dy * dy;
     }
 
     public double distanceBetween(Point2D another) {
-        return GeometryUtils.valueOf(Math.sqrt(distance2Between(another)));
+        return Math.sqrt(distance2Between(another));
     }
 
     public boolean near(Point2D another) {

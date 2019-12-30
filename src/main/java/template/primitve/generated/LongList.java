@@ -16,16 +16,16 @@ public class LongList implements Cloneable{
     }
 
     public void remove(int l, int r) {
-        checkRange(l);
-        checkRange(r);
         if (l > r) {
             return;
         }
+        checkRange(l);
+        checkRange(r);
         if (r == size - 1) {
             size = l;
             return;
         } else {
-            System.arraycopy(data, l, data, r + 1, size - (r + 1));
+            System.arraycopy(data, r + 1, data, l, size - (r + 1));
             size -= (r - l + 1);
         }
     }

@@ -1,4 +1,2 @@
-43 src/main/java/contest/E. Divide Points.json
-2
-1
-4
+42 src/main/java/contest/E. Sasha Circle.json
+0

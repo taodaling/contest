@@ -14,7 +14,28 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e173ed55-e541-424a-82e1-b5da979c74d7" name="Default" comment="" />
+    <list default="true" id="e173ed55-e541-424a-82e1-b5da979c74d7" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/../archive/unsorted/2019.12/2019.12.30 - Good Bye 2019/F. Awesome Substrings.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../archive/unsorted/2019.12/2019.12.30 - Good Bye 2019/FAwesomeSubstrings.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../archive/unsorted/2019.12/2019.12.30 - Good Bye 2019/G. Subset with Zero Sum.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../archive/unsorted/2019.12/2019.12.30 - Good Bye 2019/GSubsetWithZeroSum.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../src/main/java/template/graph/CircularPath.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_30_Good_Bye_2019/F__Awesome_Substrings/F. Awesome Substrings.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_30_Good_Bye_2019/F__Awesome_Substrings/FAwesomeSubstrings.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_30_Good_Bye_2019/F__Awesome_Substrings/Main.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_30_Good_Bye_2019/G__Subset_with_Zero_Sum/G. Subset with Zero Sum.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_30_Good_Bye_2019/G__Subset_with_Zero_Sum/GSubsetWithZeroSum.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../src/test/java/on2019_12/on2019_12_30_Good_Bye_2019/G__Subset_with_Zero_Sum/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CHelperReport.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../CHelperReport.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../output/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/../output/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/template/datastructure/ObjectList.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/template/datastructure/ObjectList.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/template/math/ExpressionSolver.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/template/math/ExpressionSolver.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/template/primitve/generated/DoubleList.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/template/primitve/generated/DoubleList.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/template/primitve/generated/IntegerList.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/template/primitve/generated/IntegerList.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/template/primitve/generated/IntegerPreSum.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/template/primitve/generated/IntegerPreSum.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/template/primitve/generated/LongList.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/template/primitve/generated/LongList.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/template/primitve/generator/LongList.java" beforeDir="false" afterPath="$PROJECT_DIR$/../src/main/java/template/primitve/generator/LongList.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -164,6 +185,7 @@
       <workItem from="1577409435117" duration="248000" />
       <workItem from="1577508852339" duration="48000" />
       <workItem from="1577508908526" duration="8587000" />
+      <workItem from="1577685784878" duration="14000" />
     </task>
     <servers />
   </component>
@@ -252,10 +274,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="968" height="528" key="XDebugger.FullValuePopup/0.0.1920.1040@0.0.1920.1040" timestamp="1576482023181" />
-    <state x="887" y="474" key="com.intellij.ide.util.TipDialog" timestamp="1577508855939">
-      <screen x="0" y="0" width="2560" height="1400" />
+    <state x="665" y="352" key="com.intellij.ide.util.TipDialog" timestamp="1577685785441">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="665" y="352" key="com.intellij.ide.util.TipDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1577409467994" />
+    <state x="665" y="352" key="com.intellij.ide.util.TipDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1577685785441" />
     <state x="887" y="474" key="com.intellij.ide.util.TipDialog/0.0.2560.1400@0.0.2560.1400" timestamp="1577508855939" />
     <state x="562" y="0" width="1012" height="1040" key="find.popup" timestamp="1576655336306">
       <screen x="0" y="0" width="1920" height="1040" />

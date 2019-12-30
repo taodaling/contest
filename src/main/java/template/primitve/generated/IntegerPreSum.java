@@ -7,7 +7,7 @@ public class IntegerPreSum {
         pre = new int[n];
     }
 
-    public void populate(int[] a){
+    public void populate(int[] a) {
         int n = a.length;
         pre[0] = a[0];
         for (int i = 1; i < n; i++) {
@@ -37,6 +37,9 @@ public class IntegerPreSum {
      * get a[0] + a[1] + ... + a[i]
      */
     public int prefix(int i) {
+        if (i < 0) {
+            return 0;
+        }
         return pre[i];
     }
 

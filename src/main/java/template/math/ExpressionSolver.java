@@ -1,5 +1,7 @@
 package template.math;
 
+import java.util.function.LongUnaryOperator;
+
 public class ExpressionSolver {
     private static ExtGCD extGCD = new ExtGCD();
 
@@ -121,5 +123,51 @@ public class ExpressionSolver {
         long xSpare = Math.max(0, (xr - x) / b);
         long ySpare = Math.max(0, (y - yl) / a);
         return 1 + Math.min(xSpare, ySpare);
+    }
+
+    /**
+     * 1 + 2 + ... + n
+     */
+    public static long sumOfIncrementSequence(int n) {
+        return (long) (1 + n) * n / 2;
+    }
+
+    /**
+     * l + (l + 1) + ... + (r - 1) + r
+     */
+    public static long sumOfIncrementSequence(int l, int r) {
+        return sumOfIncrementSequence(r) - sumOfIncrementSequence(l - 1);
+    }
+
+    /**
+     * sum_{i=0}^y \lfloor i/x \rfloor
+     */
+    public static long sumOfImmutableDenominator(int x, int y) {
+        int round = y / x;
+        int extra = y - round * x + 1;
+        return sumOfIncrementSequence(round - 1) * x + (long) extra * round;
+    }
+
+    /**
+     * sum_{i=b}^y \lfloor i/x \rfloor
+     */
+    public static long sumOfImmutableDenominator(int b, int x, int y) {
+        if (b == 0) {
+            return sumOfImmutableDenominator(x, y);
+        }
+        return sumOfImmutableDenominator(x, y) - sumOfImmutableDenominator(x, b - 1);
+    }
+
+
+    /**
+     * sum_{i=l}^r function(\lfloor m / i \rfloor)
+     */
+    public static long sumOfFunctionFloorDiv(LongUnaryOperator function, int l, int r, int m) {
+        long ans = 0;
+        for (int i = l, j; i <= r; i = j + 1) {
+            j = Math.min(r, m / (m / i));
+            ans += function.applyAsLong(i) * (j - i + 1);
+        }
+        return ans;
     }
 }

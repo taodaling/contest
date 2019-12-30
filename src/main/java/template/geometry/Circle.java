@@ -15,7 +15,9 @@ public class Circle implements Shape {
 
     @Override
     public boolean contain(Point2D pt, boolean cover) {
-        double dist2 = center.distance2Between(pt) - radius * radius;
+        double dx = pt.x - center.x;
+        double dy = pt.y - center.y;
+        double dist2 = dx * dx + dy * dy - radius * radius;
         if (cover) {
             return dist2 <= 0;
         }

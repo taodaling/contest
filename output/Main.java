@@ -4,7 +4,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.io.IOException;
+import java.util.Random;
 import java.io.UncheckedIOException;
+import java.util.List;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
@@ -28,86 +30,40 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            EDividePoints solver = new EDividePoints();
+            ESashaCircle solver = new ESashaCircle();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class EDividePoints {
+    static class ESashaCircle {
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            Node[] nodes = new Node[n];
+            int m = in.readInt();
+            Point2D[] a = new Point2D[n];
+            Point2D[] b = new Point2D[m];
             for (int i = 0; i < n; i++) {
-                nodes[i] = new Node();
-                nodes[i].x = in.readInt();
-                nodes[i].y = in.readInt();
+                a[i] = new Point2D(in.readInt(), in.readInt());
+            }
+            for (int i = 0; i < m; i++) {
+                b[i] = new Point2D(in.readInt(), in.readInt());
             }
 
-            IntegerList ans = new IntegerList(n);
-            int[][] cnts = new int[2][2];
-            while (true) {
-                SequenceUtils.deepFill(cnts, 0);
-                for (int i = 0; i < n; i++) {
-                    cnts[nodes[i].x & 1][nodes[i].y & 1]++;
-                }
-                if (cnts[0][0] == n) {
-                    for (int i = 0; i < n; i++) {
-                        nodes[i].x /= 2;
-                        nodes[i].y /= 2;
-                    }
-                    continue;
-                }
-                if (cnts[0][1] == n) {
-                    for (int i = 0; i < n; i++) {
-                        nodes[i].x /= 2;
-                        nodes[i].y = (nodes[i].y - 1) / 2;
-                    }
-                    continue;
-                }
-                if (cnts[1][0] == n) {
-                    for (int i = 0; i < n; i++) {
-                        nodes[i].x = (nodes[i].x - 1) / 2;
-                        nodes[i].y = nodes[i].y / 2;
-                    }
-                    continue;
-                }
-                if (cnts[1][1] == n) {
-                    for (int i = 0; i < n; i++) {
-                        nodes[i].x = (nodes[i].x - 1) / 2;
-                        nodes[i].y = (nodes[i].y - 1) / 2;
-                    }
-                    continue;
-                }
-
-                if (cnts[0][0] + cnts[1][1] == n) {
-                    for (int i = 0; i < n; i++) {
-                        if ((nodes[i].x & 1) == 0 && (nodes[i].y & 1) == 0) {
-                            ans.add(i);
-                        }
-                    }
-                    break;
-                }
-                if (cnts[1][0] + cnts[0][1] == n) {
-                    for (int i = 0; i < n; i++) {
-                        if ((nodes[i].x & 1) == 1 && (nodes[i].y & 1) == 0) {
-                            ans.add(i);
-                        }
-                    }
-                    break;
-                }
-                for (int i = 0; i < n; i++) {
-                    if ((nodes[i].x & 1) == (nodes[i].y & 1)) {
-                        ans.add(i);
-                    }
-                }
-                break;
+            if (check(Circle.minCircleCover(Arrays.asList(a)), b) ||
+                    check(Circle.minCircleCover(Arrays.asList(b)), a)) {
+                out.println("YES");
+            } else {
+                out.println("NO");
             }
+        }
 
-            out.println(ans.size());
-            for (int i = 0; i < ans.size(); i++) {
-                out.append(ans.get(i) + 1).append(' ');
+        public boolean check(Circle c, Point2D[] pts) {
+            for (Point2D pt : pts) {
+                if (c.contain(pt, true)) {
+                    return false;
+                }
             }
+            return true;
         }
 
     }
@@ -124,17 +80,7 @@ public class Main {
             this(new OutputStreamWriter(os));
         }
 
-        public FastOutput append(char c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput append(int c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput println(int c) {
+        public FastOutput println(String c) {
             cache.append(c).append('\n');
             return this;
         }
@@ -162,42 +108,6 @@ public class Main {
         public String toString() {
             return cache.toString();
         }
-
-    }
-
-    static class SequenceUtils {
-        public static void deepFill(Object array, int val) {
-            if (!array.getClass().isArray()) {
-                throw new IllegalArgumentException();
-            }
-            if (array instanceof int[]) {
-                int[] intArray = (int[]) array;
-                Arrays.fill(intArray, val);
-            } else {
-                Object[] objArray = (Object[]) array;
-                for (Object obj : objArray) {
-                    deepFill(obj, val);
-                }
-            }
-        }
-
-        public static boolean equal(int[] a, int al, int ar, int[] b, int bl, int br) {
-            if ((ar - al) != (br - bl)) {
-                return false;
-            }
-            for (int i = al, j = bl; i <= ar; i++, j++) {
-                if (a[i] != b[j]) {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-    }
-
-    static class Node {
-        int x;
-        int y;
 
     }
 
@@ -260,98 +170,219 @@ public class Main {
 
     }
 
-    static class IntegerList implements Cloneable {
-        private int size;
-        private int cap;
-        private int[] data;
-        private static final int[] EMPTY = new int[0];
+    static class Line2D {
+        public final Point2D a;
+        public final Point2D b;
+        public final Point2D d;
 
-        public IntegerList(int cap) {
-            this.cap = cap;
-            if (cap == 0) {
-                data = EMPTY;
-            } else {
-                data = new int[cap];
+        public Line2D(Point2D a, Point2D b) {
+            this.a = a;
+            this.b = b;
+            d = new Point2D(b.x - a.x, b.y - a.y);
+        }
+
+        public Point2D intersect(Line2D another) {
+            double m11 = b.x - a.x;
+            double m01 = another.b.x - another.a.x;
+            double m10 = a.y - b.y;
+            double m00 = another.a.y - another.b.y;
+
+            double div = GeometryUtils.valueOf(m00 * m11 - m01 * m10);
+            if (div == 0) {
+                return null;
             }
+
+            double v0 = (another.a.x - a.x) / div;
+            double v1 = (another.a.y - a.y) / div;
+
+            double alpha = m00 * v0 + m01 * v1;
+            return getPoint(alpha);
         }
 
-        public IntegerList(IntegerList list) {
-            this.size = list.size;
-            this.cap = list.cap;
-            this.data = Arrays.copyOf(list.data, size);
-        }
-
-        public IntegerList() {
-            this(0);
-        }
-
-        public void ensureSpace(int req) {
-            if (req > cap) {
-                while (cap < req) {
-                    cap = Math.max(cap + 10, 2 * cap);
-                }
-                data = Arrays.copyOf(data, cap);
-            }
-        }
-
-        private void checkRange(int i) {
-            if (i < 0 || i >= size) {
-                throw new ArrayIndexOutOfBoundsException();
-            }
-        }
-
-        public int get(int i) {
-            checkRange(i);
-            return data[i];
-        }
-
-        public void add(int x) {
-            ensureSpace(size + 1);
-            data[size++] = x;
-        }
-
-        public void addAll(int[] x, int offset, int len) {
-            ensureSpace(size + len);
-            System.arraycopy(x, offset, data, size, len);
-            size += len;
-        }
-
-        public void addAll(IntegerList list) {
-            addAll(list.data, 0, list.size);
-        }
-
-        public int size() {
-            return size;
-        }
-
-        public int[] toArray() {
-            return Arrays.copyOf(data, size);
+        public Point2D getPoint(double alpha) {
+            return new Point2D(a.x + d.x * alpha, a.y + d.y * alpha);
         }
 
         public String toString() {
-            return Arrays.toString(toArray());
+            return d.toString();
         }
 
-        public boolean equals(Object obj) {
-            if (!(obj instanceof IntegerList)) {
-                return false;
+    }
+
+    static class Segment2D extends Line2D {
+        public Segment2D(Point2D a, Point2D b) {
+            super(a, b);
+        }
+
+        public Line2D getPerpendicularBisector() {
+            Point2D center = new Point2D((a.x + b.x) / 2, (a.y + b.y) / 2);
+            Point2D apeak = d.getApeak();
+            return new Line2D(center, center.add(apeak));
+        }
+
+    }
+
+    static class Randomized {
+        static Random random = new Random();
+
+        public static <T> void randomizedArray(T[] data, int from, int to) {
+            to--;
+            for (int i = from; i <= to; i++) {
+                int s = nextInt(i, to);
+                T tmp = data[i];
+                data[i] = data[s];
+                data[s] = tmp;
             }
-            IntegerList other = (IntegerList) obj;
-            return SequenceUtils.equal(data, 0, size - 1, other.data, 0, other.size - 1);
+        }
+
+        public static int nextInt(int l, int r) {
+            return random.nextInt(r - l + 1) + l;
+        }
+
+    }
+
+    static class Triangle implements Shape {
+        Point2D a;
+        Point2D b;
+        Point2D c;
+
+        public Triangle(Point2D a, Point2D b, Point2D c) {
+            if (a.cross(b, c) < 0) {
+                Point2D tmp = b;
+                b = c;
+                c = tmp;
+            }
+            this.a = a;
+            this.b = b;
+            this.c = c;
+        }
+
+        public Circle outerCircle() {
+            Segment2D ab = new Segment2D(a, b);
+            Segment2D ac = new Segment2D(a, c);
+            Line2D abPB = ab.getPerpendicularBisector();
+            Line2D acPB = ac.getPerpendicularBisector();
+            Point2D center = abPB.intersect(acPB);
+            return new Circle(center, center.distanceBetween(a));
+        }
+
+    }
+
+    static class Circle implements Shape {
+        public final Point2D center;
+        public final double radius;
+
+        public Circle(Point2D center, double radius) {
+            this.center = center;
+            this.radius = radius;
+        }
+
+        public boolean contain(Point2D pt, boolean cover) {
+            double dx = pt.x - center.x;
+            double dy = pt.y - center.y;
+            double dist2 = dx * dx + dy * dy - radius * radius;
+            if (cover) {
+                return dist2 <= 0;
+            }
+            return dist2 < 0;
+        }
+
+        public static Circle minCircleCover(Point2D[] pts, int l, int r) {
+            Randomized.randomizedArray(pts, l, r + 1);
+            Circle circle = new Circle(new Point2D(0, 0), 0);
+            for (int i = l; i <= r; i++) {
+                if (circle.contain(pts[i], true)) {
+                    continue;
+                }
+                circle = new Circle(pts[i], 0);
+                for (int j = l; j < i; j++) {
+                    if (circle.contain(pts[j], true)) {
+                        continue;
+                    }
+                    circle = getCircleByDiameter(pts[i], pts[j]);
+                    for (int k = l; k < j; k++) {
+                        if (circle.contain(pts[k], true)) {
+                            continue;
+                        }
+                        circle = new Triangle(pts[i], pts[j], pts[k]).outerCircle();
+                    }
+                }
+            }
+            return circle;
+        }
+
+        public static Circle getCircleByDiameter(Point2D a, Point2D b) {
+            return new Circle(new Point2D((a.x + b.x) / 2, (a.y + b.y) / 2), a.distanceBetween(b) / 2);
+        }
+
+        public static Circle minCircleCover(List<Point2D> pts) {
+            return minCircleCover(pts.toArray(new Point2D[0]), 0, pts.size() - 1);
+        }
+
+        public String toString() {
+            return "Circle " + center + " with radius=" + radius;
+        }
+
+    }
+
+    static class GeometryUtils {
+        public static final double PREC = 1e-15;
+
+        public static double valueOf(double x) {
+            return x > -PREC && x < PREC ? 0 : x;
+        }
+
+        public static double cross(double x1, double y1, double x2, double y2) {
+            return valueOf(x1 * y2 - y1 * x2);
+        }
+
+    }
+
+    static interface Shape {
+    }
+
+    static class Point2D {
+        public final double x;
+        public final double y;
+
+        public Point2D(double x, double y) {
+            this.x = x;//GeometryUtils.valueOf(x);
+            this.y = y;//GeometryUtils.valueOf(y);
+        }
+
+        public double distance2Between(Point2D another) {
+            double dx = x - another.x;
+            double dy = y - another.y;
+            return dx * dx + dy * dy;
+        }
+
+        public double distanceBetween(Point2D another) {
+            return Math.sqrt(distance2Between(another));
+        }
+
+        public double cross(Point2D a, Point2D b) {
+            return GeometryUtils.cross(a.x - x, a.y - y, b.x - x, b.y - y);
+        }
+
+        public Point2D getApeak() {
+            return new Point2D(-y, x);
+        }
+
+        public Point2D add(Point2D vector) {
+            return new Point2D(x + vector.x, y + vector.y);
+        }
+
+        public String toString() {
+            return String.format("(%f, %f)", x, y);
         }
 
         public int hashCode() {
-            int h = 1;
-            for (int i = 0; i < size; i++) {
-                h = h * 31 + Integer.hashCode(data[i]);
-            }
-            return h;
+            return (int) (Double.doubleToLongBits(x) * 31 + Double.doubleToLongBits(y));
         }
 
-        public IntegerList clone() {
-            IntegerList ans = new IntegerList();
-            ans.addAll(this);
-            return ans;
+        public boolean equals(Object obj) {
+            Point2D other = (Point2D) obj;
+            return x == other.x && y == other.y;
         }
 
     }
