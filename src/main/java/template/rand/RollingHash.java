@@ -20,7 +20,7 @@ public class RollingHash {
     public RollingHash(int size, int x) {
         deque = new IntegerDequeImpl(size);
         xs = new int[size + 1];
-        inverse = new Power(MOD).inverse(x);
+        inverse = new Power(MOD).inverseByFermat(x);
         xs[0] = 1;
         for (int i = 1; i <= size; i++) {
             xs[i] = MOD.mul(xs[i - 1], x);

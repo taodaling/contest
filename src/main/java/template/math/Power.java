@@ -10,6 +10,8 @@ public class Power {
         return modular;
     }
 
+    static ExtGCD extGCD = new ExtGCD();
+
     final Modular modular;
 
     public Power(Modular modular) {
@@ -56,8 +58,15 @@ public class Power {
         return (int) r;
     }
 
-    public int inverse(int x) {
+    public int inverseByFermat(int x) {
         return pow(x, modular.m - 2);
+    }
+
+    public int inverseExtGCD(int x) {
+        if(extGCD.extgcd(x, modular.getMod()) != 1){
+            throw new IllegalArgumentException();
+        }
+        return modular.valueOf(extGCD.getX());
     }
 
     public int pow2(int x) {

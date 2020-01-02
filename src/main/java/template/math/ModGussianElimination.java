@@ -82,7 +82,7 @@ public class ModGussianElimination {
                     break;
                 }
             }
-            mat[n][x] = modular.mul(mat[i][m], power.inverse(mat[i][x]));
+            mat[n][x] = modular.mul(mat[i][m], power.inverseByFermat(mat[i][x]));
             for (int j = i - 1; j >= 0; j--) {
                 if (mat[j][x] == 0) {
                     continue;
@@ -107,7 +107,7 @@ public class ModGussianElimination {
     }
 
     void divideRow(int i, int f) {
-        int divisor = power.inverse(f);
+        int divisor = power.inverseByFermat(f);
         for (int k = 0; k <= m; k++) {
             mat[i][k] = modular.mul(mat[i][k], divisor);
         }

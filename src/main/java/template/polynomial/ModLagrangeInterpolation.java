@@ -42,7 +42,7 @@ public class ModLagrangeInterpolation {
                 up = modular.mul(up, modular.plus(x, -otherPoint.getKey()));
                 bottom = modular.mul(bottom, modular.plus(point.getKey(), -otherPoint.getKey()));
             }
-            int addition = modular.mul(up, power.inverse(bottom));
+            int addition = modular.mul(up, power.inverseByFermat(bottom));
             sum = modular.plus(sum, addition);
         }
         return sum;

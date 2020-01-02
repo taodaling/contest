@@ -4,6 +4,7 @@ import java.util.function.LongUnaryOperator;
 
 public class ExpressionSolver {
     private static ExtGCD extGCD = new ExtGCD();
+    private static LinearIntegerRange range = new LinearIntegerRange();
 
     /**
      * Find ka=b(mod c) where k is the minimum possible non negative integer. <br>
@@ -37,92 +38,33 @@ public class ExpressionSolver {
      * The time complexity of this method is O(log2(max(a,b)))
      */
     public static long findWaysToAssignXYSatisfyEquation(long a, long b, long c, long xl, long xr, long yl, long yr) {
-        if (c < 0) {
+        if(a == 0 && b == 0){
+            if(c == 0 && xr >= xl && yr >= yl){
+                return (xr - xl + 1) * (yr - yl + 1);
+            }
+            return 0;
+        }
+        if (a < 0) {
             a = -a;
             b = -b;
             c = -c;
         }
-        if (a < 0) {
-            a = -a;
-            long l = xl;
-            long r = xr;
-            xl = -r;
-            xr = -l;
-        }
-        if (b < 0) {
-            b = -b;
-            long l = yl;
-            long r = yr;
-            yl = -r;
-            yr = -l;
-        }
-        if (xl > xr || yl > yr) {
-            return 0;
-        }
-        if (a == 0 && b == 0) {
-            if (c != 0) {
-                return 0;
-            }
-            return (xr - xl + 1) * (yr - yl + 1);
-        }
-        if (a == 0) {
-            if (c % b != 0) {
-                return 0;
-            }
-            long y = c / b;
-            if (y < yl || y > yr) {
-                return 0;
-            }
-            return xr - xl + 1;
-        }
-        if (b == 0) {
-            if (c % a != 0) {
-                return 0;
-            }
-            long x = c / a;
-            if (x < xl || x > xr) {
-                return 0;
-            }
-            return yr - yl + 1;
-        }
-        long g = extGCD.extgcd(a, b);
+        long g = extGCD.extgcd(a, Math.abs(b));
         if (c % g != 0) {
             return 0;
         }
         a /= g;
         b /= g;
         c /= g;
-        long x = extGCD.getX() * c;
-        long y = extGCD.getY() * c;
-        if (x < xl) {
-            // x + kb >= xl
-            // k >= (xl - x)/b
-            long k = DigitUtils.ceilDiv(xl - x, b);
-            x += k * b;
-            y -= k * a;
-        } else {
-            // x - kb >= xl
-            // (x - xl)/b>=k
-            long k = DigitUtils.floorDiv(x - xl, b);
-            x -= k * b;
-            y += k * a;
+        long x0 = extGCD.getX() * c;
+        long y0 = extGCD.getY() * c;
+        if (b < 0) {
+            y0 = -y0;
         }
-
-        if (y > yr) {
-            // y - ka <= yr
-            // k >= (y - yr)/a
-            long k = DigitUtils.ceilDiv(y - yr, a);
-            x += k * b;
-            y -= k * a;
-        }
-
-        if (x > xr || y < yl) {
-            return 0;
-        }
-
-        long xSpare = Math.max(0, (xr - x) / b);
-        long ySpare = Math.max(0, (y - yl) / a);
-        return 1 + Math.min(xSpare, ySpare);
+        range.reset();
+        range.between(b, x0, xl, xr);
+        range.between(-a, y0, yl, yr);
+        return range.length();
     }
 
     /**
@@ -169,5 +111,25 @@ public class ExpressionSolver {
             ans += function.applyAsLong(i) * (j - i + 1);
         }
         return ans;
+    }
+
+    /**
+     * Return an integer interval [l, r], for any element x in this interval, denote y = n % x. Following expression always true:
+     * <pre>
+     * \lfloor n / x \rfloor = d
+     * lx <= x <= rx
+     * ly <= y <= ry
+     * <pre/>
+     * If there is no answer, then ans[0] > ans[1]
+     * <br>
+     *  You should promise n, lx, rx, ly, ry >= 0, d > 0
+     */
+    public static void findRangeForDivisor(long n, long d, long lx, long rx, long ly, long ry, long[] ans) {
+        range.reset(lx, rx);
+        range.lessThanOrEqual(d, n);
+        range.greaterThan(d + 1, n);
+        range.between(-d, n, ly, ry);
+        ans[0] = range.getL();
+        ans[1] = range.getR();
     }
 }

@@ -13,22 +13,23 @@ package template.math;
  *   c11*x1+...+c1m*xm <= c10
  *   ...
  *   cn1*x1+...+cnm*xm <= cn0
+ *   x1, x2, ..., xm >= 0
  * </pre>
  */
 public class LinearProgramming {
-    private final double PREC;
-    private final double INF = 1e50;
-    double[][] mat;
-    int[] basicVariables;
-    int[] basicVariable2RowIndex;
-    boolean unbound;
-    boolean infeasible;
+    private final double prec;
+    private final double inf = 1e50;
+    private double[][] mat;
+    private int[] basicVariables;
+    private int[] basicVariable2RowIndex;
+    private boolean unbound;
+    private boolean infeasible;
 
-    int n;
-    int m;
+    private int n;
+    private int m;
 
     public LinearProgramming(int n, int m, double prec) {
-        this.PREC = prec;
+        this.prec = prec;
         this.n = n;
         this.m = m + n;
         mat = new double[n + 1][this.m + 2];
@@ -150,7 +151,7 @@ public class LinearProgramming {
     private void normalize() {
         for (int i = 0; i <= n; i++) {
             for (int j = 0; j <= m; j++) {
-                if (mat[i][j] >= -PREC && mat[i][j] <= PREC) {
+                if (mat[i][j] >= -prec && mat[i][j] <= prec) {
                     mat[i][j] = 0;
                 }
             }
@@ -196,7 +197,7 @@ public class LinearProgramming {
         if (firstPositiveVariableId == -1) {
             return false;
         }
-        double maxConstraint = INF;
+        double maxConstraint = inf;
         int maxConstraintRow = -1;
         for (int i = 1; i <= n; i++) {
             if (mat[i][firstPositiveVariableId] >= 0) {
@@ -240,9 +241,31 @@ public class LinearProgramming {
             }
             builder.append("<=").append(mat[i][0]).append("\n");
         }
+
+        builder.append("\n").append("Assignment\n");
+        for (int i = 1; i <= m; i++) {
+            builder.append("  x").append(i).append("=").append(getAssignmentValueForVariable(i)).append("\n");
+        }
+
         return builder.toString();
     }
 
+
+    /**
+     * <br>
+     * N constraints and M variables.
+     * <br>
+     * The target is to find an assignment for each variable to make target expression as large as possible.
+     * <br>
+     * <pre>
+     * Minimize t0+t1*x1+...+tm*xm
+     * where following constraint satisfied:
+     *   c11*x1+...+c1m*xm >= c10
+     *   ...
+     *   cn1*x1+...+cnm*xm >= cn0
+     *   x1, x2, ..., xm >= 0
+     * </pre>
+     */
     public static class DualLinearProgramming {
         LinearProgramming lp;
         int n;

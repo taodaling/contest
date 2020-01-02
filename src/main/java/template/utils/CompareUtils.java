@@ -1,6 +1,5 @@
 package template.utils;
 
-import template.datastructure.ObjectList;
 import template.primitve.generated.IntegerList;
 import template.primitve.generated.LongList;
 import template.rand.Randomized;
@@ -221,7 +220,6 @@ public class CompareUtils {
     }
 
     private static final int[] BUF8 = new int[1 << 8];
-    private static final ObjectList OBJECT_LIST = new ObjectList();
     private static final IntegerList INT_LIST = new IntegerList();
     private static final LongList LONG_LIST = new LongList();
 
@@ -298,18 +296,6 @@ public class CompareUtils {
         }
         for (int i = r; i >= l; i--) {
             output[--buf[(data[i] >>> rightShift) & mask]] = data[i];
-        }
-    }
-
-    public static <T> void radixSort(T[] data, int l, int r, ToIntFunction<T> indexFetcher) {
-        OBJECT_LIST.clear();
-        OBJECT_LIST.expandWith(null, r - l + 1);
-        Object[] output = OBJECT_LIST.getData();
-        for (int i = 0; i < 4; i++) {
-            int rightShift = i * 8;
-            int mask = BUF8.length - 1;
-            radixSort0(data, output, BUF8, l, r, (x) -> (indexFetcher.applyAsInt(x) >>> rightShift) & mask);
-            System.arraycopy(output, 0, data, l, r - l + 1);
         }
     }
 

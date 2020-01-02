@@ -29,6 +29,20 @@ public class DigitUtils {
     }
 
     /**
+     * Return minimum integer x satisfy a / b < x
+     */
+    public static long minimumIntegerGreaterThanDiv(long a, long b){
+       return floorDiv(a, b) + 1;
+    }
+
+    /**
+     * Return minimum integer x satisfy a / b < x
+     */
+    public static long maximumIntegerLessThanDiv(long a, long b){
+        return ceilDiv(a, b) - 1;
+    }
+
+    /**
      * return floor(a / b) while b is positive
      */
     public static long floorDiv(long a, long b) {

@@ -18,7 +18,7 @@ public class ModifiableHash {
 
         xs[0] = 1;
         inverse[0] = 1;
-        int invX = POWER.inverse(x);
+        int invX = POWER.inverseByFermat(x);
         for (int i = 1; i <= n; i++) {
             xs[i] = MOD.mul(xs[i - 1], x);
             inverse[i] = MOD.mul(inverse[i - 1], invX);

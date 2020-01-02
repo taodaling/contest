@@ -1,0 +1,35 @@
+{
+  "name" : "F. Lost Root",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 2\n\nNo\n\nYes\n",
+    "output" : "? 1 3 2\n\n? 1 2 3\n\n! 2\n",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_01.on2020_01_02_Codeforces_Round__523__Div__2_.F__Lost_Root.FLostRoot",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.01.02",
+  "contestName" : "Codeforces Round #523 (Div. 2)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : true,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

@@ -1,8 +1,6 @@
 package template.datastructure;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class GeneralizedLinearBasis {
     private boolean[][] basis;

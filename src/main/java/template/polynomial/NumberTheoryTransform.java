@@ -29,7 +29,7 @@ public class NumberTheoryTransform {
         for (int i = 0, until = wCache.length; i < until; i++) {
             int s = 1 << i;
             wCache[i] = power.pow(this.g, (modular.getMod() - 1) / 2 / s);
-            invCache[i] = power.inverse(s);
+            invCache[i] = power.inverseByFermat(s);
         }
     }
 
@@ -250,7 +250,7 @@ public class NumberTheoryTransform {
     public void inverse(int[] p, int[] inv, int m) {
         if (m == 0) {
             Arrays.fill(inv, 0);
-            inv[0] = power.inverse(p[0]);
+            inv[0] = power.inverseByFermat(p[0]);
             return;
         }
         inverse(p, inv, m - 1);

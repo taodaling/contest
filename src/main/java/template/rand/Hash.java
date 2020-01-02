@@ -20,7 +20,7 @@ public class Hash {
         inverse = new int[size + 1];
         hash = new int[size + 1];
         xs = new int[size + 1];
-        int invX = POWER.inverse(x);
+        int invX = POWER.inverseByFermat(x);
         inverse[0] = 1;
         xs[0] = 1;
         for (int i = 1; i <= size; i++) {

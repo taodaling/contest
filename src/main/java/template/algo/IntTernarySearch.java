@@ -1,10 +1,12 @@
 package template.algo;
 
+import template.math.DigitUtils;
+
 import java.util.function.IntUnaryOperator;
 
 /**
  * Used to find the minimum value of a lower convex.
- * Assume f(-inf)>...>f(ans)=f(ans+1)=...=f(ans+k)>...>f(inf)
+ * Assume f(-inf)<...<f(ans)=f(ans+1)=...=f(ans+k)>...>f(inf)
  */
 public class IntTernarySearch {
     private IntUnaryOperator operator;
@@ -15,9 +17,8 @@ public class IntTernarySearch {
 
     public int find(int l, int r) {
         while (r - l > 2) {
-            int dist = (r - l) / 3;
-            int ml = l + dist;
-            int mr = r - dist;
+            int ml = l + DigitUtils.floorDiv(r - l, 3);
+            int mr = r - DigitUtils.ceilDiv(r - l, 3);
             if (operator.applyAsInt(ml) < operator.applyAsInt(mr)) {
                 l = ml;
             } else {
@@ -25,7 +26,7 @@ public class IntTernarySearch {
             }
         }
         while (l < r) {
-            if (operator.applyAsInt(l) < operator.applyAsInt(r)) {
+            if (operator.applyAsInt(l) >= operator.applyAsInt(r)) {
                 r--;
             } else {
                 l++;

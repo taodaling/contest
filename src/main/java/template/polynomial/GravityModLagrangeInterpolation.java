@@ -71,7 +71,7 @@ public class GravityModLagrangeInterpolation {
         int sum = 0;
         for (int i = 0; i < n; i++) {
             int val = modular.mul(invW.coes[i], modular.subtract(x, xs.coes[i]));
-            val = modular.mul(power.inverse(val), ys.coes[i]);
+            val = modular.mul(power.inverseByFermat(val), ys.coes[i]);
             sum = modular.plus(sum, val);
         }
 
@@ -85,7 +85,7 @@ public class GravityModLagrangeInterpolation {
         Polynomial ans = new Polynomial(n);
         Polynomial ansBuf = new Polynomial(n);
         for (int i = 0; i < n; i++) {
-            int c = modular.mul(ys.coes[i], power.inverse(invW.coes[i]));
+            int c = modular.mul(ys.coes[i], power.inverseByFermat(invW.coes[i]));
             lx.div(modular.valueOf(-xs.coes[i]), ansBuf);
             ansBuf.mulConstant(c, ansBuf);
             ans.plus(ansBuf, ans);
