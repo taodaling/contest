@@ -31,12 +31,11 @@ public class DigitBase {
     }
 
     public int ceilLog(long x) {
-        int ans = 0;
-        while (x > 1) {
-            x /= base;
-            ans++;
+        int k = floorLog(x);
+        if (valueOfBit(k) < x) {
+            k++;
         }
-        return ans;
+        return k;
     }
 
     public long valueOfBit(int i) {

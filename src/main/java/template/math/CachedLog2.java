@@ -40,9 +40,9 @@ public class CachedLog2 {
 
     public static int floorLog(long x) {
         int ans = 0;
-        while (x < LIMIT) {
+        while (x >= LIMIT) {
             ans += BITS;
-            x >>>= LIMIT;
+            x >>>= BITS;
         }
         return ans + CACHE[(int) x];
     }

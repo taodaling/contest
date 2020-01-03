@@ -1,5 +1,5 @@
 {
-  "name" : "E - Golf",
+  "name" : "F. Tree and XOR",
   "testType" : "SINGLE",
   "input" : {
     "type" : "STANDARD",
@@ -10,32 +10,30 @@
     "fileName" : "output.txt"
   },
   "tests" : [ {
-    "input" : "11\n-1 2\n",
+    "input" : "2 1\n1 3\n",
+    "output" : "0\n",
     "index" : 0,
     "active" : true
   }, {
-    "input" : "4600\n52 149\n",
+    "input" : "3 6\n1 2\n1 3\n",
+    "output" : "2\n",
     "index" : 1,
-    "active" : true
-  }, {
-    "input" : "4\n9 9\n",
-    "index" : 2,
     "active" : true
   } ],
   "location" : "src/main/java/contest",
-  "vmArgs" : "-Xmx1024M",
+  "vmArgs" : "-Xmx256M",
   "mainClass" : "Main",
-  "taskClass" : "contest.TaskE",
+  "taskClass" : "on2020_01.on2020_01_03_Mail_Ru_Cup_2018_Round_2.F__Tree_and_XOR.FTreeAndXOR",
   "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
   "checkerParameters" : "",
   "testClasses" : [ ],
-  "date" : "2019.11.12",
-  "contestName" : "AtCoder Beginner Contest 135",
+  "date" : "2020.01.03",
+  "contestName" : "Mail.Ru Cup 2018 Round 2",
   "truncate" : true,
-  "inputClass" : "template.FastInput",
-  "outputClass" : "template.FastOutput",
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
   "includeLocale" : false,
-  "failOnOverflow" : true,
+  "failOnOverflow" : false,
   "interactive" : false,
   "interactor" : "net.egork.chelper.tester.Interactor",
   "newThread" : true

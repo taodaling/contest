@@ -3,12 +3,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
+import java.util.Collection;
 import java.io.IOException;
-import java.util.function.DoubleUnaryOperator;
+import java.util.Random;
+import java.util.Deque;
+import java.util.function.Supplier;
+import java.util.ArrayList;
 import java.io.UncheckedIOException;
+import java.util.function.Consumer;
+import java.util.List;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
+import java.util.ArrayDeque;
 import java.io.InputStream;
 
 /**
@@ -29,76 +36,31 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            FWriteTheContest solver = new FWriteTheContest();
-            int testCount = Integer.parseInt(in.next());
-            for (int i = 1; i <= testCount; i++)
-                solver.solve(i, in, out);
+            FTreeAndXOR solver = new FTreeAndXOR();
+            solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class FWriteTheContest {
+    static class FTreeAndXOR {
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            double c = in.readDouble();
-            double t = in.readDouble();
-            double s = 1;
+            long k = in.readLong();
 
-            double[] bests = new double[n + 1];
-            for (int i = 0; i <= n; i++) {
-                if (i * 10 >= t) {
-                    continue;
-                }
-                double punish = 10 * i;
-                DoubleUnaryOperator func = x -> (s + c * x) * (t - x - punish);
-                DoubleTernarySearch dts = new DoubleTernarySearch(func, 1e-12, 1e-6);
-                double best = func.applyAsDouble(dts.find(0, t));
-                bests[i] = best;
+            long[] weights = new long[n];
+            for (int i = 1; i < n; i++) {
+                int p = in.readInt() - 1;
+                long w = in.readLong();
+                weights[i] = weights[p] ^ w;
             }
-            int[][] problems = new int[n][2];
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < 2; j++) {
-                    problems[i][j] = in.readInt();
-                }
-            }
-
-            double[] pow = new double[n + 1];
-            pow[0] = 1;
-            for (int i = 1; i <= n; i++) {
-                pow[i] = pow[i - 1] * 0.9D;
-            }
-            Arrays.sort(problems, (a, b) -> -(a[0] - b[0]));
-            int limit = 10 * n;
-            double[][] dp = new double[n + 1][limit + 1];
-            SequenceUtils.deepFill(dp, 1e18);
-            dp[0][0] = 0;
-            for (int i = 0; i < n; i++) {
-                int a = problems[i][0];
-                int p = problems[i][1];
-                for (int j = n; j >= 0; j--) {
-                    for (int k = 0; k <= limit; k++) {
-                        if (j >= 1 && k >= p) {
-                            dp[j][k] = Math.min(dp[j][k], dp[j - 1][k - p] + a / pow[j]);
-                        }
-                    }
-                }
-            }
-
-            for (int i = limit; i >= 0; i--) {
-                for (int j = 0; j <= n; j++) {
-                    if (dp[j][i] <= bests[j]) {
-                        out.println(i);
-                        return;
-                    }
-                }
-            }
+            long mask = KthXorTwoElement.solve(weights, k);
+            out.println(mask);
         }
 
     }
 
     static class FastInput {
         private final InputStream is;
-        private StringBuilder defaultStringBuf = new StringBuilder(1 << 13);
         private byte[] buf = new byte[1 << 13];
         private int bufLen;
         private int bufOffset;
@@ -129,10 +91,6 @@ public class Main {
             }
         }
 
-        public String next() {
-            return readString();
-        }
-
         public int readInt() {
             int sign = 1;
 
@@ -158,97 +116,71 @@ public class Main {
             return val;
         }
 
-        public double readDouble() {
-            boolean sign = true;
+        public long readLong() {
+            int sign = 1;
+
             skipBlank();
             if (next == '+' || next == '-') {
-                sign = next == '+';
+                sign = next == '+' ? 1 : -1;
                 next = read();
             }
 
             long val = 0;
-            while (next >= '0' && next <= '9') {
-                val = val * 10 + next - '0';
-                next = read();
-            }
-            if (next != '.') {
-                return sign ? val : -val;
-            }
-            next = read();
-            long radix = 1;
-            long point = 0;
-            while (next >= '0' && next <= '9') {
-                point = point * 10 + next - '0';
-                radix = radix * 10;
-                next = read();
-            }
-            double result = val + (double) point / radix;
-            return sign ? result : -result;
-        }
-
-        public String readString(StringBuilder builder) {
-            skipBlank();
-
-            while (next > 32) {
-                builder.append((char) next);
-                next = read();
-            }
-
-            return builder.toString();
-        }
-
-        public String readString() {
-            defaultStringBuf.setLength(0);
-            return readString(defaultStringBuf);
-        }
-
-    }
-
-    static class DoubleTernarySearch {
-        private DoubleUnaryOperator operator;
-        private double relative;
-        private double absolute;
-
-        public DoubleTernarySearch(DoubleUnaryOperator operator, double relative, double absolute) {
-            this.operator = operator;
-            this.relative = relative;
-            this.absolute = absolute;
-        }
-
-        public double find(double l, double r) {
-            while (r - l > absolute) {
-                if (r < 0 && (r - l) / -r <= relative ||
-                        l > 0 && (r - l) / l <= relative) {
-                    break;
+            if (sign == 1) {
+                while (next >= '0' && next <= '9') {
+                    val = val * 10 + next - '0';
+                    next = read();
                 }
-                double dist = (r - l) / 3;
-                double ml = l + dist;
-                double mr = r - dist;
-                if (operator.applyAsDouble(ml) < operator.applyAsDouble(mr)) {
-                    l = ml;
-                } else {
-                    r = mr;
-                }
-            }
-            return (l + r) / 2;
-        }
-
-    }
-
-    static class SequenceUtils {
-        public static void deepFill(Object array, double val) {
-            if (!array.getClass().isArray()) {
-                throw new IllegalArgumentException();
-            }
-            if (array instanceof double[]) {
-                double[] doubleArray = (double[]) array;
-                Arrays.fill(doubleArray, val);
             } else {
-                Object[] objArray = (Object[]) array;
-                for (Object obj : objArray) {
-                    deepFill(obj, val);
+                while (next >= '0' && next <= '9') {
+                    val = val * 10 - next + '0';
+                    next = read();
                 }
             }
+
+            return val;
+        }
+
+    }
+
+    static class Randomized {
+        static Random random = new Random();
+
+        public static void randomizedArray(long[] data) {
+            randomizedArray(data, 0, data.length - 1);
+        }
+
+        public static void randomizedArray(long[] data, int from, int to) {
+            to--;
+            for (int i = from; i <= to; i++) {
+                int s = nextInt(i, to);
+                long tmp = data[i];
+                data[i] = data[s];
+                data[s] = tmp;
+            }
+        }
+
+        public static int nextInt(int l, int r) {
+            return random.nextInt(r - l + 1) + l;
+        }
+
+    }
+
+    static class Bits {
+        private Bits() {
+        }
+
+        public static int bitAt(long x, int i) {
+            return (int) ((x >> i) & 1);
+        }
+
+        public static long setBit(long x, int i, boolean v) {
+            if (v) {
+                x |= 1L << i;
+            } else {
+                x &= ~(1L << i);
+            }
+            return x;
         }
 
     }
@@ -265,7 +197,7 @@ public class Main {
             this(new OutputStreamWriter(os));
         }
 
-        public FastOutput println(int c) {
+        public FastOutput println(long c) {
             cache.append(c).append('\n');
             return this;
         }
@@ -292,6 +224,189 @@ public class Main {
 
         public String toString() {
             return cache.toString();
+        }
+
+    }
+
+    static class CachedLog2 {
+        private static final int BITS = 16;
+        private static final int LIMIT = 1 << BITS;
+        private static final byte[] CACHE = new byte[LIMIT];
+
+        static {
+            int b = 0;
+            for (int i = 0; i < LIMIT; i++) {
+                while ((1 << (b + 1)) <= i) {
+                    b++;
+                }
+                CACHE[i] = (byte) b;
+            }
+        }
+
+        public static int floorLog(long x) {
+            int ans = 0;
+            while (x >= LIMIT) {
+                ans += BITS;
+                x >>>= BITS;
+            }
+            return ans + CACHE[(int) x];
+        }
+
+    }
+
+    static class Buffer<T> {
+        private Deque<T> deque;
+        private Supplier<T> supplier;
+        private Consumer<T> cleaner;
+
+        public Buffer(Supplier<T> supplier) {
+            this(supplier, (x) -> {
+            });
+        }
+
+        public Buffer(Supplier<T> supplier, Consumer<T> cleaner) {
+            this(supplier, cleaner, 0);
+        }
+
+        public Buffer(Supplier<T> supplier, Consumer<T> cleaner, int exp) {
+            this.supplier = supplier;
+            this.cleaner = cleaner;
+            deque = new ArrayDeque<>(exp);
+        }
+
+        public T alloc() {
+            return deque.isEmpty() ? supplier.get() : deque.removeFirst();
+        }
+
+        public void release(T e) {
+            cleaner.accept(e);
+            deque.addLast(e);
+        }
+
+    }
+
+    static class KthXorTwoElement {
+        public static long solve(long[] data, long k) {
+            int n = data.length;
+
+            Buffer<KthXorTwoElement.Interval> buffer = new Buffer<>(KthXorTwoElement.Interval::new, x -> {
+            }, n * 2);
+
+            Randomized.randomizedArray(data);
+            Arrays.sort(data);
+
+            List<KthXorTwoElement.Interval> lastLevel = new ArrayList<>(n);
+            List<KthXorTwoElement.Interval> curLevel = new ArrayList<>(n);
+            lastLevel.add(newInterval(buffer, 0, n - 1));
+            int level = CachedLog2.floorLog(data[n - 1]);
+            long mask = 0;
+            for (; level >= 0; level--) {
+                curLevel.clear();
+                for (KthXorTwoElement.Interval interval : lastLevel) {
+                    int l = interval.l;
+                    int r = interval.r;
+                    int m = r;
+                    while (m >= l && Bits.bitAt(data[m], level) == 1) {
+                        m--;
+                    }
+                    interval.m = m;
+                }
+                long total = 0;
+                for (KthXorTwoElement.Interval interval : lastLevel) {
+                    total += (long) (interval.m - interval.l + 1) * (interval.relative.m - interval.relative.l + 1);
+                    total += (long) (interval.r - interval.m) * (interval.relative.r - interval.relative.m);
+                }
+                if (total < k) {
+                    k -= total;
+                    mask = Bits.setBit(mask, level, true);
+                    for (KthXorTwoElement.Interval interval : lastLevel) {
+                        if (interval.relative == interval) {
+                            if (interval.l <= interval.m && interval.m < interval.r) {
+                                KthXorTwoElement.Interval a = newInterval(buffer, interval.l, interval.m);
+                                KthXorTwoElement.Interval b = newInterval(buffer, interval.m + 1, interval.r);
+                                a.relative = b;
+                                b.relative = a;
+                                curLevel.add(a);
+                                curLevel.add(b);
+                            }
+                        } else if (interval.r >= interval.relative.r) {
+                            if (interval.l <= interval.m && interval.relative.r > interval.relative.m) {
+                                KthXorTwoElement.Interval a = newInterval(buffer, interval.l, interval.m);
+                                KthXorTwoElement.Interval b = newInterval(buffer, interval.relative.m + 1, interval.relative.r);
+                                a.relative = b;
+                                b.relative = a;
+                                curLevel.add(a);
+                                curLevel.add(b);
+                            }
+                            if (interval.m < interval.r && interval.relative.m >= interval.relative.l) {
+                                KthXorTwoElement.Interval a = newInterval(buffer, interval.m + 1, interval.r);
+                                KthXorTwoElement.Interval b = newInterval(buffer, interval.relative.l, interval.relative.m);
+                                a.relative = b;
+                                b.relative = a;
+                                curLevel.add(a);
+                                curLevel.add(b);
+                            }
+                        }
+                    }
+                } else {
+                    for (KthXorTwoElement.Interval interval : lastLevel) {
+                        if (interval.relative == interval) {
+                            if (interval.l <= interval.m) {
+                                KthXorTwoElement.Interval a = newInterval(buffer, interval.l, interval.m);
+                                a.relative = a;
+                                curLevel.add(a);
+                            }
+                            if (interval.m < interval.r) {
+                                KthXorTwoElement.Interval a = newInterval(buffer, interval.m + 1, interval.r);
+                                a.relative = a;
+                                curLevel.add(a);
+                            }
+                        } else if (interval.r >= interval.relative.r) {
+                            if (interval.l <= interval.m && interval.relative.l <= interval.relative.m) {
+                                KthXorTwoElement.Interval a = newInterval(buffer, interval.l, interval.m);
+                                KthXorTwoElement.Interval b = newInterval(buffer, interval.relative.l, interval.relative.m);
+                                a.relative = b;
+                                b.relative = a;
+                                curLevel.add(a);
+                                curLevel.add(b);
+                            }
+                            if (interval.m < interval.r && interval.relative.m < interval.relative.r) {
+                                KthXorTwoElement.Interval a = newInterval(buffer, interval.m + 1, interval.r);
+                                KthXorTwoElement.Interval b = newInterval(buffer, interval.relative.m + 1, interval.relative.r);
+                                a.relative = b;
+                                b.relative = a;
+                                curLevel.add(a);
+                                curLevel.add(b);
+                            }
+                        }
+                    }
+                }
+
+                for (KthXorTwoElement.Interval interval : lastLevel) {
+                    buffer.release(interval);
+                }
+
+                List<KthXorTwoElement.Interval> tmp = curLevel;
+                curLevel = lastLevel;
+                lastLevel = tmp;
+            }
+
+            return mask;
+        }
+
+        private static KthXorTwoElement.Interval newInterval(Buffer<KthXorTwoElement.Interval> buffer, int l, int r) {
+            KthXorTwoElement.Interval ans = buffer.alloc();
+            ans.l = l;
+            ans.r = r;
+            return ans;
+        }
+
+        static class Interval {
+            int l;
+            int r;
+            int m;
+            KthXorTwoElement.Interval relative = this;
+
         }
 
     }

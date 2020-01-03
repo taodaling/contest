@@ -1,9 +1,5 @@
 package template.math;
 
-import template.math.Modular;
-import template.math.PollardRho;
-import template.math.Power;
-
 public class PrimitiveRoot {
     private int[] factors;
     private Modular mod;
