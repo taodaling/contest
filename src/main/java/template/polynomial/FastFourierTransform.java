@@ -130,14 +130,16 @@ public class FastFourierTransform {
             inv[0][i] = inv[1][i] = 0;
         }
     }
-
     public static int[] multiplyMod(int[] a, int[] b, int m) {
-        int need = a.length + b.length - 1;
+        return multiplyMod(a, a.length, b, b.length, m);
+    }
+    public static int[] multiplyMod(int[] a, int aLen, int[] b, int bLen, int m) {
+        int need = aLen + bLen - 1;
         int n = 1 << CachedLog2.ceilLog(need);
 
         double[] aReal = new double[n];
         double[] aImag = new double[n];
-        for (int i = 0; i < a.length; i++) {
+        for (int i = 0; i < aLen; i++) {
             int x = (a[i] % m + m) % m;
             aReal[i] = x & ((1 << 15) - 1);
             aImag[i] = x >> 15;
@@ -146,7 +148,7 @@ public class FastFourierTransform {
 
         double[] bReal = new double[n];
         double[] bImag = new double[n];
-        for (int i = 0; i < b.length; i++) {
+        for (int i = 0; i < bLen; i++) {
             int x = (b[i] % m + m) % m;
             bReal[i] = x & ((1 << 15) - 1);
             bImag[i] = x >> 15;

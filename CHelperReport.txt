@@ -1,2 +1,3 @@
-42 src/main/java/contest/F. Tree and XOR.json
+54 src/main/java/contest/C1. Madhouse (Easy version).json
+1
 0

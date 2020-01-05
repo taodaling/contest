@@ -29,6 +29,8 @@ using std::swap;
 using std::unordered_map;
 using std::vector;
 using std::bitset;
+using std::uniform_int_distribution;
+using std::uniform_real_distribution;
 
 typedef unsigned int ui;
 typedef long long ll;
@@ -67,7 +69,7 @@ int main()
     std::cin.tie(NULL);
     std::cout << std::setiosflags(std::ios::fixed);
     std::cout << std::setprecision(15);
-
+    
     solve(std::cin, std::cout);
 
     return 0;

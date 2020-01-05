@@ -1,5 +1,7 @@
 package template.graph;
 
+import template.primitve.generated.IntegerList;
+
 import java.util.*;
 
 public class LongISAP {
@@ -8,11 +10,11 @@ public class LongISAP {
     Node source;
     Node target;
     int nodeNum;
-    Map<Long, DirectChannel> channelMap = new HashMap();
+    Map<Long, DirectLongChannel> channelMap;
     Deque<Node> deque;
 
-    public List<Node> getComponentS() {
-        List<Node> result = new ArrayList();
+    public IntegerList getComponentS() {
+        IntegerList result = new IntegerList(nodeNum);
         for (int i = 0; i < nodeNum; i++) {
             nodes[i].visited = false;
         }
@@ -20,8 +22,8 @@ public class LongISAP {
         source.visited = true;
         while (!deque.isEmpty()) {
             Node head = deque.removeFirst();
-            result.add(head);
-            for (Channel channel : head.channelList) {
+            result.add(head.id);
+            for (LongChannel channel : head.channelList) {
                 if (channel.getFlow() == channel.getCapacity()) {
                     continue;
                 }
@@ -36,20 +38,20 @@ public class LongISAP {
         return result;
     }
 
-    private Collection<DirectChannel> getChannels() {
+    private Collection<DirectLongChannel> getChannels() {
         return channelMap.values();
     }
 
-    private DirectChannel addChannel(int src, int dst) {
-        DirectChannel channel = new DirectChannel(nodes[src], nodes[dst], 0, 0);
+    private DirectLongChannel addChannel(int src, int dst) {
+        DirectLongChannel channel = new DirectLongChannel(nodes[src], nodes[dst], 0, 0);
         nodes[src].channelList.add(channel);
         nodes[dst].channelList.add(channel.getInverse());
         return channel;
     }
 
-    public DirectChannel getChannel(int src, int dst) {
+    public DirectLongChannel getChannel(int src, int dst) {
         Long id = (((long) src) << 32) | dst;
-        DirectChannel channel = channelMap.get(id);
+        DirectLongChannel channel = channelMap.get(id);
         if (channel == null) {
             channel = addChannel(src, dst);
             channelMap.put(id, channel);
@@ -58,6 +60,7 @@ public class LongISAP {
     }
 
     public LongISAP(int nodeNum) {
+        channelMap = new HashMap<>(nodeNum);
         this.nodeNum = nodeNum;
         deque = new ArrayDeque(nodeNum);
         nodes = new Node[nodeNum];
@@ -92,7 +95,7 @@ public class LongISAP {
 
         long sent = 0;
         int nextDistance = node.distance - 1;
-        for (Channel channel : node.channelList) {
+        for (LongChannel channel : node.channelList) {
             long channelRemain = channel.getCapacity() - channel.getFlow();
             Node dst = channel.getDst();
             if (channelRemain == 0 || dst.distance != nextDistance) {
@@ -144,8 +147,8 @@ public class LongISAP {
         while (!deque.isEmpty()) {
             Node head = deque.removeFirst();
             distanceCnt[head.distance]++;
-            for (Channel channel : head.channelList) {
-                Channel inverse = channel.getInverse();
+            for (LongChannel channel : head.channelList) {
+                LongChannel inverse = channel.getInverse();
                 if (inverse.getCapacity() == inverse.getFlow()) {
                     continue;
                 }
@@ -159,7 +162,7 @@ public class LongISAP {
         }
     }
 
-    public static interface Channel {
+    public static interface LongChannel {
         public Node getSrc();
 
         public Node getDst();
@@ -170,23 +173,23 @@ public class LongISAP {
 
         public void sendFlow(long volume);
 
-        public Channel getInverse();
+        public LongChannel getInverse();
     }
 
-    public static class DirectChannel implements Channel {
+    public static class DirectLongChannel implements LongChannel {
         final Node src;
         final Node dst;
         final int id;
         long capacity;
         long flow;
-        Channel inverse;
+        LongChannel inverse;
 
-        public DirectChannel(Node src, Node dst, int capacity, int id) {
+        public DirectLongChannel(Node src, Node dst, int capacity, int id) {
             this.src = src;
             this.dst = dst;
             this.capacity = capacity;
             this.id = id;
-            inverse = new InverseChannelWrapper(this);
+            inverse = new InverseLongChannelWrapper(this);
         }
 
         public void reset(long cap, long flow) {
@@ -210,7 +213,7 @@ public class LongISAP {
         }
 
         @Override
-        public Channel getInverse() {
+        public LongChannel getInverse() {
             return inverse;
         }
 
@@ -242,15 +245,15 @@ public class LongISAP {
 
     }
 
-    public static class InverseChannelWrapper implements Channel {
-        final Channel channel;
+    public static class InverseLongChannelWrapper implements LongChannel {
+        final LongChannel channel;
 
-        public InverseChannelWrapper(Channel channel) {
+        public InverseLongChannelWrapper(LongChannel channel) {
             this.channel = channel;
         }
 
         @Override
-        public Channel getInverse() {
+        public LongChannel getInverse() {
             return channel;
         }
 
@@ -287,11 +290,11 @@ public class LongISAP {
         }
     }
 
-    public static class Node {
+    private static class Node {
         int id;
         int distance;
         boolean visited;
-        List<Channel> channelList = new ArrayList(1);
+        List<LongChannel> channelList = new ArrayList(1);
 
         public int getId() {
             return id;
@@ -306,14 +309,14 @@ public class LongISAP {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        for (DirectChannel channel : getChannels()) {
+        for (DirectLongChannel channel : getChannels()) {
             if (channel.getFlow() == 0) {
                 continue;
             }
             builder.append(channel).append('\n');
         }
 
-        for (DirectChannel channel : getChannels()) {
+        for (DirectLongChannel channel : getChannels()) {
             if (channel.getFlow() != 0) {
                 continue;
             }

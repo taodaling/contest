@@ -1,14 +1,19 @@
 package template.rand;
 
+import java.util.List;
 import java.util.Random;
 
 /**
  * Created by dalt on 2018/6/1.
  */
 public class Randomized {
-    static Random random = new Random();
+    static Random random = new Random(0);
 
     public static void randomizedArray(int[] data) {
+        randomizedArray(data, 0, data.length - 1);
+    }
+
+    public static void randomizedArray(char[] data) {
         randomizedArray(data, 0, data.length - 1);
     }
 
@@ -37,6 +42,18 @@ public class Randomized {
             char tmp = data[i];
             data[i] = data[s];
             data[s] = tmp;
+        }
+    }
+    public static<T> void randomizedList(List<T> list){
+        randomizedList(list, 0, list.size());
+    }
+    public static<T> void randomizedList(List<T> list, int from, int to) {
+        to--;
+        for (int i = from; i <= to; i++) {
+            int s = nextInt(i, to);
+            T tmp = list.get(i);
+            list.set(i, list.get(s));
+            list.set(s, tmp);
         }
     }
 

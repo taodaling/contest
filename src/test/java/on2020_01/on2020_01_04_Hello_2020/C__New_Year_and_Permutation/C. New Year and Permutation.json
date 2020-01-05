@@ -1,0 +1,55 @@
+{
+  "name" : "C. New Year and Permutation",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "1 993244853\n",
+    "output" : "1\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "2 993244853\n",
+    "output" : "6\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "3 993244853\n",
+    "output" : "32\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "2019 993244853\n",
+    "output" : "923958830\n",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "2020 437122297\n",
+    "output" : "265955509\n",
+    "index" : 4,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_01.on2020_01_04_Hello_2020.C__New_Year_and_Permutation.CNewYearAndPermutation",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.01.04",
+  "contestName" : "Hello 2020",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

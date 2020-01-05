@@ -2,20 +2,18 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
+import java.io.PrintStream;
 import java.util.Collection;
 import java.io.IOException;
-import java.util.Random;
-import java.util.Deque;
-import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.ArrayList;
 import java.io.UncheckedIOException;
-import java.util.function.Consumer;
 import java.util.List;
+import java.util.stream.Stream;
 import java.io.Closeable;
+import java.util.Map;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
-import java.util.ArrayDeque;
 import java.io.InputStream;
 
 /**
@@ -36,31 +34,191 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            FTreeAndXOR solver = new FTreeAndXOR();
+            C1MadhouseEasyVersion solver = new C1MadhouseEasyVersion();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class FTreeAndXOR {
+    static class C1MadhouseEasyVersion {
+        FastInput in;
+        FastOutput out;
+
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            long k = in.readLong();
+            this.in = in;
+            this.out = out;
 
-            long[] weights = new long[n];
-            for (int i = 1; i < n; i++) {
-                int p = in.readInt() - 1;
-                long w = in.readLong();
-                weights[i] = weights[p] ^ w;
+            if (n == 1) {
+                int[] ans = new int[2];
+                read(1, 1, ans);
+                answer(ans);
+                return;
             }
-            long mask = KthXorTwoElement.solve(weights, k);
-            out.println(mask);
+
+            int[] ans = new int[n + 1];
+
+            int m = n / 2;
+            read(1, m, ans);
+            read(m + 1, n, ans);
+
+            int[] buf = new int[n + 1];
+            if (isPalindrome(ans, 1, m) && isPalindrome(ans, m + 1, n)) {
+            } else if (isPalindrome(ans, 1, m)) {
+                int l = m + 1;
+                int r = n;
+                while (ans[l] == ans[r]) {
+                    l++;
+                    r--;
+                }
+
+                read(l, l, buf);
+                if (ans[l] != buf[l]) {
+                    SequenceUtils.reverse(ans, m + 1, n);
+                }
+            } else if (isPalindrome(ans, m + 1, n)) {
+                int l = 1;
+                int r = m;
+                while (ans[l] == ans[r]) {
+                    l++;
+                    r--;
+                }
+
+                read(l, l, buf);
+                if (ans[l] != buf[l]) {
+                    SequenceUtils.reverse(ans, 1, m);
+                }
+            } else {
+                int l1 = 1;
+                int r1 = m;
+                int l2 = m + 1;
+                int r2 = n;
+                while (ans[l1] == ans[r1]) {
+                    l1++;
+                    r1--;
+                }
+                while (ans[l2] == ans[r2]) {
+                    l2++;
+                    r2--;
+                }
+                read(l1, l2, buf);
+                if (equal(buf, ans, l1, m)) {
+                } else if (invEqual(buf, ans, l1, m, l1, l2)) {
+                    SequenceUtils.reverse(buf, l1, l2);
+                } else {
+                    SequenceUtils.reverse(ans, 1, m);
+                    if (equal(buf, ans, l1, m)) {
+                    } else if (invEqual(buf, ans, l1, m, l1, l2)) {
+                        SequenceUtils.reverse(buf, l1, l2);
+                    }
+                }
+
+                if (ans[r2] != buf[r2]) {
+                    SequenceUtils.reverse(ans, m + 1, n);
+                }
+            }
+
+            answer(ans);
+        }
+
+        public boolean equal(int[] seq, int[] ans, int l, int r) {
+            for (int i = l; i <= r; i++) {
+                if (seq[i] != ans[i]) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public boolean invEqual(int[] seq, int[] ans, int l, int r, int ll, int rr) {
+            seq = seq.clone();
+            SequenceUtils.reverse(seq, ll, rr);
+            return equal(seq, ans, l, r);
+        }
+
+        public void answer(int[] seq) {
+            out.append("! ");
+            for (int i = 1; i < seq.length; i++) {
+                out.append((char) ('a' + seq[i]));
+            }
+            out.flush();
+        }
+
+        public boolean isPalindrome(int[] seq, int l, int r) {
+            return l > r ? true : (seq[l] == seq[r] && isPalindrome(seq, l + 1, r - 1));
+        }
+
+        public void read(int l, int r, int[] ans) {
+            int n = r - l + 1;
+            int cnt = n * (n - 1) / 2 + n;
+
+            out.printf("? %d %d", l, r).println().flush();
+
+            List<Metadata> metadataList = new ArrayList<>(cnt);
+            for (int i = 0; i < cnt; i++) {
+                metadataList.add(read());
+            }
+
+            Map<Integer, List<Metadata>> groupBySum = metadataList.stream().collect(Collectors.groupingBy(x -> x.sum));
+            int[] buf = new int[n];
+            Metadata whole = groupBySum.get(n).get(0);
+            if (l == r) {
+                for (int i = 0; i < whole.cnts.length; i++) {
+                    if (whole.cnts[i] != 0) {
+                        ans[l] = i;
+                        return;
+                    }
+                }
+            }
+
+            Metadata left = groupBySum.get(n - 1).get(0);
+            Metadata right = groupBySum.get(n - 1).get(1);
+            buf[0] = whole.index(right);
+            buf[n - 1] = whole.index(left);
+            for (int i = n - 2; n - i - 1 <= i; i--) {
+                List<Metadata> list = groupBySum.get(i);
+                Metadata lPart = null;
+                Metadata rPart = null;
+                for (Metadata data : list) {
+                    if (left.differ(data) == 1) {
+                        lPart = data;
+                        break;
+                    }
+                }
+                for (Metadata data : list) {
+                    if (data != lPart && right.differ(data) == 1) {
+                        rPart = data;
+                        break;
+                    }
+                }
+
+                buf[n - i - 1] = right.index(lPart);
+                buf[i] = left.index(rPart);
+                left.dec(buf[i]);
+                right.dec(buf[n - i - 1]);
+            }
+
+            for (int i = 0; i < n; i++) {
+                ans[i + l] = buf[i];
+            }
+
+            System.err.print("" + l + "," + r + "=");
+            for (int i = l; i <= r; i++) {
+                System.err.append("" + (char) (ans[i] + 'a'));
+            }
+            System.err.println();
+        }
+
+        public Metadata read() {
+            String s = in.readString();
+            return new Metadata(s);
         }
 
     }
 
     static class FastInput {
         private final InputStream is;
+        private StringBuilder defaultStringBuf = new StringBuilder(1 << 13);
         private byte[] buf = new byte[1 << 13];
         private int bufLen;
         private int bufOffset;
@@ -116,71 +274,75 @@ public class Main {
             return val;
         }
 
-        public long readLong() {
-            int sign = 1;
-
+        public String readString(StringBuilder builder) {
             skipBlank();
-            if (next == '+' || next == '-') {
-                sign = next == '+' ? 1 : -1;
+
+            while (next > 32) {
+                builder.append((char) next);
                 next = read();
             }
 
-            long val = 0;
-            if (sign == 1) {
-                while (next >= '0' && next <= '9') {
-                    val = val * 10 + next - '0';
-                    next = read();
-                }
-            } else {
-                while (next >= '0' && next <= '9') {
-                    val = val * 10 - next + '0';
-                    next = read();
-                }
-            }
+            return builder.toString();
+        }
 
-            return val;
+        public String readString() {
+            defaultStringBuf.setLength(0);
+            return readString(defaultStringBuf);
         }
 
     }
 
-    static class Randomized {
-        static Random random = new Random();
+    static class Metadata {
+        int[] cnts = new int['z' - 'a' + 1];
+        int sum;
 
-        public static void randomizedArray(long[] data) {
-            randomizedArray(data, 0, data.length - 1);
-        }
-
-        public static void randomizedArray(long[] data, int from, int to) {
-            to--;
-            for (int i = from; i <= to; i++) {
-                int s = nextInt(i, to);
-                long tmp = data[i];
-                data[i] = data[s];
-                data[s] = tmp;
+        public Metadata(String s) {
+            int n = s.length();
+            for (int i = 0; i < n; i++) {
+                cnts[s.charAt(i) - 'a']++;
+            }
+            for (int x : cnts) {
+                sum += x;
             }
         }
 
-        public static int nextInt(int l, int r) {
-            return random.nextInt(r - l + 1) + l;
+        public void dec(int i) {
+            sum--;
+            cnts[i]--;
+        }
+
+        public int differ(Metadata x) {
+            int ans = 0;
+            for (int i = 0; i < cnts.length; i++) {
+                ans += Math.abs(cnts[i] - x.cnts[i]);
+            }
+            return ans;
+        }
+
+        public int index(Metadata a) {
+            for (int i = 0; i < cnts.length; i++) {
+                if (cnts[i] != a.cnts[i]) {
+                    return i;
+                }
+            }
+            return -1;
         }
 
     }
 
-    static class Bits {
-        private Bits() {
+    static class SequenceUtils {
+        public static void swap(int[] data, int i, int j) {
+            int tmp = data[i];
+            data[i] = data[j];
+            data[j] = tmp;
         }
 
-        public static int bitAt(long x, int i) {
-            return (int) ((x >> i) & 1);
-        }
-
-        public static long setBit(long x, int i, boolean v) {
-            if (v) {
-                x |= 1L << i;
-            } else {
-                x &= ~(1L << i);
+        public static void reverse(int[] data, int l, int r) {
+            while (l < r) {
+                swap(data, l, r);
+                l++;
+                r--;
             }
-            return x;
         }
 
     }
@@ -197,8 +359,23 @@ public class Main {
             this(new OutputStreamWriter(os));
         }
 
-        public FastOutput println(long c) {
-            cache.append(c).append('\n');
+        public FastOutput append(char c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput append(String c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput printf(String format, Object... args) {
+            cache.append(String.format(format, args));
+            return this;
+        }
+
+        public FastOutput println() {
+            cache.append('\n');
             return this;
         }
 
@@ -224,189 +401,6 @@ public class Main {
 
         public String toString() {
             return cache.toString();
-        }
-
-    }
-
-    static class CachedLog2 {
-        private static final int BITS = 16;
-        private static final int LIMIT = 1 << BITS;
-        private static final byte[] CACHE = new byte[LIMIT];
-
-        static {
-            int b = 0;
-            for (int i = 0; i < LIMIT; i++) {
-                while ((1 << (b + 1)) <= i) {
-                    b++;
-                }
-                CACHE[i] = (byte) b;
-            }
-        }
-
-        public static int floorLog(long x) {
-            int ans = 0;
-            while (x >= LIMIT) {
-                ans += BITS;
-                x >>>= BITS;
-            }
-            return ans + CACHE[(int) x];
-        }
-
-    }
-
-    static class Buffer<T> {
-        private Deque<T> deque;
-        private Supplier<T> supplier;
-        private Consumer<T> cleaner;
-
-        public Buffer(Supplier<T> supplier) {
-            this(supplier, (x) -> {
-            });
-        }
-
-        public Buffer(Supplier<T> supplier, Consumer<T> cleaner) {
-            this(supplier, cleaner, 0);
-        }
-
-        public Buffer(Supplier<T> supplier, Consumer<T> cleaner, int exp) {
-            this.supplier = supplier;
-            this.cleaner = cleaner;
-            deque = new ArrayDeque<>(exp);
-        }
-
-        public T alloc() {
-            return deque.isEmpty() ? supplier.get() : deque.removeFirst();
-        }
-
-        public void release(T e) {
-            cleaner.accept(e);
-            deque.addLast(e);
-        }
-
-    }
-
-    static class KthXorTwoElement {
-        public static long solve(long[] data, long k) {
-            int n = data.length;
-
-            Buffer<KthXorTwoElement.Interval> buffer = new Buffer<>(KthXorTwoElement.Interval::new, x -> {
-            }, n * 2);
-
-            Randomized.randomizedArray(data);
-            Arrays.sort(data);
-
-            List<KthXorTwoElement.Interval> lastLevel = new ArrayList<>(n);
-            List<KthXorTwoElement.Interval> curLevel = new ArrayList<>(n);
-            lastLevel.add(newInterval(buffer, 0, n - 1));
-            int level = CachedLog2.floorLog(data[n - 1]);
-            long mask = 0;
-            for (; level >= 0; level--) {
-                curLevel.clear();
-                for (KthXorTwoElement.Interval interval : lastLevel) {
-                    int l = interval.l;
-                    int r = interval.r;
-                    int m = r;
-                    while (m >= l && Bits.bitAt(data[m], level) == 1) {
-                        m--;
-                    }
-                    interval.m = m;
-                }
-                long total = 0;
-                for (KthXorTwoElement.Interval interval : lastLevel) {
-                    total += (long) (interval.m - interval.l + 1) * (interval.relative.m - interval.relative.l + 1);
-                    total += (long) (interval.r - interval.m) * (interval.relative.r - interval.relative.m);
-                }
-                if (total < k) {
-                    k -= total;
-                    mask = Bits.setBit(mask, level, true);
-                    for (KthXorTwoElement.Interval interval : lastLevel) {
-                        if (interval.relative == interval) {
-                            if (interval.l <= interval.m && interval.m < interval.r) {
-                                KthXorTwoElement.Interval a = newInterval(buffer, interval.l, interval.m);
-                                KthXorTwoElement.Interval b = newInterval(buffer, interval.m + 1, interval.r);
-                                a.relative = b;
-                                b.relative = a;
-                                curLevel.add(a);
-                                curLevel.add(b);
-                            }
-                        } else if (interval.r >= interval.relative.r) {
-                            if (interval.l <= interval.m && interval.relative.r > interval.relative.m) {
-                                KthXorTwoElement.Interval a = newInterval(buffer, interval.l, interval.m);
-                                KthXorTwoElement.Interval b = newInterval(buffer, interval.relative.m + 1, interval.relative.r);
-                                a.relative = b;
-                                b.relative = a;
-                                curLevel.add(a);
-                                curLevel.add(b);
-                            }
-                            if (interval.m < interval.r && interval.relative.m >= interval.relative.l) {
-                                KthXorTwoElement.Interval a = newInterval(buffer, interval.m + 1, interval.r);
-                                KthXorTwoElement.Interval b = newInterval(buffer, interval.relative.l, interval.relative.m);
-                                a.relative = b;
-                                b.relative = a;
-                                curLevel.add(a);
-                                curLevel.add(b);
-                            }
-                        }
-                    }
-                } else {
-                    for (KthXorTwoElement.Interval interval : lastLevel) {
-                        if (interval.relative == interval) {
-                            if (interval.l <= interval.m) {
-                                KthXorTwoElement.Interval a = newInterval(buffer, interval.l, interval.m);
-                                a.relative = a;
-                                curLevel.add(a);
-                            }
-                            if (interval.m < interval.r) {
-                                KthXorTwoElement.Interval a = newInterval(buffer, interval.m + 1, interval.r);
-                                a.relative = a;
-                                curLevel.add(a);
-                            }
-                        } else if (interval.r >= interval.relative.r) {
-                            if (interval.l <= interval.m && interval.relative.l <= interval.relative.m) {
-                                KthXorTwoElement.Interval a = newInterval(buffer, interval.l, interval.m);
-                                KthXorTwoElement.Interval b = newInterval(buffer, interval.relative.l, interval.relative.m);
-                                a.relative = b;
-                                b.relative = a;
-                                curLevel.add(a);
-                                curLevel.add(b);
-                            }
-                            if (interval.m < interval.r && interval.relative.m < interval.relative.r) {
-                                KthXorTwoElement.Interval a = newInterval(buffer, interval.m + 1, interval.r);
-                                KthXorTwoElement.Interval b = newInterval(buffer, interval.relative.m + 1, interval.relative.r);
-                                a.relative = b;
-                                b.relative = a;
-                                curLevel.add(a);
-                                curLevel.add(b);
-                            }
-                        }
-                    }
-                }
-
-                for (KthXorTwoElement.Interval interval : lastLevel) {
-                    buffer.release(interval);
-                }
-
-                List<KthXorTwoElement.Interval> tmp = curLevel;
-                curLevel = lastLevel;
-                lastLevel = tmp;
-            }
-
-            return mask;
-        }
-
-        private static KthXorTwoElement.Interval newInterval(Buffer<KthXorTwoElement.Interval> buffer, int l, int r) {
-            KthXorTwoElement.Interval ans = buffer.alloc();
-            ans.l = l;
-            ans.r = r;
-            return ans;
-        }
-
-        static class Interval {
-            int l;
-            int r;
-            int m;
-            KthXorTwoElement.Interval relative = this;
-
         }
 
     }

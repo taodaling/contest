@@ -1,9 +1,6 @@
 package template.graph;
 
-import template.graph.ISAP;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import template.primitve.generated.IntegerIterator;
 
 public class MinimumCloseSubGraph {
     private ISAP isap;
@@ -38,7 +35,7 @@ public class MinimumCloseSubGraph {
 
     private boolean solved;
     private double minCut;
-    private List<Integer> subGraph;
+    private boolean[] status;
 
     public double solve() {
         if (!solved) {
@@ -48,11 +45,17 @@ public class MinimumCloseSubGraph {
         return sumOfPositive - minCut;
     }
 
-    public List<Integer> getSubGraph() {
-        if (subGraph == null) {
+    public boolean[] getStatus() {
+        if (status == null) {
             solve();
-            subGraph = isap.getComponentS().stream().map(x -> x.getId()).collect(Collectors.toList());
+            status = new boolean[n];
+            for (IntegerIterator iterator = isap.getComponentS().iterator(); iterator.hasNext(); ) {
+                int node = iterator.next();
+                if (node < n) {
+                    status[node] = true;
+                }
+            }
         }
-        return subGraph;
+        return status;
     }
 }

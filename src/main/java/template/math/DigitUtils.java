@@ -31,14 +31,14 @@ public class DigitUtils {
     /**
      * Return minimum integer x satisfy a / b < x
      */
-    public static long minimumIntegerGreaterThanDiv(long a, long b){
-       return floorDiv(a, b) + 1;
+    public static long minimumIntegerGreaterThanDiv(long a, long b) {
+        return floorDiv(a, b) + 1;
     }
 
     /**
      * Return minimum integer x satisfy a / b < x
      */
-    public static long maximumIntegerLessThanDiv(long a, long b){
+    public static long maximumIntegerLessThanDiv(long a, long b) {
         return ceilDiv(a, b) - 1;
     }
 
@@ -120,8 +120,9 @@ public class DigitUtils {
         return c;
     }
 
+    private static long mask32 = (1L << 32) - 1;
     public static long asLong(int high, int low) {
-        return (((long) high) << 32) | low;
+        return ((((long) high)) << 32) | (((long) low) & mask32);
     }
 
     public static int highBit(long x) {

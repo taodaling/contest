@@ -142,6 +142,10 @@ public class IntervalBooleanMap implements Iterable<IntervalBooleanMap.Interval>
         return entry != null && entry.getValue().r >= index;
     }
 
+    public boolean or(long l, long r) {
+        Map.Entry<Long, Interval> entry = map.floorEntry(r);
+        return entry != null && entry.getValue().r >= l;
+    }
 
     @Override
     public Iterator<Interval> iterator() {

@@ -1,0 +1,39 @@
+{
+  "name" : "LUOGU4723",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "6 4\n3 -1 0 4\n-2 3 1 5",
+    "output" : "73",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "1000000000 32000\n1",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_01.on2020_01_04_Educational_Codeforces_Round_78__Rated_for_Div__2_.LUOGU4723.LUOGU4723",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.01.04",
+  "contestName" : "Educational Codeforces Round 78 (Rated for Div. 2)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : false
+}

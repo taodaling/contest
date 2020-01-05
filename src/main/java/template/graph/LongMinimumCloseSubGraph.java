@@ -1,5 +1,8 @@
 package template.graph;
 
+import template.primitve.generated.IntegerIterator;
+import template.primitve.generated.IntegerList;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,26 +34,32 @@ public class LongMinimumCloseSubGraph {
         if (!(from >= 0 && from < n && to >= 0 && to < n)) {
             throw new IllegalArgumentException();
         }
-        isap.getChannel(from, to).reset((long)1e18, 0);
+        isap.getChannel(from, to).reset((long) 1e18, 0);
     }
 
     private boolean solved;
     private long minCut;
-    private List<Integer> subGraph;
+    private boolean[] status;
 
     public long solve() {
         if (!solved) {
-            minCut = isap.send((long)1e18);
+            minCut = isap.send((long) 1e18);
             solved = true;
         }
         return sumOfPositive - minCut;
     }
 
-    public List<Integer> getSubGraph() {
-        if (subGraph == null) {
+    public boolean[] getStatus() {
+        if (status == null) {
             solve();
-            subGraph = isap.getComponentS().stream().map(x -> x.getId()).collect(Collectors.toList());
+            status = new boolean[n];
+            for (IntegerIterator iterator = isap.getComponentS().iterator(); iterator.hasNext(); ) {
+                int node = iterator.next();
+                if (node < n) {
+                    status[node] = true;
+                }
+            }
         }
-        return subGraph;
+        return status;
     }
 }
