@@ -11,7 +11,7 @@ public class PrefixIncrementOnePriorityQueue {
     int r;
 
     public PrefixIncrementOnePriorityQueue(int[] data) {
-        Randomized.randomizedArray(data);
+        Randomized.shuffle(data);
         Arrays.sort(data);
         l = 0;
         r = data.length - 1;

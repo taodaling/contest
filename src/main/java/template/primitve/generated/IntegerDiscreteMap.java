@@ -10,7 +10,7 @@ public class IntegerDiscreteMap {
     int t;
 
     public IntegerDiscreteMap(int[] val, int f, int t) {
-            Randomized.randomizedArray(val, f, t);
+            Randomized.shuffle(val, f, t);
             Arrays.sort(val, f, t);
             int wpos = f + 1;
             for (int i = f + 1; i < t; i++) {

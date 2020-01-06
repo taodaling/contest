@@ -2,18 +2,11 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintStream;
-import java.util.Collection;
-import java.io.IOException;
-import java.util.stream.Collectors;
-import java.util.ArrayList;
 import java.io.UncheckedIOException;
-import java.util.List;
-import java.util.stream.Stream;
 import java.io.Closeable;
-import java.util.Map;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
+import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -34,191 +27,56 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            C1MadhouseEasyVersion solver = new C1MadhouseEasyVersion();
+            FNewYearAndSocialNetwork solver = new FNewYearAndSocialNetwork();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class C1MadhouseEasyVersion {
-        FastInput in;
-        FastOutput out;
-
+    static class FNewYearAndSocialNetwork {
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            this.in = in;
-            this.out = out;
-
-            if (n == 1) {
-                int[] ans = new int[2];
-                read(1, 1, ans);
-                answer(ans);
-                return;
+            LCTNode[] nodes = new LCTNode[n + 1];
+            for (int i = 1; i <= n; i++) {
+                nodes[i] = new LCTNode();
+                nodes[i].id = (int) 1e7;
             }
 
-            int[] ans = new int[n + 1];
+            LCTNode[] edges = new LCTNode[n];
+            int[][] t1 = new int[n][2];
+            for (int i = 1; i < n; i++) {
+                edges[i] = new LCTNode();
+                edges[i].id = i;
 
-            int m = n / 2;
-            read(1, m, ans);
-            read(m + 1, n, ans);
+                t1[i][0] = in.readInt();
+                t1[i][1] = in.readInt();
 
-            int[] buf = new int[n + 1];
-            if (isPalindrome(ans, 1, m) && isPalindrome(ans, m + 1, n)) {
-            } else if (isPalindrome(ans, 1, m)) {
-                int l = m + 1;
-                int r = n;
-                while (ans[l] == ans[r]) {
-                    l++;
-                    r--;
-                }
-
-                read(l, l, buf);
-                if (ans[l] != buf[l]) {
-                    SequenceUtils.reverse(ans, m + 1, n);
-                }
-            } else if (isPalindrome(ans, m + 1, n)) {
-                int l = 1;
-                int r = m;
-                while (ans[l] == ans[r]) {
-                    l++;
-                    r--;
-                }
-
-                read(l, l, buf);
-                if (ans[l] != buf[l]) {
-                    SequenceUtils.reverse(ans, 1, m);
-                }
-            } else {
-                int l1 = 1;
-                int r1 = m;
-                int l2 = m + 1;
-                int r2 = n;
-                while (ans[l1] == ans[r1]) {
-                    l1++;
-                    r1--;
-                }
-                while (ans[l2] == ans[r2]) {
-                    l2++;
-                    r2--;
-                }
-                read(l1, l2, buf);
-                if (equal(buf, ans, l1, m)) {
-                } else if (invEqual(buf, ans, l1, m, l1, l2)) {
-                    SequenceUtils.reverse(buf, l1, l2);
-                } else {
-                    SequenceUtils.reverse(ans, 1, m);
-                    if (equal(buf, ans, l1, m)) {
-                    } else if (invEqual(buf, ans, l1, m, l1, l2)) {
-                        SequenceUtils.reverse(buf, l1, l2);
-                    }
-                }
-
-                if (ans[r2] != buf[r2]) {
-                    SequenceUtils.reverse(ans, m + 1, n);
-                }
+                LCTNode.join(nodes[t1[i][0]], edges[i]);
+                LCTNode.join(nodes[t1[i][1]], edges[i]);
             }
 
-            answer(ans);
-        }
+            out.println(n - 1);
+            for (int i = 1; i < n; i++) {
+                int a = in.readInt();
+                int b = in.readInt();
+                LCTNode.findRoute(nodes[a], nodes[b]);
+                LCTNode.splay(nodes[a]);
+                LCTNode replace = nodes[a].minIdNode;
+                replace.pushUp();
 
-        public boolean equal(int[] seq, int[] ans, int l, int r) {
-            for (int i = l; i <= r; i++) {
-                if (seq[i] != ans[i]) {
-                    return false;
-                }
+                out.append(t1[replace.id][0]).append(' ').append(t1[replace.id][1])
+                        .append(' ').append(a).append(' ').append(b).println();
+
+                LCTNode.cut(replace, nodes[t1[replace.id][0]]);
+                LCTNode.cut(replace, nodes[t1[replace.id][1]]);
+                LCTNode.join(nodes[a], nodes[b]);
             }
-            return true;
-        }
-
-        public boolean invEqual(int[] seq, int[] ans, int l, int r, int ll, int rr) {
-            seq = seq.clone();
-            SequenceUtils.reverse(seq, ll, rr);
-            return equal(seq, ans, l, r);
-        }
-
-        public void answer(int[] seq) {
-            out.append("! ");
-            for (int i = 1; i < seq.length; i++) {
-                out.append((char) ('a' + seq[i]));
-            }
-            out.flush();
-        }
-
-        public boolean isPalindrome(int[] seq, int l, int r) {
-            return l > r ? true : (seq[l] == seq[r] && isPalindrome(seq, l + 1, r - 1));
-        }
-
-        public void read(int l, int r, int[] ans) {
-            int n = r - l + 1;
-            int cnt = n * (n - 1) / 2 + n;
-
-            out.printf("? %d %d", l, r).println().flush();
-
-            List<Metadata> metadataList = new ArrayList<>(cnt);
-            for (int i = 0; i < cnt; i++) {
-                metadataList.add(read());
-            }
-
-            Map<Integer, List<Metadata>> groupBySum = metadataList.stream().collect(Collectors.groupingBy(x -> x.sum));
-            int[] buf = new int[n];
-            Metadata whole = groupBySum.get(n).get(0);
-            if (l == r) {
-                for (int i = 0; i < whole.cnts.length; i++) {
-                    if (whole.cnts[i] != 0) {
-                        ans[l] = i;
-                        return;
-                    }
-                }
-            }
-
-            Metadata left = groupBySum.get(n - 1).get(0);
-            Metadata right = groupBySum.get(n - 1).get(1);
-            buf[0] = whole.index(right);
-            buf[n - 1] = whole.index(left);
-            for (int i = n - 2; n - i - 1 <= i; i--) {
-                List<Metadata> list = groupBySum.get(i);
-                Metadata lPart = null;
-                Metadata rPart = null;
-                for (Metadata data : list) {
-                    if (left.differ(data) == 1) {
-                        lPart = data;
-                        break;
-                    }
-                }
-                for (Metadata data : list) {
-                    if (data != lPart && right.differ(data) == 1) {
-                        rPart = data;
-                        break;
-                    }
-                }
-
-                buf[n - i - 1] = right.index(lPart);
-                buf[i] = left.index(rPart);
-                left.dec(buf[i]);
-                right.dec(buf[n - i - 1]);
-            }
-
-            for (int i = 0; i < n; i++) {
-                ans[i + l] = buf[i];
-            }
-
-            System.err.print("" + l + "," + r + "=");
-            for (int i = l; i <= r; i++) {
-                System.err.append("" + (char) (ans[i] + 'a'));
-            }
-            System.err.println();
-        }
-
-        public Metadata read() {
-            String s = in.readString();
-            return new Metadata(s);
         }
 
     }
 
     static class FastInput {
         private final InputStream is;
-        private StringBuilder defaultStringBuf = new StringBuilder(1 << 13);
         private byte[] buf = new byte[1 << 13];
         private int bufLen;
         private int bufOffset;
@@ -274,74 +132,185 @@ public class Main {
             return val;
         }
 
-        public String readString(StringBuilder builder) {
-            skipBlank();
-
-            while (next > 32) {
-                builder.append((char) next);
-                next = read();
-            }
-
-            return builder.toString();
-        }
-
-        public String readString() {
-            defaultStringBuf.setLength(0);
-            return readString(defaultStringBuf);
-        }
-
     }
 
-    static class Metadata {
-        int[] cnts = new int['z' - 'a' + 1];
-        int sum;
+    static class LCTNode {
+        public static final LCTNode NIL = new LCTNode();
+        LCTNode left = NIL;
+        LCTNode right = NIL;
+        LCTNode father = NIL;
+        LCTNode treeFather = NIL;
+        boolean reverse;
+        int id;
+        LCTNode minIdNode;
 
-        public Metadata(String s) {
-            int n = s.length();
-            for (int i = 0; i < n; i++) {
-                cnts[s.charAt(i) - 'a']++;
-            }
-            for (int x : cnts) {
-                sum += x;
+        static {
+            NIL.left = NIL;
+            NIL.right = NIL;
+            NIL.father = NIL;
+            NIL.treeFather = NIL;
+            NIL.id = (int) 1e8;
+            NIL.minIdNode = NIL;
+        }
+
+        public static void access(LCTNode x) {
+            LCTNode last = NIL;
+            while (x != NIL) {
+                splay(x);
+                x.right.father = NIL;
+                x.right.treeFather = x;
+                x.setRight(last);
+                x.pushUp();
+
+                last = x;
+                x = x.treeFather;
             }
         }
 
-        public void dec(int i) {
-            sum--;
-            cnts[i]--;
+        public static void makeRoot(LCTNode x) {
+            access(x);
+            splay(x);
+            x.reverse();
         }
 
-        public int differ(Metadata x) {
-            int ans = 0;
-            for (int i = 0; i < cnts.length; i++) {
-                ans += Math.abs(cnts[i] - x.cnts[i]);
+        public static void cut(LCTNode y, LCTNode x) {
+            makeRoot(y);
+            access(x);
+            splay(y);
+            y.right.treeFather = NIL;
+            y.right.father = NIL;
+            y.setRight(NIL);
+            y.pushUp();
+        }
+
+        public static void join(LCTNode y, LCTNode x) {
+            makeRoot(x);
+            x.treeFather = y;
+        }
+
+        public static void findRoute(LCTNode x, LCTNode y) {
+            makeRoot(y);
+            access(x);
+        }
+
+        public static void splay(LCTNode x) {
+            if (x == NIL) {
+                return;
             }
-            return ans;
-        }
-
-        public int index(Metadata a) {
-            for (int i = 0; i < cnts.length; i++) {
-                if (cnts[i] != a.cnts[i]) {
-                    return i;
+            LCTNode y, z;
+            while ((y = x.father) != NIL) {
+                if ((z = y.father) == NIL) {
+                    y.pushDown();
+                    x.pushDown();
+                    if (x == y.left) {
+                        zig(x);
+                    } else {
+                        zag(x);
+                    }
+                } else {
+                    z.pushDown();
+                    y.pushDown();
+                    x.pushDown();
+                    if (x == y.left) {
+                        if (y == z.left) {
+                            zig(y);
+                            zig(x);
+                        } else {
+                            zig(x);
+                            zag(x);
+                        }
+                    } else {
+                        if (y == z.left) {
+                            zag(x);
+                            zig(x);
+                        } else {
+                            zag(y);
+                            zag(x);
+                        }
+                    }
                 }
             }
-            return -1;
+
+            x.pushDown();
+            x.pushUp();
         }
 
-    }
+        public static void zig(LCTNode x) {
+            LCTNode y = x.father;
+            LCTNode z = y.father;
+            LCTNode b = x.right;
 
-    static class SequenceUtils {
-        public static void swap(int[] data, int i, int j) {
-            int tmp = data[i];
-            data[i] = data[j];
-            data[j] = tmp;
+            y.setLeft(b);
+            x.setRight(y);
+            z.changeChild(y, x);
+
+            y.pushUp();
         }
 
-        public static void reverse(int[] data, int l, int r) {
-            while (l < r) {
-                swap(data, l, r);
-                l++;
-                r--;
+        public static void zag(LCTNode x) {
+            LCTNode y = x.father;
+            LCTNode z = y.father;
+            LCTNode b = x.left;
+
+            y.setRight(b);
+            x.setLeft(y);
+            z.changeChild(y, x);
+
+            y.pushUp();
+        }
+
+        public String toString() {
+            return "" + id;
+        }
+
+        public void pushDown() {
+            if (reverse) {
+                reverse = false;
+
+                LCTNode tmpNode = left;
+                left = right;
+                right = tmpNode;
+
+                left.reverse();
+                right.reverse();
+            }
+
+            left.treeFather = treeFather;
+            right.treeFather = treeFather;
+        }
+
+        public void reverse() {
+            reverse = !reverse;
+        }
+
+        public void setLeft(LCTNode x) {
+            left = x;
+            x.father = this;
+        }
+
+        public void setRight(LCTNode x) {
+            right = x;
+            x.father = this;
+        }
+
+        public void changeChild(LCTNode y, LCTNode x) {
+            if (left == y) {
+                setLeft(x);
+            } else {
+                setRight(x);
+            }
+        }
+
+        public void pushUp() {
+            if (this == NIL) {
+                return;
+            }
+            minIdNode = this;
+            if (this.left.minIdNode.id < minIdNode.id) {
+                minIdNode = this.left.minIdNode;
+            }
+            if (this.right.minIdNode.id < minIdNode.id) {
+                minIdNode = this.right.minIdNode;
             }
         }
 
@@ -364,13 +333,13 @@ public class Main {
             return this;
         }
 
-        public FastOutput append(String c) {
+        public FastOutput append(int c) {
             cache.append(c);
             return this;
         }
 
-        public FastOutput printf(String format, Object... args) {
-            cache.append(String.format(format, args));
+        public FastOutput println(int c) {
+            cache.append(c).append('\n');
             return this;
         }
 

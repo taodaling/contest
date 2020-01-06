@@ -33,7 +33,7 @@ public class Circle implements Shape {
      * O(r-l+1) algorithm solve min circle cover problem
      */
     public static Circle minCircleCover(Point2D[] pts, int l, int r) {
-        Randomized.randomizedArray(pts, l, r + 1);
+        Randomized.shuffle(pts, l, r + 1);
         Circle circle = new Circle(new Point2D(0, 0), 0);
         for (int i = l; i <= r; i++) {
             if (circle.contain(pts[i], true)) {

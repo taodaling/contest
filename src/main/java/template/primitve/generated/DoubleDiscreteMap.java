@@ -10,7 +10,7 @@ public class DoubleDiscreteMap {
     int t;
 
     public DoubleDiscreteMap(double[] val, int f, int t) {
-            Randomized.randomizedArray(val, f, t);
+            Randomized.shuffle(val, f, t);
             Arrays.sort(val, f, t);
             int wpos = f + 1;
             for (int i = f + 1; i < t; i++) {

@@ -16,14 +16,14 @@ import java.util.List;
  */
 public class KthXorTwoElement {
     /**
-     * This method will modify the argument, backing it if necessary
+     * This method will modify the argument, backing up it if necessary
      */
     public static long solve(long[] data, long k) {
         int n = data.length;
 
         Buffer<Interval> buffer = new Buffer<>(Interval::new, x -> {}, n * 2);
 
-        Randomized.randomizedArray(data);
+        Randomized.shuffle(data);
         Arrays.sort(data);
 
         List<Interval> lastLevel = new ArrayList<>(n);

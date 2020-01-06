@@ -1,3 +1,2 @@
-54 src/main/java/contest/C1. Madhouse (Easy version).json
-1
+57 src/main/java/contest/F. New Year and Social Network.json
 0
