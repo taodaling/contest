@@ -2,11 +2,14 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.io.UncheckedIOException;
+import java.util.List;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
-import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -34,43 +37,213 @@ public class Main {
     }
 
     static class FNewYearAndSocialNetwork {
+        Node[] t1;
+        Node[] t2;
+        LcaOnTree lcaOnTree;
+        FastOutput out;
+
         public void solve(int testNumber, FastInput in, FastOutput out) {
+            this.out = out;
+
             int n = in.readInt();
-            LCTNode[] nodes = new LCTNode[n + 1];
+            t1 = new Node[n + 1];
+            t2 = new Node[n + 1];
+            MultiWayIntegerStack edges = new MultiWayIntegerStack(n + 1, (n + 1) * 2);
+            edges.addLast(0, 1);
+
             for (int i = 1; i <= n; i++) {
-                nodes[i] = new LCTNode();
-                nodes[i].id = (int) 1e7;
+                t1[i] = new Node();
+                t1[i].id = i;
+
+                t2[i] = new Node();
+                t2[i].id = i;
             }
 
-            LCTNode[] edges = new LCTNode[n];
-            int[][] t1 = new int[n][2];
             for (int i = 1; i < n; i++) {
-                edges[i] = new LCTNode();
-                edges[i].id = i;
+                Node a = t1[in.readInt()];
+                Node b = t1[in.readInt()];
+                addEdge(a, b);
+                edges.addLast(a.id, b.id);
+                edges.addLast(b.id, a.id);
+            }
+            lcaOnTree = new LcaOnTree(edges, 0);
 
-                t1[i][0] = in.readInt();
-                t1[i][1] = in.readInt();
-
-                LCTNode.join(nodes[t1[i][0]], edges[i]);
-                LCTNode.join(nodes[t1[i][1]], edges[i]);
+            for (int i = 1; i < n; i++) {
+                Node a = t2[in.readInt()];
+                Node b = t2[in.readInt()];
+                addEdge(a, b);
             }
 
             out.println(n - 1);
-            for (int i = 1; i < n; i++) {
-                int a = in.readInt();
-                int b = in.readInt();
-                LCTNode.findRoute(nodes[a], nodes[b]);
-                LCTNode.splay(nodes[a]);
-                LCTNode replace = nodes[a].minIdNode;
-                replace.pushUp();
+            dfsT1(t1[1], null, 0);
+            dfsT2(t2[1], null);
+        }
 
-                out.append(t1[replace.id][0]).append(' ').append(t1[replace.id][1])
-                        .append(' ').append(a).append(' ').append(b).println();
-
-                LCTNode.cut(replace, nodes[t1[replace.id][0]]);
-                LCTNode.cut(replace, nodes[t1[replace.id][1]]);
-                LCTNode.join(nodes[a], nodes[b]);
+        public void dfsT1(Node root, Edge from, int depth) {
+            root.from = from;
+            root.jump = new Node[20];
+            root.depth = depth;
+            if (root.from != null) {
+                root.jump[0] = from.other(root);
+                for (int i = 0; root.jump[i] != null; i++) {
+                    root.jump[i + 1] = root.jump[i].jump[i];
+                }
             }
+            for (Edge e : root.next) {
+                if (e == from) {
+                    continue;
+                }
+                dfsT1(e.other(root), e, depth + 1);
+            }
+        }
+
+        public void dfsT2(Node root, Edge from) {
+            for (Edge e : root.next) {
+                if (e == from) {
+                    continue;
+                }
+                dfsT2(e.other(root), e);
+            }
+            for (Edge e : root.next) {
+                if (e == from) {
+                    continue;
+                }
+                Edge partner = findPartner(e.other(root), root);
+                answer(partner, e);
+                Node.merge(t2[partner.a.id], t2[partner.b.id]);
+            }
+        }
+
+        public boolean sameComponent(Node leaf, Node x) {
+            return leaf.find() == t2[x.id].find();
+        }
+
+        public Edge findPartner(Node leaf, Node p) {
+            Node b = t1[lcaOnTree.lca(leaf.id, p.id)];
+            Node a;
+            if (sameComponent(leaf, b)) {
+                a = t1[p.id];
+            } else {
+                a = t1[leaf.id];
+            }
+
+            for (int i = 20 - 1; i >= 0; i--) {
+                if (a.jump[i] == null || a.jump[i].depth <= b.depth) {
+                    continue;
+                }
+                boolean sameWithA;
+                if (sameComponent(leaf, a)) {
+                    sameWithA = sameComponent(leaf, a.jump[i]);
+                } else {
+                    sameWithA = !sameComponent(leaf, a.jump[i]);
+                }
+                if (sameWithA) {
+                    a = a.jump[i];
+                }
+            }
+
+            return a.from;
+        }
+
+        public void answer(Edge e1, Edge e2) {
+            out.append(e1.a.id).append(' ').append(e1.b.id).append(' ')
+                    .append(e2.a.id).append(' ').append(e2.b.id).println();
+        }
+
+        public void addEdge(Node a, Node b) {
+            Edge e = new Edge();
+            e.a = a;
+            e.b = b;
+            a.next.add(e);
+            b.next.add(e);
+        }
+
+    }
+
+    static interface IntegerIterator {
+        boolean hasNext();
+
+        int next();
+
+    }
+
+    static class LcaOnTree {
+        int[] parent;
+        int[] preOrder;
+        int[] i;
+        int[] head;
+        int[] a;
+        int time;
+
+        void dfs1(MultiWayIntegerStack tree, int u, int p) {
+            parent[u] = p;
+            i[u] = preOrder[u] = time++;
+            for (IntegerIterator iterator = tree.iterator(u); iterator.hasNext(); ) {
+                int v = iterator.next();
+                if (v == p) continue;
+                dfs1(tree, v, u);
+                if (Integer.lowestOneBit(i[u]) < Integer.lowestOneBit(i[v])) {
+                    i[u] = i[v];
+                }
+            }
+            head[i[u]] = u;
+        }
+
+        void dfs2(MultiWayIntegerStack tree, int u, int p, int up) {
+            a[u] = up | Integer.lowestOneBit(i[u]);
+            for (IntegerIterator iterator = tree.iterator(u); iterator.hasNext(); ) {
+                int v = iterator.next();
+                if (v == p) continue;
+                dfs2(tree, v, u, a[u]);
+            }
+        }
+
+        public LcaOnTree(MultiWayIntegerStack tree, int root) {
+            int n = tree.stackNumber();
+            preOrder = new int[n];
+            i = new int[n];
+            head = new int[n];
+            a = new int[n];
+            parent = new int[n];
+
+            dfs1(tree, root, -1);
+            dfs2(tree, root, -1, 0);
+        }
+
+        private int enterIntoStrip(int x, int hz) {
+            if (Integer.lowestOneBit(i[x]) == hz)
+                return x;
+            int hw = 1 << CachedLog2.floorLog(a[x] & (hz - 1));
+            return parent[head[i[x] & -hw | hw]];
+        }
+
+        public int lca(int x, int y) {
+            int hb = i[x] == i[y] ? Integer.lowestOneBit(i[x]) : (1 << CachedLog2.floorLog(i[x] ^ i[y]));
+            int hz = Integer.lowestOneBit(a[x] & a[y] & -hb);
+            int ex = enterIntoStrip(x, hz);
+            int ey = enterIntoStrip(y, hz);
+            return preOrder[ex] < preOrder[ey] ? ex : ey;
+        }
+
+    }
+
+    static class CachedLog2 {
+        private static final int BITS = 16;
+        private static final int LIMIT = 1 << BITS;
+        private static final byte[] CACHE = new byte[LIMIT];
+
+        static {
+            int b = 0;
+            for (int i = 0; i < LIMIT; i++) {
+                while ((1 << (b + 1)) <= i) {
+                    b++;
+                }
+                CACHE[i] = (byte) b;
+            }
+        }
+
+        public static int floorLog(int x) {
+            return x < LIMIT ? CACHE[x] : (BITS + CACHE[x >>> BITS]);
         }
 
     }
@@ -134,184 +307,47 @@ public class Main {
 
     }
 
-    static class LCTNode {
-        public static final LCTNode NIL = new LCTNode();
-        LCTNode left = NIL;
-        LCTNode right = NIL;
-        LCTNode father = NIL;
-        LCTNode treeFather = NIL;
-        boolean reverse;
+    static class Edge {
+        Node a;
+        Node b;
+
+        Node other(Node x) {
+            return a == x ? b : a;
+        }
+
+    }
+
+    static class Node {
+        List<Edge> next = new ArrayList<>();
         int id;
-        LCTNode minIdNode;
+        Node[] jump;
+        Edge from;
+        Node p = this;
+        int rank = 0;
+        int depth;
 
-        static {
-            NIL.left = NIL;
-            NIL.right = NIL;
-            NIL.father = NIL;
-            NIL.treeFather = NIL;
-            NIL.id = (int) 1e8;
-            NIL.minIdNode = NIL;
+        public Node find() {
+            return p == p.p ? p : (p = p.find());
         }
 
-        public static void access(LCTNode x) {
-            LCTNode last = NIL;
-            while (x != NIL) {
-                splay(x);
-                x.right.father = NIL;
-                x.right.treeFather = x;
-                x.setRight(last);
-                x.pushUp();
-
-                last = x;
-                x = x.treeFather;
-            }
-        }
-
-        public static void makeRoot(LCTNode x) {
-            access(x);
-            splay(x);
-            x.reverse();
-        }
-
-        public static void cut(LCTNode y, LCTNode x) {
-            makeRoot(y);
-            access(x);
-            splay(y);
-            y.right.treeFather = NIL;
-            y.right.father = NIL;
-            y.setRight(NIL);
-            y.pushUp();
-        }
-
-        public static void join(LCTNode y, LCTNode x) {
-            makeRoot(x);
-            x.treeFather = y;
-        }
-
-        public static void findRoute(LCTNode x, LCTNode y) {
-            makeRoot(y);
-            access(x);
-        }
-
-        public static void splay(LCTNode x) {
-            if (x == NIL) {
+        public static void merge(Node a, Node b) {
+            a = a.find();
+            b = b.find();
+            if (a == b) {
                 return;
             }
-            LCTNode y, z;
-            while ((y = x.father) != NIL) {
-                if ((z = y.father) == NIL) {
-                    y.pushDown();
-                    x.pushDown();
-                    if (x == y.left) {
-                        zig(x);
-                    } else {
-                        zag(x);
-                    }
-                } else {
-                    z.pushDown();
-                    y.pushDown();
-                    x.pushDown();
-                    if (x == y.left) {
-                        if (y == z.left) {
-                            zig(y);
-                            zig(x);
-                        } else {
-                            zig(x);
-                            zag(x);
-                        }
-                    } else {
-                        if (y == z.left) {
-                            zag(x);
-                            zig(x);
-                        } else {
-                            zag(y);
-                            zag(x);
-                        }
-                    }
-                }
+            if (a.rank == b.rank) {
+                a.rank++;
             }
-
-            x.pushDown();
-            x.pushUp();
-        }
-
-        public static void zig(LCTNode x) {
-            LCTNode y = x.father;
-            LCTNode z = y.father;
-            LCTNode b = x.right;
-
-            y.setLeft(b);
-            x.setRight(y);
-            z.changeChild(y, x);
-
-            y.pushUp();
-        }
-
-        public static void zag(LCTNode x) {
-            LCTNode y = x.father;
-            LCTNode z = y.father;
-            LCTNode b = x.left;
-
-            y.setRight(b);
-            x.setLeft(y);
-            z.changeChild(y, x);
-
-            y.pushUp();
+            if (a.rank > b.rank) {
+                b.p = a;
+            } else {
+                a.p = b;
+            }
         }
 
         public String toString() {
             return "" + id;
-        }
-
-        public void pushDown() {
-            if (reverse) {
-                reverse = false;
-
-                LCTNode tmpNode = left;
-                left = right;
-                right = tmpNode;
-
-                left.reverse();
-                right.reverse();
-            }
-
-            left.treeFather = treeFather;
-            right.treeFather = treeFather;
-        }
-
-        public void reverse() {
-            reverse = !reverse;
-        }
-
-        public void setLeft(LCTNode x) {
-            left = x;
-            x.father = this;
-        }
-
-        public void setRight(LCTNode x) {
-            right = x;
-            x.father = this;
-        }
-
-        public void changeChild(LCTNode y, LCTNode x) {
-            if (left == y) {
-                setLeft(x);
-            } else {
-                setRight(x);
-            }
-        }
-
-        public void pushUp() {
-            if (this == NIL) {
-                return;
-            }
-            minIdNode = this;
-            if (this.left.minIdNode.id < minIdNode.id) {
-                minIdNode = this.left.minIdNode;
-            }
-            if (this.right.minIdNode.id < minIdNode.id) {
-                minIdNode = this.right.minIdNode;
-            }
         }
 
     }
@@ -370,6 +406,80 @@ public class Main {
 
         public String toString() {
             return cache.toString();
+        }
+
+    }
+
+    static class MultiWayIntegerStack {
+        private int[] values;
+        private int[] next;
+        private int[] heads;
+        private int alloc;
+        private int stackNum;
+
+        public IntegerIterator iterator(final int queue) {
+            return new IntegerIterator() {
+                int ele = heads[queue];
+
+
+                public boolean hasNext() {
+                    return ele != 0;
+                }
+
+
+                public int next() {
+                    int ans = values[ele];
+                    ele = next[ele];
+                    return ans;
+                }
+            };
+        }
+
+        private void doubleCapacity() {
+            int newSize = Math.max(next.length + 10, next.length * 2);
+            next = Arrays.copyOf(next, newSize);
+            values = Arrays.copyOf(values, newSize);
+        }
+
+        public void alloc() {
+            alloc++;
+            if (alloc >= next.length) {
+                doubleCapacity();
+            }
+            next[alloc] = 0;
+        }
+
+        public int stackNumber() {
+            return stackNum;
+        }
+
+        public MultiWayIntegerStack(int qNum, int totalCapacity) {
+            values = new int[totalCapacity + 1];
+            next = new int[totalCapacity + 1];
+            heads = new int[qNum];
+            stackNum = qNum;
+        }
+
+        public void addLast(int qId, int x) {
+            alloc();
+            values[alloc] = x;
+            next[alloc] = heads[qId];
+            heads[qId] = alloc;
+        }
+
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < stackNum; i++) {
+                builder.append(i).append(": ");
+                for (IntegerIterator iterator = iterator(i); iterator.hasNext(); ) {
+                    builder.append(iterator.next()).append(",");
+                }
+                if (builder.charAt(builder.length() - 1) == ',') {
+                    builder.setLength(builder.length() - 1);
+                }
+                builder.append('\n');
+            }
+            return builder.toString();
         }
 
     }
