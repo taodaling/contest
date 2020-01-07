@@ -17,9 +17,10 @@ public class DLCC {
     Power power = new Power(mod);
     InverseNumber inverseNumber = new InverseNumber(2000000, mod);
 
+    int n;
 
     public void solve(int testNumber, FastInput in, FastOutput out) {
-        int n = in.readInt();
+        n = in.readInt();
         Ball[] balls = new Ball[n];
         for (int i = 0; i < n; i++) {
             balls[i] = new Ball();
@@ -90,6 +91,14 @@ public class DLCC {
             }
         }
 
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 2; j++) {
+                if (ans[i][j].size > 4 * (r - l + 1)) {
+                    throw new RuntimeException();
+                }
+            }
+        }
+
 //        if(totalProb(ans) != 1){
 //            throw new RuntimeException();
 //        }
@@ -125,9 +134,9 @@ public class DLCC {
             } else {
                 item = b.data[(bIndex++)];
             }
-            if (item.prob == 0) {
-                continue;
-            }
+//            if (item.prob == 0) {
+//                continue;
+//            }
             if (ans.size > 0 && ans.data[(ans.size - 1)].fraction.compareTo(item.fraction) == 0) {
                 Item tail = ans.data[(ans.size - 1)];
                 tail.prob = mod.plus(tail.prob, item.prob);
@@ -250,11 +259,11 @@ class Fraction implements Comparable<Fraction> {
             a = -a;
             b = -b;
         }
-        long g = gcd(Math.abs(a), b);
-        if (g != 0) {
-            a /= g;
-            b /= g;
-        }
+//        long g = gcd(Math.abs(a), b);
+//        if (g != 0) {
+//            a /= g;
+//            b /= g;
+//        }
         this.a = a;
         this.b = b;
     }
