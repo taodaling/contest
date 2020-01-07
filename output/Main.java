@@ -2,11 +2,19 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.Set;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Random;
+import java.util.ArrayList;
 import java.io.UncheckedIOException;
+import java.util.List;
+import java.util.Map;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
-import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -27,56 +35,89 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            FNewYearAndSocialNetwork solver = new FNewYearAndSocialNetwork();
+            C1MadhouseEasyVersion solver = new C1MadhouseEasyVersion();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class FNewYearAndSocialNetwork {
+    static class C1MadhouseEasyVersion {
+        FastInput in;
+        FastOutput out;
+
         public void solve(int testNumber, FastInput in, FastOutput out) {
+            this.in = in;
+            this.out = out;
+
             int n = in.readInt();
-            LCTNode[] nodes = new LCTNode[n + 1];
-            for (int i = 1; i <= n; i++) {
-                nodes[i] = new LCTNode();
-                nodes[i].id = (int) 1e7;
+            if (n == 1) {
+                Map<String, Integer> map = read(1, 1);
+                String s = map.keySet().iterator().next();
+                answer(s);
+                return;
             }
 
-            LCTNode[] edges = new LCTNode[n];
-            int[][] t1 = new int[n][2];
-            for (int i = 1; i < n; i++) {
-                edges[i] = new LCTNode();
-                edges[i].id = i;
+            Map<String, Integer> a = read(1, n);
+            Map<String, Integer> b = read(2, n);
 
-                t1[i][0] = in.readInt();
-                t1[i][1] = in.readInt();
-
-                LCTNode.join(nodes[t1[i][0]], edges[i]);
-                LCTNode.join(nodes[t1[i][1]], edges[i]);
+            for (String key : b.keySet()) {
+                int remain = a.get(key) - b.get(key);
+                if (remain == 0) {
+                    a.remove(key);
+                } else {
+                    a.put(key, remain);
+                }
             }
 
-            out.println(n - 1);
-            for (int i = 1; i < n; i++) {
-                int a = in.readInt();
-                int b = in.readInt();
-                LCTNode.findRoute(nodes[a], nodes[b]);
-                LCTNode.splay(nodes[a]);
-                LCTNode replace = nodes[a].minIdNode;
-                replace.pushUp();
+            List<String> prefix = new ArrayList<>(a.keySet());
+            prefix.sort((x, y) -> x.length() - y.length());
 
-                out.append(t1[replace.id][0]).append(' ').append(t1[replace.id][1])
-                        .append(' ').append(a).append(' ').append(b).println();
-
-                LCTNode.cut(replace, nodes[t1[replace.id][0]]);
-                LCTNode.cut(replace, nodes[t1[replace.id][1]]);
-                LCTNode.join(nodes[a], nodes[b]);
+            StringBuilder ans = new StringBuilder(n);
+            String last = "";
+            for (String s : prefix) {
+                ans.append(differ(last, s));
+                last = s;
             }
+
+            answer(ans.toString());
+        }
+
+        public void answer(String s) {
+            out.printf("! %s", s).println().flush();
+        }
+
+        public char differ(String shorter, String longer) {
+            int differ = 0;
+            while (shorter.length() > differ && shorter.charAt(differ) == longer.charAt(differ)) {
+                differ++;
+            }
+            return longer.charAt(differ);
+        }
+
+        public Map<String, Integer> read(int l, int r) {
+            int n = (r - l + 1);
+            int m = (n + 1) * n / 2;
+            Map<String, Integer> map = new HashMap<>(m);
+            out.printf("? %d %d", l, r).println().flush();
+            for (int i = 0; i < m; i++) {
+                String s = arrange(in.readString());
+                map.put(s, map.getOrDefault(s, 0) + 1);
+            }
+            return map;
+        }
+
+        String arrange(String x) {
+            char[] s = x.toCharArray();
+            Randomized.shuffle(s);
+            Arrays.sort(s);
+            return new String(s);
         }
 
     }
 
     static class FastInput {
         private final InputStream is;
+        private StringBuilder defaultStringBuf = new StringBuilder(1 << 13);
         private byte[] buf = new byte[1 << 13];
         private int bufLen;
         private int bufOffset;
@@ -132,186 +173,20 @@ public class Main {
             return val;
         }
 
-    }
+        public String readString(StringBuilder builder) {
+            skipBlank();
 
-    static class LCTNode {
-        public static final LCTNode NIL = new LCTNode();
-        LCTNode left = NIL;
-        LCTNode right = NIL;
-        LCTNode father = NIL;
-        LCTNode treeFather = NIL;
-        boolean reverse;
-        int id;
-        LCTNode minIdNode;
-
-        static {
-            NIL.left = NIL;
-            NIL.right = NIL;
-            NIL.father = NIL;
-            NIL.treeFather = NIL;
-            NIL.id = (int) 1e8;
-            NIL.minIdNode = NIL;
-        }
-
-        public static void access(LCTNode x) {
-            LCTNode last = NIL;
-            while (x != NIL) {
-                splay(x);
-                x.right.father = NIL;
-                x.right.treeFather = x;
-                x.setRight(last);
-                x.pushUp();
-
-                last = x;
-                x = x.treeFather;
-            }
-        }
-
-        public static void makeRoot(LCTNode x) {
-            access(x);
-            splay(x);
-            x.reverse();
-        }
-
-        public static void cut(LCTNode y, LCTNode x) {
-            makeRoot(y);
-            access(x);
-            splay(y);
-            y.right.treeFather = NIL;
-            y.right.father = NIL;
-            y.setRight(NIL);
-            y.pushUp();
-        }
-
-        public static void join(LCTNode y, LCTNode x) {
-            makeRoot(x);
-            x.treeFather = y;
-        }
-
-        public static void findRoute(LCTNode x, LCTNode y) {
-            makeRoot(y);
-            access(x);
-        }
-
-        public static void splay(LCTNode x) {
-            if (x == NIL) {
-                return;
-            }
-            LCTNode y, z;
-            while ((y = x.father) != NIL) {
-                if ((z = y.father) == NIL) {
-                    y.pushDown();
-                    x.pushDown();
-                    if (x == y.left) {
-                        zig(x);
-                    } else {
-                        zag(x);
-                    }
-                } else {
-                    z.pushDown();
-                    y.pushDown();
-                    x.pushDown();
-                    if (x == y.left) {
-                        if (y == z.left) {
-                            zig(y);
-                            zig(x);
-                        } else {
-                            zig(x);
-                            zag(x);
-                        }
-                    } else {
-                        if (y == z.left) {
-                            zag(x);
-                            zig(x);
-                        } else {
-                            zag(y);
-                            zag(x);
-                        }
-                    }
-                }
+            while (next > 32) {
+                builder.append((char) next);
+                next = read();
             }
 
-            x.pushDown();
-            x.pushUp();
+            return builder.toString();
         }
 
-        public static void zig(LCTNode x) {
-            LCTNode y = x.father;
-            LCTNode z = y.father;
-            LCTNode b = x.right;
-
-            y.setLeft(b);
-            x.setRight(y);
-            z.changeChild(y, x);
-
-            y.pushUp();
-        }
-
-        public static void zag(LCTNode x) {
-            LCTNode y = x.father;
-            LCTNode z = y.father;
-            LCTNode b = x.left;
-
-            y.setRight(b);
-            x.setLeft(y);
-            z.changeChild(y, x);
-
-            y.pushUp();
-        }
-
-        public String toString() {
-            return "" + id;
-        }
-
-        public void pushDown() {
-            if (reverse) {
-                reverse = false;
-
-                LCTNode tmpNode = left;
-                left = right;
-                right = tmpNode;
-
-                left.reverse();
-                right.reverse();
-            }
-
-            left.treeFather = treeFather;
-            right.treeFather = treeFather;
-        }
-
-        public void reverse() {
-            reverse = !reverse;
-        }
-
-        public void setLeft(LCTNode x) {
-            left = x;
-            x.father = this;
-        }
-
-        public void setRight(LCTNode x) {
-            right = x;
-            x.father = this;
-        }
-
-        public void changeChild(LCTNode y, LCTNode x) {
-            if (left == y) {
-                setLeft(x);
-            } else {
-                setRight(x);
-            }
-        }
-
-        public void pushUp() {
-            if (this == NIL) {
-                return;
-            }
-            minIdNode = this;
-            if (this.left.minIdNode.id < minIdNode.id) {
-                minIdNode = this.left.minIdNode;
-            }
-            if (this.right.minIdNode.id < minIdNode.id) {
-                minIdNode = this.right.minIdNode;
-            }
+        public String readString() {
+            defaultStringBuf.setLength(0);
+            return readString(defaultStringBuf);
         }
 
     }
@@ -328,18 +203,8 @@ public class Main {
             this(new OutputStreamWriter(os));
         }
 
-        public FastOutput append(char c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput append(int c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput println(int c) {
-            cache.append(c).append('\n');
+        public FastOutput printf(String format, Object... args) {
+            cache.append(String.format(format, args));
             return this;
         }
 
@@ -370,6 +235,29 @@ public class Main {
 
         public String toString() {
             return cache.toString();
+        }
+
+    }
+
+    static class Randomized {
+        private static Random random = new Random();
+
+        public static void shuffle(char[] data, int from, int to) {
+            to--;
+            for (int i = from; i <= to; i++) {
+                int s = nextInt(i, to);
+                char tmp = data[i];
+                data[i] = data[s];
+                data[s] = tmp;
+            }
+        }
+
+        public static int nextInt(int l, int r) {
+            return random.nextInt(r - l + 1) + l;
+        }
+
+        public static void shuffle(char[] data) {
+            shuffle(data, 0, data.length - 1);
         }
 
     }
