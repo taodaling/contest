@@ -1,2 +1,2 @@
-57 src/main/java/contest/F. New Year and Social Network.json
+33 src/main/java/contest/D. LCC.json
 0

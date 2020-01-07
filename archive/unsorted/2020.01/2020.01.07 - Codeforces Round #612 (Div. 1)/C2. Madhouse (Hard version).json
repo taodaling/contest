@@ -1,0 +1,55 @@
+{
+  "name" : "C2. Madhouse (Hard version)",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "a",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "ab",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "aabhh",
+    "output" : "",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "acce",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "abba",
+    "index" : 4,
+    "active" : true
+  }, {
+    "input" : "baab",
+    "index" : 5,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.C2MadhouseHardVersion",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.01.07",
+  "contestName" : "Codeforces Round #612 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : true,
+  "interactor" : "contest.ProbCInteractor",
+  "newThread" : true
+}

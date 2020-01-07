@@ -2,11 +2,10 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
+import java.lang.reflect.Array;
+import java.util.Iterator;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.io.UncheckedIOException;
-import java.util.List;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
@@ -30,220 +29,376 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            FNewYearAndSocialNetwork solver = new FNewYearAndSocialNetwork();
+            DLCC solver = new DLCC();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class FNewYearAndSocialNetwork {
-        Node[] t1;
-        Node[] t2;
-        LcaOnTree lcaOnTree;
-        FastOutput out;
+    static class DLCC {
+        Modular mod = new Modular(998244353);
+        InverseNumber inverseNumber = new InverseNumber(2000000, mod);
+        Fraction inf = new Fraction((int) 2e9 + 10, 1);
 
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            this.out = out;
-
             int n = in.readInt();
-            t1 = new Node[n + 1];
-            t2 = new Node[n + 1];
-            MultiWayIntegerStack edges = new MultiWayIntegerStack(n + 1, (n + 1) * 2);
-            edges.addLast(0, 1);
-
-            for (int i = 1; i <= n; i++) {
-                t1[i] = new Node();
-                t1[i].id = i;
-
-                t2[i] = new Node();
-                t2[i].id = i;
+            Ball[] balls = new Ball[n];
+            for (int i = 0; i < n; i++) {
+                balls[i] = new Ball();
+                balls[i].x = in.readInt();
+                balls[i].v[1] = in.readInt();
+                balls[i].p[1] = mod.mul(inverseNumber.inverse(100), in.readInt());
+                balls[i].v[0] = -balls[i].v[1];
+                balls[i].p[0] = mod.subtract(1, balls[i].p[1]);
             }
 
-            for (int i = 1; i < n; i++) {
-                Node a = t1[in.readInt()];
-                Node b = t1[in.readInt()];
-                addEdge(a, b);
-                edges.addLast(a.id, b.id);
-                edges.addLast(b.id, a.id);
-            }
-            lcaOnTree = new LcaOnTree(edges, 0);
+            SpecialList<Item>[][] ans = dac(balls, 0, n - 1);
 
-            for (int i = 1; i < n; i++) {
-                Node a = t2[in.readInt()];
-                Node b = t2[in.readInt()];
-                addEdge(a, b);
+            int expect = 0;
+            for (SpecialList<Item>[] lists : ans) {
+                for (SpecialList<Item> list : lists) {
+                    for (Item item : list) {
+                        if (inf.compareTo(item.fraction) == 0) {
+                            continue;
+                        }
+                        int cost = valueOf(item.fraction);
+                        expect = mod.plus(expect, mod.mul(cost, item.prob));
+                    }
+                }
             }
 
-            out.println(n - 1);
-            dfsT1(t1[1], null, 0);
-            dfsT2(t2[1], null);
+            out.println(expect);
         }
 
-        public void dfsT1(Node root, Edge from, int depth) {
-            root.from = from;
-            root.jump = new Node[20];
-            root.depth = depth;
-            if (root.from != null) {
-                root.jump[0] = from.other(root);
-                for (int i = 0; root.jump[i] != null; i++) {
-                    root.jump[i + 1] = root.jump[i].jump[i];
-                }
-            }
-            for (Edge e : root.next) {
-                if (e == from) {
-                    continue;
-                }
-                dfsT1(e.other(root), e, depth + 1);
-            }
+        public int valueOf(Fraction fraction) {
+            return mod.mul(fraction.a, inverseNumber.inverse(fraction.b));
         }
 
-        public void dfsT2(Node root, Edge from) {
-            for (Edge e : root.next) {
-                if (e == from) {
-                    continue;
-                }
-                dfsT2(e.other(root), e);
+        public Fraction met(int dist, int v1, int v2) {
+            if (v1 <= v2) {
+                return inf;
             }
-            for (Edge e : root.next) {
-                if (e == from) {
-                    continue;
-                }
-                Edge partner = findPartner(e.other(root), root);
-                answer(partner, e);
-                Node.merge(t2[partner.a.id], t2[partner.b.id]);
-            }
+            return new Fraction(dist, v1 - v2);
         }
 
-        public boolean sameComponent(Node leaf, Node x) {
-            return leaf.find() == t2[x.id].find();
-        }
-
-        public Edge findPartner(Node leaf, Node p) {
-            Node b = t1[lcaOnTree.lca(leaf.id, p.id)];
-            Node a;
-            if (sameComponent(leaf, b)) {
-                a = t1[p.id];
-            } else {
-                a = t1[leaf.id];
+        SpecialList<Item>[][] dac(Ball[] balls, int l, int r) {
+            SpecialList<Item>[][] ans = new SpecialList[2][2];
+            if (l == r) {
+                for (int i = 0; i < 2; i++) {
+                    for (int j = 0; j < 2; j++) {
+                        ans[i][j] = new SpecialList<>(1, Item.class);
+                    }
+                }
+                ans[0][0].add(new Item(inf, balls[l].p[0]));
+                ans[1][1].add(new Item(inf, balls[l].p[1]));
+                return ans;
             }
 
-            for (int i = 20 - 1; i >= 0; i--) {
-                if (a.jump[i] == null || a.jump[i].depth <= b.depth) {
-                    continue;
+            int m = (l + r) >>> 1;
+            SpecialList<Item>[][] left = dac(balls, l, m);
+            SpecialList<Item>[][] right = dac(balls, m + 1, r);
+
+            for (int ll = 0; ll < 2; ll++) {
+                for (int rr = 0; rr < 2; rr++) {
+                    for (int lr = 0; lr < 2; lr++) {
+                        for (int rl = 0; rl < 2; rl++) {
+                            //int prob = mod.mul(balls[m].p[lr], balls[m + 1].p[rl]);
+                            Fraction time = met(balls[m + 1].x - balls[m].x, balls[m].v[lr], balls[m + 1].v[rl]);
+                            ans[ll][rr] = merge(merge(left[ll][lr], right[rl][rr], time), ans[ll][rr]);
+                        }
+                    }
                 }
-                boolean sameWithA;
-                if (sameComponent(leaf, a)) {
-                    sameWithA = sameComponent(leaf, a.jump[i]);
+            }
+
+//        if(totalProb(ans) != 1){
+//            throw new RuntimeException();
+//        }
+            return ans;
+        }
+
+        public SpecialList<Item> merge(SpecialList<Item> a, SpecialList<Item> b) {
+            if (a == null) {
+                return b;
+            }
+            if (b == null) {
+                return a;
+            }
+            SpecialList<Item> ans = new SpecialList<>(a.size + b.size, Item.class);
+            int aIndex = 0;
+            int bIndex = 0;
+            while (aIndex < a.size || bIndex < b.size) {
+                Item item;
+                if (bIndex >= b.size || (aIndex < a.size && a.data[(aIndex)].fraction.compareTo(b.data[(bIndex)].fraction) <= 0)) {
+                    item = a.data[(aIndex++)];
                 } else {
-                    sameWithA = !sameComponent(leaf, a.jump[i]);
+                    item = b.data[(bIndex++)];
                 }
-                if (sameWithA) {
-                    a = a.jump[i];
+                if (item.prob == 0) {
+                    continue;
+                }
+                if (ans.size > 0 && ans.data[(ans.size - 1)].fraction.compareTo(item.fraction) == 0) {
+                    Item tail = ans.data[(ans.size - 1)];
+                    tail.prob = mod.plus(tail.prob, item.prob);
+                } else {
+                    ans.add(item);
+                }
+            }
+            return ans;
+        }
+
+        public SpecialList<Item> merge(SpecialList<Item> left, SpecialList<Item> right, Fraction max) {
+            int lIndex = left.size - 1;
+            int rIndex = right.size - 1;
+            int lTotalProb = 0;
+            int rTotalProb = 0;
+            for (; lIndex >= 0 && left.data[lIndex].fraction.compareTo(max) >= 0; lIndex--) {
+                lTotalProb = mod.plus(lTotalProb, left.data[(lIndex)].prob);
+            }
+            for (; rIndex >= 0 && right.data[(rIndex)].fraction.compareTo(max) >= 0; rIndex--) {
+                rTotalProb = mod.plus(rTotalProb, right.data[(rIndex)].prob);
+            }
+            Item newItem = new Item(max, mod.mul(lTotalProb, rTotalProb));
+            SpecialList<Item> ans = new SpecialList<>(lIndex + 1 + rIndex + 1 + 1, Item.class);
+            ans.add(newItem);
+
+            while (lIndex >= 0 || rIndex >= 0) {
+                Item item;
+                if (rIndex < 0 || (lIndex >= 0 && left.data[(lIndex)].fraction.compareTo(right.data[(rIndex)].fraction) >= 0)) {
+                    item = new Item(left.data[(lIndex--)]);
+                    lTotalProb = mod.plus(lTotalProb, item.prob);
+                    item.prob = mod.mul(item.prob, rTotalProb);
+                } else {
+                    item = new Item(right.data[(rIndex--)]);
+                    rTotalProb = mod.plus(rTotalProb, item.prob);
+                    item.prob = mod.mul(item.prob, lTotalProb);
+                }
+                if (ans.size > 0 && ans.data[(ans.size - 1)].fraction.compareTo(item.fraction) == 0) {
+                    Item tail = ans.data[(ans.size - 1)];
+                    tail.prob = mod.plus(tail.prob, item.prob);
+                } else {
+                    ans.add(item);
                 }
             }
 
-            return a.from;
-        }
-
-        public void answer(Edge e1, Edge e2) {
-            out.append(e1.a.id).append(' ').append(e1.b.id).append(' ')
-                    .append(e2.a.id).append(' ').append(e2.b.id).println();
-        }
-
-        public void addEdge(Node a, Node b) {
-            Edge e = new Edge();
-            e.a = a;
-            e.b = b;
-            a.next.add(e);
-            b.next.add(e);
+            ans.reverse();
+            return ans;
         }
 
     }
 
-    static interface IntegerIterator {
-        boolean hasNext();
+    static class InverseNumber {
+        int[] inv;
 
-        int next();
-
-    }
-
-    static class LcaOnTree {
-        int[] parent;
-        int[] preOrder;
-        int[] i;
-        int[] head;
-        int[] a;
-        int time;
-
-        void dfs1(MultiWayIntegerStack tree, int u, int p) {
-            parent[u] = p;
-            i[u] = preOrder[u] = time++;
-            for (IntegerIterator iterator = tree.iterator(u); iterator.hasNext(); ) {
-                int v = iterator.next();
-                if (v == p) continue;
-                dfs1(tree, v, u);
-                if (Integer.lowestOneBit(i[u]) < Integer.lowestOneBit(i[v])) {
-                    i[u] = i[v];
-                }
-            }
-            head[i[u]] = u;
-        }
-
-        void dfs2(MultiWayIntegerStack tree, int u, int p, int up) {
-            a[u] = up | Integer.lowestOneBit(i[u]);
-            for (IntegerIterator iterator = tree.iterator(u); iterator.hasNext(); ) {
-                int v = iterator.next();
-                if (v == p) continue;
-                dfs2(tree, v, u, a[u]);
+        public InverseNumber(int[] inv, int limit, Modular modular) {
+            this.inv = inv;
+            inv[1] = 1;
+            int p = modular.getMod();
+            for (int i = 2; i <= limit; i++) {
+                int k = p / i;
+                int r = p % i;
+                inv[i] = modular.mul(-k, inv[r]);
             }
         }
 
-        public LcaOnTree(MultiWayIntegerStack tree, int root) {
-            int n = tree.stackNumber();
-            preOrder = new int[n];
-            i = new int[n];
-            head = new int[n];
-            a = new int[n];
-            parent = new int[n];
-
-            dfs1(tree, root, -1);
-            dfs2(tree, root, -1, 0);
+        public InverseNumber(int limit, Modular modular) {
+            this(new int[limit + 1], limit, modular);
         }
 
-        private int enterIntoStrip(int x, int hz) {
-            if (Integer.lowestOneBit(i[x]) == hz)
-                return x;
-            int hw = 1 << CachedLog2.floorLog(a[x] & (hz - 1));
-            return parent[head[i[x] & -hw | hw]];
-        }
-
-        public int lca(int x, int y) {
-            int hb = i[x] == i[y] ? Integer.lowestOneBit(i[x]) : (1 << CachedLog2.floorLog(i[x] ^ i[y]));
-            int hz = Integer.lowestOneBit(a[x] & a[y] & -hb);
-            int ex = enterIntoStrip(x, hz);
-            int ey = enterIntoStrip(y, hz);
-            return preOrder[ex] < preOrder[ey] ? ex : ey;
+        public int inverse(int x) {
+            return inv[x];
         }
 
     }
 
-    static class CachedLog2 {
-        private static final int BITS = 16;
-        private static final int LIMIT = 1 << BITS;
-        private static final byte[] CACHE = new byte[LIMIT];
+    static class Item {
+        Fraction fraction;
+        int prob;
 
-        static {
-            int b = 0;
-            for (int i = 0; i < LIMIT; i++) {
-                while ((1 << (b + 1)) <= i) {
-                    b++;
-                }
-                CACHE[i] = (byte) b;
+        public Item(Fraction fraction, int prob) {
+            this.fraction = fraction;
+            this.prob = prob;
+        }
+
+        public Item(Item item) {
+            this.fraction = item.fraction;
+            this.prob = item.prob;
+        }
+
+        public String toString() {
+            return String.format("P(%s)=%d", fraction.toString(), prob);
+        }
+
+    }
+
+    static class FastOutput implements AutoCloseable, Closeable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
+
+        public FastOutput(Writer os) {
+            this.os = os;
+        }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput println(int c) {
+            cache.append(c).append('\n');
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            return this;
+        }
+
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
             }
         }
 
-        public static int floorLog(int x) {
-            return x < LIMIT ? CACHE[x] : (BITS + CACHE[x >>> BITS]);
+        public String toString() {
+            return cache.toString();
+        }
+
+    }
+
+    static class Fraction implements Comparable<Fraction> {
+        public int a;
+        public int b;
+
+        public Fraction(int a, int b) {
+            if (b < 0) {
+                a = -a;
+                b = -b;
+            }
+            long g = gcd(Math.abs(a), b);
+            if (g != 0) {
+                a /= g;
+                b /= g;
+            }
+            this.a = a;
+            this.b = b;
+        }
+
+        static long gcd(int a, int b) {
+            return b == 0 ? a : gcd(b, a % b);
+        }
+
+        public int compareTo(Fraction o) {
+            return Long.compare((long) this.a * o.b, (long) this.b * o.a);
+        }
+
+        public String toString() {
+            return a + "/" + b;
+        }
+
+    }
+
+    static class SpecialList<T> implements Iterable<T> {
+        T[] data;
+        int size;
+        Object[] empty = new Object[0];
+
+        public SpecialList(int c, Class<T> cls) {
+            if (c == 0) {
+                data = (T[]) empty;
+            } else {
+                data = (T[]) Array.newInstance(cls, c);
+            }
+        }
+
+        public void add(T x) {
+            data[size++] = x;
+        }
+
+        public void reverse() {
+            SequenceUtils.reverse(data, 0, size - 1);
+        }
+
+        public Iterator<T> iterator() {
+            return new Iterator<T>() {
+                int index = 0;
+
+
+                public boolean hasNext() {
+                    return index < size;
+                }
+
+
+                public T next() {
+                    return data[index++];
+                }
+            };
+        }
+
+    }
+
+    static class Modular {
+        int m;
+
+        public int getMod() {
+            return m;
+        }
+
+        public Modular(int m) {
+            this.m = m;
+        }
+
+        public Modular(long m) {
+            this.m = (int) m;
+            if (this.m != m) {
+                throw new IllegalArgumentException();
+            }
+        }
+
+        public Modular(double m) {
+            this.m = (int) m;
+            if (this.m != m) {
+                throw new IllegalArgumentException();
+            }
+        }
+
+        public int valueOf(int x) {
+            x %= m;
+            if (x < 0) {
+                x += m;
+            }
+            return x;
+        }
+
+        public int valueOf(long x) {
+            x %= m;
+            if (x < 0) {
+                x += m;
+            }
+            return (int) x;
+        }
+
+        public int mul(int x, int y) {
+            return valueOf((long) x * y);
+        }
+
+        public int plus(int x, int y) {
+            return valueOf(x + y);
+        }
+
+        public int subtract(int x, int y) {
+            return valueOf(x - y);
+        }
+
+        public String toString() {
+            return "mod " + m;
         }
 
     }
@@ -307,179 +462,26 @@ public class Main {
 
     }
 
-    static class Edge {
-        Node a;
-        Node b;
-
-        Node other(Node x) {
-            return a == x ? b : a;
-        }
+    static class Ball {
+        int x;
+        int[] v = new int[2];
+        int[] p = new int[2];
 
     }
 
-    static class Node {
-        List<Edge> next = new ArrayList<>();
-        int id;
-        Node[] jump;
-        Edge from;
-        Node p = this;
-        int rank = 0;
-        int depth;
-
-        public Node find() {
-            return p == p.p ? p : (p = p.find());
+    static class SequenceUtils {
+        public static <T> void swap(T[] data, int i, int j) {
+            T tmp = data[i];
+            data[i] = data[j];
+            data[j] = tmp;
         }
 
-        public static void merge(Node a, Node b) {
-            a = a.find();
-            b = b.find();
-            if (a == b) {
-                return;
+        public static <T> void reverse(T[] data, int l, int r) {
+            while (l < r) {
+                swap(data, l, r);
+                l++;
+                r--;
             }
-            if (a.rank == b.rank) {
-                a.rank++;
-            }
-            if (a.rank > b.rank) {
-                b.p = a;
-            } else {
-                a.p = b;
-            }
-        }
-
-        public String toString() {
-            return "" + id;
-        }
-
-    }
-
-    static class FastOutput implements AutoCloseable, Closeable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
-
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput append(char c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput append(int c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput println(int c) {
-            cache.append(c).append('\n');
-            return this;
-        }
-
-        public FastOutput println() {
-            cache.append('\n');
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        }
-
-        public String toString() {
-            return cache.toString();
-        }
-
-    }
-
-    static class MultiWayIntegerStack {
-        private int[] values;
-        private int[] next;
-        private int[] heads;
-        private int alloc;
-        private int stackNum;
-
-        public IntegerIterator iterator(final int queue) {
-            return new IntegerIterator() {
-                int ele = heads[queue];
-
-
-                public boolean hasNext() {
-                    return ele != 0;
-                }
-
-
-                public int next() {
-                    int ans = values[ele];
-                    ele = next[ele];
-                    return ans;
-                }
-            };
-        }
-
-        private void doubleCapacity() {
-            int newSize = Math.max(next.length + 10, next.length * 2);
-            next = Arrays.copyOf(next, newSize);
-            values = Arrays.copyOf(values, newSize);
-        }
-
-        public void alloc() {
-            alloc++;
-            if (alloc >= next.length) {
-                doubleCapacity();
-            }
-            next[alloc] = 0;
-        }
-
-        public int stackNumber() {
-            return stackNum;
-        }
-
-        public MultiWayIntegerStack(int qNum, int totalCapacity) {
-            values = new int[totalCapacity + 1];
-            next = new int[totalCapacity + 1];
-            heads = new int[qNum];
-            stackNum = qNum;
-        }
-
-        public void addLast(int qId, int x) {
-            alloc();
-            values[alloc] = x;
-            next[alloc] = heads[qId];
-            heads[qId] = alloc;
-        }
-
-        public String toString() {
-            StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < stackNum; i++) {
-                builder.append(i).append(": ");
-                for (IntegerIterator iterator = iterator(i); iterator.hasNext(); ) {
-                    builder.append(iterator.next()).append(",");
-                }
-                if (builder.charAt(builder.length() - 1) == ',') {
-                    builder.setLength(builder.length() - 1);
-                }
-                builder.append('\n');
-            }
-            return builder.toString();
         }
 
     }

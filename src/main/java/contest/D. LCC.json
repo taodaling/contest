@@ -1,0 +1,45 @@
+{
+  "name" : "D. LCC",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2\n1 1 100\n3 1 0\n",
+    "output" : "1\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "3\n7 10 0\n9 4 86\n14 5 100\n",
+    "output" : "0\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "4\n6 4 50\n11 25 50\n13 16 50\n15 8 50\n",
+    "output" : "150902884\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.DLCC",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.01.07",
+  "contestName" : "Codeforces Round #612 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}
