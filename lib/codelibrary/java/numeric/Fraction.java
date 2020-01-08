@@ -3,6 +3,14 @@ package numeric;
 public class Fraction implements Comparable<Fraction> {
     public long a, b;
 
+    public Fraction() {
+        this(0);
+    }
+
+    public Fraction(long a) {
+        this(a, 1);
+    }
+
     public Fraction(long a, long b) {
         if (b < 0) {
             a = -a;
@@ -15,6 +23,24 @@ public class Fraction implements Comparable<Fraction> {
         }
         this.a = a;
         this.b = b;
+    }
+
+    public Fraction abs() {
+        return new Fraction(Math.abs(a), b);
+    }
+
+    public long floor() {
+        if (a < 0) {
+            return -(-a / b);
+        }
+        return a / b;
+    }
+
+    public long ceil() {
+        if (a < 0) {
+            return a / b;
+        }
+        return (a + b - 1) / b;
     }
 
     static long gcd(long a, long b) {
@@ -44,7 +70,7 @@ public class Fraction implements Comparable<Fraction> {
 
     @Override
     public String toString() {
-        return a + "/" + b;
+        return a + "/" + b + "(" + (double) a / b + ")";
     }
 
     // Usage example

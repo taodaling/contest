@@ -3,15 +3,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
-import java.util.Iterator;
-import java.util.Set;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Random;
-import java.util.ArrayList;
 import java.io.UncheckedIOException;
-import java.util.List;
-import java.util.Map;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
@@ -35,89 +28,67 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            C1MadhouseEasyVersion solver = new C1MadhouseEasyVersion();
+            ESegmentsOnTheLine solver = new ESegmentsOnTheLine();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class C1MadhouseEasyVersion {
-        FastInput in;
-        FastOutput out;
-
+    static class ESegmentsOnTheLine {
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            this.in = in;
-            this.out = out;
-
             int n = in.readInt();
-            if (n == 1) {
-                Map<String, Integer> map = read(1, 1);
-                String s = map.keySet().iterator().next();
-                answer(s);
+            int s = in.readInt();
+            int m = in.readInt();
+            int k = in.readInt();
+
+            int[] a = new int[n];
+            for (int i = 0; i < n; i++) {
+                a[i] = in.readInt();
+            }
+            Interval[] intervals = new Interval[s];
+
+            int total = 0;
+            for (int i = 0; i < s; i++) {
+                intervals[i] = new Interval();
+                intervals[i].l = in.readInt() - 1;
+                intervals[i].r = in.readInt() - 1;
+                total += intervals[i].r - intervals[i].l + 1;
+            }
+
+            if (total < k) {
+                out.println(-1);
                 return;
             }
 
-            Map<String, Integer> a = read(1, n);
-            Map<String, Integer> b = read(2, n);
+            IntBinarySearch ibs = new IntBinarySearch() {
 
-            for (String key : b.keySet()) {
-                int remain = a.get(key) - b.get(key);
-                if (remain == 0) {
-                    a.remove(key);
-                } else {
-                    a.put(key, remain);
+                public boolean check(int mid) {
+                    for (Interval interval : intervals) {
+                        interval.w = 0;
+                        for (int i = interval.l; i <= interval.r; i++) {
+                            if (a[i] <= mid) {
+                                interval.w++;
+                            }
+                        }
+                    }
+                    Arrays.sort(intervals, (a, b) -> -Integer.compare(a.w, b.w));
+                    int count = 0;
+                    for (int i = 0; i < m; i++) {
+                        count += intervals[i].w;
+                    }
+
+                    return count >= k;
                 }
-            }
+            };
 
-            List<String> prefix = new ArrayList<>(a.keySet());
-            prefix.sort((x, y) -> x.length() - y.length());
-
-            StringBuilder ans = new StringBuilder(n);
-            String last = "";
-            for (String s : prefix) {
-                ans.append(differ(last, s));
-                last = s;
-            }
-
-            answer(ans.toString());
-        }
-
-        public void answer(String s) {
-            out.printf("! %s", s).println().flush();
-        }
-
-        public char differ(String shorter, String longer) {
-            int differ = 0;
-            while (shorter.length() > differ && shorter.charAt(differ) == longer.charAt(differ)) {
-                differ++;
-            }
-            return longer.charAt(differ);
-        }
-
-        public Map<String, Integer> read(int l, int r) {
-            int n = (r - l + 1);
-            int m = (n + 1) * n / 2;
-            Map<String, Integer> map = new HashMap<>(m);
-            out.printf("? %d %d", l, r).println().flush();
-            for (int i = 0; i < m; i++) {
-                String s = arrange(in.readString());
-                map.put(s, map.getOrDefault(s, 0) + 1);
-            }
-            return map;
-        }
-
-        String arrange(String x) {
-            char[] s = x.toCharArray();
-            Randomized.shuffle(s);
-            Arrays.sort(s);
-            return new String(s);
+            int ans = ibs.binarySearch(1, (int) 1e9);
+            out.println(ans);
         }
 
     }
 
     static class FastInput {
         private final InputStream is;
-        private StringBuilder defaultStringBuf = new StringBuilder(1 << 13);
         private byte[] buf = new byte[1 << 13];
         private int bufLen;
         private int bufOffset;
@@ -173,20 +144,31 @@ public class Main {
             return val;
         }
 
-        public String readString(StringBuilder builder) {
-            skipBlank();
+    }
 
-            while (next > 32) {
-                builder.append((char) next);
-                next = read();
+    static class Interval {
+        int l;
+        int r;
+        int w;
+
+    }
+
+    static abstract class IntBinarySearch {
+        public abstract boolean check(int mid);
+
+        public int binarySearch(int l, int r) {
+            if (l > r) {
+                throw new IllegalArgumentException();
             }
-
-            return builder.toString();
-        }
-
-        public String readString() {
-            defaultStringBuf.setLength(0);
-            return readString(defaultStringBuf);
+            while (l < r) {
+                int mid = (l + r) >>> 1;
+                if (check(mid)) {
+                    r = mid;
+                } else {
+                    l = mid + 1;
+                }
+            }
+            return l;
         }
 
     }
@@ -203,13 +185,8 @@ public class Main {
             this(new OutputStreamWriter(os));
         }
 
-        public FastOutput printf(String format, Object... args) {
-            cache.append(String.format(format, args));
-            return this;
-        }
-
-        public FastOutput println() {
-            cache.append('\n');
+        public FastOutput println(int c) {
+            cache.append(c).append('\n');
             return this;
         }
 
@@ -235,29 +212,6 @@ public class Main {
 
         public String toString() {
             return cache.toString();
-        }
-
-    }
-
-    static class Randomized {
-        private static Random random = new Random();
-
-        public static void shuffle(char[] data, int from, int to) {
-            to--;
-            for (int i = from; i <= to; i++) {
-                int s = nextInt(i, to);
-                char tmp = data[i];
-                data[i] = data[s];
-                data[s] = tmp;
-            }
-        }
-
-        public static int nextInt(int l, int r) {
-            return random.nextInt(r - l + 1) + l;
-        }
-
-        public static void shuffle(char[] data) {
-            shuffle(data, 0, data.length - 1);
         }
 
     }
