@@ -1,3 +1,2 @@
 50 src/main/java/contest/E. Segments on the Line.json
-1
 0
