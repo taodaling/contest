@@ -1,2 +1,3 @@
-46 src/main/java/contest/G. Beautiful Matrix.json
-0
+43 src/main/java/contest/D. Computer Game.json
+1
+3

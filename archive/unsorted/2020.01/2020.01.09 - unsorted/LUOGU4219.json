@@ -1,0 +1,40 @@
+{
+  "name" : "LUOGU4219",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "8 6\nA 2 3\nA 3 4\nA 3 8\nA 8 7\nA 6 5\nQ 3 8",
+    "output" : "6",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "100 200\nA 2 50\nA 58 98\nA 77 74\nA 98 2\nA 57 93\nA 11 28\nA 93 58\nA 49 65\nA 50 77\nA 65 11\nA 32 49\nA 17 15\nA 15 14\nA 68 17\nA 31 21\nA 67 31\nA 14 32\nA 21 68\nA 28 57\nQ 49 65\nA 96 91\nA 30 67\nA 97 25\nA 25 94\nA 91 30\nA 86 79\nA 79 53\nA 61 86\nA 53 97\nA 43 19\nA 19 64\nA 38 43\nA 60 38\nA 64 61\nQ 93 58\nA 72 20\nA 37 72\nA 20 18\nA 6 47\nA 27 6\nA 7 27\nA 5 7\nQ 93 58\nQ 58 98\nA 94 96\nQ 43 19\nA 88 81\nA 81 5\nA 47 37\nQ 91 30\nA 56 42\nA 18 60\nQ 27 6\nA 42 3\nA 100 76\nA 76 9\nA 9 56\nA 3 88\nA 95 36\nQ 56 42\nA 85 40\nA 36 26\nQ 94 96\nA 40 95\nQ 47 37\nA 63 24\nQ 3 88\nA 87 85\nQ 85 40\nA 24 87\nA 26 100\nA 70 63\nA 8 78\nA 78 33\nQ 3 88\nQ 63 24\nQ 97 25\nQ 78 33\nA 1 8\nA 51 39\nQ 24 87\nQ 85 40\nA 45 51\nA 33 70\nA 39 89\nA 16 22\nQ 24 87\nA 22 73\nQ 95 36\nA 4 84\nQ 94 96\nQ 6 47\nQ 33 70\nQ 30 67\nA 84 16\nA 10 4\nQ 42 3\nA 90 54\nA 13 90\nA 73 45\nQ 84 16\nA 89 1\nQ 30 67\nA 54 10\nA 48 12\nQ 15 14\nQ 86 79\nQ 37 72\nQ 5 7\nQ 28 57\nQ 28 57\nQ 17 15\nA 12 55\nQ 27 6\nQ 17 15\nA 55 69\nQ 43 19\nQ 68 17\nQ 3 88\nQ 9 56\nQ 28 57\nQ 55 69\nQ 25 94\nQ 90 54\nQ 91 30\nQ 56 42\nQ 100 76\nA 41 48\nQ 42 3\nA 69 13\nQ 53 97\nQ 45 51\nA 80 62\nQ 95 36\nA 62 66\nQ 100 76\nQ 94 96\nQ 91 30\nQ 37 72\nQ 78 33\nA 23 92\nQ 8 78\nA 92 80\nQ 92 80\nQ 1 8\nQ 92 80\nQ 43 19\nA 82 99\nQ 86 79\nQ 82 99\nQ 27 6\nQ 3 88\nQ 89 1\nQ 32 49\nA 75 82\nQ 32 49\nQ 88 81\nQ 21 68\nQ 11 28\nA 99 23\nQ 51 39\nQ 9 56\nQ 94 96\nQ 87 85\nA 46 71\nQ 53 97\nQ 20 18\nQ 38 43\nA 66 44\nQ 26 100\nQ 88 81\nQ 85 40\nQ 9 56\nQ 95 36\nA 35 46\nQ 57 93\nQ 10 4\nA 83 35\nQ 23 92\nA 71 75\nA 44 41\nQ 93 58\nQ 84 16\nA 29 59\nQ 40 95\nQ 10 4\nQ 58 98\nA 34 83\nQ 98 2\nA 59 52\nQ 36 26\nA 52 34\nQ 40 95\nQ 32 49\nQ 54 10\nQ 65 11\nQ 99 23\nQ 12 55\nQ 10 4\nQ 23 92\n",
+    "output" : "99\n102\n102\n90\n96\n294\n205\n192\n667\n507\n276\n8\n690\n118\n900\n2\n174\n280\n406\n594\n966\n1000\n244\n900\n846\n21\n1100\n896\n1400\n1520\n1505\n560\n560\n945\n1517\n945\n1472\n992\n1472\n1421\n560\n3\n1296\n152\n1197\n1440\n1377\n1457\n1482\n1020\n1566\n1632\n1380\n1302\n1710\n1302\n1260\n6\n1216\n6\n1632\n1540\n1\n1722\n1702\n1170\n852\n852\n1710\n1122\n666\n1072\n1666\n1380\n1482\n1482\n1692\n1650\n1612\n1710\n1512\n1666\n1566\n532\n666\n20\n540\n1728\n2255\n1628\n455\n372\n2332\n2475\n1056\n1875\n900\n979\n1600\n1924\n1056\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256m -Xss64m",
+  "mainClass" : "Main",
+  "taskClass" : "contest.LUOGU4219",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.01.09",
+  "contestName" : "",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : false
+}

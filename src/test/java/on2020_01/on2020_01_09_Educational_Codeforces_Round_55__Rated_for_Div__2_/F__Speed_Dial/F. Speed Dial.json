@@ -1,0 +1,45 @@
+{
+  "name" : "F. Speed Dial",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 1\n0001 5\n001 4\n01 1\n",
+    "output" : "14\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "3 1\n0001 5\n001 6\n01 1\n",
+    "output" : "18\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "2 5\n456 51\n40 32",
+    "output" : "0",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_01.on2020_01_09_Educational_Codeforces_Round_55__Rated_for_Div__2_.F__Speed_Dial.FSpeedDial",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.01.09",
+  "contestName" : "Educational Codeforces Round 55 (Rated for Div. 2)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

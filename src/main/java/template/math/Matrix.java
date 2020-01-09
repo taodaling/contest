@@ -79,7 +79,7 @@ public class Matrix implements Cloneable {
         return y;
     }
 
-    public static Matrix pow(Matrix x, int n) {
+    public static Matrix pow(Matrix x, long n) {
         if (n == 0) {
             Matrix r = new Matrix(x.n, x.m);
             r.asStandard();
