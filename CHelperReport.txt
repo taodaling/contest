@@ -1,2 +1,2 @@
-50 src/main/java/contest/E. Segments on the Line.json
+46 src/main/java/contest/G. Beautiful Matrix.json
 0

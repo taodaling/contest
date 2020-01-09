@@ -60,4 +60,44 @@ public class SAISTest {
         Assert.assertEquals(0, sais.longestCommonPrefixBetween(3));
     }
 
+    @Test
+    public void test4(){
+        SAIS sais = new SAIS(new int[]{1, -1, -1, -1});
+        Assert.assertEquals(3, sais.queryRank(0));
+        Assert.assertEquals(2, sais.queryRank(1));
+        Assert.assertEquals(1, sais.queryRank(2));
+        Assert.assertEquals(0, sais.queryRank(3));
+
+        Assert.assertEquals(3, sais.queryKth(0));
+        Assert.assertEquals(2, sais.queryKth(1));
+        Assert.assertEquals(1, sais.queryKth(2));
+        Assert.assertEquals(0, sais.queryKth(3));
+
+
+        Assert.assertEquals(0, sais.longestCommonPrefixBetween(0));
+        Assert.assertEquals(1, sais.longestCommonPrefixBetween(1));
+        Assert.assertEquals(2, sais.longestCommonPrefixBetween(2));
+        Assert.assertEquals(0, sais.longestCommonPrefixBetween(3));
+    }
+
+    @Test
+    public void test5(){
+        SAIS sais = new SAIS(new int[]{-1, -2, -2, -2});
+        Assert.assertEquals(3, sais.queryRank(0));
+        Assert.assertEquals(2, sais.queryRank(1));
+        Assert.assertEquals(1, sais.queryRank(2));
+        Assert.assertEquals(0, sais.queryRank(3));
+
+        Assert.assertEquals(3, sais.queryKth(0));
+        Assert.assertEquals(2, sais.queryKth(1));
+        Assert.assertEquals(1, sais.queryKth(2));
+        Assert.assertEquals(0, sais.queryKth(3));
+
+
+        Assert.assertEquals(0, sais.longestCommonPrefixBetween(0));
+        Assert.assertEquals(1, sais.longestCommonPrefixBetween(1));
+        Assert.assertEquals(2, sais.longestCommonPrefixBetween(2));
+        Assert.assertEquals(0, sais.longestCommonPrefixBetween(3));
+    }
+
 }

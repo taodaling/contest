@@ -7,6 +7,9 @@ import template.polynomial.NumberTheoryTransform;
 
 import java.util.Arrays;
 
+/**
+ * 1 * x1 + 2 * x2 + ... + n * xn = m while m <= n and xi >= 0
+ */
 public class WayToSplitNumber {
     int[] ways;
     int[] f;
@@ -14,7 +17,7 @@ public class WayToSplitNumber {
     int n;
     Modular mod;
 
-    private void prepare(int n, Modular mod){
+    private void prepare(int n, Modular mod) {
         this.n = n;
         this.mod = mod;
 
@@ -36,13 +39,13 @@ public class WayToSplitNumber {
         b[0] = 1;
         g[0] = 1;
         for (int i = 1; i <= n / k; i++) {
-            for(int j = n; j >= 0; j--){
+            for (int j = n; j >= 0; j--) {
                 b[j] = j >= k ? b[j - k] : 0;
             }
             for (int j = i; j <= n; j++) {
                 b[j] = mod.plus(b[j], b[j - i]);
             }
-            for(int j = 0; j <= n; j++){
+            for (int j = 0; j <= n; j++) {
                 g[j] = mod.plus(g[j], b[j]);
             }
         }
@@ -64,16 +67,13 @@ public class WayToSplitNumber {
         ntt.idft(ways, m);
     }
 
-    /**
-     * 1 * x1 + 2 * x2 + ... + n * xn = m while m <= n and xi >= 0
-     */
     public WayToSplitNumber(int n, Modular mod) {
         prepare(n, mod);
 
         ways = FastFourierTransform.multiplyMod(f, g, mod.getMod());
     }
 
-    public int wayOf(int i){
+    public int wayOf(int i) {
         return ways[i];
     }
 }

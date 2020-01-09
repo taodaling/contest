@@ -77,8 +77,7 @@ public class SAIS {
         for (int i = 0; i < n; i++) {
             rank2Index[i] = i;
         }
-        int minElement = CompareUtils.minOf(data, 0, n - 1);
-        CompareUtils.radixSort(rank2Index, 0, n - 1, x -> data[x] - minElement);
+        CompareUtils.radixSort(rank2Index, 0, n - 1, x -> data[x] ^ Integer.MIN_VALUE);
         int rank = 0;
         index2Rank[rank2Index[0]] = 0;
         for (int i = 1; i < data.length; i++) {

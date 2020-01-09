@@ -28,156 +28,192 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            ESegmentsOnTheLine solver = new ESegmentsOnTheLine();
+            GBeautifulMatrix solver = new GBeautifulMatrix();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class ESegmentsOnTheLine {
+    static class GBeautifulMatrix {
+        Modular mod = new Modular(998244353);
+        Factorial factorial = new Factorial(2000, mod);
+
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            int s = in.readInt();
-            int m = in.readInt();
-            int k = in.readInt();
-
-            int[] a = new int[n];
+            int[][] mat = new int[n][n];
             for (int i = 0; i < n; i++) {
-                a[i] = in.readInt();
-            }
-            IntervalPickProblem.Interval[] intervals = new IntervalPickProblem.Interval[s];
-
-            for (int i = 0; i < s; i++) {
-                intervals[i] = new IntervalPickProblem.Interval(in.readInt() - 1, in.readInt() - 1);
-            }
-
-            IntervalPickProblem.Interval[] finalIntervals = intervals;
-            IntBinarySearch ibs = new IntBinarySearch() {
-
-                public boolean check(int mid) {
-                    long[] data = new long[n];
-                    for (int i = 0; i < n; i++) {
-                        if (a[i] <= mid) {
-                            data[i] = 1;
-                        }
-                    }
-                    return IntervalPickProblem.solve(data, finalIntervals, m) >= k;
+                for (int j = 0; j < n; j++) {
+                    mat[i][j] = in.readInt();
                 }
-            };
-
-            int ans = ibs.binarySearch(1, (int) 1e9);
-            if (!ibs.check(ans)) {
-                out.println(-1);
-                return;
             }
+
+            PermutationWithDistinctForbiddenMatch permutation = new PermutationWithDistinctForbiddenMatch(mod, n);
+            int[] follow = new int[n + 1];
+            follow[0] = 1;
+            for (int i = 1; i <= n; i++) {
+                follow[i] = mod.mul(follow[i - 1], permutation.get(n, 0));
+            }
+
+            int ans = 0;
+
+            int[] indexOfVal = new int[n + 1];
+            int[] indexOfDim = new int[n + 1];
+            IntegerBIT deleteBit = new IntegerBIT(n);
+            IntegerBIT leftBIT = new IntegerBIT(n);
+            IntegerBIT rightBIT = new IntegerBIT(n);
+
+            int[][] live = new int[n][n];
+            int[][] left = new int[n][n];
+            int[][] right = new int[n][n];
+            MultiWayIntegerStack s1 = new MultiWayIntegerStack(n, n);
+            MultiWayIntegerStack s2 = new MultiWayIntegerStack(n, n);
+            for (int i = 1; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    indexOfVal[mat[i][j]] = j;
+                    indexOfDim[mat[i - 1][j]] = j;
+                }
+
+                leftBIT.clear();
+                rightBIT.clear();
+                s1.clear();
+                s2.clear();
+                for (int j = n - 1; j >= 0; j--) {
+                    right[i][j] = rightBIT.query(mat[i][j] - 1);
+                    if (mat[i - 1][j] < mat[i][j]) {
+                        right[i][j] -= rightBIT.query(mat[i - 1][j]) - rightBIT.query(mat[i - 1][j] - 1);
+                    }
+                    left[i][j] = leftBIT.query(mat[i][j] - 1);
+                    if (mat[i - 1][j] < mat[i][j]) {
+                        left[i][j] -= leftBIT.query(mat[i - 1][j]) - leftBIT.query(mat[i - 1][j] - 1);
+                    }
+                    live[i][j] = rightBIT.query(n);
+
+                    if (indexOfVal[mat[i - 1][j]] <= j) {
+                        s1.addLast(indexOfVal[mat[i - 1][j]], j);
+                    } else {
+                        rightBIT.update(mat[i - 1][j], 1);
+                    }
+
+                    if (indexOfDim[mat[i][j]] <= j) {
+                        s2.addLast(indexOfDim[mat[i][j]], j);
+                        leftBIT.update(mat[i][j], 1);
+                    } else {
+                    }
+
+                    while (!s1.isEmpty(j)) {
+                        int tail = s1.removeLast(j);
+                        //leftBIT.update(mat[i - 1][tail], -1);
+                        rightBIT.update(mat[i - 1][tail], 1);
+                    }
+
+                    while (!s2.isEmpty(j)) {
+                        int tail = s2.removeLast(j);
+                        leftBIT.update(mat[i][tail], -1);
+                    }
+                }
+
+            }
+
+            deleteBit.clear();
+            for (int j = 0; j < n; j++) {
+                int cnt = mat[0][j] - 1 - deleteBit.query(mat[0][j] - 1);
+                int contrib = mod.mul(cnt, factorial.fact(n - j - 1));
+                contrib = mod.mul(contrib, follow[n - 1]);
+                ans = mod.plus(ans, contrib);
+                deleteBit.update(mat[0][j], 1);
+            }
+
+            for (int i = 1; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    indexOfVal[mat[i][j]] = j;
+                    indexOfDim[mat[i - 1][j]] = j;
+                }
+                for (int j = 0; j < n; j++) {
+                    //from left
+                    if (left[i][j] == 0) {
+                        continue;
+                    }
+                    int contrib = left[i][j];
+                    int remain = n - 1 - j;
+                    int l = live[i][j];
+                    if (indexOfDim[mat[i][j]] > j) {
+                        l++;
+                    }
+                    contrib = mod.mul(contrib, permutation.get(l, remain - l));
+                    contrib = mod.mul(contrib, follow[n - 1 - i]);
+                    ans = mod.plus(ans, contrib);
+                }
+                for (int j = 0; j < n; j++) {
+                    //from right
+                    if (right[i][j] == 0) {
+                        continue;
+                    }
+                    int contrib = right[i][j];
+                    int remain = n - 1 - j;
+                    int l = live[i][j];
+                    if (indexOfDim[mat[i][j]] > j) {
+                        l++;
+                    }
+                    contrib = mod.mul(contrib, permutation.get(l - 1, remain - (l - 1)));
+                    contrib = mod.mul(contrib, follow[n - 1 - i]);
+                    ans = mod.plus(ans, contrib);
+                }
+            }
+
             out.println(ans);
         }
 
     }
 
-    static class FastOutput implements AutoCloseable, Closeable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
+    static class PermutationWithDistinctForbiddenMatch {
+        private int[][] dp;
+        private int[][] dp2;
 
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput println(int c) {
-            cache.append(c).append('\n');
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
+        public PermutationWithDistinctForbiddenMatch(Modular mod, int n) {
+            this.dp = new int[n + 1][n + 1];
+            dp[0][0] = 1;
+            for (int i = 1; i <= n; i++) {
+                for (int j = 0; j <= i; j++) {
+                    dp[i][j] = mod.mul(dp[i - 1][j], j + j);
+                    if (j + 1 <= n) {
+                        dp[i][j] = mod.plus(dp[i][j], dp[i - 1][j + 1]);
+                    }
+                    if (j > 0) {
+                        dp[i][j] = mod.plus(dp[i][j], mod.mul(dp[i - 1][j - 1], mod.mul(j, j)));
+                    }
+                }
             }
-            return this;
-        }
 
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
+            dp2 = new int[n + 1][n + 1];
+            for (int i = 0; i <= n; i++) {
+                for (int j = 0; j <= n; j++) {
+                    if (j == 0) {
+                        dp2[i][j] = dp[i][j];
+                        continue;
+                    }
+                    if (j > 0) {
+                        dp2[i][j] = mod.plus(dp2[i][j], mod.mul(dp2[i][j - 1], j));
+                    }
+                    if (i > 0) {
+                        dp2[i][j] = mod.plus(dp2[i][j], mod.mul(dp2[i - 1][j], i));
+                    }
+                }
             }
+
+//        System.err.println(Arrays.deepToString(dp));
+//        System.err.println(Arrays.deepToString(dp2));
         }
 
-        public String toString() {
-            return cache.toString();
+        public int get(int i, int j) {
+            return dp2[i][j];
         }
 
     }
 
-    static class LongPreSum {
-        private long[] pre;
+    static interface IntegerIterator {
+        boolean hasNext();
 
-        public LongPreSum(int n) {
-            pre = new long[n];
-        }
-
-        public void populate(long[] a) {
-            int n = a.length;
-            pre[0] = a[0];
-            for (int i = 1; i < n; i++) {
-                pre[i] = pre[i - 1] + a[i];
-            }
-        }
-
-        public void populate(int[] a) {
-            int n = a.length;
-            pre[0] = a[0];
-            for (int i = 1; i < n; i++) {
-                pre[i] = pre[i - 1] + a[i];
-            }
-        }
-
-        public LongPreSum(long[] a) {
-            this(a.length);
-            populate(a);
-        }
-
-        public LongPreSum(int[] a) {
-            this(a.length);
-            populate(a);
-        }
-
-        public long intervalSum(int l, int r) {
-            if (l > r) {
-                return 0;
-            }
-            if (l == 0) {
-                return pre[r];
-            }
-            return pre[r] - pre[l - 1];
-        }
-
-        public long prefix(int i) {
-            return pre[i];
-        }
-
-    }
-
-    static class DigitUtils {
-        private DigitUtils() {
-        }
-
-        public static long round(double x) {
-            if (x >= 0) {
-                return (long) (x + 0.5);
-            } else {
-                return (long) (x - 0.5);
-            }
-        }
+        int next();
 
     }
 
@@ -240,234 +276,271 @@ public class Main {
 
     }
 
-    static class IntervalPickProblem {
-        private static IntervalPickProblem.WQSResult solve(long[] data, IntervalPickProblem.Interval[] intervals, double cost) {
-            LongPreSum lps = new LongPreSum(data);
-            Arrays.sort(intervals, (a, b) -> a.l == b.l ? a.r - b.r : a.l - b.l);
-            int n = intervals.length;
-            double[] dp = new double[n];
-            int[] time = new int[n];
+    static class MultiWayIntegerStack {
+        private int[] values;
+        private int[] next;
+        private int[] heads;
+        private int alloc;
+        private int stackNum;
 
-            IntervalPickProblem.DoubleSegmentQuery query = new IntervalPickProblem.DoubleSegmentQuery();
-            int m = data.length;
-            IntervalPickProblem.DoubleSegment lower = new IntervalPickProblem.DoubleSegment(0, m);
-            IntervalPickProblem.DoubleSegment upper = new IntervalPickProblem.DoubleSegment(0, m);
+        public IntegerIterator iterator(final int queue) {
+            return new IntegerIterator() {
+                int ele = heads[queue];
 
-            for (int i = 0; i < n; i++) {
-                IntervalPickProblem.Interval now = intervals[i];
-                dp[i] = lps.intervalSum(now.l, now.r);
-                time[i] = 1;
 
-                query.reset();
-                lower.query(0, now.l - 1, 0, m, query);
-                if (query.val + lps.intervalSum(now.l, now.r) > dp[i]) {
-                    dp[i] = query.val + lps.intervalSum(now.l, now.r);
-                    time[i] = time[query.index] + 1;
-                }
-                query.reset();
-                upper.query(now.l, now.r, 0, m, query);
-                if (query.val + lps.prefix(now.r) > dp[i]) {
-                    dp[i] = query.val + lps.prefix(now.r);
-                    time[i] = time[query.index] + 1;
+                public boolean hasNext() {
+                    return ele != 0;
                 }
 
-                dp[i] -= cost;
-                lower.update(now.r, now.r, 0, m, dp[i], i);
-                upper.update(now.r, now.r, 0, m, dp[i] - lps.prefix(now.r), i);
-            }
 
-            int maxIndex = 0;
-            for (int i = 0; i < n; i++) {
-                if (dp[i] > dp[maxIndex]) {
-                    maxIndex = i;
-                }
-            }
-
-            return new IntervalPickProblem.WQSResult(dp[maxIndex], time[maxIndex]);
-        }
-
-        public static long solve(long[] data, IntervalPickProblem.Interval[] intervals, int k) {
-            DoubleBinarySearch dbs = new DoubleBinarySearch(1e-12, 1e-12) {
-
-                public boolean check(double mid) {
-                    return solve(data, intervals, mid).time <= k;
+                public int next() {
+                    int ans = values[ele];
+                    ele = next[ele];
+                    return ans;
                 }
             };
+        }
 
-            long sum = 0;
-            for (long x : data) {
-                sum += Math.abs(x);
+        private void doubleCapacity() {
+            int newSize = Math.max(next.length + 10, next.length * 2);
+            next = Arrays.copyOf(next, newSize);
+            values = Arrays.copyOf(values, newSize);
+        }
+
+        public void alloc() {
+            alloc++;
+            if (alloc >= next.length) {
+                doubleCapacity();
             }
-            double cost = dbs.binarySearch(0, sum);
-            long ans = DigitUtils.round(solve(data, intervals, cost).maxValue + k * cost);
+            next[alloc] = 0;
+        }
+
+        public void clear() {
+            alloc = 0;
+            Arrays.fill(heads, 0, stackNum, 0);
+        }
+
+        public boolean isEmpty(int qId) {
+            return heads[qId] == 0;
+        }
+
+        public MultiWayIntegerStack(int qNum, int totalCapacity) {
+            values = new int[totalCapacity + 1];
+            next = new int[totalCapacity + 1];
+            heads = new int[qNum];
+            stackNum = qNum;
+        }
+
+        public void addLast(int qId, int x) {
+            alloc();
+            values[alloc] = x;
+            next[alloc] = heads[qId];
+            heads[qId] = alloc;
+        }
+
+        public int removeLast(int qId) {
+            int ans = values[heads[qId]];
+            heads[qId] = next[heads[qId]];
             return ans;
         }
 
-        public static class Interval {
-            public final int l;
-            public final int r;
-
-            public Interval(int l, int r) {
-                this.l = l;
-                this.r = r;
-            }
-
-            public String toString() {
-                return String.format("(%d, %d)", l, r);
-            }
-
-        }
-
-        private static class WQSResult {
-            double maxValue;
-            int time;
-
-            public WQSResult(double maxValue, int time) {
-                this.maxValue = maxValue;
-                this.time = time;
-            }
-
-        }
-
-        private static class DoubleSegmentQuery {
-            int index;
-            double val;
-
-            public void reset() {
-                index = -1;
-                val = -IntervalPickProblem.DoubleSegment.inf;
-            }
-
-            public void update(int index, double val) {
-                if (this.val < val) {
-                    this.index = index;
-                    this.val = val;
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < stackNum; i++) {
+                builder.append(i).append(": ");
+                for (IntegerIterator iterator = iterator(i); iterator.hasNext(); ) {
+                    builder.append(iterator.next()).append(",");
                 }
-            }
-
-        }
-
-        private static class DoubleSegment implements Cloneable {
-            private static double inf = 1e50;
-            private IntervalPickProblem.DoubleSegment left;
-            private IntervalPickProblem.DoubleSegment right;
-            private double val = -inf;
-            private int index = -1;
-
-            public void pushUp() {
-                val = Math.max(left.val, right.val);
-                if (val == left.val) {
-                    index = left.index;
-                } else {
-                    index = right.index;
+                if (builder.charAt(builder.length() - 1) == ',') {
+                    builder.setLength(builder.length() - 1);
                 }
+                builder.append('\n');
             }
-
-            public void pushDown() {
-            }
-
-            public DoubleSegment(int l, int r) {
-                if (l < r) {
-                    int m = (l + r) >> 1;
-                    left = new IntervalPickProblem.DoubleSegment(l, m);
-                    right = new IntervalPickProblem.DoubleSegment(m + 1, r);
-                    pushUp();
-                } else {
-                }
-            }
-
-            private boolean covered(int ll, int rr, int l, int r) {
-                return ll <= l && rr >= r;
-            }
-
-            private boolean noIntersection(int ll, int rr, int l, int r) {
-                return ll > r || rr < l;
-            }
-
-            public void update(int ll, int rr, int l, int r, double x, int index) {
-                if (noIntersection(ll, rr, l, r)) {
-                    return;
-                }
-                if (covered(ll, rr, l, r)) {
-                    if (x > val) {
-                        this.val = x;
-                        this.index = index;
-                    }
-                    return;
-                }
-                pushDown();
-                int m = (l + r) >> 1;
-                left.update(ll, rr, l, m, x, index);
-                right.update(ll, rr, m + 1, r, x, index);
-                pushUp();
-            }
-
-            public void query(int ll, int rr, int l, int r, IntervalPickProblem.DoubleSegmentQuery query) {
-                if (noIntersection(ll, rr, l, r)) {
-                    return;
-                }
-                if (covered(ll, rr, l, r)) {
-                    query.update(index, val);
-                    return;
-                }
-                pushDown();
-                int m = (l + r) >> 1;
-                left.query(ll, rr, l, m, query);
-                right.query(ll, rr, m + 1, r, query);
-            }
-
+            return builder.toString();
         }
 
     }
 
-    static abstract class IntBinarySearch {
-        public abstract boolean check(int mid);
+    static class Modular {
+        int m;
 
-        public int binarySearch(int l, int r) {
-            if (l > r) {
+        public int getMod() {
+            return m;
+        }
+
+        public Modular(int m) {
+            this.m = m;
+        }
+
+        public Modular(long m) {
+            this.m = (int) m;
+            if (this.m != m) {
                 throw new IllegalArgumentException();
             }
-            while (l < r) {
-                int mid = (l + r) >>> 1;
-                if (check(mid)) {
-                    r = mid;
-                } else {
-                    l = mid + 1;
-                }
+        }
+
+        public Modular(double m) {
+            this.m = (int) m;
+            if (this.m != m) {
+                throw new IllegalArgumentException();
             }
-            return l;
+        }
+
+        public int valueOf(int x) {
+            x %= m;
+            if (x < 0) {
+                x += m;
+            }
+            return x;
+        }
+
+        public int valueOf(long x) {
+            x %= m;
+            if (x < 0) {
+                x += m;
+            }
+            return (int) x;
+        }
+
+        public int mul(int x, int y) {
+            return valueOf((long) x * y);
+        }
+
+        public int plus(int x, int y) {
+            return valueOf(x + y);
+        }
+
+        public String toString() {
+            return "mod " + m;
         }
 
     }
 
-    static abstract class DoubleBinarySearch {
-        private final double relativeErrorTolerance;
-        private final double absoluteErrorTolerance;
+    static class IntegerBIT {
+        private int[] data;
+        private int n;
 
-        public DoubleBinarySearch(double relativeErrorTolerance, double absoluteErrorTolerance) {
-            this.relativeErrorTolerance = relativeErrorTolerance;
-            this.absoluteErrorTolerance = absoluteErrorTolerance;
+        public IntegerBIT(int n) {
+            this.n = n;
+            data = new int[n + 1];
         }
 
-        public abstract boolean check(double mid);
-
-        public double binarySearch(double l, double r) {
-            if (l > r) {
-                throw new IllegalArgumentException();
+        public int query(int i) {
+            int sum = 0;
+            for (; i > 0; i -= i & -i) {
+                sum += data[i];
             }
-            while (r - l > absoluteErrorTolerance) {
-                if ((r < 0 && (r - l) < -r * relativeErrorTolerance) || (l > 0 && (r - l) < l * relativeErrorTolerance)) {
-                    break;
-                }
+            return sum;
+        }
 
-                double mid = (l + r) / 2;
-                if (check(mid)) {
-                    r = mid;
-                } else {
-                    l = mid;
-                }
+        public void update(int i, int mod) {
+            if (i <= 0) {
+                return;
             }
-            return (l + r) / 2;
+            for (; i <= n; i += i & -i) {
+                data[i] += mod;
+            }
+        }
+
+        public void clear() {
+            Arrays.fill(data, 0);
+        }
+
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            for (int i = 1; i <= n; i++) {
+                builder.append(query(i) - query(i - 1)).append(' ');
+            }
+            return builder.toString();
+        }
+
+    }
+
+    static class FastOutput implements AutoCloseable, Closeable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
+
+        public FastOutput(Writer os) {
+            this.os = os;
+        }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput println(int c) {
+            cache.append(c).append('\n');
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            return this;
+        }
+
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+
+        public String toString() {
+            return cache.toString();
+        }
+
+    }
+
+    static class InverseNumber {
+        int[] inv;
+
+        public InverseNumber(int[] inv, int limit, Modular modular) {
+            this.inv = inv;
+            inv[1] = 1;
+            int p = modular.getMod();
+            for (int i = 2; i <= limit; i++) {
+                int k = p / i;
+                int r = p % i;
+                inv[i] = modular.mul(-k, inv[r]);
+            }
+        }
+
+        public InverseNumber(int limit, Modular modular) {
+            this(new int[limit + 1], limit, modular);
+        }
+
+    }
+
+    static class Factorial {
+        int[] fact;
+        int[] inv;
+        Modular modular;
+
+        public Factorial(int[] fact, int[] inv, InverseNumber in, int limit, Modular modular) {
+            this.modular = modular;
+            this.fact = fact;
+            this.inv = inv;
+            fact[0] = inv[0] = 1;
+            for (int i = 1; i <= limit; i++) {
+                fact[i] = modular.mul(fact[i - 1], i);
+                inv[i] = modular.mul(inv[i - 1], in.inv[i]);
+            }
+        }
+
+        public Factorial(int limit, Modular modular) {
+            this(new int[limit + 1], new int[limit + 1], new InverseNumber(limit, modular), limit, modular);
+        }
+
+        public int fact(int n) {
+            return fact[n];
         }
 
     }
