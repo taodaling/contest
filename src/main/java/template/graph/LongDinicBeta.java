@@ -126,15 +126,20 @@ public class LongDinicBeta {
         return totalSent;
     }
 
-    private ChannelImpl getChannel(int a, int b) {
+    public ChannelImpl getChannel(int a, int b) {
         long id = DigitUtils.asLong(a, b);
         ChannelImpl channel = map.get(id);
         if (channel == null) {
-            channel = new ChannelImpl(a, b);
-            edges.addLast(a, channel);
-            edges.addLast(b, channel.inverse());
+            channel = addChannel(a, b);
             map.put(id, channel);
         }
+        return channel;
+    }
+
+    public ChannelImpl addChannel(int a, int b) {
+        ChannelImpl channel = new ChannelImpl(a, b);
+        edges.addLast(a, channel);
+        edges.addLast(b, channel.inverse());
         return channel;
     }
 
@@ -143,12 +148,12 @@ public class LongDinicBeta {
         channel.expand(cap);
     }
 
-    public long getFlowBetween(int a, int b){
+    public long getFlowBetween(int a, int b) {
         ChannelImpl channel = getChannel(a, b);
         return channel.getFlow();
     }
 
-    private static interface Channel {
+    public static interface Channel {
         Channel inverse();
 
         long getFlow();
@@ -162,7 +167,7 @@ public class LongDinicBeta {
         int getDst();
     }
 
-    private static class ChannelImpl implements Channel {
+    public static class ChannelImpl implements Channel {
         private long flow;
         private long cap;
         private InverseChannelWrapper inverse = new InverseChannelWrapper(this);

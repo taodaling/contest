@@ -2,14 +2,18 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Iterator;
+import java.util.Collection;
 import java.io.IOException;
-import java.util.TreeSet;
+import java.util.HashMap;
+import java.util.Deque;
+import java.util.ArrayList;
 import java.io.UncheckedIOException;
+import java.util.List;
 import java.io.Closeable;
+import java.util.Map;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
-import java.util.Comparator;
+import java.util.ArrayDeque;
 import java.io.InputStream;
 
 /**
@@ -18,9 +22,7 @@ import java.io.InputStream;
  */
 public class Main {
     public static void main(String[] args) throws Exception {
-        Thread thread = new Thread(null, new TaskAdapter(), "", 1 << 27);
-        thread.start();
-        thread.join();
+        new TaskAdapter().run();
     }
 
     static class TaskAdapter implements Runnable {
@@ -30,360 +32,26 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            DComputerGame solver = new DComputerGame();
+            LOJ102 solver = new LOJ102();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class DComputerGame {
+    static class LOJ102 {
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            long t = in.readLong();
-            Quest[] quests = new Quest[n];
-            for (int i = 0; i < n; i++) {
-                quests[i] = new Quest();
-                quests[i].a = in.readInt();
-                quests[i].b = in.readInt();
-                quests[i].p = in.readDouble();
+            int m = in.readInt();
+            LongMinCostMaxFlow mcmf = new LongMinCostMaxFlow(n + 1, 1, n);
+            for (int i = 0; i < m; i++) {
+                int s = in.readInt();
+                int t = in.readInt();
+                int c = in.readInt();
+                int w = in.readInt();
+                mcmf.getChannel(s, t, w).modify(c, 0);
             }
-
-            double E = 0;
-            for (int i = 0; i < n; i++) {
-                E = Math.max(E, quests[i].p * quests[i].b);
-            }
-
-            ConvexHullTrick cht = new ConvexHullTrick();
-            for (Quest q : quests) {
-                cht.insert(q.p, q.a * q.p, q);
-            }
-
-            long now = 0;
-            double begin = 0;
-            for (ConvexHullTrick.Line line : cht) {
-                double rx = line.rx;
-                BSResult result = bs(now, t, line.quest, E, begin, rx);
-                begin = result.state;
-                now = result.now;
-                if (now == t) {
-                    break;
-                }
-            }
-
-            out.printf("%.13f", begin);
-        }
-
-        public BSResult bs(long l, long r, Quest q, double E, double begin, double rx) {
-            Matrix[] mats = new Matrix[35];
-            Matrix x = new Matrix(new double[][]{
-                    {1 - q.p, E * q.p, q.a * q.p},
-                    {0, 1, 1},
-                    {0, 0, 1}
-            });
-            mats[0] = x;
-            for (int i = 1; i < 35; i++) {
-                mats[i] = Matrix.mul(mats[i - 1], mats[i - 1]);
-            }
-
-            Matrix next = new Matrix(3, 1);
-            Matrix vector = new Matrix(new double[][]{
-                    {begin},
-                    {l},
-                    {1}
-            });
-            long now = l;
-            for (int i = 35 - 1; i >= 0; i--) {
-                if (now + (1L << i) > r) {
-                    continue;
-                }
-                Matrix.mul(mats[i], vector, next);
-                if (E * (now + (1L << i)) - next.get(0, 0) < rx) {
-                    now += 1L << i;
-                    Matrix tmp = next;
-                    next = vector;
-                    vector = tmp;
-                }
-            }
-
-            if (now < r && E * now - vector.get(0, 0) < rx) {
-                now++;
-                vector = Matrix.mul(mats[0], vector);
-            }
-
-            return new BSResult(vector.get(0, 0), now);
-        }
-
-    }
-
-    static class ConvexHullTrick implements Iterable<ConvexHullTrick.Line> {
-        static final double INF = 1e50;
-        private TreeSet<ConvexHullTrick.Line> setOrderByA = new TreeSet(ConvexHullTrick.Line.orderByA);
-        private TreeSet<ConvexHullTrick.Line> setOrderByLx = new TreeSet(ConvexHullTrick.Line.orderByLx);
-
-        public ConvexHullTrick.Line insert(double a, double b, Quest quest) {
-            ConvexHullTrick.Line newLine = new ConvexHullTrick.Line(a, b);
-            newLine.quest = quest;
-            boolean add = true;
-            while (add) {
-                ConvexHullTrick.Line prev = setOrderByA.floor(newLine);
-                if (prev == null) {
-                    newLine.lx = -INF;
-                    break;
-                }
-                if (prev.a == newLine.a) {
-                    if (prev.b >= newLine.b) {
-                        add = false;
-                        break;
-                    } else {
-                        setOrderByA.remove(prev);
-                        setOrderByLx.remove(prev);
-                    }
-                } else {
-                    double lx = ConvexHullTrick.Line.intersectAt(prev, newLine);
-                    if (lx <= prev.lx) {
-                        setOrderByA.remove(prev);
-                        setOrderByLx.remove(prev);
-                    } else if (lx > prev.rx) {
-                        add = false;
-                        break;
-                    } else {
-                        prev.rx = lx;
-                        newLine.lx = lx;
-                        break;
-                    }
-                }
-            }
-
-            while (add) {
-                ConvexHullTrick.Line next = setOrderByA.ceiling(newLine);
-                if (next == null) {
-                    newLine.rx = INF;
-                    break;
-                }
-                double rx = ConvexHullTrick.Line.intersectAt(newLine, next);
-                if (rx >= next.rx) {
-                    setOrderByA.remove(next);
-                    setOrderByLx.remove(next);
-                } else if (rx < next.lx || (newLine.lx >= rx)) {
-                    ConvexHullTrick.Line lastLine = setOrderByA.floor(newLine);
-                    if (lastLine != null) {
-                        lastLine.rx = next.lx;
-                    }
-                    add = false;
-                    break;
-                } else {
-                    next.lx = rx;
-                    newLine.rx = rx;
-                    break;
-                }
-            }
-
-            if (add) {
-                setOrderByA.add(newLine);
-                setOrderByLx.add(newLine);
-            }
-
-            return newLine;
-        }
-
-        public Iterator<ConvexHullTrick.Line> iterator() {
-            return setOrderByA.iterator();
-        }
-
-        public String toString() {
-            StringBuilder builder = new StringBuilder();
-            for (ConvexHullTrick.Line line : this) {
-                builder.append(line).append('\n');
-            }
-            return builder.toString();
-        }
-
-        public static class Line {
-            double a;
-            double b;
-            double lx;
-            double rx;
-            Quest quest;
-            static Comparator<ConvexHullTrick.Line> orderByA = new Comparator<ConvexHullTrick.Line>() {
-
-                public int compare(ConvexHullTrick.Line o1, ConvexHullTrick.Line o2) {
-                    return Double.compare(o1.a, o2.a);
-                }
-            };
-            static Comparator<ConvexHullTrick.Line> orderByLx = new Comparator<ConvexHullTrick.Line>() {
-
-                public int compare(ConvexHullTrick.Line o1, ConvexHullTrick.Line o2) {
-                    return Double.compare(o1.lx, o2.lx);
-                }
-            };
-
-            public Line(double a, double b) {
-                this.a = a;
-                this.b = b;
-            }
-
-            public static double intersectAt(ConvexHullTrick.Line a, ConvexHullTrick.Line b) {
-                return (b.b - a.b) / (a.a - b.a);
-            }
-
-            public int hashCode() {
-                return (int) (Double.doubleToLongBits(a) * 31 + Double.doubleToLongBits(b));
-            }
-
-            public boolean equals(Object obj) {
-                ConvexHullTrick.Line line = (ConvexHullTrick.Line) obj;
-                return a == line.a && b == line.b;
-            }
-
-            public String toString() {
-                return a + "x+" + b;
-            }
-
-        }
-
-    }
-
-    static class Quest {
-        int a;
-        int b;
-        double p;
-
-    }
-
-    static class BSResult {
-        double state;
-        long now;
-
-        public BSResult(double state, long now) {
-            this.state = state;
-            this.now = now;
-        }
-
-        public String toString() {
-            return String.format("(%d, %f)", now, state);
-        }
-
-    }
-
-    static class FastOutput implements AutoCloseable, Closeable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
-
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput printf(String format, Object... args) {
-            cache.append(String.format(format, args));
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        }
-
-        public String toString() {
-            return cache.toString();
-        }
-
-    }
-
-    static class Matrix implements Cloneable {
-        double[][] mat;
-        int n;
-        int m;
-
-        public double get(int i, int j) {
-            return mat[i][j];
-        }
-
-        public Matrix(Matrix model) {
-            n = model.n;
-            m = model.m;
-            mat = new double[n][m];
-            asSame(model);
-        }
-
-        public Matrix(double[][] mat) {
-            if (mat.length == 0 || mat[0].length == 0) {
-                throw new IllegalArgumentException();
-            }
-            this.n = mat.length;
-            this.m = mat[0].length;
-            this.mat = mat;
-        }
-
-        public Matrix(int n, int m) {
-            this.n = n;
-            this.m = m;
-            mat = new double[n][m];
-        }
-
-        public void fill(int v) {
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < m; j++) {
-                    mat[i][j] = v;
-                }
-            }
-        }
-
-        public static Matrix mul(Matrix a, Matrix b, Matrix c) {
-            c.fill(0);
-            for (int i = 0; i < c.n; i++) {
-                for (int j = 0; j < c.m; j++) {
-                    for (int k = 0; k < a.m; k++) {
-                        c.mat[i][j] = c.mat[i][j] + a.mat[i][k] * b.mat[k][j];
-                    }
-                }
-            }
-            return c;
-        }
-
-        public static Matrix mul(Matrix a, Matrix b) {
-            Matrix c = new Matrix(a.n, b.m);
-            return mul(a, b, c);
-        }
-
-        public String toString() {
-            StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < m; j++) {
-                    builder.append(mat[i][j]).append(' ');
-                }
-                builder.append('\n');
-            }
-            return builder.toString();
-        }
-
-        public void asSame(Matrix matrix) {
-            if (matrix.n != n || matrix.m != m) {
-                throw new IllegalArgumentException();
-            }
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < m; j++) {
-                    mat[i][j] = matrix.mat[i][j];
-                }
-            }
+            long[] ans = mcmf.send((long) 1e18);
+            out.append(ans[0]).append(' ').append(ans[1]).println();
         }
 
     }
@@ -445,57 +113,350 @@ public class Main {
             return val;
         }
 
-        public long readLong() {
-            int sign = 1;
+    }
 
-            skipBlank();
-            if (next == '+' || next == '-') {
-                sign = next == '+' ? 1 : -1;
-                next = read();
+    static class LongMinCostMaxFlow {
+        LongMinCostMaxFlow.Node[] nodes;
+        Deque<LongMinCostMaxFlow.Node> deque;
+        LongMinCostMaxFlow.Node source;
+        LongMinCostMaxFlow.Node target;
+        int nodeNum;
+        final static long INF = (long) 1e18;
+        Map<LongMinCostMaxFlow.ID, LongMinCostMaxFlow.DirectFeeChannel> channelMap = new HashMap();
+        LongMinCostMaxFlow.ID id = new LongMinCostMaxFlow.ID(0, 0, 0);
+
+        public LongMinCostMaxFlow(int nodeNum, int s, int t) {
+            this.nodeNum = nodeNum;
+            nodes = new LongMinCostMaxFlow.Node[nodeNum];
+            for (int i = 0; i < nodeNum; i++) {
+                nodes[i] = new LongMinCostMaxFlow.Node(i);
             }
-
-            long val = 0;
-            if (sign == 1) {
-                while (next >= '0' && next <= '9') {
-                    val = val * 10 + next - '0';
-                    next = read();
-                }
-            } else {
-                while (next >= '0' && next <= '9') {
-                    val = val * 10 - next + '0';
-                    next = read();
-                }
-            }
-
-            return val;
+            deque = new ArrayDeque(nodeNum);
+            setSource(s);
+            setTarget(t);
         }
 
-        public double readDouble() {
-            boolean sign = true;
-            skipBlank();
-            if (next == '+' || next == '-') {
-                sign = next == '+';
-                next = read();
+        private void setSource(int id) {
+            source = nodes[id];
+        }
+
+        private void setTarget(int id) {
+            target = nodes[id];
+        }
+
+        public LongMinCostMaxFlow.DirectFeeChannel getChannel(int src, int dst, long fee) {
+            id.src = src;
+            id.dst = dst;
+            id.fee = fee;
+            LongMinCostMaxFlow.DirectFeeChannel channel = channelMap.get(id);
+            if (channel == null) {
+                channel = addChannel(src, dst, fee);
+                channelMap.put(new LongMinCostMaxFlow.ID(src, dst, fee), channel);
+            }
+            return channel;
+        }
+
+        private LongMinCostMaxFlow.DirectFeeChannel addChannel(int src, int dst, long fee) {
+            LongMinCostMaxFlow.DirectFeeChannel dfc = new LongMinCostMaxFlow.DirectFeeChannel(nodes[src], nodes[dst], fee);
+            nodes[src].channelList.add(dfc);
+            nodes[dst].channelList.add(dfc.inverse());
+            return dfc;
+        }
+
+        public long[] send(long flow) {
+            long totalFee = 0;
+            long totalFlow = 0;
+
+            while (flow > 0) {
+                spfa();
+
+                if (target.distance == INF) {
+                    break;
+                }
+
+
+                long feeSum = target.distance;
+                long minFlow = flow;
+
+                LongMinCostMaxFlow.Node trace = target;
+                while (trace != source) {
+                    LongMinCostMaxFlow.FeeChannel last = trace.last;
+                    minFlow = Math.min(minFlow, last.getCapacity() - last.getFlow());
+                    trace = last.getSrc();
+                }
+
+                flow -= minFlow;
+
+                trace = target;
+                while (trace != source) {
+                    LongMinCostMaxFlow.FeeChannel last = trace.last;
+                    last.sendFlow(minFlow);
+                    trace = last.getSrc();
+                }
+
+                totalFee += feeSum * minFlow;
+                totalFlow += minFlow;
             }
 
-            long val = 0;
-            while (next >= '0' && next <= '9') {
-                val = val * 10 + next - '0';
-                next = read();
+            return new long[]{totalFlow, totalFee};
+        }
+
+        private void spfa() {
+            for (int i = 0; i < nodeNum; i++) {
+                nodes[i].distance = INF;
+                nodes[i].inque = false;
+                nodes[i].last = null;
             }
-            if (next != '.') {
-                return sign ? val : -val;
+
+            deque.addLast(source);
+            source.distance = 0;
+            source.inque = true;
+            long sumOfDistance = 0;
+
+            while (!deque.isEmpty()) {
+                LongMinCostMaxFlow.Node head = deque.removeFirst();
+                if (head.distance * (deque.size() + 1) > sumOfDistance) {
+                    deque.addLast(head);
+                    continue;
+                }
+                sumOfDistance -= head.distance;
+                head.inque = false;
+                for (LongMinCostMaxFlow.FeeChannel channel : head.channelList) {
+                    if (channel.getFlow() == channel.getCapacity()) {
+                        continue;
+                    }
+                    LongMinCostMaxFlow.Node dst = channel.getDst();
+                    long oldDist = dst.distance;
+                    long newDist = head.distance + channel.getFee();
+                    if (oldDist <= newDist) {
+                        continue;
+                    }
+                    dst.distance = newDist;
+                    dst.last = channel;
+                    if (dst.inque) {
+                        sumOfDistance -= oldDist;
+                        sumOfDistance += newDist;
+                        continue;
+                    }
+                    if (!deque.isEmpty() && deque.peekFirst().distance < dst.distance) {
+                        deque.addFirst(dst);
+                    } else {
+                        deque.addLast(dst);
+                    }
+                    dst.inque = true;
+                    sumOfDistance += newDist;
+                }
             }
-            next = read();
-            long radix = 1;
-            long point = 0;
-            while (next >= '0' && next <= '9') {
-                point = point * 10 + next - '0';
-                radix = radix * 10;
-                next = read();
+        }
+
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            for (LongMinCostMaxFlow.DirectFeeChannel channel : channelMap.values()) {
+                if (channel.getFlow() > 0) {
+                    builder.append(channel).append('\n');
+                }
             }
-            double result = val + (double) point / radix;
-            return sign ? result : -result;
+            return builder.toString();
+        }
+
+        private static class ID {
+            int src;
+            int dst;
+            long fee;
+
+            ID(int src, int dst, long fee) {
+                this.src = src;
+                this.dst = dst;
+                this.fee = fee;
+            }
+
+            public int hashCode() {
+                return (int) ((src * 31L + dst) * 31 + Long.hashCode(fee));
+            }
+
+            public boolean equals(Object obj) {
+                LongMinCostMaxFlow.ID other = (LongMinCostMaxFlow.ID) obj;
+                return src == other.src &&
+                        dst == other.dst &&
+                        fee == other.fee;
+            }
+
+        }
+
+        public static interface FeeChannel {
+            public LongMinCostMaxFlow.Node getSrc();
+
+            public LongMinCostMaxFlow.Node getDst();
+
+            public long getCapacity();
+
+            public long getFlow();
+
+            public void sendFlow(long volume);
+
+            public long getFee();
+
+        }
+
+        public static class DirectFeeChannel implements LongMinCostMaxFlow.FeeChannel {
+            final LongMinCostMaxFlow.Node src;
+            final LongMinCostMaxFlow.Node dst;
+            long capacity;
+            long flow;
+            LongMinCostMaxFlow.FeeChannel inverse;
+            final long fee;
+
+            public long getFee() {
+                return fee;
+            }
+
+            public DirectFeeChannel(LongMinCostMaxFlow.Node src, LongMinCostMaxFlow.Node dst, long fee) {
+                this.src = src;
+                this.dst = dst;
+                this.fee = fee;
+                inverse = new LongMinCostMaxFlow.InverseFeeChannelWrapper(this);
+            }
+
+            public String toString() {
+                return String.format("%s--%s/%s-->%s", getSrc(), getFlow(), getCapacity(), getDst());
+            }
+
+            public LongMinCostMaxFlow.Node getSrc() {
+                return src;
+            }
+
+            public LongMinCostMaxFlow.FeeChannel inverse() {
+                return inverse;
+            }
+
+            public LongMinCostMaxFlow.Node getDst() {
+                return dst;
+            }
+
+            public long getCapacity() {
+                return capacity;
+            }
+
+            public long getFlow() {
+                return flow;
+            }
+
+            public void sendFlow(long volume) {
+                flow += volume;
+            }
+
+            public void modify(long cap, long flow) {
+                this.capacity += cap;
+                this.flow += flow;
+            }
+
+        }
+
+        public static class InverseFeeChannelWrapper implements LongMinCostMaxFlow.FeeChannel {
+            final LongMinCostMaxFlow.FeeChannel inner;
+
+            public InverseFeeChannelWrapper(LongMinCostMaxFlow.FeeChannel inner) {
+                this.inner = inner;
+            }
+
+            public long getFee() {
+                return -inner.getFee();
+            }
+
+            public LongMinCostMaxFlow.Node getSrc() {
+                return inner.getDst();
+            }
+
+            public LongMinCostMaxFlow.Node getDst() {
+                return inner.getSrc();
+            }
+
+            public long getCapacity() {
+                return inner.getFlow();
+            }
+
+            public long getFlow() {
+                return 0;
+            }
+
+            public void sendFlow(long volume) {
+                inner.sendFlow(-volume);
+            }
+
+            public String toString() {
+                return String.format("%s--%s/%s-->%s", getSrc(), getFlow(), getCapacity(), getDst());
+            }
+
+        }
+
+        public static class Node {
+            final int id;
+            long distance;
+            boolean inque;
+            LongMinCostMaxFlow.FeeChannel last;
+            List<LongMinCostMaxFlow.FeeChannel> channelList = new ArrayList(1);
+
+            public Node(int id) {
+                this.id = id;
+            }
+
+            public String toString() {
+                return "" + id;
+            }
+
+        }
+
+    }
+
+    static class FastOutput implements AutoCloseable, Closeable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
+
+        public FastOutput(Writer os) {
+            this.os = os;
+        }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput append(char c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput append(long c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput println() {
+            cache.append('\n');
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            return this;
+        }
+
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+
+        public String toString() {
+            return cache.toString();
         }
 
     }

@@ -5,7 +5,7 @@ import java.util.List;
 
 public class KMAlgo {
     public static class Node {
-        List<Node> nodes = new ArrayList(2);
+        List<Node> nodes = new ArrayList<>();
         int visited;
         Node partner;
         int id;

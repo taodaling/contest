@@ -15,20 +15,7 @@ public class LongPreSum {
         }
     }
 
-    public void populate(int[] a){
-        int n = a.length;
-        pre[0] = a[0];
-        for (int i = 1; i < n; i++) {
-            pre[i] = pre[i - 1] + a[i];
-        }
-    }
-
     public LongPreSum(long[] a) {
-        this(a.length);
-        populate(a);
-    }
-
-    public LongPreSum(int[] a) {
         this(a.length);
         populate(a);
     }

@@ -3,6 +3,7 @@ package template.problem;
 import template.algo.DoubleBinarySearch;
 import template.math.DigitUtils;
 import template.primitve.generated.LongPreSum;
+import template.primitve.generated.MinIntegerQueue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,6 +52,7 @@ public class IntervalPickProblem {
      * <br>
      * 要求我们选择任意个区间，要求被选中的区间覆盖的元素的和最大。
      * <br>
+     * 时间复杂度为O(n\log_2n)
      */
     public static long solve(long[] data, Interval[] intervals) {
         LongPreSum lps = new LongPreSum(data);
@@ -101,7 +103,6 @@ public class IntervalPickProblem {
 
         return dp[maxIndex];
     }
-
 
     private static class WQSResult {
         double maxValue;
@@ -179,7 +180,7 @@ public class IntervalPickProblem {
         for (long x : data) {
             sum += Math.abs(x);
         }
-        double cost = dbs.binarySearch(0, sum);
+        double cost = dbs.binarySearch(-sum, sum);
         long ans = DigitUtils.round(solve(data, intervals, cost).maxValue + k * cost);
         return ans;
     }
@@ -299,9 +300,9 @@ public class IntervalPickProblem {
 
         public void pushUp() {
             val = Math.max(left.val, right.val);
-            if(val == left.val){
+            if (val == left.val) {
                 index = left.index;
-            }else{
+            } else {
                 index = right.index;
             }
         }
@@ -360,4 +361,74 @@ public class IntervalPickProblem {
         }
     }
 
+    /**
+     * 有一个序列data[0], data[1], ... , data[n - 1], 以及m个区间
+     * intervals[0], intervals[1], ..., intervals[m - 1].且序列元素非负。
+     * <br>
+     * 要求我们选择任意个区间，要求被选中的区间覆盖的元素的和最大。
+     * <br>
+     * 时间复杂度为O(n)
+     */
+    private static WQSResult solveNonNegative(long[] data, Interval[] intervals, double cost) {
+        LongPreSum lps = new LongPreSum(data);
+        int n = intervals.length;
+        double[] dp = new double[n + 1];
+        int[] time = new int[n + 1];
+
+        MinIntegerQueue left = new MinIntegerQueue(n, (a, b) -> -Double.compare(dp[a], dp[b]));
+        MinIntegerQueue middle = new MinIntegerQueue(n, (a, b) -> -Double.compare(dp[a] - lps.prefix(intervals[a - 1].r), dp[b] - lps.prefix(intervals[b - 1].r)));
+        left.addLast(0);
+        for (int i = 1; i <= n; i++) {
+            IntervalPickProblem.Interval now = intervals[i - 1];
+            while (!middle.isEmpty() && intervals[middle.peek() - 1].r < now.l) {
+                left.addLast(middle.removeFirst());
+            }
+            dp[i] = -1e50;
+            if (dp[i] < dp[left.min()] + lps.intervalSum(now.l, now.r)) {
+                dp[i] = dp[left.min()] + lps.intervalSum(now.l, now.r);
+                time[i] = time[left.min()] + 1;
+            }
+            if (!middle.isEmpty() && dp[i] < dp[middle.min()] + lps.prefix(now.r) - lps.prefix(intervals[middle.min() - 1].r)) {
+                dp[i] = dp[middle.min()] + lps.prefix(now.r) - lps.prefix(intervals[middle.min() - 1].r);
+                time[i] = time[middle.min()] + 1;
+            }
+            dp[i] -= cost;
+            middle.addLast(i);
+        }
+
+        int maxIndex = 0;
+        for (int i = 1; i <= n; i++) {
+            if (dp[i] > dp[maxIndex]) {
+                maxIndex = i;
+            }
+        }
+
+        return new IntervalPickProblem.WQSResult(dp[maxIndex], time[maxIndex]);
+    }
+
+    /**
+     * 有一个序列data[0], data[1], ... , data[n - 1], 以及m个区间
+     * intervals[0], intervals[1], ..., intervals[m - 1].
+     * <br>
+     * 要求所有元素非负，且intervals[i + 1].r > intervals[i - 1].r > intervals[i + 1].l > ;
+     * <br>
+     * 要求我们正好选择k个区间，要求被选中的区间覆盖的元素的和最大。
+     * <br>
+     * 区间需要满足intervals[i].l < intervals[i + 1].l且intervals[i].r < intervals[i + 1].r
+     * <br>
+     */
+    public static long solveNonNegative(long[] data, IntervalPickProblem.Interval[] intervals, int k) {
+        DoubleBinarySearch dbs = new DoubleBinarySearch(1e-12, 1e-12) {
+            public boolean check(double mid) {
+                return solveNonNegative(data, intervals, mid).time <= k;
+            }
+        };
+        long sum = 0;
+        for (long x : data) {
+            sum += x;
+        }
+        double cost = dbs.binarySearch(0, sum);
+        long ans = DigitUtils.round(solve(data, intervals, cost).maxValue + k * cost);
+        return ans;
+    }
 }
