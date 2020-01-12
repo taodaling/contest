@@ -22,7 +22,7 @@ public class KMAlgo {
     Node[] rightSides;
     int version;
 
-    public void findMinVertexCover() {
+    public boolean[][] minVertexCover() {
         prepare();
         for (Node r : rightSides) {
             if (r.partner == null) {
@@ -30,12 +30,16 @@ public class KMAlgo {
             }
         }
 
-        for (Node l : leftSides) {
-            l.inMinVertexCover = l.visited == version;
+        boolean[] left = new boolean[leftSides.length];
+        boolean[] right = new boolean[rightSides.length];
+        for(int i = 0; i < left.length; i++){
+            left[i] = leftSides[i].visited == version;
         }
-        for (Node r : rightSides) {
-            r.inMinVertexCover = r.visited != version;
+        for(int i = 0; i < right.length; i++){
+            right[i] = rightSides[i].visited != version;
         }
+
+        return new boolean[][]{left, right};
     }
 
     private void dfsRight(Node node) {
@@ -73,9 +77,13 @@ public class KMAlgo {
         }
     }
 
-    public void addEdge(int lId, int rId) {
+    public void addEdge(int lId, int rId, boolean urge) {
         leftSides[lId].nodes.add(rightSides[rId]);
         rightSides[rId].nodes.add(leftSides[lId]);
+        if (urge && leftSides[lId].partner == null && rightSides[rId].partner == null) {
+            leftSides[lId].partner = rightSides[rId];
+            rightSides[rId].partner = leftSides[lId];
+        }
     }
 
     private void prepare() {
@@ -87,7 +95,7 @@ public class KMAlgo {
      */
     public boolean matchLeft(int id) {
         if (leftSides[id].partner != null) {
-            return false;
+            return true;
         }
         prepare();
         return findPartner(leftSides[id]);
@@ -98,7 +106,7 @@ public class KMAlgo {
      */
     public boolean matchRight(int id) {
         if (rightSides[id].partner != null) {
-            return false;
+            return true;
         }
         prepare();
         return findPartner(rightSides[id]);

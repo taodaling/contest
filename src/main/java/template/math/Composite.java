@@ -23,4 +23,11 @@ public class Composite {
         }
         return modular.mul(modular.mul(factorial.fact(m), factorial.invFact(n)), factorial.invFact(m - n));
     }
+
+    /**
+     * return 1 / composite(m, n)
+     */
+    public int invComposite(int m, int n) {
+        return modular.mul(modular.mul(factorial.invFact(m), factorial.fact(n)), factorial.fact(m - n));
+    }
 }

@@ -1,7 +1,10 @@
 package template.problem;
 
 import template.algo.DoubleBinarySearch;
+import template.datastructure.Array2DequeAdapter;
+import template.datastructure.SimplifiedDeque;
 import template.math.DigitUtils;
+import template.primitve.generated.IntegerPreSum;
 import template.primitve.generated.LongPreSum;
 import template.primitve.generated.MinIntegerQueue;
 
@@ -403,8 +406,9 @@ public class IntervalPickProblem {
             }
         }
 
-        return new IntervalPickProblem.WQSResult(dp[maxIndex], time[maxIndex]);
+        return new WQSResult(dp[maxIndex], time[maxIndex]);
     }
+
 
     /**
      * 有一个序列data[0], data[1], ... , data[n - 1], 以及m个区间
@@ -428,7 +432,8 @@ public class IntervalPickProblem {
             sum += x;
         }
         double cost = dbs.binarySearch(0, sum);
-        long ans = DigitUtils.round(solve(data, intervals, cost).maxValue + k * cost);
+        long ans = DigitUtils.round(solveNonNegative(data, intervals, cost).maxValue + k * cost);
         return ans;
     }
+
 }

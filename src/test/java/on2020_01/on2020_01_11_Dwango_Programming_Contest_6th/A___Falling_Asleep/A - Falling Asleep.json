@@ -1,0 +1,45 @@
+{
+  "name" : "A - Falling Asleep",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3\ndwango 2\nsixth 5\nprelims 25\ndwango\n",
+    "output" : "30\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "1\nabcde 1000\nabcde\n",
+    "output" : "0\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "15\nypnxn 279\nkgjgwx 464\nqquhuwq 327\nrxing 549\npmuduhznoaqu 832\ndagktgdarveusju 595\nwunfagppcoi 200\ndhavrncwfw 720\njpcmigg 658\nwrczqxycivdqn 639\nmcmkkbnjfeod 992\nhtqvkgkbhtytsz 130\ntwflegsjz 467\ndswxxrxuzzfhkp 989\nszfwtzfpnscgue 958\npmuduhznoaqu\n",
+    "output" : "6348\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_01.on2020_01_11_Dwango_Programming_Contest_6th.A___Falling_Asleep.AFallingAsleep",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.01.11",
+  "contestName" : "Dwango Programming Contest 6th",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

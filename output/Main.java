@@ -2,18 +2,12 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Collection;
+import java.util.function.IntUnaryOperator;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Deque;
-import java.util.ArrayList;
 import java.io.UncheckedIOException;
-import java.util.List;
 import java.io.Closeable;
-import java.util.Map;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
-import java.util.ArrayDeque;
 import java.io.InputStream;
 
 /**
@@ -22,7 +16,9 @@ import java.io.InputStream;
  */
 public class Main {
     public static void main(String[] args) throws Exception {
-        new TaskAdapter().run();
+        Thread thread = new Thread(null, new TaskAdapter(), "", 1 << 27);
+        thread.start();
+        thread.join();
     }
 
     static class TaskAdapter implements Runnable {
@@ -32,26 +28,120 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            LOJ102 solver = new LOJ102();
+            EVasyaAndBigIntegers solver = new EVasyaAndBigIntegers();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class LOJ102 {
+    static class EVasyaAndBigIntegers {
+        Modular mod = new Modular(998244353);
+
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            int n = in.readInt();
-            int m = in.readInt();
-            LongMinCostMaxFlow mcmf = new LongMinCostMaxFlow(n + 1, 1, n);
-            for (int i = 0; i < m; i++) {
-                int s = in.readInt();
-                int t = in.readInt();
-                int c = in.readInt();
-                int w = in.readInt();
-                mcmf.getChannel(s, t, w).modify(c, 0);
+            char[] a = new char[1000000];
+            char[] left = new char[1000000];
+            char[] right = new char[1000000];
+            int aLen = in.readString(a, 0);
+            int leftLen = in.readString(left, 0);
+            int rightLen = in.readString(right, 0);
+
+            ZAlgorithm leftLCP = new ZAlgorithm(leftLen + aLen, i -> i < leftLen ? left[i] : a[i - leftLen]);
+            ZAlgorithm rightLCP = new ZAlgorithm(rightLen + aLen, i -> i < rightLen ? right[i] : a[i - rightLen]);
+
+            int[] dp = new int[aLen + 1];
+            int[] preSum = new int[aLen + 1];
+            dp[0] = 1;
+            preSum[0] = 1;
+            for (int i = 1; i <= aLen; i++) {
+                preSum[i] = preSum[i - 1];
+                int l = i - rightLen;
+                int r = i - leftLen;
+                if (l >= 0) {
+                    int lcp = rightLCP.applyAsInt(rightLen + l);
+                    if (lcp < rightLen && a[l + lcp] > right[lcp]) {
+                        l++;
+                    }
+                } else {
+                    l = 0;
+                }
+                if (r < 0) {
+                    continue;
+                }
+                int lcp = leftLCP.applyAsInt(leftLen + r);
+                if (lcp < leftLen && a[r + lcp] < left[lcp]) {
+                    r--;
+                }
+                if (l > r) {
+                    continue;
+                }
+                dp[i] = interval(preSum, l, r);
+                preSum[i] = mod.plus(preSum[i - 1], dp[i]);
+
+                if (a[i - 1] == '0') {
+                    preSum[i - 1] = mod.subtract(preSum[i - 1], dp[i - 1]);
+                    preSum[i] = mod.subtract(preSum[i], dp[i - 1]);
+                }
             }
-            long[] ans = mcmf.send((long) 1e18);
-            out.append(ans[0]).append(' ').append(ans[1]).println();
+
+
+//        System.err.println(Arrays.toString(dp));
+//
+//        int bf = bf(String.valueOf(a, 0, aLen), String.valueOf(left, 0, leftLen), String.valueOf(right, 0, rightLen));
+//        if (bf != dp[aLen]) {
+//            //      throw new RuntimeException();
+//        }
+            int ans = dp[aLen];
+            out.println(ans);
+        }
+
+        public int interval(int[] preSum, int l, int r) {
+            if (l == 0) {
+                return preSum[r];
+            }
+            return mod.subtract(preSum[r], preSum[l - 1]);
+        }
+
+    }
+
+    static class Modular {
+        int m;
+
+        public Modular(int m) {
+            this.m = m;
+        }
+
+        public Modular(long m) {
+            this.m = (int) m;
+            if (this.m != m) {
+                throw new IllegalArgumentException();
+            }
+        }
+
+        public Modular(double m) {
+            this.m = (int) m;
+            if (this.m != m) {
+                throw new IllegalArgumentException();
+            }
+        }
+
+        public int valueOf(int x) {
+            x %= m;
+            if (x < 0) {
+                x += m;
+            }
+            return x;
+        }
+
+        public int plus(int x, int y) {
+            return valueOf(x + y);
+        }
+
+        public int subtract(int x, int y) {
+            return valueOf(x - y);
+        }
+
+        public String toString() {
+            return "mod " + m;
         }
 
     }
@@ -88,322 +178,16 @@ public class Main {
             }
         }
 
-        public int readInt() {
-            int sign = 1;
-
+        public int readString(char[] data, int offset) {
             skipBlank();
-            if (next == '+' || next == '-') {
-                sign = next == '+' ? 1 : -1;
+
+            int originalOffset = offset;
+            while (next > 32) {
+                data[offset++] = (char) next;
                 next = read();
             }
 
-            int val = 0;
-            if (sign == 1) {
-                while (next >= '0' && next <= '9') {
-                    val = val * 10 + next - '0';
-                    next = read();
-                }
-            } else {
-                while (next >= '0' && next <= '9') {
-                    val = val * 10 - next + '0';
-                    next = read();
-                }
-            }
-
-            return val;
-        }
-
-    }
-
-    static class LongMinCostMaxFlow {
-        LongMinCostMaxFlow.Node[] nodes;
-        Deque<LongMinCostMaxFlow.Node> deque;
-        LongMinCostMaxFlow.Node source;
-        LongMinCostMaxFlow.Node target;
-        int nodeNum;
-        final static long INF = (long) 1e18;
-        Map<LongMinCostMaxFlow.ID, LongMinCostMaxFlow.DirectFeeChannel> channelMap = new HashMap();
-        LongMinCostMaxFlow.ID id = new LongMinCostMaxFlow.ID(0, 0, 0);
-
-        public LongMinCostMaxFlow(int nodeNum, int s, int t) {
-            this.nodeNum = nodeNum;
-            nodes = new LongMinCostMaxFlow.Node[nodeNum];
-            for (int i = 0; i < nodeNum; i++) {
-                nodes[i] = new LongMinCostMaxFlow.Node(i);
-            }
-            deque = new ArrayDeque(nodeNum);
-            setSource(s);
-            setTarget(t);
-        }
-
-        private void setSource(int id) {
-            source = nodes[id];
-        }
-
-        private void setTarget(int id) {
-            target = nodes[id];
-        }
-
-        public LongMinCostMaxFlow.DirectFeeChannel getChannel(int src, int dst, long fee) {
-            id.src = src;
-            id.dst = dst;
-            id.fee = fee;
-            LongMinCostMaxFlow.DirectFeeChannel channel = channelMap.get(id);
-            if (channel == null) {
-                channel = addChannel(src, dst, fee);
-                channelMap.put(new LongMinCostMaxFlow.ID(src, dst, fee), channel);
-            }
-            return channel;
-        }
-
-        private LongMinCostMaxFlow.DirectFeeChannel addChannel(int src, int dst, long fee) {
-            LongMinCostMaxFlow.DirectFeeChannel dfc = new LongMinCostMaxFlow.DirectFeeChannel(nodes[src], nodes[dst], fee);
-            nodes[src].channelList.add(dfc);
-            nodes[dst].channelList.add(dfc.inverse());
-            return dfc;
-        }
-
-        public long[] send(long flow) {
-            long totalFee = 0;
-            long totalFlow = 0;
-
-            while (flow > 0) {
-                spfa();
-
-                if (target.distance == INF) {
-                    break;
-                }
-
-
-                long feeSum = target.distance;
-                long minFlow = flow;
-
-                LongMinCostMaxFlow.Node trace = target;
-                while (trace != source) {
-                    LongMinCostMaxFlow.FeeChannel last = trace.last;
-                    minFlow = Math.min(minFlow, last.getCapacity() - last.getFlow());
-                    trace = last.getSrc();
-                }
-
-                flow -= minFlow;
-
-                trace = target;
-                while (trace != source) {
-                    LongMinCostMaxFlow.FeeChannel last = trace.last;
-                    last.sendFlow(minFlow);
-                    trace = last.getSrc();
-                }
-
-                totalFee += feeSum * minFlow;
-                totalFlow += minFlow;
-            }
-
-            return new long[]{totalFlow, totalFee};
-        }
-
-        private void spfa() {
-            for (int i = 0; i < nodeNum; i++) {
-                nodes[i].distance = INF;
-                nodes[i].inque = false;
-                nodes[i].last = null;
-            }
-
-            deque.addLast(source);
-            source.distance = 0;
-            source.inque = true;
-            long sumOfDistance = 0;
-
-            while (!deque.isEmpty()) {
-                LongMinCostMaxFlow.Node head = deque.removeFirst();
-                if (head.distance * (deque.size() + 1) > sumOfDistance) {
-                    deque.addLast(head);
-                    continue;
-                }
-                sumOfDistance -= head.distance;
-                head.inque = false;
-                for (LongMinCostMaxFlow.FeeChannel channel : head.channelList) {
-                    if (channel.getFlow() == channel.getCapacity()) {
-                        continue;
-                    }
-                    LongMinCostMaxFlow.Node dst = channel.getDst();
-                    long oldDist = dst.distance;
-                    long newDist = head.distance + channel.getFee();
-                    if (oldDist <= newDist) {
-                        continue;
-                    }
-                    dst.distance = newDist;
-                    dst.last = channel;
-                    if (dst.inque) {
-                        sumOfDistance -= oldDist;
-                        sumOfDistance += newDist;
-                        continue;
-                    }
-                    if (!deque.isEmpty() && deque.peekFirst().distance < dst.distance) {
-                        deque.addFirst(dst);
-                    } else {
-                        deque.addLast(dst);
-                    }
-                    dst.inque = true;
-                    sumOfDistance += newDist;
-                }
-            }
-        }
-
-        public String toString() {
-            StringBuilder builder = new StringBuilder();
-            for (LongMinCostMaxFlow.DirectFeeChannel channel : channelMap.values()) {
-                if (channel.getFlow() > 0) {
-                    builder.append(channel).append('\n');
-                }
-            }
-            return builder.toString();
-        }
-
-        private static class ID {
-            int src;
-            int dst;
-            long fee;
-
-            ID(int src, int dst, long fee) {
-                this.src = src;
-                this.dst = dst;
-                this.fee = fee;
-            }
-
-            public int hashCode() {
-                return (int) ((src * 31L + dst) * 31 + Long.hashCode(fee));
-            }
-
-            public boolean equals(Object obj) {
-                LongMinCostMaxFlow.ID other = (LongMinCostMaxFlow.ID) obj;
-                return src == other.src &&
-                        dst == other.dst &&
-                        fee == other.fee;
-            }
-
-        }
-
-        public static interface FeeChannel {
-            public LongMinCostMaxFlow.Node getSrc();
-
-            public LongMinCostMaxFlow.Node getDst();
-
-            public long getCapacity();
-
-            public long getFlow();
-
-            public void sendFlow(long volume);
-
-            public long getFee();
-
-        }
-
-        public static class DirectFeeChannel implements LongMinCostMaxFlow.FeeChannel {
-            final LongMinCostMaxFlow.Node src;
-            final LongMinCostMaxFlow.Node dst;
-            long capacity;
-            long flow;
-            LongMinCostMaxFlow.FeeChannel inverse;
-            final long fee;
-
-            public long getFee() {
-                return fee;
-            }
-
-            public DirectFeeChannel(LongMinCostMaxFlow.Node src, LongMinCostMaxFlow.Node dst, long fee) {
-                this.src = src;
-                this.dst = dst;
-                this.fee = fee;
-                inverse = new LongMinCostMaxFlow.InverseFeeChannelWrapper(this);
-            }
-
-            public String toString() {
-                return String.format("%s--%s/%s-->%s", getSrc(), getFlow(), getCapacity(), getDst());
-            }
-
-            public LongMinCostMaxFlow.Node getSrc() {
-                return src;
-            }
-
-            public LongMinCostMaxFlow.FeeChannel inverse() {
-                return inverse;
-            }
-
-            public LongMinCostMaxFlow.Node getDst() {
-                return dst;
-            }
-
-            public long getCapacity() {
-                return capacity;
-            }
-
-            public long getFlow() {
-                return flow;
-            }
-
-            public void sendFlow(long volume) {
-                flow += volume;
-            }
-
-            public void modify(long cap, long flow) {
-                this.capacity += cap;
-                this.flow += flow;
-            }
-
-        }
-
-        public static class InverseFeeChannelWrapper implements LongMinCostMaxFlow.FeeChannel {
-            final LongMinCostMaxFlow.FeeChannel inner;
-
-            public InverseFeeChannelWrapper(LongMinCostMaxFlow.FeeChannel inner) {
-                this.inner = inner;
-            }
-
-            public long getFee() {
-                return -inner.getFee();
-            }
-
-            public LongMinCostMaxFlow.Node getSrc() {
-                return inner.getDst();
-            }
-
-            public LongMinCostMaxFlow.Node getDst() {
-                return inner.getSrc();
-            }
-
-            public long getCapacity() {
-                return inner.getFlow();
-            }
-
-            public long getFlow() {
-                return 0;
-            }
-
-            public void sendFlow(long volume) {
-                inner.sendFlow(-volume);
-            }
-
-            public String toString() {
-                return String.format("%s--%s/%s-->%s", getSrc(), getFlow(), getCapacity(), getDst());
-            }
-
-        }
-
-        public static class Node {
-            final int id;
-            long distance;
-            boolean inque;
-            LongMinCostMaxFlow.FeeChannel last;
-            List<LongMinCostMaxFlow.FeeChannel> channelList = new ArrayList(1);
-
-            public Node(int id) {
-                this.id = id;
-            }
-
-            public String toString() {
-                return "" + id;
-            }
-
+            return offset - originalOffset;
         }
 
     }
@@ -420,18 +204,8 @@ public class Main {
             this(new OutputStreamWriter(os));
         }
 
-        public FastOutput append(char c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput append(long c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput println() {
-            cache.append('\n');
+        public FastOutput println(int c) {
+            cache.append(c).append('\n');
             return this;
         }
 
@@ -457,6 +231,45 @@ public class Main {
 
         public String toString() {
             return cache.toString();
+        }
+
+    }
+
+    static class ZAlgorithm implements IntUnaryOperator {
+        private int[] z;
+
+        public ZAlgorithm(int n, IntUnaryOperator s) {
+            if (n == 0) {
+                return;
+            }
+
+            int l = 0;
+            int r = -1;
+            z = new int[n];
+            z[0] = n;
+            for (int i = 1; i < n; i++) {
+                if (r < i) {
+                    l = r = i;
+                } else {
+                    int t = i - l;
+                    int k = r - i + 1;
+                    if (z[t] < k) {
+                        z[i] = z[t];
+                        continue;
+                    }
+                    l = i;
+                    r++;
+                }
+                while (r < n && s.applyAsInt(r - l) == s.applyAsInt(r)) {
+                    r++;
+                }
+                r--;
+                z[i] = r - l + 1;
+            }
+        }
+
+        public int applyAsInt(int operand) {
+            return z[operand];
         }
 
     }

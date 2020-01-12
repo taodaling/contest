@@ -5,6 +5,7 @@ import template.primitve.generated.IntegerList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 public class SequenceUtils {
     /**
@@ -616,7 +617,7 @@ public class SequenceUtils {
 
     public static <T> int indexOf(T[] array, int l, int r, T val) {
         for (int i = l; i <= r; i++) {
-            if (array[i] == val) {
+            if (Objects.equals(array[i], val)) {
                 return i;
             }
         }

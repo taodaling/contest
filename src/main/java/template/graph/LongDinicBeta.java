@@ -1,6 +1,8 @@
 package template.graph;
 
 import template.datastructure.MultiWayStack;
+import template.datastructure.SimplifiedDeque;
+import template.datastructure.SimplifiedStack;
 import template.math.DigitUtils;
 import template.primitve.generated.IntegerDequeImpl;
 import template.primitve.generated.IntegerList;
@@ -33,6 +35,10 @@ public class LongDinicBeta {
 
     private int sink;
     private int source;
+
+    public SimplifiedStack<Channel> getChannelFrom(int id){
+        return edges.getStack(id);
+    }
 
     public IntegerList getComponentS() {
         Arrays.fill(dists, 0);

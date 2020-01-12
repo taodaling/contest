@@ -1,0 +1,50 @@
+{
+  "name" : "E. Vasya and Big Integers",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "135\n1\n15\n",
+    "output" : "2\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "10000\n0\n9\n",
+    "output" : "1\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "8698272232067125804692796793285996652907461532074057999849092982935510140661249431760679611642931478\n6\n68270",
+    "output" : "336970248",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "1254298816872758107814873768638894851215334772406487549640220733524354123084977151799244616404710412\n35\n9634401298",
+    "output" : "254154042",
+    "index" : 3,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_01.on2020_01_12_Educational_Codeforces_Round_51__Rated_for_Div__2_.E__Vasya_and_Big_Integers.EVasyaAndBigIntegers",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.01.12",
+  "contestName" : "Educational Codeforces Round 51 (Rated for Div. 2)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}
