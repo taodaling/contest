@@ -6,7 +6,7 @@ public class MoOnArray {
 
     public static <T, Q extends Query> void handle(T[] data, Q[] queries, Handler<T, Q> handler) {
         int n = data.length;
-        int blockSize = (int) Math.ceil(Math.sqrt(n));
+        int blockSize = Math.max(1, (int) Math.ceil(Math.sqrt(queries.length)));
         handle(data, queries, handler, blockSize);
     }
 
@@ -50,7 +50,7 @@ public class MoOnArray {
 
     public static <Q extends Query> void handle(int[] data, Q[] queries, IntHandler<Q> handler) {
         int n = data.length;
-        int blockSize = (int) Math.ceil(Math.sqrt(n));
+        int blockSize = Math.max(1, (int) Math.ceil(Math.sqrt(queries.length)));
         handle(data, queries, handler, blockSize);
     }
 
