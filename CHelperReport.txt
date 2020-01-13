@@ -1,2 +1,3 @@
-52 src/main/java/contest/E. Vasya and Big Integers.json
-0
+33 src/main/java/contest/F. DFS.json
+1
+3
