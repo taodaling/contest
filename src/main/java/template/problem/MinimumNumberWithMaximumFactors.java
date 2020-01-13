@@ -2,13 +2,16 @@ package template.problem;
 
 import template.math.DigitUtils;
 
+import java.util.Arrays;
+
 public class MinimumNumberWithMaximumFactors {
     public static void main(String[] args) {
-        System.out.println(MinimumNumberWithMaximumFactors.find((long) 1e15));
-       // System.out.println(new LongPollardRho().findAllFactors(978217616376000L));
+        //System.out.println(MinimumNumberWithMaximumFactors.find((long) 1e15));
+        System.out.println(Arrays.toString(MinimumNumberWithMaximumFactors.maximumPrimeFactor((long) 300000)));
+        // System.out.println(new LongPollardRho().findAllFactors(978217616376000L));
     }
 
-    private static int[] primes = new int[] {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53};
+    private static int[] primes = new int[]{2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53};
 
     /**
      * Find the minimum x, while x <= r and x has many factors as possible
@@ -19,6 +22,23 @@ public class MinimumNumberWithMaximumFactors {
         return answer;
     }
 
+    /**
+     * 统计[1,n]中的所有数中拥有最多不同素因子的数，以及其素因子数。
+     * <br>
+     * 返回结果ret，则ret[0]表示该数，ret[1]表示该数包含多少个不同的素因子
+     */
+    public static long[] maximumPrimeFactor(long n) {
+        long[] ans = new long[2];
+        ans[0] = 1;
+        for (int i = 0; i < primes.length; i++) {
+            if (DigitUtils.isMultiplicationOverflow(ans[0], primes[i], n)) {
+                break;
+            }
+            ans[0] *= primes[i];
+            ans[1]++;
+        }
+        return ans;
+    }
 
     private static void find(long r, Answer answer, long factorNumber, long value, int step, int last) {
         if (value > r) {
