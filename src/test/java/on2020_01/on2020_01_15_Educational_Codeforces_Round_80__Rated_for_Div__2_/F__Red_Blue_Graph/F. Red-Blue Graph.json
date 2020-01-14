@@ -1,5 +1,5 @@
 {
-  "name" : "Gorgeous Sequence",
+  "name" : "F. Red-Blue Graph",
   "testType" : "SINGLE",
   "input" : {
     "type" : "STANDARD",
@@ -10,20 +10,30 @@
     "fileName" : "output.txt"
   },
   "tests" : [ {
-    "input" : "1\n5 5\n1 2 3 4 5\n1 1 5\n2 1 5\n0 3 5 3\n1 1 5\n2 1 5\n",
-    "output" : "5\n15\n3\n12\n",
+    "input" : "3 2 6 10 15\nRRB\nUB\n3 2\n2 2\n1 2\n1 1\n2 1\n1 1\n",
+    "output" : "35\nBUURRU\n",
     "index" : 0,
+    "active" : true
+  }, {
+    "input" : "3 1 3 4 5\nRRR\nB\n2 1\n1 1\n3 1\n",
+    "output" : "-1\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "3 1 3 4 5\nURU\nB\n2 1\n1 1\n3 1\n",
+    "output" : "14\nRBB\n",
+    "index" : 2,
     "active" : true
   } ],
   "location" : "src/main/java/contest",
-  "vmArgs" : "-Xmx131M",
+  "vmArgs" : "-Xmx512M",
   "mainClass" : "Main",
-  "taskClass" : "contest.GorgeousSequence",
+  "taskClass" : "on2020_01.on2020_01_15_Educational_Codeforces_Round_80__Rated_for_Div__2_.F__Red_Blue_Graph.FRedBlueGraph",
   "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
   "checkerParameters" : "",
   "testClasses" : [ ],
-  "date" : "2020.01.14",
-  "contestName" : "HDU Online Judge",
+  "date" : "2020.01.15",
+  "contestName" : "Educational Codeforces Round 80 (Rated for Div. 2)",
   "truncate" : true,
   "inputClass" : "template.io.FastInput",
   "outputClass" : "template.io.FastOutput",

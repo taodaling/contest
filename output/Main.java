@@ -2,13 +2,17 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.Collection;
 import java.io.IOException;
+import java.util.Deque;
 import java.util.ArrayList;
 import java.io.UncheckedIOException;
 import java.util.List;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
+import java.util.ArrayDeque;
 import java.io.InputStream;
 
 /**
@@ -29,98 +33,89 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            DYouAreGivenATree solver = new DYouAreGivenATree();
+            EMessengerSimulator solver = new EMessengerSimulator();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class DYouAreGivenATree {
-        Node[] nodes;
-        int count = 0;
-
+    static class EMessengerSimulator {
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            nodes = new Node[n + 1];
-            for (int i = 1; i <= n; i++) {
-                nodes[i] = new Node();
-            }
-            for (int i = 1; i < n; i++) {
-                Node a = nodes[in.readInt()];
-                Node b = nodes[in.readInt()];
-                a.next.add(b);
-                b.next.add(a);
+            int m = in.readInt();
+            int[] a = new int[m];
+            for (int i = 0; i < m; i++) {
+                a[i] = in.readInt() - 1;
             }
 
-            dfs(nodes[1], null);
-
-            int sqrt = (int) Math.ceil(Math.sqrt(n));
-            int[] ans = new int[n + 1];
-            for (int i = 1; i < sqrt; i++) {
-                out.println(solve(i));
+            MultiWayIntegerDeque deque = new MultiWayIntegerDeque(n, m);
+            for (int i = 0; i < m; i++) {
+                deque.addLast(a[i], i);
             }
 
-            int r = sqrt - 1;
-            int l;
-            while (r < n) {
-                int since = r + 1;
-                l = since;
-                int val = solve(l);
-                r = n;
-                while (l < r) {
-                    int mid = (l + r + 1) >> 1;
-                    if (solve(mid) == val) {
-                        l = mid;
-                    } else {
-                        r = mid - 1;
+            List<Query> queries = new ArrayList<>();
+            int[] first = new int[n];
+            int[] last = new int[n];
+
+            for (int i = 0; i < n; i++) {
+                if (deque.isEmpty(i)) {
+                    first[i] = i;
+                } else {
+                    first[i] = 0;
+                    IntegerIterator iterator = deque.iterator(i);
+                    int pre = iterator.next();
+                    while (iterator.hasNext()) {
+                        int next = iterator.next();
+                        queries.add(new Query(pre + 1, next - 1, i));
+                        pre = next;
+                    }
+                    if (pre + 1 <= m - 1) {
+                        queries.add(new Query(pre + 1, m - 1, i));
                     }
                 }
-                for (int i = since; i <= r; i++) {
-                    out.println(val);
+            }
+
+            IntegerBIT appearBIT = new IntegerBIT(n);
+            boolean[] visited = new boolean[n];
+            for (int i = 0; i < m; i++) {
+                if (visited[a[i]]) {
+                    continue;
+                }
+                visited[a[i]] = true;
+                appearBIT.update(a[i] + 1, 1);
+                last[a[i]] = Math.max(last[a[i]], a[i] + appearBIT.query(n) - appearBIT.query(a[i] + 1));
+            }
+
+            for (int i = 0; i < n; i++) {
+                if (visited[i]) {
+                    continue;
+                }
+                visited[i] = true;
+                last[i] = Math.max(last[i], i + appearBIT.query(n) - appearBIT.query(i + 1));
+            }
+
+            int[] registries = new int[n];
+            Arrays.fill(registries, -1);
+            IntegerBIT countBit = new IntegerBIT(m);
+            queries.sort((x, y) -> x.r - y.r);
+            Deque<Query> queue = new ArrayDeque<>(queries);
+
+            for (int i = 0; i < m; i++) {
+                if (registries[a[i]] != -1) {
+                    countBit.update(1 + registries[a[i]], -1);
+                }
+                registries[a[i]] = i;
+                countBit.update(1 + registries[a[i]], 1);
+                while (!queue.isEmpty() && queue.peekFirst().r == i) {
+                    Query q = queue.removeFirst();
+                    int ans = countBit.query(q.r + 1) - countBit.query(q.l);
+                    last[q.person] = Math.max(last[q.person], ans);
                 }
             }
-        }
 
-        public int solve(int k) {
-            prepare();
-            dp(nodes[1], k);
-            return count;
-        }
-
-        public void dfs(Node root, Node p) {
-            root.next.remove(p);
-            root.size = 1;
-            for (Node node : root.next) {
-                dfs(node, root);
-                root.size += node.size;
+            for (int i = 0; i < n; i++) {
+                out.append(first[i] + 1).append(' ').append(last[i] + 1).println();
             }
-        }
-
-        private void prepare() {
-            count = 0;
-        }
-
-        public int dp(Node root, int k) {
-            int max1 = 0;
-            int max2 = 0;
-
-            for (Node node : root.next) {
-                int ans = dp(node, k);
-                if (ans > max2) {
-                    max2 = ans;
-                }
-                if (max2 > max1) {
-                    int tmp = max1;
-                    max1 = max2;
-                    max2 = tmp;
-                }
-            }
-
-            if (max1 + max2 + 1 >= k) {
-                count++;
-                return 0;
-            }
-            return max1 + 1;
         }
 
     }
@@ -184,12 +179,6 @@ public class Main {
 
     }
 
-    static class Node {
-        List<Node> next = new ArrayList<>();
-        int size;
-
-    }
-
     static class FastOutput implements AutoCloseable, Closeable {
         private StringBuilder cache = new StringBuilder(10 << 20);
         private final Writer os;
@@ -202,8 +191,18 @@ public class Main {
             this(new OutputStreamWriter(os));
         }
 
-        public FastOutput println(int c) {
-            cache.append(c).append('\n');
+        public FastOutput append(char c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput append(int c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput println() {
+            cache.append('\n');
             return this;
         }
 
@@ -229,6 +228,147 @@ public class Main {
 
         public String toString() {
             return cache.toString();
+        }
+
+    }
+
+    static class IntegerBIT {
+        private int[] data;
+        private int n;
+
+        public IntegerBIT(int n) {
+            this.n = n;
+            data = new int[n + 1];
+        }
+
+        public int query(int i) {
+            int sum = 0;
+            for (; i > 0; i -= i & -i) {
+                sum += data[i];
+            }
+            return sum;
+        }
+
+        public void update(int i, int mod) {
+            if (i <= 0) {
+                return;
+            }
+            for (; i <= n; i += i & -i) {
+                data[i] += mod;
+            }
+        }
+
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            for (int i = 1; i <= n; i++) {
+                builder.append(query(i) - query(i - 1)).append(' ');
+            }
+            return builder.toString();
+        }
+
+    }
+
+    static interface IntegerIterator {
+        boolean hasNext();
+
+        int next();
+
+    }
+
+    static class Query {
+        int l;
+        int r;
+        int person;
+
+        public Query(int l, int r, int person) {
+            this.l = l;
+            this.r = r;
+            this.person = person;
+        }
+
+    }
+
+    static class MultiWayIntegerDeque {
+        private int[] values;
+        private int[] next;
+        private int[] prev;
+        private int[] heads;
+        private int[] tails;
+        private int alloc;
+        private int queueNum;
+
+        public IntegerIterator iterator(final int queue) {
+            return new IntegerIterator() {
+                int ele = heads[queue];
+
+
+                public boolean hasNext() {
+                    return ele != 0;
+                }
+
+
+                public int next() {
+                    int ans = values[ele];
+                    ele = next[ele];
+                    return ans;
+                }
+            };
+        }
+
+        private void doubleCapacity() {
+            int newSize = Math.max(next.length + 10, next.length * 2);
+            next = Arrays.copyOf(next, newSize);
+            prev = Arrays.copyOf(prev, newSize);
+            values = Arrays.copyOf(values, newSize);
+        }
+
+        public void alloc() {
+            alloc++;
+            if (alloc >= next.length) {
+                doubleCapacity();
+            }
+            next[alloc] = 0;
+        }
+
+        public boolean isEmpty(int qId) {
+            return heads[qId] == 0;
+        }
+
+        public MultiWayIntegerDeque(int qNum, int totalCapacity) {
+            values = new int[totalCapacity + 1];
+            next = new int[totalCapacity + 1];
+            prev = new int[totalCapacity + 1];
+            heads = new int[qNum];
+            tails = new int[qNum];
+            queueNum = qNum;
+        }
+
+        public void addLast(int qId, int x) {
+            alloc();
+            values[alloc] = x;
+
+            if (heads[qId] == 0) {
+                heads[qId] = tails[qId] = alloc;
+                return;
+            }
+            next[tails[qId]] = alloc;
+            prev[alloc] = tails[qId];
+            tails[qId] = alloc;
+        }
+
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < queueNum; i++) {
+                builder.append(i).append(": ");
+                for (IntegerIterator iterator = iterator(i); iterator.hasNext(); ) {
+                    builder.append(iterator.next()).append(",");
+                }
+                if (builder.charAt(builder.length() - 1) == ',') {
+                    builder.setLength(builder.length() - 1);
+                }
+                builder.append('\n');
+            }
+            return builder.toString();
         }
 
     }

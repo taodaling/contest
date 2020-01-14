@@ -1,0 +1,40 @@
+{
+  "name" : "Gorgeous Sequence",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "1\n5 5\n1 2 3 4 5\n1 1 5\n2 1 5\n0 3 5 3\n1 1 5\n2 1 5\n",
+    "output" : "5\n15\n3\n12\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "1\n5 3\n1 2 3 4 5\n0 1 5 4\n0 1 5 3\n2 1 5",
+    "output" : "12",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx131M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_01.on2020_01_14_HDU_Online_Judge.Gorgeous_Sequence0.GorgeousSequence",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "on2020_01.on2020_01_14_HDU_Online_Judge.Gorgeous_Sequence0.GorgeousSequenceTestCase" ],
+  "date" : "2020.01.14",
+  "contestName" : "HDU Online Judge",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : false
+}

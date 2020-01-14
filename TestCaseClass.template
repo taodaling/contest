@@ -18,7 +18,16 @@ public class %TestCaseClass% {
         return tests;
     }
 
+    private void printLine(StringBuilder builder, Object...vals){
+        for(Object val : vals){
+            builder.append(val).append(' ');
+        }
+        builder.append('\n');
+    }
+
     RandomWrapper random = new RandomWrapper(new Random(0));
     public Test create(int testNum){
     }
+
+
 }

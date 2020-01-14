@@ -7,32 +7,32 @@ public class SegmentBeat {
     private SegmentBeat right;
     private long first;
     private long second;
+    private int firstCnt;
     private static long inf = (long) 2e18;
-    private long minTag = inf;
     private long sum;
-    private int size;
 
     private void setMin(long x) {
-        minTag = Math.min(minTag, x);
-        first = Math.min(minTag, x);
+        if (first <= x) {
+            return;
+        }
+        sum -= (first - x) * firstCnt;
+        first = x;
     }
 
     public void pushUp() {
-        if (left.first >= right.first) {
-            first = left.first;
-            second = Math.max(left.second, right.first);
+        first = Math.max(left.first, right.first);
+        if (left.first == right.first) {
+            second = Math.max(left.second, right.second);
         } else {
-            first = right.first;
-            second = Math.max(left.first, right.second);
+            second = Math.max(Math.max(left.second, right.second), Math.min(left.first, right.first));
         }
-        size = left.size + right.size;
+        firstCnt = (left.first == first ? left.firstCnt : 0) + (right.first == first ? right.firstCnt : 0);
         sum = left.sum + right.sum;
     }
 
     public void pushDown() {
-        left.setMin(minTag);
-        right.setMin(minTag);
-        minTag = inf;
+        left.setMin(first);
+        right.setMin(first);
     }
 
     public SegmentBeat(int l, int r, IntUnaryOperator func) {
@@ -42,10 +42,9 @@ public class SegmentBeat {
             right = new SegmentBeat(m + 1, r, func);
             pushUp();
         } else {
-            first = func.applyAsInt(l);
+            sum = first = func.applyAsInt(l);
             second = -inf;
-            size = 1;
-            sum = first;
+            firstCnt = 1;
         }
     }
 
@@ -57,7 +56,7 @@ public class SegmentBeat {
         return ll > r || rr < l;
     }
 
-    public void updateMin(int ll, int rr, int l, int r, int x) {
+    public void updateMin(int ll, int rr, int l, int r, long x) {
         if (noIntersection(ll, rr, l, r)) {
             return;
         }
@@ -65,10 +64,10 @@ public class SegmentBeat {
             if (first <= x) {
                 return;
             }
-            if (second <= x) {
-                sum -= x;
+            if (second < x) {
+                setMin(x);
+                return;
             }
-            return;
         }
         pushDown();
         int m = (l + r) >> 1;
@@ -77,16 +76,29 @@ public class SegmentBeat {
         pushUp();
     }
 
-    public void query(int ll, int rr, int l, int r) {
+    public long querySum(int ll, int rr, int l, int r) {
         if (noIntersection(ll, rr, l, r)) {
-            return;
+            return 0;
         }
         if (covered(ll, rr, l, r)) {
-            return;
+            return sum;
         }
         pushDown();
         int m = (l + r) >> 1;
-        left.query(ll, rr, l, m);
-        right.query(ll, rr, m + 1, r);
+        return left.querySum(ll, rr, l, m) +
+                right.querySum(ll, rr, m + 1, r);
+    }
+
+    public long queryMax(int ll, int rr, int l, int r) {
+        if (noIntersection(ll, rr, l, r)) {
+            return -inf;
+        }
+        if (covered(ll, rr, l, r)) {
+            return first;
+        }
+        pushDown();
+        int m = (l + r) >> 1;
+        return Math.max(left.queryMax(ll, rr, l, m),
+                right.queryMax(ll, rr, m + 1, r));
     }
 }
