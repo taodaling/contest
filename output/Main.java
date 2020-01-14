@@ -2,9 +2,10 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.io.UncheckedIOException;
+import java.util.List;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
@@ -28,251 +29,98 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            FMakeItOne solver = new FMakeItOne();
+            DYouAreGivenATree solver = new DYouAreGivenATree();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class FMakeItOne {
+    static class DYouAreGivenATree {
+        Node[] nodes;
+        int count = 0;
+
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            int limit = 300000;
-            int[] cnts = new int[limit + 1];
-            for (int i = 0; i < n; i++) {
-                cnts[in.readInt()]++;
+            nodes = new Node[n + 1];
+            for (int i = 1; i <= n; i++) {
+                nodes[i] = new Node();
             }
-            if (cnts[1] > 0) {
-                out.println(1);
-                return;
-            }
-            MultiWayIntegerStack allPrimeFactors = new MultiWayIntegerStack(limit + 1, limit * 7);
-            boolean[] isComp = new boolean[limit + 1];
-            for (int i = 2; i <= limit; i++) {
-                if (isComp[i]) {
-                    continue;
-                }
-                for (int j = i; j <= limit; j += i) {
-                    isComp[j] = true;
-                    allPrimeFactors.addLast(j, i);
-                }
+            for (int i = 1; i < n; i++) {
+                Node a = nodes[in.readInt()];
+                Node b = nodes[in.readInt()];
+                a.next.add(b);
+                b.next.add(a);
             }
 
-            int[] hasGcdGreaterThan1 = new int[limit + 1];
-            int[] multiples = new int[limit + 1];
-            for (int i = 1; i <= limit; i++) {
-                for (int j = i; j <= limit; j += i) {
-                    multiples[i] += cnts[j];
-                }
+            dfs(nodes[1], null);
+
+            int sqrt = (int) Math.ceil(Math.sqrt(n));
+            int[] ans = new int[n + 1];
+            for (int i = 1; i < sqrt; i++) {
+                out.println(solve(i));
             }
 
-            IntegerList allFactors = new IntegerList(10);
-            for (int i = 1; i <= limit; i++) {
-                allFactors.clear();
-                for (IntegerIterator iterator = allPrimeFactors.iterator(i); iterator.hasNext(); ) {
-                    allFactors.add(iterator.next());
-                }
-                hasGcdGreaterThan1[i] = dfs(multiples, allFactors.getData(), 1, 0, allFactors.size() - 1);
-            }
-
-            int[] dp = new int[limit + 1];
-            Arrays.fill(dp, (int) 1e8);
-            for (int i = limit; i >= 1; i--) {
-                if (cnts[i] > 0) {
-                    dp[i] = Math.min(dp[i], 1);
-                }
-                for (int j = 2; j * i <= limit; j++) {
-                    if (hasGcdGreaterThan1[j] == n) {
-                        continue;
+            int r = sqrt - 1;
+            int l;
+            while (r < n) {
+                int since = r + 1;
+                l = since;
+                int val = solve(l);
+                r = n;
+                while (l < r) {
+                    int mid = (l + r + 1) >> 1;
+                    if (solve(mid) == val) {
+                        l = mid;
+                    } else {
+                        r = mid - 1;
                     }
-                    dp[i] = Math.min(dp[i], dp[j * i] + 1);
+                }
+                for (int i = since; i <= r; i++) {
+                    out.println(val);
+                }
+            }
+        }
+
+        public int solve(int k) {
+            prepare();
+            dp(nodes[1], k);
+            return count;
+        }
+
+        public void dfs(Node root, Node p) {
+            root.next.remove(p);
+            root.size = 1;
+            for (Node node : root.next) {
+                dfs(node, root);
+                root.size += node.size;
+            }
+        }
+
+        private void prepare() {
+            count = 0;
+        }
+
+        public int dp(Node root, int k) {
+            int max1 = 0;
+            int max2 = 0;
+
+            for (Node node : root.next) {
+                int ans = dp(node, k);
+                if (ans > max2) {
+                    max2 = ans;
+                }
+                if (max2 > max1) {
+                    int tmp = max1;
+                    max1 = max2;
+                    max2 = tmp;
                 }
             }
 
-            if (dp[1] == (int) 1e8) {
-                out.println(-1);
-                return;
+            if (max1 + max2 + 1 >= k) {
+                count++;
+                return 0;
             }
-
-            out.println(dp[1]);
-        }
-
-        public int dfs(int[] multiples, int[] allFactors, int prod, int factors, int i) {
-            if (i == -1) {
-                if (factors == 0) {
-                    return 0;
-                }
-                int ans = multiples[prod];
-                if (factors % 2 == 0) {
-                    ans = -ans;
-                }
-                return ans;
-            }
-            return dfs(multiples, allFactors, prod * allFactors[i], factors + 1, i - 1) +
-                    dfs(multiples, allFactors, prod, factors, i - 1);
-        }
-
-    }
-
-    static class IntegerList implements Cloneable {
-        private int size;
-        private int cap;
-        private int[] data;
-        private static final int[] EMPTY = new int[0];
-
-        public int[] getData() {
-            return data;
-        }
-
-        public IntegerList(int cap) {
-            this.cap = cap;
-            if (cap == 0) {
-                data = EMPTY;
-            } else {
-                data = new int[cap];
-            }
-        }
-
-        public IntegerList(IntegerList list) {
-            this.size = list.size;
-            this.cap = list.cap;
-            this.data = Arrays.copyOf(list.data, size);
-        }
-
-        public IntegerList() {
-            this(0);
-        }
-
-        public void ensureSpace(int req) {
-            if (req > cap) {
-                while (cap < req) {
-                    cap = Math.max(cap + 10, 2 * cap);
-                }
-                data = Arrays.copyOf(data, cap);
-            }
-        }
-
-        public void add(int x) {
-            ensureSpace(size + 1);
-            data[size++] = x;
-        }
-
-        public void addAll(int[] x, int offset, int len) {
-            ensureSpace(size + len);
-            System.arraycopy(x, offset, data, size, len);
-            size += len;
-        }
-
-        public void addAll(IntegerList list) {
-            addAll(list.data, 0, list.size);
-        }
-
-        public int size() {
-            return size;
-        }
-
-        public int[] toArray() {
-            return Arrays.copyOf(data, size);
-        }
-
-        public void clear() {
-            size = 0;
-        }
-
-        public String toString() {
-            return Arrays.toString(toArray());
-        }
-
-        public boolean equals(Object obj) {
-            if (!(obj instanceof IntegerList)) {
-                return false;
-            }
-            IntegerList other = (IntegerList) obj;
-            return SequenceUtils.equal(data, 0, size - 1, other.data, 0, other.size - 1);
-        }
-
-        public int hashCode() {
-            int h = 1;
-            for (int i = 0; i < size; i++) {
-                h = h * 31 + Integer.hashCode(data[i]);
-            }
-            return h;
-        }
-
-        public IntegerList clone() {
-            IntegerList ans = new IntegerList();
-            ans.addAll(this);
-            return ans;
-        }
-
-    }
-
-    static class MultiWayIntegerStack {
-        private int[] values;
-        private int[] next;
-        private int[] heads;
-        private int alloc;
-        private int stackNum;
-
-        public IntegerIterator iterator(final int queue) {
-            return new IntegerIterator() {
-                int ele = heads[queue];
-
-
-                public boolean hasNext() {
-                    return ele != 0;
-                }
-
-
-                public int next() {
-                    int ans = values[ele];
-                    ele = next[ele];
-                    return ans;
-                }
-            };
-        }
-
-        private void doubleCapacity() {
-            int newSize = Math.max(next.length + 10, next.length * 2);
-            next = Arrays.copyOf(next, newSize);
-            values = Arrays.copyOf(values, newSize);
-        }
-
-        public void alloc() {
-            alloc++;
-            if (alloc >= next.length) {
-                doubleCapacity();
-            }
-            next[alloc] = 0;
-        }
-
-        public MultiWayIntegerStack(int qNum, int totalCapacity) {
-            values = new int[totalCapacity + 1];
-            next = new int[totalCapacity + 1];
-            heads = new int[qNum];
-            stackNum = qNum;
-        }
-
-        public void addLast(int qId, int x) {
-            alloc();
-            values[alloc] = x;
-            next[alloc] = heads[qId];
-            heads[qId] = alloc;
-        }
-
-        public String toString() {
-            StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < stackNum; i++) {
-                builder.append(i).append(": ");
-                for (IntegerIterator iterator = iterator(i); iterator.hasNext(); ) {
-                    builder.append(iterator.next()).append(",");
-                }
-                if (builder.charAt(builder.length() - 1) == ',') {
-                    builder.setLength(builder.length() - 1);
-                }
-                builder.append('\n');
-            }
-            return builder.toString();
+            return max1 + 1;
         }
 
     }
@@ -336,25 +184,9 @@ public class Main {
 
     }
 
-    static class SequenceUtils {
-        public static boolean equal(int[] a, int al, int ar, int[] b, int bl, int br) {
-            if ((ar - al) != (br - bl)) {
-                return false;
-            }
-            for (int i = al, j = bl; i <= ar; i++, j++) {
-                if (a[i] != b[j]) {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-    }
-
-    static interface IntegerIterator {
-        boolean hasNext();
-
-        int next();
+    static class Node {
+        List<Node> next = new ArrayList<>();
+        int size;
 
     }
 

@@ -72,5 +72,6 @@
         "typeinfo": "cpp",
         "valarray": "cpp",
         "rope": "cpp"
-    }
+    },
+    "competitive-programming-helper.firstTime": false
 }

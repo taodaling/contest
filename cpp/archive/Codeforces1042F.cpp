@@ -1,3 +1,4 @@
+//https://codeforces.com/problemset/problem/1042/F
 #include <iostream>
 #include <fstream>
 #include <iomanip>
@@ -59,8 +60,55 @@ namespace other
 
 using namespace dalt;
 
+vector<vector<int>> edges;
+int n, k;
+int total;
+
+int dfs(int root, int p, int depth){
+  vector<int> sub;
+  sub.reserve(edges[root].size());
+  for(int node : edges[root]){
+    if(node == p){
+      continue;
+    }
+    sub.push_back(dfs(node, root, depth + 1));
+  }
+  if(sub.empty()){
+    return depth;
+  }
+
+  sort(sub.begin(), sub.end());
+  int highest = sub[sub.size() - 1];
+  for(int i = sub.size() - 1; i >= 1; i--){
+    if(sub[i] + sub[i - 1] - depth * 2 > k){
+      total++;
+      highest = sub[i - 1];
+    }else{
+      break;
+    }
+  }
+  return highest;
+}
+
 void solve(istream &in, ostream &out)
 {
+  in >> n >> k;
+  edges.resize(n + 1);
+  for(int i = 1; i < n; i++){
+    int a, b;
+    in >> a >> b;
+    edges[a].push_back(b);
+    edges[b].push_back(a);
+  }
+
+  int root = 1;
+  while(root + 1 <= n && edges[root].size() <= 1){
+    root++;
+  }
+
+  dfs(root, 0, 0);
+  total++;
+  out << total << endl;
 }
 
 int main()

@@ -38,16 +38,12 @@ typedef long double ld;
 typedef unsigned long long ull;
 std::mt19937 rng(std::chrono::steady_clock::now().time_since_epoch().count());
 
-#define trace(...) __f(#__VA_ARGS__, __VA_ARGS__)
-template <typename Arg1>
-void __f(const char* name, Arg1&& arg1){
-  cerr << name << ": " << arg1 << endl;
-}
-template <typename Arg1, typename... Args>
-void __f(const char* names, Arg1&& arg1, Args&&... args){
-  const char* comma = strchr(names + 1, ',');
-  cerr.write(names, comma - names) << ": " << arg1 << " |";
-  __f(comma + 1, args...);
+#define error(args...) { string _s = #args; replace(_s.begin(), _s.end(), ',', ' '); stringstream _ss(_s); istream_iterator<string> _it(_ss); err(_it, args); }
+void err(std::istream_iterator<string> it) {}
+template<typename T, typename... Args>
+void err(std::istream_iterator<string> it, T a, Args... args) {
+	cerr << *it << " = " << a << endl;
+	err(++it, args...);
 }
 
 namespace dalt
