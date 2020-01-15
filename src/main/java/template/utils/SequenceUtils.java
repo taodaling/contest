@@ -532,6 +532,9 @@ public class SequenceUtils {
         }
     }
 
+    public static <T> void reverse(List<T> data) {
+        reverse(data, 0, data.size() - 1);
+    }
 
     public static <T> void reverse(T[] data, int l, int r) {
         while (l < r) {

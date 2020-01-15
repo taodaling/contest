@@ -10,6 +10,10 @@ public class HashLinkedListBeta<E> extends LinkedListBeta<E> {
         map = new HashMap<>(cap);
     }
 
+    public HashLinkedListBeta() {
+        this(0);
+    }
+
     private void assertNull(Object o) {
         if (o != null) {
             throw new IllegalStateException();
