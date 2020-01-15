@@ -70,7 +70,7 @@ public class LongMinCostMaxFlow {
         return channel;
     }
 
-    private DirectFeeChannel addChannel(int src, int dst, long fee) {
+    public DirectFeeChannel addChannel(int src, int dst, long fee) {
         DirectFeeChannel dfc = new DirectFeeChannel(nodes[src], nodes[dst], fee);
         nodes[src].channelList.add(dfc);
         nodes[dst].channelList.add(dfc.inverse());
@@ -237,14 +237,16 @@ public class LongMinCostMaxFlow {
             flow += volume;
         }
 
-        public void reset(long cap, long flow) {
+        public DirectFeeChannel reset(long cap, long flow) {
             this.capacity = cap;
             this.flow = flow;
+            return this;
         }
 
-        public void modify(long cap, long flow) {
+        public DirectFeeChannel modify(long cap, long flow) {
             this.capacity += cap;
             this.flow += flow;
+            return this;
         }
     }
 

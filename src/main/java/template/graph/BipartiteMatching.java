@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * O(E\sqrt{V}) time to find bipartite matching
+ */
 public class BipartiteMatching {
     LongDinicBeta dinic;
     int l;

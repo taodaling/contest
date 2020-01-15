@@ -1,2 +1,2 @@
-49 src/main/java/contest/E. Messenger Simulator.json
+44 src/main/java/contest/F. Red-Blue Graph.json
 0

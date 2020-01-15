@@ -60,42 +60,49 @@ public class FastOutput implements AutoCloseable, Closeable {
     }
 
     public FastOutput println(char c) {
-        cache.append(c).append('\n');
+        cache.append(c);
+        println();
         return this;
     }
 
     public FastOutput println(String c) {
-        cache.append(c).append('\n');
+        cache.append(c);
+        println();
         return this;
     }
 
     public FastOutput println(int c) {
-        cache.append(c).append('\n');
+        cache.append(c);
+        println();
         return this;
     }
 
     public FastOutput println(long c) {
-        cache.append(c).append('\n');
+        cache.append(c);
+        println();
         return this;
     }
 
     public FastOutput println(float c) {
-        cache.append(c).append('\n');
+        cache.append(c);
+        println();
         return this;
     }
 
     public FastOutput println(double c) {
-        cache.append(c).append('\n');
+        cache.append(c);
+        println();
         return this;
     }
 
     public FastOutput println(Object c) {
-        cache.append(c).append('\n');
+        cache.append(c);
+        println();
         return this;
     }
 
     public FastOutput println() {
-        cache.append('\n');
+        cache.append(System.lineSeparator());
         return this;
     }
 

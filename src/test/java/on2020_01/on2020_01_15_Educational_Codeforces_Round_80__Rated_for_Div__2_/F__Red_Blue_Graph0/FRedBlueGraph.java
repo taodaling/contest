@@ -1,4 +1,6 @@
-package contest;
+package on2020_01.on2020_01_15_Educational_Codeforces_Round_80__Rated_for_Div__2_.F__Red_Blue_Graph0;
+
+
 
 import template.graph.LongDinicBeta;
 import template.graph.LongMinCostMaxFlow;
