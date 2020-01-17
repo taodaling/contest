@@ -1,2 +1,2 @@
-50 src/main/java/contest/D. You Are Given a Tree.json
+44 src/main/java/contest/Long Long Message.json
 0

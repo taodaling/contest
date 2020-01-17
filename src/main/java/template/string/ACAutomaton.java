@@ -12,10 +12,14 @@ public class ACAutomaton {
     private final int MIN_CHARACTER;
     private final int MAX_CHARACTER;
     private final int RANGE;
-    Node root;
-    Node buildLast;
-    Node matchLast;
-    List<Node> allNodes = new ArrayList();
+    private Node root;
+    private Node buildLast;
+    private Node matchLast;
+    private List<Node> allNodes = new ArrayList();
+
+    public void setMatchLast(Node node) {
+        matchLast = node;
+    }
 
     public Node getBuildLast() {
         return buildLast;
@@ -118,7 +122,7 @@ public class ACAutomaton {
     }
 
     public static class Node {
-        Node[] next;
+        public Node[] next;
         Node fail;
         Node father;
         int index;
