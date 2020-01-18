@@ -17,10 +17,6 @@ public class ACAutomaton {
     private Node matchLast;
     private List<Node> allNodes = new ArrayList();
 
-    public void setMatchLast(Node node) {
-        matchLast = node;
-    }
-
     public Node getBuildLast() {
         return buildLast;
     }

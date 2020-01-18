@@ -3,11 +3,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
-import java.util.Iterator;
-import java.util.function.IntUnaryOperator;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.util.Objects;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
@@ -31,304 +28,221 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            HSecurity solver = new HSecurity();
+            DSwapAndFlip solver = new DSwapAndFlip();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class HSecurity {
+    static class DSwapAndFlip {
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            String s = in.readString();
-            int n = s.length();
-            SuffixTree st = new SuffixTree(i -> i < n ? s.charAt(i) : 'a' - 1, n + 1, 'a' - 1, 'z');
-            st.dfs(st.getRoot());
-            int q = in.readInt();
-            Query[] queries = new Query[q];
-            for (int i = 0; i < q; i++) {
-                queries[i] = new Query();
-                queries[i].l = in.readInt() - 1;
-                queries[i].r = in.readInt() - 1;
-                queries[i].x = in.readString();
+            int n = in.readInt();
+            int[] a = new int[n];
+            int[] b = new int[n];
+            for (int i = 0; i < n; i++) {
+                a[i] = in.readInt();
             }
-            Query[] sorted = queries.clone();
-            Arrays.sort(sorted, (a, b) -> a.l - b.l);
-            SimplifiedDeque<Query> deque = new Array2DequeAdapter<>(sorted);
-            for (int i = s.length() - 1; i >= 0; i--) {
-                st.enable(i);
-                while (!deque.isEmpty() && deque.peekLast().l == i) {
-                    Query query = deque.removeLast();
-                    int m = query.x.length();
-                    query.ans = st.search(j -> j < m ? query.x.charAt(j) : 'a' - 1, m + 1, query.r);
-                }
+            for (int i = 0; i < n; i++) {
+                b[i] = in.readInt();
             }
+            int[] vals = new int[n];
+            MultiWayIntegerDeque deque = new MultiWayIntegerDeque(51, n);
+            int[] masks = new int[n];
+            IntegerList perm = new IntegerList(n);
+            int minCnt = (int) 1e8;
 
-            for (Query query : queries) {
-                if (query.ans == -1) {
-                    out.println(query.ans);
-                    continue;
-                }
-                for (int j = query.ans; ; j++) {
-                    out.append(s.charAt(j));
-                    if (query.x.length() <= j - query.ans || s.charAt(j) != query.x.charAt(j - query.ans)) {
-                        break;
+            for (int i = 0; i < (1 << n); i++) {
+                boolean valid = true;
+                for (int j = 0; j < n; j++) {
+                    masks[j] = Bits.bitAt(i, j);
+                    if (masks[j] == 1) {
+                        vals[j] = b[j];
+                    } else {
+                        vals[j] = a[j];
                     }
                 }
-                out.println();
+                for (int j = 0; j < n; j++) {
+                    deque.addLast(vals[j], j);
+                }
+                int cnt = 0;
+                for (int j = 0; j < n; j++) {
+                    int p = 0;
+                    for (int t = 0; t < n; t++) {
+                        if (vals[t] > vals[j] && t < j ||
+                                vals[t] < vals[j] && t > j) {
+                            p++;
+                        }
+                    }
+                    cnt += p;
+                    masks[j] ^= p & 1;
+                }
+                cnt /= 2;
+
+                for (int j = 1; j <= 50; j++) {
+                    perm.clear();
+                    while (!deque.isEmpty(j)) {
+                        int last = deque.removeFirst(j);
+                        perm.add(masks[last] ^ (perm.size() & 1));
+                    }
+                    if (perm.isEmpty()) {
+                        continue;
+                    }
+                    int sum = 0;
+                    int m = perm.size();
+                    for (int k = 0; k < m; k++) {
+                        sum += perm.get(k);
+                    }
+                    if (sum != perm.size() / 2) {
+                        valid = false;
+                    }
+                    sum = 0;
+                    for (int k = 0; k < m; k++) {
+                        int val = perm.get(k);
+                        if (val == 0) {
+                            continue;
+                        }
+                        sum += val;
+                        int target = sum * 2 - 1;
+                        int dist = Math.abs(target - k);
+                        cnt += dist;
+                    }
+                }
+
+                if (!valid) {
+                    continue;
+                }
+                minCnt = Math.min(minCnt, cnt);
             }
+
+            if (minCnt == (int) 1e8) {
+                out.println(-1);
+            } else {
+                out.println(minCnt);
+            }
+        }
+
+    }
+
+    static interface IntegerIterator {
+        boolean hasNext();
+
+        int next();
+
+    }
+
+    static class MultiWayIntegerDeque {
+        private int[] values;
+        private int[] next;
+        private int[] prev;
+        private int[] heads;
+        private int[] tails;
+        private int alloc;
+        private int queueNum;
+
+        public IntegerIterator iterator(final int queue) {
+            return new IntegerIterator() {
+                int ele = heads[queue];
+
+
+                public boolean hasNext() {
+                    return ele != 0;
+                }
+
+
+                public int next() {
+                    int ans = values[ele];
+                    ele = next[ele];
+                    return ans;
+                }
+            };
+        }
+
+        private void doubleCapacity() {
+            int newSize = Math.max(next.length + 10, next.length * 2);
+            next = Arrays.copyOf(next, newSize);
+            prev = Arrays.copyOf(prev, newSize);
+            values = Arrays.copyOf(values, newSize);
+        }
+
+        public void alloc() {
+            alloc++;
+            if (alloc >= next.length) {
+                doubleCapacity();
+            }
+            next[alloc] = 0;
+        }
+
+        public boolean isEmpty(int qId) {
+            return heads[qId] == 0;
+        }
+
+        public MultiWayIntegerDeque(int qNum, int totalCapacity) {
+            values = new int[totalCapacity + 1];
+            next = new int[totalCapacity + 1];
+            prev = new int[totalCapacity + 1];
+            heads = new int[qNum];
+            tails = new int[qNum];
+            queueNum = qNum;
+        }
+
+        public void addLast(int qId, int x) {
+            alloc();
+            values[alloc] = x;
+
+            if (heads[qId] == 0) {
+                heads[qId] = tails[qId] = alloc;
+                return;
+            }
+            next[tails[qId]] = alloc;
+            prev[alloc] = tails[qId];
+            tails[qId] = alloc;
+        }
+
+        public int removeFirst(int qId) {
+            int ans = values[heads[qId]];
+            if (heads[qId] == tails[qId]) {
+                heads[qId] = tails[qId] = 0;
+            } else {
+                heads[qId] = next[heads[qId]];
+                prev[tails[qId]] = 0;
+            }
+            return ans;
+        }
+
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < queueNum; i++) {
+                builder.append(i).append(": ");
+                for (IntegerIterator iterator = iterator(i); iterator.hasNext(); ) {
+                    builder.append(iterator.next()).append(",");
+                }
+                if (builder.charAt(builder.length() - 1) == ',') {
+                    builder.setLength(builder.length() - 1);
+                }
+                builder.append('\n');
+            }
+            return builder.toString();
         }
 
     }
 
     static class SequenceUtils {
-        public static <T> int indexOf(T[] array, int l, int r, T val) {
-            for (int i = l; i <= r; i++) {
-                if (Objects.equals(array[i], val)) {
-                    return i;
+        public static boolean equal(int[] a, int al, int ar, int[] b, int bl, int br) {
+            if ((ar - al) != (br - bl)) {
+                return false;
+            }
+            for (int i = al, j = bl; i <= ar; i++, j++) {
+                if (a[i] != b[j]) {
+                    return false;
                 }
             }
-            return -1;
-        }
-
-    }
-
-    static interface SimplifiedDeque<T> extends SimplifiedStack<T> {
-    }
-
-    static class FastOutput implements AutoCloseable, Closeable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
-
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput append(char c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput println(int c) {
-            cache.append(c);
-            println();
-            return this;
-        }
-
-        public FastOutput println() {
-            cache.append(System.lineSeparator());
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        }
-
-        public String toString() {
-            return cache.toString();
-        }
-
-    }
-
-    static class SuffixTree {
-        private int minCharacter;
-        private int maxCharacter;
-        private int alphabet;
-        private SuffixTree.Node root;
-        private int n;
-        private IntUnaryOperator s;
-        private SuffixTree.Node[] suffixIndex2Node;
-        private Segment segment;
-        int idAlloc = 0;
-
-        public void enable(int suffix) {
-            segment.update(suffixIndex2Node[suffix].l, suffixIndex2Node[suffix].l, 1, n, suffix);
-        }
-
-        public void dfs(SuffixTree.Node root) {
-            if (root.end == n) {
-                root.l = root.r = ++idAlloc;
-                suffixIndex2Node[root.begin - root.depth] = root;
-                return;
-            }
-            root.l = Integer.MAX_VALUE;
-            root.r = Integer.MIN_VALUE;
-            for (SuffixTree.Node node : root.children) {
-                if (node == null) {
-                    continue;
-                }
-                dfs(node);
-                root.l = Math.min(root.l, node.l);
-                root.r = Math.max(root.r, node.r);
-            }
-        }
-
-        public int find(SuffixTree.Node node) {
-            return segment.query(node.l, node.r, 1, n);
-        }
-
-        public int search(IntUnaryOperator x, int m, int r) {
-            SuffixTree.Node trace = root;
-            int sl = trace.begin;
-            int sr = trace.end - 1;
-
-            SuffixTree.Node startPoint = null;
-            int startIndex = -1;
-
-            int i;
-            for (i = 0; i < m; i++) {
-                int val = x.applyAsInt(i);
-                if (sl > sr) {
-                    if (trace.children[val - minCharacter] == null) {
-                        startPoint = trace;
-                        startIndex = val - minCharacter + 1;
-                        break;
-                    }
-                    trace = trace.children[val - minCharacter];
-                    sl = trace.begin;
-                    sr = trace.end - 1;
-                }
-                if (s.applyAsInt(sl) != val) {
-                    startPoint = trace.parent;
-                    startIndex = SequenceUtils.indexOf(startPoint.children, 0, alphabet - 1, trace) + 1;
-                    if (s.applyAsInt(sl) > val) {
-                        int suffix = find(trace);
-                        if (r - suffix + 1 > i) {
-                            return suffix;
-                        }
-                    }
-                    break;
-                }
-                sl++;
-                if (i == m - 1) {
-                    if (sl <= sr) {
-                        throw new RuntimeException();
-                    }
-                    startPoint = trace.parent;
-                    startIndex = SequenceUtils.indexOf(startPoint.children, 0, alphabet - 1, trace) + 1;
-                }
-            }
-
-            while (startPoint != null) {
-                if (startIndex >= alphabet) {
-                    SuffixTree.Node last = startPoint;
-                    startPoint = startPoint.parent;
-                    if (startPoint == null) {
-                        break;
-                    }
-                    startIndex = x.applyAsInt(last.depth) - minCharacter + 1;
-                    continue;
-                }
-                if (startPoint.children[startIndex] != null) {
-                    int suffix = find(startPoint.children[startIndex]);
-                    if (r - suffix + 1 > startPoint.children[startIndex].depth) {
-                        return suffix;
-                    }
-                }
-                startIndex++;
-            }
-            return -1;
-        }
-
-        public SuffixTree.Node getRoot() {
-            return root;
-        }
-
-        public SuffixTree(IntUnaryOperator s, int n, int minCharacter, int maxCharacter) {
-            suffixIndex2Node = new SuffixTree.Node[n];
-            segment = new Segment(1, n);
-            this.n = n;
-            this.s = s;
-            int[] a = new int[n];
-            this.minCharacter = minCharacter;
-            this.maxCharacter = maxCharacter;
-            alphabet = maxCharacter - minCharacter + 1;
-            for (int i = 0; i < n; i++) a[i] = s.applyAsInt(i) - minCharacter;
-            root = new SuffixTree.Node(0, 0, 0, null, alphabet);
-            SuffixTree.Node node = root;
-            for (int i = 0, tail = 0; i < n; i++, tail++) {
-                SuffixTree.Node last = null;
-                while (tail >= 0) {
-                    SuffixTree.Node ch = node.children[a[i - tail]];
-                    while (ch != null && tail >= ch.end - ch.begin) {
-                        tail -= ch.end - ch.begin;
-                        node = ch;
-                        ch = ch.children[a[i - tail]];
-                    }
-                    if (ch == null) {
-                        node.children[a[i]] = new SuffixTree.Node(i, n, node.depth + node.end - node.begin, node, alphabet);
-                        if (last != null) last.suffixLink = node;
-                        last = null;
-                    } else {
-                        int afterTail = a[ch.begin + tail];
-                        if (afterTail == a[i]) {
-                            if (last != null) last.suffixLink = node;
-                            break;
-                        } else {
-                            SuffixTree.Node splitNode = new SuffixTree.Node(ch.begin, ch.begin + tail, node.depth + node.end - node.begin, node, alphabet);
-                            splitNode.children[a[i]] = new SuffixTree.Node(i, n, ch.depth + tail, splitNode, alphabet);
-                            splitNode.children[afterTail] = ch;
-                            ch.begin += tail;
-                            ch.depth += tail;
-                            ch.parent = splitNode;
-                            node.children[a[i - tail]] = splitNode;
-                            if (last != null) last.suffixLink = splitNode;
-                            last = splitNode;
-                        }
-                    }
-                    if (node == root) {
-                        --tail;
-                    } else {
-                        node = node.suffixLink;
-                    }
-                }
-            }
-        }
-
-        public static class Node {
-            public int begin;
-            public int end;
-            public int depth;
-            public SuffixTree.Node parent;
-            public SuffixTree.Node[] children;
-            public SuffixTree.Node suffixLink;
-            int l;
-            int r;
-
-            Node(int begin, int end, int depth, SuffixTree.Node parent, int alphabet) {
-                this.begin = begin;
-                this.end = end;
-                this.parent = parent;
-                this.depth = depth;
-                children = new SuffixTree.Node[alphabet];
-            }
-
+            return true;
         }
 
     }
 
     static class FastInput {
         private final InputStream is;
-        private StringBuilder defaultStringBuf = new StringBuilder(1 << 13);
         private byte[] buf = new byte[1 << 13];
         private int bufLen;
         private int bufOffset;
@@ -384,145 +298,168 @@ public class Main {
             return val;
         }
 
-        public String readString(StringBuilder builder) {
-            skipBlank();
+    }
 
-            while (next > 32) {
-                builder.append((char) next);
-                next = read();
-            }
+    static class FastOutput implements AutoCloseable, Closeable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
 
-            return builder.toString();
+        public FastOutput(Writer os) {
+            this.os = os;
         }
 
-        public String readString() {
-            defaultStringBuf.setLength(0);
-            return readString(defaultStringBuf);
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput println(int c) {
+            cache.append(c);
+            println();
+            return this;
+        }
+
+        public FastOutput println() {
+            cache.append(System.lineSeparator());
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            return this;
+        }
+
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+
+        public String toString() {
+            return cache.toString();
         }
 
     }
 
-    static class Array2DequeAdapter<T> implements SimplifiedDeque<T> {
-        T[] data;
-        int l;
-        int r;
+    static class IntegerList implements Cloneable {
+        private int size;
+        private int cap;
+        private int[] data;
+        private static final int[] EMPTY = new int[0];
 
-        public Array2DequeAdapter(T[] data) {
-            this(data, 0, data.length - 1);
+        public IntegerList(int cap) {
+            this.cap = cap;
+            if (cap == 0) {
+                data = EMPTY;
+            } else {
+                data = new int[cap];
+            }
         }
 
-        public Array2DequeAdapter(T[] data, int l, int r) {
-            this.data = data;
-            this.l = l;
-            this.r = r;
+        public IntegerList(IntegerList list) {
+            this.size = list.size;
+            this.cap = list.cap;
+            this.data = Arrays.copyOf(list.data, size);
+        }
+
+        public IntegerList() {
+            this(0);
+        }
+
+        public void ensureSpace(int req) {
+            if (req > cap) {
+                while (cap < req) {
+                    cap = Math.max(cap + 10, 2 * cap);
+                }
+                data = Arrays.copyOf(data, cap);
+            }
+        }
+
+        private void checkRange(int i) {
+            if (i < 0 || i >= size) {
+                throw new ArrayIndexOutOfBoundsException("index " + i + " out of range");
+            }
+        }
+
+        public int get(int i) {
+            checkRange(i);
+            return data[i];
+        }
+
+        public void add(int x) {
+            ensureSpace(size + 1);
+            data[size++] = x;
+        }
+
+        public void addAll(int[] x, int offset, int len) {
+            ensureSpace(size + len);
+            System.arraycopy(x, offset, data, size, len);
+            size += len;
+        }
+
+        public void addAll(IntegerList list) {
+            addAll(list.data, 0, list.size);
+        }
+
+        public int size() {
+            return size;
+        }
+
+        public int[] toArray() {
+            return Arrays.copyOf(data, size);
         }
 
         public boolean isEmpty() {
-            return l > r;
+            return size == 0;
         }
 
-        public T peekLast() {
-            return data[r];
+        public void clear() {
+            size = 0;
         }
 
-        public T removeLast() {
-            return data[r--];
+        public String toString() {
+            return Arrays.toString(toArray());
         }
 
-        public Iterator<T> iterator() {
-            return new Iterator<T>() {
-                int iter = l;
+        public boolean equals(Object obj) {
+            if (!(obj instanceof IntegerList)) {
+                return false;
+            }
+            IntegerList other = (IntegerList) obj;
+            return SequenceUtils.equal(data, 0, size - 1, other.data, 0, other.size - 1);
+        }
 
+        public int hashCode() {
+            int h = 1;
+            for (int i = 0; i < size; i++) {
+                h = h * 31 + Integer.hashCode(data[i]);
+            }
+            return h;
+        }
 
-                public boolean hasNext() {
-                    return iter <= r;
-                }
-
-
-                public T next() {
-                    return data[iter++];
-                }
-            };
+        public IntegerList clone() {
+            IntegerList ans = new IntegerList();
+            ans.addAll(this);
+            return ans;
         }
 
     }
 
-    static class Segment implements Cloneable {
-        private Segment left;
-        private Segment right;
-        private static int inf = (int) 1e9;
-        private int min = inf;
-
-        public void pushUp() {
-            min = Math.min(left.min, right.min);
+    static class Bits {
+        private Bits() {
         }
 
-        public void pushDown() {
+        public static int bitAt(int x, int i) {
+            return (x >> i) & 1;
         }
-
-        public Segment(int l, int r) {
-            if (l < r) {
-                int m = (l + r) >> 1;
-                left = new Segment(l, m);
-                right = new Segment(m + 1, r);
-                pushUp();
-            } else {
-
-            }
-        }
-
-        private boolean covered(int ll, int rr, int l, int r) {
-            return ll <= l && rr >= r;
-        }
-
-        private boolean noIntersection(int ll, int rr, int l, int r) {
-            return ll > r || rr < l;
-        }
-
-        public void update(int ll, int rr, int l, int r, int x) {
-            if (noIntersection(ll, rr, l, r)) {
-                return;
-            }
-            if (covered(ll, rr, l, r)) {
-                min = Math.min(min, x);
-                return;
-            }
-            pushDown();
-            int m = (l + r) >> 1;
-            left.update(ll, rr, l, m, x);
-            right.update(ll, rr, m + 1, r, x);
-            pushUp();
-        }
-
-        public int query(int ll, int rr, int l, int r) {
-            if (noIntersection(ll, rr, l, r)) {
-                return inf;
-            }
-            if (covered(ll, rr, l, r)) {
-                return min;
-            }
-            pushDown();
-            int m = (l + r) >> 1;
-            return Math.min(left.query(ll, rr, l, m),
-                    right.query(ll, rr, m + 1, r));
-        }
-
-    }
-
-    static class Query {
-        int l;
-        int r;
-        String x;
-        int ans;
-
-    }
-
-    static interface SimplifiedStack<T> extends Iterable<T> {
-        boolean isEmpty();
-
-        T peekLast();
-
-        T removeLast();
 
     }
 }
