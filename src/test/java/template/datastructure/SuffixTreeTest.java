@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static org.junit.Assert.*;
@@ -30,14 +31,7 @@ public class SuffixTreeTest {
     }
 
     public boolean testContain(String a, String b){
-        SuffixTree st = new SuffixTree(a.length(), 'a', 'z');
-        for(char c : a.toCharArray()){
-            st.append(c);
-        }
-        int[] data = new int[b.length()];
-        for(int i = 0; i < b.length(); i++){
-            data[i] = b.charAt(i);
-        }
-        return st.contain(data, 0, data.length - 1);
+        SuffixTree st = new SuffixTree(i -> a.charAt(i), a.length(), 'a', 'z');
+        return st.contain(IntStream.range(0, b.length()).map(i -> b.charAt(i)).toArray(), 0, b.length() - 1);
     }
 }

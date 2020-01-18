@@ -3,117 +3,109 @@ package template.datastructure;
 import template.math.DigitUtils;
 
 import java.util.Arrays;
+import java.util.function.IntUnaryOperator;
 
 /**
  * Based on
  * https://stackoverflow.com/questions/9452701/ukkonens-suffix-tree-algorithm-in-plain-english/9513423#9513423
  */
 public class SuffixTree {
+    private int minCharacter;
+    private int maxCharacter;
+    private int alphabet;
+    private Node root;
+    private int n;
+    private IntUnaryOperator s;
 
-    int minCharacter;
-    int maxCharacter;
-    int alphabet;
-    Node root;
-    int[] data;
-    int len;
-    Node activeNode;
-    Node lastJump;
-    int l = 0;
+    public static class Node {
+        public int begin;
+        public int end;
+        public int depth; // distance in characters from root to this node
+        public Node parent;
+        public Node[] children;
+        public Node suffixLink;
 
-    public SuffixTree(int len, int minCharacter, int maxCharacter) {
-        data = new int[len];
-        alphabet = maxCharacter - minCharacter + 1;
+        Node(int begin, int end, int depth, Node parent, int alphabet) {
+            this.begin = begin;
+            this.end = end;
+            this.parent = parent;
+            this.depth = depth;
+            children = new Node[alphabet];
+        }
+    }
+
+    public Node getRoot(){
+        return root;
+    }
+
+    public SuffixTree(IntUnaryOperator s, int n, int minCharacter, int maxCharacter) {
+        this.n = n;
+        this.s = s;
+        int[] a = new int[n];
         this.minCharacter = minCharacter;
         this.maxCharacter = maxCharacter;
-        root = new Node(null, alphabet);
-        root.l = 0;
-        root.r = -1;
-        root.suffixLink = root;
-        activeNode = root;
-    }
-
-    public void append(int x) {
-        x -= minCharacter;
-        data[len++] = x;
-        lastJump = null;
-        insert();
-    }
-
-    private void jump() {
-        activeNode = activeNode.suffixLink;
-        if (activeNode == null) {
-            activeNode = root;
+        alphabet = maxCharacter - minCharacter + 1;
+        for (int i = 0; i < n; i++) a[i] = s.applyAsInt(i) - minCharacter;
+        root = new Node(0, 0, 0, null, alphabet);
+        Node node = root;
+        for (int i = 0, tail = 0; i < n; i++, tail++) {
+            Node last = null;
+            while (tail >= 0) {
+                Node ch = node.children[a[i - tail]];
+                while (ch != null && tail >= ch.end - ch.begin) {
+                    tail -= ch.end - ch.begin;
+                    node = ch;
+                    ch = ch.children[a[i - tail]];
+                }
+                if (ch == null) {
+                    node.children[a[i]] = new Node(i, n, node.depth + node.end - node.begin, node, alphabet);
+                    if (last != null) last.suffixLink = node;
+                    last = null;
+                } else {
+                    int afterTail = a[ch.begin + tail];
+                    if (afterTail == a[i]) {
+                        if (last != null) last.suffixLink = node;
+                        break;
+                    } else {
+                        Node splitNode = new Node(ch.begin, ch.begin + tail, node.depth + node.end - node.begin, node, alphabet);
+                        splitNode.children[a[i]] = new Node(i, n, ch.depth + tail, splitNode, alphabet);
+                        splitNode.children[afterTail] = ch;
+                        ch.begin += tail;
+                        ch.depth += tail;
+                        ch.parent = splitNode;
+                        node.children[a[i - tail]] = splitNode;
+                        if (last != null) last.suffixLink = splitNode;
+                        last = splitNode;
+                    }
+                }
+                if (node == root) {
+                    --tail;
+                } else {
+                    node = node.suffixLink;
+                }
+            }
         }
-        insert();
-    }
-
-    private Node newNode(Node parent) {
-        Node node = new Node(parent, alphabet);
-        if (lastJump != null) {
-            lastJump.suffixLink = node;
-        }
-        return node;
     }
 
     public boolean contain(int[] seq, int l, int r) {
-        Node trace = root;
+        Node node = root;
         int sl = 0;
         int sr = -1;
         for (int i = l; i <= r; i++) {
             if (sl > sr) {
-                trace = trace.next[seq[i] - minCharacter];
-                if (trace == null) {
+                node = node.children[seq[i] - minCharacter];
+                if (node == null) {
                     return false;
                 }
-                sl = trace.l;
-                sr = Math.min(trace.r, len - 1);
+                sl = node.begin;
+                sr = node.end - 1;
             }
-            if (data[sl] != seq[i] - minCharacter) {
+            if (seq[i] != s.applyAsInt(sl)) {
                 return false;
             }
             sl++;
         }
         return true;
-    }
-
-    private void insert() {
-        if (l == len) {
-            return;
-        }
-        Node node = activeNode.next[data[l]];
-        if (node == null) {
-            node = new Node(activeNode, alphabet);
-            node.l = l;
-            node.r = data.length;
-            node.suffixStartIndex = l;
-            activeNode.next[data[l]] = node;
-            l++;
-            jump();
-            return;
-        }
-        if (data[node.l + len - 1 - l] == data[len - 1]) {
-            if (node.r - node.l + 1 == len - l) {
-                activeNode = node;
-                l = len;
-            }
-            return;
-        }
-
-        Node split = newNode(activeNode);
-        split.l = node.l;
-        split.r = node.l + len - l - 2;
-        node.l = split.r + 1;
-        activeNode.next[data[l]] = split;
-        split.next[data[node.l]] = node;
-        node.setParent(split);
-
-        Node inserted = new Node(split, alphabet);
-        inserted.l = l + split.r - split.l + 1;
-        inserted.r = data.length;
-        inserted.suffixStartIndex = l;
-        split.next[data[inserted.l]] = inserted;
-        l++;
-        jump();
     }
 
     public int lcs(int leftEndIndex) {
@@ -123,15 +115,15 @@ public class SuffixTree {
     private long lcs(Node root, int leftEndIndex) {
         int mask = 0;
         int ans = 0;
-        if (root.suffixStartIndex != -1) {
-            if (root.suffixStartIndex <= leftEndIndex) {
+        if (root.end == n) {
+            if (root.begin - root.depth <= leftEndIndex) {
                 return 1L << 32;
             } else {
                 return 1L << 33;
             }
         }
         for (int i = 0; i < alphabet; i++) {
-            Node node = root.next[i];
+            Node node = root.children[i];
             if (node == null) {
                 continue;
             }
@@ -140,38 +132,8 @@ public class SuffixTree {
             ans = Math.max(ans, DigitUtils.lowBit(sub));
         }
         if (mask == 3) {
-            ans = Math.max(ans, root.parentDepth + root.size(len));
+            ans = Math.max(ans, root.depth + root.end - root.begin);
         }
         return DigitUtils.asLong(mask, ans);
-    }
-    int sequence = 0;
-    private class Node {
-        int id;
-
-        public void setParent(Node parent){
-            parentDepth = parent == null ? 0 : (parent.parentDepth + parent.r - parent.l + 1);
-        }
-
-        public Node(Node parent, int cap) {
-            id = sequence++;
-            setParent(parent);
-            this.next = new Node[cap];
-        }
-
-        @Override
-        public String toString() {
-            return Arrays.toString(Arrays.copyOf(data, Math.min(r + 1, len)));
-        }
-
-        Node[] next;
-        Node suffixLink;
-        int l;
-        int r;
-        int suffixStartIndex = -1;
-        int parentDepth;
-
-        public int size(int len) {
-            return Math.min(r, len - 1) - l + 1;
-        }
     }
 }

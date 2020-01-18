@@ -24,14 +24,24 @@
     "output" : "4",
     "index" : 2,
     "active" : true
+  }, {
+    "input" : "aa\naa\n",
+    "output" : "2",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "zzzab\ncdefabcdef",
+    "output" : "2",
+    "index" : 4,
+    "active" : true
   } ],
   "location" : "src/main/java/contest",
   "vmArgs" : "-Xmx131M",
   "mainClass" : "Main",
-  "taskClass" : "contest.LongLongMessage",
+  "taskClass" : "on2020_01.on2020_01_17_POJ___POJ_Monthly__2006_03_26.Long_Long_Message.LongLongMessage",
   "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
   "checkerParameters" : "",
-  "testClasses" : [ ],
+  "testClasses" : [ "on2020_01.on2020_01_17_POJ___POJ_Monthly__2006_03_26.Long_Long_Message.LongLongMessageTestCase" ],
   "date" : "2020.01.17",
   "contestName" : "POJ - POJ Monthly--2006.03.26",
   "truncate" : true,
@@ -41,5 +51,5 @@
   "failOnOverflow" : false,
   "interactive" : false,
   "interactor" : "net.egork.chelper.tester.Interactor",
-  "newThread" : true
+  "newThread" : false
 }

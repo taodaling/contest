@@ -3,8 +3,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.function.IntUnaryOperator;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.util.Objects;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
@@ -28,79 +31,68 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            LongLongMessage solver = new LongLongMessage();
+            HSecurity solver = new HSecurity();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class LongLongMessage {
+    static class HSecurity {
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            int[] a = new int[100000 + 1];
-            int[] b = new int[100000 + 1];
-            int end = 'z' + 1;
-            int aLen = in.readString(a, 0);
-            int bLen = in.readString(b, 0);
-
-            SuffixTree st = new SuffixTree(aLen + bLen + 1, 'a', end);
-            for (int i = 0; i < aLen; i++) {
-                st.append(a[i]);
+            String s = in.readString();
+            int n = s.length();
+            SuffixTree st = new SuffixTree(i -> i < n ? s.charAt(i) : 'a' - 1, n + 1, 'a' - 1, 'z');
+            st.dfs(st.getRoot());
+            int q = in.readInt();
+            Query[] queries = new Query[q];
+            for (int i = 0; i < q; i++) {
+                queries[i] = new Query();
+                queries[i].l = in.readInt() - 1;
+                queries[i].r = in.readInt() - 1;
+                queries[i].x = in.readString();
             }
-            for (int i = 0; i < bLen; i++) {
-                st.append(b[i]);
+            Query[] sorted = queries.clone();
+            Arrays.sort(sorted, (a, b) -> a.l - b.l);
+            SimplifiedDeque<Query> deque = new Array2DequeAdapter<>(sorted);
+            for (int i = s.length() - 1; i >= 0; i--) {
+                st.enable(i);
+                while (!deque.isEmpty() && deque.peekLast().l == i) {
+                    Query query = deque.removeLast();
+                    int m = query.x.length();
+                    query.ans = st.search(j -> j < m ? query.x.charAt(j) : 'a' - 1, m + 1, query.r);
+                }
             }
-            st.append(end);
 
-            int ans = st.lcs(aLen - 1);
-            out.println(ans);
+            for (Query query : queries) {
+                if (query.ans == -1) {
+                    out.println(query.ans);
+                    continue;
+                }
+                for (int j = query.ans; ; j++) {
+                    out.append(s.charAt(j));
+                    if (query.x.length() <= j - query.ans || s.charAt(j) != query.x.charAt(j - query.ans)) {
+                        break;
+                    }
+                }
+                out.println();
+            }
         }
 
     }
 
-    static class FastInput {
-        private final InputStream is;
-        private byte[] buf = new byte[1 << 13];
-        private int bufLen;
-        private int bufOffset;
-        private int next;
-
-        public FastInput(InputStream is) {
-            this.is = is;
-        }
-
-        private int read() {
-            while (bufLen == bufOffset) {
-                bufOffset = 0;
-                try {
-                    bufLen = is.read(buf);
-                } catch (IOException e) {
-                    bufLen = -1;
-                }
-                if (bufLen == -1) {
-                    return -1;
+    static class SequenceUtils {
+        public static <T> int indexOf(T[] array, int l, int r, T val) {
+            for (int i = l; i <= r; i++) {
+                if (Objects.equals(array[i], val)) {
+                    return i;
                 }
             }
-            return buf[bufOffset++];
+            return -1;
         }
 
-        public void skipBlank() {
-            while (next >= 0 && next <= 32) {
-                next = read();
-            }
-        }
+    }
 
-        public int readString(int[] data, int offset) {
-            skipBlank();
-
-            int originalOffset = offset;
-            while (next > 32) {
-                data[offset++] = (char) next;
-                next = read();
-            }
-
-            return offset - originalOffset;
-        }
-
+    static interface SimplifiedDeque<T> extends SimplifiedStack<T> {
     }
 
     static class FastOutput implements AutoCloseable, Closeable {
@@ -113,6 +105,11 @@ public class Main {
 
         public FastOutput(OutputStream os) {
             this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput append(char c) {
+            cache.append(c);
+            return this;
         }
 
         public FastOutput println(int c) {
@@ -152,170 +149,380 @@ public class Main {
 
     }
 
-    static class DigitUtils {
-        private static long mask32 = (1L << 32) - 1;
+    static class SuffixTree {
+        private int minCharacter;
+        private int maxCharacter;
+        private int alphabet;
+        private SuffixTree.Node root;
+        private int n;
+        private IntUnaryOperator s;
+        private SuffixTree.Node[] suffixIndex2Node;
+        private Segment segment;
+        int idAlloc = 0;
 
-        private DigitUtils() {
+        public void enable(int suffix) {
+            segment.update(suffixIndex2Node[suffix].l, suffixIndex2Node[suffix].l, 1, n, suffix);
         }
 
-        public static long asLong(int high, int low) {
-            return ((((long) high)) << 32) | (((long) low) & mask32);
+        public void dfs(SuffixTree.Node root) {
+            if (root.end == n) {
+                root.l = root.r = ++idAlloc;
+                suffixIndex2Node[root.begin - root.depth] = root;
+                return;
+            }
+            root.l = Integer.MAX_VALUE;
+            root.r = Integer.MIN_VALUE;
+            for (SuffixTree.Node node : root.children) {
+                if (node == null) {
+                    continue;
+                }
+                dfs(node);
+                root.l = Math.min(root.l, node.l);
+                root.r = Math.max(root.r, node.r);
+            }
         }
 
-        public static int highBit(long x) {
-            return (int) (x >> 32);
+        public int find(SuffixTree.Node node) {
+            return segment.query(node.l, node.r, 1, n);
         }
 
-        public static int lowBit(long x) {
-            return (int) x;
+        public int search(IntUnaryOperator x, int m, int r) {
+            SuffixTree.Node trace = root;
+            int sl = trace.begin;
+            int sr = trace.end - 1;
+
+            SuffixTree.Node startPoint = null;
+            int startIndex = -1;
+
+            int i;
+            for (i = 0; i < m; i++) {
+                int val = x.applyAsInt(i);
+                if (sl > sr) {
+                    if (trace.children[val - minCharacter] == null) {
+                        startPoint = trace;
+                        startIndex = val - minCharacter + 1;
+                        break;
+                    }
+                    trace = trace.children[val - minCharacter];
+                    sl = trace.begin;
+                    sr = trace.end - 1;
+                }
+                if (s.applyAsInt(sl) != val) {
+                    startPoint = trace.parent;
+                    startIndex = SequenceUtils.indexOf(startPoint.children, 0, alphabet - 1, trace) + 1;
+                    if (s.applyAsInt(sl) > val) {
+                        int suffix = find(trace);
+                        if (r - suffix + 1 > i) {
+                            return suffix;
+                        }
+                    }
+                    break;
+                }
+                sl++;
+                if (i == m - 1) {
+                    if (sl <= sr) {
+                        throw new RuntimeException();
+                    }
+                    startPoint = trace.parent;
+                    startIndex = SequenceUtils.indexOf(startPoint.children, 0, alphabet - 1, trace) + 1;
+                }
+            }
+
+            while (startPoint != null) {
+                if (startIndex >= alphabet) {
+                    SuffixTree.Node last = startPoint;
+                    startPoint = startPoint.parent;
+                    if (startPoint == null) {
+                        break;
+                    }
+                    startIndex = x.applyAsInt(last.depth) - minCharacter + 1;
+                    continue;
+                }
+                if (startPoint.children[startIndex] != null) {
+                    int suffix = find(startPoint.children[startIndex]);
+                    if (r - suffix + 1 > startPoint.children[startIndex].depth) {
+                        return suffix;
+                    }
+                }
+                startIndex++;
+            }
+            return -1;
+        }
+
+        public SuffixTree.Node getRoot() {
+            return root;
+        }
+
+        public SuffixTree(IntUnaryOperator s, int n, int minCharacter, int maxCharacter) {
+            suffixIndex2Node = new SuffixTree.Node[n];
+            segment = new Segment(1, n);
+            this.n = n;
+            this.s = s;
+            int[] a = new int[n];
+            this.minCharacter = minCharacter;
+            this.maxCharacter = maxCharacter;
+            alphabet = maxCharacter - minCharacter + 1;
+            for (int i = 0; i < n; i++) a[i] = s.applyAsInt(i) - minCharacter;
+            root = new SuffixTree.Node(0, 0, 0, null, alphabet);
+            SuffixTree.Node node = root;
+            for (int i = 0, tail = 0; i < n; i++, tail++) {
+                SuffixTree.Node last = null;
+                while (tail >= 0) {
+                    SuffixTree.Node ch = node.children[a[i - tail]];
+                    while (ch != null && tail >= ch.end - ch.begin) {
+                        tail -= ch.end - ch.begin;
+                        node = ch;
+                        ch = ch.children[a[i - tail]];
+                    }
+                    if (ch == null) {
+                        node.children[a[i]] = new SuffixTree.Node(i, n, node.depth + node.end - node.begin, node, alphabet);
+                        if (last != null) last.suffixLink = node;
+                        last = null;
+                    } else {
+                        int afterTail = a[ch.begin + tail];
+                        if (afterTail == a[i]) {
+                            if (last != null) last.suffixLink = node;
+                            break;
+                        } else {
+                            SuffixTree.Node splitNode = new SuffixTree.Node(ch.begin, ch.begin + tail, node.depth + node.end - node.begin, node, alphabet);
+                            splitNode.children[a[i]] = new SuffixTree.Node(i, n, ch.depth + tail, splitNode, alphabet);
+                            splitNode.children[afterTail] = ch;
+                            ch.begin += tail;
+                            ch.depth += tail;
+                            ch.parent = splitNode;
+                            node.children[a[i - tail]] = splitNode;
+                            if (last != null) last.suffixLink = splitNode;
+                            last = splitNode;
+                        }
+                    }
+                    if (node == root) {
+                        --tail;
+                    } else {
+                        node = node.suffixLink;
+                    }
+                }
+            }
+        }
+
+        public static class Node {
+            public int begin;
+            public int end;
+            public int depth;
+            public SuffixTree.Node parent;
+            public SuffixTree.Node[] children;
+            public SuffixTree.Node suffixLink;
+            int l;
+            int r;
+
+            Node(int begin, int end, int depth, SuffixTree.Node parent, int alphabet) {
+                this.begin = begin;
+                this.end = end;
+                this.parent = parent;
+                this.depth = depth;
+                children = new SuffixTree.Node[alphabet];
+            }
+
         }
 
     }
 
-    static class SuffixTree {
-        int minCharacter;
-        int maxCharacter;
-        int alphabet;
-        Node root;
-        int[] data;
-        int len;
-        Node activeNode;
-        Node lastJump;
-        int l = 0;
-        int sequence = 0;
+    static class FastInput {
+        private final InputStream is;
+        private StringBuilder defaultStringBuf = new StringBuilder(1 << 13);
+        private byte[] buf = new byte[1 << 13];
+        private int bufLen;
+        private int bufOffset;
+        private int next;
 
-        public SuffixTree(int len, int minCharacter, int maxCharacter) {
-            data = new int[len];
-            alphabet = maxCharacter - minCharacter + 1;
-            this.minCharacter = minCharacter;
-            this.maxCharacter = maxCharacter;
-            root = new Node(null, alphabet);
-            root.l = 0;
-            root.r = -1;
-            root.suffixLink = root;
-            activeNode = root;
+        public FastInput(InputStream is) {
+            this.is = is;
         }
 
-        public void append(int x) {
-            x -= minCharacter;
-            data[len++] = x;
-            lastJump = null;
-            insert();
-        }
-
-        private void jump() {
-            activeNode = activeNode.suffixLink;
-            if (activeNode == null) {
-                activeNode = root;
-            }
-            insert();
-        }
-
-        private Node newNode(Node parent) {
-            Node node = new Node(parent, alphabet);
-            if (lastJump != null) {
-                lastJump.suffixLink = node;
-            }
-            return node;
-        }
-
-        private void insert() {
-            if (l == len) {
-                return;
-            }
-            Node node = activeNode.next[data[l]];
-            if (node == null) {
-                node = new Node(activeNode, alphabet);
-                node.l = l;
-                node.r = data.length;
-                node.suffixStartIndex = l;
-                activeNode.next[data[l]] = node;
-                l++;
-                jump();
-                return;
-            }
-            if (data[node.l + len - 1 - l] == data[len - 1]) {
-                if (node.r - node.l + 1 == len - l) {
-                    activeNode = node;
-                    l = len;
+        private int read() {
+            while (bufLen == bufOffset) {
+                bufOffset = 0;
+                try {
+                    bufLen = is.read(buf);
+                } catch (IOException e) {
+                    bufLen = -1;
                 }
-                return;
-            }
-
-            Node split = newNode(activeNode);
-            split.l = node.l;
-            split.r = node.l + len - l - 2;
-            node.l = split.r + 1;
-            activeNode.next[data[l]] = split;
-            split.next[data[node.l]] = node;
-            node.setParent(split);
-
-            Node inserted = new Node(split, alphabet);
-            inserted.l = l + split.r - split.l + 1;
-            inserted.r = data.length;
-            inserted.suffixStartIndex = l;
-            split.next[data[inserted.l]] = inserted;
-            l++;
-            jump();
-        }
-
-        public int lcs(int leftEndIndex) {
-            return DigitUtils.lowBit(lcs(root, leftEndIndex));
-        }
-
-        private long lcs(Node root, int leftEndIndex) {
-            int mask = 0;
-            int ans = 0;
-            if (root.suffixStartIndex != -1) {
-                if (root.suffixStartIndex <= leftEndIndex) {
-                    return 1L << 32;
-                } else {
-                    return 1L << 33;
+                if (bufLen == -1) {
+                    return -1;
                 }
             }
-            for (int i = 0; i < alphabet; i++) {
-                Node node = root.next[i];
-                if (node == null) {
-                    continue;
+            return buf[bufOffset++];
+        }
+
+        public void skipBlank() {
+            while (next >= 0 && next <= 32) {
+                next = read();
+            }
+        }
+
+        public int readInt() {
+            int sign = 1;
+
+            skipBlank();
+            if (next == '+' || next == '-') {
+                sign = next == '+' ? 1 : -1;
+                next = read();
+            }
+
+            int val = 0;
+            if (sign == 1) {
+                while (next >= '0' && next <= '9') {
+                    val = val * 10 + next - '0';
+                    next = read();
                 }
-                long sub = lcs(node, leftEndIndex);
-                mask |= DigitUtils.highBit(sub);
-                ans = Math.max(ans, DigitUtils.lowBit(sub));
+            } else {
+                while (next >= '0' && next <= '9') {
+                    val = val * 10 - next + '0';
+                    next = read();
+                }
             }
-            if (mask == 3) {
-                ans = Math.max(ans, root.parentDepth + root.size(len));
-            }
-            return DigitUtils.asLong(mask, ans);
+
+            return val;
         }
 
-        private class Node {
-            int id;
-            Node[] next;
-            Node suffixLink;
-            int l;
-            int r;
-            int suffixStartIndex = -1;
-            int parentDepth;
+        public String readString(StringBuilder builder) {
+            skipBlank();
 
-            public void setParent(Node parent) {
-                parentDepth = parent == null ? 0 : (parent.parentDepth + parent.r - parent.l + 1);
+            while (next > 32) {
+                builder.append((char) next);
+                next = read();
             }
 
-            public Node(Node parent, int cap) {
-                id = sequence++;
-                setParent(parent);
-                this.next = new Node[cap];
-            }
-
-            public String toString() {
-                return Arrays.toString(Arrays.copyOf(data, Math.min(r + 1, len)));
-            }
-
-            public int size(int len) {
-                return Math.min(r, len - 1) - l + 1;
-            }
-
+            return builder.toString();
         }
+
+        public String readString() {
+            defaultStringBuf.setLength(0);
+            return readString(defaultStringBuf);
+        }
+
+    }
+
+    static class Array2DequeAdapter<T> implements SimplifiedDeque<T> {
+        T[] data;
+        int l;
+        int r;
+
+        public Array2DequeAdapter(T[] data) {
+            this(data, 0, data.length - 1);
+        }
+
+        public Array2DequeAdapter(T[] data, int l, int r) {
+            this.data = data;
+            this.l = l;
+            this.r = r;
+        }
+
+        public boolean isEmpty() {
+            return l > r;
+        }
+
+        public T peekLast() {
+            return data[r];
+        }
+
+        public T removeLast() {
+            return data[r--];
+        }
+
+        public Iterator<T> iterator() {
+            return new Iterator<T>() {
+                int iter = l;
+
+
+                public boolean hasNext() {
+                    return iter <= r;
+                }
+
+
+                public T next() {
+                    return data[iter++];
+                }
+            };
+        }
+
+    }
+
+    static class Segment implements Cloneable {
+        private Segment left;
+        private Segment right;
+        private static int inf = (int) 1e9;
+        private int min = inf;
+
+        public void pushUp() {
+            min = Math.min(left.min, right.min);
+        }
+
+        public void pushDown() {
+        }
+
+        public Segment(int l, int r) {
+            if (l < r) {
+                int m = (l + r) >> 1;
+                left = new Segment(l, m);
+                right = new Segment(m + 1, r);
+                pushUp();
+            } else {
+
+            }
+        }
+
+        private boolean covered(int ll, int rr, int l, int r) {
+            return ll <= l && rr >= r;
+        }
+
+        private boolean noIntersection(int ll, int rr, int l, int r) {
+            return ll > r || rr < l;
+        }
+
+        public void update(int ll, int rr, int l, int r, int x) {
+            if (noIntersection(ll, rr, l, r)) {
+                return;
+            }
+            if (covered(ll, rr, l, r)) {
+                min = Math.min(min, x);
+                return;
+            }
+            pushDown();
+            int m = (l + r) >> 1;
+            left.update(ll, rr, l, m, x);
+            right.update(ll, rr, m + 1, r, x);
+            pushUp();
+        }
+
+        public int query(int ll, int rr, int l, int r) {
+            if (noIntersection(ll, rr, l, r)) {
+                return inf;
+            }
+            if (covered(ll, rr, l, r)) {
+                return min;
+            }
+            pushDown();
+            int m = (l + r) >> 1;
+            return Math.min(left.query(ll, rr, l, m),
+                    right.query(ll, rr, m + 1, r));
+        }
+
+    }
+
+    static class Query {
+        int l;
+        int r;
+        String x;
+        int ans;
+
+    }
+
+    static interface SimplifiedStack<T> extends Iterable<T> {
+        boolean isEmpty();
+
+        T peekLast();
+
+        T removeLast();
 
     }
 }
