@@ -414,7 +414,7 @@ public class IntervalPickProblem {
      * 有一个序列data[0], data[1], ... , data[n - 1], 以及m个区间
      * intervals[0], intervals[1], ..., intervals[m - 1].
      * <br>
-     * 要求所有元素非负，且intervals[i + 1].r > intervals[i - 1].r > intervals[i + 1].l > ;
+     * 要求所有元素非负，且intervals[i + 1].r > intervals[i - 1].r, intervals[i + 1].l > intervals[i - 1].l;
      * <br>
      * 要求我们正好选择k个区间，要求被选中的区间覆盖的元素的和最大。
      * <br>
