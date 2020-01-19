@@ -33,6 +33,11 @@ public class LongVersionArray {
         data[i] = v;
     }
 
+    public long modify(int i, long x) {
+        visit(i);
+        return data[i] = data[i] + x;
+    }
+
     public long get(int i) {
         visit(i);
         return data[i];

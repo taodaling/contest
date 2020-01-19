@@ -47,4 +47,9 @@ public class LongVersionArray {
         visit(i);
         return --data[i];
     }
+
+    public long modify(int i, long x) {
+        visit(i);
+        return data[i] = data[i] + x;
+    }
 }

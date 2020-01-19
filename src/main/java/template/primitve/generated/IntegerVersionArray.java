@@ -38,6 +38,11 @@ public class IntegerVersionArray {
         return data[i];
     }
 
+    public int modify(int i, int x) {
+        visit(i);
+        return data[i] = data[i] + x;
+    }
+
     public int inc(int i) {
         visit(i);
         return ++data[i];

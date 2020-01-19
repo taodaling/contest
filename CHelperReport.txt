@@ -1,2 +1,2 @@
-44 src/main/java/contest/D - Swap and Flip.json
+40 src/main/java/contest/F. Classical-.json
 0

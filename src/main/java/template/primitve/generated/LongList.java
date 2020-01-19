@@ -39,6 +39,12 @@ public class LongList implements Cloneable{
         }
     }
 
+    public void addAll(LongIterator iterator) {
+        while (iterator.hasNext()) {
+            add(iterator.next());
+        }
+    }
+
     public LongList(LongList list) {
         this.size = list.size;
         this.cap = list.cap;

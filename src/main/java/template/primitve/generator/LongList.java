@@ -5,7 +5,7 @@ import template.utils.SequenceUtils;
 
 import java.util.Arrays;
 
-public class LongList implements Cloneable{
+public class LongList implements Cloneable {
     private int size;
     private int cap;
     private long[] data;
@@ -80,7 +80,7 @@ public class LongList implements Cloneable{
 
     private void checkRange(int i) {
         if (i < 0 || i >= size) {
-            throw new ArrayIndexOutOfBoundsException("index " +  i + " out of range");
+            throw new ArrayIndexOutOfBoundsException("index " + i + " out of range");
         }
     }
 
@@ -115,6 +115,12 @@ public class LongList implements Cloneable{
             }
         }
         return -1;
+    }
+
+    public void addAll(LongIterator iterator) {
+        while (iterator.hasNext()) {
+            add(iterator.next());
+        }
     }
 
     public int lastIndexOf(long x) {

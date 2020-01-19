@@ -45,6 +45,12 @@ public class IntegerList implements Cloneable {
         this.data = Arrays.copyOf(list.data, size);
     }
 
+    public void addAll(IntegerIterator iterator) {
+        while (iterator.hasNext()) {
+            add(iterator.next());
+        }
+    }
+
     public void insert(int i, int x) {
         if (i == size) {
             add(x);

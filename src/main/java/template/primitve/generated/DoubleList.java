@@ -5,7 +5,7 @@ import template.utils.SequenceUtils;
 
 import java.util.Arrays;
 
-public class DoubleList implements Cloneable{
+public class DoubleList implements Cloneable {
     private int size;
     private int cap;
     private double[] data;
@@ -87,6 +87,12 @@ public class DoubleList implements Cloneable{
     public double get(int i) {
         checkRange(i);
         return data[i];
+    }
+
+    public void addAll(DoubleIterator iterator) {
+        while (iterator.hasNext()) {
+            add(iterator.next());
+        }
     }
 
     public void add(double x) {
