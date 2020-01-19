@@ -92,7 +92,7 @@ public class GcdLcmProblem {
     /**
      * return any pair of indexes (i, j), while i != j and gcd(seq[i], seq[j]) = 1, null for non-existence.
      */
-    public int[] findAnyPairesIndexesCoprime() {
+    public int[] findAnyPairIndexesCoprime() {
         return findAnyPairIndexesCoprime(seq);
     }
 
