@@ -1,2 +1,2 @@
-40 src/main/java/contest/F. Classical-.json
+57 src/main/java/contest/C. Xenon's Attack on the Gangs.json
 0
