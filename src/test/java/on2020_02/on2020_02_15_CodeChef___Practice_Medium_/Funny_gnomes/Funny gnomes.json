@@ -1,0 +1,35 @@
+{
+  "name" : "Funny gnomes",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "\n5\n0 1 0 0 0\n0 0 1 1 0\n1 0 0 0 0\n0 0 0 1 0\n0 0 0 0 0\n4\n3 1\n10000 1\n0 5\n1 5",
+    "output" : "\n2\n1 4\n2\n2 4\n1\n5\n0\n-1",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_02.on2020_02_15_CodeChef___Practice_Medium_.Funny_gnomes.FunnyGnomes",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.02.15",
+  "contestName" : "CodeChef - Practice(Medium)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

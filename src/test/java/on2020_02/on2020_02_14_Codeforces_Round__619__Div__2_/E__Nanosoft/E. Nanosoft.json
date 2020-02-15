@@ -1,0 +1,45 @@
+{
+  "name" : "E. Nanosoft",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5 5 5\nRRGGB\nRRGGY\nYYBBG\nYYBBR\nRBBRG\n1 1 5 5\n2 2 5 5\n2 2 3 3\n1 1 3 5\n4 4 5 5\n",
+    "output" : "16\n4\n4\n4\n0\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "6 10 5\nRRRGGGRRGG\nRRRGGGRRGG\nRRRGGGYYBB\nYYYBBBYYBB\nYYYBBBRGRG\nYYYBBBYBYB\n1 1 6 10\n1 3 3 10\n2 2 6 6\n1 7 6 10\n2 1 5 10\n",
+    "output" : "36\n4\n16\n16\n16\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "8 8 8\nRRRRGGGG\nRRRRGGGG\nRRRRGGGG\nRRRRGGGG\nYYYYBBBB\nYYYYBBBB\nYYYYBBBB\nYYYYBBBB\n1 1 8 8\n5 2 5 7\n3 1 8 6\n2 3 5 8\n1 2 6 8\n2 1 5 5\n2 1 7 7\n6 5 7 5\n",
+    "output" : "64\n0\n16\n4\n16\n4\n36\n0\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx512M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_02.on2020_02_14_Codeforces_Round__619__Div__2_.E__Nanosoft.ENanosoft",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.02.14",
+  "contestName" : "Codeforces Round #619 (Div. 2)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

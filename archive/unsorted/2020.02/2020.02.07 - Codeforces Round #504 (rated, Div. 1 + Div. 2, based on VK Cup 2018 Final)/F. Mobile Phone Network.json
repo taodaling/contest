@@ -1,0 +1,45 @@
+{
+  "name" : "F. Mobile Phone Network",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4 3 6\n1 2\n3 4\n1 3\n2 3 3\n3 1 4\n1 2 4\n4 2 8\n4 3 8\n4 1 10\n",
+    "output" : "14\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "3 2 1\n1 2\n2 3\n1 2 30\n",
+    "output" : "-1\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "4 3 3\n1 2\n1 3\n1 4\n4 1 1000000000\n4 2 1000000000\n4 3 1000000000\n",
+    "output" : "3000000000\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.FMobilePhoneNetwork",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.02.07",
+  "contestName" : "Codeforces Round #504 (rated, Div. 1 + Div. 2, based on VK Cup 2018 Final)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

@@ -1,0 +1,50 @@
+{
+  "name" : "C - Prefix Enlightenment",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "7 3\n0011100\n3\n1 4 6\n3\n3 4 7\n2\n2 3\n",
+    "output" : "1\n2\n3\n3\n3\n3\n3\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "8 6\n00110011\n3\n1 3 8\n5\n1 2 5 6 7\n2\n6 8\n2\n3 5\n2\n4 7\n1\n2\n",
+    "output" : "1\n1\n1\n1\n1\n1\n4\n4\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "5 3\n00011\n3\n1 2 3\n1\n4\n3\n3 4 5\n",
+    "output" : "1\n1\n1\n1\n1\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "19 5\n1001001001100000110\n2\n2 3\n2\n5 6\n2\n8 9\n5\n12 13 14 15 16\n1\n19\n",
+    "output" : "0\n1\n1\n1\n2\n2\n2\n3\n3\n3\n3\n4\n4\n4\n4\n4\n4\n4\n5\n",
+    "index" : 3,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.TaskC",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.02.02",
+  "contestName" : "Codeforces Round #616 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

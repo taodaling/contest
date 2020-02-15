@@ -1,0 +1,2 @@
+!!entity.Config {archiveDir: archive, databaseDir: database, generated: output/submit.cpp,
+  mainTemplate: libs/main.cpp, port: 18777, timeLimit: 10000}
