@@ -20,7 +20,7 @@ public class Coordination2D {
 
     //set x coordination
     public static Coordination2D ofXAxis(double x, double y) {
-        if (near(x * x + y * y, 1)) {
+        if (!near(x * x + y * y, 1)) {
             double d = Math.sqrt(x * x + y * y);
             x /= d;
             y /= d;

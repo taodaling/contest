@@ -11,6 +11,10 @@ import java.util.Arrays;
  * 1 * x1 + 2 * x2 + ... + n * xn = m while m <= n and xi >= 0
  */
 public class WayToSplitNumber {
+    public static void main(String[] args){
+        System.out.println(new WayToSplitNumber(20, new Modular(1e9 + 7)).wayOf(20));
+    }
+
     int[] ways;
     int[] f;
     int[] g;

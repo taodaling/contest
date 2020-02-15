@@ -93,7 +93,7 @@ public class LongConvexHullTrick implements Iterable<LongConvexHullTrick.Line> {
                 return line;
             }
             if (r < floor.l) {
-                setSortedByA.remove(floor);
+                removeLine(floor);
                 continue;
             }
             floor.r = r;

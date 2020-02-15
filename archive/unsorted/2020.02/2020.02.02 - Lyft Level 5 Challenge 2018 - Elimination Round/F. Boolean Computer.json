@@ -1,0 +1,50 @@
+{
+  "name" : "F. Boolean Computer",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4 3 1\n13 10 6\nAXoA\n",
+    "output" : "3\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "1 7 6\n0 1 1 0 1 0 0\nA\nO\nX\na\no\nx\n",
+    "output" : "40\n16\n25\n9\n33\n24\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "6 2 4\n47 12\nAOXaox\nAAaaAA\nxxxxxx\nXXXXXX\n",
+    "output" : "2\n3\n0\n2\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "2 2 2\n2 0\nxO\nOx\n",
+    "output" : "2\n0\n",
+    "index" : 3,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.FBooleanComputer",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.02.02",
+  "contestName" : "Lyft Level 5 Challenge 2018 - Elimination Round",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

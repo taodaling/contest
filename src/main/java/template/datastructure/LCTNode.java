@@ -127,6 +127,7 @@ public class LCTNode {
     }
 
     public static LCTNode findRoot(LCTNode x) {
+        splay(x);
         x.pushDown();
         while (x.left != NIL) {
             x = x.left;

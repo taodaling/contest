@@ -38,18 +38,26 @@ public class ModMatrixLinearRecurrenceSolver {
         return ans;
     }
 
+    /**
+     * O(n^2log_2k)
+     */
     public IntegerList solve(long k) {
         Polynomials.module(k, p, remainder, pow);
         return solve();
     }
 
+    /**
+     * O(n^2log_2k)
+     */
     public IntegerList solve(BitSet k) {
         Polynomials.module(k, p, remainder, pow);
         return solve();
     }
 
     /**
-     * Auto detect linear recurrence from given matrix and vec
+     * Auto detect linear recurrence from given matrix and vec.
+     * <br>
+     * O(n^3)
      */
     public ModMatrixLinearRecurrenceSolver(ModMatrix mat, IntegerList vec, Modular mod) {
         GravityModLagrangeInterpolation.Polynomial p = mat.getCharacteristicPolynomial(new Power(mod));

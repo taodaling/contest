@@ -2,17 +2,15 @@ package template.math;
 
 import template.primitve.generated.LongList;
 import template.primitve.generated.MultiWayIntegerStack;
+import template.problem.MinimumNumberWithMaximumFactors;
 
 public class Factorization {
     /**
      * factorize all number in [1, n], and only return their prime factors
      */
     public static MultiWayIntegerStack factorizeRangePrime(int n) {
-        int size = 0;
-        for (int i = 1; i <= n; i++) {
-            size += n / i;
-        }
-        MultiWayIntegerStack stack = new MultiWayIntegerStack(n + 1, size);
+        int maxFactorCnt = (int) MinimumNumberWithMaximumFactors.maximumPrimeFactor(n)[1];
+        MultiWayIntegerStack stack = new MultiWayIntegerStack(n + 1, n * maxFactorCnt);
         boolean[] isComp = new boolean[n + 1];
         for (int i = 2; i <= n; i++) {
             if (isComp[i]) {
@@ -48,6 +46,11 @@ public class Factorization {
      */
     public static LongList factorizeNumber(long x) {
         LongList ans = new LongList();
+        factorizeNumber(x, ans);
+        return ans;
+    }
+
+    public static void factorizeNumber(long x, LongList ans) {
         for (long i = 1; i * i <= x; i++) {
             if (x % i != 0) {
                 continue;
@@ -57,7 +60,6 @@ public class Factorization {
                 ans.add(x / i);
             }
         }
-        return ans;
     }
 
     /**

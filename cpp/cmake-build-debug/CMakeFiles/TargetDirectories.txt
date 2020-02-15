@@ -1,5 +1,0 @@
-C:/Users/DALT/IdeaProjects/contest/c++/cmake-build-debug/CMakeFiles/output.dir
-C:/Users/DALT/IdeaProjects/contest/c++/cmake-build-debug/CMakeFiles/testrunner.dir
-C:/Users/DALT/IdeaProjects/contest/c++/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-C:/Users/DALT/IdeaProjects/contest/c++/cmake-build-debug/CMakeFiles/test.dir
-C:/Users/DALT/IdeaProjects/contest/c++/cmake-build-debug/CMakeFiles/edit_cache.dir

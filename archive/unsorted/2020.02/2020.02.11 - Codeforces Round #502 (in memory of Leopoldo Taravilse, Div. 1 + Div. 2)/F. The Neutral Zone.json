@@ -1,0 +1,44 @@
+{
+  "name" : "F. The Neutral Zone",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "12 0 0 1 0\n",
+    "output" : "63\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "4 1 2 3 4\n",
+    "output" : "136\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "300000000 0 0 1 0",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx16M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.FTheNeutralZone",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.02.11",
+  "contestName" : "Codeforces Round #502 (in memory of Leopoldo Taravilse, Div. 1 + Div. 2)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

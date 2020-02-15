@@ -18,23 +18,13 @@ public class CompareUtils {
     }
 
     public static int middleOf(int a, int b, int c) {
-        if (a >= b) {
-            if (c <= b) {
-                return b;
-            }
-            if (c >= a) {
-                return a;
-            }
-            return c;
-        } else {
-            if (c <= a) {
-                return a;
-            }
-            if (c >= b) {
-                return b;
-            }
-            return c;
+        if (b <= a && a <= c) {
+            return a;
         }
+        if (a <= b && b <= c) {
+            return b;
+        }
+        return c;
     }
 
     public static int minOf(int[] a, int l, int r) {
@@ -319,28 +309,13 @@ public class CompareUtils {
         }
     }
 
-    public static<T> void mergeAscending(T[] a, int al, int ar, T[] b, int bl, int br, T[] c, int cl, Comparator<T> comp) {
+    public static <T> void mergeAscending(T[] a, int al, int ar, T[] b, int bl, int br, T[] c, int cl, Comparator<T> comp) {
         while (al <= ar || bl <= br) {
             if (bl > br || (al <= ar && comp.compare(a[al], b[bl]) <= 0)) {
                 c[cl++] = a[al++];
             } else {
                 c[cl++] = b[bl++];
             }
-        }
-    }
-
-
-    private static <T> void radixSort0(T[] data, Object[] output, int[] buf, int l, int r,
-                                       ToIntFunction<T> indexFetcher) {
-        Arrays.fill(buf, 0);
-        for (int i = l; i <= r; i++) {
-            buf[indexFetcher.applyAsInt(data[i])]++;
-        }
-        for (int i = 1; i < buf.length; i++) {
-            buf[i] += buf[i - 1];
-        }
-        for (int i = r; i >= l; i--) {
-            output[--buf[indexFetcher.applyAsInt(data[i])]] = data[i];
         }
     }
 
@@ -363,6 +338,15 @@ public class CompareUtils {
     }
 
     public static boolean strictAscending(int[] data, int l, int r) {
+        for (int i = l + 1; i <= r; i++) {
+            if (data[i] <= data[i - 1]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean strictAscending(long[] data, int l, int r) {
         for (int i = l + 1; i <= r; i++) {
             if (data[i] <= data[i - 1]) {
                 return false;

@@ -12,12 +12,12 @@ public class PollardRho {
     Random random = new Random();
 
     public int findFactor(int n) {
-        if (mr.mr(n, 10)) {
+        if (mr.mr(n, 5)) {
             return n;
         }
         while (true) {
-            int f = findFactor0(random.nextInt(n), random.nextInt(n), n);
-            if (f != -1) {
+            int f = rho(n);
+            if (f != n) {
                 return f;
             }
         }
@@ -52,23 +52,28 @@ public class PollardRho {
         findAllFactors(map, n / f);
     }
 
-    private int findFactor0(int x, int c, int n) {
-        int xi = x;
-        int xj = x;
-        int j = 2;
-        int i = 1;
-        while (i < n) {
-            i++;
-            xi = (int) ((long) xi * xi + c) % n;
-            int g = GCDs.gcd(n, Math.abs(xi - xj));
-            if (g != 1 && g != n) {
-                return g;
+    private int rho(int n) {
+        if (n % 2 == 0) {
+            return 2;
+        }
+        if (n % 3 == 0) {
+            return 3;
+        }
+        int x = 0, y = x, t, q = 1, c = random.nextInt(n - 1) + 1;
+        for (int k = 2; ; k <<= 1, y = x, q = 1) {
+            for (int i = 1; i <= k; ++i) {
+                x = DigitUtils.mod((long) x * x + c, n);
+                q = DigitUtils.mod((long) q * Math.abs(x - y), n);
+                if ((i & 127) == 0) {
+                    t = GCDs.gcd(q, n);
+                    if (t > 1) {
+                        return t;
+                    }
+                }
             }
-            if (i == j) {
-                j = j << 1;
-                xj = xi;
+            if ((t = GCDs.gcd(q, n)) > 1) {
+                return t;
             }
         }
-        return -1;
     }
 }

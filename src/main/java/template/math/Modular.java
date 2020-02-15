@@ -6,7 +6,6 @@ package template.math;
 public class Modular {
     int m;
 
-
     public int getMod() {
         return m;
     }

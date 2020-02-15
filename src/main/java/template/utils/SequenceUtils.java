@@ -473,55 +473,31 @@ public class SequenceUtils {
         return b == 0 ? a : gcd0(b, a % b);
     }
 
-    public static <T> void rotate(List<T> list, int l, int newBeg, int r) {
-        int offset = l;
-        int len = r - l + 1;
-        int step = len - (newBeg - l);
-        int g = gcd0(newBeg, r - l + 1);
-        for (int i = 0; i < g; i++) {
-            T take = list.get(i + offset);
-            int ni = i;
-            while ((ni = (ni + step) % len) != i) {
-                T tmp = list.get(ni + offset);
-                list.set(ni + offset, take);
-                take = tmp;
-            }
-            list.set(i + offset, take);
-        }
+    /**
+     * 旋转区间[l,r],使得原本在l的元素落在to处
+     */
+    public static <T> void rotate(List<T> list, int l, int r, int to) {
+        SequenceUtils.reverse(list, l, r);
+        SequenceUtils.reverse(list, l, to - 1);
+        SequenceUtils.reverse(list, to, r);
     }
 
-    public static void rotate(int[] list, int l, int newBeg, int r) {
-        int offset = l;
-        int len = r - l + 1;
-        int step = len - (newBeg - l);
-        int g = gcd0(newBeg, r - l + 1);
-        for (int i = 0; i < g; i++) {
-            int take = list[i + offset];
-            int ni = i;
-            while ((ni = (ni + step) % len) != i) {
-                int tmp = list[ni + offset];
-                list[ni + offset] = take;
-                take = tmp;
-            }
-            list[i + offset] = take;
-        }
+    /**
+     * 旋转区间[l,r],使得原本在l的元素落在to处
+     */
+    public static void rotate(int[] list, int l, int r, int to) {
+        SequenceUtils.reverse(list, l, r);
+        SequenceUtils.reverse(list, l, to - 1);
+        SequenceUtils.reverse(list, to, r);
     }
 
-    public static <T> void rotate(T[] list, int l, int newBeg, int r) {
-        int offset = l;
-        int len = r - l + 1;
-        int step = len - (newBeg - l);
-        int g = gcd0(newBeg, r - l + 1);
-        for (int i = 0; i < g; i++) {
-            T take = list[i + offset];
-            int ni = i;
-            while ((ni = (ni + step) % len) != i) {
-                T tmp = list[ni + offset];
-                list[ni + offset] = take;
-                take = tmp;
-            }
-            list[i + offset] = take;
-        }
+    /**
+     * 旋转区间[l,r],使得原本在l的元素落在to处
+     */
+    public static <T> void rotate(T[] list, int l, int r, int to) {
+        SequenceUtils.reverse(list, l, r);
+        SequenceUtils.reverse(list, l, to - 1);
+        SequenceUtils.reverse(list, to, r);
     }
 
     public static <T> void reverse(List<T> data, int l, int r) {

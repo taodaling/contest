@@ -44,6 +44,14 @@ public class ModBIT {
         }
     }
 
+    public int interval(int l, int r) {
+        int sum = query(r);
+        if (l > 1) {
+            sum = modular.subtract(sum, query(l - 1));
+        }
+        return sum;
+    }
+
     /**
      * 将A全部清0
      */

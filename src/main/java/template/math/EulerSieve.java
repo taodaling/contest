@@ -17,14 +17,14 @@ public class EulerSieve {
     }
 
     public boolean isPrime(int x) {
-        if (x == 1) {
+        if (x <= 1) {
             return false;
         }
         return !isComp[x];
     }
 
     public boolean isComp(int x) {
-        if (x == 1) {
+        if (x <= 1) {
             return false;
         }
         return isComp[x];

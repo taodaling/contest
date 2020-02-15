@@ -47,7 +47,7 @@ public class PermutationWithDistinctForbiddenMatch {
     }
 
     /**
-     * 排列$i+j$个数，其中对于$k<=i$,第k个数不允许为$k$。
+     * 排列$i+j$个数($i,j<=n$)，其中对于$k<=i$,第k个数不允许为$k$。
      * @return 方案数
      */
     public int get(int i, int j) {

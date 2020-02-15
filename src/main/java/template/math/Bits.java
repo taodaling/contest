@@ -33,6 +33,14 @@ public class Bits {
         return x;
     }
 
+    public static long flip(long x, int i) {
+        return x ^ (1L << i);
+    }
+
+    public static int flip(int x, int i) {
+        return x ^ (1 << i);
+    }
+
     public static long swapBit(long x, int i, int j) {
         int bi = bitAt(x, i);
         int bj = bitAt(x, j);

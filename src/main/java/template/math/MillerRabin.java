@@ -14,34 +14,44 @@ public class MillerRabin {
      * Check whether n is a prime s times
      */
     public boolean mr(int n, int s) {
+        if (n <= 1) {
+            return false;
+        }
         if (n == 2) {
             return true;
         }
         if (n % 2 == 0) {
             return false;
         }
+        int m = n - 1;
+        while (m % 2 == 0) {
+            m /= 2;
+        }
         modular = new Modular(n);
         power = new Power(modular);
         for (int i = 0; i < s; i++) {
             int x = random.nextInt(n - 2) + 2;
-            if (!mr0(x, n)) {
+            if (!mr0(x, n, m)) {
                 return false;
             }
         }
         return true;
     }
 
-    private boolean mr0(int x, int n) {
-        int exp = n - 1;
-        while (true) {
-            int y = power.pow(x, exp);
-            if (y != 1 && y != n - 1) {
-                return false;
-            }
-            if (y != 1 || exp % 2 == 1) {
-                break;
-            }
-            exp = exp / 2;
+    private boolean mr0(int x, int n, int m) {
+        return test(power.pow(x, m), m, n);
+    }
+
+    private boolean test(int y, int exp, int n) {
+        int y2 = modular.mul(y, y);
+        if (!(exp == n - 1 || test(y2, exp * 2, n))) {
+            return false;
+        }
+        if (exp != n - 1 && y2 != 1) {
+            return true;
+        }
+        if (y != 1 && y != n - 1) {
+            return false;
         }
         return true;
     }

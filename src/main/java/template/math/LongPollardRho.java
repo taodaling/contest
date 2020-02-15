@@ -5,8 +5,11 @@ import java.util.Map;
 import java.util.Random;
 
 public class LongPollardRho {
+    public static void main(String[] args){
+        System.out.println(new LongPollardRho().findAllFactors(100000000000123503L));
+    }
+
     LongMillerRabin mr = new LongMillerRabin();
-    ILongModular modular;
     Random random = new Random();
 
 
@@ -14,36 +17,16 @@ public class LongPollardRho {
      * Find a factor of n, if n is returned, it means n is 1 or a prime
      */
     public long findFactor(long n) {
-        if (mr.mr(n, 3)) {
+        if (mr.mr(n, 5)) {
             return n;
         }
-        modular = ILongModular.getInstance(n);
+
         while (true) {
-            long f = findFactor0((long) (random.nextDouble() * n), (long) (random.nextDouble() * n), n);
-            if (f != -1) {
+            long f = rho(n);
+            if (f != n) {
                 return f;
             }
         }
-    }
-
-    private long findFactor0(long x, long c, long n) {
-        long xi = x;
-        long xj = x;
-        int j = 2;
-        int i = 1;
-        while (i < n) {
-            i++;
-            xi = modular.plus(modular.mul(xi, xi), c);
-            long g = GCDs.gcd(n, Math.abs(xi - xj));
-            if (g != 1 && g != n) {
-                return g;
-            }
-            if (i == j) {
-                j = j << 1;
-                xj = xi;
-            }
-        }
-        return -1;
     }
 
     /**
@@ -71,5 +54,31 @@ public class LongPollardRho {
         }
         findAllFactors(map, f);
         findAllFactors(map, n / f);
+    }
+
+    private long rho(long n) {
+        if (n % 2 == 0) {
+            return 2;
+        }
+        if (n % 3 == 0) {
+            return 3;
+        }
+        ILongModular modular = ILongModular.getInstance(n);
+        long x = 0, y = x, t, q = 1, c = (long) (random.nextDouble() * (n - 1)) + 1;
+        for (int k = 2; ; k <<= 1, y = x, q = 1) {
+            for (int i = 1; i <= k; ++i) {
+                x = modular.plus(modular.mul(x, x), c);
+                q = modular.mul(q, Math.abs(x - y));
+                if ((i & 127) == 0) {
+                    t = GCDs.gcd(q, n);
+                    if (t > 1) {
+                        return t;
+                    }
+                }
+            }
+            if ((t = GCDs.gcd(q, n)) > 1) {
+                return t;
+            }
+        }
     }
 }

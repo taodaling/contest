@@ -1,2 +1,2 @@
-57 src/main/java/contest/C. Xenon's Attack on the Gangs.json
+39 src/main/java/contest/Funny gnomes.json
 0

@@ -7,7 +7,19 @@ import java.io.OutputStreamWriter;
 import java.io.UncheckedIOException;
 import java.io.Writer;
 
-public class FastOutput implements AutoCloseable, Closeable {
+public class FastOutput implements AutoCloseable, Closeable, Appendable {
+    @Override
+    public FastOutput append(CharSequence csq) {
+        cache.append(csq);
+        return this;
+    }
+
+    @Override
+    public FastOutput append(CharSequence csq, int start, int end) {
+        cache.append(csq, start, end);
+        return this;
+    }
+
     private StringBuilder cache = new StringBuilder(10 << 20);
     private final Writer os;
 

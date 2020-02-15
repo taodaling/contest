@@ -10,7 +10,6 @@ public class LongMillerRabin {
     LongPower power;
     Random random = new Random();
 
-
     /**
      * Check whether n is a prime s times
      */
@@ -24,28 +23,36 @@ public class LongMillerRabin {
         if (n % 2 == 0) {
             return false;
         }
+        long m = n - 1;
+        while(m % 2 == 0){
+            m /= 2;
+        }
         modular = ILongModular.getInstance(n);
         power = new LongPower(modular);
         for (int i = 0; i < s; i++) {
             long x = (long) (random.nextDouble() * (n - 2) + 2);
-            if (!mr0(x, n)) {
+            if (!mr0(x, n, m)) {
                 return false;
             }
         }
         return true;
     }
 
-    private boolean mr0(long x, long n) {
-        long exp = n - 1;
-        while (true) {
-            long y = power.pow(x, exp);
-            if (y != 1 && y != n - 1) {
-                return false;
-            }
-            if (y != 1 || exp % 2 == 1) {
-                break;
-            }
-            exp = exp / 2;
+
+    private boolean mr0(long x, long n, long m) {
+        return test(power.pow(x, m), m, n);
+    }
+
+    private boolean test(long y, long exp, long n) {
+        long y2 = modular.mul(y, y);
+        if (!(exp == n - 1 || test(y2, exp * 2, n))) {
+            return false;
+        }
+        if (exp != n - 1 && y2 != 1) {
+            return true;
+        }
+        if (y != 1 && y != n - 1) {
+            return false;
         }
         return true;
     }

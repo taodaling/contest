@@ -6,6 +6,8 @@ public class LongPower {
     }
 
     final ILongModular modular;
+    static ExtGCD extGCD = new ExtGCD();
+
 
     public LongPower(ILongModular modular) {
         this.modular = modular;
@@ -21,6 +23,17 @@ public class LongPower {
             r = modular.mul(r, x);
         }
         return r;
+    }
+
+    public long inverseByFermat(long x) {
+        return pow(x, modular.getMod() - 2);
+    }
+
+    public long inverseExtGCD(long x) {
+        if (extGCD.extgcd(x, modular.getMod()) != 1) {
+            throw new IllegalArgumentException();
+        }
+        return modular.valueOf(extGCD.getX());
     }
 
     public long inverse(long x) {

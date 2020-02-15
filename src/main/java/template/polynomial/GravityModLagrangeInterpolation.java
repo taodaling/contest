@@ -100,6 +100,11 @@ public class GravityModLagrangeInterpolation {
     }
 
 
+    @Override
+    public String toString() {
+        return preparePolynomial().toString();
+    }
+
     Map<Integer, Integer> points = new HashMap<>();
     Polynomial xs;
     Polynomial ys;

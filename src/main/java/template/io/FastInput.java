@@ -7,7 +7,7 @@ public class FastInput {
     private final InputStream is;
     private StringBuilder defaultStringBuf = new StringBuilder(1 << 13);
 
-    private byte[] buf = new byte[1 << 13];
+    private byte[] buf = new byte[1 << 20];
     private int bufLen;
     private int bufOffset;
     private int next;

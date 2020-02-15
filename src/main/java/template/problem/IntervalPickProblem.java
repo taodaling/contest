@@ -1,10 +1,7 @@
 package template.problem;
 
 import template.algo.DoubleBinarySearch;
-import template.datastructure.Array2DequeAdapter;
-import template.datastructure.SimplifiedDeque;
 import template.math.DigitUtils;
-import template.primitve.generated.IntegerPreSum;
 import template.primitve.generated.LongPreSum;
 import template.primitve.generated.MinIntegerQueue;
 
