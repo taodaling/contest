@@ -5,7 +5,7 @@ import template.io.FastOutput;
 import template.math.DigitUtils;
 import template.math.EulerSieve;
 import template.primitve.generated.IntegerPreSum;
-import template.primitve.generated.MultiWayIntegerStack;
+import template.primitve.generated.IntegerMultiWayStack;
 import template.primitve.generated.MultiWayLongDeque;
 import template.primitve.generated.MultiWayLongStack;
 import template.utils.CompareUtils;

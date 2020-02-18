@@ -9,7 +9,7 @@ import template.io.FastOutput;
 import java.util.Arrays;
 
 public class TaskE {
-    MultiWayIntegerStack edges;
+    IntegerMultiWayStack edges;
     int[] a;
     long[][] negDp;
     long[] posDp;
@@ -21,7 +21,7 @@ public class TaskE {
         for (int i = 1; i <= n; i++) {
             a[i] = in.readInt();
         }
-        edges = new MultiWayIntegerStack(n + 1, n * 2);
+        edges = new IntegerMultiWayStack(n + 1, n * 2);
         for (int i = 1; i < n; i++) {
             int a = in.readInt();
             int b = in.readInt();

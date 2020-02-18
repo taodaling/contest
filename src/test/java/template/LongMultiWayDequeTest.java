@@ -2,13 +2,13 @@ package template;
 
 import org.junit.Assert;
 import org.junit.Test;
-import template.primitve.generated.datastructure.MultiWayIntegerDeque;
+import template.primitve.generated.datastructure.IntegerMultiWayDeque;
 
 public class LongMultiWayDequeTest {
 
     @Test
     public void test1(){
-        MultiWayIntegerDeque deque = new MultiWayIntegerDeque(3, 0);
+        IntegerMultiWayDeque deque = new IntegerMultiWayDeque(3, 0);
 
         deque.addFirst(0, 1);
         deque.addFirst(0, 3);

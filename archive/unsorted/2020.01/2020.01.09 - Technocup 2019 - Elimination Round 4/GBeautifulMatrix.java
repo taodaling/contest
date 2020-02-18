@@ -5,7 +5,7 @@ import template.io.FastOutput;
 import template.math.Factorial;
 import template.math.Modular;
 import template.primitve.generated.IntegerBIT;
-import template.primitve.generated.MultiWayIntegerStack;
+import template.primitve.generated.IntegerMultiWayStack;
 import template.problem.PermutationWithDistinctForbiddenMatch;
 
 public class GBeautifulMatrix {
@@ -39,8 +39,8 @@ public class GBeautifulMatrix {
         int[][] live = new int[n][n];
         int[][] left = new int[n][n];
         int[][] right = new int[n][n];
-        MultiWayIntegerStack s1 = new MultiWayIntegerStack(n, n);
-        MultiWayIntegerStack s2 = new MultiWayIntegerStack(n, n);
+        IntegerMultiWayStack s1 = new IntegerMultiWayStack(n, n);
+        IntegerMultiWayStack s2 = new IntegerMultiWayStack(n, n);
         for (int i = 1; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 indexOfVal[mat[i][j]] = j;

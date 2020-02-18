@@ -3,13 +3,13 @@ package contest;
 import template.algo.MoOnTreeBeta;
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.primitve.generated.MultiWayIntegerStack;
+import template.primitve.generated.IntegerMultiWayStack;
 
 public class BZOJ3757 {
     public void solve(int testNumber, FastInput in, FastOutput out) {
         int n = in.readInt();
         int m = in.readInt();
-        MultiWayIntegerStack edges = new MultiWayIntegerStack(n, 2 * n);
+        IntegerMultiWayStack edges = new IntegerMultiWayStack(n, 2 * n);
         int[] data = new int[n];
         for (int i = 0; i < n; i++) {
             data[i] = in.readInt();

@@ -4,7 +4,7 @@ import org.omg.CORBA.INTERNAL;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.math.Bits;
-import template.primitve.generated.MultiWayIntegerStack;
+import template.primitve.generated.IntegerMultiWayStack;
 import template.problem.KthXorTwoElement;
 import template.rand.Randomized;
 import template.utils.Buffer;

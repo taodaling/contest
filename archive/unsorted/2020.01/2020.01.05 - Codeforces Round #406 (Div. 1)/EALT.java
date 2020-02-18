@@ -6,7 +6,7 @@ import template.io.FastInput;
 import template.io.FastOutput;
 import template.math.CachedLog2;
 import template.primitve.generated.IntegerList;
-import template.primitve.generated.MultiWayIntegerStack;
+import template.primitve.generated.IntegerMultiWayStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,7 @@ public class EALT {
             nodes[i].id = i + 1;
         }
 
-        MultiWayIntegerStack edges = new MultiWayIntegerStack(n, n * 2);
+        IntegerMultiWayStack edges = new IntegerMultiWayStack(n, n * 2);
         for (int i = 1; i < n; i++) {
             int aId = in.readInt() - 1;
             int bId = in.readInt() - 1;

@@ -4,8 +4,8 @@ import template.graph.ForestDiameter;
 import template.graph.TreeDiameter;
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.primitve.generated.MultiWayIntegerDeque;
-import template.primitve.generated.MultiWayIntegerStack;
+import template.primitve.generated.IntegerMultiWayDeque;
+import template.primitve.generated.IntegerMultiWayStack;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -47,7 +47,7 @@ public class FChoosingTwoPaths {
             }
         }
 
-        MultiWayIntegerStack edgeStack = new MultiWayIntegerStack(n, n * 2);
+        IntegerMultiWayStack edgeStack = new IntegerMultiWayStack(n, n * 2);
         for (int[] e : edges) {
             if (nodes[e[0]].removed || nodes[e[1]].removed) {
                 continue;

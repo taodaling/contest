@@ -11,12 +11,12 @@ import template.primitve.generated.IntegerDequeImpl;
 import template.primitve.generated.IntegerIterator;
 import template.primitve.generated.IntegerList;
 import template.primitve.generated.IntegerVersionArray;
-import template.primitve.generated.MultiWayIntegerDeque;
-import template.primitve.generated.MultiWayIntegerStack;
+import template.primitve.generated.IntegerMultiWayDeque;
+import template.primitve.generated.IntegerMultiWayStack;
 
 public class FClassical {
     int limit = 100000;
-    MultiWayIntegerStack divisors = Factorization.factorizeRange(limit);
+    IntegerMultiWayStack divisors = Factorization.factorizeRange(limit);
     MultiplicativeFunctionSieve sieve = new MultiplicativeFunctionSieve(limit, true, false, false);
 
     public void solve(int testNumber, FastInput in, FastOutput out) {
@@ -27,7 +27,7 @@ public class FClassical {
             list.add(in.readInt());
         }
         list.unique();
-        MultiWayIntegerDeque multiple = new MultiWayIntegerDeque(limit + 1, 20 * limit);
+        IntegerMultiWayDeque multiple = new IntegerMultiWayDeque(limit + 1, 20 * limit);
         for (int i = 0; i < list.size(); i++) {
             int x = list.get(i);
             for (IntegerIterator iterator = divisors.iterator(x); iterator.hasNext(); ) {

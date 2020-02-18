@@ -6,7 +6,7 @@ import template.io.FastOutput;
 import template.math.DigitUtils;
 import template.primitve.generated.IntegerDequeImpl;
 import template.primitve.generated.LongDequeImpl;
-import template.primitve.generated.MultiWayIntegerStack;
+import template.primitve.generated.IntegerMultiWayStack;
 
 import java.util.*;
 
@@ -22,7 +22,7 @@ public class CXenonsAttackOnTheGangs {
             nodes[i].id = i;
         }
         List<Edge> edges = new ArrayList<>(n);
-        MultiWayIntegerStack stack = new MultiWayIntegerStack(n, n * 2);
+        IntegerMultiWayStack stack = new IntegerMultiWayStack(n, n * 2);
         for (int i = 0; i < n - 1; i++) {
             Edge e = new Edge();
             e.a = nodes[in.readInt() - 1];

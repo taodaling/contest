@@ -1,4 +1,4 @@
-package template.primitve.datastructure;
+package template.primitve.generated.datastructure;
 
 import template.math.CachedLog2;
 

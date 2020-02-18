@@ -6,7 +6,7 @@ import template.io.FastInput;
 import template.io.FastOutput;
 import template.primitve.generated.IntegerDiscreteMap;
 import template.primitve.generated.IntegerList;
-import template.primitve.generated.MultiWayIntegerStack;
+import template.primitve.generated.IntegerMultiWayStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,7 @@ public class BZOJ1146 {
         IntegerList allTimes = new IntegerList(n + q);
         allTimes.addAll(data);
 
-        MultiWayIntegerStack edges = new MultiWayIntegerStack(n, n * 2);
+        IntegerMultiWayStack edges = new IntegerMultiWayStack(n, n * 2);
         for (int i = 1; i < n; i++) {
             int a = in.readInt() - 1;
             int b = in.readInt() - 1;

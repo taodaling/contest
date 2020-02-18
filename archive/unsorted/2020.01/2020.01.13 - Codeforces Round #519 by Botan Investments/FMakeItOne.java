@@ -6,7 +6,7 @@ import template.io.FastInput;
 import template.io.FastOutput;
 import template.primitve.generated.IntegerIterator;
 import template.primitve.generated.IntegerList;
-import template.primitve.generated.MultiWayIntegerStack;
+import template.primitve.generated.IntegerMultiWayStack;
 
 import java.util.Arrays;
 
@@ -22,7 +22,7 @@ public class FMakeItOne {
             out.println(1);
             return;
         }
-        MultiWayIntegerStack allPrimeFactors = new MultiWayIntegerStack(limit + 1, limit * 7);
+        IntegerMultiWayStack allPrimeFactors = new IntegerMultiWayStack(limit + 1, limit * 7);
         boolean[] isComp = new boolean[limit + 1];
         for (int i = 2; i <= limit; i++) {
             if (isComp[i]) {

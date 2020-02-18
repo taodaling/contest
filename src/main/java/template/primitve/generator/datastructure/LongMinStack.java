@@ -1,4 +1,4 @@
-package template.primitve.datastructure;
+package template.primitve.generated.datastructure;
 
 public class LongMinStack {
     LongDequeImpl minDeque;

@@ -6,7 +6,7 @@ import template.io.FastOutput;
 import template.math.Modular;
 
 public class TaskF2 {
-    MultiWayIntegerStack edges;
+    IntegerMultiWayStack edges;
     int[][] dp;
     int[] color;
     int[] parent;
@@ -17,7 +17,7 @@ public class TaskF2 {
     public void solve(int testNumber, FastInput in, FastOutput out) {
         int n = in.readInt();
         int k = in.readInt();
-        edges = new MultiWayIntegerStack(n + 1, n * 2);
+        edges = new IntegerMultiWayStack(n + 1, n * 2);
         dp = new int[n + 1][2];
         color = new int[n + 1];
         visited = new boolean[n + 1];

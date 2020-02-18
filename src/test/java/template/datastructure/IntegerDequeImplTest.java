@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import template.primitve.generated.datastructure.IntegerDequeImpl;
 import template.primitve.generated.datastructure.IntegerIterator;
-import template.primitve.generated.datastructure.MultiWayIntegerDeque;
+import template.primitve.generated.datastructure.IntegerMultiWayDeque;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -88,7 +88,7 @@ public class IntegerDequeImplTest {
     @Test
     public void test5() {
         int n = 10000000;
-        MultiWayIntegerDeque deque = new MultiWayIntegerDeque(1, n);
+        IntegerMultiWayDeque deque = new IntegerMultiWayDeque(1, n);
         for (int i = 0; i < n; i++) {
             deque.addLast(0, i);
         }

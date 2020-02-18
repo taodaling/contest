@@ -1,7 +1,5 @@
-package template.primitve.datastructure;
+package template.primitve.generated.datastructure;
 
-import template.primitve.generated.LongDeque;
-import template.primitve.generated.LongIterator;
 
 public class LongDequeImpl implements LongDeque {
     private long[] data;
@@ -39,8 +37,8 @@ public class LongDequeImpl implements LongDeque {
         data = newData;
     }
 
-    public template.primitve.generated.LongIterator iterator() {
-        return new template.primitve.generated.LongIterator() {
+    public LongIterator iterator() {
+        return new LongIterator() {
             int index = bpos;
 
             @Override

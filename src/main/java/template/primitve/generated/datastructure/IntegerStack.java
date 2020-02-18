@@ -11,4 +11,6 @@ public interface IntegerStack {
     IntegerIterator iterator();
 
     boolean isEmpty();
+
+    void clear();
 }

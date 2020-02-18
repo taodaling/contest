@@ -2,12 +2,12 @@ package template.graph;
 
 import template.primitve.generated.datastructure.IntegerDequeImpl;
 import template.primitve.generated.datastructure.IntegerIterator;
-import template.primitve.generated.datastructure.MultiWayIntegerStack;
+import template.primitve.generated.datastructure.IntegerMultiWayStack;
 
 import java.util.Arrays;
 
 public class TwoSatBeta {
-    private MultiWayIntegerStack edges;
+    private IntegerMultiWayStack edges;
     private boolean[] values;
     private int[] sets;
     private int[] dfns;
@@ -19,7 +19,7 @@ public class TwoSatBeta {
     public TwoSatBeta(int n, int m) {
         values = new boolean[n * 2];
         sets = new int[n * 2];
-        edges = new MultiWayIntegerStack(n * 2, m * 2);
+        edges = new IntegerMultiWayStack(n * 2, m * 2);
         dfns = new int[n * 2];
         lows = new int[n * 2];
         instk = new boolean[n * 2];

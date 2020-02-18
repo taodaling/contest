@@ -1,6 +1,5 @@
-package template.primitve.datastructure;
+package template.primitve.generated.datastructure;
 
-import template.primitve.generated.LongObjectEntryIterator;
 
 import java.util.Arrays;
 

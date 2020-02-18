@@ -1,16 +1,16 @@
 package template.math;
 
+import template.primitve.generated.datastructure.IntegerMultiWayStack;
 import template.primitve.generated.datastructure.LongList;
-import template.primitve.generated.datastructure.MultiWayIntegerStack;
 import template.problem.MinimumNumberWithMaximumFactors;
 
 public class Factorization {
     /**
      * factorize all number in [1, n], and only return their prime factors
      */
-    public static MultiWayIntegerStack factorizeRangePrime(int n) {
+    public static IntegerMultiWayStack factorizeRangePrime(int n) {
         int maxFactorCnt = (int) MinimumNumberWithMaximumFactors.maximumPrimeFactor(n)[1];
-        MultiWayIntegerStack stack = new MultiWayIntegerStack(n + 1, n * maxFactorCnt);
+        IntegerMultiWayStack stack = new IntegerMultiWayStack(n + 1, n * maxFactorCnt);
         boolean[] isComp = new boolean[n + 1];
         for (int i = 2; i <= n; i++) {
             if (isComp[i]) {
@@ -27,12 +27,12 @@ public class Factorization {
     /**
      * factorize all number in [1, n]
      */
-    public static MultiWayIntegerStack factorizeRange(int n) {
+    public static IntegerMultiWayStack factorizeRange(int n) {
         int size = 0;
         for (int i = 1; i <= n; i++) {
             size += n / i;
         }
-        MultiWayIntegerStack stack = new MultiWayIntegerStack(n + 1, size);
+        IntegerMultiWayStack stack = new IntegerMultiWayStack(n + 1, size);
         for (int i = 1; i <= n; i++) {
             for (int j = i; j <= n; j += i) {
                 stack.addLast(j, i);

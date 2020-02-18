@@ -1,5 +1,6 @@
 package template.primitve.generated.datastructure;
 
+
 import template.math.CachedLog2;
 
 /**

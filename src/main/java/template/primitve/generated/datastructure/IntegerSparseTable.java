@@ -1,11 +1,9 @@
 package template.primitve.generated.datastructure;
 
-import template.algo.IntBinarySearch;
 import template.math.CachedLog2;
 
 import java.util.Arrays;
 import java.util.function.IntBinaryOperator;
-import java.util.function.IntUnaryOperator;
 
 /**
  * Created by dalt on 2018/5/20.

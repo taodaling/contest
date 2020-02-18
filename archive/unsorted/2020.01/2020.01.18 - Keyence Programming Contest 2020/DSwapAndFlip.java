@@ -4,8 +4,8 @@ import template.io.FastInput;
 import template.io.FastOutput;
 import template.math.Bits;
 import template.primitve.generated.IntegerList;
-import template.primitve.generated.MultiWayIntegerDeque;
-import template.primitve.generated.MultiWayIntegerStack;
+import template.primitve.generated.IntegerMultiWayDeque;
+import template.primitve.generated.IntegerMultiWayStack;
 
 import java.util.Arrays;
 
@@ -21,7 +21,7 @@ public class DSwapAndFlip {
             b[i] = in.readInt();
         }
         int[] vals = new int[n];
-        MultiWayIntegerDeque deque = new MultiWayIntegerDeque(51, n);
+        IntegerMultiWayDeque deque = new IntegerMultiWayDeque(51, n);
         int[] masks = new int[n];
         IntegerList perm = new IntegerList(n);
         int minCnt = (int) 1e8;

@@ -1,6 +1,5 @@
 package template.primitve.generated.datastructure;
 
-
 import template.rand.Randomized;
 import template.utils.SequenceUtils;
 

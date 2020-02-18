@@ -19,7 +19,7 @@ public class TaskE {
         for (int i = 0; i < n; i++) {
             a[i] = in.readInt();
         }
-        MultiWayIntegerDeque deque = new MultiWayIntegerDeque(n + 2, n + 1);
+        IntegerMultiWayDeque deque = new IntegerMultiWayDeque(n + 2, n + 1);
         FindCeilElementInDeque bs = new FindCeilElementInDeque(deque, a);
 
         List<IntegerList> ans = new ArrayList<>();
@@ -86,7 +86,7 @@ public class TaskE {
 }
 
 class FindCeilElementInDeque extends IntBinarySearch {
-    private MultiWayIntegerDeque deque;
+    private IntegerMultiWayDeque deque;
     private int[] a;
 
     public void setElement(int element) {
@@ -95,7 +95,7 @@ class FindCeilElementInDeque extends IntBinarySearch {
 
     private int element;
 
-    FindCeilElementInDeque(MultiWayIntegerDeque deque, int[] a) {
+    FindCeilElementInDeque(IntegerMultiWayDeque deque, int[] a) {
         this.deque = deque;
         this.a = a;
     }

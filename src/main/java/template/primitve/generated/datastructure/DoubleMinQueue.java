@@ -1,5 +1,6 @@
 package template.primitve.generated.datastructure;
 
+
 public class DoubleMinQueue {
     DoubleDequeImpl minQueue;
     DoubleDequeImpl data;

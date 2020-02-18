@@ -14,7 +14,7 @@ public class TaskG {
         for (int i = 0; i < n; i++) {
             a[i] = in.readInt();
         }
-        MultiWayIntegerStack stack = new MultiWayIntegerStack(n, n);
+        IntegerMultiWayStack stack = new IntegerMultiWayStack(n, n);
         IntDeque deque = new IntegerDequeImpl(n);
         for (int i = n - 1; i >= 0; i--) {
             while (!deque.isEmpty() && a[deque.peekFirst()] <= a[i]) {

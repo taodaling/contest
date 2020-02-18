@@ -1,7 +1,5 @@
-package template.primitve.datastructure;
+package template.primitve.generated.datastructure;
 
-import template.primitve.generated.LongIterator;
-import template.primitve.generated.LongStack;
 
 import java.util.Arrays;
 
@@ -12,8 +10,8 @@ public class LongMultiWayStack {
     private int alloc;
     private int stackNum;
 
-    public template.primitve.generated.LongIterator iterator(final int queue) {
-        return new template.primitve.generated.LongIterator() {
+    public LongIterator iterator(final int queue) {
+        return new LongIterator() {
             int ele = heads[queue];
 
             @Override
@@ -30,7 +28,7 @@ public class LongMultiWayStack {
         };
     }
 
-    public template.primitve.generated.LongStack getStack(int qId){
+    public LongStack getStack(int qId){
         return new LongStack() {
             @Override
             public void addLast(long x) {
@@ -48,13 +46,18 @@ public class LongMultiWayStack {
             }
 
             @Override
-            public template.primitve.generated.LongIterator iterator() {
+            public LongIterator iterator() {
                 return LongMultiWayStack.this.iterator(qId);
             }
 
             @Override
             public boolean isEmpty() {
                 return LongMultiWayStack.this.isEmpty(qId);
+            }
+
+            @Override
+            public void clear() {
+                heads[qId] = 0;
             }
         };
     }

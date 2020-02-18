@@ -4,8 +4,8 @@ import template.io.FastInput;
 import template.io.FastOutput;
 import template.primitve.generated.IntegerBIT;
 import template.primitve.generated.IntegerIterator;
-import template.primitve.generated.MultiWayIntegerDeque;
-import template.primitve.generated.MultiWayIntegerStack;
+import template.primitve.generated.IntegerMultiWayDeque;
+import template.primitve.generated.IntegerMultiWayStack;
 
 import java.util.*;
 
@@ -18,7 +18,7 @@ public class EMessengerSimulator {
             a[i] = in.readInt() - 1;
         }
 
-        MultiWayIntegerDeque deque = new MultiWayIntegerDeque(n, m);
+        IntegerMultiWayDeque deque = new IntegerMultiWayDeque(n, m);
         for (int i = 0; i < m; i++) {
             deque.addLast(a[i], i);
         }

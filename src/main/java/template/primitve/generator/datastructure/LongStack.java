@@ -1,6 +1,5 @@
-package template.primitve.datastructure;
+package template.primitve.generated.datastructure;
 
-import template.primitve.generated.LongIterator;
 
 public interface LongStack {
     void addLast(long x);
@@ -12,4 +11,6 @@ public interface LongStack {
     LongIterator iterator();
 
     boolean isEmpty();
+
+    void clear();
 }

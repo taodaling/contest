@@ -25,7 +25,7 @@ public class FAlmostSameDistance {
             nodes[i].id = i;
         }
 
-        MultiWayIntegerStack edges = new MultiWayIntegerStack(n + 1, n * 2);
+        IntegerMultiWayStack edges = new IntegerMultiWayStack(n + 1, n * 2);
         for (int i = 1; i < n; i++) {
             int a = in.readInt();
             int b = in.readInt();

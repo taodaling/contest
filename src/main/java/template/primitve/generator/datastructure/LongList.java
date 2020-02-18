@@ -1,6 +1,5 @@
-package template.primitve.datastructure;
+package template.primitve.generated.datastructure;
 
-import template.primitve.generated.LongIterator;
 import template.rand.Randomized;
 import template.utils.SequenceUtils;
 
@@ -186,7 +185,7 @@ public class LongList implements Cloneable{
         size = wpos;
     }
 
-    public void set(int i, int x) {
+    public void set(int i, long x) {
         checkRange(i);
         data[i] = x;
     }

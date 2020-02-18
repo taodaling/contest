@@ -1,4 +1,4 @@
-package template.primitve.datastructure;
+package template.primitve.generated.datastructure;
 
 public class LongBIT2D {
     private long[][] data;

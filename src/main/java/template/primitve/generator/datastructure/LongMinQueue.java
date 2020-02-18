@@ -1,7 +1,5 @@
-package template.primitve.datastructure;
+package template.primitve.generated.datastructure;
 
-import template.primitve.generated.LongComparator;
-import template.primitve.generated.LongDequeImpl;
 
 public class LongMinQueue {
     LongDequeImpl minQueue;

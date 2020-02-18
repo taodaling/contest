@@ -7,7 +7,7 @@ import template.io.FastOutput;
 import template.math.Factorization;
 import template.primitve.generated.IntegerIterator;
 import template.primitve.generated.IntegerList;
-import template.primitve.generated.MultiWayIntegerStack;
+import template.primitve.generated.IntegerMultiWayStack;
 import template.utils.SequenceUtils;
 
 import java.util.Arrays;
@@ -31,7 +31,7 @@ public class HMakeSquare {
         }
         Query[] sortedQs = qs.clone();
         Arrays.sort(sortedQs, (a, b) -> a.r != b.r ? a.r - b.r : a.l - b.l);
-        MultiWayIntegerStack stack = Factorization.factorizeRangePrime(maxA);
+        IntegerMultiWayStack stack = Factorization.factorizeRangePrime(maxA);
 
         SimplifiedDeque<Query> deque = new Array2DequeAdapter<>(sortedQs);
         dp = new int[maxA + 1][maxAns + 1];

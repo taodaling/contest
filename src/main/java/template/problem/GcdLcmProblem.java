@@ -6,22 +6,22 @@ import template.math.LCMs;
 import template.primitve.generated.datastructure.IntegerDequeImpl;
 import template.primitve.generated.datastructure.IntegerIterator;
 import template.primitve.generated.datastructure.IntegerList;
+import template.primitve.generated.datastructure.IntegerMultiWayDeque;
+import template.primitve.generated.datastructure.IntegerMultiWayStack;
 import template.primitve.generated.datastructure.IntegerVersionArray;
-import template.primitve.generated.datastructure.MultiWayIntegerDeque;
-import template.primitve.generated.datastructure.MultiWayIntegerStack;
 
 import java.util.Arrays;
 
 public class GcdLcmProblem {
-    private MultiWayIntegerStack primeFactors;
-    private MultiWayIntegerStack factors;
+    private IntegerMultiWayStack primeFactors;
+    private IntegerMultiWayStack factors;
     private IntegerList allFactors = new IntegerList(20);
     private int[] cntOfMultiple;
     private int m;
     private int[] seq;
     public static final int INF = (int) 1e9;
     private int[] coprime;
-    private MultiWayIntegerDeque indexesOfSeq;
+    private IntegerMultiWayDeque indexesOfSeq;
 
     public GcdLcmProblem(int m, int[] seq) {
         this.m = m;
@@ -31,7 +31,7 @@ public class GcdLcmProblem {
         prepareCntOfMultiple();
         coprime = new int[m + 1];
         Arrays.fill(coprime, -1);
-        indexesOfSeq = new MultiWayIntegerDeque(m + 1, seq.length);
+        indexesOfSeq = new IntegerMultiWayDeque(m + 1, seq.length);
         for (int i = 0; i < seq.length; i++) {
             indexesOfSeq.addLast(seq[i], i);
         }
@@ -177,7 +177,7 @@ public class GcdLcmProblem {
             size += m / i;
         }
 
-        MultiWayIntegerDeque deque = new MultiWayIntegerDeque(m + 1, size);
+        IntegerMultiWayDeque deque = new IntegerMultiWayDeque(m + 1, size);
         for (int i = 1; i <= m; i++) {
             for (int j = i; j <= m; j += i) {
                 if (!indexesOfSeq.isEmpty(j)) {
@@ -242,7 +242,7 @@ public class GcdLcmProblem {
             size += m / i;
         }
 
-        MultiWayIntegerDeque deque = new MultiWayIntegerDeque(m + 1, size);
+        IntegerMultiWayDeque deque = new IntegerMultiWayDeque(m + 1, size);
         for (int i = 1; i <= m; i++) {
             for (int j = i; j <= m; j += i) {
                 if (!indexesOfSeq.isEmpty(j)) {

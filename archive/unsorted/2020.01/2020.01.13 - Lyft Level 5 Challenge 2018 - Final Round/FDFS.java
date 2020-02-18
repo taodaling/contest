@@ -7,12 +7,12 @@ import template.math.CachedLog2;
 import template.math.DigitUtils;
 import template.primitve.generated.IntegerIterator;
 import template.primitve.generated.LongHashSet;
-import template.primitve.generated.MultiWayIntegerStack;
+import template.primitve.generated.IntegerMultiWayStack;
 
 import java.util.Arrays;
 
 public class FDFS {
-    MultiWayIntegerStack edges;
+    IntegerMultiWayStack edges;
     int[] intervalL;
     int[] intervalR;
     int[] depths;
@@ -24,7 +24,7 @@ public class FDFS {
     public void solve(int testNumber, FastInput in, FastOutput out) {
         n = in.readInt();
         int q = in.readInt();
-        edges = new MultiWayIntegerStack(n, n * 2);
+        edges = new IntegerMultiWayStack(n, n * 2);
         intervalL = new int[n];
         intervalR = new int[n];
         depths = new int[n];

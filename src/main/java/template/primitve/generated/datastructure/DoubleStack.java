@@ -1,6 +1,5 @@
 package template.primitve.generated.datastructure;
 
-import template.primitve.generated.datastructure.DoubleIterator;
 
 public interface DoubleStack {
     void addLast(double x);
@@ -12,4 +11,6 @@ public interface DoubleStack {
     DoubleIterator iterator();
 
     boolean isEmpty();
+
+    void clear();
 }

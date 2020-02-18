@@ -3,12 +3,12 @@ package template.graph;
 import template.math.DigitUtils;
 import template.primitve.generated.datastructure.IntegerIterator;
 import template.primitve.generated.datastructure.IntegerList;
-import template.primitve.generated.datastructure.MultiWayIntegerStack;
+import template.primitve.generated.datastructure.IntegerMultiWayStack;
 
 import java.util.Arrays;
 
 public class ForestDiameter {
-    private MultiWayIntegerStack edges;
+    private IntegerMultiWayStack edges;
     private int[] depth;
     private int[] parents;
     private int[] diameters;
@@ -33,7 +33,7 @@ public class ForestDiameter {
         return treeIds[i];
     }
 
-    public ForestDiameter(MultiWayIntegerStack edges, int n) {
+    public ForestDiameter(IntegerMultiWayStack edges, int n) {
         this.edges = edges;
         depth = new int[n];
         parents = new int[n];

@@ -2,16 +2,16 @@ package template.graph;
 
 import template.primitve.generated.datastructure.IntegerIterator;
 import template.primitve.generated.datastructure.IntegerList;
-import template.primitve.generated.datastructure.MultiWayIntegerStack;
+import template.primitve.generated.datastructure.IntegerMultiWayStack;
 
 public class CircularPath {
-    MultiWayIntegerStack edges;
+    IntegerMultiWayStack edges;
     boolean[] instk;
     boolean[] visited;
     int n;
     IntegerList circular;
 
-    public CircularPath(MultiWayIntegerStack edges) {
+    public CircularPath(IntegerMultiWayStack edges) {
         this.edges = edges;
         n = edges.stackNumber();
         instk = new boolean[n];

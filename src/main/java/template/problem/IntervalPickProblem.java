@@ -2,8 +2,8 @@ package template.problem;
 
 import template.algo.DoubleBinarySearch;
 import template.math.DigitUtils;
+import template.primitve.generated.datastructure.IntegerMinQueue;
 import template.primitve.generated.datastructure.LongPreSum;
-import template.primitve.generated.datastructure.MinIntegerQueue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -375,8 +375,8 @@ public class IntervalPickProblem {
         double[] dp = new double[n + 1];
         int[] time = new int[n + 1];
 
-        MinIntegerQueue left = new MinIntegerQueue(n, (a, b) -> -Double.compare(dp[a], dp[b]));
-        MinIntegerQueue middle = new MinIntegerQueue(n, (a, b) -> -Double.compare(dp[a] - lps.prefix(intervals[a - 1].r), dp[b] - lps.prefix(intervals[b - 1].r)));
+        IntegerMinQueue left = new IntegerMinQueue(n, (a, b) -> -Double.compare(dp[a], dp[b]));
+        IntegerMinQueue middle = new IntegerMinQueue(n, (a, b) -> -Double.compare(dp[a] - lps.prefix(intervals[a - 1].r), dp[b] - lps.prefix(intervals[b - 1].r)));
         left.addLast(0);
         for (int i = 1; i <= n; i++) {
             IntervalPickProblem.Interval now = intervals[i - 1];

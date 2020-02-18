@@ -1,7 +1,5 @@
 package template.primitve.generated.datastructure;
 
-import template.primitve.generated.datastructure.DoubleDeque;
-import template.primitve.generated.datastructure.DoubleIterator;
 
 public class DoubleDequeImpl implements DoubleDeque {
     private double[] data;

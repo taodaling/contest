@@ -3,13 +3,13 @@ package contest;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.primitve.generated.IntegerIterator;
-import template.primitve.generated.MultiWayIntegerStack;
+import template.primitve.generated.IntegerMultiWayStack;
 
 import java.util.Arrays;
 
 public class FUpAndDownTheTree {
     int[][] dp;
-    MultiWayIntegerStack edges;
+    IntegerMultiWayStack edges;
     int[] depths;
     int[] nearestDepths;
     int[] degrees;
@@ -21,7 +21,7 @@ public class FUpAndDownTheTree {
         int n = in.readInt();
         k = in.readInt();
         dp = new int[2][n];
-        edges = new MultiWayIntegerStack(n, 2 * n);
+        edges = new IntegerMultiWayStack(n, 2 * n);
         depths = new int[n];
         nearestDepths = new int[n];
         degrees = new int[n];

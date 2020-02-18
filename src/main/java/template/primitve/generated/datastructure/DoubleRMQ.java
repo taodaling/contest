@@ -1,8 +1,7 @@
 package template.primitve.generated.datastructure;
 
+
 import template.math.CachedLog2;
-import template.primitve.generated.datastructure.DoubleComparator;
-import template.utils.IntComparator;
 
 /**
  * O(n) space and pre-compute, O(logn) for query min element in interval

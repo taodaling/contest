@@ -3,7 +3,7 @@ package contest;
 import template.datastructure.MultiWayStack;
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.primitve.generated.MultiWayIntegerStack;
+import template.primitve.generated.IntegerMultiWayStack;
 import template.utils.SequenceUtils;
 
 public class ENanosoft {

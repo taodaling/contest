@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class TaskD {
-    MultiWayIntegerDeque edges;
+    IntegerMultiWayDeque edges;
     long[] dp0;
     long[] dp1;
     int n;
@@ -19,7 +19,7 @@ public class TaskD {
         dp0 = new long[n + 1];
         dp1 = new long[n + 1];
         size = new int[n + 1];
-        edges = new MultiWayIntegerDeque(n + 1, 2 * n);
+        edges = new IntegerMultiWayDeque(n + 1, 2 * n);
         for (int i = 1; i < n; i++) {
             int a = in.readInt();
             int b = in.readInt();

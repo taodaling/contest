@@ -1,7 +1,5 @@
 package template.primitve.generated.datastructure;
 
-import template.primitve.generated.datastructure.DoubleIterator;
-import template.primitve.generated.datastructure.DoubleStack;
 
 import java.util.Arrays;
 
@@ -55,6 +53,11 @@ public class DoubleMultiWayStack {
             @Override
             public boolean isEmpty() {
                 return DoubleMultiWayStack.this.isEmpty(qId);
+            }
+
+            @Override
+            public void clear() {
+                heads[qId] = 0;
             }
         };
     }

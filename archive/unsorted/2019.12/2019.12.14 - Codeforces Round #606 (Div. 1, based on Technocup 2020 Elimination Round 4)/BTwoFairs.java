@@ -8,7 +8,7 @@ import java.util.Arrays;
 
 public class BTwoFairs {
 
-    MultiWayIntegerStack edges;
+    IntegerMultiWayStack edges;
     boolean[] visited;
 
     public void solve(int testNumber, FastInput in, FastOutput out) {
@@ -16,7 +16,7 @@ public class BTwoFairs {
         int m = in.readInt();
         int a = in.readInt() - 1;
         int b = in.readInt() - 1;
-        edges = new MultiWayIntegerStack(n, m * 2);
+        edges = new IntegerMultiWayStack(n, m * 2);
         int[] aCnt = new int[n];
         int[] bCnt = new int[n];
         visited = new boolean[n];

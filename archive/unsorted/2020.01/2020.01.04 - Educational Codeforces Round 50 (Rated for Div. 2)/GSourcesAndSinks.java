@@ -6,7 +6,7 @@ import template.math.Bits;
 import template.math.CachedLog2;
 import template.primitve.generated.IntegerIterator;
 import template.primitve.generated.IntegerList;
-import template.primitve.generated.MultiWayIntegerStack;
+import template.primitve.generated.IntegerMultiWayStack;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -14,14 +14,14 @@ import java.util.Arrays;
 import java.util.List;
 
 public class GSourcesAndSinks {
-    static MultiWayIntegerStack edges;
+    static IntegerMultiWayStack edges;
     static boolean[] isSink;
     static boolean[] isSrc;
     static int[] id;
     public void solve(int testNumber, FastInput in, FastOutput out) {
         int n = in.readInt();
         int m = in.readInt();
-        edges = new MultiWayIntegerStack(n, m);
+        edges = new IntegerMultiWayStack(n, m);
         isSink = new boolean[n];
         isSrc = new boolean[n];
         Arrays.fill(isSink, true);

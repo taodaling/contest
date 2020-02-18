@@ -7,14 +7,14 @@ import template.io.FastInput;
 import template.io.FastOutput;
 import template.primitve.generated.IntegerIterator;
 import template.primitve.generated.IntegerList;
-import template.primitve.generated.MultiWayIntegerStack;
+import template.primitve.generated.IntegerMultiWayStack;
 import template.utils.SequenceUtils;
 
 import java.util.function.IntBinaryOperator;
 
 public class CMaxMex {
     int[] depth;
-    MultiWayIntegerStack edges;
+    IntegerMultiWayStack edges;
 
     public void dfsForDepth(int root, int p, int d) {
         depth[root] = d;
@@ -36,7 +36,7 @@ public class CMaxMex {
             permToNode[nodeToPerm[i]] = i;
         }
 
-        edges = new MultiWayIntegerStack(n, n + n);
+        edges = new IntegerMultiWayStack(n, n + n);
         depth = new int[n];
         for (int i = 1; i < n; i++) {
             int p = in.readInt() - 1;

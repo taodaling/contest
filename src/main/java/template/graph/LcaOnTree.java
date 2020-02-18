@@ -2,7 +2,7 @@ package template.graph;
 
 import template.math.CachedLog2;
 import template.primitve.generated.datastructure.IntegerIterator;
-import template.primitve.generated.datastructure.MultiWayIntegerStack;
+import template.primitve.generated.datastructure.IntegerMultiWayStack;
 
 // Answering LCA queries in O(1) with O(n) preprocessing
 public class LcaOnTree {
@@ -13,7 +13,7 @@ public class LcaOnTree {
     int[] a;
     int time;
 
-    void dfs1(MultiWayIntegerStack tree, int u, int p) {
+    void dfs1(IntegerMultiWayStack tree, int u, int p) {
         parent[u] = p;
         i[u] = preOrder[u] = time++;
         for (IntegerIterator iterator = tree.iterator(u); iterator.hasNext(); ) {
@@ -27,7 +27,7 @@ public class LcaOnTree {
         head[i[u]] = u;
     }
 
-    void dfs2(MultiWayIntegerStack tree, int u, int p, int up) {
+    void dfs2(IntegerMultiWayStack tree, int u, int p, int up) {
         a[u] = up | Integer.lowestOneBit(i[u]);
         for (IntegerIterator iterator = tree.iterator(u); iterator.hasNext(); ) {
             int v = iterator.next();
@@ -36,7 +36,7 @@ public class LcaOnTree {
         }
     }
 
-    public LcaOnTree(MultiWayIntegerStack tree, int root) {
+    public LcaOnTree(IntegerMultiWayStack tree, int root) {
         int n = tree.stackNumber();
         preOrder = new int[n];
         i = new int[n];

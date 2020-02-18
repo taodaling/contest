@@ -14,7 +14,7 @@ public class EMinimalDiameterForest {
         int n = in.readInt();
         int m = in.readInt();
 
-        MultiWayIntegerStack edges = new MultiWayIntegerStack(n, 2 * n);
+        IntegerMultiWayStack edges = new IntegerMultiWayStack(n, 2 * n);
         for (int i = 0; i < m; i++) {
             int a = in.readInt() - 1;
             int b = in.readInt() - 1;

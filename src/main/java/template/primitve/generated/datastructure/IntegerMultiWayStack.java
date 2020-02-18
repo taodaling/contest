@@ -1,7 +1,5 @@
 package template.primitve.generated.datastructure;
 
-import template.primitve.generated.datastructure.IntegerIterator;
-import template.primitve.generated.datastructure.IntegerStack;
 
 import java.util.Arrays;
 
@@ -55,6 +53,11 @@ public class IntegerMultiWayStack {
             @Override
             public boolean isEmpty() {
                 return IntegerMultiWayStack.this.isEmpty(qId);
+            }
+
+            @Override
+            public void clear() {
+                heads[qId] = 0;
             }
         };
     }

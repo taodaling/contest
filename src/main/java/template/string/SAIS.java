@@ -2,7 +2,7 @@ package template.string;
 
 
 import template.primitve.generated.datastructure.IntegerList;
-import template.primitve.generated.datastructure.MultiWayIntegerDeque;
+import template.primitve.generated.datastructure.IntegerMultiWayDeque;
 import template.utils.CompareUtils;
 
 /**
@@ -88,7 +88,7 @@ public class SAIS {
         }
 
         System.arraycopy(index2Rank, 0, rank2Index, 0, n);
-        buildSA(rank2Index, new IntegerList(n), new IntegerList(n), new MultiWayIntegerDeque(n, n), index2Rank);
+        buildSA(rank2Index, new IntegerList(n), new IntegerList(n), new IntegerMultiWayDeque(n, n), index2Rank);
         for (int i = 0; i < n; i++) {
             rank2Index[index2Rank[i]] = i;
         }
@@ -115,7 +115,7 @@ public class SAIS {
     private static final int TYPE_PLUS = 1;
 
 
-    private static void buildSA(int[] data, IntegerList plus, IntegerList minus, MultiWayIntegerDeque deque, int[] output) {
+    private static void buildSA(int[] data, IntegerList plus, IntegerList minus, IntegerMultiWayDeque deque, int[] output) {
         int n = data.length;
         if (n == 1) {
             output[0] = 0;
@@ -233,7 +233,7 @@ public class SAIS {
         return -((ar - al) - (br - bl));
     }
 
-    private static void induceSort(IntegerList plus, IntegerList minus, byte[] type, int[] data, MultiWayIntegerDeque deque) {
+    private static void induceSort(IntegerList plus, IntegerList minus, byte[] type, int[] data, IntegerMultiWayDeque deque) {
         int n = data.length;
         deque.expandQueueNum(n);
         minus.clear();

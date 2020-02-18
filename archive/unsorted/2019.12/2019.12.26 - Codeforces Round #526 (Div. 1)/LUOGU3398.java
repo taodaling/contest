@@ -3,13 +3,13 @@ package contest;
 import template.graph.LcaOnTree;
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.primitve.generated.MultiWayIntegerStack;
+import template.primitve.generated.IntegerMultiWayStack;
 
 public class LUOGU3398 {
     public void solve(int testNumber, FastInput in, FastOutput out) {
         int n = in.readInt();
         int q = in.readInt();
-        MultiWayIntegerStack edges = new MultiWayIntegerStack(n, n * 2);
+        IntegerMultiWayStack edges = new IntegerMultiWayStack(n, n * 2);
         for (int i = 1; i < n; i++) {
             int a = in.readInt() - 1;
             int b = in.readInt() - 1;

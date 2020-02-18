@@ -1,7 +1,5 @@
 package template.primitve.generated.datastructure;
 
-import template.primitve.generated.datastructure.IntegerDeque;
-import template.primitve.generated.datastructure.IntegerIterator;
 
 import java.util.Arrays;
 

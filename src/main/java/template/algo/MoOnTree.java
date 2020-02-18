@@ -2,12 +2,12 @@ package template.algo;
 
 import template.graph.LcaOnTree;
 import template.primitve.generated.datastructure.IntegerIterator;
-import template.primitve.generated.datastructure.MultiWayIntegerStack;
+import template.primitve.generated.datastructure.IntegerMultiWayStack;
 
 import java.util.Arrays;
 
 public class MoOnTree {
-    private MultiWayIntegerStack edges;
+    private IntegerMultiWayStack edges;
     private boolean[] odd;
     private int[] eulerTour;
     private int eulerTourTail = 0;
@@ -15,7 +15,7 @@ public class MoOnTree {
     private int[] end;
     private LcaOnTree lcaOnTree;
 
-    public MoOnTree(MultiWayIntegerStack edges) {
+    public MoOnTree(IntegerMultiWayStack edges) {
         this.edges = edges;
         odd = new boolean[edges.stackNumber()];
         eulerTour = new int[edges.stackNumber() * 2];

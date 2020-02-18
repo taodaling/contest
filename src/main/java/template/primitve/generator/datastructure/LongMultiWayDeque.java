@@ -1,7 +1,5 @@
-package template.primitve.datastructure;
+package template.primitve.generated.datastructure;
 
-import template.primitve.generated.LongDeque;
-import template.primitve.generated.LongIterator;
 
 import java.util.Arrays;
 
@@ -14,8 +12,8 @@ public class LongMultiWayDeque {
     private int alloc;
     private int queueNum;
 
-    public template.primitve.generated.LongIterator iterator(final int queue) {
-        return new template.primitve.generated.LongIterator() {
+    public LongIterator iterator(final int queue) {
+        return new LongIterator() {
             int ele = heads[queue];
 
             @Override
@@ -32,7 +30,7 @@ public class LongMultiWayDeque {
         };
     }
 
-    public template.primitve.generated.LongDeque getDeque(int qId) {
+    public LongDeque getDeque(int qId) {
         return new LongDeque() {
             @Override
             public void addFirst(long x) {
@@ -65,7 +63,7 @@ public class LongMultiWayDeque {
             }
 
             @Override
-            public template.primitve.generated.LongIterator iterator() {
+            public LongIterator iterator() {
                 return LongMultiWayDeque.this.iterator(qId);
             }
 

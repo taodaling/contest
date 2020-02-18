@@ -4,7 +4,7 @@ package contest;
 import template.graph.LcaOnTree;
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.primitve.generated.MultiWayIntegerStack;
+import template.primitve.generated.IntegerMultiWayStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +21,7 @@ public class FNewYearAndSocialNetwork {
         int n = in.readInt();
         t1 = new Node[n + 1];
         t2 = new Node[n + 1];
-        MultiWayIntegerStack edges = new MultiWayIntegerStack(n + 1, (n + 1) * 2);
+        IntegerMultiWayStack edges = new IntegerMultiWayStack(n + 1, (n + 1) * 2);
         edges.addLast(0, 1);
 
         for (int i = 1; i <= n; i++) {

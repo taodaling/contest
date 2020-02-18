@@ -1,6 +1,5 @@
 package template.primitve.generated.datastructure;
 
-import template.primitve.generated.datastructure.DoubleIterator;
 
 import java.util.Arrays;
 

@@ -1,7 +1,5 @@
 package template.primitve.generated.datastructure;
 
-import template.primitve.generated.datastructure.IntegerDeque;
-import template.primitve.generated.datastructure.IntegerIterator;
 
 public class IntegerDequeImpl implements IntegerDeque {
     private int[] data;
