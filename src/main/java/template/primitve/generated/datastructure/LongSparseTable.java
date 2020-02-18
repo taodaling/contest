@@ -3,7 +3,6 @@ package template.primitve.generated.datastructure;
 import template.math.CachedLog2;
 
 import java.util.Arrays;
-import java.util.function.LongBinaryOperator;
 
 /**
  * Created by dalt on 2018/5/20.
@@ -12,9 +11,9 @@ public class LongSparseTable {
     // st[i][j] means the merge value between [i, i + 2^j),
     // so st[i][j] equals to merge(st[i][j - 1], st[i + 2^(j - 1)][j - 1])
     private long[][] st;
-    private LongBinaryOperator merger;
+    private LongBinaryFunction merger;
 
-    public LongSparseTable(long[] data, int length, LongBinaryOperator merger) {
+    public LongSparseTable(long[] data, int length, LongBinaryFunction merger) {
         int m = CachedLog2.floorLog(length);
         st = new long[m + 1][length];
         this.merger = merger;
@@ -34,7 +33,7 @@ public class LongSparseTable {
     }
 
     private long merge(long a, long b) {
-        return merger.applyAsLong(a, b);
+        return merger.apply(a, b);
     }
 
     /**

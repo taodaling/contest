@@ -1,6 +1,8 @@
-package template.graph;
+package template.primitve.generated.graph;
 
-public class LongWeightDirectedEdge extends DirectedEdge{
+import template.graph.DirectedEdge;
+
+public class LongWeightDirectedEdge extends DirectedEdge {
     public long weight;
 
     public LongWeightDirectedEdge(int to, long weight) {

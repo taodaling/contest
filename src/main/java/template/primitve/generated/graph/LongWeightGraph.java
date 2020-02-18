@@ -1,7 +1,5 @@
 package template.primitve.generated.graph;
 
-import template.graph.LongWeightDirectedEdge;
-import template.graph.LongWeightUndirectedEdge;
 import template.primitve.generated.datastructure.IntegerDeque;
 import template.primitve.generated.datastructure.IntegerDequeImpl;
 

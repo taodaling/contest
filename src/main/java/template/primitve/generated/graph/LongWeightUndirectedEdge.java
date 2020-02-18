@@ -1,4 +1,4 @@
-package template.graph;
+package template.primitve.generated.graph;
 
 public class LongWeightUndirectedEdge extends LongWeightDirectedEdge{
     public LongWeightUndirectedEdge rev;

@@ -1,6 +1,5 @@
 package template.primitve.generated.graph;
 
-import template.graph.LongWeightUndirectedEdge;
 import template.primitve.generated.datastructure.IntegerList;
 
 import java.util.List;
