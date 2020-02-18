@@ -3,7 +3,6 @@ package template.primitve.generated.datastructure;
 import template.math.CachedLog2;
 
 import java.util.Arrays;
-import java.util.function.DoubleBinaryOperator;
 
 /**
  * Created by dalt on 2018/5/20.
@@ -12,9 +11,9 @@ public class DoubleSparseTable {
     // st[i][j] means the merge value between [i, i + 2^j),
     // so st[i][j] equals to merge(st[i][j - 1], st[i + 2^(j - 1)][j - 1])
     private double[][] st;
-    private DoubleBinaryOperator merger;
+    private DoubleBinaryFunction merger;
 
-    public DoubleSparseTable(double[] data, int length, DoubleBinaryOperator merger) {
+    public DoubleSparseTable(double[] data, int length, DoubleBinaryFunction merger) {
         int m = CachedLog2.floorLog(length);
         st = new double[m + 1][length];
         this.merger = merger;
@@ -34,7 +33,7 @@ public class DoubleSparseTable {
     }
 
     private double merge(double a, double b) {
-        return merger.applyAsDouble(a, b);
+        return merger.apply(a, b);
     }
 
     /**

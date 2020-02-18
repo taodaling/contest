@@ -4,15 +4,15 @@ import template.primitve.generated.datastructure.IntegerList;
 
 import java.util.List;
 
-public class LongGomoryHuTree {
-    private List<LongWeightUndirectedEdge>[] ug;
-    private long[][] minCuts;
-    private static final long INF = (long) 2e18;
+public class IntegerGomoryHuTree {
+    private List<IntegerWeightUndirectedEdge>[] ug;
+    private int[][] minCuts;
+    private static final int INF = (int) 2e18;
 
-    public LongGomoryHuTree(List<LongFlowEdge>[] g, LongMaximumFlow mf) {
+    public IntegerGomoryHuTree(List<IntegerFlowEdge>[] g, IntegerMaximumFlow mf) {
         int n = g.length;
-        ug = LongWeightGraph.createUndirectedGraph(n);
-        minCuts = new long[n][n];
+        ug = IntegerWeightGraph.createUndirectedGraph(n);
+        minCuts = new int[n][n];
         IntegerList list = new IntegerList(n);
         for (int i = 0; i < n; i++) {
             list.add(i);
@@ -23,14 +23,14 @@ public class LongGomoryHuTree {
         }
     }
 
-    private void addEdge(int s, int t, long f) {
+    private void addEdge(int s, int t, int f) {
         //System.err.printf("(%d,%d)=%d\n", s, t, f);
-        LongWeightGraph.addUndirectedEdge(ug, s, t, f);
+        IntegerWeightGraph.addUndirectedEdge(ug, s, t, f);
     }
 
-    private void dfs(int root, int p, long w, long[] minCuts) {
+    private void dfs(int root, int p, int w, int[] minCuts) {
         minCuts[root] = w;
-        for (LongWeightUndirectedEdge e : ug[root]) {
+        for (IntegerWeightUndirectedEdge e : ug[root]) {
             if (e.to == p) {
                 continue;
             }
@@ -38,22 +38,22 @@ public class LongGomoryHuTree {
         }
     }
 
-    public long minCut(int s, int t) {
+    public int minCut(int s, int t) {
         return minCuts[s][t];
     }
 
 
-    public void dac(IntegerList set, List<LongFlowEdge>[] g, LongMaximumFlow mf, boolean[] visited) {
+    public void dac(IntegerList set, List<IntegerFlowEdge>[] g, IntegerMaximumFlow mf, boolean[] visited) {
         if (set.size() <= 1) {
             return;
         }
         //rebuild the flow
-        LongFlow.rewind(g);
+        IntegerFlow.rewind(g);
         int s = set.get(0);
         int t = set.get(1);
-        long f = mf.apply(g, s, t);
+        int f = mf.apply(g, s, t);
         addEdge(s, t, f);
-        LongFlow.findSetST(g, s, visited);
+        IntegerFlow.findSetST(g, s, visited);
         IntegerList l1 = new IntegerList(set.size());
         IntegerList l2 = new IntegerList(set.size());
         for (int i = set.size() - 1; i >= 0; i--) {

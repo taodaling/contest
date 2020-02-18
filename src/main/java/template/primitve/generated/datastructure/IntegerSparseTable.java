@@ -3,7 +3,6 @@ package template.primitve.generated.datastructure;
 import template.math.CachedLog2;
 
 import java.util.Arrays;
-import java.util.function.IntBinaryOperator;
 
 /**
  * Created by dalt on 2018/5/20.
@@ -12,9 +11,9 @@ public class IntegerSparseTable {
     // st[i][j] means the merge value between [i, i + 2^j),
     // so st[i][j] equals to merge(st[i][j - 1], st[i + 2^(j - 1)][j - 1])
     private int[][] st;
-    private IntBinaryOperator merger;
+    private IntegerBinaryFunction merger;
 
-    public IntegerSparseTable(int[] data, int length, IntBinaryOperator merger) {
+    public IntegerSparseTable(int[] data, int length, IntegerBinaryFunction merger) {
         int m = CachedLog2.floorLog(length);
         st = new int[m + 1][length];
         this.merger = merger;
@@ -34,7 +33,7 @@ public class IntegerSparseTable {
     }
 
     private int merge(int a, int b) {
-        return merger.applyAsInt(a, b);
+        return merger.apply(a, b);
     }
 
     /**

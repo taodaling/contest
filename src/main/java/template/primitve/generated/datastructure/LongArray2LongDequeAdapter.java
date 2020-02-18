@@ -1,8 +1,5 @@
 package template.primitve.generated.datastructure;
 
-import template.primitve.generated.datastructure.LongDeque;
-import template.primitve.generated.datastructure.LongIterator;
-
 public class LongArray2LongDequeAdapter implements LongDeque {
     long[] data;
     int l;

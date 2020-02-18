@@ -7,60 +7,60 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
 
-public class LongWeightGraph {
-    public static void addEdge(List<LongWeightDirectedEdge>[] g, int s, int t, long w) {
-        g[s].add(new LongWeightDirectedEdge(t, w));
+public class DoubleWeightGraph {
+    public static void addEdge(List<DoubleWeightDirectedEdge>[] g, int s, int t, double w) {
+        g[s].add(new DoubleWeightDirectedEdge(t, w));
     }
 
-    public static void addUndirectedEdge(List<LongWeightUndirectedEdge>[] g, int s, int t, long w) {
-        LongWeightUndirectedEdge toT = new LongWeightUndirectedEdge(t, w);
-        LongWeightUndirectedEdge toS = new LongWeightUndirectedEdge(s, w);
+    public static void addUndirectedEdge(List<DoubleWeightUndirectedEdge>[] g, int s, int t, double w) {
+        DoubleWeightUndirectedEdge toT = new DoubleWeightUndirectedEdge(t, w);
+        DoubleWeightUndirectedEdge toS = new DoubleWeightUndirectedEdge(s, w);
         toS.rev = toT;
         toT.rev = toS;
         g[s].add(toT);
         g[t].add(toS);
     }
 
-    public static List<LongWeightDirectedEdge>[] createDirectedGraph(int n) {
-        List<LongWeightDirectedEdge>[] ans = new List[n];
+    public static List<DoubleWeightDirectedEdge>[] createDirectedGraph(int n) {
+        List<DoubleWeightDirectedEdge>[] ans = new List[n];
         for (int i = 0; i < n; i++) {
             ans[i] = new ArrayList<>();
         }
         return ans;
     }
 
-    public static List<LongWeightUndirectedEdge>[] createUndirectedGraph(int n) {
-        List<LongWeightUndirectedEdge>[] ans = new List[n];
+    public static List<DoubleWeightUndirectedEdge>[] createUndirectedGraph(int n) {
+        List<DoubleWeightUndirectedEdge>[] ans = new List[n];
         for (int i = 0; i < n; i++) {
             ans[i] = new ArrayList<>();
         }
         return ans;
     }
 
-    public static class LongDijkstraNode implements Comparable<LongDijkstraNode> {
+    public static class DoubleDijkstraNode implements Comparable<DoubleDijkstraNode> {
         int node;
-        long dist;
+        double dist;
 
         @Override
-        public int compareTo(LongDijkstraNode o) {
-            return dist == o.dist ? Integer.compare(node, o.node) : Long.compare(dist, o.dist);
+        public int compareTo(DoubleDijkstraNode o) {
+            return dist == o.dist ? Integer.compare(node, o.node) : Double.compare(dist, o.dist);
         }
     }
 
-    public static <T extends LongWeightDirectedEdge> void dijkstraElogV(List<T>[] g, int s, long[] dists, long inf) {
+    public static <T extends DoubleWeightDirectedEdge> void dijkstraElogV(List<T>[] g, int s, double[] dists, double inf) {
         int n = g.length;
-        LongDijkstraNode[] nodes = new LongDijkstraNode[n];
+        DoubleDijkstraNode[] nodes = new DoubleDijkstraNode[n];
         for (int i = 0; i < n; i++) {
-            nodes[i] = new LongDijkstraNode();
+            nodes[i] = new DoubleDijkstraNode();
             nodes[i].dist = inf;
             nodes[i].node = i;
         }
         nodes[s].dist = 0;
-        TreeSet<LongDijkstraNode> set = new TreeSet<>();
+        TreeSet<DoubleDijkstraNode> set = new TreeSet<>();
         set.add(nodes[s]);
         while (!set.isEmpty()) {
-            LongDijkstraNode head = set.pollFirst();
-            for (LongWeightDirectedEdge e : g[head.node]) {
+            DoubleDijkstraNode head = set.pollFirst();
+            for (DoubleWeightDirectedEdge e : g[head.node]) {
                 if (nodes[e.to].dist > head.dist + e.weight) {
                     set.remove(nodes[e.to]);
                     nodes[e.to].dist = head.dist + e.weight;
@@ -73,7 +73,7 @@ public class LongWeightGraph {
         }
     }
 
-    public static <T extends LongWeightDirectedEdge> void dijkstraV2(List<T>[] g, int s, long[] dists, long inf) {
+    public static <T extends DoubleWeightDirectedEdge> void dijkstraV2(List<T>[] g, int s, double[] dists, double inf) {
         int n = g.length;
         for (int i = 0; i < g.length; i++) {
             dists[i] = inf;
@@ -88,13 +88,13 @@ public class LongWeightGraph {
                 }
             }
             handled[head] = true;
-            for (LongWeightDirectedEdge e : g[head]) {
+            for (DoubleWeightDirectedEdge e : g[head]) {
                 dists[e.to] = Math.min(dists[e.to], dists[head] + e.weight);
             }
         }
     }
 
-    public static <T extends LongWeightDirectedEdge> void spfa(List<T>[] g, int s, long[] dists, long inf) {
+    public static <T extends DoubleWeightDirectedEdge> void spfa(List<T>[] g, int s, double[] dists, double inf) {
         int n = g.length;
         for (int i = 0; i < g.length; i++) {
             dists[i] = inf;
@@ -106,7 +106,7 @@ public class LongWeightGraph {
         while (!deque.isEmpty()) {
             int head = deque.removeFirst();
             inque[head] = false;
-            for (LongWeightDirectedEdge e : g[head]) {
+            for (DoubleWeightDirectedEdge e : g[head]) {
                 if (dists[e.to] > dists[head] + e.weight) {
                     dists[e.to] = dists[head] + e.weight;
                     if (!inque[e.to]) {
@@ -121,7 +121,7 @@ public class LongWeightGraph {
     /**
      * @return whether exists a negative circle
      */
-    public static <T extends LongWeightDirectedEdge> boolean spfaWithPossibleNegativeCircle(List<T>[] g, int s, long[] dists, long inf) {
+    public static <T extends DoubleWeightDirectedEdge> boolean spfaWithPossibleNegativeCircle(List<T>[] g, int s, double[] dists, double inf) {
         int n = g.length;
         for (int i = 0; i < g.length; i++) {
             dists[i] = inf;
@@ -140,7 +140,7 @@ public class LongWeightGraph {
                 return true;
             }
 
-            for (LongWeightDirectedEdge e : g[head]) {
+            for (DoubleWeightDirectedEdge e : g[head]) {
                 if (dists[e.to] > dists[head] + e.weight) {
                     dists[e.to] = dists[head] + e.weight;
                     if (!inque[e.to]) {
