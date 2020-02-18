@@ -1,19 +1,21 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-#pragma GCC target ("sse4.2")
-
-#include <iostream>
-#include <fstream>
-#include <iomanip>
 #include <bits/stdc++.h>
 #include <chrono>
 #include <random>
 #include<ext/rope>
+#include"compiler_macro.h"
+#include <iostream>
+#include <fstream>
+#include <iomanip>
+#include<queue>
 
+using std::function;
 using __gnu_cxx::rope;
 using std::cerr;
 using std::deque;
+using std::queue;
 using std::endl;
 using std::fill;
 using std::ios_base;
@@ -54,6 +56,41 @@ void err(std::istream_iterator<string> it, T a, Args... args) {
 }
 
 #define mp make_pair
-#define popcount __builtin_popcount
 
 #endif
+
+#ifdef LOCAL
+#define PREPARE_INPUT {std::cout << "Input file name:"; string file; std::cin >> file; file = string(__FILE__) + "/../" + file + ".in"; std::cout << "Open file:" << file << std::endl; freopen(file.data(),"r",stdin); }
+#else
+#define PREPARE_INPUT
+#endif
+
+
+#define RUN_ONCE \
+int main()\
+{\
+    PREPARE_INPUT;\
+    std::ios_base::sync_with_stdio(false);\
+    std::cin.tie(0);\
+    std::cout << std::setiosflags(std::ios::fixed);\
+    std::cout << std::setprecision(15);\
+    solve(1, std::cin, std::cout);\
+    return 0;\
+}
+
+#define RUN_MULTI \
+int main()\
+{\
+    PREPARE_INPUT;\
+    std::ios_base::sync_with_stdio(false);\
+    std::cin.tie(0);\
+    std::cout << std::setiosflags(std::ios::fixed);\
+    std::cout << std::setprecision(15);\
+    int t;\
+    std::cin >> t;\
+    for (int i = 1; i <= t; i++)\
+    {\
+        solve(i, std::cin, std::cout);\
+    }\
+    return 0;\
+}

@@ -1,7 +1,7 @@
 package template.math;
 
-import template.primitve.generated.IntegerHashSet;
-import template.primitve.generated.IntegerList;
+import template.primitve.generated.datastructure.IntegerHashSet;
+import template.primitve.generated.datastructure.IntegerList;
 
 public class ModPrimeRoot {
     private RelativePrimeModLog log;

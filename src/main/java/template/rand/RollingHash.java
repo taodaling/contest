@@ -2,7 +2,7 @@ package template.rand;
 
 import template.math.Modular;
 import template.math.Power;
-import template.primitve.generated.IntegerDequeImpl;
+import template.primitve.generated.datastructure.IntegerDequeImpl;
 
 public class RollingHash {
     public static final Modular MOD = new Modular((int) (1e9 + 7));

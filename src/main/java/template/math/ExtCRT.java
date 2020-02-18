@@ -45,8 +45,10 @@ public class ExtCRT {
             return valid = false;
         }
         this.m = m1 / g * m2;
-        this.r = BigInteger.valueOf(a).multiply(BigInteger.valueOf((x2 - x1) / g)).multiply(BigInteger.valueOf(m1))
-                .add(BigInteger.valueOf(x1)).mod(BigInteger.valueOf(this.m)).longValue();
+        ILongModular modular = ILongModular.getInstance(this.m);
+        this.r = modular.plus(modular.mul(modular.mul(modular.valueOf(a), modular.valueOf((x2 - x1) / g)), m1), x1);
+//        this.r = BigInteger.valueOf(a).multiply(BigInteger.valueOf((x2 - x1) / g)).multiply(BigInteger.valueOf(m1))
+//                .add(BigInteger.valueOf(x1)).mod(BigInteger.valueOf(this.m)).longValue();
         return true;
     }
 

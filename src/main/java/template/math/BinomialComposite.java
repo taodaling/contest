@@ -3,7 +3,7 @@ package template.math;
 import template.datastructure.Loop;
 import template.polynomial.FastFourierTransform;
 import template.polynomial.Polynomials;
-import template.primitve.generated.IntegerList;
+import template.primitve.generated.datastructure.IntegerList;
 
 /**
  * 计算C(n,0),C(n,1),...,C(n,m)在模p的情况下的值，其中p不一定是素数。

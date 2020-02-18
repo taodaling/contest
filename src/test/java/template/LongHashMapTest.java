@@ -6,8 +6,8 @@ import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
-import template.primitve.generated.LongEntryIterator;
-import template.primitve.generated.LongHashMap;
+import template.primitve.generated.datastructure.LongEntryIterator;
+import template.primitve.generated.datastructure.LongHashMap;
 
 public class LongHashMapTest {
 

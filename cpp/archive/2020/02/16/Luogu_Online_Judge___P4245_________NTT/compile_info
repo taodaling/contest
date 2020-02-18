@@ -1,0 +1,17 @@
+In file included from C:/Users/daltao/IdeaProjects/contest/cpp/libs/common.h:8,
+                 from C:\Users\daltao\IdeaProjects\contest\cpp\database\Luogu_Online_Judge___P4245_________NTT\main.cpp:1:
+C:/Users/daltao/IdeaProjects/contest/cpp/libs/compiler_macro.h:6:30: warning: '-std=c++14' is not an option that controls warnings [-Wpragmas]
+ #pragma GCC diagnostic error "-std=c++14"
+                              ^~~~~~~~~~~~
+In file included from C:\Users\daltao\IdeaProjects\contest\cpp\database\Luogu_Online_Judge___P4245_________NTT\main.cpp:3:
+C:/Users/daltao/IdeaProjects/contest/cpp/libs/fft.h: In function 'void fast_fourie_transform::FFT(std::vector<std::complex<double> >&, bool)':
+C:/Users/daltao/IdeaProjects/contest/cpp/libs/fft.h:32:35: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
+     for (unsigned i = 1, j = 0; i < n; i++)
+                                 ~~^~~
+C:/Users/daltao/IdeaProjects/contest/cpp/libs/fft.h:35:18: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
+         for (; j >= bit; bit >>= 1)
+                ~~^~~~~~
+C:/Users/daltao/IdeaProjects/contest/cpp/libs/fft.h: In function 'std::vector<int> fast_fourie_transform::MultiplyBigInt(const std::vector<int>&, const std::vector<int>&, int)':
+C:/Users/daltao/IdeaProjects/contest/cpp/libs/fft.h:74:26: warning: comparison of integer expressions of different signedness: 'size_t' {aka 'long long unsigned int'} and 'int' [-Wsign-compare]
+     for (size_t i = 0; i < n; i++)
+                        ~~^~~

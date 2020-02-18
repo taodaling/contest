@@ -1,0 +1,11 @@
+In file included from C:/Users/daltao/IdeaProjects/contest/cpp/libs/common.h:8,
+                 from C:\Users\daltao\IdeaProjects\contest\cpp\database\Luogu_Online_Judge___P3398____sugar\main.cpp:1:
+C:/Users/daltao/IdeaProjects/contest/cpp/libs/compiler_macro.h:6:30: warning: '-std=c++14' is not an option that controls warnings [-Wpragmas]
+ #pragma GCC diagnostic error "-std=c++14"
+                              ^~~~~~~~~~~~
+In file included from C:/Users/daltao/IdeaProjects/contest/cpp/libs/tree.h:5,
+                 from C:\Users\daltao\IdeaProjects\contest\cpp\database\Luogu_Online_Judge___P3398____sugar\main.cpp:2:
+C:/Users/daltao/IdeaProjects/contest/cpp/libs/lca.h: In member function 'int tree::Lca::enter_into_strip(int, int) const':
+C:/Users/daltao/IdeaProjects/contest/cpp/libs/lca.h:54:32: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
+         if (LowestOneBit(I[x]) == hz)
+             ~~~~~~~~~~~~~~~~~~~^~~~~

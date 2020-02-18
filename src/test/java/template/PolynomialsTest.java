@@ -6,7 +6,7 @@ import org.junit.Test;
 import template.math.Modular;
 import template.math.Power;
 import template.polynomial.Polynomials;
-import template.primitve.generated.IntegerList;
+import template.primitve.generated.datastructure.IntegerList;
 import template.utils.SequenceUtils;
 
 /**

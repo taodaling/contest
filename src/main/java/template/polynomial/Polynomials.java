@@ -3,7 +3,7 @@ package template.polynomial;
 import template.math.ExtGCD;
 import template.math.Power;
 import template.math.Modular;
-import template.primitve.generated.IntegerList;
+import template.primitve.generated.datastructure.IntegerList;
 import template.utils.Buffer;
 
 import java.util.BitSet;

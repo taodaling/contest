@@ -1,7 +1,6 @@
 package template.math;
 
-import template.primitve.generated.IntegerHashMap;
-import template.primitve.generated.LongHashMap;
+import template.primitve.generated.datastructure.LongHashMap;
 
 public class LongRelativePrimeModLog {
     ILongModular mod;

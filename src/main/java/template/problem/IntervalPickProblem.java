@@ -2,8 +2,8 @@ package template.problem;
 
 import template.algo.DoubleBinarySearch;
 import template.math.DigitUtils;
-import template.primitve.generated.LongPreSum;
-import template.primitve.generated.MinIntegerQueue;
+import template.primitve.generated.datastructure.LongPreSum;
+import template.primitve.generated.datastructure.MinIntegerQueue;
 
 import java.util.ArrayList;
 import java.util.Arrays;

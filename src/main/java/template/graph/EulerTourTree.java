@@ -1,6 +1,6 @@
 package template.graph;
 
-import template.primitve.generated.LongObjectHashMap;
+import template.primitve.generated.datastructure.LongObjectHashMap;
 import template.utils.Buffer;
 
 public class EulerTourTree {

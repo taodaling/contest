@@ -1,6 +1,6 @@
 package template.problem;
 
-import template.primitve.generated.IntegerBIT;
+import template.primitve.generated.datastructure.IntegerBIT;
 
 import java.util.Arrays;
 import java.util.Comparator;

@@ -2,9 +2,9 @@ package template.datastructure;
 
 import org.junit.Assert;
 import org.junit.Test;
-import template.primitve.generated.IntegerDequeImpl;
-import template.primitve.generated.IntegerIterator;
-import template.primitve.generated.MultiWayIntegerDeque;
+import template.primitve.generated.datastructure.IntegerDequeImpl;
+import template.primitve.generated.datastructure.IntegerIterator;
+import template.primitve.generated.datastructure.MultiWayIntegerDeque;
 
 import java.util.ArrayDeque;
 import java.util.Deque;

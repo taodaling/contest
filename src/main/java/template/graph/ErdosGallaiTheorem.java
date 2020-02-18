@@ -1,6 +1,6 @@
 package template.graph;
 
-import template.primitve.generated.IntegerPreSum;
+import template.primitve.generated.datastructure.IntegerPreSum;
 import template.utils.CompareUtils;
 import template.utils.SequenceUtils;
 

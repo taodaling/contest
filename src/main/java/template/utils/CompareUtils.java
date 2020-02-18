@@ -1,13 +1,12 @@
 package template.utils;
 
-import template.primitve.generated.IntegerList;
-import template.primitve.generated.LongList;
+import template.primitve.generated.datastructure.IntegerList;
+import template.primitve.generated.datastructure.LongList;
 import template.rand.Randomized;
 
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.function.IntUnaryOperator;
-import java.util.function.ToIntFunction;
 
 /**
  * Be careful. the radix sort will regard the number in sequence as unsigned integer, it means -1 > -2 > 2 > 1.

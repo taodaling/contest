@@ -2,7 +2,7 @@ package template;
 
 import org.junit.Assert;
 import org.junit.Test;
-import template.primitve.generated.LongObjectHashMap;
+import template.primitve.generated.datastructure.LongObjectHashMap;
 
 import java.util.HashMap;
 import java.util.Map;

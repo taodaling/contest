@@ -1,6 +1,6 @@
 package template.math;
 
-import template.primitve.generated.IntegerHashMap;
+import template.primitve.generated.datastructure.IntegerHashMap;
 
 /**
  * Used to find k while x^k = y % p and p is a prime

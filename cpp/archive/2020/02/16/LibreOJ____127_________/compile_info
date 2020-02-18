@@ -1,0 +1,22 @@
+In file included from C:\Users\daltao\IdeaProjects\contest\cpp\database\LibreOJ____127_________\main.cpp:1:
+C:/Users/daltao/IdeaProjects/contest/cpp/libs/common.h:80:19: warning: backslash-newline at end of file
+ #define RUN_MULTI \
+                    
+In file included from C:/Users/daltao/IdeaProjects/contest/cpp/libs/push_relabel.h:4,
+                 from C:\Users\daltao\IdeaProjects\contest\cpp\database\LibreOJ____127_________\main.cpp:2:
+C:/Users/daltao/IdeaProjects/contest/cpp/libs/common.h:80:19: warning: backslash-newline at end of file
+ #define RUN_MULTI \
+                    
+In file included from C:/Users/daltao/IdeaProjects/contest/cpp/libs/common.h:8,
+                 from C:\Users\daltao\IdeaProjects\contest\cpp\database\LibreOJ____127_________\main.cpp:1:
+C:/Users/daltao/IdeaProjects/contest/cpp/libs/compiler_macro.h:6:30: warning: '-std=c++14' is not an option that controls warnings [-Wpragmas]
+ #pragma GCC diagnostic error "-std=c++14"
+                              ^~~~~~~~~~~~
+In file included from C:\Users\daltao\IdeaProjects\contest\cpp\database\LibreOJ____127_________\main.cpp:2:
+C:/Users/daltao/IdeaProjects/contest/cpp/libs/push_relabel.h: In instantiation of 'void push_relabel::HLPP<MAXN, T>::addEdge(int, int, int, bool) [with int MAXN = 1201; T = long long int]':
+C:\Users\daltao\IdeaProjects\contest\cpp\database\LibreOJ____127_________\main.cpp:15:29:   required from here
+C:/Users/daltao/IdeaProjects/contest/cpp/libs/push_relabel.h:26:9: warning: narrowing conversion of '((push_relabel::HLPP<1201, long long int>*)this)->push_relabel::HLPP<1201, long long int>::adj[to].std::vector<push_relabel::HLPP<1201, long long int>::edge, std::allocator<push_relabel::HLPP<1201, long long int>::edge> >::size()' from 'std::vector<push_relabel::HLPP<1201, long long int>::edge, std::allocator<push_relabel::HLPP<1201, long long int>::edge> >::size_type' {aka 'long long unsigned int'} to 'int' inside { } [-Wnarrowing]
+         adj[from].push_back({to, adj[to].size(), f});
+         ^~~
+C:/Users/daltao/IdeaProjects/contest/cpp/libs/push_relabel.h:27:51: warning: narrowing conversion of '(((push_relabel::HLPP<1201, long long int>*)this)->push_relabel::HLPP<1201, long long int>::adj[from].std::vector<push_relabel::HLPP<1201, long long int>::edge, std::allocator<push_relabel::HLPP<1201, long long int>::edge> >::size() - 1)' from 'std::vector<push_relabel::HLPP<1201, long long int>::edge, std::allocator<push_relabel::HLPP<1201, long long int>::edge> >::size_type' {aka 'long long unsigned int'} to 'int' inside { } [-Wnarrowing]
+         adj[to].push_back({from, adj[from].size() - 1, isDirected ? 0 : f});

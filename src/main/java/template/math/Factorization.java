@@ -1,7 +1,7 @@
 package template.math;
 
-import template.primitve.generated.LongList;
-import template.primitve.generated.MultiWayIntegerStack;
+import template.primitve.generated.datastructure.LongList;
+import template.primitve.generated.datastructure.MultiWayIntegerStack;
 import template.problem.MinimumNumberWithMaximumFactors;
 
 public class Factorization {

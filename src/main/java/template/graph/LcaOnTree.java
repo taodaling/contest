@@ -1,8 +1,8 @@
 package template.graph;
 
 import template.math.CachedLog2;
-import template.primitve.generated.IntegerIterator;
-import template.primitve.generated.MultiWayIntegerStack;
+import template.primitve.generated.datastructure.IntegerIterator;
+import template.primitve.generated.datastructure.MultiWayIntegerStack;
 
 // Answering LCA queries in O(1) with O(n) preprocessing
 public class LcaOnTree {

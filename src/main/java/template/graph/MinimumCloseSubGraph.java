@@ -1,6 +1,6 @@
 package template.graph;
 
-import template.primitve.generated.IntegerIterator;
+import template.primitve.generated.datastructure.IntegerIterator;
 
 public class MinimumCloseSubGraph {
     private ISAP isap;

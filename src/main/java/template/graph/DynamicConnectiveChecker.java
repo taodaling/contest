@@ -16,6 +16,10 @@ public class DynamicConnectiveChecker {
         return map.containsKey(idOfEdge(i, j));
     }
 
+    /**
+     * @param n number of vertex
+     * @param m number of edges
+     */
     public DynamicConnectiveChecker(int n, int m) {
         this.n = n;
         this.log2 = 32 - Integer.numberOfLeadingZeros(n - 1);
@@ -314,13 +318,10 @@ public class DynamicConnectiveChecker {
             destroy(e.b);
         }
 
-
         private static class Edge {
             Splay a;
             Splay b;
         }
-
-
     }
 
     /**
@@ -538,16 +539,6 @@ public class DynamicConnectiveChecker {
         }
 
         /**
-         * delete root of tree, then merge remain nodes into a new tree, and return the new root
-         */
-        public static Splay deleteRoot(Splay root) {
-            root.pushDown();
-            Splay left = splitLeft(root);
-            Splay right = splitRight(root);
-            return merge(left, right);
-        }
-
-        /**
          * detach the left subtree from root and return the root of left subtree
          */
         public static Splay splitLeft(Splay root) {
@@ -583,30 +574,6 @@ public class DynamicConnectiveChecker {
             a.setRight(b);
             a.pushUp();
             return a;
-        }
-
-        public static Splay selectKthAsRoot(Splay root, int k) {
-            if (root == NIL) {
-                return NIL;
-            }
-            Splay trace = root;
-            Splay father = NIL;
-            while (trace != NIL) {
-                father = trace;
-                trace.pushDown();
-                if (trace.left.size >= k) {
-                    trace = trace.left;
-                } else {
-                    k -= trace.left.size + 1;
-                    if (k == 0) {
-                        break;
-                    } else {
-                        trace = trace.right;
-                    }
-                }
-            }
-            splay(father);
-            return father;
         }
 
         @Override

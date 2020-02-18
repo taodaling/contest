@@ -1,0 +1,15 @@
+In file included from C:/Users/daltao/IdeaProjects/contest/cpp/libs/common.h:8,
+                 from C:\Users\daltao\IdeaProjects\contest\cpp\database\Codeforces_Round__620__Div__2____F1__Animal_Observation__easy_version_\main.cpp:1:
+C:/Users/daltao/IdeaProjects/contest/cpp/libs/compiler_macro.h:6:30: warning: '-std=c++14' is not an option that controls warnings [-Wpragmas]
+ #pragma GCC diagnostic error "-std=c++14"
+                              ^~~~~~~~~~~~
+C:\Users\daltao\IdeaProjects\contest\cpp\database\Codeforces_Round__620__Div__2____F1__Animal_Observation__easy_version_\main.cpp: In constructor 'Segment::Segment(int, int)':
+C:\Users\daltao\IdeaProjects\contest\cpp\database\Codeforces_Round__620__Div__2____F1__Animal_Observation__easy_version_\main.cpp:83:9: warning: 'Segment::dirty' will be initialized after [-Wreorder]
+     int dirty;
+         ^~~~~
+C:\Users\daltao\IdeaProjects\contest\cpp\database\Codeforces_Round__620__Div__2____F1__Animal_Observation__easy_version_\main.cpp:81:14: warning:   'Segment* Segment::_l' [-Wreorder]
+     Segment *_l, *_r;
+              ^~
+C:\Users\daltao\IdeaProjects\contest\cpp\database\Codeforces_Round__620__Div__2____F1__Animal_Observation__easy_version_\main.cpp:9:5: warning:   when initialized here [-Wreorder]
+     Segment(int l, int r) : mx(0), dirty(0), _l(0), _r(0)
+     ^~~~~~~

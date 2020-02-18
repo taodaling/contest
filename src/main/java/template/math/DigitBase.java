@@ -1,6 +1,6 @@
 package template.math;
 
-import template.primitve.generated.LongList;
+import template.primitve.generated.datastructure.LongList;
 
 import java.util.Arrays;
 

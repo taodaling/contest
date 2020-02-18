@@ -1,10 +1,10 @@
 #ifndef SPARSE_SEGMENT_H
 #define SPARSE_SEGMENT_H
-namespace rmq {
+namespace sparse_segment {
     template<typename R=int>
-    class sparse_segment {
+    class SparseSegment {
     public:
-        sparse_segment() {
+        SparseSegment() {
             _l = _r = 0;
         }
 
@@ -44,18 +44,18 @@ namespace rmq {
 #undef COVER
 
     private:
-        sparse_segment<R> *_l, *_r;
+        SparseSegment<R> *_l, *_r;
 
-        sparse_segment<R> *get_left() {
+        SparseSegment<R> *get_left() {
             if (!_l) {
-                _l = new sparse_segment();
+                _l = new SparseSegment();
             }
             return _l;
         }
 
-        sparse_segment<R> *get_right() {
+        SparseSegment<R> *get_right() {
             if (!_r) {
-                _r = new sparse_segment();
+                _r = new SparseSegment();
             }
             return _r;
         }

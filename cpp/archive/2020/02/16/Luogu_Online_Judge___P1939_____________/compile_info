@@ -1,0 +1,5 @@
+In file included from C:/Users/daltao/IdeaProjects/contest/cpp/libs/common.h:8,
+                 from C:\Users\daltao\IdeaProjects\contest\cpp\database\Luogu_Online_Judge___P1939_____________\main.cpp:1:
+C:/Users/daltao/IdeaProjects/contest/cpp/libs/compiler_macro.h:6:30: warning: '-std=c++14' is not an option that controls warnings [-Wpragmas]
+ #pragma GCC diagnostic error "-std=c++14"
+                              ^~~~~~~~~~~~

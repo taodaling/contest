@@ -3,7 +3,7 @@
 
 #include "common.h"
 
-namespace ds
+namespace version_array
 {
 template <class T>
 class VersionArray

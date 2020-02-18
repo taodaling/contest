@@ -4,9 +4,9 @@ package template.string;
  * Created by dalt on 2018/5/25.
  */
 public class PalindromeAutomaton {
-    static final int MIN_CHARACTER = 'a';
-    static final int MAX_CHARACTER = 'z';
-    static final int RANGE_SIZE = MAX_CHARACTER - MIN_CHARACTER + 1;
+    final int minCharacter;
+    final int maxCharacter;
+    int range;
 
     Node odd;
     Node even;
@@ -15,14 +15,22 @@ public class PalindromeAutomaton {
     int size;
     Node buildLast;
 
-    public PalindromeAutomaton(int cap) {
+    private Node newNode() {
+        return new Node(range);
+    }
+
+    public PalindromeAutomaton(int minCharacter, int maxCharacter, int cap) {
+        this.minCharacter = minCharacter;
+        this.maxCharacter = maxCharacter;
+        range = maxCharacter - minCharacter + 1;
+
         data = new char[cap];
         size = 0;
 
-        odd = new Node();
+        odd = newNode();
         odd.len = -1;
 
-        even = new Node();
+        even = newNode();
         even.fail = odd;
         even.len = 0;
 
@@ -32,7 +40,7 @@ public class PalindromeAutomaton {
     public void build(char c) {
         data[size++] = c;
 
-        int index = c - MIN_CHARACTER;
+        int index = c - minCharacter;
 
         Node trace = buildLast;
         while (size - 2 - trace.len < 0) {
@@ -48,7 +56,7 @@ public class PalindromeAutomaton {
             return;
         }
 
-        Node now = new Node();
+        Node now = newNode();
         now.len = trace.len + 2;
         trace.next[index] = now;
 
@@ -66,8 +74,12 @@ public class PalindromeAutomaton {
     }
 
     public static class Node {
-        Node[] next = new Node[RANGE_SIZE];
-        Node fail;
-        int len;
+        public Node(int range) {
+            next = new Node[range];
+        }
+
+        public Node[] next;
+        public Node fail;
+        public int len;
     }
 }

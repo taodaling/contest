@@ -1,6 +1,6 @@
 package template.graph;
 
-import template.primitve.generated.IntegerList;
+import template.primitve.generated.datastructure.IntegerList;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;

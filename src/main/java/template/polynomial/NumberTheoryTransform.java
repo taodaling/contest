@@ -1,7 +1,7 @@
 package template.polynomial;
 
 import template.math.*;
-import template.primitve.generated.IntegerList;
+import template.primitve.generated.datastructure.IntegerList;
 import template.utils.SequenceUtils;
 import template.utils.Buffer;
 

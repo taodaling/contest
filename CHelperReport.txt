@@ -1,2 +1,2 @@
-39 src/main/java/contest/Funny gnomes.json
+34 src/main/java/contest/E - MUL.json
 0

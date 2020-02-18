@@ -1,8 +1,8 @@
 package template.graph;
 
-import template.primitve.generated.IntegerIterator;
-import template.primitve.generated.IntegerList;
-import template.primitve.generated.MultiWayIntegerStack;
+import template.primitve.generated.datastructure.IntegerIterator;
+import template.primitve.generated.datastructure.IntegerList;
+import template.primitve.generated.datastructure.MultiWayIntegerStack;
 
 public class CircularPath {
     MultiWayIntegerStack edges;

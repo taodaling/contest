@@ -3,34 +3,32 @@ package graphs.flows;
 import java.util.*;
 import java.util.stream.Stream;
 
-// https://en.wikipedia.org/wiki/Minimum-cost_flow_problem in O(E * V * FLOW)
-// negative-cost edges are allowed
-// negative-cost cycles are not allowed
+// Maximum flow of minimum cost with Bellman–Ford in O(min(E^2*V^2, E*V*FLOW))
 public class MinCostFlowBF {
+    public static class Edge {
+        public int to, f, cap, cost, rev;
 
-    List<Edge>[] graph;
-
-    public MinCostFlowBF(int nodes) {
-        graph = Stream.generate(ArrayList::new).limit(nodes).toArray(List[]::new);
-    }
-
-    class Edge {
-        int to, rev, cap, f, cost;
-
-        Edge(int to, int rev, int cap, int cost) {
-            this.to = to;
-            this.rev = rev;
+        Edge(int v, int cap, int cost, int rev) {
+            this.to = v;
             this.cap = cap;
             this.cost = cost;
+            this.rev = rev;
         }
     }
 
-    public void addEdge(int s, int t, int cap, int cost) {
-        graph[s].add(new Edge(t, graph[t].size(), cap, cost));
-        graph[t].add(new Edge(s, graph[s].size() - 1, 0, -cost));
+    public static List<Edge>[] createGraph(int n) {
+        List<Edge>[] graph = new List[n];
+        for (int i = 0; i < n; i++)
+            graph[i] = new ArrayList<Edge>();
+        return graph;
     }
 
-    void bellmanFord(int s, int[] dist, int[] prevnode, int[] prevedge, int[] curflow) {
+    public static void addEdge(List<Edge>[] graph, int s, int t, int cap, int cost) {
+        graph[s].add(new Edge(t, cap, cost, graph[t].size()));
+        graph[t].add(new Edge(s, 0, -cost, graph[s].size() - 1));
+    }
+
+    static void bellmanFord(List<Edge>[] graph, int s, int[] dist, int[] prevnode, int[] prevedge, int[] curflow) {
         int n = graph.length;
         Arrays.fill(dist, 0, n, Integer.MAX_VALUE);
         dist[s] = 0;
@@ -39,7 +37,7 @@ public class MinCostFlowBF {
         int[] q = new int[n];
         int qt = 0;
         q[qt++] = s;
-        for (int qh = 0; qh != qt; qh++) {
+        for (int qh = 0; (qh - qt) % n != 0; qh++) {
             int u = q[qh % n];
             inqueue[u] = false;
             for (int i = 0; i < graph[u].size(); i++) {
@@ -62,7 +60,7 @@ public class MinCostFlowBF {
         }
     }
 
-    public int[] minCostFlow(int s, int t, int maxf) {
+    public static int[] minCostFlow(List<Edge>[] graph, int s, int t, int maxf) {
         int n = graph.length;
         int[] dist = new int[n];
         int[] curflow = new int[n];
@@ -72,7 +70,7 @@ public class MinCostFlowBF {
         int flow = 0;
         int flowCost = 0;
         while (flow < maxf) {
-            bellmanFord(s, dist, prevnode, prevedge, curflow);
+            bellmanFord(graph, s, dist, prevnode, prevedge, curflow);
             if (dist[t] == Integer.MAX_VALUE)
                 break;
             int df = Math.min(curflow[t], maxf - flow);
@@ -89,11 +87,11 @@ public class MinCostFlowBF {
 
     // Usage example
     public static void main(String[] args) {
-        MinCostFlowBF mcf = new MinCostFlowBF(3);
-        mcf.addEdge(0, 1, 3, 1);
-        mcf.addEdge(0, 2, 2, 1);
-        mcf.addEdge(1, 2, 2, 1);
-        int[] res = mcf.minCostFlow(0, 2, Integer.MAX_VALUE);
+        List<Edge>[] graph = createGraph(3);
+        addEdge(graph, 0, 1, 3, 1);
+        addEdge(graph, 0, 2, 2, 1);
+        addEdge(graph, 1, 2, 2, 1);
+        int[] res = minCostFlow(graph, 0, 2, Integer.MAX_VALUE);
         int flow = res[0];
         int flowCost = res[1];
         System.out.println(4 == flow);

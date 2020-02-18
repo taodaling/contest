@@ -2,7 +2,7 @@ package template.polynomial;
 
 import template.math.Modular;
 import template.math.Power;
-import template.primitve.generated.IntegerList;
+import template.primitve.generated.datastructure.IntegerList;
 
 import java.util.Arrays;
 import java.util.HashMap;

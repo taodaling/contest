@@ -4,4 +4,4 @@ void solve(int testId, istream &in, ostream &out)
 {
 }
 
-#include "../../libs/run_once.h"
+RUN_ONCE

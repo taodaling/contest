@@ -1,8 +1,8 @@
 package template.graph;
 
-import template.primitve.generated.IntegerDequeImpl;
-import template.primitve.generated.IntegerIterator;
-import template.primitve.generated.MultiWayIntegerStack;
+import template.primitve.generated.datastructure.IntegerDequeImpl;
+import template.primitve.generated.datastructure.IntegerIterator;
+import template.primitve.generated.datastructure.MultiWayIntegerStack;
 
 import java.util.Arrays;
 

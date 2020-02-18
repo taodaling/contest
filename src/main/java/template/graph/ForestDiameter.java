@@ -1,9 +1,9 @@
 package template.graph;
 
 import template.math.DigitUtils;
-import template.primitve.generated.IntegerIterator;
-import template.primitve.generated.IntegerList;
-import template.primitve.generated.MultiWayIntegerStack;
+import template.primitve.generated.datastructure.IntegerIterator;
+import template.primitve.generated.datastructure.IntegerList;
+import template.primitve.generated.datastructure.MultiWayIntegerStack;
 
 import java.util.Arrays;
 

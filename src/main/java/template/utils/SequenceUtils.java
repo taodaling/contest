@@ -1,6 +1,6 @@
 package template.utils;
 
-import template.primitve.generated.IntegerList;
+import template.primitve.generated.datastructure.IntegerList;
 
 import java.util.Arrays;
 import java.util.Comparator;

@@ -1,0 +1,87 @@
+In file included from C:\Users\daltao\IdeaProjects\contest\cpp\database\Luogu_Online_Judge___P3369__________\main.cpp:3:
+C:/Users/daltao/IdeaProjects/contest/cpp/libs/common.h:78:19: warning: backslash-newline at end of file
+ #define RUN_MULTI \
+                    
+In file included from C:/Users/daltao/IdeaProjects/contest/cpp/libs/memory_controll.h:3,
+                 from C:\Users\daltao\IdeaProjects\contest\cpp\database\Luogu_Online_Judge___P3369__________\main.cpp:4:
+C:/Users/daltao/IdeaProjects/contest/cpp/libs/common.h:78:19: warning: backslash-newline at end of file
+ #define RUN_MULTI \
+                    
+In file included from C:/Users/daltao/IdeaProjects/contest/cpp/libs/treap.h:4,
+                 from C:\Users\daltao\IdeaProjects\contest\cpp\database\Luogu_Online_Judge___P3369__________\main.cpp:5:
+C:/Users/daltao/IdeaProjects/contest/cpp/libs/common.h:78:19: warning: backslash-newline at end of file
+ #define RUN_MULTI \
+                    
+In file included from C:/Users/daltao/IdeaProjects/contest/cpp/libs/common.h:8,
+                 from C:\Users\daltao\IdeaProjects\contest\cpp\database\Luogu_Online_Judge___P3369__________\main.cpp:3:
+C:/Users/daltao/IdeaProjects/contest/cpp/libs/compiler_macro.h:6:30: warning: '-std=c++14' is not an option that controls warnings [-Wpragmas]
+ #pragma GCC diagnostic error "-std=c++14"
+                              ^~~~~~~~~~~~
+In file included from C:\Users\daltao\IdeaProjects\contest\cpp\database\Luogu_Online_Judge___P3369__________\main.cpp:4:
+C:/Users/daltao/IdeaProjects/contest/cpp/libs/memory_controll.h:17:31: warning: optimization attribute on 'void* operator new(size_t)' follows definition but the attribute doesn't match [-Wattributes]
+ void *operator new(size_t size)
+                               ^
+In file included from C:/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/exception_ptr.h:40,
+                 from C:/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/exception:143,
+                 from C:/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/ios:39,
+                 from C:/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/istream:38,
+                 from C:/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/sstream:38,
+                 from C:/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/complex:45,
+                 from C:/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/ccomplex:39,
+                 from C:/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/x86_64-w64-mingw32/bits/stdc++.h:52,
+                 from C:/Users/daltao/IdeaProjects/contest/cpp/libs/common.h:4,
+                 from C:\Users\daltao\IdeaProjects\contest\cpp\database\Luogu_Online_Judge___P3369__________\main.cpp:3:
+C:/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/new:168:14: note: previous definition of 'void* operator new(std::size_t, void*)' was here
+ inline void* operator new(std::size_t, void* __p) _GLIBCXX_USE_NOEXCEPT
+              ^~~~~~~~
+In file included from C:\Users\daltao\IdeaProjects\contest\cpp\database\Luogu_Online_Judge___P3369__________\main.cpp:4:
+C:/Users/daltao/IdeaProjects/contest/cpp/libs/memory_controll.h:23:33: warning: optimization attribute on 'void* operator new [](size_t)' follows definition but the attribute doesn't match [-Wattributes]
+ void *operator new[](size_t size)
+                                 ^
+In file included from C:/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/exception_ptr.h:40,
+                 from C:/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/exception:143,
+                 from C:/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/ios:39,
+                 from C:/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/istream:38,
+                 from C:/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/sstream:38,
+                 from C:/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/complex:45,
+                 from C:/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/ccomplex:39,
+                 from C:/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/x86_64-w64-mingw32/bits/stdc++.h:52,
+                 from C:/Users/daltao/IdeaProjects/contest/cpp/libs/common.h:4,
+                 from C:\Users\daltao\IdeaProjects\contest\cpp\database\Luogu_Online_Judge___P3369__________\main.cpp:3:
+C:/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/new:170:14: note: previous definition of 'void* operator new [](std::size_t, void*)' was here
+ inline void* operator new[](std::size_t, void* __p) _GLIBCXX_USE_NOEXCEPT
+              ^~~~~~~~
+In file included from C:\Users\daltao\IdeaProjects\contest\cpp\database\Luogu_Online_Judge___P3369__________\main.cpp:4:
+C:/Users/daltao/IdeaProjects/contest/cpp/libs/memory_controll.h:29:29: warning: optimization attribute on 'void operator delete(void*)' follows definition but the attribute doesn't match [-Wattributes]
+ void operator delete(void *p) {}
+                             ^
+In file included from C:/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/exception_ptr.h:40,
+                 from C:/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/exception:143,
+                 from C:/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/ios:39,
+                 from C:/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/istream:38,
+                 from C:/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/sstream:38,
+                 from C:/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/complex:45,
+                 from C:/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/ccomplex:39,
+                 from C:/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/x86_64-w64-mingw32/bits/stdc++.h:52,
+                 from C:/Users/daltao/IdeaProjects/contest/cpp/libs/common.h:4,
+                 from C:\Users\daltao\IdeaProjects\contest\cpp\database\Luogu_Online_Judge___P3369__________\main.cpp:3:
+C:/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/new:174:13: note: previous definition of 'void operator delete(void*, void*)' was here
+ inline void operator delete  (void*, void*) _GLIBCXX_USE_NOEXCEPT { }
+             ^~~~~~~~
+In file included from C:\Users\daltao\IdeaProjects\contest\cpp\database\Luogu_Online_Judge___P3369__________\main.cpp:4:
+C:/Users/daltao/IdeaProjects/contest/cpp/libs/memory_controll.h:30:31: warning: optimization attribute on 'void operator delete [](void*)' follows definition but the attribute doesn't match [-Wattributes]
+ void operator delete[](void *p) {}
+                               ^
+In file included from C:/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/exception_ptr.h:40,
+                 from C:/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/exception:143,
+                 from C:/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/ios:39,
+                 from C:/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/istream:38,
+                 from C:/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/sstream:38,
+                 from C:/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/complex:45,
+                 from C:/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/ccomplex:39,
+                 from C:/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/x86_64-w64-mingw32/bits/stdc++.h:52,
+                 from C:/Users/daltao/IdeaProjects/contest/cpp/libs/common.h:4,
+                 from C:\Users\daltao\IdeaProjects\contest\cpp\database\Luogu_Online_Judge___P3369__________\main.cpp:3:
+C:/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/new:175:13: note: previous definition of 'void operator delete [](void*, void*)' was here
+ inline void operator delete[](void*, void*) _GLIBCXX_USE_NOEXCEPT { }
+             ^~~~~~~~

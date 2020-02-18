@@ -3,12 +3,12 @@ package template.problem;
 import template.math.Factorization;
 import template.math.GCDs;
 import template.math.LCMs;
-import template.primitve.generated.IntegerDequeImpl;
-import template.primitve.generated.IntegerIterator;
-import template.primitve.generated.IntegerList;
-import template.primitve.generated.IntegerVersionArray;
-import template.primitve.generated.MultiWayIntegerDeque;
-import template.primitve.generated.MultiWayIntegerStack;
+import template.primitve.generated.datastructure.IntegerDequeImpl;
+import template.primitve.generated.datastructure.IntegerIterator;
+import template.primitve.generated.datastructure.IntegerList;
+import template.primitve.generated.datastructure.IntegerVersionArray;
+import template.primitve.generated.datastructure.MultiWayIntegerDeque;
+import template.primitve.generated.datastructure.MultiWayIntegerStack;
 
 import java.util.Arrays;
 

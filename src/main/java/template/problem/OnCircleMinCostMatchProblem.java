@@ -1,8 +1,8 @@
 package template.problem;
 
 import template.math.DigitUtils;
-import template.primitve.generated.IntegerList;
-import template.primitve.generated.LongObjectHashMap;
+import template.primitve.generated.datastructure.IntegerList;
+import template.primitve.generated.datastructure.LongObjectHashMap;
 
 /**
  * There is c points on a circle, points are enumerated as 0, 1, ... , c - 1.

@@ -1,12 +1,11 @@
 package template.graph;
 
 import template.datastructure.MultiWayStack;
-import template.datastructure.SimplifiedDeque;
 import template.datastructure.SimplifiedStack;
 import template.math.DigitUtils;
-import template.primitve.generated.IntegerDequeImpl;
-import template.primitve.generated.IntegerList;
-import template.primitve.generated.LongObjectHashMap;
+import template.primitve.generated.datastructure.IntegerDequeImpl;
+import template.primitve.generated.datastructure.IntegerList;
+import template.primitve.generated.datastructure.LongObjectHashMap;
 import template.utils.RevokeIterator;
 
 import java.util.Arrays;

@@ -4,20 +4,11 @@ package on2020_01.on2020_01_22_Codeforces_Round__614__Div__1_.D__Chaotic_V_;
 
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.math.DigitUtils;
 import template.math.EulerSieve;
-import template.primitve.generated.IntegerPreSum;
-import template.primitve.generated.MultiWayIntegerStack;
-import template.primitve.generated.MultiWayLongDeque;
-import template.primitve.generated.MultiWayLongStack;
-import template.utils.CompareUtils;
 
-import javax.xml.bind.annotation.XmlElementDecl;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.PriorityQueue;
 
 public class DChaoticV {
     int limit = 669;

@@ -1,6 +1,6 @@
 package template.math;
 
-import template.primitve.generated.IntegerList;
+import template.primitve.generated.datastructure.IntegerList;
 
 import java.util.ArrayList;
 import java.util.Arrays;

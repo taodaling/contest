@@ -1,7 +1,6 @@
 package template.polynomial;
 
 import template.math.CachedLog2;
-import template.primitve.generated.DoubleList;
 import template.utils.SequenceUtils;
 
 public class FastFourierTransform {

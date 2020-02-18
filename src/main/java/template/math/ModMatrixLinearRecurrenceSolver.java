@@ -2,7 +2,7 @@ package template.math;
 
 import template.polynomial.GravityModLagrangeInterpolation;
 import template.polynomial.Polynomials;
-import template.primitve.generated.IntegerList;
+import template.primitve.generated.datastructure.IntegerList;
 
 import java.util.BitSet;
 

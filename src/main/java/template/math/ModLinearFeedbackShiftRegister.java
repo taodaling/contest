@@ -1,6 +1,6 @@
 package template.math;
 
-import template.primitve.generated.IntegerList;
+import template.primitve.generated.datastructure.IntegerList;
 
 /**
  * For given sequence a1, a2, ... , an.

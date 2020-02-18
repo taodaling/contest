@@ -1,6 +1,6 @@
 package template.math;
 
-import template.primitve.generated.IntegerHashMap;
+import template.primitve.generated.datastructure.IntegerHashMap;
 
 class RelativePrimeModLog {
     Modular mod;

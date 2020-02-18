@@ -1,10 +1,6 @@
 package template.graph;
 
-import template.primitve.generated.IntegerIterator;
-import template.primitve.generated.IntegerList;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import template.primitve.generated.datastructure.IntegerIterator;
 
 public class LongMinimumCloseSubGraph {
     private LongISAP isap;

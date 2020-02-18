@@ -143,6 +143,9 @@ public class LCTNode {
     }
 
     public void pushDown() {
+        if (this == NIL) {
+            return;
+        }
         if (reverse) {
             reverse = false;
 
@@ -181,5 +184,8 @@ public class LCTNode {
     }
 
     public void pushUp() {
+        if (this == NIL) {
+            return;
+        }
     }
 }

@@ -1,8 +1,8 @@
 package template.algo;
 
 import template.graph.LcaOnTree;
-import template.primitve.generated.IntegerIterator;
-import template.primitve.generated.MultiWayIntegerStack;
+import template.primitve.generated.datastructure.IntegerIterator;
+import template.primitve.generated.datastructure.MultiWayIntegerStack;
 
 import java.util.Arrays;
 

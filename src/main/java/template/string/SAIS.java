@@ -1,8 +1,8 @@
 package template.string;
 
 
-import template.primitve.generated.IntegerList;
-import template.primitve.generated.MultiWayIntegerDeque;
+import template.primitve.generated.datastructure.IntegerList;
+import template.primitve.generated.datastructure.MultiWayIntegerDeque;
 import template.utils.CompareUtils;
 
 /**
