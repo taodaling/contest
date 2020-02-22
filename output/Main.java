@@ -2,14 +2,10 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.PriorityQueue;
-import java.util.AbstractQueue;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.io.UncheckedIOException;
 import java.util.List;
-import java.util.AbstractCollection;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
@@ -52,7 +48,7 @@ public class Main {
                 LongFlow.addEdge(g, u, v, c, w);
             }
 
-            LongMinimumCostFlow mcf = new LongMinCostFlowPolynomial();
+            LongMinimumCostFlow mcf = new LongSpfaMinimumCostFlow(n + 1);
             long[] ans = mcf.apply(g, s, t, (long) 2e18);
             out.append(ans[0]).append(' ').append(ans[1]);
         }
@@ -61,6 +57,64 @@ public class Main {
 
     static interface LongMinimumCostFlow {
         long[] apply(List<LongCostFlowEdge>[] net, int s, int t, long send);
+
+    }
+
+    static class FastOutput implements AutoCloseable, Closeable, Appendable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
+
+        public FastOutput append(CharSequence csq) {
+            cache.append(csq);
+            return this;
+        }
+
+        public FastOutput append(CharSequence csq, int start, int end) {
+            cache.append(csq, start, end);
+            return this;
+        }
+
+        public FastOutput(Writer os) {
+            this.os = os;
+        }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput append(char c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput append(long c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            return this;
+        }
+
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+
+        public String toString() {
+            return cache.toString();
+        }
 
     }
 
@@ -123,112 +177,180 @@ public class Main {
 
     }
 
-    static class LongMinCostFlowPolynomial implements LongMinimumCostFlow {
-        static void bellmanFord(List<LongCostFlowEdge>[] graph, int s, long[] dist) {
-            int n = graph.length;
-            Arrays.fill(dist, Integer.MAX_VALUE);
-            dist[s] = 0;
-            boolean[] inqueue = new boolean[n];
-            int[] q = new int[n];
-            int qt = 0;
-            q[qt++] = s;
-            for (int qh = 0; (qh - qt) % n != 0; qh++) {
-                int u = q[qh % n];
-                inqueue[u] = false;
-                for (int i = 0; i < graph[u].size(); i++) {
-                    LongCostFlowEdge e = graph[u].get(i);
-                    if (e.rev.flow == 0)
-                        continue;
-                    int v = e.to;
-                    long ndist = dist[u] + e.cost;
-                    if (dist[v] > ndist) {
-                        dist[v] = ndist;
-                        if (!inqueue[v]) {
-                            inqueue[v] = true;
-                            q[qt++ % n] = v;
-                        }
-                    }
+    static class IntegerDequeImpl implements IntegerDeque {
+        private int[] data;
+        private int bpos;
+        private int epos;
+        private static final int[] EMPTY = new int[0];
+        private int n;
+
+        public IntegerDequeImpl(int cap) {
+            if (cap == 0) {
+                data = EMPTY;
+            } else {
+                data = new int[cap];
+            }
+            bpos = 0;
+            epos = 0;
+            n = cap;
+        }
+
+        private void expandSpace(int len) {
+            while (n < len) {
+                n = Math.max(n + 10, n * 2);
+            }
+            int[] newData = new int[n];
+            if (bpos <= epos) {
+                if (bpos < epos) {
+                    System.arraycopy(data, bpos, newData, 0, epos - bpos);
                 }
+            } else {
+                System.arraycopy(data, bpos, newData, 0, data.length - bpos);
+                System.arraycopy(data, 0, newData, data.length - bpos, epos);
+            }
+            epos = size();
+            bpos = 0;
+            data = newData;
+        }
+
+        public IntegerIterator iterator() {
+            return new IntegerIterator() {
+                int index = bpos;
+
+
+                public boolean hasNext() {
+                    return index != epos;
+                }
+
+
+                public int next() {
+                    int ans = data[index];
+                    index = IntegerDequeImpl.this.next(index);
+                    return ans;
+                }
+            };
+        }
+
+        public int removeFirst() {
+            int ans = data[bpos];
+            bpos = next(bpos);
+            return ans;
+        }
+
+        public void addLast(int x) {
+            ensureMore();
+            data[epos] = x;
+            epos = next(epos);
+        }
+
+        public void clear() {
+            bpos = epos = 0;
+        }
+
+        private int next(int x) {
+            return x + 1 >= n ? 0 : x + 1;
+        }
+
+        private void ensureMore() {
+            if (next(epos) == bpos) {
+                expandSpace(n + 1);
             }
         }
 
-        public static long[] minCostFlow(List<LongCostFlowEdge>[] graph, int s, int t, long maxf) {
-            int n = graph.length;
-            long[] prio = new long[n];
-            long[] curflow = new long[n];
-            int[] prevedge = new int[n];
-            int[] prevnode = new int[n];
-            long[] pot = new long[n];
+        public int size() {
+            int ans = epos - bpos;
+            if (ans < 0) {
+                ans += data.length;
+            }
+            return ans;
+        }
 
-            // bellmanFord invocation can be skipped if edges costs are non-negative
-            bellmanFord(graph, s, pot);
-            long flow = 0;
-            long flowCost = 0;
+        public boolean isEmpty() {
+            return bpos == epos;
+        }
 
-            PriorityQueue<LongMinCostFlowPolynomial.State> q = new PriorityQueue<>();
-            while (flow < maxf) {
-                q.clear();
-                q.add(new LongMinCostFlowPolynomial.State(0, s));
-                Arrays.fill(prio, Integer.MAX_VALUE);
-                prio[s] = 0;
-                boolean[] finished = new boolean[n];
-                curflow[s] = Integer.MAX_VALUE;
-                while (!finished[t] && !q.isEmpty()) {
-                    LongMinCostFlowPolynomial.State cur = q.remove();
-                    int u = cur.u;
-                    long priou = cur.priou;
-                    if (priou != prio[u])
-                        continue;
-                    finished[u] = true;
-                    for (int i = 0; i < graph[u].size(); i++) {
-                        LongCostFlowEdge e = graph[u].get(i);
-                        if (e.rev.flow == 0)
-                            continue;
-                        int v = e.to;
-                        long nprio = prio[u] + e.cost + pot[u] - pot[v];
-                        if (prio[v] > nprio) {
-                            prio[v] = nprio;
-                            q.add(new LongMinCostFlowPolynomial.State(nprio, v));
-                            prevnode[v] = u;
-                            prevedge[v] = i;
-                            curflow[v] = Math.min(curflow[u], e.rev.flow);
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            for (IntegerIterator iterator = iterator(); iterator.hasNext(); ) {
+                builder.append(iterator.next()).append(' ');
+            }
+            return builder.toString();
+        }
+
+    }
+
+    static class LongSpfaMinimumCostFlow implements LongMinimumCostFlow {
+        IntegerDeque deque;
+        long[] dists;
+        boolean[] inque;
+        LongCostFlowEdge[] prev;
+        List<LongCostFlowEdge>[] net;
+        private static final long INF = (long) 2e18;
+
+        public LongSpfaMinimumCostFlow(int vertexNum) {
+            deque = new IntegerDequeImpl(vertexNum);
+            dists = new long[vertexNum];
+            inque = new boolean[vertexNum];
+            prev = new LongCostFlowEdge[vertexNum];
+        }
+
+        private void spfa(int s, long inf) {
+            deque.clear();
+            for (int i = 0; i < net.length; i++) {
+                dists[i] = inf;
+                inque[i] = false;
+            }
+            dists[s] = 0;
+            prev[s] = null;
+            deque.addLast(s);
+            while (!deque.isEmpty()) {
+                int head = deque.removeFirst();
+                inque[head] = false;
+                for (LongCostFlowEdge e : net[head]) {
+                    if (e.flow > 0 && dists[e.to] > dists[head] - e.cost) {
+                        dists[e.to] = dists[head] - e.cost;
+                        prev[e.to] = e;
+                        if (!inque[e.to]) {
+                            inque[e.to] = true;
+                            deque.addLast(e.to);
                         }
                     }
                 }
-                if (prio[t] == Integer.MAX_VALUE)
-                    break;
-                for (int i = 0; i < n; i++)
-                    if (finished[i])
-                        pot[i] += prio[i] - prio[t];
-                long df = Math.min(curflow[t], maxf - flow);
-                flow += df;
-                for (int v = t; v != s; v = prevnode[v]) {
-                    LongCostFlowEdge e = graph[prevnode[v]].get(prevedge[v]);
-                    LongFlow.send(e, df);
-                    flowCost += df * e.cost;
-                }
             }
-            return new long[]{flow, flowCost};
         }
 
         public long[] apply(List<LongCostFlowEdge>[] net, int s, int t, long send) {
-            return minCostFlow(net, s, t, send);
+            long cost = 0;
+            long flow = 0;
+            this.net = net;
+            while (flow < send) {
+                spfa(t, INF);
+                if (dists[s] == INF) {
+                    break;
+                }
+                int iter = s;
+                long sent = send - flow;
+                while (prev[iter] != null) {
+                    sent = Math.min(sent, prev[iter].flow);
+                    iter = prev[iter].rev.to;
+                }
+                iter = s;
+                while (prev[iter] != null) {
+                    LongFlow.send(prev[iter], -sent);
+                    iter = prev[iter].rev.to;
+                }
+                cost += sent * dists[s];
+                flow += sent;
+            }
+            return new long[]{flow, cost};
         }
 
-        public static class State implements Comparable<LongMinCostFlowPolynomial.State> {
-            long priou;
-            int u;
+    }
 
-            public State(long priou, int u) {
-                this.priou = priou;
-                this.u = u;
-            }
+    static interface IntegerIterator {
+        boolean hasNext();
 
-            public int compareTo(LongMinCostFlowPolynomial.State o) {
-                return priou == o.priou ? Integer.compare(u, o.u) : Long.compare(priou, o.priou);
-            }
-
-        }
+        int next();
 
     }
 
@@ -255,6 +377,11 @@ public class Main {
 
     }
 
+    static interface IntegerDeque extends IntegerStack {
+        int removeFirst();
+
+    }
+
     static class DirectedEdge {
         public int to;
 
@@ -268,61 +395,12 @@ public class Main {
 
     }
 
-    static class FastOutput implements AutoCloseable, Closeable, Appendable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
+    static interface IntegerStack {
+        void addLast(int x);
 
-        public FastOutput append(CharSequence csq) {
-            cache.append(csq);
-            return this;
-        }
+        boolean isEmpty();
 
-        public FastOutput append(CharSequence csq, int start, int end) {
-            cache.append(csq, start, end);
-            return this;
-        }
-
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput append(char c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput append(long c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        }
-
-        public String toString() {
-            return cache.toString();
-        }
+        void clear();
 
     }
 

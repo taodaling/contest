@@ -32,29 +32,21 @@ public class LongPriorityQueueBasedOnSegment implements Cloneable {
         }
     }
 
-    private boolean covered(int ll, int rr, int l, int r) {
-        return ll <= l && rr >= r;
-    }
-
-    private boolean noIntersection(int ll, int rr, int l, int r) {
-        return ll > r || rr < l;
-    }
-
-    public void update(int ll, int rr, int l, int r, long val) {
-        if (noIntersection(ll, rr, l, r)) {
+    public void update(int x, int l, int r, long val) {
+        if (l > x || r < x) {
             return;
         }
-        if (covered(ll, rr, l, r)) {
+        if (l == r) {
             minimum = val;
             return;
         }
         int m = (l + r) >> 1;
-        left.update(ll, rr, l, m, val);
-        right.update(ll, rr, m + 1, r, val);
+        left.update(x, l, m, val);
+        right.update(x, m + 1, r, val);
         pushUp();
     }
 
-    public int query(int l, int r) {
+    public int pop(int l, int r) {
         if (l == r) {
             minimum = INF;
             return l;
@@ -62,9 +54,9 @@ public class LongPriorityQueueBasedOnSegment implements Cloneable {
         int m = (l + r) >> 1;
         int ans;
         if (left.minimum == minimum) {
-            ans = left.query(l, m);
+            ans = left.pop(l, m);
         } else {
-            ans = right.query(m + 1, r);
+            ans = right.pop(m + 1, r);
         }
         pushUp();
         return ans;

@@ -5,23 +5,21 @@ import template.primitve.generated.datastructure.IntegerDequeImpl;
 
 import java.util.List;
 
-public class LongDijkstraMinimumCostFlow implements LongMinimumCostFlow {
+public class IntegerDijkstraV2MinimumCostFlow implements IntegerMinimumCostFlow {
     private int m;
-    private LongPriorityQueueBasedOnSegment segment;
-    private long[] lastDist;
-    private long[] curDist;
-    private LongCostFlowEdge[] prev;
+    private int[] lastDist;
+    private int[] curDist;
+    private IntegerCostFlowEdge[] prev;
     private boolean[] inq;
     private IntegerDeque dq;
-    private static final long INF = (long) 1e18 + 100;
-    List<LongCostFlowEdge>[] g;
+    private static final int INF = (int) 1e18 + 100;
+    List<IntegerCostFlowEdge>[] g;
 
-    public LongDijkstraMinimumCostFlow(int m) {
+    public IntegerDijkstraV2MinimumCostFlow(int m) {
         this.m = m - 1;
-        this.segment = new LongPriorityQueueBasedOnSegment(0, m - 1);
-        lastDist = new long[m];
-        curDist = new long[m];
-        prev = new LongCostFlowEdge[m];
+        lastDist = new int[m];
+        curDist = new int[m];
+        prev = new IntegerCostFlowEdge[m];
         inq = new boolean[m];
         dq = new IntegerDequeImpl(m);
     }
@@ -39,7 +37,7 @@ public class LongDijkstraMinimumCostFlow implements LongMinimumCostFlow {
         while (!dq.isEmpty()) {
             int head = dq.removeFirst();
             inq[head] = false;
-            for (LongCostFlowEdge e : g[head]) {
+            for (IntegerCostFlowEdge e : g[head]) {
                 if (e.rev.flow == 0 || lastDist[e.to] <= lastDist[head] + e.cost) {
                     continue;
                 }
@@ -54,27 +52,31 @@ public class LongDijkstraMinimumCostFlow implements LongMinimumCostFlow {
 
     private void dijkstra(int s) {
         int n = g.length;
-        segment.reset(0, m);
         for (int i = 0; i < n; i++) {
             curDist[i] = INF;
             prev[i] = null;
+            inq[i] = false;
         }
         curDist[s] = 0;
-        segment.update(s, 0, m, 0);
 
         for (int i = 0; i < n; i++) {
-            int head = segment.pop(0, m);
+            int head = -1;
+            for (int j = 0; j < n; j++) {
+                if (!inq[j] && (head == -1 || curDist[j] < curDist[head])) {
+                    head = j;
+                }
+            }
             if (curDist[head] >= INF) {
                 break;
             }
-            for (LongCostFlowEdge e : g[head]) {
-                long dist;
+            inq[head] = true;
+            for (IntegerCostFlowEdge e : g[head]) {
+                int dist;
                 if (e.rev.flow == 0 || curDist[e.to] <= (dist = curDist[head] + e.cost - lastDist[e.to] + lastDist[head])) {
                     continue;
                 }
                 prev[e.to] = e.rev;
                 curDist[e.to] = dist;
-                segment.update(e.to, 0, m, curDist[e.to]);
             }
         }
 
@@ -83,26 +85,26 @@ public class LongDijkstraMinimumCostFlow implements LongMinimumCostFlow {
         }
     }
 
-    public long[] apply(List<LongCostFlowEdge>[] net, int s, int t, long send) {
+    public int[] apply(List<IntegerCostFlowEdge>[] net, int s, int t, int send) {
         this.g = net;
         bf(s);
-        long flow = 0;
-        long cost = 0;
+        int flow = 0;
+        int cost = 0;
         while (flow < send) {
             dijkstra(s);
             if (prev[t] == null) {
                 break;
             }
-            long remain = send - flow;
-            for (LongCostFlowEdge trace = prev[t]; trace != null; trace = prev[trace.to]) {
+            int remain = send - flow;
+            for (IntegerCostFlowEdge trace = prev[t]; trace != null; trace = prev[trace.to]) {
                 remain = Math.min(remain, trace.flow);
             }
-            for (LongCostFlowEdge trace = prev[t]; trace != null; trace = prev[trace.to]) {
+            for (IntegerCostFlowEdge trace = prev[t]; trace != null; trace = prev[trace.to]) {
                 cost += trace.cost * -remain;
-                LongFlow.send(trace, -remain);
+                IntegerFlow.send(trace, -remain);
             }
             flow += remain;
         }
-        return new long[]{flow, cost};
+        return new int[]{flow, cost};
     }
 }

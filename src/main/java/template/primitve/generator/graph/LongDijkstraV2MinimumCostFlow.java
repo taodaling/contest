@@ -5,9 +5,8 @@ import template.primitve.generated.datastructure.IntegerDequeImpl;
 
 import java.util.List;
 
-public class LongDijkstraMinimumCostFlow implements LongMinimumCostFlow {
+public class LongDijkstraV2MinimumCostFlow implements LongMinimumCostFlow {
     private int m;
-    private LongPriorityQueueBasedOnSegment segment;
     private long[] lastDist;
     private long[] curDist;
     private LongCostFlowEdge[] prev;
@@ -16,9 +15,8 @@ public class LongDijkstraMinimumCostFlow implements LongMinimumCostFlow {
     private static final long INF = (long) 1e18 + 100;
     List<LongCostFlowEdge>[] g;
 
-    public LongDijkstraMinimumCostFlow(int m) {
+    public LongDijkstraV2MinimumCostFlow(int m) {
         this.m = m - 1;
-        this.segment = new LongPriorityQueueBasedOnSegment(0, m - 1);
         lastDist = new long[m];
         curDist = new long[m];
         prev = new LongCostFlowEdge[m];
@@ -54,19 +52,24 @@ public class LongDijkstraMinimumCostFlow implements LongMinimumCostFlow {
 
     private void dijkstra(int s) {
         int n = g.length;
-        segment.reset(0, m);
         for (int i = 0; i < n; i++) {
             curDist[i] = INF;
             prev[i] = null;
+            inq[i] = false;
         }
         curDist[s] = 0;
-        segment.update(s, 0, m, 0);
 
         for (int i = 0; i < n; i++) {
-            int head = segment.pop(0, m);
+            int head = -1;
+            for (int j = 0; j < n; j++) {
+                if (!inq[j] && (head == -1 || curDist[j] < curDist[head])) {
+                    head = j;
+                }
+            }
             if (curDist[head] >= INF) {
                 break;
             }
+            inq[head] = true;
             for (LongCostFlowEdge e : g[head]) {
                 long dist;
                 if (e.rev.flow == 0 || curDist[e.to] <= (dist = curDist[head] + e.cost - lastDist[e.to] + lastDist[head])) {
@@ -74,7 +77,6 @@ public class LongDijkstraMinimumCostFlow implements LongMinimumCostFlow {
                 }
                 prev[e.to] = e.rev;
                 curDist[e.to] = dist;
-                segment.update(e.to, 0, m, curDist[e.to]);
             }
         }
 

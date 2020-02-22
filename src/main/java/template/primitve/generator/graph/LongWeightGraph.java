@@ -43,16 +43,16 @@ public class LongWeightGraph {
             dists[i] = inf;
         }
         dists[s] = 0;
-        pq.update(s, s, 0, n, 0);
+        pq.update(s, 0, n, 0);
         for (int i = 0; i < n; i++) {
-            int head = pq.query(0, n);
+            int head = pq.pop(0, n);
             if (dists[head] >= inf) {
                 break;
             }
             for (LongWeightDirectedEdge e : g[head]) {
                 if (dists[e.to] > dists[head] + e.weight) {
                     dists[e.to] = dists[head] + e.weight;
-                    pq.update(e.to, e.to, 0, n, dists[e.to]);
+                    pq.update(e.to, 0, n, dists[e.to]);
                 }
             }
         }
