@@ -33,7 +33,7 @@ public class LongMaximumCloseSubGraphAdapter implements LongMaximumCloseSubGraph
                 LongFlow.addEdge(net, i, e.to, INF);
             }
         }
-        long minCut = mf.apply(net, s, t);
+        long minCut = mf.apply(net, s, t, (long)2e18);
         boolean[] belongToS = LongFlow.findSetST(net, s);
         System.arraycopy(belongToS, 0, picked, 0, n);
         return sumOfPositive - minCut;

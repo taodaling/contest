@@ -1,6 +1,6 @@
 package template.polynomial;
 
-import template.math.CachedLog2;
+import template.binary.CachedLog2;
 import template.utils.SequenceUtils;
 
 public class FastFourierTransform {

@@ -63,7 +63,7 @@ public class DoubleFlow {
         }
     }
 
-    public static <T extends DoubleFlowEdge> void send(List<T>[] g, T edge, double flow) {
+    public static <T extends DoubleFlowEdge> void send(T edge, double flow) {
         edge.flow += flow;
         edge.rev.flow -= flow;
     }
@@ -80,7 +80,7 @@ public class DoubleFlow {
 
     public static DoubleCostFlowEdge addEdge(List<DoubleCostFlowEdge>[] g, int s, int t, double cap, double cost) {
         DoubleCostFlowEdge real = new DoubleCostFlowEdge(t,0, true, cost);
-        DoubleCostFlowEdge virtual = new DoubleCostFlowEdge(s, cap, false, cost);
+        DoubleCostFlowEdge virtual = new DoubleCostFlowEdge(s, cap, false, -cost);
         real.rev = virtual;
         virtual.rev = real;
         g[s].add(real);

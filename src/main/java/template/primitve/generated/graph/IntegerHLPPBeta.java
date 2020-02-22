@@ -54,7 +54,7 @@ public class IntegerHLPPBeta implements IntegerMaximumFlow {
                 int sent = Math.min(excess[root], remain);
                 excess[root] -= sent;
                 excess[c.to] += sent;
-                IntegerFlow.send(g, c, sent);
+                IntegerFlow.send(c, sent);
                 if (excess[root] == 0) {
                     iterators[root].previous();
                     return;
@@ -103,7 +103,7 @@ public class IntegerHLPPBeta implements IntegerMaximumFlow {
         for (IntegerFlowEdge c : g[source]) {
             int newFlow = Math.min(c.rev.flow, flow - sent);
             sent += newFlow;
-            IntegerFlow.send(g, c, newFlow);
+            IntegerFlow.send(c, newFlow);
             excess[source] -= newFlow;
             excess[c.to] += newFlow;
         }
@@ -119,11 +119,11 @@ public class IntegerHLPPBeta implements IntegerMaximumFlow {
     }
 
     @Override
-    public int apply(List<IntegerFlowEdge>[] g, int s, int t) {
+    public int apply(List<IntegerFlowEdge>[] g, int s, int t, int send) {
         vertexNumber = g.length;
         this.g = g;
         this.source = s;
         this.sink = t;
-        return send((int)2e18);
+        return send(send);
     }
 }

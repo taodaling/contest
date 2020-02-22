@@ -42,6 +42,6 @@ public class DoublePreSum {
      * get a[i] + a[i + 1] + ... + a[n - 1]
      */
     public double post(int i) {
-        return pre[n - 1] - prefix(i);
+        return pre[n - 1] - prefix(i - 1);
     }
 }

@@ -1,5 +1,7 @@
 package template.math;
 
+import template.binary.Bits;
+
 import java.util.Map;
 import java.util.Random;
 

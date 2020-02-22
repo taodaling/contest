@@ -11,7 +11,7 @@ import java.util.List;
  * Very fast, but the flow on each edge is wrong, the maximum flow is right.
  */
 public class IntegerHLPP implements IntegerMaximumFlow {
-    private static final int INF = (int)2e18;
+    private int inf;
     private int maxV;
     private int s;
     private int t;
@@ -94,7 +94,7 @@ public class IntegerHLPP implements IntegerMaximumFlow {
             lst[height[e.to]].add(e.to);
         }
         int df = Math.min(excess[v], e.rev.flow);
-        IntegerFlow.send(adj, e, df);
+        IntegerFlow.send(e, df);
         excess[v] -= df;
         excess[e.to] += df;
     }
@@ -127,8 +127,8 @@ public class IntegerHLPP implements IntegerMaximumFlow {
 
     private int calc(int heur_n) {
         Arrays.fill(excess, 0);
-        excess[s] = INF;
-        excess[t] = -INF;
+        excess[s] = inf;
+        excess[t] = -inf;
         globalRelabel();
         for (IntegerFlowEdge e : adj[s]) {
             push(s, e);
@@ -142,18 +142,19 @@ public class IntegerHLPP implements IntegerMaximumFlow {
                 }
             }
         }
-        return excess[t] + INF;
+        return excess[t] + inf;
     }
 
     public int calc() {
         return calc(maxV);
     }
 
-    public int apply(List<IntegerFlowEdge>[] net, int s, int t) {
+    public int apply(List<IntegerFlowEdge>[] net, int s, int t, int send) {
         this.adj = net;
         this.s = s;
         this.t = t;
         this.maxV = net.length;
+        this.inf = send;
         init();
         return calc();
     }

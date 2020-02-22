@@ -1,5 +1,7 @@
 package template.math;
 
+import template.binary.Bits;
+import template.binary.CachedLog2;
 import template.datastructure.Loop;
 import template.polynomial.FastFourierTransform;
 import template.polynomial.Polynomials;

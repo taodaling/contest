@@ -118,6 +118,11 @@ public class FastOutput implements AutoCloseable, Closeable, Appendable {
         return this;
     }
 
+    public FastOutput clear() {
+        cache.setLength(0);
+        return this;
+    }
+
     public FastOutput flush() {
         try {
             os.append(cache);
@@ -137,6 +142,10 @@ public class FastOutput implements AutoCloseable, Closeable, Appendable {
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
+    }
+
+    public void pop(int k) {
+        cache.setLength(cache.length() - k);
     }
 
     @Override

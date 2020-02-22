@@ -1,5 +1,6 @@
 package template.math;
 
+import template.binary.Log2;
 import template.polynomial.NumberTheoryTransform;
 import template.utils.SequenceUtils;
 

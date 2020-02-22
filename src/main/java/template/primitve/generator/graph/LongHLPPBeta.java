@@ -54,7 +54,7 @@ public class LongHLPPBeta implements LongMaximumFlow {
                 long sent = Math.min(excess[root], remain);
                 excess[root] -= sent;
                 excess[c.to] += sent;
-                LongFlow.send(g, c, sent);
+                LongFlow.send(c, sent);
                 if (excess[root] == 0) {
                     iterators[root].previous();
                     return;
@@ -103,7 +103,7 @@ public class LongHLPPBeta implements LongMaximumFlow {
         for (LongFlowEdge c : g[source]) {
             long newFlow = Math.min(c.rev.flow, flow - sent);
             sent += newFlow;
-            LongFlow.send(g, c, newFlow);
+            LongFlow.send(c, newFlow);
             excess[source] -= newFlow;
             excess[c.to] += newFlow;
         }
@@ -119,11 +119,11 @@ public class LongHLPPBeta implements LongMaximumFlow {
     }
 
     @Override
-    public long apply(List<LongFlowEdge>[] g, int s, int t) {
+    public long apply(List<LongFlowEdge>[] g, int s, int t, long send) {
         vertexNumber = g.length;
         this.g = g;
         this.source = s;
         this.sink = t;
-        return send((long)2e18);
+        return send(send);
     }
 }

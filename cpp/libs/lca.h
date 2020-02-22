@@ -4,7 +4,7 @@
 #include "common.h"
 #include "bits.h"
 
-namespace tree
+namespace lca
 {
 using namespace bits;
 class Lca

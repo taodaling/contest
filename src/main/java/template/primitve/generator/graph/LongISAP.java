@@ -35,7 +35,7 @@ public class LongISAP implements LongMaximumFlow {
             }
             long sent = send(e.to, Math.min(flow, remain));
             flow -= sent;
-            LongFlow.send(net, e, sent);
+            LongFlow.send(e, sent);
             if (flow == 0 || exit) {
                 break;
             }
@@ -52,7 +52,7 @@ public class LongISAP implements LongMaximumFlow {
     }
 
     @Override
-    public long apply(List<LongFlowEdge>[] g, int s, int t) {
+    public long apply(List<LongFlowEdge>[] g, int s, int t, long send) {
         this.net = g;
         this.s = s;
         this.t = t;
@@ -64,8 +64,8 @@ public class LongISAP implements LongMaximumFlow {
             cnts[d]++;
         }
         long flow = 0;
-        while (!exit && dists[s] < n) {
-            flow += send(s, Long.MAX_VALUE);
+        while (flow < send && !exit && dists[s] < n) {
+            flow += send(s, send - flow);
         }
         return flow;
     }

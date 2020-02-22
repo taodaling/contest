@@ -1,8 +1,8 @@
 package template.graph;
 
-import template.math.CachedLog2;
-import template.primitve.generated.datastructure.IntegerIterator;
-import template.primitve.generated.datastructure.IntegerMultiWayStack;
+import template.binary.CachedLog2;
+
+import java.util.List;
 
 // Answering LCA queries in O(1) with O(n) preprocessing
 public class LcaOnTree {
@@ -13,11 +13,11 @@ public class LcaOnTree {
     int[] a;
     int time;
 
-    void dfs1(IntegerMultiWayStack tree, int u, int p) {
+    void dfs1(List<UndirectedEdge>[] tree, int u, int p) {
         parent[u] = p;
         i[u] = preOrder[u] = time++;
-        for (IntegerIterator iterator = tree.iterator(u); iterator.hasNext(); ) {
-            int v = iterator.next();
+        for (UndirectedEdge e : tree[u]) {
+            int v = e.to;
             if (v == p) continue;
             dfs1(tree, v, u);
             if (Integer.lowestOneBit(i[u]) < Integer.lowestOneBit(i[v])) {
@@ -27,17 +27,17 @@ public class LcaOnTree {
         head[i[u]] = u;
     }
 
-    void dfs2(IntegerMultiWayStack tree, int u, int p, int up) {
+    void dfs2(List<UndirectedEdge>[] tree, int u, int p, int up) {
         a[u] = up | Integer.lowestOneBit(i[u]);
-        for (IntegerIterator iterator = tree.iterator(u); iterator.hasNext(); ) {
-            int v = iterator.next();
+        for (UndirectedEdge e : tree[u]) {
+            int v = e.to;
             if (v == p) continue;
             dfs2(tree, v, u, a[u]);
         }
     }
 
-    public LcaOnTree(IntegerMultiWayStack tree, int root) {
-        int n = tree.stackNumber();
+    public LcaOnTree(List<UndirectedEdge>[] tree, int root) {
+        int n = tree.length;
         preOrder = new int[n];
         i = new int[n];
         head = new int[n];

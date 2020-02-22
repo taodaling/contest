@@ -23,6 +23,11 @@ public class PairingHeap<T> implements Cloneable {
         this.val = val;
     }
 
+    public void reset(T val) {
+        father = prev = next = children = NIL;
+        this.val = val;
+    }
+
     private static <T> void detach(PairingHeap<T> father, PairingHeap<T> child) {
         if (father == NIL || child == NIL) {
             return;

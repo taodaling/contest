@@ -34,7 +34,7 @@ public class LongDinic implements LongMaximumFlow {
             }
             long sent = send(e.to, Math.min(flow, remain));
             flow -= sent;
-            LongFlow.send(g, e, sent);
+            LongFlow.send(e, sent);
             if (flow == 0) {
                 iterators[root].previous();
                 break;
@@ -44,12 +44,12 @@ public class LongDinic implements LongMaximumFlow {
     }
 
     @Override
-    public long apply(List<LongFlowEdge>[] g, int s, int t) {
+    public long apply(List<LongFlowEdge>[] g, int s, int t, long send) {
         this.s = s;
         this.t = t;
         this.g = g;
         long flow = 0;
-        while (true) {
+        while (flow < send) {
             LongFlow.bfsForFlow(g, t, dists, Integer.MAX_VALUE, deque);
             if (dists[s] == Integer.MAX_VALUE) {
                 break;
@@ -57,7 +57,7 @@ public class LongDinic implements LongMaximumFlow {
             for (int i = 0; i < g.length; i++) {
                 iterators[i] = g[i].listIterator();
             }
-            flow += send(s, Long.MAX_VALUE);
+            flow += send(s, send - flow);
         }
         return flow;
     }

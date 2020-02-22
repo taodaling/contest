@@ -51,7 +51,7 @@ public class LongGomoryHuTree {
         LongFlow.rewind(g);
         int s = set.get(0);
         int t = set.get(1);
-        long f = mf.apply(g, s, t);
+        long f = mf.apply(g, s, t, (long)2e18);
         addEdge(s, t, f);
         LongFlow.findSetST(g, s, visited);
         IntegerList l1 = new IntegerList(set.size());

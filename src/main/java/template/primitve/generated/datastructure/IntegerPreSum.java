@@ -42,6 +42,6 @@ public class IntegerPreSum {
      * get a[i] + a[i + 1] + ... + a[n - 1]
      */
     public int post(int i) {
-        return pre[n - 1] - prefix(i);
+        return pre[n - 1] - prefix(i - 1);
     }
 }

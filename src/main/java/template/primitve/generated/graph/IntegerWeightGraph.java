@@ -5,7 +5,6 @@ import template.primitve.generated.datastructure.IntegerDequeImpl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TreeSet;
 
 public class IntegerWeightGraph {
     public static void addEdge(List<IntegerWeightDirectedEdge>[] g, int s, int t, int w) {
@@ -37,39 +36,25 @@ public class IntegerWeightGraph {
         return ans;
     }
 
-    public static class IntegerDijkstraNode implements Comparable<IntegerDijkstraNode> {
-        int node;
-        int dist;
-
-        @Override
-        public int compareTo(IntegerDijkstraNode o) {
-            return dist == o.dist ? Integer.compare(node, o.node) : Integer.compare(dist, o.dist);
-        }
-    }
-
     public static <T extends IntegerWeightDirectedEdge> void dijkstraElogV(List<T>[] g, int s, int[] dists, int inf) {
         int n = g.length;
-        IntegerDijkstraNode[] nodes = new IntegerDijkstraNode[n];
+        IntegerPriorityQueueBasedOnSegment pq = new IntegerPriorityQueueBasedOnSegment(0, n);
         for (int i = 0; i < n; i++) {
-            nodes[i] = new IntegerDijkstraNode();
-            nodes[i].dist = inf;
-            nodes[i].node = i;
+            dists[i] = inf;
         }
-        nodes[s].dist = 0;
-        TreeSet<IntegerDijkstraNode> set = new TreeSet<>();
-        set.add(nodes[s]);
-        while (!set.isEmpty()) {
-            IntegerDijkstraNode head = set.pollFirst();
-            for (IntegerWeightDirectedEdge e : g[head.node]) {
-                if (nodes[e.to].dist > head.dist + e.weight) {
-                    set.remove(nodes[e.to]);
-                    nodes[e.to].dist = head.dist + e.weight;
-                    set.add(nodes[e.to]);
+        dists[s] = 0;
+        pq.update(s, s, 0, n, 0);
+        for (int i = 0; i < n; i++) {
+            int head = pq.query(0, n);
+            if (dists[head] >= inf) {
+                break;
+            }
+            for (IntegerWeightDirectedEdge e : g[head]) {
+                if (dists[e.to] > dists[head] + e.weight) {
+                    dists[e.to] = dists[head] + e.weight;
+                    pq.update(e.to, e.to, 0, n, dists[e.to]);
                 }
             }
-        }
-        for (int i = 0; i < n; i++) {
-            dists[i] = nodes[i].dist;
         }
     }
 

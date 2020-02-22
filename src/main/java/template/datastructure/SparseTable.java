@@ -1,7 +1,6 @@
 package template.datastructure;
 
-import template.math.CachedLog2;
-import template.math.DigitUtils;
+import template.binary.CachedLog2;
 
 import java.util.Arrays;
 import java.util.function.BiFunction;

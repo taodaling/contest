@@ -49,24 +49,24 @@ public class IntegerSpfaMinimumCostFlow implements IntegerMinimumCostFlow {
     private static final int INF = (int) 2e18;
 
     @Override
-    public int[] apply(List<IntegerCostFlowEdge>[] net, int s, int t) {
+    public int[] apply(List<IntegerCostFlowEdge>[] net, int s, int t, int send) {
         int cost = 0;
         int flow = 0;
         this.net = net;
-        while (true) {
+        while (flow < send) {
             spfa(t, INF);
             if (dists[s] == INF) {
                 break;
             }
             int iter = s;
-            int sent = Integer.MAX_VALUE;
+            int sent = send - flow;
             while (prev[iter] != null) {
                 sent = Math.min(sent, prev[iter].flow);
                 iter = prev[iter].rev.to;
             }
             iter = s;
             while (prev[iter] != null) {
-                IntegerFlow.send(net, prev[iter], -sent);
+                IntegerFlow.send(prev[iter], -sent);
                 iter = prev[iter].rev.to;
             }
             cost += sent * dists[s];

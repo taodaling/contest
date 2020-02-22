@@ -54,7 +54,7 @@ public class DoubleHLPPBeta implements DoubleMaximumFlow {
                 double sent = Math.min(excess[root], remain);
                 excess[root] -= sent;
                 excess[c.to] += sent;
-                DoubleFlow.send(g, c, sent);
+                DoubleFlow.send(c, sent);
                 if (excess[root] == 0) {
                     iterators[root].previous();
                     return;
@@ -103,7 +103,7 @@ public class DoubleHLPPBeta implements DoubleMaximumFlow {
         for (DoubleFlowEdge c : g[source]) {
             double newFlow = Math.min(c.rev.flow, flow - sent);
             sent += newFlow;
-            DoubleFlow.send(g, c, newFlow);
+            DoubleFlow.send(c, newFlow);
             excess[source] -= newFlow;
             excess[c.to] += newFlow;
         }
@@ -119,11 +119,11 @@ public class DoubleHLPPBeta implements DoubleMaximumFlow {
     }
 
     @Override
-    public double apply(List<DoubleFlowEdge>[] g, int s, int t) {
+    public double apply(List<DoubleFlowEdge>[] g, int s, int t, double send) {
         vertexNumber = g.length;
         this.g = g;
         this.source = s;
         this.sink = t;
-        return send((double)2e18);
+        return send(send);
     }
 }

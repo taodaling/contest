@@ -1,11 +1,11 @@
 #ifndef COMMON_H
 #define COMMON_H
 
+#include"compiler_macro.h"
 #include <bits/stdc++.h>
 #include <chrono>
 #include <random>
 #include<ext/rope>
-#include"compiler_macro.h"
 #include <iostream>
 #include <fstream>
 #include <iomanip>

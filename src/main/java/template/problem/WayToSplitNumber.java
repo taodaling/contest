@@ -1,6 +1,6 @@
 package template.problem;
 
-import template.math.CachedLog2;
+import template.binary.CachedLog2;
 import template.math.Modular;
 import template.polynomial.FastFourierTransform;
 import template.polynomial.NumberTheoryTransform;

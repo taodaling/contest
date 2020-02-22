@@ -34,7 +34,7 @@ public class IntegerDinic implements IntegerMaximumFlow {
             }
             int sent = send(e.to, Math.min(flow, remain));
             flow -= sent;
-            IntegerFlow.send(g, e, sent);
+            IntegerFlow.send(e, sent);
             if (flow == 0) {
                 iterators[root].previous();
                 break;
@@ -44,12 +44,12 @@ public class IntegerDinic implements IntegerMaximumFlow {
     }
 
     @Override
-    public int apply(List<IntegerFlowEdge>[] g, int s, int t) {
+    public int apply(List<IntegerFlowEdge>[] g, int s, int t, int send) {
         this.s = s;
         this.t = t;
         this.g = g;
         int flow = 0;
-        while (true) {
+        while (flow < send) {
             IntegerFlow.bfsForFlow(g, t, dists, Integer.MAX_VALUE, deque);
             if (dists[s] == Integer.MAX_VALUE) {
                 break;
@@ -57,7 +57,7 @@ public class IntegerDinic implements IntegerMaximumFlow {
             for (int i = 0; i < g.length; i++) {
                 iterators[i] = g[i].listIterator();
             }
-            flow += send(s, Integer.MAX_VALUE);
+            flow += send(s, send - flow);
         }
         return flow;
     }

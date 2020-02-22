@@ -1,9 +1,7 @@
 package template.datastructure;
 
-import template.math.CachedLog2;
-import template.utils.IntComparator;
+import template.binary.CachedLog2;
 
-import java.lang.reflect.Array;
 import java.util.Comparator;
 
 /**

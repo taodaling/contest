@@ -1,10 +1,6 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-#include <bits/stdc++.h>
-#include <chrono>
-#include <random>
-#include<ext/rope>
 #ifndef COMPILER_MACRO_H
 #define COMPILER_MACRO_H
 
@@ -20,11 +16,16 @@
 #endif
 
 #endif 
+#include <bits/stdc++.h>
+#include <chrono>
+#include <random>
+#include<ext/rope>
 #include <iostream>
 #include <fstream>
 #include <iomanip>
 #include<queue>
 
+using std::function;
 using __gnu_cxx::rope;
 using std::cerr;
 using std::deque;
@@ -107,302 +108,319 @@ int main()\
     }\
     return 0;\
 }
-#ifndef PUSH_RELABEL_H
-#define PUSH_RELABEL_H
+#ifndef TREE_PATH_BRUTEFORCE_H
+#define TREE_PATH_BRUTEFORCE_H
+
+
+#ifndef LCA_H
+#define LCA_H
+
+
+#ifndef BITS_H
+#define BITS_H
 
 
 
-namespace push_relabel
+namespace bits
 {
-template <int MAXN, class T = int>
-struct HLPP
+template <class T>
+inline bool BitAt(T x, int i)
 {
-    const T INF = numeric_limits<T>::max();
-    struct edge
+    return (x >> i) & 1;
+}
+template <class T>
+inline T SetBit(T x, int i)
+{
+    return x |= T(1) << i;
+}
+template <class T>
+inline T RemoveBit(T x, int i)
+{
+    return x &= ~(T(1) << i);
+}
+template <class T>
+inline T LowestOneBit(T x)
+{
+    return x & -x;
+}
+inline int FloorLog2(unsigned int x)
+{
+    if (x == 0)
     {
-        int to, rev;
-        T f;
-    };
-    int s = MAXN - 1, t = MAXN - 2;
-    vector<edge> adj[MAXN];
-    deque<int> lst[MAXN];
-    vector<int> gap[MAXN];
-    int ptr[MAXN];
-    T excess[MAXN];
-    int highest, height[MAXN], cnt[MAXN], work;
-    void addEdge(int from, int to, int f, bool isDirected = true)
-    {
-        adj[from].push_back({to, adj[to].size(), f});
-        adj[to].push_back({from, adj[from].size() - 1, isDirected ? 0 : f});
+        return 0;
     }
-    void updHeight(int v, int nh)
+    return (sizeof(unsigned int) * 8) - 1 - __builtin_clz(x);
+}
+inline int FloorLog2(unsigned long long x)
+{
+    if (x == 0)
     {
-        work++;
-        if (height[v] != MAXN)
-            cnt[height[v]]--;
-        height[v] = nh;
-        if (nh == MAXN)
-            return;
-        cnt[nh]++, highest = nh;
-        gap[nh].push_back(v);
-        if (excess[v] > 0)
-            lst[nh].push_back(v), ptr[nh]++;
+        return 0;
     }
-    void globalRelabel()
+    return (sizeof(unsigned long long) * 8) - 1 - __builtin_clzll(x);
+}
+inline int CeilLog2(unsigned int x)
+{
+    if (x == 0)
     {
-        work = 0;
-        for (int i = 0; i < MAXN; i++)
+        return 0;
+    }
+    return (sizeof(unsigned int) * 8) - __builtin_clz(x - 1);
+}
+inline int CeilLog2(unsigned long long x)
+{
+    if (x == 0)
+    {
+        return 0;
+    }
+    return (sizeof(unsigned long long) * 8) - __builtin_clzll(x - 1);
+}
+template <class T>
+inline T HighestOneBit(T x)
+{
+    return T(1) << FloorLog2(x);
+}
+inline int CountOne(unsigned int x)
+{
+    return __builtin_popcount(x);
+}
+inline int CountOne(unsigned long long x)
+{
+    return __builtin_popcountll(x);
+}
+} // namespace bits
+#endif
+
+namespace lca
+{
+using namespace bits;
+class Lca
+{
+
+private:
+    vector<int> parent;
+    vector<unsigned> pre_order;
+    vector<unsigned> I;
+    vector<int> head;
+    vector<unsigned> A;
+    unsigned time;
+    unsigned highest_one_bit(unsigned x) const
+    {
+        return x ? 1u << FloorLog2(x) : 0;
+    }
+    void dfs1(const vector<vector<int>> &tree, int u, int p)
+    {
+        parent[u] = p;
+        I[u] = pre_order[u] = time++;
+        for (int v : tree[u])
         {
-            height[i] = MAXN;
-            cnt[i] = 0;
-        }
-        for (int i = 0; i <= highest; i++)
-            lst[i].clear(), gap[i].clear(), ptr[i] = 0;
-        height[t] = 0;
-        queue<int> q({t});
-        while (!q.empty())
-        {
-            int v = q.front();
-            q.pop();
-            for (auto &e : adj[v])
-                if (height[e.to] == MAXN && adj[e.to][e.rev].f > 0)
-                    q.push(e.to), updHeight(e.to, height[v] + 1);
-            highest = height[v];
-        }
-    }
-    void push(int v, edge &e)
-    {
-        if (excess[e.to] == 0)
-            lst[height[e.to]].push_back(e.to), ptr[height[e.to]]++;
-        T df = min(excess[v], e.f);
-        e.f -= df, adj[e.to][e.rev].f += df;
-        excess[v] -= df, excess[e.to] += df;
-    }
-    void discharge(int v)
-    {
-        int nh = MAXN;
-        for (auto &e : adj[v])
-        {
-            if (e.f > 0)
+            if (v == p)
+                continue;
+            dfs1(tree, v, u);
+            if (LowestOneBit(I[u]) < LowestOneBit(I[v]))
             {
-                if (height[v] == height[e.to] + 1)
-                {
-                    push(v, e);
-                    if (excess[v] <= 0)
-                        return;
-                }
-                else
-                    nh = min(nh, height[e.to] + 1);
+                I[u] = I[v];
             }
         }
-        if (cnt[height[v]] > 1)
-            updHeight(v, nh);
-        else
+        head[I[u]] = u;
+    }
+
+    void dfs2(const vector<vector<int>> &tree, int u, int p, unsigned up)
+    {
+        A[u] = up | LowestOneBit(I[u]);
+        for (int v : tree[u])
         {
-            for (int i = height[v]; i < MAXN; i++)
-            {
-                for (auto j : gap[i])
-                    updHeight(j, MAXN);
-                gap[i].clear(), ptr[i] = 0;
-            }
+            if (v == p)
+                continue;
+            dfs2(tree, v, u, A[u]);
         }
     }
-    T calc(int src, int sink, int heur_n = MAXN)
+
+    int enter_into_strip(int x, int hz) const
     {
-        s = src;
-        t = sink;
-        memset(excess, 0, sizeof(excess));
-        excess[s] = INF, excess[t] = -INF;
-        globalRelabel();
-        for (auto &e : adj[s])
-            push(s, e);
-        for (; highest >= 0; highest--)
-        {
-            // while (ptr[highest] >= 0) {
-            while (!lst[highest].empty())
-            {
-                // int v = lst[highest][ptr[highest]];
-                // cout << highest << ' ' << ptr[highest] << ' ' << lst[highest].size() << endl;
-                int v = lst[highest].back();
-                // ptr[highest]--;
-                lst[highest].pop_back();
-                discharge(v);
-                if (work > 4 * heur_n)
-                    globalRelabel();
-            }
-        }
-        return excess[t] + INF;
+        if (LowestOneBit(I[x]) == hz)
+            return x;
+        int hw = highest_one_bit(A[x] & (hz - 1));
+        return parent[head[(I[x] & -hw) | hw]];
+    }
+
+public:
+    // lca in O(1)
+    int operator()(int x, int y) const
+    {
+        int hb = I[x] == I[y] ? LowestOneBit(I[x]) : highest_one_bit(I[x] ^ I[y]);
+        int hz = LowestOneBit(A[x] & A[y] & -hb);
+        int ex = enter_into_strip(x, hz);
+        int ey = enter_into_strip(y, hz);
+        return pre_order[ex] < pre_order[ey] ? ex : ey;
+    }
+
+    void init(const vector<vector<int>> &tree, int root)
+    {
+        int n = tree.size();
+        parent.resize(n);
+        pre_order.resize(n);
+        I.resize(n);
+        head.resize(n);
+        A.resize(n);
+
+        time = 0;
+        dfs1(tree, root, -1);
+        dfs2(tree, root, -1, 0);
     }
 };
-} // namespace push_relabel
+} // namespace tree
 
 #endif
 
-using Flow = push_relabel::HLPP<250000 + 1, int>;
-
-#include <iostream>
-#include <fstream>
- 
-#include <bits/stdc++.h>
- 
-#define pb push_back
-#define sz(v) ((int)(v).size())
-#define all(v) (v).begin(),(v).end()
-#define mp make_pair
- 
-using namespace std;
- 
-typedef long long int64;
-typedef vector<int> vi;
-typedef pair<int, int> ii;
- 
-class TaskF {
- public:
-  void dfs(const vector<vector<int>>& edge, vector<int>& parent, vector<int>& depth, vector<int>& order, int at, int from) {
-    order.pb(at);
-    parent[at] = from;
-    if (from < 0) {
-      depth[at] = 0;
-    } else {
-      depth[at] = 1 + depth[from];
-    }
-    for (int x : edge[at]) if (x != from) {
-      dfs(edge, parent, depth, order, x, at);
-    }
-  }
- 
-  void solveOne(istream &in, ostream &out) {
-    int n;
-    in >> n;
-    vector<vector<int>> a(n);
-    vector<vector<int>> b(n);
-    for (int i = 0; i < n - 1; ++i) {
-      int u; int v; in >> u >> v;
-      --u; --v;
-      a[u].pb(v);
-      a[v].pb(u);
-    }
-    for (int i = 0; i < n - 1; ++i) {
-      int u; int v; in >> u >> v;
-      --u; --v;
-      b[u].pb(v);
-      b[v].pb(u);
-    }
-    vector<int> parent(n);
-    vector<int> depth(n);
-    vector<int> order;
-    dfs(a, parent, depth, order, 0, -1);
-    vector<vector<int>> jump(n);
-    for (int i : order) {
-      if (parent[i] < 0) continue;
-      jump[i].pb(parent[i]);
-      while (jump[i].size() <= jump[jump[i].back()].size()) {
-        jump[i].pb(jump[jump[i].back()][jump[i].size() - 1]);
-      }
-    }
-    vector<int> jumpOffset(n);
-    int totalV = n + 1;
-    for (int i = 0; i < n; ++i) {
-      jumpOffset[i] = totalV;
-      totalV += jump[i].size();
-    }
-    
-    Flow flow;
-    int s = 0;
-    int t = 1;
-    map<int, ii> sedges;
-    for (int i = 0; i < n; ++i) {
-      if (parent[i] < 0) continue;
-      flow.addEdge(jumpOffset[i], t, 1);
-      sedges[jumpOffset[i]] = ii(i, parent[i]);
-      for (int j = 1; j < jump[i].size(); ++j) {
-        flow.addEdge(jumpOffset[i] + j, jumpOffset[i] + j - 1, n);
-        flow.addEdge(jumpOffset[i] + j, jumpOffset[jump[i][j - 1]] + j - 1, n);
-      }
-    }
-    int edgePtr = 2;
-    vector<ii> edges;
-    for (int u = 0; u < n; ++u) {
-      for (int v : b[u]) {
-        if (u > v) continue;
-        flow.addEdge(s, edgePtr, 1);
-        edges.emplace_back(u, v);
-        int pu = u;
-        int pv = v;
-        for (int i = (int) jump[pu].size() - 1; i >= 0; --i) {
-          if (depth[pu] - (1 << i) >= depth[pv]) {
-            flow.addEdge(edgePtr, jumpOffset[pu] + i, 1);
-            pu = jump[pu][i];
-          }
-        }
-        for (int i = (int) jump[pv].size() - 1; i >= 0; --i) {
-          if (depth[pv] - (1 << i) >= depth[pu]) {
-            flow.addEdge(edgePtr, jumpOffset[pv] + i, 1);
-            pv = jump[pv][i];
-          }
-        }
-        assert(depth[pu] == depth[pv]);
-        for (int i = jump[pu].size() - 1; i >= 0; --i) {
-          if ((1 << i) <= depth[pu]) {
-            if (jump[pu][i] != jump[pv][i]) {
-              flow.addEdge(edgePtr, jumpOffset[pu] + i, 1);
-              flow.addEdge(edgePtr, jumpOffset[pv] + i, 1);
-              pu = jump[pu][i];
-              pv = jump[pv][i];
-            }
-          }
-        }
-        if (pu != pv) {
-          flow.addEdge(edgePtr, jumpOffset[pu], 1);
-          flow.addEdge(edgePtr, jumpOffset[pv], 1);
-          pu = parent[pu];
-          pv = parent[pv];
-        }
-        assert(pu == pv);
-        int lca = pu;
-        ++edgePtr;
-      }
-    }
-    assert(edgePtr == n + 1);
-    int size = flow.calc(s, t);
-    vector<int> ptr(totalV);
-    out << size << "\n";
-    for (int step = 0; step < size; ++step) {
-      int at = s;
-      int left = -1;
-      int right = -1;
-      while (at != t) {
-        while (flow.adj[at][ptr[at]].f <= 0) {
-          ++ptr[at];
-          assert(ptr[at] < flow.adj[at].size());
-        }
-        --flow.adj[at][ptr[at]].f;
-        int pat = at;
-        at = flow.adj[at][ptr[at]].to;
-        if (at == t) {
-          right = pat;
-        }
-        if (pat == s) {
-          left = at;
-        }
-      }
-      assert(sedges.find(right) != sedges.end());
-      out << sedges[right].first + 1 << " " << sedges[right].second + 1 << " " << edges[left - 2].first + 1 << " " << edges[left - 2].second + 1 << "\n";
-    }
-  }
- 
-  void solve(std::istream &in, std::ostream &out) {
-    int nt = 1;
-    for (int it = 0; it < nt; ++it) {
-      solveOne(in, out);
-    }
-  }
+namespace tree_path_bruteforce
+{
+template <class T>
+struct Node
+{
+    int r;
+    int node;
+    T data;
 };
- 
+
+template <class T, int MAX_N>
+class TreePathBF
+{
+public:
+    void init(vector<vector<int>> &tree)
+    {
+        _seqTail = 0;
+        _lca.init(tree, 0);
+        dfs(0, -1, tree);
+        compress(0, -1, tree);
+    }
+
+    void operator()(int u, int v,  const function<void(Node<T> &)> &consumer)
+    {
+        int lca = _lca(u, v);
+        consumer(_seq[_nodeToSeq[lca]]);
+        upToBottom(lca, u, consumer);
+        upToBottom(lca, v, consumer);
+    }
+
+
+private:
+
+   void upToBottom(int ancestor, int v, const function<void(Node<T> &)> &consumer)
+    {
+        int l = _nodeToSeq[v];
+        int r = _seq[l].r;
+        for (int i = _nodeToSeq[ancestor] + 1; i <= l; i++)
+        {
+            if (_seq[i].r >= l)
+            {
+                consumer(_seq[i]);
+            }
+            else
+            {
+                i = _seq[i].r;
+            }
+        }
+    }
+
+    void dfs(int root, int p, vector<vector<int>> &tree)
+    {
+        _size[root] = 1;
+        for (int node : tree[root])
+        {
+            if (node == p)
+            {
+                continue;
+            }
+            dfs(node, root, tree);
+            _size[root] += _size[node];
+        }
+        sort(tree[root].begin(), tree[root].end(), [this](auto &a, auto &b) { return _size[a] > _size[b]; });
+    }
+
+    void compress(int root, int p, vector<vector<int>> &tree)
+    {
+        int id = _seqTail++;
+        _seq[id].r = id;
+        _seq[id].node = root;
+        _nodeToSeq[root] = id;
+        for (int node : tree[root])
+        {
+            if (node == p)
+            {
+                continue;
+            }
+            compress(node, root, tree);
+        }
+        _seq[id].r = _seqTail - 1;
+    }
+
+    lca::Lca _lca;
+    Node<T> _seq[MAX_N];
+    int _nodeToSeq[MAX_N];
+    int _size[MAX_N];
+    int _seqTail;
+};
+}; // namespace tree_path_bruteforce
+
+#endif
+
+struct LinearFunction
+{
+    ll a;
+    ll b;
+};
+tree_path_bruteforce::TreePathBF<LinearFunction, 100000 + 5> treePath;
+
 
 void solve(int testId, istream &in, ostream &out)
 {
-    TaskF().solve(in, out);
+    int n, q;
+    in >> n >> q;
+    vector<LinearFunction> funcs(n);
+    for(int i = 0; i < n; i++){
+        in >> funcs[i].a;
+    }
+    for(int i = 0; i < n; i++){
+        in >> funcs[i].b;
+    }
+    vector<vector<int>> edges(n);
+    for(int i = 1; i < n; i++){
+        int u, v;
+        in >> u >> v;
+        u--;
+        v--;
+        edges[u].push_back(v);
+        edges[v].push_back(u);
+    }
+    treePath.init(edges);
+    for(int i = 0; i < n; i++){
+        treePath(i, i, [&](auto &node){
+            node.data = funcs[i];
+        });
+    }
+    for(int i = 0; i < q; i++){
+        int t, u, v;
+        in >> t >> u >> v;
+        u--;
+        v--;
+        if(t == 1){
+            ll a, b;
+            in >> a >> b;
+            treePath(u, v, [&](auto &node){
+                node.data.a += a;
+                node.data.b += b;
+            });
+        }else{
+            ll z;
+            ll ans = -2e18;
+            in >> z;
+            treePath(u, v, [&](auto &node){
+                ans = max(ans, node.data.a * z + node.data.b);
+            });
+            out << ans << endl;
+        }
+    }
 }
 
 RUN_ONCE

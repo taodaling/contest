@@ -51,7 +51,7 @@ public class DoubleGomoryHuTree {
         DoubleFlow.rewind(g);
         int s = set.get(0);
         int t = set.get(1);
-        double f = mf.apply(g, s, t);
+        double f = mf.apply(g, s, t, (double)2e18);
         addEdge(s, t, f);
         DoubleFlow.findSetST(g, s, visited);
         IntegerList l1 = new IntegerList(set.size());

@@ -1,6 +1,7 @@
 package template.graph;
 
 import template.primitve.generated.datastructure.IntegerDeque;
+import template.primitve.generated.datastructure.IntegerList;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,6 +13,25 @@ public class Graph {
         dist[s] = 0;
         deque.clear();
         deque.addLast(s);
+        while (!deque.isEmpty()) {
+            int head = deque.removeFirst();
+            for (T e : g[head]) {
+                if (dist[e.to] == inf) {
+                    dist[e.to] = dist[head] + 1;
+                    deque.addLast(e.to);
+                }
+            }
+        }
+    }
+
+    public static <T extends DirectedEdge> void multiSourceBfs(List<T>[] g, IntegerList sources, int[] dist, int inf, IntegerDeque deque) {
+        Arrays.fill(dist, inf);
+        deque.clear();
+        for (int i = 0; i < sources.size(); i++) {
+            int v = sources.get(i);
+            dist[v] = 0;
+            deque.addLast(v);
+        }
         while (!deque.isEmpty()) {
             int head = deque.removeFirst();
             for (T e : g[head]) {

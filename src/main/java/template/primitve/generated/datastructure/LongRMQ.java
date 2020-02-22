@@ -1,7 +1,7 @@
 package template.primitve.generated.datastructure;
 
 
-import template.math.CachedLog2;
+import template.binary.CachedLog2;
 
 /**
  * O(n) space and pre-compute, O(logn) for query min element in interval

@@ -32,7 +32,7 @@ public class TaskB2 {
         Arrays.sort(addIndex, (x, y) -> a[x] == a[y] ? x - y : -(a[x] - a[y]));
         Segment seg = new Segment(1, n, a);
         for (int i = 1; i <= n; i++) {
-            seg.update(addIndex[i - 1], addIndex[i - 1], 1, n);
+            seg.updateClear(addIndex[i - 1], addIndex[i - 1], 1, n);
             while(!deque.isEmpty() && deque.peekFirst().k == i){
                 Query q = deque.removeFirst();
                 q.ans = seg.query(q.pos, 1, n);
@@ -94,8 +94,8 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = (l + r) >> 1;
-        left.update(ll, rr, l, m);
-        right.update(ll, rr, m + 1, r);
+        left.updateClear(ll, rr, l, m);
+        right.updateClear(ll, rr, m + 1, r);
         pushUp();
     }
 

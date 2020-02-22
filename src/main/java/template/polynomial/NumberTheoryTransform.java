@@ -1,5 +1,6 @@
 package template.polynomial;
 
+import template.binary.Log2;
 import template.math.*;
 import template.primitve.generated.datastructure.IntegerList;
 import template.utils.SequenceUtils;

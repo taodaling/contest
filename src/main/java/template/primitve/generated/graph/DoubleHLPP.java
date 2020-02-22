@@ -11,7 +11,7 @@ import java.util.List;
  * Very fast, but the flow on each edge is wrong, the maximum flow is right.
  */
 public class DoubleHLPP implements DoubleMaximumFlow {
-    private static final double INF = (double)2e18;
+    private double inf;
     private int maxV;
     private int s;
     private int t;
@@ -94,7 +94,7 @@ public class DoubleHLPP implements DoubleMaximumFlow {
             lst[height[e.to]].add(e.to);
         }
         double df = Math.min(excess[v], e.rev.flow);
-        DoubleFlow.send(adj, e, df);
+        DoubleFlow.send(e, df);
         excess[v] -= df;
         excess[e.to] += df;
     }
@@ -127,8 +127,8 @@ public class DoubleHLPP implements DoubleMaximumFlow {
 
     private double calc(int heur_n) {
         Arrays.fill(excess, 0);
-        excess[s] = INF;
-        excess[t] = -INF;
+        excess[s] = inf;
+        excess[t] = -inf;
         globalRelabel();
         for (DoubleFlowEdge e : adj[s]) {
             push(s, e);
@@ -142,18 +142,19 @@ public class DoubleHLPP implements DoubleMaximumFlow {
                 }
             }
         }
-        return excess[t] + INF;
+        return excess[t] + inf;
     }
 
     public double calc() {
         return calc(maxV);
     }
 
-    public double apply(List<DoubleFlowEdge>[] net, int s, int t) {
+    public double apply(List<DoubleFlowEdge>[] net, int s, int t, double send) {
         this.adj = net;
         this.s = s;
         this.t = t;
         this.maxV = net.length;
+        this.inf = send;
         init();
         return calc();
     }

@@ -6,5 +6,5 @@ public interface LongMinimumCostFlow {
     /**
      * result[0] means the flow, result[1] means the total cost
      */
-    long[] apply(List<LongCostFlowEdge>[] net, int s, int t);
+    long[] apply(List<LongCostFlowEdge>[] net, int s, int t, long send);
 }

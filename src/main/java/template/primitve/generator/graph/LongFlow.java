@@ -63,7 +63,7 @@ public class LongFlow {
         }
     }
 
-    public static <T extends LongFlowEdge> void send(List<T>[] g, T edge, long flow) {
+    public static <T extends LongFlowEdge> void send(T edge, long flow) {
         edge.flow += flow;
         edge.rev.flow -= flow;
     }
@@ -80,7 +80,7 @@ public class LongFlow {
 
     public static LongCostFlowEdge addEdge(List<LongCostFlowEdge>[] g, int s, int t, long cap, long cost) {
         LongCostFlowEdge real = new LongCostFlowEdge(t,0, true, cost);
-        LongCostFlowEdge virtual = new LongCostFlowEdge(s, cap, false, cost);
+        LongCostFlowEdge virtual = new LongCostFlowEdge(s, cap, false, -cost);
         real.rev = virtual;
         virtual.rev = real;
         g[s].add(real);

@@ -49,24 +49,24 @@ public class DoubleSpfaMinimumCostFlow implements DoubleMinimumCostFlow {
     private static final double INF = (double) 2e18;
 
     @Override
-    public double[] apply(List<DoubleCostFlowEdge>[] net, int s, int t) {
+    public double[] apply(List<DoubleCostFlowEdge>[] net, int s, int t, double send) {
         double cost = 0;
         double flow = 0;
         this.net = net;
-        while (true) {
+        while (flow < send) {
             spfa(t, INF);
             if (dists[s] == INF) {
                 break;
             }
             int iter = s;
-            double sent = Double.MAX_VALUE;
+            double sent = send - flow;
             while (prev[iter] != null) {
                 sent = Math.min(sent, prev[iter].flow);
                 iter = prev[iter].rev.to;
             }
             iter = s;
             while (prev[iter] != null) {
-                DoubleFlow.send(net, prev[iter], -sent);
+                DoubleFlow.send(prev[iter], -sent);
                 iter = prev[iter].rev.to;
             }
             cost += sent * dists[s];

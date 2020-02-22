@@ -1,5 +1,9 @@
 package graphs.flows;
 
+import template.primitve.generated.graph.LongCostFlowEdge;
+import template.primitve.generated.graph.LongFlow;
+import template.primitve.generated.graph.LongMinimumCostFlow;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -8,33 +12,8 @@ import java.util.PriorityQueue;
 /**
  * Maximum flow of minimum cost with potentials in O(min(E^2*V*logV, E*logV*FLOW))
  */
-public class MinCostFlowPolynomial {
-
-    public static class Edge {
-        public int to, rev;
-        long f, cap, cost;
-
-        Edge(int v, long cap, long cost, int rev) {
-            this.to = v;
-            this.cap = cap;
-            this.cost = cost;
-            this.rev = rev;
-        }
-    }
-
-    public static List<Edge>[] createGraph(int n) {
-        List<Edge>[] graph = new List[n];
-        for (int i = 0; i < n; i++)
-            graph[i] = new ArrayList<>();
-        return graph;
-    }
-
-    public static void addEdge(List<Edge>[] graph, int s, int t, long cap, long cost) {
-        graph[s].add(new Edge(t, cap, cost, graph[t].size()));
-        graph[t].add(new Edge(s, 0, -cost, graph[s].size() - 1));
-    }
-
-    static void bellmanFord(List<Edge>[] graph, int s, long[] dist) {
+public class MinCostFlowPolynomial implements LongMinimumCostFlow {
+    static void bellmanFord(List<LongCostFlowEdge>[] graph, int s, long[] dist) {
         int n = graph.length;
         Arrays.fill(dist, Integer.MAX_VALUE);
         dist[s] = 0;
@@ -46,8 +25,8 @@ public class MinCostFlowPolynomial {
             int u = q[qh % n];
             inqueue[u] = false;
             for (int i = 0; i < graph[u].size(); i++) {
-                Edge e = graph[u].get(i);
-                if (e.cap <= e.f)
+                LongCostFlowEdge e = graph[u].get(i);
+                if (e.rev.flow == 0)
                     continue;
                 int v = e.to;
                 long ndist = dist[u] + e.cost;
@@ -77,7 +56,7 @@ public class MinCostFlowPolynomial {
         }
     }
 
-    public static long[] minCostFlow(List<Edge>[] graph, int s, int t, long maxf) {
+    public static long[] minCostFlow(List<LongCostFlowEdge>[] graph, int s, int t, long maxf) {
         int n = graph.length;
         long[] prio = new long[n];
         long[] curflow = new long[n];
@@ -106,8 +85,8 @@ public class MinCostFlowPolynomial {
                     continue;
                 finished[u] = true;
                 for (int i = 0; i < graph[u].size(); i++) {
-                    Edge e = graph[u].get(i);
-                    if (e.f >= e.cap)
+                    LongCostFlowEdge e = graph[u].get(i);
+                    if (e.rev.flow == 0)
                         continue;
                     int v = e.to;
                     long nprio = prio[u] + e.cost + pot[u] - pot[v];
@@ -116,7 +95,7 @@ public class MinCostFlowPolynomial {
                         q.add(new State(nprio, v));
                         prevnode[v] = u;
                         prevedge[v] = i;
-                        curflow[v] = Math.min(curflow[u], e.cap - e.f);
+                        curflow[v] = Math.min(curflow[u], e.rev.flow);
                     }
                 }
             }
@@ -128,25 +107,29 @@ public class MinCostFlowPolynomial {
             long df = Math.min(curflow[t], maxf - flow);
             flow += df;
             for (int v = t; v != s; v = prevnode[v]) {
-                Edge e = graph[prevnode[v]].get(prevedge[v]);
-                e.f += df;
-                graph[v].get(e.rev).f -= df;
+                LongCostFlowEdge e = graph[prevnode[v]].get(prevedge[v]);
+                LongFlow.send(e, df);
                 flowCost += df * e.cost;
             }
         }
         return new long[]{flow, flowCost};
     }
 
+    @Override
+    public long[] apply(List<LongCostFlowEdge>[] net, int s, int t, long send) {
+        return minCostFlow(net, s, t, send);
+    }
+
     // Usage example
     public static void main(String[] args) {
-        List<Edge>[] graph = createGraph(3);
-        addEdge(graph, 0, 1, 3, 1);
-        addEdge(graph, 0, 2, 2, 1);
-        addEdge(graph, 1, 2, 2, 1);
-        long[] res = minCostFlow(graph, 0, 2, Integer.MAX_VALUE);
-        long flow = res[0];
-        long flowCost = res[1];
-        System.out.println(4 == flow);
-        System.out.println(6 == flowCost);
+//        List<Edge>[] graph = createGraph(3);
+//        addEdge(graph, 0, 1, 3, 1);
+//        addEdge(graph, 0, 2, 2, 1);
+//        addEdge(graph, 1, 2, 2, 1);
+//        long[] res = minCostFlow(graph, 0, 2, Integer.MAX_VALUE);
+//        long flow = res[0];
+//        long flowCost = res[1];
+//        System.out.println(4 == flow);
+//        System.out.println(6 == flowCost);
     }
 }

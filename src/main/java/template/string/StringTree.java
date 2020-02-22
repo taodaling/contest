@@ -1,6 +1,6 @@
 package template.string;
 
-import template.math.CachedLog2;
+import template.binary.CachedLog2;
 
 
 /**

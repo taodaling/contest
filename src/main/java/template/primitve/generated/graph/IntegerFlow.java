@@ -63,7 +63,7 @@ public class IntegerFlow {
         }
     }
 
-    public static <T extends IntegerFlowEdge> void send(List<T>[] g, T edge, int flow) {
+    public static <T extends IntegerFlowEdge> void send(T edge, int flow) {
         edge.flow += flow;
         edge.rev.flow -= flow;
     }
@@ -80,7 +80,7 @@ public class IntegerFlow {
 
     public static IntegerCostFlowEdge addEdge(List<IntegerCostFlowEdge>[] g, int s, int t, int cap, int cost) {
         IntegerCostFlowEdge real = new IntegerCostFlowEdge(t,0, true, cost);
-        IntegerCostFlowEdge virtual = new IntegerCostFlowEdge(s, cap, false, cost);
+        IntegerCostFlowEdge virtual = new IntegerCostFlowEdge(s, cap, false, -cost);
         real.rev = virtual;
         virtual.rev = real;
         g[s].add(real);

@@ -33,7 +33,7 @@ public class DoubleMaximumCloseSubGraphAdapter implements DoubleMaximumCloseSubG
                 DoubleFlow.addEdge(net, i, e.to, INF);
             }
         }
-        double minCut = mf.apply(net, s, t);
+        double minCut = mf.apply(net, s, t, (double)2e18);
         boolean[] bedoubleToS = DoubleFlow.findSetST(net, s);
         System.arraycopy(bedoubleToS, 0, picked, 0, n);
         return sumOfPositive - minCut;

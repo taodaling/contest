@@ -639,6 +639,10 @@ public class SequenceUtils {
         return true;
     }
 
+    public static boolean equal(long[] a, long[] b) {
+        return equal(a, 0, a.length - 1, b, 0, b.length - 1);
+    }
+
     public static boolean equal(double[] a, int al, int ar, double[] b, int bl, int br) {
         if ((ar - al) != (br - bl)) {
             return false;

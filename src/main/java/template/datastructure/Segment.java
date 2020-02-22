@@ -55,4 +55,44 @@ public class Segment implements Cloneable {
         left.query(ll, rr, l, m);
         right.query(ll, rr, m + 1, r);
     }
+
+    private Segment deepClone() {
+        Segment seg = clone();
+        if (seg.left != null) {
+            seg.left = seg.left.deepClone();
+        }
+        if (seg.right != null) {
+            seg.right = seg.right.deepClone();
+        }
+        return seg;
+    }
+
+    @Override
+    protected Segment clone() {
+        try {
+            return (Segment) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void toString(StringBuilder builder) {
+        if (left == null && right == null) {
+            builder.append("val").append(",");
+            return;
+        }
+        pushDown();
+        left.toString(builder);
+        right.toString(builder);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        deepClone().toString(builder);
+        if (builder.length() > 0) {
+            builder.setLength(builder.length() - 1);
+        }
+        return builder.toString();
+    }
 }

@@ -51,7 +51,7 @@ public class IntegerGomoryHuTree {
         IntegerFlow.rewind(g);
         int s = set.get(0);
         int t = set.get(1);
-        int f = mf.apply(g, s, t);
+        int f = mf.apply(g, s, t, (int)2e18);
         addEdge(s, t, f);
         IntegerFlow.findSetST(g, s, visited);
         IntegerList l1 = new IntegerList(set.size());

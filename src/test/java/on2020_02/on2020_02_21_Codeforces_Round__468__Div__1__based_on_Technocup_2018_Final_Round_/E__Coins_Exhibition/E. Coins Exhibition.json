@@ -1,0 +1,50 @@
+{
+  "name" : "E. Coins Exhibition",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5 2 2\n1 3\n3 5\n2 2\n4 5\n",
+    "output" : "8\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "5 3 2\n1 3\n2 2\n3 5\n2 2\n4 5\n",
+    "output" : "0\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "60 5 7\n1 3\n50 60\n1 60\n30 45\n20 40\n4 5\n6 37\n5 18\n50 55\n22 27\n25 31\n44 45\n",
+    "output" : "732658600\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "10 0 0",
+    "output" : "1024",
+    "index" : 3,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_02.on2020_02_21_Codeforces_Round__468__Div__1__based_on_Technocup_2018_Final_Round_.E__Coins_Exhibition.ECoinsExhibition",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.02.21",
+  "contestName" : "Codeforces Round #468 (Div. 1, based on Technocup 2018 Final Round)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

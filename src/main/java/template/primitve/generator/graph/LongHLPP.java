@@ -11,7 +11,7 @@ import java.util.List;
  * Very fast, but the flow on each edge is wrong, the maximum flow is right.
  */
 public class LongHLPP implements LongMaximumFlow {
-    private static final long INF = (long)2e18;
+    private long inf;
     private int maxV;
     private int s;
     private int t;
@@ -94,7 +94,7 @@ public class LongHLPP implements LongMaximumFlow {
             lst[height[e.to]].add(e.to);
         }
         long df = Math.min(excess[v], e.rev.flow);
-        LongFlow.send(adj, e, df);
+        LongFlow.send(e, df);
         excess[v] -= df;
         excess[e.to] += df;
     }
@@ -127,8 +127,8 @@ public class LongHLPP implements LongMaximumFlow {
 
     private long calc(int heur_n) {
         Arrays.fill(excess, 0);
-        excess[s] = INF;
-        excess[t] = -INF;
+        excess[s] = inf;
+        excess[t] = -inf;
         globalRelabel();
         for (LongFlowEdge e : adj[s]) {
             push(s, e);
@@ -142,18 +142,19 @@ public class LongHLPP implements LongMaximumFlow {
                 }
             }
         }
-        return excess[t] + INF;
+        return excess[t] + inf;
     }
 
     public long calc() {
         return calc(maxV);
     }
 
-    public long apply(List<LongFlowEdge>[] net, int s, int t) {
+    public long apply(List<LongFlowEdge>[] net, int s, int t, long send) {
         this.adj = net;
         this.s = s;
         this.t = t;
         this.maxV = net.length;
+        this.inf = send;
         init();
         return calc();
     }

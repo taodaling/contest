@@ -49,24 +49,24 @@ public class LongSpfaMinimumCostFlow implements LongMinimumCostFlow {
     private static final long INF = (long) 2e18;
 
     @Override
-    public long[] apply(List<LongCostFlowEdge>[] net, int s, int t) {
+    public long[] apply(List<LongCostFlowEdge>[] net, int s, int t, long send) {
         long cost = 0;
         long flow = 0;
         this.net = net;
-        while (true) {
+        while (flow < send) {
             spfa(t, INF);
             if (dists[s] == INF) {
                 break;
             }
             int iter = s;
-            long sent = Long.MAX_VALUE;
+            long sent = send - flow;
             while (prev[iter] != null) {
                 sent = Math.min(sent, prev[iter].flow);
                 iter = prev[iter].rev.to;
             }
             iter = s;
             while (prev[iter] != null) {
-                LongFlow.send(net, prev[iter], -sent);
+                LongFlow.send(prev[iter], -sent);
                 iter = prev[iter].rev.to;
             }
             cost += sent * dists[s];

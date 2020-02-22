@@ -35,7 +35,7 @@ public class DoubleISAP implements DoubleMaximumFlow {
             }
             double sent = send(e.to, Math.min(flow, remain));
             flow -= sent;
-            DoubleFlow.send(net, e, sent);
+            DoubleFlow.send(e, sent);
             if (flow == 0 || exit) {
                 break;
             }
@@ -52,7 +52,7 @@ public class DoubleISAP implements DoubleMaximumFlow {
     }
 
     @Override
-    public double apply(List<DoubleFlowEdge>[] g, int s, int t) {
+    public double apply(List<DoubleFlowEdge>[] g, int s, int t, double send) {
         this.net = g;
         this.s = s;
         this.t = t;
@@ -64,8 +64,8 @@ public class DoubleISAP implements DoubleMaximumFlow {
             cnts[d]++;
         }
         double flow = 0;
-        while (!exit && dists[s] < n) {
-            flow += send(s, Double.MAX_VALUE);
+        while (flow < send && !exit && dists[s] < n) {
+            flow += send(s, send - flow);
         }
         return flow;
     }

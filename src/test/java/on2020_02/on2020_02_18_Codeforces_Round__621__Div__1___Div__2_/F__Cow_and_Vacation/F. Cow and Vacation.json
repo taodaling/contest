@@ -1,0 +1,40 @@
+{
+  "name" : "F. Cow and Vacation",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "6 2 1\n1 2\n2 3\n2 4\n4 5\n5 6\n2\n3\n1 3\n3 5\n3 6\n",
+    "output" : "YES\nYES\nNO\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "8 3 3\n1 2\n2 3\n3 4\n4 5\n4 6\n6 7\n7 8\n2 5 8\n2\n7 1\n8 1\n",
+    "output" : "YES\nNO\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_02.on2020_02_18_Codeforces_Round__621__Div__1___Div__2_.F__Cow_and_Vacation.FCowAndVacation",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.02.18",
+  "contestName" : "Codeforces Round #621 (Div. 1 + Div. 2)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

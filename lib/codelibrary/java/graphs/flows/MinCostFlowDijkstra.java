@@ -162,8 +162,8 @@ public class MinCostFlowDijkstra {
         int flow = 0;
         int flowCost = 0;
         while (flow < maxf) {
-          //  dijkstra(s, t); // E*logV
-            dijkstra2(s, t); // V^2
+          dijkstra(s, t); // E*logV
+          //  dijkstra2(s, t); // V^2
             if (dist[t] == Integer.MAX_VALUE)
                 break;
             for (int i = 0; i < n; i++)

@@ -2,10 +2,10 @@ package template.primitve.generated.graph;
 
 import template.graph.DirectedEdge;
 
-public class LongFlowEdge extends DirectedEdge {
+public class LongFlowEdge<T extends LongFlowEdge> extends DirectedEdge {
     public long flow;
     public boolean real;
-    public LongFlowEdge rev;
+    public T rev;
 
     public LongFlowEdge(int to, long flow, boolean real) {
         super(to);

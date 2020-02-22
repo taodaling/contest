@@ -1,7 +1,7 @@
 package template.problem;
 
-import template.math.Bits;
-import template.math.CachedLog2;
+import template.binary.Bits;
+import template.binary.CachedLog2;
 import template.rand.Randomized;
 import template.utils.Buffer;
 

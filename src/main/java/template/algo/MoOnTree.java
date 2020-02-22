@@ -1,13 +1,15 @@
 package template.algo;
 
 import template.graph.LcaOnTree;
+import template.graph.UndirectedEdge;
 import template.primitve.generated.datastructure.IntegerIterator;
 import template.primitve.generated.datastructure.IntegerMultiWayStack;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class MoOnTree {
-    private IntegerMultiWayStack edges;
+    private List<UndirectedEdge>[] edges;
     private boolean[] odd;
     private int[] eulerTour;
     private int eulerTourTail = 0;
@@ -15,12 +17,12 @@ public class MoOnTree {
     private int[] end;
     private LcaOnTree lcaOnTree;
 
-    public MoOnTree(IntegerMultiWayStack edges) {
+    public MoOnTree(List<UndirectedEdge>[] edges) {
         this.edges = edges;
-        odd = new boolean[edges.stackNumber()];
-        eulerTour = new int[edges.stackNumber() * 2];
-        begin = new int[edges.stackNumber()];
-        end = new int[edges.stackNumber()];
+        odd = new boolean[edges.length];
+        eulerTour = new int[edges.length * 2];
+        begin = new int[edges.length];
+        end = new int[edges.length];
         dfs(0, -1);
         lcaOnTree = new LcaOnTree(edges, 0);
     }
@@ -29,8 +31,8 @@ public class MoOnTree {
         begin[root] = eulerTourTail;
         eulerTour[eulerTourTail++] = root;
 
-        for (IntegerIterator iterator = edges.iterator(root); iterator.hasNext(); ) {
-            int node = iterator.next();
+        for (UndirectedEdge e : edges[root]) {
+            int node = e.to;
             if (node == p) {
                 continue;
             }

@@ -33,7 +33,7 @@ public class IntegerMaximumCloseSubGraphAdapter implements IntegerMaximumCloseSu
                 IntegerFlow.addEdge(net, i, e.to, INF);
             }
         }
-        int minCut = mf.apply(net, s, t);
+        int minCut = mf.apply(net, s, t, (int)2e18);
         boolean[] beintToS = IntegerFlow.findSetST(net, s);
         System.arraycopy(beintToS, 0, picked, 0, n);
         return sumOfPositive - minCut;

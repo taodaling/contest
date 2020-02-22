@@ -15,7 +15,7 @@ private:
     function<T(const T &, const T &) _func;
 
 public:
-    void init(vector<T> &data, function<T(const T, const T) func){
+    void init(vector<T> &data, function<T(const T, const T)> func){
         
     }
 };

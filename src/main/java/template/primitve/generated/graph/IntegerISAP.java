@@ -35,7 +35,7 @@ public class IntegerISAP implements IntegerMaximumFlow {
             }
             int sent = send(e.to, Math.min(flow, remain));
             flow -= sent;
-            IntegerFlow.send(net, e, sent);
+            IntegerFlow.send(e, sent);
             if (flow == 0 || exit) {
                 break;
             }
@@ -52,7 +52,7 @@ public class IntegerISAP implements IntegerMaximumFlow {
     }
 
     @Override
-    public int apply(List<IntegerFlowEdge>[] g, int s, int t) {
+    public int apply(List<IntegerFlowEdge>[] g, int s, int t, int send) {
         this.net = g;
         this.s = s;
         this.t = t;
@@ -64,8 +64,8 @@ public class IntegerISAP implements IntegerMaximumFlow {
             cnts[d]++;
         }
         int flow = 0;
-        while (!exit && dists[s] < n) {
-            flow += send(s, Integer.MAX_VALUE);
+        while (flow < send && !exit && dists[s] < n) {
+            flow += send(s, send - flow);
         }
         return flow;
     }

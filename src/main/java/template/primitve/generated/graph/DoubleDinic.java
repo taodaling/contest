@@ -34,7 +34,7 @@ public class DoubleDinic implements DoubleMaximumFlow {
             }
             double sent = send(e.to, Math.min(flow, remain));
             flow -= sent;
-            DoubleFlow.send(g, e, sent);
+            DoubleFlow.send(e, sent);
             if (flow == 0) {
                 iterators[root].previous();
                 break;
@@ -44,12 +44,12 @@ public class DoubleDinic implements DoubleMaximumFlow {
     }
 
     @Override
-    public double apply(List<DoubleFlowEdge>[] g, int s, int t) {
+    public double apply(List<DoubleFlowEdge>[] g, int s, int t, double send) {
         this.s = s;
         this.t = t;
         this.g = g;
         double flow = 0;
-        while (true) {
+        while (flow < send) {
             DoubleFlow.bfsForFlow(g, t, dists, Integer.MAX_VALUE, deque);
             if (dists[s] == Integer.MAX_VALUE) {
                 break;
@@ -57,7 +57,7 @@ public class DoubleDinic implements DoubleMaximumFlow {
             for (int i = 0; i < g.length; i++) {
                 iterators[i] = g[i].listIterator();
             }
-            flow += send(s, Double.MAX_VALUE);
+            flow += send(s, send - flow);
         }
         return flow;
     }
