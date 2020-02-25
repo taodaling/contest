@@ -1,13 +1,17 @@
 package template.problem;
 
 import template.math.DigitUtils;
+import template.math.LongPollardRho;
+import template.primitve.generated.datastructure.IntegerList;
+import template.primitve.generated.datastructure.LongList;
 
 import java.util.Arrays;
 
 public class MinimumNumberWithMaximumFactors {
     public static void main(String[] args) {
-        System.out.println(MinimumNumberWithMaximumFactors.find((long) 1e18));
-        System.out.println(Arrays.toString(MinimumNumberWithMaximumFactors.maximumPrimeFactor((long) 1e18)));
+        System.out.println(MinimumNumberWithMaximumFactors.find((long) 1e15));
+        System.out.println(MinimumNumberWithMaximumFactors.divisionRelation(978217616376000L));
+        System.out.println(Arrays.toString(MinimumNumberWithMaximumFactors.maximumPrimeFactor((long) 1e15)));
         // System.out.println(new LongPollardRho().findAllFactors(978217616376000L));
     }
 
@@ -38,6 +42,42 @@ public class MinimumNumberWithMaximumFactors {
             ans[1]++;
         }
         return ans;
+    }
+
+    /**
+     * For all factors of n, find how many pair of factors (x,y) satisfy x | y
+     */
+    public static long divisionRelation(long n) {
+        long[] primes = new LongPollardRho().findAllFactors(n).keySet().stream().mapToLong(Long::longValue).toArray();
+        LongList list = new LongList();
+        collectAllFactors(primes, n, 1, 0, list);
+        long[] factors = list.toArray();
+
+        long cnt = 0;
+        for (int i = 0; i < factors.length; i++) {
+            for (int j = 0; j <= i; j++) {
+                if (factors[i] % factors[j] == 0) {
+                    cnt++;
+                }
+            }
+        }
+
+        return cnt;
+    }
+
+    public static void collectAllFactors(long[] primes, long n, long val, int i, LongList list) {
+        if (i == primes.length) {
+            list.add(val);
+            return;
+        }
+        long x = 1;
+        while (true) {
+            collectAllFactors(primes, n, val * x, i + 1, list);
+            if (n / x % primes[i] != 0) {
+                break;
+            }
+            x *= primes[i];
+        }
     }
 
     private static void find(long r, Answer answer, long factorNumber, long value, int step, int last) {

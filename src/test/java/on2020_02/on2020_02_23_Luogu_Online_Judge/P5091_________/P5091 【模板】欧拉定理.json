@@ -1,0 +1,59 @@
+{
+  "name" : "P5091 【模板】欧拉定理",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2 7 4\n",
+    "output" : "2\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "998244353 12345 98765472103312450233333333333\n",
+    "output" : "5333\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "2 2 0",
+    "output" : "1",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "2 1 1",
+    "output" : "0",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "2 4 4",
+    "index" : 4,
+    "active" : true
+  }, {
+    "input" : "4 6 2",
+    "output" : "4",
+    "index" : 5,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx125M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_02.on2020_02_23_Luogu_Online_Judge.P5091_________.P5091",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "on2020_02.on2020_02_23_Luogu_Online_Judge.P5091_________.P5091TestCase" ],
+  "date" : "2020.02.23",
+  "contestName" : "Luogu Online Judge",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : false
+}

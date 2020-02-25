@@ -1,15 +1,20 @@
 package template.string;
 
+import java.util.Arrays;
 import java.util.function.IntUnaryOperator;
 
 public class ZAlgorithm implements IntUnaryOperator {
-    private int[] z;
+    public int[] z;
+
+    public int length() {
+        return z.length;
+    }
 
     /**
      * Provide sequence : s(0), s(1), ... , s(n - 1), calculate their z function
      */
     public ZAlgorithm(int n, IntUnaryOperator s) {
-        if(n == 0){
+        if (n == 0) {
             return;
         }
 
@@ -41,5 +46,10 @@ public class ZAlgorithm implements IntUnaryOperator {
     @Override
     public int applyAsInt(int operand) {
         return z[operand];
+    }
+
+    @Override
+    public String toString() {
+        return Arrays.toString(z);
     }
 }

@@ -126,6 +126,10 @@ public class FastInput {
         return c;
     }
 
+    public boolean meetBlank() {
+        return next <= 32;
+    }
+
     public String readString(StringBuilder builder) {
         skipBlank();
 

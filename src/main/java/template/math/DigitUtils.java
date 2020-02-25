@@ -121,6 +121,7 @@ public class DigitUtils {
     }
 
     private static long mask32 = (1L << 32) - 1;
+
     public static long asLong(int high, int low) {
         return ((((long) high)) << 32) | (((long) low) & mask32);
     }
@@ -179,5 +180,29 @@ public class DigitUtils {
     public static long mulMod(long a, long b, long mod) {
         long k = DigitUtils.round((double) a / mod * b);
         return DigitUtils.mod(a * b - k * mod, mod);
+    }
+
+    public static int limitPow(int x, long n, int limit) {
+        if (n == 0) {
+            return Math.min(1, limit);
+        }
+        int ans = limitPow(x, n / 2, limit);
+        ans = (int) Math.min((long) ans * ans, limit);
+        if (n % 2 == 1) {
+            ans = (int) Math.min((long) ans * x, limit);
+        }
+        return ans;
+    }
+
+    public static int modPow(int x, long n, int m) {
+        if (n == 0) {
+            return DigitUtils.mod(1, m);
+        }
+        int ans = modPow(x, n / 2, m);
+        ans = DigitUtils.mod((long) ans * ans, m);
+        if (n % 2 == 1) {
+            ans = DigitUtils.mod((long) ans * x, m);
+        }
+        return ans;
     }
 }

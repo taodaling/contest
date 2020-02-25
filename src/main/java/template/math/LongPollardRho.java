@@ -5,13 +5,12 @@ import java.util.Map;
 import java.util.Random;
 
 public class LongPollardRho {
-    public static void main(String[] args){
+    public static void main(String[] args) {
         System.out.println(new LongPollardRho().findAllFactors(100000000000123503L));
     }
 
     LongMillerRabin mr = new LongMillerRabin();
     Random random = new Random();
-
 
     /**
      * Find a factor of n, if n is returned, it means n is 1 or a prime
@@ -27,6 +26,11 @@ public class LongPollardRho {
                 return f;
             }
         }
+    }
+
+    public long findPrimeFactor(long n) {
+        long ans = findFactor(n);
+        return ans == n ? ans : findPrimeFactor(ans);
     }
 
     /**

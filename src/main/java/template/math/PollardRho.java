@@ -9,7 +9,7 @@ import java.util.Random;
  */
 public class PollardRho {
     MillerRabin mr = new MillerRabin();
-    Random random = new Random();
+    Random random = new Random(1);
 
     public int findFactor(int n) {
         if (mr.mr(n, 5)) {
@@ -21,6 +21,11 @@ public class PollardRho {
                 return f;
             }
         }
+    }
+
+    public int findPrimeFactor(int n) {
+        int ans = findFactor(n);
+        return ans == n ? ans : findPrimeFactor(ans);
     }
 
     /**

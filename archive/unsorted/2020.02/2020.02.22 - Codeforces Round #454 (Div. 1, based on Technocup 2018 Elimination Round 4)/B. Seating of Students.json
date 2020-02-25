@@ -1,0 +1,60 @@
+{
+  "name" : "B. Seating of Students",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2 4\n",
+    "output" : "YES\n5 4 7 2 \n3 6 1 8 \n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "2 1\n",
+    "output" : "NO\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "3 3",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "3 2",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "1 1",
+    "index" : 4,
+    "active" : false
+  }, {
+    "input" : "4 1",
+    "index" : 5,
+    "active" : false
+  }, {
+    "input" : "1 4",
+    "index" : 6,
+    "active" : false
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.BSeatingOfStudents",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.02.22",
+  "contestName" : "Codeforces Round #454 (Div. 1, based on Technocup 2018 Elimination Round 4)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

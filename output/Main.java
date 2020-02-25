@@ -3,9 +3,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.io.UncheckedIOException;
-import java.util.List;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
@@ -17,7 +15,9 @@ import java.io.InputStream;
  */
 public class Main {
     public static void main(String[] args) throws Exception {
-        new TaskAdapter().run();
+        Thread thread = new Thread(null, new TaskAdapter(), "", 1 << 27);
+        thread.start();
+        thread.join();
     }
 
     static class TaskAdapter implements Runnable {
@@ -27,36 +27,154 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            P3381 solver = new P3381();
+            BDoubleElimination solver = new BDoubleElimination();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class P3381 {
+    static class BDoubleElimination {
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            int m = in.readInt();
-            int s = in.readInt();
-            int t = in.readInt();
-            List<LongCostFlowEdge>[] g = LongFlow.createCostFlow(n + 1);
-            for (int i = 0; i < m; i++) {
-                int u = in.readInt();
-                int v = in.readInt();
-                int c = in.readInt();
-                int w = in.readInt();
-                LongFlow.addEdge(g, u, v, c, w);
+            int k = in.readInt();
+            if (k == 0) {
+                out.println(0);
+                return;
+            }
+//        if (k == 1) {
+//            out.println(n * 2 + 2);
+//            return;
+//        }
+
+            Node[] replacement = new Node[1 << (n - 1)];
+            for (int i = 0; i < replacement.length; i++) {
+                replacement[i] = new Node();
+            }
+            Node[] nodes = new Node[1 << n];
+            for (int i = 0; i < nodes.length; i++) {
+                nodes[i] = new Node();
+                nodes[i].replacement = replacement[i / 2];
             }
 
-            LongMinimumCostFlow mcf = new LongSpfaMinimumCostFlow(n + 1);
-            long[] ans = mcf.apply(g, s, t, (long) 2e18);
-            out.append(ans[0]).append(' ').append(ans[1]);
+            merge0(nodes);
+            merge1(replacement);
+            int sum = 1 + k;
+            for (int i = 0; i < k; i++) {
+                int id = in.readInt() - 1;
+                nodes[id].repr = nodes[id];
+            }
+
+            for (int i = 0; i < nodes.length; i += 2) {
+                if (nodes[i].repr != null && nodes[i + 1].repr != null) {
+                    sum += update(nodes[i].replacement);
+                    nodes[i].repr = null;
+                }
+            }
+
+            Node[] parents = getP(nodes);
+            sum += dpOnTree(parents, 0);
+            out.println(sum);
         }
 
-    }
+        public Node[] getP(Node[] nodes) {
+            Node[] parents = new Node[nodes.length / 2];
+            for (int i = 0; i < nodes.length; i += 2) {
+                parents[i / 2] = nodes[i].parent;
+            }
+            return parents;
+        }
 
-    static interface LongMinimumCostFlow {
-        long[] apply(List<LongCostFlowEdge>[] net, int s, int t, long send);
+        public int dpOnTree(Node[] nodes, int level) {
+            int ans = 0;
+            for (Node node : nodes) {
+                if (node.children[0].repr != null &&
+                        node.children[1].repr != null) {
+                    if (test(node.children[0].repr.replacement) <
+                            test(node.children[1].repr.replacement)) {
+                        SequenceUtils.swap(node.children, 0, 1);
+                    }
+                    if (test(node.children[0].repr.replacement) > level) {
+                        ans += update(node.children[0].repr.replacement) - level;
+                        node.children[0].repr = null;
+                    }
+                }
+                for (int i = 0; i < 2; i++) {
+                    if (node.children[i].repr != null) {
+                        node.repr = node.children[i].repr;
+                    }
+                }
+            }
+
+            if (nodes.length == 1) {
+                if (test(nodes[0].repr.replacement) > level + 1) {
+                    ans += update(nodes[0].repr.replacement) - level;
+                }
+            } else {
+
+                ans += dpOnTree(getP(nodes), level + 1);
+            }
+            return ans;
+        }
+
+        public void merge0(Node[] nodes) {
+            if (nodes.length == 1) {
+                return;
+            }
+            Node[] parents = new Node[nodes.length / 2];
+            for (int i = 0; i < parents.length; i++) {
+                parents[i] = new Node();
+            }
+            for (int i = 0; i < nodes.length; i++) {
+                nodes[i].parent = parents[i / 2];
+                parents[i / 2].children[i % 2] = nodes[i];
+            }
+            merge0(parents);
+        }
+
+        public void merge1(Node[] nodes) {
+            Node[] tmp = new Node[nodes.length];
+            for (int i = 0; i < tmp.length; i++) {
+                tmp[i] = new Node();
+                nodes[i].parent = tmp[i];
+            }
+            if (nodes.length == 1) {
+                return;
+            }
+            Node[] parents = new Node[nodes.length / 2];
+            for (int i = 0; i < parents.length; i++) {
+                parents[i] = new Node();
+            }
+            for (int i = 0; i < nodes.length; i++) {
+                tmp[i].parent = parents[i / 2];
+                parents[i / 2].children[i % 2] = tmp[i];
+            }
+            merge1(parents);
+
+        }
+
+        public int test(Node node) {
+            return test0(node);// - 1;
+        }
+
+        public int test0(Node node) {
+            if (node == null || node.paint) {
+                return 0;
+            }
+            //node.paint = true;
+            return 1 + test0(node.parent);
+        }
+
+        public int update(Node node) {
+            return update0(node);// - 1;
+        }
+
+        public int update0(Node node) {
+            if (node == null || node.paint) {
+                return 0;
+            }
+            node.paint = true;
+            return 1 + update0(node.parent);
+        }
 
     }
 
@@ -87,8 +205,14 @@ public class Main {
             return this;
         }
 
-        public FastOutput append(long c) {
+        public FastOutput println(int c) {
             cache.append(c);
+            println();
+            return this;
+        }
+
+        public FastOutput println() {
+            cache.append(System.lineSeparator());
             return this;
         }
 
@@ -115,6 +239,24 @@ public class Main {
         public String toString() {
             return cache.toString();
         }
+
+    }
+
+    static class SequenceUtils {
+        public static <T> void swap(T[] data, int i, int j) {
+            T tmp = data[i];
+            data[i] = data[j];
+            data[j] = tmp;
+        }
+
+    }
+
+    static class Node {
+        Node parent;
+        Node[] children = new Node[2];
+        boolean paint;
+        Node replacement;
+        Node repr;
 
     }
 
@@ -173,259 +315,6 @@ public class Main {
             }
 
             return val;
-        }
-
-    }
-
-    static class IntegerDequeImpl implements IntegerDeque {
-        private int[] data;
-        private int bpos;
-        private int epos;
-        private static final int[] EMPTY = new int[0];
-        private int n;
-
-        public IntegerDequeImpl(int cap) {
-            if (cap == 0) {
-                data = EMPTY;
-            } else {
-                data = new int[cap];
-            }
-            bpos = 0;
-            epos = 0;
-            n = cap;
-        }
-
-        private void expandSpace(int len) {
-            while (n < len) {
-                n = Math.max(n + 10, n * 2);
-            }
-            int[] newData = new int[n];
-            if (bpos <= epos) {
-                if (bpos < epos) {
-                    System.arraycopy(data, bpos, newData, 0, epos - bpos);
-                }
-            } else {
-                System.arraycopy(data, bpos, newData, 0, data.length - bpos);
-                System.arraycopy(data, 0, newData, data.length - bpos, epos);
-            }
-            epos = size();
-            bpos = 0;
-            data = newData;
-        }
-
-        public IntegerIterator iterator() {
-            return new IntegerIterator() {
-                int index = bpos;
-
-
-                public boolean hasNext() {
-                    return index != epos;
-                }
-
-
-                public int next() {
-                    int ans = data[index];
-                    index = IntegerDequeImpl.this.next(index);
-                    return ans;
-                }
-            };
-        }
-
-        public int removeFirst() {
-            int ans = data[bpos];
-            bpos = next(bpos);
-            return ans;
-        }
-
-        public void addLast(int x) {
-            ensureMore();
-            data[epos] = x;
-            epos = next(epos);
-        }
-
-        public void clear() {
-            bpos = epos = 0;
-        }
-
-        private int next(int x) {
-            return x + 1 >= n ? 0 : x + 1;
-        }
-
-        private void ensureMore() {
-            if (next(epos) == bpos) {
-                expandSpace(n + 1);
-            }
-        }
-
-        public int size() {
-            int ans = epos - bpos;
-            if (ans < 0) {
-                ans += data.length;
-            }
-            return ans;
-        }
-
-        public boolean isEmpty() {
-            return bpos == epos;
-        }
-
-        public String toString() {
-            StringBuilder builder = new StringBuilder();
-            for (IntegerIterator iterator = iterator(); iterator.hasNext(); ) {
-                builder.append(iterator.next()).append(' ');
-            }
-            return builder.toString();
-        }
-
-    }
-
-    static class LongSpfaMinimumCostFlow implements LongMinimumCostFlow {
-        IntegerDeque deque;
-        long[] dists;
-        boolean[] inque;
-        LongCostFlowEdge[] prev;
-        List<LongCostFlowEdge>[] net;
-        private static final long INF = (long) 2e18;
-
-        public LongSpfaMinimumCostFlow(int vertexNum) {
-            deque = new IntegerDequeImpl(vertexNum);
-            dists = new long[vertexNum];
-            inque = new boolean[vertexNum];
-            prev = new LongCostFlowEdge[vertexNum];
-        }
-
-        private void spfa(int s, long inf) {
-            deque.clear();
-            for (int i = 0; i < net.length; i++) {
-                dists[i] = inf;
-                inque[i] = false;
-            }
-            dists[s] = 0;
-            prev[s] = null;
-            deque.addLast(s);
-            while (!deque.isEmpty()) {
-                int head = deque.removeFirst();
-                inque[head] = false;
-                for (LongCostFlowEdge e : net[head]) {
-                    if (e.flow > 0 && dists[e.to] > dists[head] - e.cost) {
-                        dists[e.to] = dists[head] - e.cost;
-                        prev[e.to] = e;
-                        if (!inque[e.to]) {
-                            inque[e.to] = true;
-                            deque.addLast(e.to);
-                        }
-                    }
-                }
-            }
-        }
-
-        public long[] apply(List<LongCostFlowEdge>[] net, int s, int t, long send) {
-            long cost = 0;
-            long flow = 0;
-            this.net = net;
-            while (flow < send) {
-                spfa(t, INF);
-                if (dists[s] == INF) {
-                    break;
-                }
-                int iter = s;
-                long sent = send - flow;
-                while (prev[iter] != null) {
-                    sent = Math.min(sent, prev[iter].flow);
-                    iter = prev[iter].rev.to;
-                }
-                iter = s;
-                while (prev[iter] != null) {
-                    LongFlow.send(prev[iter], -sent);
-                    iter = prev[iter].rev.to;
-                }
-                cost += sent * dists[s];
-                flow += sent;
-            }
-            return new long[]{flow, cost};
-        }
-
-    }
-
-    static interface IntegerIterator {
-        boolean hasNext();
-
-        int next();
-
-    }
-
-    static class LongCostFlowEdge extends LongFlowEdge<LongCostFlowEdge> {
-        public long cost;
-
-        public LongCostFlowEdge(int to, long flow, boolean real, long cost) {
-            super(to, flow, real);
-            this.cost = cost;
-        }
-
-    }
-
-    static class LongFlowEdge<T extends LongFlowEdge> extends DirectedEdge {
-        public long flow;
-        public boolean real;
-        public T rev;
-
-        public LongFlowEdge(int to, long flow, boolean real) {
-            super(to);
-            this.flow = flow;
-            this.real = real;
-        }
-
-    }
-
-    static interface IntegerDeque extends IntegerStack {
-        int removeFirst();
-
-    }
-
-    static class DirectedEdge {
-        public int to;
-
-        public DirectedEdge(int to) {
-            this.to = to;
-        }
-
-        public String toString() {
-            return "->" + to;
-        }
-
-    }
-
-    static interface IntegerStack {
-        void addLast(int x);
-
-        boolean isEmpty();
-
-        void clear();
-
-    }
-
-    static class LongFlow {
-        public static <T extends LongFlowEdge> void send(T edge, long flow) {
-            edge.flow += flow;
-            edge.rev.flow -= flow;
-        }
-
-        public static LongCostFlowEdge addEdge(List<LongCostFlowEdge>[] g, int s, int t, long cap, long cost) {
-            LongCostFlowEdge real = new LongCostFlowEdge(t, 0, true, cost);
-            LongCostFlowEdge virtual = new LongCostFlowEdge(s, cap, false, -cost);
-            real.rev = virtual;
-            virtual.rev = real;
-            g[s].add(real);
-            g[t].add(virtual);
-            return real;
-        }
-
-        public static List<LongCostFlowEdge>[] createCostFlow(int n) {
-            List<LongCostFlowEdge>[] g = new List[n];
-            for (int i = 0; i < n; i++) {
-                g[i] = new ArrayList<>();
-            }
-            return g;
         }
 
     }
