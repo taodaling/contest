@@ -12,7 +12,7 @@ public class IntegerDijkstraV2MinimumCostFlow implements IntegerMinimumCostFlow 
     private IntegerCostFlowEdge[] prev;
     private boolean[] inq;
     private IntegerDeque dq;
-    private static final int INF = (int) 1e18 + 100;
+    private static final int INF = Integer.MAX_VALUE / 4;
     List<IntegerCostFlowEdge>[] g;
 
     public IntegerDijkstraV2MinimumCostFlow(int m) {

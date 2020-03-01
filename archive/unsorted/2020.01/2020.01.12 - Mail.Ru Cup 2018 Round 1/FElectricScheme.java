@@ -1,6 +1,5 @@
 package contest;
 
-import template.graph.BipartiteMatching;
 import template.graph.KMAlgo;
 import template.io.FastInput;
 import template.io.FastOutput;

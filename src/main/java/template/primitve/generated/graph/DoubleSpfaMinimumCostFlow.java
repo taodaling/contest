@@ -46,7 +46,7 @@ public class DoubleSpfaMinimumCostFlow implements DoubleMinimumCostFlow {
     }
 
 
-    private static final double INF = (double) 2e18;
+    private static final double INF = Double.MAX_VALUE / 4;
 
     @Override
     public double[] apply(List<DoubleCostFlowEdge>[] net, int s, int t, double send) {

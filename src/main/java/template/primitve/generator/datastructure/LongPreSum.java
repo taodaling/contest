@@ -42,6 +42,6 @@ public class LongPreSum {
      * get a[i] + a[i + 1] + ... + a[n - 1]
      */
     public long post(int i) {
-        return pre[n - 1] - prefix(i);
+        return pre[n - 1] - prefix(i - 1);
     }
 }

@@ -1,6 +1,6 @@
 package template.primitve.generated.datastructure;
 
-import template.math.CachedLog2;
+import template.binary.CachedLog2;
 
 import java.util.Arrays;
 

@@ -6,7 +6,7 @@ import java.util.List;
 
 public class DoubleMaximumCloseSubGraphAdapter implements DoubleMaximumCloseSubGraph {
     private final DoubleMaximumFlow mf;
-    private static final double INF = (double) 2e18;
+    private static final double INF = Double.MAX_VALUE / 4;
 
     public DoubleMaximumCloseSubGraphAdapter(DoubleMaximumFlow mf) {
         this.mf = mf;
@@ -33,7 +33,7 @@ public class DoubleMaximumCloseSubGraphAdapter implements DoubleMaximumCloseSubG
                 DoubleFlow.addEdge(net, i, e.to, INF);
             }
         }
-        double minCut = mf.apply(net, s, t, (double)2e18);
+        double minCut = mf.apply(net, s, t, INF);
         boolean[] bedoubleToS = DoubleFlow.findSetST(net, s);
         System.arraycopy(bedoubleToS, 0, picked, 0, n);
         return sumOfPositive - minCut;

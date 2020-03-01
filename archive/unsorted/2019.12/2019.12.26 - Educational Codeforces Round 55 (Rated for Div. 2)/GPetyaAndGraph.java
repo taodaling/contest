@@ -1,6 +1,5 @@
 package contest;
 
-import template.graph.LongMinimumCloseSubGraph;
 import template.io.FastInput;
 import template.io.FastOutput;
 

@@ -13,7 +13,7 @@ public class LongDijkstraMinimumCostFlow implements LongMinimumCostFlow {
     private LongCostFlowEdge[] prev;
     private boolean[] inq;
     private IntegerDeque dq;
-    private static final long INF = (long) 1e18 + 100;
+    private static final long INF = Long.MAX_VALUE / 4;
     List<LongCostFlowEdge>[] g;
 
     public LongDijkstraMinimumCostFlow(int m) {

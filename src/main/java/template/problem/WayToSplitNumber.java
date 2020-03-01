@@ -9,10 +9,12 @@ import java.util.Arrays;
 
 /**
  * 1 * x1 + 2 * x2 + ... + n * xn = m while m <= n and xi >= 0
+ * <br>
+ * n^1.5
  */
 public class WayToSplitNumber {
     public static void main(String[] args){
-        System.out.println(new WayToSplitNumber(20, new Modular(1e9 + 7)).wayOf(20));
+        System.out.println(new WayToSplitNumber(2000, new Modular(1e9 + 7)).wayOf(2000));
     }
 
     int[] ways;
@@ -73,7 +75,6 @@ public class WayToSplitNumber {
 
     public WayToSplitNumber(int n, Modular mod) {
         prepare(n, mod);
-
         ways = FastFourierTransform.multiplyMod(f, g, mod.getMod());
     }
 

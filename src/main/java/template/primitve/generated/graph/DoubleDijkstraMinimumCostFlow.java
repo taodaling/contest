@@ -13,7 +13,7 @@ public class DoubleDijkstraMinimumCostFlow implements DoubleMinimumCostFlow {
     private DoubleCostFlowEdge[] prev;
     private boolean[] inq;
     private IntegerDeque dq;
-    private static final double INF = (double) 1e18 + 100;
+    private static final double INF = Double.MAX_VALUE / 4;
     List<DoubleCostFlowEdge>[] g;
 
     public DoubleDijkstraMinimumCostFlow(int m) {

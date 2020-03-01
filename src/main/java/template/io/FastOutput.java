@@ -6,6 +6,8 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UncheckedIOException;
 import java.io.Writer;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class FastOutput implements AutoCloseable, Closeable, Appendable {
     @Override
@@ -52,7 +54,7 @@ public class FastOutput implements AutoCloseable, Closeable, Appendable {
     }
 
     public FastOutput append(double c) {
-        cache.append(c);
+        cache.append(new BigDecimal(c).toPlainString());
         return this;
     }
 
@@ -72,45 +74,31 @@ public class FastOutput implements AutoCloseable, Closeable, Appendable {
     }
 
     public FastOutput println(char c) {
-        cache.append(c);
-        println();
-        return this;
+        return append(c).println();
     }
 
     public FastOutput println(String c) {
-        cache.append(c);
-        println();
-        return this;
+        return append(c).println();
     }
 
     public FastOutput println(int c) {
-        cache.append(c);
-        println();
-        return this;
+        return append(c).println();
     }
 
     public FastOutput println(long c) {
-        cache.append(c);
-        println();
-        return this;
+        return append(c).println();
     }
 
     public FastOutput println(float c) {
-        cache.append(c);
-        println();
-        return this;
+        return append(c).println();
     }
 
     public FastOutput println(double c) {
-        cache.append(c);
-        println();
-        return this;
+        return append(c).println();
     }
 
     public FastOutput println(Object c) {
-        cache.append(c);
-        println();
-        return this;
+        return append(c).println();
     }
 
     public FastOutput println() {

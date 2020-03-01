@@ -39,6 +39,23 @@ public class IntervalBooleanMap implements Iterable<IntervalBooleanMap.Interval>
         total += interval.length();
     }
 
+    public long firstFalse(long l) {
+        Map.Entry<Long, Interval> entry = map.floorEntry(l);
+        if (entry == null || entry.getValue().r < l) {
+            return l;
+        }
+        Interval last = entry.getValue();
+        while (true) {
+            Map.Entry<Long, Interval> ceil = map.ceilingEntry(last.r + 1);
+            if (ceil == null || ceil.getValue().l > last.r + 1) {
+                break;
+            }
+            last.r = ceil.getValue().r;
+            map.remove(ceil.getKey());
+        }
+        return entry.getValue().r + 1;
+    }
+
     public void setTrue(long l, long r) {
         if (l > r) {
             return;

@@ -2,6 +2,7 @@ package template.primitve.generated.graph;
 
 import template.primitve.generated.datastructure.IntegerDeque;
 import template.primitve.generated.datastructure.IntegerDequeImpl;
+import template.primitve.generated.datastructure.IntegerList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,14 +37,17 @@ public class LongWeightGraph {
         return ans;
     }
 
-    public static <T extends LongWeightDirectedEdge> void dijkstraElogV(List<T>[] g, int s, long[] dists, long inf) {
+    public static <T extends LongWeightDirectedEdge> void dijkstraElogV(List<T>[] g, IntegerList s, long[] dists, long inf) {
         int n = g.length;
         LongPriorityQueueBasedOnSegment pq = new LongPriorityQueueBasedOnSegment(0, n);
         for (int i = 0; i < n; i++) {
             dists[i] = inf;
         }
-        dists[s] = 0;
-        pq.update(s, 0, n, 0);
+        for (int i = s.size() - 1; i >= 0; i--) {
+            int node = s.get(i);
+            dists[node] = 0;
+            pq.update(node, 0, n, 0);
+        }
         for (int i = 0; i < n; i++) {
             int head = pq.pop(0, n);
             if (dists[head] >= inf) {
@@ -58,13 +62,16 @@ public class LongWeightGraph {
         }
     }
 
-    public static <T extends LongWeightDirectedEdge> void dijkstraV2(List<T>[] g, int s, long[] dists, long inf) {
+    public static <T extends LongWeightDirectedEdge> void dijkstraV2(List<T>[] g, IntegerList s, long[] dists, long inf) {
         int n = g.length;
         for (int i = 0; i < g.length; i++) {
             dists[i] = inf;
         }
         boolean[] handled = new boolean[n];
-        dists[s] = 0;
+        for (int i = s.size() - 1; i >= 0; i--) {
+            int node = s.get(i);
+            dists[node] = 0;
+        }
         for (int i = 0; i < n; i++) {
             int head = -1;
             for (int j = 0; j < n; j++) {
@@ -79,15 +86,18 @@ public class LongWeightGraph {
         }
     }
 
-    public static <T extends LongWeightDirectedEdge> void spfa(List<T>[] g, int s, long[] dists, long inf) {
+    public static <T extends LongWeightDirectedEdge> void spfa(List<T>[] g, IntegerList s, long[] dists, long inf) {
         int n = g.length;
         for (int i = 0; i < g.length; i++) {
             dists[i] = inf;
         }
-        dists[s] = 0;
         IntegerDeque deque = new IntegerDequeImpl(n);
         boolean[] inque = new boolean[n];
-        deque.addLast(s);
+        for (int i = s.size() - 1; i >= 0; i--) {
+            int node = s.get(i);
+            dists[node] = 0;
+            deque.addLast(node);
+        }
         while (!deque.isEmpty()) {
             int head = deque.removeFirst();
             inque[head] = false;
@@ -106,17 +116,21 @@ public class LongWeightGraph {
     /**
      * @return whether exists a negative circle
      */
-    public static <T extends LongWeightDirectedEdge> boolean spfaWithPossibleNegativeCircle(List<T>[] g, int s, long[] dists, long inf) {
+    public static <T extends LongWeightDirectedEdge> boolean spfaWithPossibleNegativeCircle(List<T>[] g, IntegerList s, long[] dists, long inf) {
         int n = g.length;
         for (int i = 0; i < g.length; i++) {
             dists[i] = inf;
         }
-        dists[s] = 0;
+
         IntegerDeque deque = new IntegerDequeImpl(n);
         boolean[] inque = new boolean[n];
-        deque.addLast(s);
         int[] added = new int[n];
-        added[s] = -1;
+        for (int i = s.size() - 1; i >= 0; i--) {
+            int node = s.get(i);
+            added[node] = -1;
+            dists[node] = 0;
+            deque.addLast(node);
+        }
         while (!deque.isEmpty()) {
             int head = deque.removeFirst();
             inque[head] = false;

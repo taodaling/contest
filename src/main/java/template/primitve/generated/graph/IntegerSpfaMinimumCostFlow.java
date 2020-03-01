@@ -46,7 +46,7 @@ public class IntegerSpfaMinimumCostFlow implements IntegerMinimumCostFlow {
     }
 
 
-    private static final int INF = (int) 2e18;
+    private static final int INF = Integer.MAX_VALUE / 4;
 
     @Override
     public int[] apply(List<IntegerCostFlowEdge>[] net, int s, int t, int send) {

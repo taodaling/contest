@@ -1,6 +1,5 @@
 package contest;
 
-import template.graph.LongISAP;
 import template.graph.MultiWayDeque;
 import template.io.FastInput;
 import template.io.FastOutput;

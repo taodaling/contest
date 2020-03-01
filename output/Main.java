@@ -2,8 +2,12 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.io.UncheckedIOException;
+import java.math.BigDecimal;
+import java.util.List;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
@@ -27,153 +31,148 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            BDoubleElimination solver = new BDoubleElimination();
+            FShrinkingTree solver = new FShrinkingTree();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class BDoubleElimination {
+    static class FShrinkingTree {
+        List<UndirectedEdge>[] g;
+        double[][] dp;
+        double[][] f;
+        double[][] comp;
+        int[] size;
+        double[] fact;
+        int n;
+
+        public double comp(int n, int m) {
+            if (n < 0 || m < 0) {
+                return 0;
+            }
+            if (comp[n][m] == -1) {
+                if (n < m) {
+                    return comp[n][m] = 0;
+                }
+                if (m == 0) {
+                    return comp[n][m] = 1;
+                }
+                comp[n][m] = comp(n - 1, m - 1) * n / m;
+            }
+            return comp[n][m];
+        }
+
+        public double fact(int i) {
+            if (i < 0) {
+                return 0;
+            }
+            if (fact[i] == -1) {
+                if (i == 0) {
+                    return fact[i] = 1;
+                }
+                fact[i] = i * fact(i - 1);
+            }
+            return fact[i];
+        }
+
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            int n = in.readInt();
-            int k = in.readInt();
-            if (k == 0) {
-                out.println(0);
-                return;
+            n = in.readInt();
+            g = Graph.createUndirectedGraph(n);
+            for (int i = 1; i < n; i++) {
+                int a = in.readInt() - 1;
+                int b = in.readInt() - 1;
+                Graph.addUndirectedEdge(g, a, b);
             }
-//        if (k == 1) {
-//            out.println(n * 2 + 2);
-//            return;
-//        }
-
-            Node[] replacement = new Node[1 << (n - 1)];
-            for (int i = 0; i < replacement.length; i++) {
-                replacement[i] = new Node();
-            }
-            Node[] nodes = new Node[1 << n];
-            for (int i = 0; i < nodes.length; i++) {
-                nodes[i] = new Node();
-                nodes[i].replacement = replacement[i / 2];
-            }
-
-            merge0(nodes);
-            merge1(replacement);
-            int sum = 1 + k;
-            for (int i = 0; i < k; i++) {
-                int id = in.readInt() - 1;
-                nodes[id].repr = nodes[id];
+            dp = new double[n][n];
+            f = new double[n][n];
+            comp = new double[n][n];
+            size = new int[n];
+            fact = new double[n];
+            SequenceUtils.deepFill(fact, -1D);
+            SequenceUtils.deepFill(comp, -1D);
+            for (int i = 0; i < n; i++) {
+                SequenceUtils.deepFill(dp, 0D);
+                SequenceUtils.deepFill(f, 0D);
+                Arrays.fill(size, 0);
+                dfs(i, -1);
+                double ans = dp[i][0] / fact(n - 1) / Math.pow(2, n - 1);
+                out.println(ans);
             }
 
-            for (int i = 0; i < nodes.length; i += 2) {
-                if (nodes[i].repr != null && nodes[i + 1].repr != null) {
-                    sum += update(nodes[i].replacement);
-                    nodes[i].repr = null;
-                }
-            }
-
-            Node[] parents = getP(nodes);
-            sum += dpOnTree(parents, 0);
-            out.println(sum);
         }
 
-        public Node[] getP(Node[] nodes) {
-            Node[] parents = new Node[nodes.length / 2];
-            for (int i = 0; i < nodes.length; i += 2) {
-                parents[i / 2] = nodes[i].parent;
+        public void dfs(int root, int p) {
+            size[root] = 1;
+            for (UndirectedEdge e : g[root]) {
+                if (e.to == p) {
+                    continue;
+                }
+                dfs(e.to, root);
+                size[root] += size[e.to];
             }
-            return parents;
+
+            int sum = 0;
+            dp[root][0] = 1;
+            for (UndirectedEdge e : g[root]) {
+                if (e.to == p) {
+                    continue;
+                }
+                double[] former = dp[root];
+                dp[root] = new double[n];
+                for (int i = 0; i < n; i++) {
+                    for (int j = 0; i + j < n; j++) {
+                        dp[root][i + j] += comp(i + j, i) * comp(sum - i + size[e.to] - j, sum - i) * former[i] * f[e.to][j];
+                    }
+                }
+                sum += size[e.to];
+            }
+
+            double[] suffix = new double[n];
+            for (int i = n - 1; i >= 0; i--) {
+                suffix[i] = dp[root][i];
+                if (i + 1 < n) {
+                    suffix[i] += suffix[i + 1];
+                }
+            }
+            for (int i = 0; i < n; i++) {
+                if (i > 0) {
+                    f[root][i] += 2 * dp[root][i - 1] * i;
+                }
+                f[root][i] += suffix[i];
+            }
         }
 
-        public int dpOnTree(Node[] nodes, int level) {
-            int ans = 0;
-            for (Node node : nodes) {
-                if (node.children[0].repr != null &&
-                        node.children[1].repr != null) {
-                    if (test(node.children[0].repr.replacement) <
-                            test(node.children[1].repr.replacement)) {
-                        SequenceUtils.swap(node.children, 0, 1);
-                    }
-                    if (test(node.children[0].repr.replacement) > level) {
-                        ans += update(node.children[0].repr.replacement) - level;
-                        node.children[0].repr = null;
-                    }
-                }
-                for (int i = 0; i < 2; i++) {
-                    if (node.children[i].repr != null) {
-                        node.repr = node.children[i].repr;
-                    }
-                }
-            }
+    }
 
-            if (nodes.length == 1) {
-                if (test(nodes[0].repr.replacement) > level + 1) {
-                    ans += update(nodes[0].repr.replacement) - level;
-                }
-            } else {
+    static class Graph {
+        public static void addUndirectedEdge(List<UndirectedEdge>[] g, int s, int t) {
+            UndirectedEdge toT = new UndirectedEdge(t);
+            UndirectedEdge toS = new UndirectedEdge(s);
+            toT.rev = toS;
+            toS.rev = toT;
+            g[s].add(toT);
+            g[t].add(toS);
+        }
 
-                ans += dpOnTree(getP(nodes), level + 1);
+        public static List<UndirectedEdge>[] createUndirectedGraph(int n) {
+            List<UndirectedEdge>[] ans = new List[n];
+            for (int i = 0; i < n; i++) {
+                ans[i] = new ArrayList<>();
             }
             return ans;
         }
 
-        public void merge0(Node[] nodes) {
-            if (nodes.length == 1) {
-                return;
-            }
-            Node[] parents = new Node[nodes.length / 2];
-            for (int i = 0; i < parents.length; i++) {
-                parents[i] = new Node();
-            }
-            for (int i = 0; i < nodes.length; i++) {
-                nodes[i].parent = parents[i / 2];
-                parents[i / 2].children[i % 2] = nodes[i];
-            }
-            merge0(parents);
+    }
+
+    static class DirectedEdge {
+        public int to;
+
+        public DirectedEdge(int to) {
+            this.to = to;
         }
 
-        public void merge1(Node[] nodes) {
-            Node[] tmp = new Node[nodes.length];
-            for (int i = 0; i < tmp.length; i++) {
-                tmp[i] = new Node();
-                nodes[i].parent = tmp[i];
-            }
-            if (nodes.length == 1) {
-                return;
-            }
-            Node[] parents = new Node[nodes.length / 2];
-            for (int i = 0; i < parents.length; i++) {
-                parents[i] = new Node();
-            }
-            for (int i = 0; i < nodes.length; i++) {
-                tmp[i].parent = parents[i / 2];
-                parents[i / 2].children[i % 2] = tmp[i];
-            }
-            merge1(parents);
-
-        }
-
-        public int test(Node node) {
-            return test0(node);// - 1;
-        }
-
-        public int test0(Node node) {
-            if (node == null || node.paint) {
-                return 0;
-            }
-            //node.paint = true;
-            return 1 + test0(node.parent);
-        }
-
-        public int update(Node node) {
-            return update0(node);// - 1;
-        }
-
-        public int update0(Node node) {
-            if (node == null || node.paint) {
-                return 0;
-            }
-            node.paint = true;
-            return 1 + update0(node.parent);
+        public String toString() {
+            return "->" + to;
         }
 
     }
@@ -205,10 +204,13 @@ public class Main {
             return this;
         }
 
-        public FastOutput println(int c) {
-            cache.append(c);
-            println();
+        public FastOutput append(double c) {
+            cache.append(new BigDecimal(c).toPlainString());
             return this;
+        }
+
+        public FastOutput println(double c) {
+            return append(c).println();
         }
 
         public FastOutput println() {
@@ -242,21 +244,12 @@ public class Main {
 
     }
 
-    static class SequenceUtils {
-        public static <T> void swap(T[] data, int i, int j) {
-            T tmp = data[i];
-            data[i] = data[j];
-            data[j] = tmp;
+    static class UndirectedEdge extends DirectedEdge {
+        public UndirectedEdge rev;
+
+        public UndirectedEdge(int to) {
+            super(to);
         }
-
-    }
-
-    static class Node {
-        Node parent;
-        Node[] children = new Node[2];
-        boolean paint;
-        Node replacement;
-        Node repr;
 
     }
 
@@ -315,6 +308,24 @@ public class Main {
             }
 
             return val;
+        }
+
+    }
+
+    static class SequenceUtils {
+        public static void deepFill(Object array, double val) {
+            if (!array.getClass().isArray()) {
+                throw new IllegalArgumentException();
+            }
+            if (array instanceof double[]) {
+                double[] doubleArray = (double[]) array;
+                Arrays.fill(doubleArray, val);
+            } else {
+                Object[] objArray = (Object[]) array;
+                for (Object obj : objArray) {
+                    deepFill(obj, val);
+                }
+            }
         }
 
     }

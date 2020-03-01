@@ -7,7 +7,7 @@ import java.util.List;
 public class LongGomoryHuTree {
     private List<LongWeightUndirectedEdge>[] ug;
     private long[][] minCuts;
-    private static final long INF = (long) 2e18;
+    private static final long INF = Long.MAX_VALUE / 4;
 
     public LongGomoryHuTree(List<LongFlowEdge>[] g, LongMaximumFlow mf) {
         int n = g.length;
@@ -51,7 +51,7 @@ public class LongGomoryHuTree {
         LongFlow.rewind(g);
         int s = set.get(0);
         int t = set.get(1);
-        long f = mf.apply(g, s, t, (long)2e18);
+        long f = mf.apply(g, s, t, INF);
         addEdge(s, t, f);
         LongFlow.findSetST(g, s, visited);
         IntegerList l1 = new IntegerList(set.size());

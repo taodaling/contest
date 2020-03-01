@@ -6,7 +6,7 @@ import java.util.List;
 
 public class LongMaximumCloseSubGraphAdapter implements LongMaximumCloseSubGraph {
     private final LongMaximumFlow mf;
-    private static final long INF = (long) 2e18;
+    private static final long INF = Long.MAX_VALUE / 4;
 
     public LongMaximumCloseSubGraphAdapter(LongMaximumFlow mf) {
         this.mf = mf;
@@ -33,7 +33,7 @@ public class LongMaximumCloseSubGraphAdapter implements LongMaximumCloseSubGraph
                 LongFlow.addEdge(net, i, e.to, INF);
             }
         }
-        long minCut = mf.apply(net, s, t, (long)2e18);
+        long minCut = mf.apply(net, s, t, INF);
         boolean[] belongToS = LongFlow.findSetST(net, s);
         System.arraycopy(belongToS, 0, picked, 0, n);
         return sumOfPositive - minCut;

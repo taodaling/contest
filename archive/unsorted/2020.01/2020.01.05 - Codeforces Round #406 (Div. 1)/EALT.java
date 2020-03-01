@@ -1,7 +1,6 @@
 package contest;
 
 import template.graph.LcaOnTree;
-import template.graph.LongMinimumCloseSubGraph;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.math.CachedLog2;

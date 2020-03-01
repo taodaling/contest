@@ -1,7 +1,5 @@
 package contest;
 
-import template.graph.LongHLPP;
-import template.graph.LongHLPPBeta;
 import template.io.FastInput;
 import template.io.FastOutput;
 

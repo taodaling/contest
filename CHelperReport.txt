@@ -1,4 +1,3 @@
-48 src/main/java/contest/B. Double Elimination.json
-2
+44 src/main/java/contest/F. Shrinking Tree.json
 1
 2

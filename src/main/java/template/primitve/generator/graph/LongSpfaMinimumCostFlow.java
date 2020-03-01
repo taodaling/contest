@@ -46,7 +46,7 @@ public class LongSpfaMinimumCostFlow implements LongMinimumCostFlow {
     }
 
 
-    private static final long INF = (long) 2e18;
+    private static final long INF = Long.MAX_VALUE / 4;
 
     @Override
     public long[] apply(List<LongCostFlowEdge>[] net, int s, int t, long send) {

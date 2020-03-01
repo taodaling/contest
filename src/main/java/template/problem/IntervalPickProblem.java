@@ -114,50 +114,71 @@ public class IntervalPickProblem {
         }
     }
 
-    private static WQSResult solve(long[] data, Interval[] intervals, double cost) {
-        LongPreSum lps = new LongPreSum(data);
-        Arrays.sort(intervals, (a, b) -> a.l == b.l ? a.r - b.r : a.l - b.l);
-        int n = intervals.length;
-        double[] dp = new double[n];
-        int[] time = new int[n];
+    private static class NormalWQSSolver {
+        LongPreSum lps;
+        int n;
+        double[] dp;
+        int[] time;
+        DoubleSegmentQuery query;
+        int m;
+        DoubleSegment lower;
+        DoubleSegment upper;
+        long[] data;
+        Interval[] intervals;
 
-        DoubleSegmentQuery query = new DoubleSegmentQuery();
-        int m = data.length;
-        DoubleSegment lower = new DoubleSegment(0, m);
-        DoubleSegment upper = new DoubleSegment(0, m);
-
-        for (int i = 0; i < n; i++) {
-            Interval now = intervals[i];
-            dp[i] = lps.intervalSum(now.l, now.r);
-            time[i] = 1;
-
-            query.reset();
-            lower.query(0, now.l - 1, 0, m, query);
-            if (query.val + lps.intervalSum(now.l, now.r) > dp[i]) {
-                dp[i] = query.val + lps.intervalSum(now.l, now.r);
-                time[i] = time[query.index] + 1;
-            }
-            query.reset();
-            upper.query(now.l, now.r, 0, m, query);
-            if (query.val + lps.prefix(now.r) > dp[i]) {
-                dp[i] = query.val + lps.prefix(now.r);
-                time[i] = time[query.index] + 1;
-            }
-
-            dp[i] -= cost;
-            lower.update(now.r, now.r, 0, m, dp[i], i);
-            upper.update(now.r, now.r, 0, m, dp[i] - lps.prefix(now.r), i);
+        public NormalWQSSolver(long[] data, Interval[] intervals) {
+            this.data = data;
+            this.intervals = intervals;
+            lps = new LongPreSum(data);
+            n = intervals.length;
+            dp = new double[n];
+            time = new int[n];
+            query = new DoubleSegmentQuery();
+            m = data.length;
+            lower = new DoubleSegment(0, m);
+            upper = new DoubleSegment(0, m);
         }
 
-        int maxIndex = 0;
-        for (int i = 0; i < n; i++) {
-            if (dp[i] > dp[maxIndex]) {
-                maxIndex = i;
-            }
-        }
+        public WQSResult solve(double cost) {
+            Arrays.fill(dp, 0);
+            Arrays.fill(time, 0);
+            lower.reset(0, m);
+            upper.reset(0, m);
 
-        return new WQSResult(dp[maxIndex], time[maxIndex]);
+            for (int i = 0; i < n; i++) {
+                Interval now = intervals[i];
+                dp[i] = lps.intervalSum(now.l, now.r);
+                time[i] = 1;
+
+                query.reset();
+                lower.query(0, now.l - 1, 0, m, query);
+                if (query.val + lps.intervalSum(now.l, now.r) > dp[i]) {
+                    dp[i] = query.val + lps.intervalSum(now.l, now.r);
+                    time[i] = time[query.index] + 1;
+                }
+                query.reset();
+                upper.query(now.l, now.r, 0, m, query);
+                if (query.val + lps.prefix(now.r) > dp[i]) {
+                    dp[i] = query.val + lps.prefix(now.r);
+                    time[i] = time[query.index] + 1;
+                }
+
+                dp[i] -= cost;
+                lower.update(now.r, now.r, 0, m, dp[i], i);
+                upper.update(now.r, now.r, 0, m, dp[i] - lps.prefix(now.r), i);
+            }
+
+            int maxIndex = 0;
+            for (int i = 0; i < n; i++) {
+                if (dp[i] > dp[maxIndex]) {
+                    maxIndex = i;
+                }
+            }
+
+            return new WQSResult(dp[maxIndex], time[maxIndex]);
+        }
     }
+
 
     /**
      * 有一个序列data[0], data[1], ... , data[n - 1], 以及m个区间
@@ -169,10 +190,12 @@ public class IntervalPickProblem {
      * <br>
      */
     public static long solve(long[] data, Interval[] intervals, int k) {
+        Arrays.sort(intervals, (a, b) -> a.l == b.l ? a.r - b.r : a.l - b.l);
+        NormalWQSSolver solver = new NormalWQSSolver(data, intervals);
         DoubleBinarySearch dbs = new DoubleBinarySearch(1e-12, 1e-12) {
             @Override
             public boolean check(double mid) {
-                return solve(data, intervals, mid).time <= k;
+                return solver.solve(mid).time <= k;
             }
         };
 
@@ -181,7 +204,7 @@ public class IntervalPickProblem {
             sum += Math.abs(x);
         }
         double cost = dbs.binarySearch(-sum, sum);
-        long ans = DigitUtils.round(solve(data, intervals, cost).maxValue + k * cost);
+        long ans = DigitUtils.round(solver.solve(cost).maxValue + k * cost);
         return ans;
     }
 
@@ -320,6 +343,18 @@ public class IntervalPickProblem {
             }
         }
 
+        public void reset(int l, int r) {
+            if (l < r) {
+                int m = (l + r) >> 1;
+                left.reset(l, m);
+                right.reset(m + 1, r);
+                pushUp();
+            } else {
+                val = -inf;
+                index = -1;
+            }
+        }
+
         private boolean covered(int ll, int rr, int l, int r) {
             return ll <= l && rr >= r;
         }
@@ -361,49 +396,69 @@ public class IntervalPickProblem {
         }
     }
 
-    /**
-     * 有一个序列data[0], data[1], ... , data[n - 1], 以及m个区间
-     * intervals[0], intervals[1], ..., intervals[m - 1].且序列元素非负。
-     * <br>
-     * 要求我们选择任意个区间，要求被选中的区间覆盖的元素的和最大。
-     * <br>
-     * 时间复杂度为O(n)
-     */
-    private static WQSResult solveNonNegative(long[] data, Interval[] intervals, double cost) {
-        LongPreSum lps = new LongPreSum(data);
-        int n = intervals.length;
-        double[] dp = new double[n + 1];
-        int[] time = new int[n + 1];
+    private static class NonNegativeWQSSolver {
+        LongPreSum lps;
+        double[] dp;
+        int[] time;
+        IntegerMinQueue left;
+        IntegerMinQueue middle;
+        int n;
+        long[] data;
+        Interval[] intervals;
 
-        IntegerMinQueue left = new IntegerMinQueue(n, (a, b) -> -Double.compare(dp[a], dp[b]));
-        IntegerMinQueue middle = new IntegerMinQueue(n, (a, b) -> -Double.compare(dp[a] - lps.prefix(intervals[a - 1].r), dp[b] - lps.prefix(intervals[b - 1].r)));
-        left.addLast(0);
-        for (int i = 1; i <= n; i++) {
-            IntervalPickProblem.Interval now = intervals[i - 1];
-            while (!middle.isEmpty() && intervals[middle.peek() - 1].r < now.l) {
-                left.addLast(middle.removeFirst());
-            }
-            dp[i] = -1e50;
-            if (dp[i] < dp[left.min()] + lps.intervalSum(now.l, now.r)) {
-                dp[i] = dp[left.min()] + lps.intervalSum(now.l, now.r);
-                time[i] = time[left.min()] + 1;
-            }
-            if (!middle.isEmpty() && dp[i] < dp[middle.min()] + lps.prefix(now.r) - lps.prefix(intervals[middle.min() - 1].r)) {
-                dp[i] = dp[middle.min()] + lps.prefix(now.r) - lps.prefix(intervals[middle.min() - 1].r);
-                time[i] = time[middle.min()] + 1;
-            }
-            dp[i] -= cost;
-            middle.addLast(i);
+        public NonNegativeWQSSolver(long[] data, Interval[] intervals) {
+            this.n = intervals.length;
+            this.data = data;
+            this.intervals = intervals;
+            lps = new LongPreSum(data);
+            dp = new double[n + 1];
+            time = new int[n + 1];
+            left = new IntegerMinQueue(n, (a, b) -> -Double.compare(dp[a], dp[b]));
+            middle = new IntegerMinQueue(n, (a, b) -> -Double.compare(dp[a] - lps.prefix(intervals[a - 1].r), dp[b] - lps.prefix(intervals[b - 1].r)));
         }
 
-        int maxIndex = 0;
-        for (int i = 1; i <= n; i++) {
-            if (dp[i] > dp[maxIndex]) {
-                maxIndex = i;
-            }
-        }
+        /**
+         * 有一个序列data[0], data[1], ... , data[n - 1], 以及m个区间
+         * intervals[0], intervals[1], ..., intervals[m - 1].且序列元素非负。
+         * <br>
+         * 要求我们选择任意个区间，要求被选中的区间覆盖的元素的和最大。
+         * <br>
+         * 时间复杂度为O(n)
+         */
+        public WQSResult solveNonNegative(double cost) {
+            Arrays.fill(dp, 0);
+            Arrays.fill(time, 0);
+            left.reset();
+            middle.reset();
 
-        return new WQSResult(dp[maxIndex], time[maxIndex]);
+            left.addLast(0);
+            for (int i = 1; i <= n; i++) {
+                IntervalPickProblem.Interval now = intervals[i - 1];
+                while (!middle.isEmpty() && intervals[middle.peek() - 1].r < now.l) {
+                    left.addLast(middle.removeFirst());
+                }
+                dp[i] = -1e50;
+                if (dp[i] < dp[left.min()] + lps.intervalSum(now.l, now.r)) {
+                    dp[i] = dp[left.min()] + lps.intervalSum(now.l, now.r);
+                    time[i] = time[left.min()] + 1;
+                }
+                if (!middle.isEmpty() && dp[i] < dp[middle.min()] + lps.prefix(now.r) - lps.prefix(intervals[middle.min() - 1].r)) {
+                    dp[i] = dp[middle.min()] + lps.prefix(now.r) - lps.prefix(intervals[middle.min() - 1].r);
+                    time[i] = time[middle.min()] + 1;
+                }
+                dp[i] -= cost;
+                middle.addLast(i);
+            }
+
+            int maxIndex = 0;
+            for (int i = 1; i <= n; i++) {
+                if (dp[i] > dp[maxIndex]) {
+                    maxIndex = i;
+                }
+            }
+
+            return new WQSResult(dp[maxIndex], time[maxIndex]);
+        }
     }
 
 
@@ -419,9 +474,10 @@ public class IntervalPickProblem {
      * <br>
      */
     public static long solveNonNegative(long[] data, IntervalPickProblem.Interval[] intervals, int k) {
+        NonNegativeWQSSolver solver = new NonNegativeWQSSolver(data, intervals);
         DoubleBinarySearch dbs = new DoubleBinarySearch(1e-12, 1e-12) {
             public boolean check(double mid) {
-                return solveNonNegative(data, intervals, mid).time <= k;
+                return solver.solveNonNegative(mid).time <= k;
             }
         };
         long sum = 0;
@@ -429,7 +485,7 @@ public class IntervalPickProblem {
             sum += x;
         }
         double cost = dbs.binarySearch(0, sum);
-        long ans = DigitUtils.round(solveNonNegative(data, intervals, cost).maxValue + k * cost);
+        long ans = DigitUtils.round(solver.solveNonNegative(cost).maxValue + k * cost);
         return ans;
     }
 

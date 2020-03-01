@@ -1,0 +1,54 @@
+{
+  "name" : "F. New Year and Handle Change",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "7 1 4\nPikMike\n",
+    "output" : "0\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "15 2 2\nAaAaAAaaAAAAaaA\n",
+    "output" : "2\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "14 2 6\naBcdEFGHIJklMn\n",
+    "output" : "0\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "9 2 2\naAaAAAaaA\n",
+    "output" : "1\n",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "1000000 500 500\nUXwqASgyouTBeisWROMzYtGcTlfmJzwgCpWVROVynINTYVphycRKIETNPjipNBVBvkTeFsLlWoyxWcRcNCimcLzTvHrPGJQEpmOjYduLPkLbfJCoqkcwxeiOpbgyQKMKKNjucsOtYGWNffgJdZpOnannWozfvcHyXZitbdCqGmBvDrhOBGfSpyzqTyzbIEhNkgvWZRSXGizEWbrDYDVDHmKSyYMEzhwmJYTDBuQomMEiVePFUYHItmnosPWgHXCSiOgHTGCMHBZgXUckvYJjUTnHFzyxwqwgrqcBoVFPZFkiwRznLgUSQsxoNQmhLnZdkUKrPdMPQcLlxacmpoqropDjQCMmHxOUlvaQNAUhTtBXlCiuFYRJsrnfFgbmkIPmNAxTcKpfYqCNhamvzgQEVRNYizbMzwXqeDRCfFCxidWrssQYzLjHOfujxbUnbOjxCkAMwvUSwHlFPaDituyYLpaDwAWNVlWziCYVffPvjfzLlw",
+    "index" : 4,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.FNewYearAndHandleChange",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.02.29",
+  "contestName" : "Educational Codeforces Round 79 (Rated for Div. 2)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

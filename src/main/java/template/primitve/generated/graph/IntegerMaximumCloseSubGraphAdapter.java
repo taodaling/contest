@@ -6,7 +6,7 @@ import java.util.List;
 
 public class IntegerMaximumCloseSubGraphAdapter implements IntegerMaximumCloseSubGraph {
     private final IntegerMaximumFlow mf;
-    private static final int INF = (int) 2e18;
+    private static final int INF = Integer.MAX_VALUE / 4;
 
     public IntegerMaximumCloseSubGraphAdapter(IntegerMaximumFlow mf) {
         this.mf = mf;
@@ -33,7 +33,7 @@ public class IntegerMaximumCloseSubGraphAdapter implements IntegerMaximumCloseSu
                 IntegerFlow.addEdge(net, i, e.to, INF);
             }
         }
-        int minCut = mf.apply(net, s, t, (int)2e18);
+        int minCut = mf.apply(net, s, t, INF);
         boolean[] beintToS = IntegerFlow.findSetST(net, s);
         System.arraycopy(beintToS, 0, picked, 0, n);
         return sumOfPositive - minCut;
