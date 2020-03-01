@@ -1,11 +1,12 @@
 package template.primitve.generated.datastructure;
 
 import template.rand.Randomized;
+import template.utils.CompareUtils;
 import template.utils.SequenceUtils;
 
 import java.util.Arrays;
 
-public class DoubleList implements Cloneable{
+public class DoubleList implements Cloneable {
     private int size;
     private int cap;
     private double[] data;
@@ -145,6 +146,10 @@ public class DoubleList implements Cloneable{
         }
         Randomized.shuffle(data, 0, size);
         Arrays.sort(data, 0, size);
+    }
+
+    public void sort(DoubleComparator comparator) {
+        CompareUtils.quickSort(data, comparator, 0, size);
     }
 
     public double first() {

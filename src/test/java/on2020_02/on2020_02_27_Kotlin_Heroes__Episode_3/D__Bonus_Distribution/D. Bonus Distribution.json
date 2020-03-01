@@ -1,0 +1,35 @@
+{
+  "name" : "D. Bonus Distribution",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5\n4 1\n3 1 4 2\n2 3\n10 2\n4 1000000000\n987654321 1000000000 999999999 500000000\n8 9\n5 6 1 8 3 4 2 7\n6 1\n6 3 1 8 5 9\n",
+    "output" : "0 0 1 0 \n0 3 \n134259259 121913582 121913582 621913577 \n2 2 0 2 0 1 0 2 \n1 0 0 0 0 0 \n",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_02.on2020_02_27_Kotlin_Heroes__Episode_3.D__Bonus_Distribution.DBonusDistribution",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.02.27",
+  "contestName" : "Kotlin Heroes: Episode 3",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

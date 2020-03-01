@@ -1,7 +1,6 @@
 package template.utils;
 
-import template.primitve.generated.datastructure.IntegerList;
-import template.primitve.generated.datastructure.LongList;
+import template.primitve.generated.datastructure.*;
 import template.rand.Randomized;
 
 import java.util.Arrays;
@@ -142,10 +141,34 @@ public class CompareUtils {
         }
     }
 
-    public static <T> void insertSort(int[] data, IntComparator cmp, int l, int r) {
+    public static void insertSort(int[] data, IntegerComparator cmp, int l, int r) {
         for (int i = l + 1; i <= r; i++) {
             int j = i;
             int val = data[i];
+            while (j > l && cmp.compare(data[j - 1], val) > 0) {
+                data[j] = data[j - 1];
+                j--;
+            }
+            data[j] = val;
+        }
+    }
+
+    public static void insertSort(long[] data, LongComparator cmp, int l, int r) {
+        for (int i = l + 1; i <= r; i++) {
+            int j = i;
+            long val = data[i];
+            while (j > l && cmp.compare(data[j - 1], val) > 0) {
+                data[j] = data[j - 1];
+                j--;
+            }
+            data[j] = val;
+        }
+    }
+
+    public static void insertSort(double[] data, DoubleComparator cmp, int l, int r) {
+        for (int i = l + 1; i <= r; i++) {
+            int j = i;
+            double val = data[i];
             while (j > l && cmp.compare(data[j - 1], val) > 0) {
                 data[j] = data[j - 1];
                 j--;
@@ -183,7 +206,57 @@ public class CompareUtils {
         return theKthSmallestElement(data, cmp, m, t, k - (m - f));
     }
 
-    public static void quickSort(int[] data, IntComparator cmp, int f, int t) {
+    public static void quickSort(int[] data, IntegerComparator cmp, int f, int t) {
+        if (t - f <= THRESHOLD) {
+            insertSort(data, cmp, f, t - 1);
+            return;
+        }
+        SequenceUtils.swap(data, f, Randomized.nextInt(f, t - 1));
+        int l = f;
+        int r = t;
+        int m = l + 1;
+        while (m < r) {
+            int c = cmp.compare(data[m], data[l]);
+            if (c == 0) {
+                m++;
+            } else if (c < 0) {
+                SequenceUtils.swap(data, l, m);
+                l++;
+                m++;
+            } else {
+                SequenceUtils.swap(data, m, --r);
+            }
+        }
+        quickSort(data, cmp, f, l);
+        quickSort(data, cmp, m, t);
+    }
+
+    public static void quickSort(long[] data, LongComparator cmp, int f, int t) {
+        if (t - f <= THRESHOLD) {
+            insertSort(data, cmp, f, t - 1);
+            return;
+        }
+        SequenceUtils.swap(data, f, Randomized.nextInt(f, t - 1));
+        int l = f;
+        int r = t;
+        int m = l + 1;
+        while (m < r) {
+            int c = cmp.compare(data[m], data[l]);
+            if (c == 0) {
+                m++;
+            } else if (c < 0) {
+                SequenceUtils.swap(data, l, m);
+                l++;
+                m++;
+            } else {
+                SequenceUtils.swap(data, m, --r);
+            }
+        }
+        quickSort(data, cmp, f, l);
+        quickSort(data, cmp, m, t);
+    }
+
+    public static void quickSort(double[] data, DoubleComparator cmp, int f, int t) {
         if (t - f <= THRESHOLD) {
             insertSort(data, cmp, f, t - 1);
             return;

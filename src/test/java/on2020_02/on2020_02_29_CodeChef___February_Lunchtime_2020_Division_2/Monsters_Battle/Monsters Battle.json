@@ -1,0 +1,45 @@
+{
+  "name" : "Monsters Battle",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2\n3 3\n5 4 60\nAAA\n2 15 16\nDAA\n\n1 1\n50\nA\n100\nA",
+    "output" : "38\n-50",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "1\n3 2\n\n90 10\nAD\n100 100\nDA",
+    "output" : "-90",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "1\n2 2\n100 100\nAA\n1 1\nDA",
+    "output" : "198",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_02.on2020_02_29_CodeChef___February_Lunchtime_2020_Division_2.Monsters_Battle.MonstersBattle",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.02.29",
+  "contestName" : "CodeChef - February Lunchtime 2020 Division 2",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

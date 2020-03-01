@@ -1,0 +1,45 @@
+{
+  "name" : "F. Shrinking Tree",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2\n1 2",
+    "output" : "0.5\n0.5",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "4\n1 2\n1 3\n1 4",
+    "output" : "0.1250000000\n0.2916666667\n0.2916666667\n0.2916666667",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "7\n1 2\n1 3\n2 4\n2 5\n3 6\n3 7",
+    "output" : "0.0850694444\n0.0664062500\n0.0664062500\n0.1955295139\n0.1955295139\n0.1955295139\n0.1955295139",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx512M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_03.on2020_03_01_Codeforces_Round__513_by_Barcelona_Bootcamp__rated__Div__1___Div__2_.F__Shrinking_Tree.FShrinkingTree",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.03.01",
+  "contestName" : "Codeforces Round #513 by Barcelona Bootcamp (rated, Div. 1 + Div. 2)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

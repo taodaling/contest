@@ -1,0 +1,40 @@
+{
+  "name" : "B. Maximum Sum of Digits",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "35\n",
+    "output" : "17\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "10000000000\n",
+    "output" : "91\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx512M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_02.on2020_02_29_Codeforces_Round__513_by_Barcelona_Bootcamp__rated__Div__1___Div__2_.B__Maximum_Sum_of_Digits.BMaximumSumOfDigits",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.02.29",
+  "contestName" : "Codeforces Round #513 by Barcelona Bootcamp (rated, Div. 1 + Div. 2)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

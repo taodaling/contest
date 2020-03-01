@@ -1,0 +1,45 @@
+{
+  "name" : "A. Journey Planning",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "6\n10 7 1 9 10 15\n",
+    "output" : "26\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "1\n400000\n",
+    "output" : "400000\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "7\n8 9 26 11 12 29 14\n",
+    "output" : "55\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_03.on2020_03_01_Codeforces_Round__625__Div__1__based_on_Technocup_2020_Final_Round_.A__Journey_Planning.AJourneyPlanning",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.03.01",
+  "contestName" : "Codeforces Round #625 (Div. 1, based on Technocup 2020 Final Round)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

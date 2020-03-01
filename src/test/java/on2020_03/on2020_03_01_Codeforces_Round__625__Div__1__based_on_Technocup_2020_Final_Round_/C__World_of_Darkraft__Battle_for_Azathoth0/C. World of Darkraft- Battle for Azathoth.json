@@ -1,0 +1,45 @@
+{
+  "name" : "C. World of Darkraft: Battle for Azathoth",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2 3 3\n2 3\n4 7\n2 4\n3 2\n5 11\n1 2 4\n2 1 6\n3 4 6\n",
+    "output" : "1\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "1 2 2\n1 10\n3 10\n5 100\n0 4 100\n0 2 10\n",
+    "output" : "0",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "",
+    "output" : "",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx512M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_03.on2020_03_01_Codeforces_Round__625__Div__1__based_on_Technocup_2020_Final_Round_.C__World_of_Darkraft__Battle_for_Azathoth0.CWorldOfDarkraftBattleForAzathoth",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "on2020_03.on2020_03_01_Codeforces_Round__625__Div__1__based_on_Technocup_2020_Final_Round_.C__World_of_Darkraft__Battle_for_Azathoth0.CWorldOfDarkraftBattleForAzathothTestCase" ],
+  "date" : "2020.03.01",
+  "contestName" : "Codeforces Round #625 (Div. 1, based on Technocup 2020 Final Round)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

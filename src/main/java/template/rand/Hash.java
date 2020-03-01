@@ -3,6 +3,8 @@ package template.rand;
 import template.math.Modular;
 import template.math.Power;
 
+import java.util.function.IntUnaryOperator;
+
 public class Hash {
     public static final Modular MOD = new Modular((int) (1e9 + 7));
     public static final Power POWER = new Power(MOD);
@@ -29,33 +31,13 @@ public class Hash {
         }
     }
 
-    public <T> void populate(T[] data, int n, ToHash<T> toHash) {
-        hash[0] = toHash.hash(data[0]);
+    public <T> void populate(IntUnaryOperator function, int n) {
+        hash[0] = function.applyAsInt(0);
         for (int i = 1; i < n; i++) {
-            hash[i] = MOD.valueOf(hash[i - 1] + (long)toHash.hash(data[i]) * xs[i]);
+            hash[i] = MOD.valueOf(hash[i - 1] + (long) function.applyAsInt(i) * xs[i]);
         }
     }
 
-    public void populate(Object[] data, int n) {
-        hash[0] = data[0].hashCode();
-        for (int i = 1; i < n; i++) {
-            hash[i] = MOD.valueOf(hash[i - 1] + (long)data[i].hashCode() * xs[i]);
-        }
-    }
-
-    public void populate(int[] data, int n) {
-        hash[0] = data[0];
-        for (int i = 1; i < n; i++) {
-            hash[i] = MOD.valueOf(hash[i - 1] + (long)data[i] * xs[i]);
-        }
-    }
-
-    public void populate(char[] data, int n) {
-        hash[0] = data[0];
-        for (int i = 1; i < n; i++) {
-            hash[i] = MOD.valueOf(hash[i - 1] + (long)data[i] * xs[i]);
-        }
-    }
 
     public int hashVerbose(int l, int r) {
         int h = hash(l, r);
