@@ -101,6 +101,21 @@ public class KMAlgo {
         return findPartner(leftSides[id]);
     }
 
+    public int getLeftMate(int lId){
+        if(leftSides[lId].partner != null) {
+            return leftSides[lId].partner.id;
+        }
+        return -1;
+    }
+
+
+    public int getRightMate(int rId){
+        if(rightSides[rId].partner != null){
+            return rightSides[rId].partner.id;
+        }
+        return -1;
+    }
+
     /**
      * Determine can we find a partner for a right node to enhance the matching degree.
      */

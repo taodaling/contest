@@ -28,30 +28,202 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            FNRE solver = new FNRE();
+            ECommonNumber solver = new ECommonNumber();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class FNRE {
+    static class ECommonNumber {
+        private long[][] dp = new long[62][2];
+        private long n;
+
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            int n = in.readInt();
-            long[] val = new long[n + 1];
-            int sum = 0;
-            for (int i = 1; i <= n; i++) {
-                int x = in.readInt();
-                val[i] = x == 1 ? 1 : -1;
-                sum += x;
+            long n = in.readLong();
+            long m = in.readLong();
+
+            LongBinarySearch lbs1 = new LongBinarySearch() {
+
+                public boolean check(long mid) {
+                    mid = mid * 2 + 1;
+                    return count(n, mid) < m;
+                }
+            };
+            LongBinarySearch lbs2 = new LongBinarySearch() {
+
+                public boolean check(long mid) {
+                    mid = mid * 2;
+                    return count(n, mid) + count(n, mid + 1) < m;
+                }
+            };
+
+            long ans1 = lbs1.binarySearch(0, (long) 1e18);
+            if (ans1 == 0) {
+                ans1 = -1;
+            } else if (lbs1.check(ans1)) {
+                ans1 = (ans1 - 1) * 2 + 1;
+            } else {
+                ans1 = ans1 * 2 + 1;
             }
-            int q = in.readInt();
-            IntervalPickProblem.Interval[] intervals = new IntervalPickProblem.Interval[q];
-            for (int i = 0; i < q; i++) {
-                intervals[i] = new IntervalPickProblem.Interval(in.readInt(), in.readInt());
+
+            long ans2 = lbs2.binarySearch(1, (long) 1e18);
+            if (lbs2.check(ans2)) {
+                ans2 = (ans2 - 1) * 2;
+            } else {
+                ans2 = ans2 * 2;
             }
-            int minus = (int) IntervalPickProblem.solve(val, intervals);
-            sum -= minus;
-            out.println(sum);
+
+            long ans = Math.max(ans1, ans2);
+            out.println(ans);
+        }
+
+        public long dp(int i, int ceil) {
+            if (i < 0) {
+                return 1;
+            }
+            if (dp[i][ceil] == -1) {
+                int bit = Bits.bitAt(n, i);
+                dp[i][ceil] = 0;
+                for (int j = 0; j <= 1; j++) {
+                    if (ceil == 1 && j > bit) {
+                        continue;
+                    }
+                    dp[i][ceil] += dp(i - 1, ceil == 1 &&
+                            bit == j ? 1 : 0);
+                }
+            }
+            return dp[i][ceil];
+        }
+
+        public long count(long n, long prefix) {
+            if (prefix > n) {
+                return 0;
+            }
+            int len = CachedLog2.floorLog(prefix);
+            int totalLen = CachedLog2.floorLog(n);
+            long ans = 0;
+            for (int i = len; i < totalLen; i++) {
+                ans += 1L << (i - len);
+            }
+            this.n = n;
+            SequenceUtils.deepFill(dp, -1L);
+            if (prefix > (n >>> (totalLen - len))) {
+                return ans;
+            }
+            int ceil = (prefix == (n >>> (totalLen - len))) ? 1 : 0;
+            long plus = dp(totalLen - len - 1, ceil);
+            return ans + plus;
+        }
+
+    }
+
+    static class SequenceUtils {
+        public static void deepFill(Object array, long val) {
+            if (!array.getClass().isArray()) {
+                throw new IllegalArgumentException();
+            }
+            if (array instanceof long[]) {
+                long[] longArray = (long[]) array;
+                Arrays.fill(longArray, val);
+            } else {
+                Object[] objArray = (Object[]) array;
+                for (Object obj : objArray) {
+                    deepFill(obj, val);
+                }
+            }
+        }
+
+    }
+
+    static class FastOutput implements AutoCloseable, Closeable, Appendable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
+
+        public FastOutput append(CharSequence csq) {
+            cache.append(csq);
+            return this;
+        }
+
+        public FastOutput append(CharSequence csq, int start, int end) {
+            cache.append(csq, start, end);
+            return this;
+        }
+
+        public FastOutput(Writer os) {
+            this.os = os;
+        }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput append(char c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput append(long c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput println(long c) {
+            return append(c).println();
+        }
+
+        public FastOutput println() {
+            cache.append(System.lineSeparator());
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            return this;
+        }
+
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+
+        public String toString() {
+            return cache.toString();
+        }
+
+    }
+
+    static class CachedLog2 {
+        private static final int BITS = 16;
+        private static final int LIMIT = 1 << BITS;
+        private static final byte[] CACHE = new byte[LIMIT];
+
+        static {
+            int b = 0;
+            for (int i = 0; i < LIMIT; i++) {
+                while ((1 << (b + 1)) <= i) {
+                    b++;
+                }
+                CACHE[i] = (byte) b;
+            }
+        }
+
+        public static int floorLog(long x) {
+            int ans = 0;
+            while (x >= LIMIT) {
+                ans += BITS;
+                x >>>= BITS;
+            }
+            return ans + CACHE[(int) x];
         }
 
     }
@@ -88,7 +260,7 @@ public class Main {
             }
         }
 
-        public int readInt() {
+        public long readLong() {
             int sign = 1;
 
             skipBlank();
@@ -97,7 +269,7 @@ public class Main {
                 next = read();
             }
 
-            int val = 0;
+            long val = 0;
             if (sign == 1) {
                 while (next >= '0' && next <= '9') {
                     val = val * 10 + next - '0';
@@ -115,264 +287,32 @@ public class Main {
 
     }
 
-    static class IntervalPickProblem {
-        public static long solve(long[] data, IntervalPickProblem.Interval[] intervals) {
-            LongPreSum lps = new LongPreSum(data);
-            Arrays.sort(intervals, (a, b) -> a.l == b.l ? a.r - b.r : a.l - b.l);
-            int n = intervals.length;
-            long[] dp = new long[n];
-            int[] last = new int[n];
-
-            IntervalPickProblem.LongSegmentQuery query = new IntervalPickProblem.LongSegmentQuery();
-            int m = data.length;
-            IntervalPickProblem.LongSegment lower = new IntervalPickProblem.LongSegment(0, m);
-            IntervalPickProblem.LongSegment upper = new IntervalPickProblem.LongSegment(0, m);
-
-            for (int i = 0; i < n; i++) {
-                IntervalPickProblem.Interval now = intervals[i];
-                dp[i] = lps.intervalSum(now.l, now.r);
-                last[i] = -1;
-
-                query.reset();
-                lower.query(0, now.l - 1, 0, m, query);
-                if (query.val + lps.intervalSum(now.l, now.r) > dp[i]) {
-                    dp[i] = query.val + lps.intervalSum(now.l, now.r);
-                    last[i] = query.index;
-                }
-                query.reset();
-                upper.query(now.l, now.r, 0, m, query);
-                if (query.val + lps.prefix(now.r) > dp[i]) {
-                    dp[i] = query.val + lps.prefix(now.r);
-                    last[i] = query.index;
-                }
-
-                lower.update(now.r, now.r, 0, m, dp[i], i);
-                upper.update(now.r, now.r, 0, m, dp[i] - lps.prefix(now.r), i);
-            }
-
-            int maxIndex = 0;
-            for (int i = 0; i < n; i++) {
-                if (dp[i] > dp[maxIndex]) {
-                    maxIndex = i;
-                }
-            }
-
-            if (dp[maxIndex] < 0) {
-                return 0;
-            }
-            int trace = maxIndex;
-            while (trace >= 0) {
-                intervals[trace].used = true;
-                trace = last[trace];
-            }
-
-            return dp[maxIndex];
+    static class Bits {
+        private Bits() {
         }
 
-        public static class Interval {
-            public final int l;
-            public final int r;
-            public boolean used;
-
-            public Interval(int l, int r) {
-                this.l = l;
-                this.r = r;
-            }
-
-            public String toString() {
-                return String.format("(%d, %d)", l, r);
-            }
-
-        }
-
-        private static class LongSegmentQuery {
-            int index;
-            long val;
-
-            public void reset() {
-                index = -1;
-                val = -IntervalPickProblem.LongSegment.inf;
-            }
-
-            public void update(int index, long val) {
-                if (this.val < val) {
-                    this.index = index;
-                    this.val = val;
-                }
-            }
-
-        }
-
-        private static class LongSegment implements Cloneable {
-            private static long inf = (long) 2e18;
-            private IntervalPickProblem.LongSegment left;
-            private IntervalPickProblem.LongSegment right;
-            private long val = -inf;
-            private int index = -1;
-
-            public void pushUp() {
-                val = Math.max(left.val, right.val);
-                if (val == left.val) {
-                    index = left.index;
-                } else {
-                    index = right.index;
-                }
-            }
-
-            public void pushDown() {
-            }
-
-            public LongSegment(int l, int r) {
-                if (l < r) {
-                    int m = (l + r) >> 1;
-                    left = new IntervalPickProblem.LongSegment(l, m);
-                    right = new IntervalPickProblem.LongSegment(m + 1, r);
-                    pushUp();
-                } else {
-                }
-            }
-
-            private boolean covered(int ll, int rr, int l, int r) {
-                return ll <= l && rr >= r;
-            }
-
-            private boolean noIntersection(int ll, int rr, int l, int r) {
-                return ll > r || rr < l;
-            }
-
-            public void update(int ll, int rr, int l, int r, long x, int index) {
-                if (noIntersection(ll, rr, l, r)) {
-                    return;
-                }
-                if (covered(ll, rr, l, r)) {
-                    if (x > val) {
-                        this.val = x;
-                        this.index = index;
-                    }
-                    return;
-                }
-                pushDown();
-                int m = (l + r) >> 1;
-                left.update(ll, rr, l, m, x, index);
-                right.update(ll, rr, m + 1, r, x, index);
-                pushUp();
-            }
-
-            public void query(int ll, int rr, int l, int r, IntervalPickProblem.LongSegmentQuery query) {
-                if (noIntersection(ll, rr, l, r)) {
-                    return;
-                }
-                if (covered(ll, rr, l, r)) {
-                    query.update(index, val);
-                    return;
-                }
-                pushDown();
-                int m = (l + r) >> 1;
-                left.query(ll, rr, l, m, query);
-                right.query(ll, rr, m + 1, r, query);
-            }
-
+        public static int bitAt(long x, int i) {
+            return (int) ((x >> i) & 1);
         }
 
     }
 
-    static class FastOutput implements AutoCloseable, Closeable, Appendable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
+    static abstract class LongBinarySearch {
+        public abstract boolean check(long mid);
 
-        public FastOutput append(CharSequence csq) {
-            cache.append(csq);
-            return this;
-        }
-
-        public FastOutput append(CharSequence csq, int start, int end) {
-            cache.append(csq, start, end);
-            return this;
-        }
-
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput append(char c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput append(int c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput println(int c) {
-            return append(c).println();
-        }
-
-        public FastOutput println() {
-            cache.append(System.lineSeparator());
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
+        public long binarySearch(long l, long r) {
+            if (l > r) {
+                throw new IllegalArgumentException();
             }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
+            while (l < r) {
+                long mid = (l + r) >>> 1;
+                if (check(mid)) {
+                    r = mid;
+                } else {
+                    l = mid + 1;
+                }
             }
-        }
-
-        public String toString() {
-            return cache.toString();
-        }
-
-    }
-
-    static class LongPreSum {
-        private long[] pre;
-        private int n;
-
-        public LongPreSum(int n) {
-            pre = new long[n];
-        }
-
-        public void populate(long[] a) {
-            n = a.length;
-            pre[0] = a[0];
-            for (int i = 1; i < n; i++) {
-                pre[i] = pre[i - 1] + a[i];
-            }
-        }
-
-        public LongPreSum(long[] a) {
-            this(a.length);
-            populate(a);
-        }
-
-        public long intervalSum(int l, int r) {
-            return prefix(r) - prefix(l - 1);
-        }
-
-        public long prefix(int i) {
-            if (i < 0) {
-                return 0;
-            }
-            return pre[Math.min(i, n - 1)];
+            return l;
         }
 
     }

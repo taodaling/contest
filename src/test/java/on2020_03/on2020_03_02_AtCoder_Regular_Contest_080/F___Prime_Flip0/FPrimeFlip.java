@@ -1,4 +1,6 @@
-package contest;
+package on2020_03.on2020_03_02_AtCoder_Regular_Contest_080.F___Prime_Flip0;
+
+
 
 
 import template.graph.KMAlgo;
