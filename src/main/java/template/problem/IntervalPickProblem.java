@@ -4,6 +4,7 @@ import template.algo.DoubleBinarySearch;
 import template.math.DigitUtils;
 import template.primitve.generated.datastructure.IntegerMinQueue;
 import template.primitve.generated.datastructure.LongPreSum;
+import template.utils.SequenceUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,23 +28,24 @@ public class IntervalPickProblem {
     }
 
     public static Interval[] sortAndRemoveUnusedInterval(Interval[] intervals) {
-        Arrays.sort(intervals, (a, b) -> Long.compare(a.l, b.l));
-        List<Interval> intervalList = new ArrayList<>(intervals.length);
-        int n = 0;
-        for (int i = 0; i < intervals.length; i++, n++) {
-            int l = i;
-            int r = i;
-            Interval max = intervals[i];
-            while (r + 1 < intervals.length && intervals[r + 1].l == intervals[l].l) {
-                r++;
-                if (intervals[r].r > max.r) {
-                    max = intervals[r];
-                }
-            }
-            i = r;
-            intervalList.add(max);
+        if (intervals.length == 0) {
+            return intervals;
         }
-        return intervalList.toArray(new Interval[0]);
+        Arrays.sort(intervals, (a, b) -> Long.compare(a.l, b.l));
+        int len = 1;
+        for (int i = 1; i < intervals.length; i++) {
+            if (intervals[i].l == intervals[len - 1].l) {
+                if (intervals[i].r > intervals[len - 1].r) {
+                    SequenceUtils.swap(intervals, i, len - 1);
+                }
+                continue;
+            }
+            if (intervals[i].r > intervals[len - 1].r) {
+                SequenceUtils.swap(intervals, i, len);
+                len++;
+            }
+        }
+        return Arrays.copyOf(intervals, len);
     }
 
     /**
@@ -95,6 +97,9 @@ public class IntervalPickProblem {
             }
         }
 
+        if (dp[maxIndex] < 0) {
+            return 0;
+        }
         int trace = maxIndex;
         while (trace >= 0) {
             intervals[trace].used = true;
@@ -175,6 +180,9 @@ public class IntervalPickProblem {
                 }
             }
 
+            if (dp[maxIndex] < 0) {
+                return new WQSResult(0, 0);
+            }
             return new WQSResult(dp[maxIndex], time[maxIndex]);
         }
     }
@@ -185,8 +193,6 @@ public class IntervalPickProblem {
      * intervals[0], intervals[1], ..., intervals[m - 1].
      * <br>
      * 要求我们正好选择k个区间，要求被选中的区间覆盖的元素的和最大。
-     * <br>
-     * 区间需要满足intervals[i].l < intervals[i + 1].l且intervals[i].r < intervals[i + 1].r
      * <br>
      */
     public static long solve(long[] data, Interval[] intervals, int k) {

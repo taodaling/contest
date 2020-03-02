@@ -1,5 +1,6 @@
 package template.math;
 
+import template.primitve.generated.datastructure.IntegerList;
 import template.primitve.generated.datastructure.IntegerMultiWayStack;
 import template.primitve.generated.datastructure.LongList;
 import template.problem.MinimumNumberWithMaximumFactors;
@@ -68,6 +69,48 @@ public class Factorization {
     public static LongList factorizeNumberPrime(long x) {
         LongList ans = new LongList();
         for (long i = 2; i * i <= x; i++) {
+            if (x % i != 0) {
+                continue;
+            }
+            ans.add(i);
+            while (x % i == 0) {
+                x /= i;
+            }
+        }
+        if (x > 1) {
+            ans.add(x);
+        }
+        return ans;
+    }
+
+
+    /**
+     * Find all factors of x, and return them unordered.
+     */
+    public static IntegerList factorizeNumber(int x) {
+        IntegerList ans = new IntegerList();
+        factorizeNumber(x, ans);
+        return ans;
+    }
+
+    public static void factorizeNumber(int x, IntegerList ans) {
+        for (int i = 1; i * i <= x; i++) {
+            if (x % i != 0) {
+                continue;
+            }
+            ans.add(i);
+            if (i * i != x) {
+                ans.add(x / i);
+            }
+        }
+    }
+
+    /**
+     * Find all prime factors of x, and return them ordered.
+     */
+    public static IntegerList factorizeNumberPrime(int x) {
+        IntegerList ans = new IntegerList();
+        for (int i = 2; i * i <= x; i++) {
             if (x % i != 0) {
                 continue;
             }

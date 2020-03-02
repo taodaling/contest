@@ -11,7 +11,7 @@ public class ModPreSum {
         this.mod = mod;
     }
 
-    public void populate(int[] a){
+    public void populate(int[] a) {
         int n = a.length;
         pre[0] = a[0];
         for (int i = 1; i < n; i++) {
@@ -28,26 +28,23 @@ public class ModPreSum {
      * get a[l] + a[l + 1] + ... + a[r]
      */
     public int intervalSum(int l, int r) {
-        if (l == 0) {
-            return pre[r];
-        }
-        return mod.subtract(pre[r], pre[l - 1]);
+        return mod.subtract(prefix(r), prefix(l - 1));
     }
 
     /**
      * get a[0] + a[1] + ... + a[i]
      */
     public int prefix(int i) {
-        return pre[i];
+        if (i < 0) {
+            return 0;
+        }
+        return pre[Math.min(i, pre.length - 1)];
     }
 
     /**
      * get a[i] + a[i + 1] + ... + a[n - 1]
      */
-    public int post(int i) {
-        if (i == 0) {
-            return pre[pre.length - 1];
-        }
-        return mod.subtract(pre[pre.length - 1], pre[i - 1]);
+    public int suffix(int i) {
+        return mod.subtract(pre[pre.length - 1], prefix(i - 1));
     }
 }

@@ -1,2 +1,2 @@
-50 src/main/java/contest/E. Treeland and Viruses.json
+34 src/main/java/contest/F - NRE.json
 0
