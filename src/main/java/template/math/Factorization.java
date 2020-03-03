@@ -68,6 +68,15 @@ public class Factorization {
      */
     public static LongList factorizeNumberPrime(long x) {
         LongList ans = new LongList();
+        factorizeNumberPrime(x, ans);
+        return ans;
+    }
+
+
+    /**
+     * Find all prime factors of x, and return them ordered.
+     */
+    public static LongList factorizeNumberPrime(long x, LongList ans) {
         for (long i = 2; i * i <= x; i++) {
             if (x % i != 0) {
                 continue;
@@ -82,7 +91,6 @@ public class Factorization {
         }
         return ans;
     }
-
 
     /**
      * Find all factors of x, and return them unordered.

@@ -1,3 +1,2 @@
-50 src/main/java/contest/F. Sonya and Bitwise OR.json
-1
+55 src/main/java/contest/F. Kuroni and the Punishment.json
 0
