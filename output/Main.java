@@ -2,6 +2,7 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.Arrays;
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -28,202 +29,155 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            ECommonNumber solver = new ECommonNumber();
+            FSonyaAndBitwiseOR solver = new FSonyaAndBitwiseOR();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class ECommonNumber {
-        private long[][] dp = new long[62][2];
-        private long n;
+    static class FSonyaAndBitwiseOR {
+        Debug debug = new Debug(true);
 
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            long n = in.readLong();
-            long m = in.readLong();
-
-            LongBinarySearch lbs1 = new LongBinarySearch() {
-
-                public boolean check(long mid) {
-                    mid = mid * 2 + 1;
-                    return count(n, mid) < m;
-                }
-            };
-            LongBinarySearch lbs2 = new LongBinarySearch() {
-
-                public boolean check(long mid) {
-                    mid = mid * 2;
-                    return count(n, mid) + count(n, mid + 1) < m;
-                }
-            };
-
-            long ans1 = lbs1.binarySearch(0, (long) 1e18);
-            if (ans1 == 0) {
-                ans1 = -1;
-            } else if (lbs1.check(ans1)) {
-                ans1 = (ans1 - 1) * 2 + 1;
-            } else {
-                ans1 = ans1 * 2 + 1;
+            int n = in.readInt();
+            int m = in.readInt();
+            int x = in.readInt();
+            int[] val = new int[n];
+            for (int i = 0; i < n; i++) {
+                val[i] = in.readInt();
+            }
+            int bSize = (int) Math.ceil(Math.sqrt(n));
+            int split = DigitUtils.ceilDiv(n, bSize);
+            Block[] blocks = new Block[split];
+            for (int i = 0; i < split; i++) {
+                blocks[i] = new Block();
+                blocks[i].pre = new int[bSize];
             }
 
-            long ans2 = lbs2.binarySearch(1, (long) 1e18);
-            if (lbs2.check(ans2)) {
-                ans2 = (ans2 - 1) * 2;
-            } else {
-                ans2 = ans2 * 2;
+            debug.debug("val", val);
+            PreXor xor = new PreXor(val);
+            int limit = 19;
+            for (int i = 0; i < n; i++) {
+                blocks[i / bSize].pre[i % bSize] = (int) xor.prefix(i);
+                blocks[i / bSize].bTree.add((int) xor.prefix(i), limit, 1);
             }
 
-            long ans = Math.max(ans1, ans2);
-            out.println(ans);
-        }
-
-        public long dp(int i, int ceil) {
-            if (i < 0) {
-                return 1;
-            }
-            if (dp[i][ceil] == -1) {
-                int bit = Bits.bitAt(n, i);
-                dp[i][ceil] = 0;
-                for (int j = 0; j <= 1; j++) {
-                    if (ceil == 1 && j > bit) {
-                        continue;
+            for (int i = 0; i < m; i++) {
+                int t = in.readInt();
+                if (t == 1) {
+                    int index = in.readInt() - 1;
+                    int y = in.readInt();
+                    int ll = y;
+                    int rr = n - 1;
+                    for (int j = index / bSize; j < blocks.length; j++) {
+                        int l = j * bSize;
+                        int r = l + bSize - 1;
+                        blocks[j].xor(Math.max(l, ll) - l, Math.min(r, rr) - l, y ^ val[index]);
                     }
-                    dp[i][ceil] += dp(i - 1, ceil == 1 &&
-                            bit == j ? 1 : 0);
-                }
-            }
-            return dp[i][ceil];
-        }
-
-        public long count(long n, long prefix) {
-            if (prefix > n) {
-                return 0;
-            }
-            int len = CachedLog2.floorLog(prefix);
-            int totalLen = CachedLog2.floorLog(n);
-            long ans = 0;
-            for (int i = len; i < totalLen; i++) {
-                ans += 1L << (i - len);
-            }
-            this.n = n;
-            SequenceUtils.deepFill(dp, -1L);
-            if (prefix > (n >>> (totalLen - len))) {
-                return ans;
-            }
-            int ceil = (prefix == (n >>> (totalLen - len))) ? 1 : 0;
-            long plus = dp(totalLen - len - 1, ceil);
-            return ans + plus;
-        }
-
-    }
-
-    static class SequenceUtils {
-        public static void deepFill(Object array, long val) {
-            if (!array.getClass().isArray()) {
-                throw new IllegalArgumentException();
-            }
-            if (array instanceof long[]) {
-                long[] longArray = (long[]) array;
-                Arrays.fill(longArray, val);
-            } else {
-                Object[] objArray = (Object[]) array;
-                for (Object obj : objArray) {
-                    deepFill(obj, val);
+                    val[index] = y;
+                } else {
+                    int ll = in.readInt() - 1;
+                    int rr = in.readInt() - 1;
+                    int mask = 0;
+                    if (ll > 0) {
+                        int bId = (ll - 1) / bSize;
+                        mask = blocks[bId].get(ll - 1 - bId * bSize);
+                    }
+                    int ans = 0;
+                    for (int j = 0; j < blocks.length; j++) {
+                        int l = j * bSize;
+                        int r = l + bSize - 1;
+                        ans += blocks[j].greaterThan(Math.max(l, ll) - l, Math.min(r, rr) - l, mask, x);
+                    }
+                    out.println(ans);
                 }
             }
         }
 
     }
 
-    static class FastOutput implements AutoCloseable, Closeable, Appendable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
+    static class Debug {
+        private boolean offline;
+        private PrintStream out = System.err;
+        static int[] empty = new int[0];
 
-        public FastOutput append(CharSequence csq) {
-            cache.append(csq);
-            return this;
+        public Debug(boolean enable) {
+            offline = enable && System.getSecurityManager() == null;
         }
 
-        public FastOutput append(CharSequence csq, int start, int end) {
-            cache.append(csq, start, end);
-            return this;
+        public Debug debug(String name, Object x) {
+            return debug(name, x, empty);
         }
 
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput append(char c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput append(long c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput println(long c) {
-            return append(c).println();
-        }
-
-        public FastOutput println() {
-            cache.append(System.lineSeparator());
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        }
-
-        public String toString() {
-            return cache.toString();
-        }
-
-    }
-
-    static class CachedLog2 {
-        private static final int BITS = 16;
-        private static final int LIMIT = 1 << BITS;
-        private static final byte[] CACHE = new byte[LIMIT];
-
-        static {
-            int b = 0;
-            for (int i = 0; i < LIMIT; i++) {
-                while ((1 << (b + 1)) <= i) {
-                    b++;
+        public Debug debug(String name, Object x, int... indexes) {
+            if (offline) {
+                if (!x.getClass().isArray()) {
+                    out.append(name);
+                    for (int i : indexes) {
+                        out.printf("[%d]", i);
+                    }
+                    out.append("=").append("" + x);
+                    out.println();
+                } else {
+                    indexes = Arrays.copyOf(indexes, indexes.length + 1);
+                    if (x instanceof byte[]) {
+                        byte[] arr = (byte[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof short[]) {
+                        short[] arr = (short[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof boolean[]) {
+                        boolean[] arr = (boolean[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof char[]) {
+                        char[] arr = (char[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof int[]) {
+                        int[] arr = (int[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof float[]) {
+                        float[] arr = (float[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof double[]) {
+                        double[] arr = (double[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof long[]) {
+                        long[] arr = (long[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else {
+                        Object[] arr = (Object[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    }
                 }
-                CACHE[i] = (byte) b;
             }
-        }
-
-        public static int floorLog(long x) {
-            int ans = 0;
-            while (x >= LIMIT) {
-                ans += BITS;
-                x >>>= BITS;
-            }
-            return ans + CACHE[(int) x];
+            return this;
         }
 
     }
@@ -260,7 +214,7 @@ public class Main {
             }
         }
 
-        public long readLong() {
+        public int readInt() {
             int sign = 1;
 
             skipBlank();
@@ -269,7 +223,7 @@ public class Main {
                 next = read();
             }
 
-            long val = 0;
+            int val = 0;
             if (sign == 1) {
                 while (next >= '0' && next <= '9') {
                     val = val * 10 + next - '0';
@@ -287,32 +241,217 @@ public class Main {
 
     }
 
-    static class Bits {
-        private Bits() {
+    static class DigitUtils {
+        private DigitUtils() {
         }
 
-        public static int bitAt(long x, int i) {
-            return (int) ((x >> i) & 1);
+        public static int floorDiv(int a, int b) {
+            return a < 0 ? -ceilDiv(-a, b) : a / b;
+        }
+
+        public static int ceilDiv(int a, int b) {
+            if (a < 0) {
+                return -floorDiv(-a, b);
+            }
+            int c = a / b;
+            if (c * b < a) {
+                return c + 1;
+            }
+            return c;
         }
 
     }
 
-    static abstract class LongBinarySearch {
-        public abstract boolean check(long mid);
+    static class Bits {
+        private Bits() {
+        }
 
-        public long binarySearch(long l, long r) {
-            if (l > r) {
-                throw new IllegalArgumentException();
-            }
-            while (l < r) {
-                long mid = (l + r) >>> 1;
-                if (check(mid)) {
-                    r = mid;
-                } else {
-                    l = mid + 1;
+        public static int bitAt(int x, int i) {
+            return (x >> i) & 1;
+        }
+
+    }
+
+    static class Block {
+        BTree bTree = new BTree();
+        int mask;
+        int[] pre;
+
+        public int greaterThan(int l, int r, int xor, int x) {
+            if (l == 0 && r == pre.length - 1) {
+                return bTree.greater(x, 19, xor ^ mask);
+            } else {
+                xor ^= mask;
+                int cnt = 0;
+                for (int i = l; i <= r; i++) {
+                    if ((pre[i] ^ xor) >= x) {
+                        cnt++;
+                    }
                 }
+                return cnt;
             }
-            return l;
+        }
+
+        public void xor(int l, int r, int x) {
+            if (l == 0 && r == pre.length - 1) {
+                mask ^= x;
+            }
+            for (int i = l; i <= r; i++) {
+                bTree.add(pre[i], 19, -1);
+                pre[i] ^= x;
+                bTree.add(pre[i], 19, 1);
+            }
+        }
+
+        public int get(int i) {
+            return pre[i] ^ mask;
+        }
+
+    }
+
+    static class PreXor {
+        private long[] pre;
+
+        public PreXor(int n) {
+            pre = new long[n];
+        }
+
+        public void populate(long[] a) {
+            int n = a.length;
+            pre[0] = a[0];
+            for (int i = 1; i < n; i++) {
+                pre[i] = pre[i - 1] ^ a[i];
+            }
+        }
+
+        public void populate(int[] a) {
+            int n = a.length;
+            pre[0] = a[0];
+            for (int i = 1; i < n; i++) {
+                pre[i] = pre[i - 1] ^ a[i];
+            }
+        }
+
+        public PreXor(long[] a) {
+            this(a.length);
+            populate(a);
+        }
+
+        public PreXor(int[] a) {
+            this(a.length);
+            populate(a);
+        }
+
+        public long prefix(int i) {
+            return pre[i];
+        }
+
+    }
+
+    static class FastOutput implements AutoCloseable, Closeable, Appendable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
+
+        public FastOutput append(CharSequence csq) {
+            cache.append(csq);
+            return this;
+        }
+
+        public FastOutput append(CharSequence csq, int start, int end) {
+            cache.append(csq, start, end);
+            return this;
+        }
+
+        public FastOutput(Writer os) {
+            this.os = os;
+        }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput append(char c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput append(int c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput println(int c) {
+            return append(c).println();
+        }
+
+        public FastOutput println() {
+            cache.append(System.lineSeparator());
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            return this;
+        }
+
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+
+        public String toString() {
+            return cache.toString();
+        }
+
+    }
+
+    static class BTree {
+        BTree[] next = new BTree[2];
+        int size = 0;
+
+        public void add(int x, int bit, int mod) {
+            if (bit < 0) {
+                size += mod;
+                return;
+            }
+            size += mod;
+            get(Bits.bitAt(x, bit)).add(x, bit - 1, mod);
+        }
+
+        public int greater(int x, int bit, int xor) {
+            int y = Bits.bitAt(xor, bit);
+            if (Bits.bitAt(x, bit) == 1) {
+                if (getSize(1 ^ y) == 0) {
+                    return 0;
+                }
+                return get(1 ^ y).greater(x, bit - 1, xor);
+            }
+            int ans = getSize(1 ^ y);
+            if (getSize(y) > 0) {
+                ans += get(y).greater(x, bit - 1, xor);
+            }
+            return ans;
+        }
+
+        public int getSize(int i) {
+            return next[i] == null ? 0 : next[i].size;
+        }
+
+        public BTree get(int i) {
+            if (next[i] == null) {
+                next[i] = new BTree();
+            }
+            return next[i];
         }
 
     }

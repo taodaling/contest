@@ -1,6 +1,10 @@
 package template.utils;
 
-import template.primitve.generated.datastructure.*;
+import template.primitve.generated.datastructure.DoubleComparator;
+import template.primitve.generated.datastructure.IntegerComparator;
+import template.primitve.generated.datastructure.IntegerList;
+import template.primitve.generated.datastructure.LongComparator;
+import template.primitve.generated.datastructure.LongList;
 import template.rand.Randomized;
 
 import java.util.Arrays;

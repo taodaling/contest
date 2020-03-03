@@ -1,2 +1,3 @@
-43 src/main/java/contest/E. Common Number.json
+50 src/main/java/contest/F. Sonya and Bitwise OR.json
+1
 0
