@@ -28,6 +28,7 @@ public class CachedPow {
     }
 
     public int pow(int exp) {
+        exp = powMod.valueOf(exp);
         return mod.mul(first[exp % first.length], second[exp / first.length]);
     }
 
@@ -35,6 +36,6 @@ public class CachedPow {
      * return x^{-exp}
      */
     public int inverse(int exp) {
-        return pow(powMod.valueOf(-exp));
+        return pow(-exp);
     }
 }

@@ -1,2 +1,2 @@
-49 src/main/java/contest/G. Kuroni and Antihype.json
+48 src/main/java/contest/F. Battalion Strength.json
 0

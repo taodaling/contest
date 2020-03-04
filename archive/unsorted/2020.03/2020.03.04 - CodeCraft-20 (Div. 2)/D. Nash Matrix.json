@@ -1,0 +1,40 @@
+{
+  "name" : "D. Nash Matrix",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2\n1 1 1 1\n2 2 2 2\n",
+    "output" : "VALID\nXL\nRX\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "3\n-1 -1 -1 -1 -1 -1\n-1 -1 2 2 -1 -1\n-1 -1 -1 -1 -1 -1\n",
+    "output" : "VALID\nRRD\nUXD\nULL\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.DNashMatrix",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.03.04",
+  "contestName" : "CodeCraft-20 (Div. 2)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

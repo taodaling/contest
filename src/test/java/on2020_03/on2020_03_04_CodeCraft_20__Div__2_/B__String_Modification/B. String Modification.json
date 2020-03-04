@@ -1,0 +1,35 @@
+{
+  "name" : "B. String Modification",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "6\n4\nabab\n6\nqwerty\n5\naaaaa\n6\nalaska\n9\nlfpbavjsm\n1\np\n",
+    "output" : "abab\n1\nertyqw\n3\naaaaa\n1\naksala\n6\navjsmbpfl\n5\np\n1\n",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_03.on2020_03_04_CodeCraft_20__Div__2_.B__String_Modification.BStringModification",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.03.04",
+  "contestName" : "CodeCraft-20 (Div. 2)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

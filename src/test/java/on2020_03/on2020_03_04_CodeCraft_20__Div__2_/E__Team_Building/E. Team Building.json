@@ -1,0 +1,45 @@
+{
+  "name" : "E. Team Building",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4 1 2\n1 16 10 3\n18\n19\n13\n15\n",
+    "output" : "44\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "6 2 3\n78 93 9 17 13 78\n80 97\n30 52\n26 17\n56 68\n60 36\n84 55\n",
+    "output" : "377\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "3 2 1\n500 498 564\n100002 3\n422332 2\n232323 1\n",
+    "output" : "422899\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_03.on2020_03_04_CodeCraft_20__Div__2_.E__Team_Building.ETeamBuilding",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.03.04",
+  "contestName" : "CodeCraft-20 (Div. 2)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}
