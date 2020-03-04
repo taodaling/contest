@@ -2,10 +2,7 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintStream;
-import java.util.Arrays;
 import java.io.IOException;
-import java.util.Random;
 import java.io.UncheckedIOException;
 import java.io.Closeable;
 import java.io.Writer;
@@ -30,68 +27,43 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            FKuroniAndThePunishment solver = new FKuroniAndThePunishment();
+            GKuroniAndAntihype solver = new GKuroniAndAntihype();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class FKuroniAndThePunishment {
-        Debug debug = new Debug(false);
-
+    static class GKuroniAndAntihype {
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            long[] a = new long[n];
-            int ans = 0;
-            long g = 0;
+            int[] cnts = new int[1 << 18];
+            cnts[0]++;
+            long sum = 0;
             for (int i = 0; i < n; i++) {
-                a[i] = in.readLong();
-                g = GCDs.gcd(a[i], g);
-                if (a[i] % 2 != 0) {
-                    ans++;
-                }
+                int x = in.readInt();
+                sum -= x;
+                cnts[x]++;
             }
-            if (g > 1) {
-                out.println(0);
-                return;
-            }
-            long end = System.currentTimeMillis() + 2000;
-            LongList factors = new LongList(100);
-            RandomWrapper wrapper = new RandomWrapper();
-            while (System.currentTimeMillis() < end) {
-                int x = wrapper.nextInt(0, n - 1);
-                int y;
-                while ((y = wrapper.nextInt(0, n - 1)) == x) ;
-                factors.clear();
-                if (a[x] == 1 || a[y] == 1) {
-                    continue;
-                }
-                for (int i = -1; i <= 1; i++) {
-                    for (int j = -1; j <= 1; j++) {
-                        Factorization.factorizeNumberPrime(GCDs.gcd(a[x] + i, a[y] + j), factors);
+            DSU dsu = new DSU(1 << 18);
+            SubsetGenerator sg = new SubsetGenerator();
+            for (int i = (1 << 18) - 1; i >= 0; i--) {
+                sg.reset(i);
+                while (sg.hasNext()) {
+                    int a = sg.next();
+                    int b = i - a;
+                    if (a < b) {
+                        break;
                     }
-                }
-                factors.unique();
-                for (int i = 0; i < factors.size(); i++) {
-                    long f = factors.get(i);
-                    long local = 0;
-                    for (long v : a) {
-                        long remainder = v % f;
-                        long contrib = f - remainder;
-                        if (v > remainder) {
-                            contrib = Math.min(remainder, contrib);
-                        }
-                        local += contrib;
-                    }
-                    if (local < ans) {
-                        debug.debug("f", f);
-                        debug.debug("local", local);
-                        ans = (int) local;
+                    if (cnts[a] != 0 && cnts[b] != 0 && dsu.find(a) != dsu.find(b)) {
+                        sum += (long) (cnts[a] + cnts[b] - 1) * i;
+                        cnts[a] = cnts[b] = 1;
+                        dsu.merge(a, b);
                     }
                 }
             }
 
-            out.println(ans);
+
+            out.println(sum);
         }
 
     }
@@ -123,12 +95,12 @@ public class Main {
             return this;
         }
 
-        public FastOutput append(int c) {
+        public FastOutput append(long c) {
             cache.append(c);
             return this;
         }
 
-        public FastOutput println(int c) {
+        public FastOutput println(long c) {
             return append(c).println();
         }
 
@@ -159,6 +131,64 @@ public class Main {
 
         public String toString() {
             return cache.toString();
+        }
+
+    }
+
+    static class SubsetGenerator {
+        private int m;
+        private int x;
+
+        public void reset(int m) {
+            this.m = m;
+            this.x = m + 1;
+        }
+
+        public boolean hasNext() {
+            return x != 0;
+        }
+
+        public int next() {
+            return x = (x - 1) & m;
+        }
+
+    }
+
+    static class DSU {
+        int[] p;
+        int[] rank;
+
+        public DSU(int n) {
+            p = new int[n];
+            rank = new int[n];
+            reset();
+        }
+
+        public void reset() {
+            for (int i = 0; i < p.length; i++) {
+                p[i] = i;
+                rank[i] = 0;
+            }
+        }
+
+        public int find(int a) {
+            return p[a] == p[p[a]] ? p[a] : (p[a] = find(p[a]));
+        }
+
+        public void merge(int a, int b) {
+            a = find(a);
+            b = find(b);
+            if (a == b) {
+                return;
+            }
+            if (rank[a] == rank[b]) {
+                rank[a]++;
+            }
+            if (rank[a] > rank[b]) {
+                p[b] = a;
+            } else {
+                p[a] = b;
+            }
         }
 
     }
@@ -218,263 +248,6 @@ public class Main {
             }
 
             return val;
-        }
-
-        public long readLong() {
-            int sign = 1;
-
-            skipBlank();
-            if (next == '+' || next == '-') {
-                sign = next == '+' ? 1 : -1;
-                next = read();
-            }
-
-            long val = 0;
-            if (sign == 1) {
-                while (next >= '0' && next <= '9') {
-                    val = val * 10 + next - '0';
-                    next = read();
-                }
-            } else {
-                while (next >= '0' && next <= '9') {
-                    val = val * 10 - next + '0';
-                    next = read();
-                }
-            }
-
-            return val;
-        }
-
-    }
-
-    static class LongList implements Cloneable {
-        private int size;
-        private int cap;
-        private long[] data;
-        private static final long[] EMPTY = new long[0];
-
-        public LongList(int cap) {
-            this.cap = cap;
-            if (cap == 0) {
-                data = EMPTY;
-            } else {
-                data = new long[cap];
-            }
-        }
-
-        public LongList(LongList list) {
-            this.size = list.size;
-            this.cap = list.cap;
-            this.data = Arrays.copyOf(list.data, size);
-        }
-
-        public LongList() {
-            this(0);
-        }
-
-        public void ensureSpace(int req) {
-            if (req > cap) {
-                while (cap < req) {
-                    cap = Math.max(cap + 10, 2 * cap);
-                }
-                data = Arrays.copyOf(data, cap);
-            }
-        }
-
-        private void checkRange(int i) {
-            if (i < 0 || i >= size) {
-                throw new ArrayIndexOutOfBoundsException();
-            }
-        }
-
-        public long get(int i) {
-            checkRange(i);
-            return data[i];
-        }
-
-        public void add(long x) {
-            ensureSpace(size + 1);
-            data[size++] = x;
-        }
-
-        public void addAll(long[] x, int offset, int len) {
-            ensureSpace(size + len);
-            System.arraycopy(x, offset, data, size, len);
-            size += len;
-        }
-
-        public void addAll(LongList list) {
-            addAll(list.data, 0, list.size);
-        }
-
-        public void sort() {
-            if (size <= 1) {
-                return;
-            }
-            Randomized.shuffle(data, 0, size);
-            Arrays.sort(data, 0, size);
-        }
-
-        public void unique() {
-            if (size <= 1) {
-                return;
-            }
-
-            sort();
-            int wpos = 1;
-            for (int i = 1; i < size; i++) {
-                if (data[i] != data[wpos - 1]) {
-                    data[wpos++] = data[i];
-                }
-            }
-            size = wpos;
-        }
-
-        public int size() {
-            return size;
-        }
-
-        public long[] toArray() {
-            return Arrays.copyOf(data, size);
-        }
-
-        public void clear() {
-            size = 0;
-        }
-
-        public String toString() {
-            return Arrays.toString(toArray());
-        }
-
-        public boolean equals(Object obj) {
-            if (!(obj instanceof LongList)) {
-                return false;
-            }
-            LongList other = (LongList) obj;
-            return SequenceUtils.equal(data, 0, size - 1, other.data, 0, other.size - 1);
-        }
-
-        public int hashCode() {
-            int h = 1;
-            for (int i = 0; i < size; i++) {
-                h = h * 31 + Long.hashCode(data[i]);
-            }
-            return h;
-        }
-
-        public LongList clone() {
-            LongList ans = new LongList();
-            ans.addAll(this);
-            return ans;
-        }
-
-    }
-
-    static class Factorization {
-        public static LongList factorizeNumberPrime(long x, LongList ans) {
-            for (long i = 2; i * i <= x; i++) {
-                if (x % i != 0) {
-                    continue;
-                }
-                ans.add(i);
-                while (x % i == 0) {
-                    x /= i;
-                }
-            }
-            if (x > 1) {
-                ans.add(x);
-            }
-            return ans;
-        }
-
-    }
-
-    static class GCDs {
-        private GCDs() {
-        }
-
-        public static long gcd(long a, long b) {
-            return a >= b ? gcd0(a, b) : gcd0(b, a);
-        }
-
-        private static long gcd0(long a, long b) {
-            return b == 0 ? a : gcd0(b, a % b);
-        }
-
-    }
-
-    static class RandomWrapper {
-        private Random random;
-
-        public RandomWrapper() {
-            this(new Random());
-        }
-
-        public RandomWrapper(Random random) {
-            this.random = random;
-        }
-
-        public int nextInt(int l, int r) {
-            return random.nextInt(r - l + 1) + l;
-        }
-
-    }
-
-    static class SequenceUtils {
-        public static boolean equal(long[] a, int al, int ar, long[] b, int bl, int br) {
-            if ((ar - al) != (br - bl)) {
-                return false;
-            }
-            for (int i = al, j = bl; i <= ar; i++, j++) {
-                if (a[i] != b[j]) {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-    }
-
-    static class Debug {
-        private boolean offline;
-        private PrintStream out = System.err;
-
-        public Debug(boolean enable) {
-            offline = enable && System.getSecurityManager() == null;
-        }
-
-        public Debug debug(String name, long x) {
-            if (offline) {
-                debug(name, "" + x);
-            }
-            return this;
-        }
-
-        public Debug debug(String name, String x) {
-            if (offline) {
-                out.printf("%s=%s", name, x);
-                out.println();
-            }
-            return this;
-        }
-
-    }
-
-    static class Randomized {
-        private static Random random = new Random(0);
-
-        public static void shuffle(long[] data, int from, int to) {
-            to--;
-            for (int i = from; i <= to; i++) {
-                int s = nextInt(i, to);
-                long tmp = data[i];
-                data[i] = data[s];
-                data[s] = tmp;
-            }
-        }
-
-        public static int nextInt(int l, int r) {
-            return random.nextInt(r - l + 1) + l;
         }
 
     }

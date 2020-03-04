@@ -1,15 +1,15 @@
 package template.math;
 
-import template.primitve.generated.datastructure.IntegerFunction;
+import template.primitve.generated.datastructure.IntToIntFunction;
 
 /**
  * Calculate x1 ^ x2 ^ x3 ^ x4 ^ x5 ^ ... ^ xn while xi >= 1
  */
 public class IntegerModPowerLink {
-    private IntegerFunction f;
+    private IntToIntFunction f;
     // private static int limit = 1 << 16;
 
-    public IntegerModPowerLink(IntegerFunction f) {
+    public IntegerModPowerLink(IntToIntFunction f) {
         this.f = f;
     }
 

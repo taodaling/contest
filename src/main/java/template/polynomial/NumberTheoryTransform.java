@@ -1,5 +1,6 @@
 package template.polynomial;
 
+import template.binary.CachedLog2;
 import template.binary.Log2;
 import template.math.*;
 import template.primitve.generated.datastructure.IntegerList;
@@ -8,7 +9,8 @@ import template.utils.Buffer;
 
 import java.util.*;
 
-public class NumberTheoryTransform {
+public class
+NumberTheoryTransform {
     public static final NumberTheoryTransform STANDARD =
             new NumberTheoryTransform(new Modular(998244353), 3);
     private Modular modular;
@@ -196,6 +198,31 @@ public class NumberTheoryTransform {
         return;
     }
 
+    private IntegerList clone(IntegerList list) {
+        Polynomials.normalize(list);
+        IntegerList ans = listBuffer.alloc();
+        ans.addAll(list);
+        return ans;
+    }
+
+    public void mul(IntegerList a, IntegerList b, IntegerList ans) {
+        a = clone(a);
+        b = clone(b);
+        int rank = a.size() + b.size() - 1;
+        int proper = CachedLog2.ceilLog(rank + 1);
+        a.expandWith(0, 1 << proper);
+        b.expandWith(0, 1 << proper);
+        ans.clear();
+        ans.expandWith(0, 1 << proper);
+        dft(a.getData(), proper);
+        dft(b.getData(), proper);
+        dotMul(a.getData(), b.getData(), ans.getData(), proper);
+        idft(ans.getData(), proper);
+        Polynomials.normalize(ans);
+        listBuffer.release(a);
+        listBuffer.release(b);
+    }
+
     public void pow2(IntegerList a) {
         int rankAns = (a.size() - 1) * 2;
         int proper = log2.ceilLog(rankAns + 1);
@@ -204,6 +231,82 @@ public class NumberTheoryTransform {
         dotMul(a.getData(), a.getData(), a.getData(), proper);
         idft(a.getData(), proper);
         Polynomials.normalize(a);
+    }
+
+    public void multiApply(IntegerList p, IntegerList x, IntegerList y) {
+        int l = 0;
+        int r = x.size() - 1;
+        y.expandWith(0, x.size());
+        multiApply(p, x, y, l, r, build(x, l, r));
+    }
+
+    private int apply(IntegerList p, int x) {
+        Polynomials.normalize(p);
+        int y = 0;
+        int[] data = p.getData();
+        for (int i = p.size() - 1; i >= 0; i--) {
+            y = modular.mul(y, x);
+            y = modular.plus(y, data[i]);
+        }
+        return y;
+    }
+
+    /**
+     * a = b * c + r
+     */
+    private void divide(IntegerList a, IntegerList b, IntegerList c, IntegerList r) {
+        Polynomials.normalize(a);
+        Polynomials.normalize(b);
+        int proper = 1 + CachedLog2.ceilLog(Math.max(a.size(), b.size()));
+        a.expandWith(0, 1 << proper);
+        b.expandWith(0, 1 << proper);
+        c.expandWith(0, 1 << proper);
+        r.expandWith(0, 1 << proper);
+        divide(a.getData(), b.getData(), c.getData(), r.getData(), proper);
+        Polynomials.normalize(a);
+        Polynomials.normalize(b);
+        Polynomials.normalize(c);
+        Polynomials.normalize(r);
+    }
+
+    private void multiApply(IntegerList p, IntegerList x, IntegerList y, int l, int r, PolynomialBTree tree) {
+        if (r - l + 1 <= 4) {
+            for (int i = l; i <= r; i++) {
+                y.set(i, apply(p, x.get(i)));
+            }
+            return;
+        }
+        IntegerList c = listBuffer.alloc();
+        IntegerList remainder = listBuffer.alloc();
+        divide(p, tree.p, c, remainder);
+
+        listBuffer.release(c);
+        int m = (l + r) >> 1;
+        multiApply(remainder, x, y, l, m, tree.left);
+        multiApply(remainder, x, y, m + 1, r, tree.right);
+        listBuffer.release(remainder);
+    }
+
+    private PolynomialBTree build(IntegerList x, int l, int r) {
+        PolynomialBTree tree = new PolynomialBTree();
+        if (l == r) {
+            tree.p = new IntegerList(2);
+            tree.p.add(modular.valueOf(-x.get(l)));
+            tree.p.add(modular.valueOf(1));
+        } else {
+            int m = (l + r) >> 1;
+            tree.left = build(x, l, m);
+            tree.right = build(x, m + 1, r);
+            tree.p = new IntegerList();
+            mul(tree.left.p, tree.right.p, tree.p);
+        }
+        return tree;
+    }
+
+    private static class PolynomialBTree {
+        public IntegerList p;
+        public PolynomialBTree left;
+        public PolynomialBTree right;
     }
 
     private void multiplyAndStoreAnswerIntoA(IntegerList a, IntegerList b) {

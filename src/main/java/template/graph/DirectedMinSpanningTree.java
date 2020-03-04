@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
 
-public class DirectMinSpanningTree {
+public class DirectedMinSpanningTree {
     long inf = Long.MAX_VALUE;
     int now;
     Node top;
@@ -25,7 +25,7 @@ public class DirectMinSpanningTree {
 
     public static class Node {
         int id = -1;
-        List<Edge> inEdges = new ArrayList<>(2);
+        List<Edge> inEdges = new ArrayList<>();
         LeftSideTree queue = LeftSideTree.NIL;
         Node parent;
         Edge outEdge;
@@ -33,13 +33,13 @@ public class DirectMinSpanningTree {
         int visited;
 
 
-        Node circleP = this;
+        Node p = this;
         int circleRank;
 
         Node currentLevel = this;
 
         Node find() {
-            return circleP.circleP == circleP ? circleP : (circleP = circleP.find());
+            return p.p == p ? p : (p = p.find());
         }
 
         static void merge(Node a, Node b) {
@@ -52,9 +52,9 @@ public class DirectMinSpanningTree {
                 a.circleRank++;
             }
             if (a.circleRank > b.circleRank) {
-                b.circleP = a;
+                b.p = a;
             } else {
-                a.circleP = b;
+                a.p = b;
             }
         }
 
@@ -166,7 +166,7 @@ public class DirectMinSpanningTree {
         edge.dst.inEdges.add(edge);
     }
 
-    public DirectMinSpanningTree(int n) {
+    public DirectedMinSpanningTree(int n) {
         nodes = new Node[n];
         for (int i = 0; i < n; i++) {
             nodes[i] = new Node();
@@ -189,7 +189,7 @@ public class DirectMinSpanningTree {
         LeftSideTree left = NIL;
         LeftSideTree right = NIL;
         int dist;
-        DirectMinSpanningTree.Edge key;
+        DirectedMinSpanningTree.Edge key;
         long mod;
 
         public void pushDown() {
@@ -208,7 +208,7 @@ public class DirectMinSpanningTree {
             mod += k;
         }
 
-        public LeftSideTree(DirectMinSpanningTree.Edge key) {
+        public LeftSideTree(DirectedMinSpanningTree.Edge key) {
             this.key = key;
         }
 
@@ -242,7 +242,7 @@ public class DirectMinSpanningTree {
             return a;
         }
 
-        public DirectMinSpanningTree.Edge peek() {
+        public DirectedMinSpanningTree.Edge peek() {
             return key;
         }
 

@@ -1,2 +1,2 @@
-55 src/main/java/contest/F. Kuroni and the Punishment.json
+49 src/main/java/contest/G. Kuroni and Antihype.json
 0
