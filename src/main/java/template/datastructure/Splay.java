@@ -104,10 +104,16 @@ public class Splay implements Cloneable {
     }
 
     public void pushUp() {
+        if(this == NIL){
+            return;
+        }
         size = left.size + right.size + 1;
     }
 
     public void pushDown() {
+        if(this == NIL){
+            return;
+        }
     }
 
     public static int toArray(Splay root, int[] data, int offset) {
@@ -277,6 +283,9 @@ public class Splay implements Cloneable {
         return father;
     }
 
+    /**
+     * Find the left most node with key k, make it as root(Or the largest value less than k if k not exists)
+     */
     public static Splay selectKeyAsRoot(Splay root, int k) {
         if (root == NIL) {
             return NIL;
@@ -333,6 +342,9 @@ public class Splay implements Cloneable {
         return merge(a, b);
     }
 
+    /**
+     * Split the tree, and store key <= specified key in result[0]
+     */
     public static Splay[] split(Splay root, int key) {
         if (root == NIL) {
             return new Splay[]{NIL, NIL};

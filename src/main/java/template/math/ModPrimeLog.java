@@ -16,7 +16,7 @@ public class ModPrimeLog {
     public ModPrimeLog(int x, Modular mod) {
         this.x = x;
         this.mod = mod;
-        pow = new CachedPow(x, mod.getMod() - 1, mod);
+        pow = new CachedPow(x, mod);
         powMod = new Modular(mod.getMod() - 1);
         m = (int) Math.ceil(Math.sqrt(mod.getMod()));
         map = new IntegerHashMap(m, false);

@@ -33,7 +33,7 @@ public class FSonyaAndBitwiseOR {
                 int index = in.readInt();
                 int y = in.readInt();
                 a[index] = y;
-                segment.update(index, index, 1, n);
+                segment.add(index, index, 1, n);
             } else {
                 int l = in.readInt();
                 int r = in.readInt();
@@ -217,8 +217,8 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = (l + r) >> 1;
-        left.update(ll, rr, l, m);
-        right.update(ll, rr, m + 1, r);
+        left.add(ll, rr, l, m);
+        right.add(ll, rr, m + 1, r);
         pushUp();
     }
 

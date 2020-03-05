@@ -1,2 +1,2 @@
-48 src/main/java/contest/F. Battalion Strength.json
+46 src/main/java/contest/D - Square Rotation.json
 0
