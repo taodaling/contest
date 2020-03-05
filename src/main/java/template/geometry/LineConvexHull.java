@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LineConvexHull extends LinePolygon {
-    public LineConvexHull(List<Line2D> points) {
+    LineConvexHull(List<Line2D> points) {
         super(points);
     }
 

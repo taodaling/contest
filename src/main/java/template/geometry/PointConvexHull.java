@@ -10,7 +10,7 @@ import java.util.Deque;
 import java.util.List;
 
 public class PointConvexHull extends PointPolygon {
-    public PointConvexHull(List<Point2D> points) {
+    PointConvexHull(List<Point2D> points) {
         super(points);
     }
 

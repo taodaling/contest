@@ -30,6 +30,24 @@ public class LongMultiWayDeque {
         };
     }
 
+    public LongIterator reverseIterator(final int queue) {
+        return new LongIterator() {
+            int ele = tails[queue];
+
+            @Override
+            public boolean hasNext() {
+                return ele != 0;
+            }
+
+            @Override
+            public long next() {
+                long ans = values[ele];
+                ele = prev[ele];
+                return ans;
+            }
+        };
+    }
+
     public LongDeque getDeque(int qId) {
         return new LongDeque() {
             @Override
@@ -65,6 +83,11 @@ public class LongMultiWayDeque {
             @Override
             public LongIterator iterator() {
                 return LongMultiWayDeque.this.iterator(qId);
+            }
+
+            @Override
+            public LongIterator reverseIterator() {
+                return LongMultiWayDeque.this.reverseIterator(qId);
             }
 
             @Override

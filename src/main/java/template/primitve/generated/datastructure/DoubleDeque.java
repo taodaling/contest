@@ -5,4 +5,5 @@ public interface DoubleDeque extends DoubleStack {
     double removeFirst();
     double peekFirst();
     DoubleIterator iterator();
+    DoubleIterator reverseIterator();
 }

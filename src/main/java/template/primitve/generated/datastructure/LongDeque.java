@@ -5,4 +5,5 @@ public interface LongDeque extends LongStack {
     long removeFirst();
     long peekFirst();
     LongIterator iterator();
+    LongIterator reverseIterator();
 }

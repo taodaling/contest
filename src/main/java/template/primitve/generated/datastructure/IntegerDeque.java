@@ -5,4 +5,5 @@ public interface IntegerDeque extends IntegerStack {
     int removeFirst();
     int peekFirst();
     IntegerIterator iterator();
+    IntegerIterator reverseIterator();
 }

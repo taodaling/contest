@@ -6,7 +6,6 @@ public class IntegerRange2DequeAdapter implements IntegerDeque {
     int l;
     int r;
 
-
     public IntegerRange2DequeAdapter(IntToIntegerFunction function, int l, int r) {
         this.function = function;
         this.l = l;
@@ -64,6 +63,23 @@ public class IntegerRange2DequeAdapter implements IntegerDeque {
             @Override
             public int next() {
                 return function.apply(iter++);
+            }
+        };
+    }
+
+    @Override
+    public IntegerIterator reverseIterator() {
+        return new IntegerIterator() {
+            int iter = r;
+
+            @Override
+            public boolean hasNext() {
+                return iter >= l;
+            }
+
+            @Override
+            public int next() {
+                return function.apply(iter--);
             }
         };
     }

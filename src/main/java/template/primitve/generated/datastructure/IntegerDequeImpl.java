@@ -55,6 +55,24 @@ public class IntegerDequeImpl implements IntegerDeque {
         };
     }
 
+    public IntegerIterator reverseIterator() {
+        return new IntegerIterator() {
+            int index = epos;
+
+            @Override
+            public boolean hasNext() {
+                return index != bpos;
+            }
+
+            @Override
+            public int next() {
+                index = last(index);
+                return data[index];
+            }
+        };
+    }
+
+
     public int removeFirst(){
         int ans = data[bpos];
         bpos = next(bpos);

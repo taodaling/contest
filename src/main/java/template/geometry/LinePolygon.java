@@ -22,6 +22,6 @@ public class LinePolygon extends Polygon<Line2D> {
             }
             deque.add(pt);
         }
-        return new PointConvexHull(deque);
+        return new PointPolygon(deque);
     }
 }

@@ -6,7 +6,6 @@ public class DoubleRange2DequeAdapter implements DoubleDeque {
     int l;
     int r;
 
-
     public DoubleRange2DequeAdapter(IntToDoubleFunction function, int l, int r) {
         this.function = function;
         this.l = l;
@@ -64,6 +63,23 @@ public class DoubleRange2DequeAdapter implements DoubleDeque {
             @Override
             public double next() {
                 return function.apply(iter++);
+            }
+        };
+    }
+
+    @Override
+    public DoubleIterator reverseIterator() {
+        return new DoubleIterator() {
+            int iter = r;
+
+            @Override
+            public boolean hasNext() {
+                return iter >= l;
+            }
+
+            @Override
+            public double next() {
+                return function.apply(iter--);
             }
         };
     }

@@ -30,6 +30,24 @@ public class DoubleMultiWayDeque {
         };
     }
 
+    public DoubleIterator reverseIterator(final int queue) {
+        return new DoubleIterator() {
+            int ele = tails[queue];
+
+            @Override
+            public boolean hasNext() {
+                return ele != 0;
+            }
+
+            @Override
+            public double next() {
+                double ans = values[ele];
+                ele = prev[ele];
+                return ans;
+            }
+        };
+    }
+
     public DoubleDeque getDeque(int qId) {
         return new DoubleDeque() {
             @Override
@@ -65,6 +83,11 @@ public class DoubleMultiWayDeque {
             @Override
             public DoubleIterator iterator() {
                 return DoubleMultiWayDeque.this.iterator(qId);
+            }
+
+            @Override
+            public DoubleIterator reverseIterator() {
+                return DoubleMultiWayDeque.this.reverseIterator(qId);
             }
 
             @Override

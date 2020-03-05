@@ -55,6 +55,24 @@ public class DoubleDequeImpl implements DoubleDeque {
         };
     }
 
+    public DoubleIterator reverseIterator() {
+        return new DoubleIterator() {
+            int index = epos;
+
+            @Override
+            public boolean hasNext() {
+                return index != bpos;
+            }
+
+            @Override
+            public double next() {
+                index = last(index);
+                return data[index];
+            }
+        };
+    }
+
+
     public double removeFirst(){
         double ans = data[bpos];
         bpos = next(bpos);

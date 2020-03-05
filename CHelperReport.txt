@@ -1,2 +1,2 @@
-46 src/main/java/contest/D - Square Rotation.json
+32 src/main/java/contest/C. U2.json
 0

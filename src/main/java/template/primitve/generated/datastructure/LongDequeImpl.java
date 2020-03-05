@@ -55,6 +55,24 @@ public class LongDequeImpl implements LongDeque {
         };
     }
 
+    public LongIterator reverseIterator() {
+        return new LongIterator() {
+            int index = epos;
+
+            @Override
+            public boolean hasNext() {
+                return index != bpos;
+            }
+
+            @Override
+            public long next() {
+                index = last(index);
+                return data[index];
+            }
+        };
+    }
+
+
     public long removeFirst(){
         long ans = data[bpos];
         bpos = next(bpos);

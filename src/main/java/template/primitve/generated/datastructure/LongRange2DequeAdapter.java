@@ -6,7 +6,6 @@ public class LongRange2DequeAdapter implements LongDeque {
     int l;
     int r;
 
-
     public LongRange2DequeAdapter(IntToLongFunction function, int l, int r) {
         this.function = function;
         this.l = l;
@@ -64,6 +63,23 @@ public class LongRange2DequeAdapter implements LongDeque {
             @Override
             public long next() {
                 return function.apply(iter++);
+            }
+        };
+    }
+
+    @Override
+    public LongIterator reverseIterator() {
+        return new LongIterator() {
+            int iter = r;
+
+            @Override
+            public boolean hasNext() {
+                return iter >= l;
+            }
+
+            @Override
+            public long next() {
+                return function.apply(iter--);
             }
         };
     }

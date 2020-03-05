@@ -30,6 +30,24 @@ public class IntegerMultiWayDeque {
         };
     }
 
+    public IntegerIterator reverseIterator(final int queue) {
+        return new IntegerIterator() {
+            int ele = tails[queue];
+
+            @Override
+            public boolean hasNext() {
+                return ele != 0;
+            }
+
+            @Override
+            public int next() {
+                int ans = values[ele];
+                ele = prev[ele];
+                return ans;
+            }
+        };
+    }
+
     public IntegerDeque getDeque(int qId) {
         return new IntegerDeque() {
             @Override
@@ -65,6 +83,11 @@ public class IntegerMultiWayDeque {
             @Override
             public IntegerIterator iterator() {
                 return IntegerMultiWayDeque.this.iterator(qId);
+            }
+
+            @Override
+            public IntegerIterator reverseIterator() {
+                return IntegerMultiWayDeque.this.reverseIterator(qId);
             }
 
             @Override

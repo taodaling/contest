@@ -2,10 +2,8 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.util.Arrays;
 import java.io.IOException;
-import java.util.Random;
 import java.io.UncheckedIOException;
 import java.io.Closeable;
 import java.io.Writer;
@@ -30,101 +28,234 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            DSquareRotation solver = new DSquareRotation();
+            EPinkFloyd solver = new EPinkFloyd();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class DSquareRotation {
-        Debug debug = new Debug(false);
+    static class EPinkFloyd {
+        LongHashMap map = new LongHashMap(300000, false);
+        FastOutput out;
+        FastInput in;
 
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            int d = in.readInt();
-            int[][] mat = new int[d][d];
-            int[][] size = new int[d][d];
+            int m = in.readInt();
             for (int i = 0; i < n; i++) {
-                int x = DigitUtils.mod(in.readInt(), d);
-                int y = DigitUtils.mod(in.readInt(), d);
-                mat[x][y]++;
+                int u = in.readInt();
+                int v = in.readInt();
+                map.put(edgeId(u, v), u);
             }
 
-            RandomWrapper rw = new RandomWrapper();
-            int[][] h = new int[d][d];
-            int[][] w = new int[d][d];
-            for (int i = 0; i < d; i++) {
-                for (int j = 0; j < d; j++) {
-                    if (mat[i][j] == 0) {
-                        continue;
-                    }
-                    size[i][j] = 0;
-                    while (size[i][j] * size[i][j] < mat[i][j]) {
-                        size[i][j]++;
-                    }
-
-                    h[i][j] = size[i][j];
-                    w[i][j] = DigitUtils.ceilDiv(mat[i][j], h[i][j]);
-                    h[i][j] = 1 + (h[i][j] - 1) * d;
-                    w[i][j] = 1 + (w[i][j] - 1) * d;
-                }
+            int root = 1;
+            for (int i = 2; i <= n; i++) {
+                int ans = ask(root, i);
+                root = ans;
             }
 
-            debug.debug("mat", mat);
-            debug.debug("size", size);
+            answer(root);
+        }
 
-            long end = System.currentTimeMillis() + 2000;
-            long ans = (long) 1e18;
-            while (System.currentTimeMillis() < end) {
-                for (int i = 0; i < d; i++) {
-                    for (int j = 0; j < d; j++) {
-                        if (mat[i][j] == 0) {
-                            continue;
-                        }
-                        if (rw.nextInt(0, 1) == 1) {
-                            int tmp = h[i][j];
-                            h[i][j] = w[i][j];
-                            w[i][j] = tmp;
-                        }
-                    }
-                }
-
-                int top = 0;
-                int right = 0;
-                for (int i = 0; i < d; i++) {
-                    for (int j = 0; j < d; j++) {
-                        if (size[i][j] == 0) {
-                            continue;
-                        }
-                        top = Math.max(top, i + h[i][j] - 1);
-                        right = Math.max(right, j + w[i][j] - 1);
-                    }
-                }
-                int height = top + 1;
-                int width = right + 1;
-                for (int i = 0; i < d; i++) {
-                    for (int j = 0; j < d; j++) {
-                        if (mat[i][j] == 0) {
-                            continue;
-                        }
-                        top = Math.max(top, i + h[i][j] - 1 + d);
-                    }
-                    height = Math.min(height, top - i);
-                }
-                for (int j = 0; j < d; j++) {
-                    for (int i = 0; i < d; i++) {
-                        if (mat[i][j] == 0) {
-                            continue;
-                        }
-                        right = Math.max(right, j + w[i][j] - 1 + d);
-                    }
-                    width = Math.min(width, right - j);
-                }
-
-                ans = Math.min(Math.min(height, width) - 1, ans);
+        public int ask(int u, int v) {
+            long key = edgeId(u, v);
+            if (!map.containKey(key)) {
+                out.append("? ").append(u).append(' ').append(v).println().flush();
+                int x = in.readInt();
+                int src = x == 1 ? u : v;
+                map.put(key, src);
             }
+            return (int) map.get(key);
+        }
 
-            out.println(ans);
+        public void answer(int x) {
+            out.append("! ").append(x).println().flush();
+        }
+
+        public long edgeId(int u, int v) {
+            if (u > v) {
+                int tmp = u;
+                u = v;
+                v = tmp;
+            }
+            return DigitUtils.asLong(u, v);
+        }
+
+    }
+
+    static class LongHashMap {
+        private int[] slot;
+        private int[] next;
+        private long[] keys;
+        private long[] values;
+        private int alloc;
+        private boolean[] removed;
+        private int mask;
+        private int size;
+        private boolean rehash;
+
+        public LongHashMap(int cap, boolean rehash) {
+            this.mask = (1 << (32 - Integer.numberOfLeadingZeros(cap - 1))) - 1;
+            slot = new int[mask + 1];
+            next = new int[cap + 1];
+            keys = new long[cap + 1];
+            values = new long[cap + 1];
+            removed = new boolean[cap + 1];
+            this.rehash = rehash;
+        }
+
+        private void doubleCapacity() {
+            int newSize = Math.max(next.length + 10, next.length * 2);
+            next = Arrays.copyOf(next, newSize);
+            keys = Arrays.copyOf(keys, newSize);
+            values = Arrays.copyOf(values, newSize);
+            removed = Arrays.copyOf(removed, newSize);
+        }
+
+        public void alloc() {
+            alloc++;
+            if (alloc >= next.length) {
+                doubleCapacity();
+            }
+            next[alloc] = 0;
+            removed[alloc] = false;
+            size++;
+        }
+
+        private void rehash() {
+            int[] newSlots = new int[Math.max(16, slot.length * 2)];
+            int newMask = newSlots.length - 1;
+            for (int i = 0; i < slot.length; i++) {
+                if (slot[i] == 0) {
+                    continue;
+                }
+                int head = slot[i];
+                while (head != 0) {
+                    int n = next[head];
+                    int s = hash(keys[head]) & newMask;
+                    next[head] = newSlots[s];
+                    newSlots[s] = head;
+                    head = n;
+                }
+            }
+            this.slot = newSlots;
+            this.mask = newMask;
+        }
+
+        private int hash(long x) {
+            int h = Long.hashCode(x);
+            return h ^ (h >>> 16);
+        }
+
+        public void put(long x, long y) {
+            put(x, y, true);
+        }
+
+        public void put(long x, long y, boolean cover) {
+            int h = hash(x);
+            int s = h & mask;
+            if (slot[s] == 0) {
+                alloc();
+                slot[s] = alloc;
+                keys[alloc] = x;
+                values[alloc] = y;
+            } else {
+                int index = findIndexOrLastEntry(s, x);
+                if (keys[index] != x) {
+                    alloc();
+                    next[index] = alloc;
+                    keys[alloc] = x;
+                    values[alloc] = y;
+                } else if (cover) {
+                    values[index] = y;
+                }
+            }
+            if (rehash && size >= slot.length) {
+                rehash();
+            }
+        }
+
+        public boolean containKey(long x) {
+            int h = hash(x);
+            int s = h & mask;
+            if (slot[s] == 0) {
+                return false;
+            }
+            return keys[findIndexOrLastEntry(s, x)] == x;
+        }
+
+        public long getOrDefault(long x, long def) {
+            int h = hash(x);
+            int s = h & mask;
+            if (slot[s] == 0) {
+                return def;
+            }
+            int index = findIndexOrLastEntry(s, x);
+            return keys[index] == x ? values[index] : def;
+        }
+
+        public long get(long x) {
+            return getOrDefault(x, 0);
+        }
+
+        private int findIndexOrLastEntry(int s, long x) {
+            int iter = slot[s];
+            while (keys[iter] != x) {
+                if (next[iter] != 0) {
+                    iter = next[iter];
+                } else {
+                    return iter;
+                }
+            }
+            return iter;
+        }
+
+        public LongEntryIterator iterator() {
+            return new LongEntryIterator() {
+                int index = 1;
+                int readIndex = -1;
+
+
+                public boolean hasNext() {
+                    while (index <= alloc && removed[index]) {
+                        index++;
+                    }
+                    return index <= alloc;
+                }
+
+
+                public long getEntryKey() {
+                    return keys[readIndex];
+                }
+
+
+                public long getEntryValue() {
+                    return values[readIndex];
+                }
+
+
+                public void next() {
+                    if (!hasNext()) {
+                        throw new IllegalStateException();
+                    }
+                    readIndex = index;
+                    index++;
+                }
+            };
+        }
+
+        public String toString() {
+            LongEntryIterator iterator = iterator();
+            StringBuilder builder = new StringBuilder("{");
+            while (iterator.hasNext()) {
+                iterator.next();
+                builder.append(iterator.getEntryKey()).append("->").append(iterator.getEntryValue()).append(',');
+            }
+            if (builder.charAt(builder.length() - 1) == ',') {
+                builder.setLength(builder.length() - 1);
+            }
+            builder.append('}');
+            return builder.toString();
         }
 
     }
@@ -188,138 +319,6 @@ public class Main {
 
     }
 
-    static class DigitUtils {
-        private DigitUtils() {
-        }
-
-        public static int floorDiv(int a, int b) {
-            return a < 0 ? -ceilDiv(-a, b) : a / b;
-        }
-
-        public static int ceilDiv(int a, int b) {
-            if (a < 0) {
-                return -floorDiv(-a, b);
-            }
-            int c = a / b;
-            if (c * b < a) {
-                return c + 1;
-            }
-            return c;
-        }
-
-        public static int mod(int x, int mod) {
-            x %= mod;
-            if (x < 0) {
-                x += mod;
-            }
-            return x;
-        }
-
-    }
-
-    static class Debug {
-        private boolean offline;
-        private PrintStream out = System.err;
-        static int[] empty = new int[0];
-
-        public Debug(boolean enable) {
-            offline = enable && System.getSecurityManager() == null;
-        }
-
-        public Debug debug(String name, Object x) {
-            return debug(name, x, empty);
-        }
-
-        public Debug debug(String name, Object x, int... indexes) {
-            if (offline) {
-                if (!x.getClass().isArray()) {
-                    out.append(name);
-                    for (int i : indexes) {
-                        out.printf("[%d]", i);
-                    }
-                    out.append("=").append("" + x);
-                    out.println();
-                } else {
-                    indexes = Arrays.copyOf(indexes, indexes.length + 1);
-                    if (x instanceof byte[]) {
-                        byte[] arr = (byte[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof short[]) {
-                        short[] arr = (short[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof boolean[]) {
-                        boolean[] arr = (boolean[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof char[]) {
-                        char[] arr = (char[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof int[]) {
-                        int[] arr = (int[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof float[]) {
-                        float[] arr = (float[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof double[]) {
-                        double[] arr = (double[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof long[]) {
-                        long[] arr = (long[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else {
-                        Object[] arr = (Object[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    }
-                }
-            }
-            return this;
-        }
-
-    }
-
-    static class RandomWrapper {
-        private Random random;
-
-        public RandomWrapper() {
-            this(new Random());
-        }
-
-        public RandomWrapper(Random random) {
-            this.random = random;
-        }
-
-        public int nextInt(int l, int r) {
-            return random.nextInt(r - l + 1) + l;
-        }
-
-    }
-
     static class FastOutput implements AutoCloseable, Closeable, Appendable {
         private StringBuilder cache = new StringBuilder(10 << 20);
         private final Writer os;
@@ -347,13 +346,14 @@ public class Main {
             return this;
         }
 
-        public FastOutput append(long c) {
+        public FastOutput append(int c) {
             cache.append(c);
             return this;
         }
 
-        public FastOutput println(long c) {
-            return append(c).println();
+        public FastOutput append(String c) {
+            cache.append(c);
+            return this;
         }
 
         public FastOutput println() {
@@ -384,6 +384,29 @@ public class Main {
         public String toString() {
             return cache.toString();
         }
+
+    }
+
+    static class DigitUtils {
+        private static long mask32 = (1L << 32) - 1;
+
+        private DigitUtils() {
+        }
+
+        public static long asLong(int high, int low) {
+            return ((((long) high)) << 32) | (((long) low) & mask32);
+        }
+
+    }
+
+    static interface LongEntryIterator {
+        boolean hasNext();
+
+        void next();
+
+        long getEntryKey();
+
+        long getEntryValue();
 
     }
 }
