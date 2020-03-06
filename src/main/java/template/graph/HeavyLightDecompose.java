@@ -7,7 +7,7 @@ import java.util.function.LongBinaryOperator;
 public class HeavyLightDecompose {
     private LongBinaryOperator op;
 
-    public class Segment {
+    public static class Segment {
         private Segment left;
         private Segment right;
         private long val;
@@ -53,7 +53,7 @@ public class HeavyLightDecompose {
             pushUp();
         }
 
-        public long query(int ll, int rr, int l, int r) {
+        public long query(int ll, int rr, int l, int r, LongBinaryOperator op) {
             if (noIntersection(ll, rr, l, r)) {
                 return 0;
             }
@@ -62,8 +62,8 @@ public class HeavyLightDecompose {
             }
             pushDown();
             int m = (l + r) >> 1;
-            return op.applyAsLong(left.query(ll, rr, l, m),
-                    right.query(ll, rr, m + 1, r));
+            return op.applyAsLong(left.query(ll, rr, l, m, op),
+                    right.query(ll, rr, m + 1, r, op));
         }
     }
 
@@ -130,7 +130,7 @@ public class HeavyLightDecompose {
                     u = v;
                     v = tmp;
                 }
-                sum = op.applyAsLong(sum, segment.query(v.dfsOrderFrom + 1, u.dfsOrderFrom, 1, n));
+                sum = op.applyAsLong(sum, segment.query(v.dfsOrderFrom + 1, u.dfsOrderFrom, 1, n, op));
                 u = v;
             } else {
                 if (u.link.size > v.link.size) {
@@ -138,11 +138,11 @@ public class HeavyLightDecompose {
                     u = v;
                     v = tmp;
                 }
-                sum = op.applyAsLong(sum, segment.query(u.link.dfsOrderFrom, u.dfsOrderFrom, 1, n));
+                sum = op.applyAsLong(sum, segment.query(u.link.dfsOrderFrom, u.dfsOrderFrom, 1, n, op));
                 u = u.link.father;
             }
         }
-        sum = op.applyAsLong(sum, segment.query(u.dfsOrderFrom, u.dfsOrderFrom, 1, n));
+        sum = op.applyAsLong(sum, segment.query(u.dfsOrderFrom, u.dfsOrderFrom, 1, n, op));
         return sum;
     }
 

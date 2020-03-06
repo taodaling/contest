@@ -1,7 +1,5 @@
 package template.binary;
 
-import template.binary.CachedLog2;
-
 /**
  * Bit operations
  */
@@ -10,11 +8,11 @@ public class Bits {
     }
 
     public static int bitAt(int x, int i) {
-        return (x >> i) & 1;
+        return (x >>> i) & 1;
     }
 
     public static int bitAt(long x, int i) {
-        return (int) ((x >> i) & 1);
+        return (int) ((x >>> i) & 1);
     }
 
     public static int setBit(int x, int i, boolean v) {

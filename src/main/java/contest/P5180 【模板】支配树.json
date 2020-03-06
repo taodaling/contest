@@ -1,0 +1,35 @@
+{
+  "name" : "P5180 【模板】支配树",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "10 15\n1 2\n2 3\n3 4\n3 5\n3 6\n4 7\n7 8\n7 9\n7 10\n5 6\n6 8\n7 8\n4 1\n3 6\n5 3\n",
+    "output" : "10 9 8 4 1 1 3 1 1 1\n",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx125M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.P5180",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "contest.P5180TestCase" ],
+  "date" : "2020.03.06",
+  "contestName" : "Luogu Online Judge",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : false
+}

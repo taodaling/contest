@@ -81,14 +81,16 @@ void err(std::istream_iterator<string> it, T a, Args... args) {
 #endif
 
 #ifdef LOCAL
-#define PREPARE_INPUT                                \
-  {                                                  \
-    std::cout << "Input file name:";                 \
-    string file;                                     \
-    std::cin >> file;                                \
-    file = string(__FILE__) + "/../" + file + ".in"; \
-    std::cout << "Open file:" << file << std::endl;  \
-    freopen(file.data(), "r", stdin);                \
+#define PREPARE_INPUT                                  \
+  {                                                    \
+    std::cout << "Input file name:";                   \
+    string file;                                       \
+    std::cin >> file;                                  \
+    if (file != "stdin") {                             \
+      file = string(__FILE__) + "/../" + file + ".in"; \
+      std::cout << "Open file:" << file << std::endl;  \
+      freopen(file.data(), "r", stdin);                \
+    }                                                  \
   }
 #else
 #define PREPARE_INPUT
@@ -119,70 +121,136 @@ void err(std::istream_iterator<string> it, T a, Args... args) {
     }                                               \
     return 0;                                       \
   }
-#ifndef DSU_H
-#define DSU_H
 
-
-
-namespace dsu {
-template <int N>
-class DSU {
- private:
-  int p[N];
-  int rank[N];
-
- public:
-  DSU() { reset(); }
-  void reset() {
-    for (int i = 0; i < N; i++) {
-      p[i] = i;
-      rank[i] = 0;
-    }
-  }
-
-  int find(int a) { return p[a] == p[p[a]] ? p[a] : (p[a] = find(p[a])); }
-
-  void merge(int a, int b) {
-    a = find(a);
-    b = find(b);
-    if (a == b) {
-      return;
-    }
-    if (rank[a] == rank[b]) {
-      rank[a]++;
-    }
-    if (rank[a] > rank[b]) {
-      p[b] = a;
-    } else {
-      p[a] = b;
-    }
-  }
+struct Node {
+  vector<int> out;
+  vector<int> all;
+  deque<int> dq;
+  bool instk;
+  int indeg;
+  int set;
+  int dfn;
+  int low;
+  int id;
 };
-}  // namespace dsu
 
-#endif
+vector<Node> nodes;
+deque<int> stk;
+int order = 0;
 
-const int LIMIT = 1 << 18;
-dsu::DSU<LIMIT> cc;
-int cnts[LIMIT];
+int ask(ostream &out, istream &in, int a, int b) {
+  out << "? " << a << ' ' << b << endl;
+  out.flush();
+  int ans;
+  in >> ans;
+  return ans == 1 ? a : b;
+}
+
+void tarjan(int root) {
+  if (nodes[root].dfn != 0) {
+    return;
+  }
+  nodes[root].dfn = nodes[root].low = ++order;
+  nodes[root].instk = true;
+  stk.push_back(root);
+  for (int node : nodes[root].out) {
+    tarjan(node);
+    if (nodes[node].instk && nodes[node].low < nodes[root].low) {
+      nodes[root].low = nodes[node].low;
+    }
+  }
+
+  if (nodes[root].low == nodes[root].dfn) {
+    while (true) {
+      int last = stk.back();
+      stk.pop_back();
+      nodes[last].set = root;
+      nodes[last].instk = false;
+      nodes[root].all.push_back(last);
+      if (last == root) {
+        break;
+      }
+    }
+    nodes[root].dq.assign(nodes[root].all.begin(), nodes[root].all.end());
+  }
+}
+
+void addBack(int x, deque<int> &dq) {
+  if (!nodes[x].dq.empty()) {
+    dq.push_back(x);
+    return;
+  }
+  for (int root : nodes[x].all) {
+    for (int node : nodes[root].out) {
+      if (nodes[node].set == x) {
+        continue;
+      }
+      nodes[nodes[node].set].indeg--;
+      if (nodes[nodes[node].set].indeg == 0) {
+        dq.push_back(nodes[node].set);
+      }
+    }
+  }
+}
 
 void solve(int testId, istream &in, ostream &out) {
-    int n;
-    in >> n;
-    cnts[0]++;
-    ll sum = 0;
-    for(int i = 0; i < n; i++){
-        int x;
-        in >> x;
-        cnts[x]++;
-        sum -= x;
+  int n;
+  int m;
+  in >> n >> m;
+
+  nodes.resize(n + 1);
+  for (int i = 1; i <= n; i++) {
+    nodes[i].id = i;
+  }
+  for (int i = 0; i < m; i++) {
+    int a, b;
+    in >> a >> b;
+    nodes[a].out.push_back(b);
+  }
+
+  for (int i = 1; i <= n; i++) {
+    tarjan(i);
+  }
+
+  deque<int> dq;
+  for (int i = 1; i <= n; i++) {
+    for (int node : nodes[i].out) {
+      if (nodes[node].set == nodes[i].set) {
+        continue;
+      }
+      nodes[nodes[node].set].indeg++;
     }
-    for(int i = LIMIT - 1; i >= 0; i--){
-        for(int j = i; j; )
-        {
-            
-        }
+  }
+
+  for (int i = 1; i <= n; i++) {
+    if (i == nodes[i].set && nodes[i].indeg == 0) {
+      dq.push_back(i);
     }
+  }
+
+  while (dq.size() > 1) {
+    int a = dq.front();
+    dq.pop_front();
+    int b = dq.front();
+    dq.pop_front();
+    
+
+    int x = nodes[a].dq.front();
+    int y = nodes[b].dq.front();
+
+    if (ask(out, in, x, y) == x) {
+      nodes[b].dq.pop_front();
+    } else {
+      nodes[a].dq.pop_front();
+    }
+
+    addBack(a, dq);
+    addBack(b, dq);
+  }
+
+  int node = nodes[dq.front()].dq.front();
+  out << "! " << node << endl;
+  out.flush();
 }
 
 RUN_ONCE

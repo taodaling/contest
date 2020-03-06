@@ -67,14 +67,16 @@ void err(std::istream_iterator<string> it, T a, Args... args) {
 #endif
 
 #ifdef LOCAL
-#define PREPARE_INPUT                                \
-  {                                                  \
-    std::cout << "Input file name:";                 \
-    string file;                                     \
-    std::cin >> file;                                \
-    file = string(__FILE__) + "/../" + file + ".in"; \
-    std::cout << "Open file:" << file << std::endl;  \
-    freopen(file.data(), "r", stdin);                \
+#define PREPARE_INPUT                                  \
+  {                                                    \
+    std::cout << "Input file name:";                   \
+    string file;                                       \
+    std::cin >> file;                                  \
+    if (file != "stdin") {                             \
+      file = string(__FILE__) + "/../" + file + ".in"; \
+      std::cout << "Open file:" << file << std::endl;  \
+      freopen(file.data(), "r", stdin);                \
+    }                                                  \
   }
 #else
 #define PREPARE_INPUT

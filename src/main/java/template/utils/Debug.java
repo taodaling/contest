@@ -65,7 +65,7 @@ public class Debug {
 
     public Debug debug(String name, Object x, int... indexes) {
         if (offline) {
-            if (!x.getClass().isArray()) {
+            if (x == null || !x.getClass().isArray()) {
                 out.append(name);
                 for (int i : indexes) {
                     out.printf("[%d]", i);

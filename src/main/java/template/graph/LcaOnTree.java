@@ -13,10 +13,10 @@ public class LcaOnTree {
     int[] a;
     int time;
 
-    void dfs1(List<UndirectedEdge>[] tree, int u, int p) {
+    void dfs1(List<? extends DirectedEdge>[] tree, int u, int p) {
         parent[u] = p;
         i[u] = preOrder[u] = time++;
-        for (UndirectedEdge e : tree[u]) {
+        for (DirectedEdge e : tree[u]) {
             int v = e.to;
             if (v == p) continue;
             dfs1(tree, v, u);
@@ -27,16 +27,16 @@ public class LcaOnTree {
         head[i[u]] = u;
     }
 
-    void dfs2(List<UndirectedEdge>[] tree, int u, int p, int up) {
+    void dfs2(List<? extends DirectedEdge>[] tree, int u, int p, int up) {
         a[u] = up | Integer.lowestOneBit(i[u]);
-        for (UndirectedEdge e : tree[u]) {
+        for (DirectedEdge e : tree[u]) {
             int v = e.to;
             if (v == p) continue;
             dfs2(tree, v, u, a[u]);
         }
     }
 
-    public LcaOnTree(List<UndirectedEdge>[] tree, int root) {
+    public LcaOnTree(List<? extends DirectedEdge>[] tree, int root) {
         int n = tree.length;
         preOrder = new int[n];
         i = new int[n];
