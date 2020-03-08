@@ -1,0 +1,14 @@
+In file included from C:\Users\DALT\IdeaProjects\contest\cpp\database\Codeforces___acm_sgu_ru_archive___102__Coprimes\main.cpp:1:
+C:/Users/DALT/IdeaProjects/contest/cpp/libs/common.h:96:53: warning: backslash-newline at end of file
+ #define RUN_MULTI                                   \
+                                                      
+In file included from C:/Users/DALT/IdeaProjects/contest/cpp/libs/gcd.h:4,
+                 from C:\Users\DALT\IdeaProjects\contest\cpp\database\Codeforces___acm_sgu_ru_archive___102__Coprimes\main.cpp:2:
+C:/Users/DALT/IdeaProjects/contest/cpp/libs/common.h:96:53: warning: backslash-newline at end of file
+ #define RUN_MULTI                                   \
+                                                      
+In file included from C:/Users/DALT/IdeaProjects/contest/cpp/libs/common.h:12,
+                 from C:\Users\DALT\IdeaProjects\contest\cpp\database\Codeforces___acm_sgu_ru_archive___102__Coprimes\main.cpp:1:
+C:/Users/DALT/IdeaProjects/contest/cpp/libs/compiler_macro.h:6:30: warning: '-std=c++14' is not an option that controls warnings [-Wpragmas]
+ #pragma GCC diagnostic error "-std=c++14"
+                              ^~~~~~~~~~~~

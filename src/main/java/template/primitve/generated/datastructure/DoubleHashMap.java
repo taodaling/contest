@@ -1,6 +1,9 @@
 package template.primitve.generated.datastructure;
 
 
+import template.rand.Hash;
+import template.rand.Hasher;
+
 import java.util.Arrays;
 
 public class DoubleHashMap {
@@ -13,6 +16,7 @@ public class DoubleHashMap {
     private int mask;
     private int size;
     private boolean rehash;
+    private Hasher hasher = new Hasher();
 
     public DoubleHashMap(int cap, boolean rehash) {
         this.mask = (1 << (32 - Integer.numberOfLeadingZeros(cap - 1))) - 1;
@@ -63,8 +67,7 @@ public class DoubleHashMap {
     }
 
     private int hash(double x) {
-        int h = Double.hashCode(x);
-        return h ^ (h >>> 16);
+        return hasher.hash(x);
     }
 
 

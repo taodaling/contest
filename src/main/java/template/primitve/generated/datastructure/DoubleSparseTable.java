@@ -13,12 +13,12 @@ public class DoubleSparseTable {
     private double[][] st;
     private DoubleBinaryFunction merger;
 
-    public DoubleSparseTable(double[] data, int length, DoubleBinaryFunction merger) {
+    public DoubleSparseTable(IntToDoubleFunction function, int length, DoubleBinaryFunction merger) {
         int m = CachedLog2.floorLog(length);
         st = new double[m + 1][length];
         this.merger = merger;
         for (int i = 0; i < length; i++) {
-            st[0][i] = data[i];
+            st[0][i] = function.apply(i);
         }
         for (int i = 0; i < m; i++) {
             int interval = 1 << i;

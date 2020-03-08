@@ -13,12 +13,12 @@ public class LongSparseTable {
     private long[][] st;
     private LongBinaryFunction merger;
 
-    public LongSparseTable(long[] data, int length, LongBinaryFunction merger) {
+    public LongSparseTable(IntToLongFunction function, int length, LongBinaryFunction merger) {
         int m = CachedLog2.floorLog(length);
         st = new long[m + 1][length];
         this.merger = merger;
         for (int i = 0; i < length; i++) {
-            st[0][i] = data[i];
+            st[0][i] = function.apply(i);
         }
         for (int i = 0; i < m; i++) {
             int interval = 1 << i;

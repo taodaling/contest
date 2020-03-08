@@ -54,6 +54,7 @@ using std::uniform_int_distribution;
 using std::uniform_real_distribution;
 using std::unordered_map;
 using std::vector;
+using std::reverse;
 
 typedef unsigned int ui;
 typedef long long ll;
@@ -61,6 +62,7 @@ typedef long double ld;
 typedef unsigned long long ull;
 std::mt19937 rng(std::chrono::steady_clock::now().time_since_epoch().count());
 
+#ifdef LOCAL
 #define error(args...)                       \
   {                                          \
     string _s = #args;                       \
@@ -75,6 +77,9 @@ void err(std::istream_iterator<string> it, T a, Args... args) {
   cerr << *it << " = " << a << endl;
   err(++it, args...);
 }
+#else
+#define error(args...)
+#endif
 
 #define mp make_pair
 
@@ -122,135 +127,122 @@ void err(std::istream_iterator<string> it, T a, Args... args) {
     return 0;                                       \
   }
 
-struct Node {
-  vector<int> out;
-  vector<int> all;
-  deque<int> dq;
-  bool instk;
-  int indeg;
-  int set;
-  int dfn;
-  int low;
-  int id;
-};
+#define MAX_N 301
 
-vector<Node> nodes;
-deque<int> stk;
-int order = 0;
+vector<pair<int, int>> g[MAX_N];
+int init[MAX_N];
+int tb[MAX_N];
+int tp[MAX_N];
+int dist[MAX_N];
+bool handled[MAX_N];
+int prev[MAX_N];
 
-int ask(ostream &out, istream &in, int a, int b) {
-  out << "? " << a << ' ' << b << endl;
-  out.flush();
-  int ans;
-  in >> ans;
-  return ans == 1 ? a : b;
+int color(int now, int x) {
+  int cur = (now + init[x]) % (tb[x] + tp[x]);
+  return cur >= tb[x] ? 1 : 0;
 }
 
-void tarjan(int root) {
-  if (nodes[root].dfn != 0) {
-    return;
+int next(int now, int x) {
+  int cur = (now + init[x]) % (tb[x] + tp[x]);
+  if (cur < tb[x]) {
+    return tb[x] - cur;
   }
-  nodes[root].dfn = nodes[root].low = ++order;
-  nodes[root].instk = true;
-  stk.push_back(root);
-  for (int node : nodes[root].out) {
-    tarjan(node);
-    if (nodes[node].instk && nodes[node].low < nodes[root].low) {
-      nodes[root].low = nodes[node].low;
-    }
-  }
-
-  if (nodes[root].low == nodes[root].dfn) {
-    while (true) {
-      int last = stk.back();
-      stk.pop_back();
-      nodes[last].set = root;
-      nodes[last].instk = false;
-      nodes[root].all.push_back(last);
-      if (last == root) {
-        break;
-      }
-    }
-    nodes[root].dq.assign(nodes[root].all.begin(), nodes[root].all.end());
-  }
+  return tb[x] + tp[x] - cur;
 }
 
-void addBack(int x, deque<int> &dq) {
-  if (!nodes[x].dq.empty()) {
-    dq.push_back(x);
-    return;
-  }
-  for (int root : nodes[x].all) {
-    for (int node : nodes[root].out) {
-      if (nodes[node].set == x) {
-        continue;
-      }
-      nodes[nodes[node].set].indeg--;
-      if (nodes[nodes[node].set].indeg == 0) {
-        dq.push_back(nodes[node].set);
-      }
+int waitUntil(int now, int a, int b) {
+  int p1 = 0;
+  int p2 = 0;
+  int l1 = (tb[b] + tp[b]) * 2 + 1;
+  int l2 = (tb[a] + tp[a]) * 2 + 1;
+  while (color(now, a) != color(now, b)) {
+    int n1 = next(now, a);
+    int n2 = next(now, b);
+    if (n1 < n2) {
+      p1++;
+    } else {
+      p2++;
     }
+    if (p1 > l1 || p2 > l2) {
+      return -1;
+    }
+    now += min(n1, n2);
   }
+  return now;
 }
 
 void solve(int testId, istream &in, ostream &out) {
-  int n;
-  int m;
+  int src, dst;
+  in >> src >> dst;
+  int n, m;
   in >> n >> m;
-
-  nodes.resize(n + 1);
   for (int i = 1; i <= n; i++) {
-    nodes[i].id = i;
+    char ci;
+    int ri, tib, tip;
+    in >> ci >> ri >> tib >> tip;
+    int total = tib + tip;
+    int time = tib;
+    if (ci == 'P') {
+      time = tib + tip;
+    }
+    time = ((time - ri) % total + total) % total;
+    init[i] = time;
+    tb[i] = tib;
+    tp[i] = tip;
   }
   for (int i = 0; i < m; i++) {
-    int a, b;
-    in >> a >> b;
-    nodes[a].out.push_back(b);
+    int a, b, len;
+    in >> a >> b >> len;
+    g[a].emplace_back(b, len);
+    g[b].emplace_back(a, len);
   }
-
-  for (int i = 1; i <= n; i++) {
-    tarjan(i);
-  }
-
-  deque<int> dq;
-  for (int i = 1; i <= n; i++) {
-    for (int node : nodes[i].out) {
-      if (nodes[node].set == nodes[i].set) {
+  fill(dist, dist + MAX_N, (int)1e9);
+  fill(prev, prev + MAX_N, -1);
+  dist[src] = 0;
+  while (true) {
+    int head = -1;
+    for (int j = 1; j <= n; j++) {
+      if (handled[j]) {
         continue;
       }
-      nodes[nodes[node].set].indeg++;
+      if (head == -1 || dist[head] > dist[j]) {
+        head = j;
+      }
+    }
+    if(head == -1){
+      break;
+    }
+    handled[head] = true;
+
+    for (auto &e : g[head]) {
+      int to = e.first;
+      int len = e.second;
+      int until = waitUntil(dist[head], head, to);
+      error(dist[head], head, to, until);
+      if(until < 0 || until + len >= dist[to]){
+        continue;
+      }
+      dist[to] = until + len;
+      prev[to] = head;
     }
   }
 
-  for (int i = 1; i <= n; i++) {
-    if (i == nodes[i].set && nodes[i].indeg == 0) {
-      dq.push_back(i);
-    }
+  if(prev[dst] == -1){
+    out << 0 << endl;
+    return;
   }
-
-  while (dq.size() > 1) {
-    int a = dq.front();
-    dq.pop_front();
-    int b = dq.front();
-    dq.pop_front();
-    
-
-    int x = nodes[a].dq.front();
-    int y = nodes[b].dq.front();
-
-    if (ask(out, in, x, y) == x) {
-      nodes[b].dq.pop_front();
-    } else {
-      nodes[a].dq.pop_front();
-    }
-
-    addBack(a, dq);
-    addBack(b, dq);
+  
+  out << dist[dst] << endl;
+  vector<int> ans;
+  for(int trace = dst; trace != -1; trace = prev[trace])
+  {
+    ans.push_back(trace);
   }
+  reverse(ans.begin(), ans.end());
 
-  int node = nodes[dq.front()].dq.front();
-  out << "! " << node << endl;
-  out.flush();
+  for(int x : ans){
+    out << x << ' ';
+  }
 }
 
 RUN_ONCE

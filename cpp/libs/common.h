@@ -40,6 +40,7 @@ using std::uniform_int_distribution;
 using std::uniform_real_distribution;
 using std::unordered_map;
 using std::vector;
+using std::reverse;
 
 typedef unsigned int ui;
 typedef long long ll;
@@ -47,6 +48,7 @@ typedef long double ld;
 typedef unsigned long long ull;
 std::mt19937 rng(std::chrono::steady_clock::now().time_since_epoch().count());
 
+#ifdef LOCAL
 #define error(args...)                       \
   {                                          \
     string _s = #args;                       \
@@ -61,6 +63,9 @@ void err(std::istream_iterator<string> it, T a, Args... args) {
   cerr << *it << " = " << a << endl;
   err(++it, args...);
 }
+#else
+#define error(args...)
+#endif
 
 #define mp make_pair
 

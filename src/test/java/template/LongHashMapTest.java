@@ -42,7 +42,7 @@ public class LongHashMapTest {
     @Test
     public void test1() {
         int n = 10000000;
-        LongHashMap hm = new LongHashMap(n, true);
+        LongHashMap hm = new LongHashMap(n, false);
         for (int i = 0; i < n; i++) {
             hm.put(i, -i);
         }

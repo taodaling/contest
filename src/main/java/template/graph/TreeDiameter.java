@@ -5,8 +5,10 @@ import template.primitve.generated.datastructure.IntegerIterator;
 import template.primitve.generated.datastructure.IntegerList;
 import template.primitve.generated.datastructure.IntegerMultiWayStack;
 
+import java.util.List;
+
 public class TreeDiameter {
-    private IntegerMultiWayStack edges;
+    private List<UndirectedEdge>[] edges;
     private int[] depth;
     private int[] parents;
     private int diameter;
@@ -25,7 +27,7 @@ public class TreeDiameter {
         return diameter;
     }
 
-    public TreeDiameter(IntegerMultiWayStack edges, int n) {
+    public TreeDiameter(List<UndirectedEdge>[] edges, int n) {
         this.edges = edges;
         depth = new int[n];
         centers = new IntegerList(2);
@@ -65,8 +67,8 @@ public class TreeDiameter {
     private void dfsForDepth(int root, int p) {
         parents[root] = p;
         depth[root] = p != -1 ? depth[p] + 1 : 0;
-        for (IntegerIterator iterator = edges.iterator(root); iterator.hasNext(); ) {
-            int node = iterator.next();
+        for (UndirectedEdge e : edges[root]) {
+            int node = e.to;
             if (node == p) {
                 continue;
             }

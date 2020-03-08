@@ -1,5 +1,7 @@
 package template.graph;
 
+import template.primitve.generated.datastructure.IntegerList;
+
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -31,14 +33,16 @@ public class UndirectedEulerTrace {
     }
 
     Node[] nodes;
-    List<Edge> edges = new ArrayList<>();
+    List<Edge> edges;
 
-    public UndirectedEulerTrace(int n) {
+    public UndirectedEulerTrace(int n, int m) {
         nodes = new Node[n];
         for (int i = 0; i < n; i++) {
             nodes[i] = new Node();
             nodes[i].id = i;
         }
+        edges = new ArrayList<>(m);
+        eulerTrace = new IntegerList(m);
     }
 
     public void addEdge(int a, int b) {
@@ -50,7 +54,6 @@ public class UndirectedEulerTrace {
         edges.add(edge);
     }
 
-
     public boolean isContainEulerTrace() {
         return containEulerTrace;
     }
@@ -59,13 +62,13 @@ public class UndirectedEulerTrace {
         return isEulerTraceClose;
     }
 
-    public List<Node> getEulerTrace() {
+    public IntegerList getEulerTrace() {
         return eulerTrace;
     }
 
     boolean containEulerTrace;
     boolean isEulerTraceClose;
-    List<Node> eulerTrace = new ArrayList<>();
+    IntegerList eulerTrace;
 
     private void dfs(Node root) {
         while (!root.deque.isEmpty()) {
@@ -76,7 +79,7 @@ public class UndirectedEulerTrace {
             tail.visited = true;
             dfs(tail.other(root));
         }
-        eulerTrace.add(root);
+        eulerTrace.add(root.id);
     }
 
     public boolean findEulerTraceSince(Node root) {
@@ -94,7 +97,6 @@ public class UndirectedEulerTrace {
         }
         isEulerTraceClose = eulerTrace.get(eulerTrace.size() - 1)
                 == eulerTrace.get(0);
-
         return true;
     }
 

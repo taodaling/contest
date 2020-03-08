@@ -1,6 +1,8 @@
 package template.primitve.generated.datastructure;
 
 
+import template.rand.Hasher;
+
 import java.util.Arrays;
 
 public class IntegerHashSet {
@@ -12,6 +14,7 @@ public class IntegerHashSet {
     private int mask;
     private int size;
     private boolean rehash;
+    private Hasher hasher = new Hasher();
 
     public IntegerHashSet(int cap, boolean rehash) {
         this.mask = (1 << (32 - Integer.numberOfLeadingZeros(cap - 1))) - 1;
@@ -40,10 +43,8 @@ public class IntegerHashSet {
     }
 
     private int hash(int x) {
-        int h = Integer.hashCode(x);
-        return h ^ (h >>> 16);
+        return hasher.hash(x);
     }
-
 
     public void add(int x) {
         int h = hash(x);

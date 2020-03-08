@@ -7,7 +7,7 @@ import java.util.Random;
  * Created by dalt on 2018/6/1.
  */
 public class Randomized {
-    private static Random random = new Random(0);
+    private static Random random = new Random();
 
     public static void shuffle(int[] data) {
         shuffle(data, 0, data.length - 1);

@@ -13,12 +13,12 @@ public class IntegerSparseTable {
     private int[][] st;
     private IntegerBinaryFunction merger;
 
-    public IntegerSparseTable(int[] data, int length, IntegerBinaryFunction merger) {
+    public IntegerSparseTable(IntToIntegerFunction function, int length, IntegerBinaryFunction merger) {
         int m = CachedLog2.floorLog(length);
         st = new int[m + 1][length];
         this.merger = merger;
         for (int i = 0; i < length; i++) {
-            st[0][i] = data[i];
+            st[0][i] = function.apply(i);
         }
         for (int i = 0; i < m; i++) {
             int interval = 1 << i;

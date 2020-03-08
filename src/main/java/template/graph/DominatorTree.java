@@ -12,16 +12,18 @@ public class DominatorTree {
     IntegerMultiWayStack in;
     List<DirectedEdge>[] span;
     int[] depth;
-    int[] dfn;
+    int[] begin;
+    int[] end;
+    int[] invDfn;
     int[] sdom;
     int[] idom;
-    LcaOnTree lcaOnTree;
     int root;
     int[] stk;
     Segment segment;
     SegmentQuery sq = new SegmentQuery();
 
-    Debug debug = new Debug(true);
+    //Debug debug = new Debug(false);
+
     public DominatorTree(List<? extends DirectedEdge>[] g, int root) {
         this.root = root;
         this.g = g;
@@ -31,39 +33,59 @@ public class DominatorTree {
         Arrays.fill(idom, -1);
         depth = new int[g.length];
         stk = new int[g.length];
+        end = new int[g.length];
         segment = new Segment(0, g.length);
         int len = 0;
         for (List<?> list : g) {
             len += list.size();
         }
         in = new IntegerMultiWayStack(g.length, len);
-        dfn = new int[g.length];
+        begin = new int[g.length];
         generateTree1(root, -1);
+        invDfn = new int[g.length + 1];
         for (int i = 0; i < g.length; i++) {
-            if (dfn[i] == 0) {
+            invDfn[begin[i]] = i;
+        }
+        for (int i = 0; i < g.length; i++) {
+            if (begin[i] == 0) {
                 continue;
             }
             for (DirectedEdge e : g[i]) {
                 in.addLast(e.to, i);
             }
         }
-        lcaOnTree = new LcaOnTree(span, root);
         dfsForSdom(root);
         dfsForIdom(root);
         idom[root] = -1;
 
-        debug.debug("idom", idom);
-        debug.debug("sdom", sdom);
-        debug.debug("span", span);
+        //debug.debug("idom", idom);
+        //debug.debug("sdom", sdom);
+        //debug.debug("span", span);
     }
 
     public int parent(int i) {
         return idom[i];
     }
 
+    List<DirectedEdge>[] tree;
+
+    public List<DirectedEdge>[] getTree() {
+        if (tree == null) {
+            tree = Graph.createDirectedGraph(g.length);
+            for (int i = 0; i < g.length; i++) {
+                int p = idom[i];
+                if (p == -1) {
+                    continue;
+                }
+                Graph.addEdge(tree, p, i);
+            }
+        }
+        return tree;
+    }
+
     private void dfsForIdom(int root) {
         stk[depth[root]] = root;
-        segment.update(depth[root], depth[root], 0, span.length, dfn[sdom[root]]);
+        segment.update(depth[root], depth[root], 0, span.length, begin[sdom[root]]);
         sq.reset();
         segment.query(depth[sdom[root]] + 1, depth[root],
                 0, span.length, sq);
@@ -83,28 +105,34 @@ public class DominatorTree {
             DirectedEdge e = span[root].get(i);
             dfsForSdom(e.to);
         }
-        int lca = root;
+        int min = begin[root];
         for (IntegerIterator iterator = in.iterator(root);
              iterator.hasNext(); ) {
             int node = iterator.next();
-            int s = dfn[node] < dfn[root] ? node : sdom[node];
-            lca = lcaOnTree.lca(lca, s);
+            if (begin[node] < begin[root]) {
+                min = Math.min(min, begin[node]);
+            } else {
+                int candidate = segment.query(begin[node], begin[node], 0, g.length);
+                min = Math.min(min, candidate);
+            }
         }
-        sdom[root] = lca;
+        sdom[root] = invDfn[min];
+        segment.updateMin(begin[root], end[root], 0, g.length, begin[sdom[root]]);
     }
 
     private int order = 0;
 
     private void generateTree1(int root, int p) {
         depth[root] = p == -1 ? 0 : depth[p] + 1;
-        dfn[root] = ++order;
+        begin[root] = ++order;
         for (DirectedEdge e : g[root]) {
-            if (e.to == p || dfn[e.to] != 0) {
+            if (e.to == p || begin[e.to] != 0) {
                 continue;
             }
             span[root].add(e);
             generateTree1(e.to, root);
         }
+        end[root] = order;
     }
 
     private static class SegmentQuery {
@@ -127,13 +155,24 @@ public class DominatorTree {
     private static class Segment implements Cloneable {
         private Segment left;
         private Segment right;
-        private int s;
+        private int s = Integer.MAX_VALUE;
+        private int dirty = Integer.MAX_VALUE;
 
         public void pushUp() {
             s = Math.min(left.s, right.s);
         }
 
+        private void modify(int d) {
+            dirty = Math.min(d, dirty);
+            s = Math.min(d, dirty);
+        }
+
         public void pushDown() {
+            if (dirty != Integer.MAX_VALUE) {
+                left.modify(dirty);
+                right.modify(dirty);
+                dirty = Integer.MAX_VALUE;
+            }
         }
 
         public Segment(int l, int r) {
@@ -170,6 +209,21 @@ public class DominatorTree {
             pushUp();
         }
 
+        public void updateMin(int ll, int rr, int l, int r, int x) {
+            if (noIntersection(ll, rr, l, r)) {
+                return;
+            }
+            if (covered(ll, rr, l, r)) {
+                modify(x);
+                return;
+            }
+            pushDown();
+            int m = (l + r) >> 1;
+            left.updateMin(ll, rr, l, m, x);
+            right.updateMin(ll, rr, m + 1, r, x);
+            pushUp();
+        }
+
         public void query(int ll, int rr, int l, int r, SegmentQuery q) {
             if (noIntersection(ll, rr, l, r) || s >= q.s) {
                 return;
@@ -187,6 +241,19 @@ public class DominatorTree {
                 right.query(ll, rr, m + 1, r, q);
                 left.query(ll, rr, l, m, q);
             }
+        }
+
+        public int query(int ll, int rr, int l, int r) {
+            if (noIntersection(ll, rr, l, r)) {
+                return Integer.MAX_VALUE;
+            }
+            if (covered(ll, rr, l, r)) {
+                return s;
+            }
+            pushDown();
+            int m = (l + r) >> 1;
+            return Math.min(left.query(ll, rr, l, m),
+                    right.query(ll, rr, m + 1, r));
         }
 
         private Segment deepClone() {
@@ -211,7 +278,7 @@ public class DominatorTree {
 
         private void toString(StringBuilder builder) {
             if (left == null && right == null) {
-                builder.append("val").append(",");
+                builder.append(s).append(",");
                 return;
             }
             pushDown();
