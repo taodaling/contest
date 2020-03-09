@@ -2,6 +2,33 @@
 #define DECIMAL_H
 
 namespace decimal {
+
+template <class T>
+T CeilDiv(T a, T b) {
+  if (b < 0) {
+    a = -a;
+    b = -b;
+  }
+  T div = a / b;
+  if (b * div < a) {
+    div++;
+  }
+  return div;
+}
+
+template <class T>
+T FloorDiv(T a, T b) {
+  if (b < 0) {
+    a = -a;
+    b = -b;
+  }
+  T div = a / b;
+  if (b * div > a) {
+    div--;
+  }
+  return div;
+}
+
 template <class T>
 T RoundToInt(double x) {
   return x >= 0 ? x + 0.5 : x - 0.5;

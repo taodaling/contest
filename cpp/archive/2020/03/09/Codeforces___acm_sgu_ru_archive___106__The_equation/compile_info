@@ -1,0 +1,19 @@
+In file included from C:\Users\daltao\IdeaProjects\contest\cpp\database\Codeforces___acm_sgu_ru_archive___106__The_equation\main.cpp:1:
+C:/Users/daltao/IdeaProjects/contest/cpp/libs/common.h:101:53: warning: backslash-newline at end of file
+ #define RUN_MULTI                                   \
+                                                      
+In file included from C:/Users/daltao/IdeaProjects/contest/cpp/libs/linear_integer_range.h:4,
+                 from C:\Users\daltao\IdeaProjects\contest\cpp\database\Codeforces___acm_sgu_ru_archive___106__The_equation\main.cpp:2:
+C:/Users/daltao/IdeaProjects/contest/cpp/libs/common.h:101:53: warning: backslash-newline at end of file
+ #define RUN_MULTI                                   \
+                                                      
+In file included from C:/Users/daltao/IdeaProjects/contest/cpp/libs/gcd.h:4,
+                 from C:\Users\daltao\IdeaProjects\contest\cpp\database\Codeforces___acm_sgu_ru_archive___106__The_equation\main.cpp:3:
+C:/Users/daltao/IdeaProjects/contest/cpp/libs/common.h:101:53: warning: backslash-newline at end of file
+ #define RUN_MULTI                                   \
+                                                      
+In file included from C:/Users/daltao/IdeaProjects/contest/cpp/libs/common.h:12,
+                 from C:\Users\daltao\IdeaProjects\contest\cpp\database\Codeforces___acm_sgu_ru_archive___106__The_equation\main.cpp:1:
+C:/Users/daltao/IdeaProjects/contest/cpp/libs/compiler_macro.h:6:30: warning: '-std=c++14' is not an option that controls warnings [-Wpragmas]
+ #pragma GCC diagnostic error "-std=c++14"
+                              ^~~~~~~~~~~~

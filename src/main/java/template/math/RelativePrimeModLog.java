@@ -9,12 +9,8 @@ class RelativePrimeModLog {
     int phi;
     IntegerHashMap map;
     int m;
-    CachedPow pow;
+    int invM;
     private static ExtGCD extGCD = new ExtGCD();
-
-    public CachedPow getPowX() {
-        return pow;
-    }
 
     public RelativePrimeModLog(int x, Modular mod) {
         this.x = x;
@@ -24,10 +20,11 @@ class RelativePrimeModLog {
         if (extGCD.extgcd(x, mod.getMod()) != 1) {
             throw new IllegalArgumentException();
         }
-        pow = new CachedPow(x, mod);
-
         m = (int) Math.ceil(Math.sqrt(phi));
         map = new IntegerHashMap(m, false);
+
+        int inv = mod.valueOf(extGCD.getX());
+        invM = new Power(mod).pow(inv, m);
 
         int prod = mod.valueOf(1);
         for (int i = 0; i < m; i++) {
@@ -41,14 +38,12 @@ class RelativePrimeModLog {
      */
     public int log(int y) {
         y = mod.valueOf(y);
-        int start = 0;
-        while (start < phi) {
-            int inverse = pow.inverse(start);
-            int val = map.getOrDefault(mod.mul(inverse, y), -1);
+        int start = y;
+        for (int i = 0; i * m < phi; start = mod.mul(start, invM), i++) {
+            int val = map.getOrDefault(start, -1);
             if (val >= 0) {
-                return powMod.valueOf(val + start);
+                return powMod.valueOf(val + i * m);
             }
-            start += m;
         }
         return -1;
     }

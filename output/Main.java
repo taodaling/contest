@@ -1,18 +1,13 @@
 import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.ArrayList;
-import java.util.Map;
-import java.io.OutputStreamWriter;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.util.List;
-import java.util.TreeMap;
 import java.io.Closeable;
-import java.util.Map.Entry;
 import java.io.Writer;
+import java.io.OutputStreamWriter;
 import java.io.InputStream;
 
 /**
@@ -21,9 +16,7 @@ import java.io.InputStream;
  */
 public class Main {
     public static void main(String[] args) throws Exception {
-        Thread thread = new Thread(null, new TaskAdapter(), "", 1 << 27);
-        thread.start();
-        thread.join();
+        new TaskAdapter().run();
     }
 
     static class TaskAdapter implements Runnable {
@@ -33,67 +26,173 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            DMangaMarket solver = new DMangaMarket();
-            solver.solve(1, in, out);
-            out.close();
+            LUOGU4195 solver = new LUOGU4195();
+            try {
+                int testNumber = 1;
+                while (true)
+                    solver.solve(testNumber++, in, out);
+            } catch (UnknownError e) {
+                out.close();
+            }
         }
     }
 
-    static class DMangaMarket {
+    static class LUOGU4195 {
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            int n = in.readInt();
-            long t = in.readInt();
-            List<Store> nonZero = new ArrayList<>(n);
-            List<Store> zero = new ArrayList<>(n);
-
-            for (int i = 0; i < n; i++) {
-                int a = in.readInt();
-                int b = in.readInt();
-                Store store = new Store();
-                store.a = a;
-                store.b = b;
-                if (a == 0) {
-                    zero.add(store);
-                } else {
-                    nonZero.add(store);
-                }
+            int a = in.readInt();
+            int p = in.readInt();
+            int b = in.readInt();
+            if (a == 0 && b == 0 && p == 0) {
+                throw new UnknownError();
             }
-
-            zero.sort((a, b) -> Long.compare(a.b, b.b));
-            nonZero.sort((a, b) -> Long.compare((a.b + 1) * b.a, (b.b + 1) * a.a));
-            int m = nonZero.size();
-            long[][] dp = new long[m + 1][30];
-            long inf = (long) 1e18;
-            SequenceUtils.deepFill(dp, inf);
-            dp[0][0] = 0;
-            for (int i = 1; i <= m; i++) {
-                Store s = nonZero.get(i - 1);
-                for (int j = 0; j < 30; j++) {
-                    dp[i][j] = dp[i - 1][j];
-                    if (j > 0) {
-                        dp[i][j] = Math.min(dp[i][j], dp[i - 1][j - 1] + 1 + DigitUtils.mul(dp[i - 1][j - 1] + 1, s.a, inf, inf) + s.b);
-                    }
-                }
+            GenericModLog log = new GenericModLog(a, p);
+            int x = log.log(b);
+            if (x == -1) {
+                out.println("No Solution");
+            } else {
+                out.println(x);
             }
+        }
 
-            long sum = 0;
-            TreeMap<Long, Integer> map = new TreeMap<>();
-            for (int i = 0; i < zero.size(); i++) {
-                Store s = zero.get(i);
-                sum += s.b + 1;
-                map.put(sum, i + 1);
+    }
+
+    static class FastOutput implements AutoCloseable, Closeable, Appendable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
+
+        public FastOutput append(CharSequence csq) {
+            cache.append(csq);
+            return this;
+        }
+
+        public FastOutput append(CharSequence csq, int start, int end) {
+            cache.append(csq, start, end);
+            return this;
+        }
+
+        public FastOutput(Writer os) {
+            this.os = os;
+        }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput append(char c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput append(int c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput append(String c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput println(String c) {
+            return append(c).println();
+        }
+
+        public FastOutput println(int c) {
+            return append(c).println();
+        }
+
+        public FastOutput println() {
+            cache.append(System.lineSeparator());
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
             }
+            return this;
+        }
 
-            long ans = 0;
-            for (int i = 0; i < 30; i++) {
-                if (dp[m][i] > t) {
-                    continue;
-                }
-                Map.Entry<Long, Integer> floor = map.floorEntry(t - dp[m][i]);
-                ans = Math.max(ans, i + (floor == null ? 0 : floor.getValue()));
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
             }
+        }
 
-            out.println(ans);
+        public String toString() {
+            return cache.toString();
+        }
+
+    }
+
+    static class GCDs {
+        private GCDs() {
+        }
+
+        public static int gcd(int a, int b) {
+            return a >= b ? gcd0(a, b) : gcd0(b, a);
+        }
+
+        private static int gcd0(int a, int b) {
+            return b == 0 ? a : gcd0(b, a % b);
+        }
+
+    }
+
+    static class Modular {
+        int m;
+
+        public int getMod() {
+            return m;
+        }
+
+        public Modular(int m) {
+            this.m = m;
+        }
+
+        public Modular(long m) {
+            this.m = (int) m;
+            if (this.m != m) {
+                throw new IllegalArgumentException();
+            }
+        }
+
+        public Modular(double m) {
+            this.m = (int) m;
+            if (this.m != m) {
+                throw new IllegalArgumentException();
+            }
+        }
+
+        public int valueOf(int x) {
+            x %= m;
+            if (x < 0) {
+                x += m;
+            }
+            return x;
+        }
+
+        public int valueOf(long x) {
+            x %= m;
+            if (x < 0) {
+                x += m;
+            }
+            return (int) x;
+        }
+
+        public int mul(int x, int y) {
+            return valueOf((long) x * y);
+        }
+
+        public String toString() {
+            return "mod " + m;
         }
 
     }
@@ -157,120 +256,361 @@ public class Main {
 
     }
 
+    static class RelativePrimeModLog {
+        Modular mod;
+        Modular powMod;
+        int x;
+        int phi;
+        IntegerHashMap map;
+        int m;
+        int invM;
+        private static ExtGCD extGCD = new ExtGCD();
+
+        public RelativePrimeModLog(int x, Modular mod) {
+            this.x = x;
+            this.mod = mod;
+            phi = mod.getMod();
+            powMod = new Modular(phi);
+            if (extGCD.extgcd(x, mod.getMod()) != 1) {
+                throw new IllegalArgumentException();
+            }
+            m = (int) Math.ceil(Math.sqrt(phi));
+            map = new IntegerHashMap(m, false);
+
+            int inv = mod.valueOf(extGCD.getX());
+            invM = new Power(mod).pow(inv, m);
+
+            int prod = mod.valueOf(1);
+            for (int i = 0; i < m; i++) {
+                map.putIfNotExist(prod, i);
+                prod = mod.mul(prod, x);
+            }
+        }
+
+        public int log(int y) {
+            y = mod.valueOf(y);
+            int start = y;
+            for (int i = 0; i * m < phi; start = mod.mul(start, invM), i++) {
+                int val = map.getOrDefault(start, -1);
+                if (val >= 0) {
+                    return powMod.valueOf(val + i * m);
+                }
+            }
+            return -1;
+        }
+
+    }
+
+    static class Hasher {
+        private long time = System.nanoTime() + System.currentTimeMillis();
+
+        private int shuffle(long x) {
+            x += time;
+            x += 0x9e3779b97f4a7c15L;
+            x = (x ^ (x >>> 30)) * 0xbf58476d1ce4e5b9L;
+            x = (x ^ (x >>> 27)) * 0x94d049bb133111ebL;
+            return (int) (x ^ (x >>> 31));
+        }
+
+        public int hash(int x) {
+            return shuffle(x);
+        }
+
+    }
+
+    static interface IntegerEntryIterator {
+        boolean hasNext();
+
+        void next();
+
+        int getEntryKey();
+
+        int getEntryValue();
+
+    }
+
+    static class ExtGCD {
+        private long x;
+        private long y;
+        private long g;
+
+        public long getX() {
+            return x;
+        }
+
+        public long extgcd(long a, long b) {
+            if (a >= b) {
+                g = extgcd0(a, b);
+            } else {
+                g = extgcd0(b, a);
+                long tmp = x;
+                x = y;
+                y = tmp;
+            }
+            return g;
+        }
+
+        private long extgcd0(long a, long b) {
+            if (b == 0) {
+                x = 1;
+                y = 0;
+                return a;
+            }
+            long g = extgcd0(b, a % b);
+            long n = x;
+            long m = y;
+            x = m;
+            y = n - m * (a / b);
+            return g;
+        }
+
+    }
+
+    static class IntegerHashMap {
+        private int[] slot;
+        private int[] next;
+        private int[] keys;
+        private int[] values;
+        private int alloc;
+        private boolean[] removed;
+        private int mask;
+        private int size;
+        private boolean rehash;
+        private Hasher hasher = new Hasher();
+
+        public IntegerHashMap(int cap, boolean rehash) {
+            this.mask = (1 << (32 - Integer.numberOfLeadingZeros(cap - 1))) - 1;
+            slot = new int[mask + 1];
+            next = new int[cap + 1];
+            keys = new int[cap + 1];
+            values = new int[cap + 1];
+            removed = new boolean[cap + 1];
+            this.rehash = rehash;
+        }
+
+        private void doubleCapacity() {
+            int newSize = Math.max(next.length + 10, next.length * 2);
+            next = Arrays.copyOf(next, newSize);
+            keys = Arrays.copyOf(keys, newSize);
+            values = Arrays.copyOf(values, newSize);
+            removed = Arrays.copyOf(removed, newSize);
+        }
+
+        public void alloc() {
+            alloc++;
+            if (alloc >= next.length) {
+                doubleCapacity();
+            }
+            next[alloc] = 0;
+            removed[alloc] = false;
+            size++;
+        }
+
+        private void rehash() {
+            int[] newSlots = new int[Math.max(16, slot.length * 2)];
+            int newMask = newSlots.length - 1;
+            for (int i = 0; i < slot.length; i++) {
+                if (slot[i] == 0) {
+                    continue;
+                }
+                int head = slot[i];
+                while (head != 0) {
+                    int n = next[head];
+                    int s = hash(keys[head]) & newMask;
+                    next[head] = newSlots[s];
+                    newSlots[s] = head;
+                    head = n;
+                }
+            }
+            this.slot = newSlots;
+            this.mask = newMask;
+        }
+
+        private int hash(int x) {
+            return hasher.hash(x);
+        }
+
+        public void putIfNotExist(int x, int y) {
+            put(x, y, false);
+        }
+
+        public void put(int x, int y, boolean cover) {
+            int h = hash(x);
+            int s = h & mask;
+            if (slot[s] == 0) {
+                alloc();
+                slot[s] = alloc;
+                keys[alloc] = x;
+                values[alloc] = y;
+            } else {
+                int index = findIndexOrLastEntry(s, x);
+                if (keys[index] != x) {
+                    alloc();
+                    next[index] = alloc;
+                    keys[alloc] = x;
+                    values[alloc] = y;
+                } else if (cover) {
+                    values[index] = y;
+                }
+            }
+            if (rehash && size >= slot.length) {
+                rehash();
+            }
+        }
+
+        public int getOrDefault(int x, int def) {
+            int h = hash(x);
+            int s = h & mask;
+            if (slot[s] == 0) {
+                return def;
+            }
+            int index = findIndexOrLastEntry(s, x);
+            return keys[index] == x ? values[index] : def;
+        }
+
+        private int findIndexOrLastEntry(int s, int x) {
+            int iter = slot[s];
+            while (keys[iter] != x) {
+                if (next[iter] != 0) {
+                    iter = next[iter];
+                } else {
+                    return iter;
+                }
+            }
+            return iter;
+        }
+
+        public IntegerEntryIterator iterator() {
+            return new IntegerEntryIterator() {
+                int index = 1;
+                int readIndex = -1;
+
+
+                public boolean hasNext() {
+                    while (index <= alloc && removed[index]) {
+                        index++;
+                    }
+                    return index <= alloc;
+                }
+
+
+                public int getEntryKey() {
+                    return keys[readIndex];
+                }
+
+
+                public int getEntryValue() {
+                    return values[readIndex];
+                }
+
+
+                public void next() {
+                    if (!hasNext()) {
+                        throw new IllegalStateException();
+                    }
+                    readIndex = index;
+                    index++;
+                }
+            };
+        }
+
+        public String toString() {
+            IntegerEntryIterator iterator = iterator();
+            StringBuilder builder = new StringBuilder("{");
+            while (iterator.hasNext()) {
+                iterator.next();
+                builder.append(iterator.getEntryKey()).append("->").append(iterator.getEntryValue()).append(',');
+            }
+            if (builder.charAt(builder.length() - 1) == ',') {
+                builder.setLength(builder.length() - 1);
+            }
+            builder.append('}');
+            return builder.toString();
+        }
+
+    }
+
     static class DigitUtils {
         private DigitUtils() {
         }
 
-        public static boolean isMultiplicationOverflow(long a, long b, long limit) {
-            if (limit < 0) {
-                limit = -limit;
+        public static int mod(int x, int mod) {
+            x %= mod;
+            if (x < 0) {
+                x += mod;
             }
-            if (a < 0) {
-                a = -a;
-            }
-            if (b < 0) {
-                b = -b;
-            }
-            if (a == 0 || b == 0) {
-                return false;
-            }
-            //a * b > limit => a > limit / b
-            return a > limit / b;
-        }
-
-        public static long mul(long a, long b, long limit, long overflowVal) {
-            return isMultiplicationOverflow(a, b, limit) ? overflowVal : a * b;
+            return x;
         }
 
     }
 
-    static class Store {
-        long a;
-        long b;
+    static class Power {
+        final Modular modular;
 
-    }
-
-    static class FastOutput implements AutoCloseable, Closeable, Appendable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
-
-        public FastOutput append(CharSequence csq) {
-            cache.append(csq);
-            return this;
+        public Power(Modular modular) {
+            this.modular = modular;
         }
 
-        public FastOutput append(CharSequence csq, int start, int end) {
-            cache.append(csq, start, end);
-            return this;
-        }
-
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput append(char c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput append(long c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput println(long c) {
-            return append(c).println();
-        }
-
-        public FastOutput println() {
-            cache.append(System.lineSeparator());
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
+        public int pow(int x, int n) {
+            if (n == 0) {
+                return modular.valueOf(1);
             }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
+            long r = pow(x, n >> 1);
+            r = modular.valueOf(r * r);
+            if ((n & 1) == 1) {
+                r = modular.valueOf(r * x);
             }
-        }
-
-        public String toString() {
-            return cache.toString();
+            return (int) r;
         }
 
     }
 
-    static class SequenceUtils {
-        public static void deepFill(Object array, long val) {
-            if (!array.getClass().isArray()) {
-                throw new IllegalArgumentException();
+    static class GenericModLog {
+        private RelativePrimeModLog log;
+        private int mul = 1;
+        private int div = 1;
+        private int k = 0;
+        private int a;
+        private Modular original;
+        private Modular modular;
+        private static ExtGCD extGCD = new ExtGCD();
+
+        public GenericModLog(int a, int p) {
+            a = DigitUtils.mod(a, p);
+            original = new Modular(p);
+            int g;
+            while ((g = GCDs.gcd(a, p)) != 1) {
+                mul = original.mul(mul, a / g);
+                div *= g;
+                p /= g;
+                k++;
             }
-            if (array instanceof long[]) {
-                long[] longArray = (long[]) array;
-                Arrays.fill(longArray, val);
-            } else {
-                Object[] objArray = (Object[]) array;
-                for (Object obj : objArray) {
-                    deepFill(obj, val);
+            this.a = a;
+            this.modular = new Modular(p);
+            log = new RelativePrimeModLog(a, modular);
+            extGCD.extgcd(mul, p);
+            mul = modular.valueOf(extGCD.getX());
+        }
+
+        public int log(int y) {
+            y = original.valueOf(y);
+            int prod = original.valueOf(1);
+            for (int i = 0; i < k; i++) {
+                if (prod == y) {
+                    return i;
                 }
+                prod = original.mul(prod, a);
             }
+            if (y % div != 0) {
+                return -1;
+            }
+
+            y = modular.mul(y / div, mul);
+            int ans = log.log(y);
+            if (ans >= 0) {
+                ans += k;
+            }
+            return ans;
         }
 
     }

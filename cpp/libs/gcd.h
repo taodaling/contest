@@ -18,7 +18,7 @@ T Gcd(T a, T b) {
 }
 
 template <typename T>
-T Extgcd0(T a, T b, T &x, T &y) {
+T  Extgcd0(T a, T b, T &x, T &y) {
   if (!b) {
     x = 1;
     y = 0;
