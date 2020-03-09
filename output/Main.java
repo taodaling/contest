@@ -4,7 +4,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.io.UncheckedIOException;
+import java.util.List;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
@@ -26,174 +28,133 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            LUOGU4195 solver = new LUOGU4195();
-            try {
-                int testNumber = 1;
-                while (true)
-                    solver.solve(testNumber++, in, out);
-            } catch (UnknownError e) {
-                out.close();
-            }
+            P3376 solver = new P3376();
+            solver.solve(1, in, out);
+            out.close();
         }
     }
 
-    static class LUOGU4195 {
+    static class P3376 {
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            int a = in.readInt();
-            int p = in.readInt();
-            int b = in.readInt();
-            if (a == 0 && b == 0 && p == 0) {
-                throw new UnknownError();
+            int n = in.readInt();
+            int m = in.readInt();
+            int s = in.readInt();
+            int t = in.readInt();
+
+            List<IntegerFlowEdge>[] net = IntegerFlow.createFlow(n + 1);
+            for (int i = 1; i <= m; i++) {
+                int u = in.readInt();
+                int v = in.readInt();
+                int c = in.readInt();
+                IntegerFlow.addEdge(net, u, v, c);
             }
-            GenericModLog log = new GenericModLog(a, p);
-            int x = log.log(b);
-            if (x == -1) {
-                out.println("No Solution");
-            } else {
-                out.println(x);
-            }
+
+            IntegerMaximumFlow mf = new IntegerISAP(n + 1);
+            int ans = mf.apply(net, s, t, (int) 2e9);
+            out.println(ans);
         }
 
     }
 
-    static class FastOutput implements AutoCloseable, Closeable, Appendable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
+    static interface IntegerIterator {
+        boolean hasNext();
 
-        public FastOutput append(CharSequence csq) {
-            cache.append(csq);
-            return this;
+        int next();
+
+    }
+
+    static class IntegerFlowEdge<T extends IntegerFlowEdge> extends DirectedEdge {
+        public int flow;
+        public boolean real;
+        public T rev;
+
+        public IntegerFlowEdge(int to, int flow, boolean real) {
+            super(to);
+            this.flow = flow;
+            this.real = real;
         }
 
-        public FastOutput append(CharSequence csq, int start, int end) {
-            cache.append(csq, start, end);
-            return this;
-        }
+    }
 
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
+    static class DirectedEdge {
+        public int to;
 
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput append(char c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput append(int c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput append(String c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput println(String c) {
-            return append(c).println();
-        }
-
-        public FastOutput println(int c) {
-            return append(c).println();
-        }
-
-        public FastOutput println() {
-            cache.append(System.lineSeparator());
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
+        public DirectedEdge(int to) {
+            this.to = to;
         }
 
         public String toString() {
-            return cache.toString();
+            return "->" + to;
         }
 
     }
 
-    static class GCDs {
-        private GCDs() {
+    static class IntegerISAP implements IntegerMaximumFlow {
+        private List<IntegerFlowEdge>[] net;
+        private int s;
+        private int t;
+        private int[] dists;
+        private int[] cnts;
+        private int n;
+        private boolean exit;
+        private IntegerDeque deque;
+
+        public IntegerISAP(int vertexNum) {
+            dists = new int[vertexNum];
+            cnts = new int[vertexNum + 2];
+            deque = new IntegerDequeImpl(n);
         }
 
-        public static int gcd(int a, int b) {
-            return a >= b ? gcd0(a, b) : gcd0(b, a);
+        private int send(int root, int flow) {
+            if (root == t) {
+                return flow;
+            }
+            int snapshot = flow;
+            for (IntegerFlowEdge e : net[root]) {
+                int remain;
+                if (dists[e.to] + 1 != dists[root] || (remain = e.rev.flow) == 0) {
+                    continue;
+                }
+                int sent = send(e.to, Math.min(flow, remain));
+                flow -= sent;
+                IntegerFlow.send(e, sent);
+                if (flow == 0 || exit) {
+                    break;
+                }
+            }
+            if (flow == snapshot) {
+                cnts[dists[root]]--;
+                dists[root]++;
+                cnts[dists[root]]++;
+                if (cnts[dists[root] - 1] == 0) {
+                    exit = true;
+                }
+            }
+            return snapshot - flow;
         }
 
-        private static int gcd0(int a, int b) {
-            return b == 0 ? a : gcd0(b, a % b);
+        public int apply(List<IntegerFlowEdge>[] g, int s, int t, int send) {
+            this.net = g;
+            this.s = s;
+            this.t = t;
+            this.exit = false;
+            n = g.length;
+            IntegerFlow.bfsForFlow(g, t, dists, n + 1, deque);
+            Arrays.fill(cnts, 0, n + 2, 0);
+            for (int d : dists) {
+                cnts[d]++;
+            }
+            int flow = 0;
+            while (flow < send && !exit && dists[s] < n) {
+                flow += send(s, send - flow);
+            }
+            return flow;
         }
 
     }
 
-    static class Modular {
-        int m;
-
-        public int getMod() {
-            return m;
-        }
-
-        public Modular(int m) {
-            this.m = m;
-        }
-
-        public Modular(long m) {
-            this.m = (int) m;
-            if (this.m != m) {
-                throw new IllegalArgumentException();
-            }
-        }
-
-        public Modular(double m) {
-            this.m = (int) m;
-            if (this.m != m) {
-                throw new IllegalArgumentException();
-            }
-        }
-
-        public int valueOf(int x) {
-            x %= m;
-            if (x < 0) {
-                x += m;
-            }
-            return x;
-        }
-
-        public int valueOf(long x) {
-            x %= m;
-            if (x < 0) {
-                x += m;
-            }
-            return (int) x;
-        }
-
-        public int mul(int x, int y) {
-            return valueOf((long) x * y);
-        }
-
-        public String toString() {
-            return "mod " + m;
-        }
+    static interface IntegerDeque extends IntegerStack {
+        int removeFirst();
 
     }
 
@@ -256,362 +217,228 @@ public class Main {
 
     }
 
-    static class RelativePrimeModLog {
-        Modular mod;
-        Modular powMod;
-        int x;
-        int phi;
-        IntegerHashMap map;
-        int m;
-        int invM;
-        private static ExtGCD extGCD = new ExtGCD();
+    static class IntegerDequeImpl implements IntegerDeque {
+        private int[] data;
+        private int bpos;
+        private int epos;
+        private static final int[] EMPTY = new int[0];
+        private int n;
 
-        public RelativePrimeModLog(int x, Modular mod) {
-            this.x = x;
-            this.mod = mod;
-            phi = mod.getMod();
-            powMod = new Modular(phi);
-            if (extGCD.extgcd(x, mod.getMod()) != 1) {
-                throw new IllegalArgumentException();
-            }
-            m = (int) Math.ceil(Math.sqrt(phi));
-            map = new IntegerHashMap(m, false);
-
-            int inv = mod.valueOf(extGCD.getX());
-            invM = new Power(mod).pow(inv, m);
-
-            int prod = mod.valueOf(1);
-            for (int i = 0; i < m; i++) {
-                map.putIfNotExist(prod, i);
-                prod = mod.mul(prod, x);
-            }
-        }
-
-        public int log(int y) {
-            y = mod.valueOf(y);
-            int start = y;
-            for (int i = 0; i * m < phi; start = mod.mul(start, invM), i++) {
-                int val = map.getOrDefault(start, -1);
-                if (val >= 0) {
-                    return powMod.valueOf(val + i * m);
-                }
-            }
-            return -1;
-        }
-
-    }
-
-    static class Hasher {
-        private long time = System.nanoTime() + System.currentTimeMillis();
-
-        private int shuffle(long x) {
-            x += time;
-            x += 0x9e3779b97f4a7c15L;
-            x = (x ^ (x >>> 30)) * 0xbf58476d1ce4e5b9L;
-            x = (x ^ (x >>> 27)) * 0x94d049bb133111ebL;
-            return (int) (x ^ (x >>> 31));
-        }
-
-        public int hash(int x) {
-            return shuffle(x);
-        }
-
-    }
-
-    static interface IntegerEntryIterator {
-        boolean hasNext();
-
-        void next();
-
-        int getEntryKey();
-
-        int getEntryValue();
-
-    }
-
-    static class ExtGCD {
-        private long x;
-        private long y;
-        private long g;
-
-        public long getX() {
-            return x;
-        }
-
-        public long extgcd(long a, long b) {
-            if (a >= b) {
-                g = extgcd0(a, b);
+        public IntegerDequeImpl(int cap) {
+            if (cap == 0) {
+                data = EMPTY;
             } else {
-                g = extgcd0(b, a);
-                long tmp = x;
-                x = y;
-                y = tmp;
+                data = new int[cap];
             }
-            return g;
+            bpos = 0;
+            epos = 0;
+            n = cap;
         }
 
-        private long extgcd0(long a, long b) {
-            if (b == 0) {
-                x = 1;
-                y = 0;
-                return a;
+        private void expandSpace(int len) {
+            while (n < len) {
+                n = Math.max(n + 10, n * 2);
             }
-            long g = extgcd0(b, a % b);
-            long n = x;
-            long m = y;
-            x = m;
-            y = n - m * (a / b);
-            return g;
-        }
-
-    }
-
-    static class IntegerHashMap {
-        private int[] slot;
-        private int[] next;
-        private int[] keys;
-        private int[] values;
-        private int alloc;
-        private boolean[] removed;
-        private int mask;
-        private int size;
-        private boolean rehash;
-        private Hasher hasher = new Hasher();
-
-        public IntegerHashMap(int cap, boolean rehash) {
-            this.mask = (1 << (32 - Integer.numberOfLeadingZeros(cap - 1))) - 1;
-            slot = new int[mask + 1];
-            next = new int[cap + 1];
-            keys = new int[cap + 1];
-            values = new int[cap + 1];
-            removed = new boolean[cap + 1];
-            this.rehash = rehash;
-        }
-
-        private void doubleCapacity() {
-            int newSize = Math.max(next.length + 10, next.length * 2);
-            next = Arrays.copyOf(next, newSize);
-            keys = Arrays.copyOf(keys, newSize);
-            values = Arrays.copyOf(values, newSize);
-            removed = Arrays.copyOf(removed, newSize);
-        }
-
-        public void alloc() {
-            alloc++;
-            if (alloc >= next.length) {
-                doubleCapacity();
-            }
-            next[alloc] = 0;
-            removed[alloc] = false;
-            size++;
-        }
-
-        private void rehash() {
-            int[] newSlots = new int[Math.max(16, slot.length * 2)];
-            int newMask = newSlots.length - 1;
-            for (int i = 0; i < slot.length; i++) {
-                if (slot[i] == 0) {
-                    continue;
+            int[] newData = new int[n];
+            if (bpos <= epos) {
+                if (bpos < epos) {
+                    System.arraycopy(data, bpos, newData, 0, epos - bpos);
                 }
-                int head = slot[i];
-                while (head != 0) {
-                    int n = next[head];
-                    int s = hash(keys[head]) & newMask;
-                    next[head] = newSlots[s];
-                    newSlots[s] = head;
-                    head = n;
-                }
-            }
-            this.slot = newSlots;
-            this.mask = newMask;
-        }
-
-        private int hash(int x) {
-            return hasher.hash(x);
-        }
-
-        public void putIfNotExist(int x, int y) {
-            put(x, y, false);
-        }
-
-        public void put(int x, int y, boolean cover) {
-            int h = hash(x);
-            int s = h & mask;
-            if (slot[s] == 0) {
-                alloc();
-                slot[s] = alloc;
-                keys[alloc] = x;
-                values[alloc] = y;
             } else {
-                int index = findIndexOrLastEntry(s, x);
-                if (keys[index] != x) {
-                    alloc();
-                    next[index] = alloc;
-                    keys[alloc] = x;
-                    values[alloc] = y;
-                } else if (cover) {
-                    values[index] = y;
-                }
+                System.arraycopy(data, bpos, newData, 0, data.length - bpos);
+                System.arraycopy(data, 0, newData, data.length - bpos, epos);
             }
-            if (rehash && size >= slot.length) {
-                rehash();
-            }
+            epos = size();
+            bpos = 0;
+            data = newData;
         }
 
-        public int getOrDefault(int x, int def) {
-            int h = hash(x);
-            int s = h & mask;
-            if (slot[s] == 0) {
-                return def;
-            }
-            int index = findIndexOrLastEntry(s, x);
-            return keys[index] == x ? values[index] : def;
-        }
-
-        private int findIndexOrLastEntry(int s, int x) {
-            int iter = slot[s];
-            while (keys[iter] != x) {
-                if (next[iter] != 0) {
-                    iter = next[iter];
-                } else {
-                    return iter;
-                }
-            }
-            return iter;
-        }
-
-        public IntegerEntryIterator iterator() {
-            return new IntegerEntryIterator() {
-                int index = 1;
-                int readIndex = -1;
+        public IntegerIterator iterator() {
+            return new IntegerIterator() {
+                int index = bpos;
 
 
                 public boolean hasNext() {
-                    while (index <= alloc && removed[index]) {
-                        index++;
-                    }
-                    return index <= alloc;
+                    return index != epos;
                 }
 
 
-                public int getEntryKey() {
-                    return keys[readIndex];
-                }
-
-
-                public int getEntryValue() {
-                    return values[readIndex];
-                }
-
-
-                public void next() {
-                    if (!hasNext()) {
-                        throw new IllegalStateException();
-                    }
-                    readIndex = index;
-                    index++;
+                public int next() {
+                    int ans = data[index];
+                    index = IntegerDequeImpl.this.next(index);
+                    return ans;
                 }
             };
         }
 
+        public int removeFirst() {
+            int ans = data[bpos];
+            bpos = next(bpos);
+            return ans;
+        }
+
+        public void addLast(int x) {
+            ensureMore();
+            data[epos] = x;
+            epos = next(epos);
+        }
+
+        public void clear() {
+            bpos = epos = 0;
+        }
+
+        private int next(int x) {
+            return x + 1 >= n ? 0 : x + 1;
+        }
+
+        private void ensureMore() {
+            if (next(epos) == bpos) {
+                expandSpace(n + 1);
+            }
+        }
+
+        public int size() {
+            int ans = epos - bpos;
+            if (ans < 0) {
+                ans += data.length;
+            }
+            return ans;
+        }
+
+        public boolean isEmpty() {
+            return bpos == epos;
+        }
+
         public String toString() {
-            IntegerEntryIterator iterator = iterator();
-            StringBuilder builder = new StringBuilder("{");
-            while (iterator.hasNext()) {
-                iterator.next();
-                builder.append(iterator.getEntryKey()).append("->").append(iterator.getEntryValue()).append(',');
+            StringBuilder builder = new StringBuilder();
+            for (IntegerIterator iterator = iterator(); iterator.hasNext(); ) {
+                builder.append(iterator.next()).append(' ');
             }
-            if (builder.charAt(builder.length() - 1) == ',') {
-                builder.setLength(builder.length() - 1);
-            }
-            builder.append('}');
             return builder.toString();
         }
 
     }
 
-    static class DigitUtils {
-        private DigitUtils() {
+    static interface IntegerMaximumFlow {
+        int apply(List<IntegerFlowEdge>[] g, int s, int t, int send);
+
+    }
+
+    static class FastOutput implements AutoCloseable, Closeable, Appendable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
+
+        public FastOutput append(CharSequence csq) {
+            cache.append(csq);
+            return this;
         }
 
-        public static int mod(int x, int mod) {
-            x %= mod;
-            if (x < 0) {
-                x += mod;
+        public FastOutput append(CharSequence csq, int start, int end) {
+            cache.append(csq, start, end);
+            return this;
+        }
+
+        public FastOutput(Writer os) {
+            this.os = os;
+        }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput append(char c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput append(int c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput println(int c) {
+            return append(c).println();
+        }
+
+        public FastOutput println() {
+            cache.append(System.lineSeparator());
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
             }
-            return x;
+            return this;
+        }
+
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+
+        public String toString() {
+            return cache.toString();
         }
 
     }
 
-    static class Power {
-        final Modular modular;
-
-        public Power(Modular modular) {
-            this.modular = modular;
+    static class IntegerFlow {
+        public static <T extends IntegerFlowEdge> void send(T edge, int flow) {
+            edge.flow += flow;
+            edge.rev.flow -= flow;
         }
 
-        public int pow(int x, int n) {
-            if (n == 0) {
-                return modular.valueOf(1);
-            }
-            long r = pow(x, n >> 1);
-            r = modular.valueOf(r * r);
-            if ((n & 1) == 1) {
-                r = modular.valueOf(r * x);
-            }
-            return (int) r;
+        public static IntegerFlowEdge addEdge(List<IntegerFlowEdge>[] g, int s, int t, int cap) {
+            IntegerFlowEdge real = new IntegerFlowEdge(t, 0, true);
+            IntegerFlowEdge virtual = new IntegerFlowEdge(s, cap, false);
+            real.rev = virtual;
+            virtual.rev = real;
+            g[s].add(real);
+            g[t].add(virtual);
+            return real;
         }
 
-    }
-
-    static class GenericModLog {
-        private RelativePrimeModLog log;
-        private int mul = 1;
-        private int div = 1;
-        private int k = 0;
-        private int a;
-        private Modular original;
-        private Modular modular;
-        private static ExtGCD extGCD = new ExtGCD();
-
-        public GenericModLog(int a, int p) {
-            a = DigitUtils.mod(a, p);
-            original = new Modular(p);
-            int g;
-            while ((g = GCDs.gcd(a, p)) != 1) {
-                mul = original.mul(mul, a / g);
-                div *= g;
-                p /= g;
-                k++;
+        public static List<IntegerFlowEdge>[] createFlow(int n) {
+            List<IntegerFlowEdge>[] g = new List[n];
+            for (int i = 0; i < n; i++) {
+                g[i] = new ArrayList<>();
             }
-            this.a = a;
-            this.modular = new Modular(p);
-            log = new RelativePrimeModLog(a, modular);
-            extGCD.extgcd(mul, p);
-            mul = modular.valueOf(extGCD.getX());
+            return g;
         }
 
-        public int log(int y) {
-            y = original.valueOf(y);
-            int prod = original.valueOf(1);
-            for (int i = 0; i < k; i++) {
-                if (prod == y) {
-                    return i;
+        public static <T extends IntegerFlowEdge> void bfsForFlow(List<T>[] g, int s, int[] dist, int inf, IntegerDeque deque) {
+            Arrays.fill(dist, 0, g.length, inf);
+            dist[s] = 0;
+            deque.clear();
+            deque.addLast(s);
+            while (!deque.isEmpty()) {
+                int head = deque.removeFirst();
+                for (T e : g[head]) {
+                    if (e.flow > 0 && dist[e.to] == inf) {
+                        dist[e.to] = dist[head] + 1;
+                        deque.addLast(e.to);
+                    }
                 }
-                prod = original.mul(prod, a);
             }
-            if (y % div != 0) {
-                return -1;
-            }
-
-            y = modular.mul(y / div, mul);
-            int ans = log.log(y);
-            if (ans >= 0) {
-                ans += k;
-            }
-            return ans;
         }
+
+    }
+
+    static interface IntegerStack {
+        void addLast(int x);
+
+        boolean isEmpty();
+
+        void clear();
 
     }
 }

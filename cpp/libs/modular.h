@@ -82,7 +82,7 @@ class Modular {
     return *this;
   }
   Modular<T, M> pow(long long exp) const { return Modpow(_v, exp, M); }
-  Modular<T, M> inverse() const { return Modular::Inverse(_v, M); }
+  Modular<T, M> inverse() const { return modular::Inverse(_v, M); }
 
  private:
   T _v;

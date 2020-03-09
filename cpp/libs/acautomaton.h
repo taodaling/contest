@@ -34,7 +34,7 @@ class ACNode {
 
 template <int L, int R>
 class ACAutomaton {
- private:
+ public:
   ACNode<L, R> *_root;
   ACNode<L, R> *_buildLast;
   ACNode<L, R> *_matchLast;

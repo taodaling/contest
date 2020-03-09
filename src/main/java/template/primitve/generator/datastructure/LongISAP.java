@@ -20,7 +20,7 @@ public class LongISAP implements LongMaximumFlow {
     public LongISAP(int vertexNum) {
         dists = new int[vertexNum];
         cnts = new int[vertexNum + 2];
-        deque = new IntegerDequeImpl(n);
+        deque = new IntegerDequeImpl(vertexNum);
     }
 
     private long send(int root, long flow) {
@@ -40,7 +40,7 @@ public class LongISAP implements LongMaximumFlow {
                 break;
             }
         }
-        if (flow == snapshot) {
+        if (flow != 0) {
             cnts[dists[root]]--;
             dists[root]++;
             cnts[dists[root]]++;

@@ -48,25 +48,6 @@ typedef long double ld;
 typedef unsigned long long ull;
 std::mt19937 rng(std::chrono::steady_clock::now().time_since_epoch().count());
 
-#ifdef LOCAL
-#define error(args...)                       \
-  {                                          \
-    string _s = #args;                       \
-    replace(_s.begin(), _s.end(), ',', ' '); \
-    stringstream _ss(_s);                    \
-    istream_iterator<string> _it(_ss);       \
-    err(_it, args);                          \
-  }
-void err(std::istream_iterator<string> it) {}
-template <typename T, typename... Args>
-void err(std::istream_iterator<string> it, T a, Args... args) {
-  cerr << *it << " = " << a << endl;
-  err(++it, args...);
-}
-#else
-#define error(args...)
-#endif
-
 #define mp make_pair
 
 #endif
