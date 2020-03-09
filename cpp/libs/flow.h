@@ -7,16 +7,33 @@ namespace flow {
 
 template <class T>
 struct FlowEdge {
-  FlowEdge *rev;
+  int rev;
   T flow;
   bool real;
   int to;
+
+  FlowEdge(int rv, T f, bool r, int t) : rev(rv), flow(f), real(r), to(t) {}
 };
 
 template <class T>
-struct CostFlowEdge : public FlowEdge<T> {
-  T cost;
-};
+ostream &operator<<(ostream &os, FlowEdge<T> &e) {
+  os << "{ flow = " << e.flow << ", real = " << e.real << ", to = " << e.to
+     << "}";
+  return os;
+}
+
+template <class T>
+ostream &operator<<(ostream &os, vector<vector<FlowEdge<T>>> &g) {
+  for (int i = 0; i < g.size(); i++) {
+    for (FlowEdge<T> &e : g[i]) {
+      if (e.real) {
+        os << i << "-" << e.flow << "(" << g[e.to][e.rev].flow << ")"
+           << "->" << e.to << endl;
+      }
+    }
+  }
+  return os;
+}
 
 template <class T>
 void Reset(vector<vector<FlowEdge<T>>> &g) {
@@ -31,35 +48,20 @@ void Reset(vector<vector<FlowEdge<T>>> &g) {
 }
 
 template <class T>
-void AddEdge(vector<vector<FlowEdge<T>>> &g, int u, int v, T cap) {
-  g[u].push_back(FlowEdge<int>{0, 0, true, v});
-  g[v].push_back(FlowEdge<int>{&g[u].back(), cap, false, u});
-  g[u].back().rev = &g[v].back();
-}
-
-template<class T>
-void Send(FlowEdge<T> &e, T flow){
+inline void Send(vector<vector<FlowEdge<T>>> &g, FlowEdge<T> &e, T flow) {
   e.flow += flow;
-  e.rev->flow -= flow;
+  g[e.to][e.rev].flow -= flow;
 }
 
 template <class T>
-void Reset(vector<vector<CostFlowEdge<T>>> &g) {
-  for (vector<CostFlowEdge<T>> &v : g) {
-    for (CostFlowEdge<T> &t : v) {
-      if (t.real) {
-        t.rev->flow += t.flow;
-        t.flow = 0;
-      }
-    }
+void AddEdge(vector<vector<FlowEdge<T>>> &g, int u, int v, T cap) {
+  if (u != v) {
+    g[u].emplace_back(g[v].size(), 0, true, v);
+    g[v].emplace_back(g[u].size(), cap, false, u);
+  } else {
+    g[u].emplace_back(g[u].size() + 1, 0, true, u);
+    g[u].emplace_back(g[u].size() - 1, cap, false, u);
   }
-}
-
-template <class T>
-void AddEdge(vector<vector<CostFlowEdge<T>>> &g, int u, int v, T cap, T cost) {
-  g[u].emplace_back(0, 0, true, v, cost);
-  g[v].emplace_back(&g[u].back(), cap, false, u, -cost);
-  g[u].back().rev = &g[v].back();
 }
 
 template <class T>
@@ -101,12 +103,12 @@ class ISAP : public MaxFlow<T> {
     }
     T snapshot = flow;
     for (FlowEdge<T> &e : g[root]) {
-      if (_dist[e.to] != _dist[root] - 1 || e.rev->flow == 0) {
+      if (_dist[e.to] != _dist[root] - 1 || g[e.to][e.rev].flow == 0) {
         continue;
       }
-      T sent = dfs(g, e.to, min(flow, e.rev->flow));
+      T sent = dfs(g, e.to, min(flow, g[e.to][e.rev].flow));
       flow -= sent;
-      Send(e, sent);
+      Send(g, e, sent);
       if (flow == 0) {
         break;
       }
