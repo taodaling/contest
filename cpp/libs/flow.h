@@ -57,7 +57,7 @@ template <class T>
 void AddEdge(vector<vector<FlowEdge<T>>> &g, int u, int v, T cap) {
   if (u != v) {
     g[u].emplace_back(g[v].size(), 0, true, v);
-    g[v].emplace_back(g[u].size(), cap, false, u);
+    g[v].emplace_back(g[u].size() - 1, cap, false, u);
   } else {
     g[u].emplace_back(g[u].size() + 1, 0, true, u);
     g[u].emplace_back(g[u].size() - 1, cap, false, u);

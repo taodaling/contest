@@ -18,7 +18,7 @@ void err(std::istream_iterator<string> it, T a, Args... args) {
   err(++it, args...);
 }
 #else
-#define dbg(args...)
+#define dbg(args...) 42
 #endif
 
 #endif

@@ -9,6 +9,15 @@ using cpx = complex<double>;
 const double PI = acos(-1);
 vector<cpx> roots = {{0, 0}, {1, 0}};
 
+template <class T>
+void Normalize(vector<T> &vec) {
+  int r = vec.size() - 1;
+  while (r > 0 && vec[r] == 0) {
+    r--;
+  }
+  vec.resize(r + 1);
+}
+
 void EnsureCapacity(int min_capacity) {
   for (int len = roots.size(); len < min_capacity; len *= 2) {
     for (int i = len >> 1; i < len; i++) {

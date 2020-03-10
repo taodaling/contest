@@ -31,6 +31,7 @@ using std::ostream;
 using std::pair;
 using std::priority_queue;
 using std::queue;
+using std::reverse;
 using std::set;
 using std::sort;
 using std::string;
@@ -40,7 +41,7 @@ using std::uniform_int_distribution;
 using std::uniform_real_distribution;
 using std::unordered_map;
 using std::vector;
-using std::reverse;
+using std::array;
 
 typedef unsigned int ui;
 typedef long long ll;
@@ -49,8 +50,6 @@ typedef unsigned long long ull;
 std::mt19937 rng(std::chrono::steady_clock::now().time_since_epoch().count());
 
 #define mp make_pair
-
-#endif
 
 #ifdef LOCAL
 #define PREPARE_INPUT                                  \
@@ -93,3 +92,5 @@ std::mt19937 rng(std::chrono::steady_clock::now().time_since_epoch().count());
     }                                               \
     return 0;                                       \
   }
+
+#endif
