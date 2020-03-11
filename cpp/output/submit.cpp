@@ -24,6 +24,8 @@
 #endif
 
 #endif
+#include <complex>
+#include <algorithm>
 
 using __gnu_cxx::rope;
 using std::array;
@@ -57,6 +59,8 @@ using std::uniform_real_distribution;
 using std::unique;
 using std::unordered_map;
 using std::vector;
+using std::array;
+using std::complex;
 
 typedef unsigned int ui;
 typedef long long ll;
@@ -583,196 +587,216 @@ void err(std::istream_iterator<string> it, T a, Args... args) {
 
 
 
-#ifndef MATRIX_H
-#define MATRIX_H
+#ifndef GEO2_H
+#define GEO2_H
 
 
-namespace matrix {
-template <class T>
-vector<vector<T>> CreateUnitMatrix(int n) {
-  vector<vector<T>> res(n, vector<T>(n));
-  for (int i = 0; i < n; i++) res[i][i] = 1;
-  return res;
+
+namespace geo2 {
+
+const double PREC = 1e-10;
+
+template<class T>
+bool IsZero(T x){
+  return -PREC <= x && x <= PREC;
 }
 
 template <class T>
-vector<vector<T>> &operator+=(vector<vector<T>> &a,
-                              const vector<vector<T>> &b) {
-  for (size_t i = 0; i < a.size(); i++)
-    for (size_t j = 0; j < a[0].size(); j++) a[i][j] += b[i][j];
-  return a;
+struct Point {
+  T x, y;
+  Point(T a, T b) : x(a), y(b) {}
+  Point() { Point(0, 0); }
+  Point<T> conj() const { return {x, -y}; }
+  T square() const { return x * x + y * y; }
+  double abs() const { return sqrt(square()); }
+};
+
+template <class T>
+Point<T> operator+(const Point<T> &a, const Point<T> &b) {
+  return {a.x + b.x, a.y + b.y};
 }
 
 template <class T>
-vector<vector<T>> operator+(vector<vector<T>> a, const vector<vector<T>> &b) {
-  a += b;
-  return a;
+Point<T> operator-(const Point<T> &a, const Point<T> &b) {
+  return {a.x - b.x, a.y - b.y};
 }
 
 template <class T>
-vector<vector<T>> operator*(const vector<vector<T>> &a,
-                            const vector<vector<T>> &b) {
-  assert(a[0].size() == b.size());
-  int n = a.size();
-  int m = a[0].size();
-  int k = b[0].size();
-  vector<vector<T>> res(n, vector<T>(k));
-  for (int i = 0; i < n; i++)
-    for (int j = 0; j < k; j++)
-      for (int p = 0; p < m; p++) res[i][j] += a[i][p] * b[p][j];
-  return res;
+Point<T> operator*(const Point<T> &a, T b) {
+  return {a.x * b, a.y * b};
 }
 
 template <class T>
-vector<vector<T>> &operator*=(vector<vector<T>> &a,
-                              const vector<vector<T>> &b) {
-  a = a * b;
-  return a;
+Point<T> operator*(T b, const Point<T> &a) {
+  return {a.x * b, a.y * b};
 }
 
 template <class T>
-vector<vector<T>> operator^(const vector<vector<T>> &a, long long p) {
-  vector<vector<T>> res = CreateUnitMatrix<T>(a.size());
-  int highest_one_bit = -1;
-  while (1LL << (highest_one_bit + 1) <= p) ++highest_one_bit;
-  for (int i = highest_one_bit; i >= 0; i--) {
-    res *= res;
-    if (p >> i & 1) {
-      res *= a;
-    }
-  }
-  return res;
+Point<T> operator*(const Point<T> &a, const Point<T> &b) {
+  return {a.x * b.x - a.y * b.y, a.x * b.y + a.y * b.x};
 }
 
 template <class T>
-vector<vector<T>> Transpose(const vector<vector<T>> &a) {
-  int n = a.size();
-  int m = a[0].size();
-  vector<vector<T>> b(m, vector<T>(n));
-  for (int i = 0; i < n; ++i) {
-    for (int j = 0; j < m; ++j) {
-      b[j][i] = a[i][j];
-    }
-  }
-  return b;
-}
-
-// a + a^2 + ... + a^p
-template <class T>
-vector<vector<T>> MatrixPowSum(const vector<vector<T>> &a, long long p) {
-  int n = a.size();
-  vector<vector<T>> res = vector<vector<T>>(n, vector<T>(n));
-  vector<vector<T>> b = CreateUnitMatrix<T>(n);
-  int highest_one_bit = -1;
-  while (1LL << (highest_one_bit + 1) <= p) ++highest_one_bit;
-  for (int i = highest_one_bit; i >= 0; i--) {
-    res = res * (CreateUnitMatrix<T>(n) + b);
-    b *= b;
-    if (p >> i & 1) {
-      b *= a;
-      res = res * a + a;
-    }
-  }
-  return res;
-}
-
-// returns f[n] = f[n-1]*a[k-1] + ... + f[n-k]*a[0], where f[0], ..., f[k-1] are
-// provided O(k^3*log(n)) complexity
-template <class T>
-T NthElementOfRecurrence(const vector<T> &a, const vector<T> &f, long long n) {
-  int k = f.size();
-  if (n < k) return f[n];
-  vector<vector<T>> A(k, vector<T>(k));
-  A[k - 1] = a;
-  for (int i = 0; i < k - 1; ++i) {
-    A[i][i + 1] = 1;
-  }
-  vector<vector<T>> F = Transpose(vector<vector<T>>{f});
-  return ((A ^ n) * F)[0][0];
+Point<T> operator/(const Point<T> &a, T b) {
+  return {a.x / b, a.y / b};
 }
 
 template <class T>
-ostream &operator<<(ostream &os, const vector<vector<T>> &a) {
-  for (auto &row : a) {
-    for (T x : row) os << x << " ";
-    os << endl;
-  }
+Point<T> operator/(const Point<T> &a, const Point<T> &b) {
+  return a * (b.conj() / b.square());
+}
+
+template <class T>
+bool operator==(const Point<T> &a, const Point<T> &b) {
+  return a.x == b.x && a.y == b.y;
+}
+template <class T>
+bool operator!=(const Point<T> &a, const Point<T> &b) {
+  return !(a == b);
+}
+template <class T>
+ostream &operator<<(ostream &os, const Point<T> &pt) {
+  os << "(" << pt.x << "," << pt.y << ")";
   return os;
 }
-}  // namespace matrix
+template <class T>
+istream &operator>>(istream &is, Point<T> &pt) {
+  is >> pt.x >> pt.y;
+  return is;
+}
+
+template <class T>
+int Sign(T x) {
+  return IsZero(x) ? 0 : x > 0 ? 1 : -1;
+}
+
+template <class T>
+Point<T> Translate(const Point<T> &v, const Point<T> &p) {
+  return p + v;
+}
+
+template <class T>
+Point<T> Scale(const Point<T> &c, T factor, const Point<T> &p) {
+  return c + (p - c) * factor;
+}
+
+template <class T>
+Point<T> Rotate(const Point<T> &pt, double a) {
+  double c = std::cos(a);
+  double s = std::sin(a);
+  return {pt.x * c - pt.y * s, pt.x * s + pt.y * c};
+}
+
+template <class T>
+Point<T> Rotate(const Point<T> &origin, const Point<T> &pt, double a) {
+  return Rotate(pt - origin, a) + origin;
+}
+
+template <class T>
+Point<T> Perp(const Point<T> &pt) {
+  return {-pt.y, pt.x};
+}
+
+template <class T>
+Point<T> LinearTransformTo(const Point<T> &p, const Point<T> &fp,
+                           const Point<T> &q, const Point<T> &fq,
+                           const Point<T> &req) {
+  return fp + (req - p) * (fq - fp) / (q - p);
+}
+
+template <class T>
+T Dot(const Point<T> &a, const Point<T> &b) {
+  return a.x * b.x + a.y * b.y;
+}
+
+template <class T>
+bool IsPerp(const Point<T> &a, const Point<T> &b) {
+  return Dot(a, b) == 0;
+}
+
+template <class T>
+double Angle(const Point<T> &a, const Point<T> &b) {
+  return std::acos(clamp(Dot(a, b) / a.abs() / b.abs()), -1.0, 1.0);
+}
+
+template <class T>
+T Cross(const Point<T> &a, const Point<T> &b) {
+  return a.x * b.y - a.y * b.x;
+}
+
+template <class T>
+int Orient(const Point<T> &a, const Point<T> &b, const Point<T> &c) {
+  return Sign(Cross(b - a, c - a));
+}
+
+template <class T>
+bool InAngle(const Point<T> &a, const Point<T> &b, const Point<T> &c,
+             const Point<T> &p) {
+  assert(Orient(a, b, c) != 0);
+  if (Orient(a, b, c) < 0) {
+    swap(b, c);
+  }
+  return Orient(a, b, p) >= 0 && Orient(a, c, p) <= 0;
+}
+
+template <class T>
+double OrientedAngle(const Point<T> &a, const Point<T> &b, const Point<T> &c) {
+  if (Orient(a, b, c) >= 0) {
+    return Angle(b - a, c - a);
+  } else {
+    return 2 * PI - Angle(b - a, c - a);
+  }
+}
+
+template <class T>
+bool IsConvex(const vector<Point<T>> &p) {
+  bool hasPos = false, hasNeg = false;
+  for (int i = 0, n = p.size(); i < n; i++) {
+    int o = Orient(p[i], p[(i + 1) % n], p[(i + 2) % n]);
+    if (o > 0) hasPos = true;
+    if (o < 0) hasNeg = true;
+  }
+  return !(hasPos & hasNeg);
+}
+}  // namespace geo2
 
 #endif
 
-#define double ld
-
-using namespace ::matrix;
-
-vector<double> operator-(const vector<double> &a, const vector<double> &b) {
-  vector<double> ans(a);
-  for (int i = 0; i < a.size(); i++) {
-    ans[i] -= b[i];
-  }
-  return ans;
-}
-
-double Length2(const vector<double> &xy) {
-  double ans = 0;
-  for (double x : xy) {
-    ans += x * x;
-  }
-  return ans;
-}
-
-double Length(const vector<double> &xy) { return sqrtl(Length2(xy)); }
-
-vector<vector<double>> TransposeRotate(double angle) {
-  double cos = std::cos(angle);
-  double sin = std::sin(angle);
-  return vector<vector<double>>{{cos, -sin}, {sin, -cos}};
-}
-
-vector<vector<double>> Create(int n, double side, double angle) {
-  double theta = PI - (n - 2) * PI / n;
-  vector<vector<double>> ans;
-  ans.reserve(n);
-  ans.push_back(vector<double>{0, 0});
-  vector<vector<double>> base{{side, 0}};
-  for (int i = 1; i < n; i++, angle += theta) {
-    dbg(i, angle);
-    vector<vector<double>> rotate = TransposeRotate(angle);
-    vector<vector<double>> ray = base * rotate;
-    ans.emplace_back(
-        vector<double>{ans.back()[0] + ray[0][0], ans.back()[1] + ray[0][1]});
-  }
-  return ans;
-}
+using namespace ::geo2;
+using pt = Point<long double>;
 
 void solve(int testId, istream &in, ostream &out) {
   int n, v1, v2;
   in >> n >> v1 >> v2;
   v1--;
   v2--;
+  pt p1, p2;
+  in >> p1 >> p2;
 
-  vector<double> xy1(2);
-  vector<double> xy2(2);
-  in >> xy1[0] >> xy1[1] >> xy2[0] >> xy2[1];
+  vector<pt> ans;
+  ans.emplace_back(0, 0);
+  double theta = PI + (n - 2) * PI / n;
+  dbg(theta);
+  pt step{1, 0};
+  dbg(Rotate(step,theta));
+  for (int i = 1; i < n; i++) {
+    ans.push_back(Rotate(step, theta * (i - 1)) + ans.back());
+  }
 
-  vector<vector<double>> points = Create(n, 1, 0);
-  double side = Length(xy2 - xy1) / Length(points[v2] - points[v1]);
-  
-  double thetaStd =
-      atan2(points[v2][0] - points[v1][0], points[v2][1] - points[v1][1]);
-  double thetaCustom = atan2(xy2[0] - xy1[0], xy2[1] - xy1[1]);
-  dbg(thetaStd, thetaCustom);
-  dbg(xy2[0]-xy1[0], xy2[1]-xy1[1]);
-  double thetaDelta = (thetaCustom - thetaStd);
-  vector<vector<double>> result = Create(n, side, thetaDelta);
-  dbg(points, side, result);
-  dbg(result);
+  dbg(ans);
+  pt w1 = ans[v1];
+  pt w2 = ans[v2];
 
-  std::cout << std::setprecision(6);
-  for (vector<double> xy : result) {
-    out << xy[0] + xy1[0] << ' ' << xy[1] + xy1[1] << endl;
+  dbg(w1,p1,w2,p2);
+  //dbg(LinearTransformTo(w1,p1,w2,p2,w2),w2,p2);
+  //assert(LinearTransformTo(w1, p1, w2, p2, w1) == p1);
+  //assert(LinearTransformTo(w1, p1, w2, p2, w2) == p2);
+  for (int i = 0; i < n; i++) {
+    ans[i] = LinearTransformTo(w1, p1, w2, p2, ans[i]);
+  }
+
+  for (int i = 0; i < n; i++) {
+    out << ans[i].x << ' ' << ans[i].y << endl;
   }
 }
 

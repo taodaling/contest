@@ -1,15 +1,17 @@
 import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Arrays;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.math.BigDecimal;
+import java.io.OutputStreamWriter;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.List;
 import java.io.Closeable;
 import java.io.Writer;
-import java.io.OutputStreamWriter;
 import java.io.InputStream;
 
 /**
@@ -18,7 +20,9 @@ import java.io.InputStream;
  */
 public class Main {
     public static void main(String[] args) throws Exception {
-        new TaskAdapter().run();
+        Thread thread = new Thread(null, new TaskAdapter(), "", 1 << 27);
+        thread.start();
+        thread.join();
     }
 
     static class TaskAdapter implements Runnable {
@@ -28,133 +32,195 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            P3376 solver = new P3376();
+            Archipelago solver = new Archipelago();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class P3376 {
+    static class Archipelago {
+        Debug debug = new Debug(true);
+
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            int m = in.readInt();
-            int s = in.readInt();
-            int t = in.readInt();
-
-            List<IntegerFlowEdge>[] net = IntegerFlow.createFlow(n + 1);
-            for (int i = 1; i <= m; i++) {
-                int u = in.readInt();
-                int v = in.readInt();
-                int c = in.readInt();
-                IntegerFlow.addEdge(net, u, v, c);
+            int v1 = in.readInt() - 1;
+            int v2 = in.readInt() - 1;
+            Point p1 = new Point(in.readDouble(), in.readDouble());
+            Point p2 = new Point(in.readDouble(), in.readDouble());
+            List<Point> ans = new ArrayList<>(n);
+            Point step = new Point(1, 0);
+            double theta = Math.PI + (n - 2) * Math.PI / n;
+            ans.add(new Point(0, 0));
+            for (int i = 1; i < n; i++) {
+                ans.add(Point.plus(Point.rotate(step, (i - 1) * theta),
+                        ans.get(i - 1)));
             }
 
-            IntegerMaximumFlow mf = new IntegerISAP(n + 1);
-            int ans = mf.apply(net, s, t, (int) 2e9);
-            out.println(ans);
+            debug.debug("ans", ans);
+            Point w1 = ans.get(v1);
+            Point w2 = ans.get(v2);
+            List<Point> transformed = new ArrayList<>(n);
+            debug.debug("", Point.linearTransform(w1, p1, w2, p2, w1));
+            debug.debug("", Point.linearTransform(w1, p1, w2, p2, w2));
+            for (Point pt : ans) {
+                transformed.add(Point.linearTransform(w1, p1, w2, p2, pt));
+            }
+
+            for (Point pt : transformed) {
+                out.append(pt.x).append(' ').append(pt.y).println();
+            }
         }
 
     }
 
-    static interface IntegerIterator {
-        boolean hasNext();
+    static class Debug {
+        private boolean offline;
+        private PrintStream out = System.err;
+        static int[] empty = new int[0];
 
-        int next();
+        public Debug(boolean enable) {
+            offline = enable && System.getSecurityManager() == null;
+        }
 
-    }
+        public Debug debug(String name, Object x) {
+            return debug(name, x, empty);
+        }
 
-    static class IntegerFlowEdge<T extends IntegerFlowEdge> extends DirectedEdge {
-        public int flow;
-        public boolean real;
-        public T rev;
-
-        public IntegerFlowEdge(int to, int flow, boolean real) {
-            super(to);
-            this.flow = flow;
-            this.real = real;
+        public Debug debug(String name, Object x, int... indexes) {
+            if (offline) {
+                if (x == null || !x.getClass().isArray()) {
+                    out.append(name);
+                    for (int i : indexes) {
+                        out.printf("[%d]", i);
+                    }
+                    out.append("=").append("" + x);
+                    out.println();
+                } else {
+                    indexes = Arrays.copyOf(indexes, indexes.length + 1);
+                    if (x instanceof byte[]) {
+                        byte[] arr = (byte[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof short[]) {
+                        short[] arr = (short[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof boolean[]) {
+                        boolean[] arr = (boolean[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof char[]) {
+                        char[] arr = (char[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof int[]) {
+                        int[] arr = (int[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof float[]) {
+                        float[] arr = (float[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof double[]) {
+                        double[] arr = (double[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof long[]) {
+                        long[] arr = (long[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else {
+                        Object[] arr = (Object[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    }
+                }
+            }
+            return this;
         }
 
     }
 
-    static class DirectedEdge {
-        public int to;
+    static class Point implements Cloneable {
+        public double x;
+        public double y;
 
-        public DirectedEdge(int to) {
-            this.to = to;
+        public Point(double x, double y) {
+            this.x = x;
+            this.y = y;
+        }
+
+        public Point() {
+            this(0, 0);
+        }
+
+        public double square() {
+            return x * x + y * y;
+        }
+
+        public Point conj() {
+            return new Point(x, -y);
+        }
+
+        public static Point plus(Point a, Point b) {
+            return new Point(a.x + b.x, a.y + b.y);
+        }
+
+        public static Point minus(Point a, Point b) {
+            return new Point(a.x - b.x, a.y - b.y);
+        }
+
+        public static Point div(Point a, double d) {
+            return new Point(a.x / d, a.y / d);
+        }
+
+        public static Point mul(Point a, Point b) {
+            return new Point(a.x * b.x - a.y * b.y, a.x * b.y + a.y * b.x);
+        }
+
+        public static Point div(Point a, Point b) {
+            return div(mul(a, b.conj()), b.square());
+        }
+
+        public static Point rotate(Point a, double angle) {
+            double c = Math.cos(angle);
+            double s = Math.sin(angle);
+            return new Point(a.x * c - a.y * s, a.x * s + a.y * c);
+        }
+
+        public static Point linearTransform(Point p, Point fp, Point q, Point fq, Point r) {
+            return plus(fp, mul(minus(r, p), div(minus(fq, fp), minus(q, p))));
+        }
+
+        public Point clone() {
+            try {
+                return (Point) super.clone();
+            } catch (CloneNotSupportedException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         public String toString() {
-            return "->" + to;
+            return String.format("(%.6f, %.6f)", x, y);
         }
-
-    }
-
-    static class IntegerISAP implements IntegerMaximumFlow {
-        private List<IntegerFlowEdge>[] net;
-        private int s;
-        private int t;
-        private int[] dists;
-        private int[] cnts;
-        private int n;
-        private boolean exit;
-        private IntegerDeque deque;
-
-        public IntegerISAP(int vertexNum) {
-            dists = new int[vertexNum];
-            cnts = new int[vertexNum + 2];
-            deque = new IntegerDequeImpl(n);
-        }
-
-        private int send(int root, int flow) {
-            if (root == t) {
-                return flow;
-            }
-            int snapshot = flow;
-            for (IntegerFlowEdge e : net[root]) {
-                int remain;
-                if (dists[e.to] + 1 != dists[root] || (remain = e.rev.flow) == 0) {
-                    continue;
-                }
-                int sent = send(e.to, Math.min(flow, remain));
-                flow -= sent;
-                IntegerFlow.send(e, sent);
-                if (flow == 0 || exit) {
-                    break;
-                }
-            }
-            if (flow == snapshot) {
-                cnts[dists[root]]--;
-                dists[root]++;
-                cnts[dists[root]]++;
-                if (cnts[dists[root] - 1] == 0) {
-                    exit = true;
-                }
-            }
-            return snapshot - flow;
-        }
-
-        public int apply(List<IntegerFlowEdge>[] g, int s, int t, int send) {
-            this.net = g;
-            this.s = s;
-            this.t = t;
-            this.exit = false;
-            n = g.length;
-            IntegerFlow.bfsForFlow(g, t, dists, n + 1, deque);
-            Arrays.fill(cnts, 0, n + 2, 0);
-            for (int d : dists) {
-                cnts[d]++;
-            }
-            int flow = 0;
-            while (flow < send && !exit && dists[s] < n) {
-                flow += send(s, send - flow);
-            }
-            return flow;
-        }
-
-    }
-
-    static interface IntegerDeque extends IntegerStack {
-        int removeFirst();
 
     }
 
@@ -215,112 +281,33 @@ public class Main {
             return val;
         }
 
-    }
-
-    static class IntegerDequeImpl implements IntegerDeque {
-        private int[] data;
-        private int bpos;
-        private int epos;
-        private static final int[] EMPTY = new int[0];
-        private int n;
-
-        public IntegerDequeImpl(int cap) {
-            if (cap == 0) {
-                data = EMPTY;
-            } else {
-                data = new int[cap];
+        public double readDouble() {
+            boolean sign = true;
+            skipBlank();
+            if (next == '+' || next == '-') {
+                sign = next == '+';
+                next = read();
             }
-            bpos = 0;
-            epos = 0;
-            n = cap;
-        }
 
-        private void expandSpace(int len) {
-            while (n < len) {
-                n = Math.max(n + 10, n * 2);
+            long val = 0;
+            while (next >= '0' && next <= '9') {
+                val = val * 10 + next - '0';
+                next = read();
             }
-            int[] newData = new int[n];
-            if (bpos <= epos) {
-                if (bpos < epos) {
-                    System.arraycopy(data, bpos, newData, 0, epos - bpos);
-                }
-            } else {
-                System.arraycopy(data, bpos, newData, 0, data.length - bpos);
-                System.arraycopy(data, 0, newData, data.length - bpos, epos);
+            if (next != '.') {
+                return sign ? val : -val;
             }
-            epos = size();
-            bpos = 0;
-            data = newData;
-        }
-
-        public IntegerIterator iterator() {
-            return new IntegerIterator() {
-                int index = bpos;
-
-
-                public boolean hasNext() {
-                    return index != epos;
-                }
-
-
-                public int next() {
-                    int ans = data[index];
-                    index = IntegerDequeImpl.this.next(index);
-                    return ans;
-                }
-            };
-        }
-
-        public int removeFirst() {
-            int ans = data[bpos];
-            bpos = next(bpos);
-            return ans;
-        }
-
-        public void addLast(int x) {
-            ensureMore();
-            data[epos] = x;
-            epos = next(epos);
-        }
-
-        public void clear() {
-            bpos = epos = 0;
-        }
-
-        private int next(int x) {
-            return x + 1 >= n ? 0 : x + 1;
-        }
-
-        private void ensureMore() {
-            if (next(epos) == bpos) {
-                expandSpace(n + 1);
+            next = read();
+            long radix = 1;
+            long point = 0;
+            while (next >= '0' && next <= '9') {
+                point = point * 10 + next - '0';
+                radix = radix * 10;
+                next = read();
             }
+            double result = val + (double) point / radix;
+            return sign ? result : -result;
         }
-
-        public int size() {
-            int ans = epos - bpos;
-            if (ans < 0) {
-                ans += data.length;
-            }
-            return ans;
-        }
-
-        public boolean isEmpty() {
-            return bpos == epos;
-        }
-
-        public String toString() {
-            StringBuilder builder = new StringBuilder();
-            for (IntegerIterator iterator = iterator(); iterator.hasNext(); ) {
-                builder.append(iterator.next()).append(' ');
-            }
-            return builder.toString();
-        }
-
-    }
-
-    static interface IntegerMaximumFlow {
-        int apply(List<IntegerFlowEdge>[] g, int s, int t, int send);
 
     }
 
@@ -351,13 +338,9 @@ public class Main {
             return this;
         }
 
-        public FastOutput append(int c) {
-            cache.append(c);
+        public FastOutput append(double c) {
+            cache.append(new BigDecimal(c).toPlainString());
             return this;
-        }
-
-        public FastOutput println(int c) {
-            return append(c).println();
         }
 
         public FastOutput println() {
@@ -388,57 +371,6 @@ public class Main {
         public String toString() {
             return cache.toString();
         }
-
-    }
-
-    static class IntegerFlow {
-        public static <T extends IntegerFlowEdge> void send(T edge, int flow) {
-            edge.flow += flow;
-            edge.rev.flow -= flow;
-        }
-
-        public static IntegerFlowEdge addEdge(List<IntegerFlowEdge>[] g, int s, int t, int cap) {
-            IntegerFlowEdge real = new IntegerFlowEdge(t, 0, true);
-            IntegerFlowEdge virtual = new IntegerFlowEdge(s, cap, false);
-            real.rev = virtual;
-            virtual.rev = real;
-            g[s].add(real);
-            g[t].add(virtual);
-            return real;
-        }
-
-        public static List<IntegerFlowEdge>[] createFlow(int n) {
-            List<IntegerFlowEdge>[] g = new List[n];
-            for (int i = 0; i < n; i++) {
-                g[i] = new ArrayList<>();
-            }
-            return g;
-        }
-
-        public static <T extends IntegerFlowEdge> void bfsForFlow(List<T>[] g, int s, int[] dist, int inf, IntegerDeque deque) {
-            Arrays.fill(dist, 0, g.length, inf);
-            dist[s] = 0;
-            deque.clear();
-            deque.addLast(s);
-            while (!deque.isEmpty()) {
-                int head = deque.removeFirst();
-                for (T e : g[head]) {
-                    if (e.flow > 0 && dist[e.to] == inf) {
-                        dist[e.to] = dist[head] + 1;
-                        deque.addLast(e.to);
-                    }
-                }
-            }
-        }
-
-    }
-
-    static interface IntegerStack {
-        void addLast(int x);
-
-        boolean isEmpty();
-
-        void clear();
 
     }
 }

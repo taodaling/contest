@@ -5,6 +5,18 @@ public class DigitUtils {
     private DigitUtils() {
     }
 
+    public static double clamp(double x, double low, double high) {
+        return Math.max(Math.min(x, high), low);
+    }
+
+    public static int clamp(int x, int low, int high) {
+        return Math.max(Math.min(x, high), low);
+    }
+
+    public static long clamp(long x, long low, long high) {
+        return Math.max(Math.min(x, high), low);
+    }
+
     public static double normalizeTo(double x, double y, double prec) {
         if (Math.abs(x - y) < prec) {
             return y;

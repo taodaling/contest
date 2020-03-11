@@ -4,16 +4,70 @@
 #include "common.h"
 
 namespace geo2 {
+
+const double PREC = 1e-10;
+
+template <class T>
+bool IsZero(T x) {
+  return -PREC <= x && x <= PREC;
+}
+
 template <class T>
 struct Point {
-  T x, y;
-  Point<T> operator+(const Point &p) const { return {x + p.x, y + p.y}; }
-  Point<T> operator-(const Point &p) const { return {x - p.x, y - p.y}; }
-  Point<T> operator*(T d) { return {x * d, y * d}; }
-  Point<T> operator/(T d) { return {x / d, y / d}; }
-  T square() { return x * x + y * y; }
-  double abs() { return sqrt(square()); }
+  const T x, y;
+  Point(T a, T b) : x(a), y(b) {}
+  Point() { Point(0, 0); }
+  Point<T> conj() const { return {x, -y}; }
+  T square() const { return x * x + y * y; }
+  double abs() const { return sqrt(square()); }
+  bool half() const { return y > 0 || y == 0 && x < 0; }
 };
+
+template<class T>
+class SortByPolarAngle{
+  bool operator()(const Point<T> &a, const Point<T> &b){
+    if(a.half() != b.half()){
+      return a.half() - b.half();
+    }
+    return Orient(b, a);
+  }
+};
+
+template <class T>
+Point<T> operator+(const Point<T> &a, const Point<T> &b) {
+  return {a.x + b.x, a.y + b.y};
+}
+
+template <class T>
+Point<T> operator-(const Point<T> &a, const Point<T> &b) {
+  return {a.x - b.x, a.y - b.y};
+}
+
+template <class T>
+Point<T> operator*(const Point<T> &a, T b) {
+  return {a.x * b, a.y * b};
+}
+
+template <class T>
+Point<T> operator*(T b, const Point<T> &a) {
+  return {a.x * b, a.y * b};
+}
+
+template <class T>
+Point<T> operator*(const Point<T> &a, const Point<T> &b) {
+  return {a.x * b.x - a.y * b.y, a.x * b.y + a.y * b.x};
+}
+
+template <class T>
+Point<T> operator/(const Point<T> &a, T b) {
+  return {a.x / b, a.y / b};
+}
+
+template <class T>
+Point<T> operator/(const Point<T> &a, const Point<T> &b) {
+  return a * (b.conj() / b.square());
+}
+
 template <class T>
 bool operator==(const Point<T> &a, const Point<T> &b) {
   return a.x == b.x && a.y == b.y;
@@ -24,13 +78,18 @@ bool operator!=(const Point<T> &a, const Point<T> &b) {
 }
 template <class T>
 ostream &operator<<(ostream &os, const Point<T> &pt) {
-  os << "(" << pt.x << "," << pt.y ")";
+  os << "(" << pt.x << "," << pt.y << ")";
   return os;
+}
+template <class T>
+istream &operator>>(istream &is, Point<T> &pt) {
+  is >> pt.x >> pt.y;
+  return is;
 }
 
 template <class T>
 int Sign(T x) {
-  return (T(0) < x) - (x < T(0));
+  return IsZero(x) ? 0 : x > 0 ? 1 : -1;
 }
 
 template <class T>
@@ -51,13 +110,18 @@ Point<T> Rotate(const Point<T> &pt, double a) {
 }
 
 template <class T>
+Point<T> Rotate(const Point<T> &origin, const Point<T> &pt, double a) {
+  return Rotate(pt - origin, a) + origin;
+}
+
+template <class T>
 Point<T> Perp(const Point<T> &pt) {
   return {-pt.y, pt.x};
 }
 
 template <class T>
-Point<T> LinearTransformTo(const Point<T> &p, const Point<T> &q,
-                           const Point<T> &fp, const Point<T> &fq,
+Point<T> LinearTransformTo(const Point<T> &p, const Point<T> &fp,
+                           const Point<T> &q, const Point<T> &fq,
                            const Point<T> &req) {
   return fp + (req - p) * (fq - fp) / (q - p);
 }
