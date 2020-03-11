@@ -10,6 +10,7 @@
 #include <queue>
 #include <random>
 #include "compiler_macro.h"
+#include <complex>
 
 using __gnu_cxx::rope;
 using std::bitset;
@@ -42,6 +43,8 @@ using std::uniform_real_distribution;
 using std::unordered_map;
 using std::vector;
 using std::array;
+using std::complex;
+using std::clamp;
 
 typedef unsigned int ui;
 typedef long long ll;
