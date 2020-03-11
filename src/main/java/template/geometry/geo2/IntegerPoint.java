@@ -146,6 +146,24 @@ public class IntegerPoint {
         return plus(origin, mul(minus(pt, origin), d));
     }
 
+    /**
+     * 判断c是否落在以a与b为直径两端的圆中（包含边界）
+     */
+    public static boolean inDisk(IntegerPoint a, IntegerPoint b, IntegerPoint c) {
+        return dot(a.x - c.x, a.y - c.y, b.x - c.x, b.y - c.y) <= 0;
+    }
+
+    public static long dot(long x1, long y1, long x2, long y2) {
+        return x1 * x2 + y1 * y2;
+    }
+
+    /**
+     * 判断c是否在a到b的线段上
+     */
+    public static boolean onSegment(IntegerPoint a, IntegerPoint b, IntegerPoint c) {
+        return orient(a, b, c) == 0 && inDisk(a, b, c);
+    }
+
     @Override
     public IntegerPoint clone() {
         try {

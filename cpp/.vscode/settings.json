@@ -85,7 +85,8 @@
         "ios": "cpp",
         "locale": "cpp",
         "queue": "cpp",
-        "stack": "cpp"
+        "stack": "cpp",
+        "*.rh": "cpp"
     },
     "competitive-programming-helper.firstTime": false,
     "C_Cpp.default.cppStandard": "c++17",

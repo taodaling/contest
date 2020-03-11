@@ -47,6 +47,7 @@ using std::unordered_map;
 using std::vector;
 using std::array;
 using std::complex;
+using std::rotate;
 
 typedef unsigned int ui;
 typedef long long ll;
@@ -102,3 +103,6 @@ const double PI = 3.14159265358979323846;
   }
 
 #endif
+
+#define C0(x) memset(x, 0, sizeof(x))
+#define C1(x) memset(x, -1, sizeof(x))

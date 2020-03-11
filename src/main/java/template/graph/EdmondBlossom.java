@@ -1,5 +1,8 @@
 package template.graph;
 
+/**
+ * Find max matching in general graph with vertex 0, 1, ..., n - 1
+ */
 public class EdmondBlossom {
     int n;
     int[] pre;
@@ -14,12 +17,15 @@ public class EdmondBlossom {
     int[] ss;
     int tim;
 
+    /**
+     * -1 represent no mate
+     */
     public int mateOf(int i) {
-        return mate[i];
+        return mate[i + 1] - 1;
     }
 
     public void addEdge(int x, int y) {
-        edges[x][y] = edges[y][x] = true;
+        edges[x + 1][y + 1] = edges[y + 1][x + 1] = true;
     }
 
     private int find(int x) {
@@ -49,7 +55,7 @@ public class EdmondBlossom {
         }
     }
 
-    public boolean match(int x) {
+    private boolean match(int x) {
         hd = tl = 0;
         for (int i = 1; i <= n; ++i) vis[fa[i] = i] = 0;
         vis[que[tl++] = x] = 2;
