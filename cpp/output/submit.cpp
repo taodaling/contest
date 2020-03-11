@@ -26,6 +26,7 @@
 #endif
 
 using __gnu_cxx::rope;
+using std::array;
 using std::bitset;
 using std::cerr;
 using std::deque;
@@ -53,15 +54,18 @@ using std::stringstream;
 using std::swap;
 using std::uniform_int_distribution;
 using std::uniform_real_distribution;
+using std::unique;
 using std::unordered_map;
 using std::vector;
-using std::array;
 
 typedef unsigned int ui;
 typedef long long ll;
 typedef long double ld;
 typedef unsigned long long ull;
 std::mt19937 rng(std::chrono::steady_clock::now().time_since_epoch().count());
+
+const double E = 2.7182818284590452354;
+const double PI = 3.14159265358979323846;
 
 #define mp make_pair
 
@@ -579,54 +583,197 @@ void err(std::istream_iterator<string> it, T a, Args... args) {
 
 
 
+#ifndef MATRIX_H
+#define MATRIX_H
+
+
+namespace matrix {
+template <class T>
+vector<vector<T>> CreateUnitMatrix(int n) {
+  vector<vector<T>> res(n, vector<T>(n));
+  for (int i = 0; i < n; i++) res[i][i] = 1;
+  return res;
+}
+
+template <class T>
+vector<vector<T>> &operator+=(vector<vector<T>> &a,
+                              const vector<vector<T>> &b) {
+  for (size_t i = 0; i < a.size(); i++)
+    for (size_t j = 0; j < a[0].size(); j++) a[i][j] += b[i][j];
+  return a;
+}
+
+template <class T>
+vector<vector<T>> operator+(vector<vector<T>> a, const vector<vector<T>> &b) {
+  a += b;
+  return a;
+}
+
+template <class T>
+vector<vector<T>> operator*(const vector<vector<T>> &a,
+                            const vector<vector<T>> &b) {
+  assert(a[0].size() == b.size());
+  int n = a.size();
+  int m = a[0].size();
+  int k = b[0].size();
+  vector<vector<T>> res(n, vector<T>(k));
+  for (int i = 0; i < n; i++)
+    for (int j = 0; j < k; j++)
+      for (int p = 0; p < m; p++) res[i][j] += a[i][p] * b[p][j];
+  return res;
+}
+
+template <class T>
+vector<vector<T>> &operator*=(vector<vector<T>> &a,
+                              const vector<vector<T>> &b) {
+  a = a * b;
+  return a;
+}
+
+template <class T>
+vector<vector<T>> operator^(const vector<vector<T>> &a, long long p) {
+  vector<vector<T>> res = CreateUnitMatrix<T>(a.size());
+  int highest_one_bit = -1;
+  while (1LL << (highest_one_bit + 1) <= p) ++highest_one_bit;
+  for (int i = highest_one_bit; i >= 0; i--) {
+    res *= res;
+    if (p >> i & 1) {
+      res *= a;
+    }
+  }
+  return res;
+}
+
+template <class T>
+vector<vector<T>> Transpose(const vector<vector<T>> &a) {
+  int n = a.size();
+  int m = a[0].size();
+  vector<vector<T>> b(m, vector<T>(n));
+  for (int i = 0; i < n; ++i) {
+    for (int j = 0; j < m; ++j) {
+      b[j][i] = a[i][j];
+    }
+  }
+  return b;
+}
+
+// a + a^2 + ... + a^p
+template <class T>
+vector<vector<T>> MatrixPowSum(const vector<vector<T>> &a, long long p) {
+  int n = a.size();
+  vector<vector<T>> res = vector<vector<T>>(n, vector<T>(n));
+  vector<vector<T>> b = CreateUnitMatrix<T>(n);
+  int highest_one_bit = -1;
+  while (1LL << (highest_one_bit + 1) <= p) ++highest_one_bit;
+  for (int i = highest_one_bit; i >= 0; i--) {
+    res = res * (CreateUnitMatrix<T>(n) + b);
+    b *= b;
+    if (p >> i & 1) {
+      b *= a;
+      res = res * a + a;
+    }
+  }
+  return res;
+}
+
+// returns f[n] = f[n-1]*a[k-1] + ... + f[n-k]*a[0], where f[0], ..., f[k-1] are
+// provided O(k^3*log(n)) complexity
+template <class T>
+T NthElementOfRecurrence(const vector<T> &a, const vector<T> &f, long long n) {
+  int k = f.size();
+  if (n < k) return f[n];
+  vector<vector<T>> A(k, vector<T>(k));
+  A[k - 1] = a;
+  for (int i = 0; i < k - 1; ++i) {
+    A[i][i + 1] = 1;
+  }
+  vector<vector<T>> F = Transpose(vector<vector<T>>{f});
+  return ((A ^ n) * F)[0][0];
+}
+
+template <class T>
+ostream &operator<<(ostream &os, const vector<vector<T>> &a) {
+  for (auto &row : a) {
+    for (T x : row) os << x << " ";
+    os << endl;
+  }
+  return os;
+}
+}  // namespace matrix
+
+#endif
+
+#define double ld
+
+using namespace ::matrix;
+
+vector<double> operator-(const vector<double> &a, const vector<double> &b) {
+  vector<double> ans(a);
+  for (int i = 0; i < a.size(); i++) {
+    ans[i] -= b[i];
+  }
+  return ans;
+}
+
+double Length2(const vector<double> &xy) {
+  double ans = 0;
+  for (double x : xy) {
+    ans += x * x;
+  }
+  return ans;
+}
+
+double Length(const vector<double> &xy) { return sqrtl(Length2(xy)); }
+
+vector<vector<double>> TransposeRotate(double angle) {
+  double cos = std::cos(angle);
+  double sin = std::sin(angle);
+  return vector<vector<double>>{{cos, -sin}, {sin, -cos}};
+}
+
+vector<vector<double>> Create(int n, double side, double angle) {
+  double theta = PI - (n - 2) * PI / n;
+  vector<vector<double>> ans;
+  ans.reserve(n);
+  ans.push_back(vector<double>{0, 0});
+  vector<vector<double>> base{{side, 0}};
+  for (int i = 1; i < n; i++, angle += theta) {
+    dbg(i, angle);
+    vector<vector<double>> rotate = TransposeRotate(angle);
+    vector<vector<double>> ray = base * rotate;
+    ans.emplace_back(
+        vector<double>{ans.back()[0] + ray[0][0], ans.back()[1] + ray[0][1]});
+  }
+  return ans;
+}
 
 void solve(int testId, istream &in, ostream &out) {
-  int n, m, k;
-  in >> n >> m >> k;
-  vector<int> prime;
-  vector<int> cnts;
+  int n, v1, v2;
+  in >> n >> v1 >> v2;
+  v1--;
+  v2--;
 
-  for (int i = 2; i * i <= k; i++) {
-    if (k % i != 0) {
-      continue;
-    }
-    prime.push_back(i);
-    cnts.push_back(0);
-    while (k % i == 0) {
-      k /= i;
-      cnts.back()++;
-    }
+  vector<double> xy1(2);
+  vector<double> xy2(2);
+  in >> xy1[0] >> xy1[1] >> xy2[0] >> xy2[1];
+
+  vector<vector<double>> points = Create(n, 1, 0);
+  double side = Length(xy2 - xy1) / Length(points[v2] - points[v1]);
+  
+  double thetaStd =
+      atan2(points[v2][0] - points[v1][0], points[v2][1] - points[v1][1]);
+  double thetaCustom = atan2(xy2[0] - xy1[0], xy2[1] - xy1[1]);
+  dbg(thetaStd, thetaCustom);
+  dbg(xy2[0]-xy1[0], xy2[1]-xy1[1]);
+  double thetaDelta = (thetaCustom - thetaStd);
+  vector<vector<double>> result = Create(n, side, thetaDelta);
+  dbg(points, side, result);
+  dbg(result);
+
+  std::cout << std::setprecision(6);
+  for (vector<double> xy : result) {
+    out << xy[0] + xy1[0] << ' ' << xy[1] + xy1[1] << endl;
   }
-  if (k > 1) {
-    prime.push_back(k);
-    cnts.push_back(1);
-  }
-
-  dbg(prime, cnts);
-
-  int ans = 0;
-  for (int i = 0; i < n; i++) {
-    int x;
-    in >> x;
-    bool valid = true;
-    for (int i = 0; i < prime.size(); i++) {
-      int p = prime[i];
-      int time = 0;
-      while (x % p == 0) {
-        time++;
-        x /= p;
-      }
-      if (time * m < cnts[i]) {
-        valid = false;
-      }
-    }
-
-    if (valid) {
-      ans++;
-    }
-  }
-
-  out << ans << endl;
 }
 
 RUN_ONCE

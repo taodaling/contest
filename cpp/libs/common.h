@@ -13,6 +13,7 @@
 #include <complex>
 
 using __gnu_cxx::rope;
+using std::array;
 using std::bitset;
 using std::cerr;
 using std::deque;
@@ -40,6 +41,7 @@ using std::stringstream;
 using std::swap;
 using std::uniform_int_distribution;
 using std::uniform_real_distribution;
+using std::unique;
 using std::unordered_map;
 using std::vector;
 using std::array;
@@ -51,6 +53,9 @@ typedef long long ll;
 typedef long double ld;
 typedef unsigned long long ull;
 std::mt19937 rng(std::chrono::steady_clock::now().time_since_epoch().count());
+
+const double E = 2.7182818284590452354;
+const double PI = 3.14159265358979323846;
 
 #define mp make_pair
 
