@@ -2,7 +2,9 @@
 #define COMMON_H
 
 #include <bits/stdc++.h>
+#include <algorithm>
 #include <chrono>
+#include <complex>
 #include <ext/rope>
 #include <fstream>
 #include <iomanip>
@@ -10,13 +12,12 @@
 #include <queue>
 #include <random>
 #include "compiler_macro.h"
-#include <complex>
-#include <algorithm>
 
 using __gnu_cxx::rope;
 using std::array;
 using std::bitset;
 using std::cerr;
+using std::complex;
 using std::deque;
 using std::endl;
 using std::fill;
@@ -26,6 +27,7 @@ using std::istream;
 using std::istream_iterator;
 using std::iterator;
 using std::make_pair;
+using std::make_tuple;
 using std::map;
 using std::max;
 using std::min;
@@ -35,6 +37,7 @@ using std::pair;
 using std::priority_queue;
 using std::queue;
 using std::reverse;
+using std::rotate;
 using std::set;
 using std::sort;
 using std::string;
@@ -45,9 +48,6 @@ using std::uniform_real_distribution;
 using std::unique;
 using std::unordered_map;
 using std::vector;
-using std::array;
-using std::complex;
-using std::rotate;
 
 typedef unsigned int ui;
 typedef long long ll;

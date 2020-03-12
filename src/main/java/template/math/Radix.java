@@ -4,11 +4,11 @@ import template.primitve.generated.datastructure.LongList;
 
 import java.util.Arrays;
 
-public class DigitBase {
+public class Radix {
     private long[] pow;
     private long base;
 
-    public DigitBase(long base) {
+    public Radix(long base) {
         if (base <= 1) {
             throw new IllegalArgumentException();
         }
