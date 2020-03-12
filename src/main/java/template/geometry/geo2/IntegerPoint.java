@@ -65,17 +65,33 @@ public class IntegerPoint {
         return new IntegerPoint(a.x * d, a.y * d);
     }
 
+    public static IntegerPoint div(IntegerPoint a, long d) {
+        return new IntegerPoint(a.x / d, a.y / d);
+    }
 
     public static IntegerPoint mul(IntegerPoint a, IntegerPoint b) {
         return new IntegerPoint(a.x * b.x - a.y * b.y, a.x * b.y + a.y * b.x);
+    }
+
+    public static IntegerPoint div(IntegerPoint a, IntegerPoint b) {
+        return div(mul(a, b.conj()), b.square());
     }
 
     public static long dot(IntegerPoint a, IntegerPoint b) {
         return a.x * b.x + a.y * b.y;
     }
 
+    public static long dot(long x1, long y1, long x2, long y2) {
+        return x1 * x2 + y1 * y2;
+    }
+
     public static long cross(IntegerPoint a, IntegerPoint b) {
         return a.x * b.y - a.y * b.x;
+    }
+
+    public static long cross(IntegerPoint a, IntegerPoint b, IntegerPoint c) {
+        return cross(b.x - a.x, b.y - a.y,
+                c.x - a.x, c.y - a.y);
     }
 
     private static long cross(long x1, long y1, long x2, long y2) {
@@ -98,7 +114,7 @@ public class IntegerPoint {
     }
 
     public static int orient(IntegerPoint b, IntegerPoint c) {
-        return Long.signum(cross(b, c));
+        return Geo2Constant.sign(cross(b, c));
     }
 
     public static int orient(IntegerPoint a, IntegerPoint b, IntegerPoint c) {
@@ -146,15 +162,15 @@ public class IntegerPoint {
         return plus(origin, mul(minus(pt, origin), d));
     }
 
+    public static IntegerPoint linearTransform(IntegerPoint p, IntegerPoint fp, IntegerPoint q, IntegerPoint fq, IntegerPoint r) {
+        return plus(fp, mul(minus(r, p), div(minus(fq, fp), minus(q, p))));
+    }
+
     /**
      * 判断c是否落在以a与b为直径两端的圆中（包含边界）
      */
     public static boolean inDisk(IntegerPoint a, IntegerPoint b, IntegerPoint c) {
-        return dot(a.x - c.x, a.y - c.y, b.x - c.x, b.y - c.y) <= 0;
-    }
-
-    public static long dot(long x1, long y1, long x2, long y2) {
-        return x1 * x2 + y1 * y2;
+        return Geo2Constant.sign(dot(a.x - c.x, a.y - c.y, b.x - c.x, b.y - c.y)) <= 0;
     }
 
     /**
@@ -162,6 +178,92 @@ public class IntegerPoint {
      */
     public static boolean onSegment(IntegerPoint a, IntegerPoint b, IntegerPoint c) {
         return orient(a, b, c) == 0 && inDisk(a, b, c);
+    }
+
+    /**
+     * 获取线段a->b与线段c->d的交点
+     */
+    public static IntegerPoint properIntersect(IntegerPoint a, IntegerPoint b, IntegerPoint c, IntegerPoint d) {
+        long oa = cross(c, d, a);
+        long ob = cross(c, d, b);
+        long oc = cross(a, b, c);
+        long od = orient(a, b, d);
+
+        if (oa * ob < 0 && oc * od < 0) {
+            return plus(mul(a, ob / (ob - oa)), mul(b, -oa / (ob - oa)));
+        }
+        return null;
+    }
+
+    public static IntegerPoint intersect(IntegerPoint a, IntegerPoint b, IntegerPoint c, IntegerPoint d) {
+        IntegerPoint pt = properIntersect(a, b, c, d);
+        if (pt == null && onSegment(a, b, c)) {
+            pt = c;
+        }
+        if (pt == null && onSegment(a, b, d)) {
+            pt = d;
+        }
+        if (pt == null && onSegment(c, d, a)) {
+            pt = a;
+        }
+        if (pt == null && onSegment(c, d, b)) {
+            pt = b;
+        }
+        return pt;
+    }
+
+    private static int above(IntegerPoint a, IntegerPoint b) {
+        return b.y >= a.y ? 1 : 0;
+    }
+
+    private static boolean crossRay(IntegerPoint a, IntegerPoint p, IntegerPoint q) {
+        return (above(a, q) - above(a, p)) * orient(a, p, q) > 0;
+    }
+
+    /**
+     * 判断某个顶点是否落在矩形内，1表示矩形内，2表示矩形边缘，0表示矩形外
+     */
+    public static int inPolygon(List<IntegerPoint> polygon, IntegerPoint pt) {
+        int cross = 0;
+        for (int i = 0, n = polygon.size(); i < n; i++) {
+            IntegerPoint cur = polygon.get(i);
+            IntegerPoint next = polygon.get((i + 1) % n);
+            if (onSegment(cur, next, pt)) {
+                return 2;
+            }
+            if (crossRay(pt, cur, next)) {
+                cross++;
+            }
+        }
+        return cross % 2;
+    }
+
+    /**
+     * 判断某个顶点是否落在矩形内，1表示矩形内，2表示矩形边缘，0表示矩形外
+     */
+    public static int inPolygonBorder(List<IntegerPoint[]> polygon, IntegerPoint pt) {
+        int cross = 0;
+        for (IntegerPoint[] pts : polygon) {
+            IntegerPoint cur = pts[0];
+            IntegerPoint next = pts[1];
+            if (onSegment(cur, next, pt)) {
+                return 2;
+            }
+            if (crossRay(pt, cur, next)) {
+                cross++;
+            }
+        }
+        return cross % 2;
+    }
+
+    public static long dist2(IntegerPoint a, IntegerPoint b) {
+        long dx = a.x - b.x;
+        long dy = a.y - b.y;
+        return dx * dx + dy * dy;
+    }
+
+    public static double dist(IntegerPoint a, IntegerPoint b) {
+        return Math.sqrt(dist2(a, b));
     }
 
     @Override
@@ -175,6 +277,6 @@ public class IntegerPoint {
 
     @Override
     public String toString() {
-        return String.format("(%.6f, %.6f)", x, y);
+        return String.format("(%d, %d)", x, y);
     }
 }

@@ -236,6 +236,50 @@ public class Point implements Cloneable {
         return pt;
     }
 
+    private static int above(Point a, Point b) {
+        return b.y >= a.y ? 1 : 0;
+    }
+
+    private static boolean crossRay(Point a, Point p, Point q) {
+        return (above(a, q) - above(a, p)) * orient(a, p, q) > 0;
+    }
+
+    /**
+     * 判断某个顶点是否落在矩形内，1表示矩形内，2表示矩形边缘，0表示矩形外
+     */
+    public static int inPolygon(List<Point> polygon, Point pt) {
+        int cross = 0;
+        for (int i = 0, n = polygon.size(); i < n; i++) {
+            Point cur = polygon.get(i);
+            Point next = polygon.get((i + 1) % n);
+            if (onSegment(cur, next, pt)) {
+                return 2;
+            }
+            if (crossRay(pt, cur, next)) {
+                cross++;
+            }
+        }
+        return cross % 2;
+    }
+
+    /**
+     * 判断某个顶点是否落在矩形内，1表示矩形内，2表示矩形边缘，0表示矩形外
+     */
+    public static int inPolygonBorder(List<Point[]> polygon, Point pt) {
+        int cross = 0;
+        for (Point[] pts : polygon) {
+            Point cur = pts[0];
+            Point next = pts[1];
+            if (onSegment(cur, next, pt)) {
+                return 2;
+            }
+            if (crossRay(pt, cur, next)) {
+                cross++;
+            }
+        }
+        return cross % 2;
+    }
+
     public static double dist2(Point a, Point b) {
         double dx = a.x - b.x;
         double dy = a.y - b.y;

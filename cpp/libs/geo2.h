@@ -14,7 +14,7 @@ bool IsZero(T x) {
 
 template <class T>
 struct Point {
-  const T x, y;
+  T x, y;
   Point(T a, T b) : x(a), y(b) {}
   Point() { Point(0, 0); }
   Point<T> conj() const { return {x, -y}; }
@@ -23,10 +23,19 @@ struct Point {
   bool half() const { return y > 0 || y == 0 && x < 0; }
 };
 
-template<class T>
-class SortByPolarAngle{
-  bool operator()(const Point<T> &a, const Point<T> &b){
-    if(a.half() != b.half()){
+template <class T>
+class SortByOrder {
+ public:
+  bool operator()(const Point<T> &a, const Point<T> &b) {
+    return a.x < b.x || a.x == b.x && a.y < b.y;
+  }
+};
+
+template <class T>
+class SortByPolarAngle {
+ public:
+  bool operator()(const Point<T> &a, const Point<T> &b) {
+    if (a.half() != b.half()) {
       return a.half() - b.half();
     }
     return Orient(b, a);
@@ -132,6 +141,11 @@ T Dot(const Point<T> &a, const Point<T> &b) {
 }
 
 template <class T>
+T Dot(T x1, T y1, T x2, T y2) {
+  return x1 * x2 + y1 * y2;
+}
+
+template <class T>
 bool IsPerp(const Point<T> &a, const Point<T> &b) {
   return Dot(a, b) == 0;
 }
@@ -180,6 +194,66 @@ bool IsConvex(const vector<Point<T>> &p) {
   }
   return !(hasPos & hasNeg);
 }
+
+/**
+ * 判断c是否落在以a与b为直径两端的圆中（包含边界）
+ */
+template <class T>
+bool InDisk(const Point<T> &a, const Point<T> &b, const Point<T> &c) {
+  return Sign(Dot(a - c, b - c)) <= 0;
+}
+
+template <class T>
+bool OnSegment(const Point<T> &a, const Point<T> &b, const Point<T> &c) {
+  return Orient(a, b, c) == 0 && InDisk(a, b, c);
+}
+
+template <class T>
+int Above(const Point<T> &a, const Point<T> &b) {
+  return b.y >= a.y ? 1 : 0;
+}
+
+template <class T>
+bool CrossRay(const Point<T> &a, const Point<T> &p, const Point<T> &q) {
+  return (Above(a, q) - Above(a, p)) * Orient(a, p, q) > 0;
+}
+
+/**
+ * 判断某个顶点是否落在矩形内，1表示矩形内，2表示矩形边缘，0表示矩形外
+ */
+template <class T>
+int InPolygon(const vector<Point<T>> &polygon, const Point<T> &pt) {
+  int cross = 0;
+  for (int i = 0, n = polygon.size(); i < n; i++) {
+    Point<T> cur = polygon[i];
+    Point<T> next = polygon[(i + 1) % n];
+    if (OnSegment(cur, next, pt)) {
+      return 2;
+    }
+    if (CrossRay(pt, cur, next)) {
+      cross++;
+    }
+  }
+  return cross % 2;
+}
+
+template <class T>
+int InPolygon(const vector<pair<Point<T>, Point<T>>> &polygonBorder,
+              const Point<T> &pt) {
+  int cross = 0;
+  for (auto &seg : polygonBorder) {
+    const Point<T> &cur = seg.first;
+    const Point<T> &next = seg.second;
+    if (OnSegment(cur, next, pt)) {
+      return 2;
+    }
+    if (CrossRay(pt, cur, next)) {
+      cross++;
+    }
+  }
+  return cross % 2;
+}
+
 }  // namespace geo2
 
 #endif
