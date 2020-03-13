@@ -2,6 +2,7 @@
 #define GEO2_H
 
 #include "common.h"
+#include "util.h"
 
 namespace geo2 {
 
@@ -10,6 +11,14 @@ const double PREC = 1e-10;
 template <class T>
 bool IsZero(T x) {
   return -PREC <= x && x <= PREC;
+}
+template <>
+bool IsZero<int>(int x) {
+  return x == 0;
+}
+template <>
+bool IsZero<ll>(ll x) {
+  return x == 0;
 }
 
 template <class T>
@@ -253,7 +262,6 @@ int InPolygon(const vector<pair<Point<T>, Point<T>>> &polygonBorder,
   }
   return cross % 2;
 }
-
 }  // namespace geo2
 
 #endif

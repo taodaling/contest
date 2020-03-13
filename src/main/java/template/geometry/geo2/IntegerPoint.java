@@ -187,7 +187,7 @@ public class IntegerPoint {
         long oa = cross(c, d, a);
         long ob = cross(c, d, b);
         long oc = cross(a, b, c);
-        long od = orient(a, b, d);
+        long od = cross(a, b, d);
 
         if (oa * ob < 0 && oc * od < 0) {
             return plus(mul(a, ob / (ob - oa)), mul(b, -oa / (ob - oa)));

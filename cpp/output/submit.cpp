@@ -1,6 +1,3 @@
-#ifndef BITS_H
-#define BITS_H
-
 #ifndef COMMON_H
 #define COMMON_H
 
@@ -124,100 +121,20 @@ const double PI = 3.14159265358979323846;
 #define C0(x) memset(x, 0, sizeof(x))
 #define C1(x) memset(x, -1, sizeof(x))
 
-namespace bits {
-template <class T>
-inline bool BitAt(T x, int i) {
-  return (x >> i) & 1;
-}
-template <class T>
-inline T SetBit(T x, int i) {
-  return x |= T(1) << i;
-}
-template <class T>
-inline T RemoveBit(T x, int i) {
-  return x &= ~(T(1) << i);
-}
-template <class T>
-inline T LowestOneBit(T x) {
-  return x & -x;
-}
-inline int FloorLog2(unsigned int x) {
-  if (x == 0) {
-    return 0;
-  }
-  return (sizeof(unsigned int) * 8) - 1 - __builtin_clz(x);
-}
-inline int FloorLog2(unsigned long long x) {
-  if (x == 0) {
-    return 0;
-  }
-  return (sizeof(unsigned long long) * 8) - 1 - __builtin_clzll(x);
-}
-inline int CeilLog2(unsigned int x) {
-  if (x == 0) {
-    return 0;
-  }
-  return (sizeof(unsigned int) * 8) - __builtin_clz(x - 1);
-}
-inline int CeilLog2(unsigned long long x) {
-  if (x == 0) {
-    return 0;
-  }
-  return (sizeof(unsigned long long) * 8) - __builtin_clzll(x - 1);
-}
-template <class T>
-inline T HighestOneBit(T x) {
-  return T(1) << FloorLog2(x);
-}
-inline int CountOne(unsigned int x) { return __builtin_popcount(x); }
-inline int CountOne(unsigned long long x) { return __builtin_popcountll(x); }
-}  // namespace bits
-#endif
-
-
 void solve(int testId, istream &in, ostream &out) {
-  ll a, b;
-  in >> a >> b;
-  if (a > b) {
-    swap(a, b);
+  int k, n;
+  in >> k >> n;
+  vector<int> cnts(10);
+  for (int i = 0; i < n; i++) {
+    string s;
+    in >> s;
+    cnts[s[0] - '0']++;
   }
-
-  if (a == 0) {
-    out << 0;
-    return;
+  int ans = 2;
+  for (int i = 0; i < 10; i++) {
+    ans += (cnts[i] + k - 1) / k;
   }
-
-  ll n = a + b;
-  ll k = 1;
-  while (a % 2 == 0 && n % 2 == 0) {
-    a /= 2;
-    n /= 2;
-  }
-
-  if(a % 2 == 0){
-    out << -1;
-    return;
-  }
-
-  int step = 0;
-  while(n % 2 == 0){
-    n /= 2;
-    k *= 2;
-    step++;
-  }
-
-  if (a % n != 0){
-    out << -1;
-    return;
-  }
-
-  int t = a / n;
-  if(t > k / 2){
-    out << -1;
-    return;
-  }
-
-  out << step;
+  out << ans;
 }
 
 RUN_ONCE

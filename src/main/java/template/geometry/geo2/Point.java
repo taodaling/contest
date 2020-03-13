@@ -211,7 +211,7 @@ public class Point implements Cloneable {
         double oa = cross(c, d, a);
         double ob = cross(c, d, b);
         double oc = cross(a, b, c);
-        double od = orient(a, b, d);
+        double od = cross(a, b, d);
 
         if (oa * ob < 0 && oc * od < 0) {
             return plus(mul(a, ob / (ob - oa)), mul(b, -oa / (ob - oa)));
