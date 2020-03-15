@@ -17,10 +17,10 @@ class Radix {
     }
   }
 
-  int operator()(int i) { return _digits[i]; }
+  inline int operator()(int i) { return _digits[i]; }
 
-  int get(T x, int i) { return x / _digits[i] % _radix; }
-  T set(T x, int i, int v) { return x + (v - get(x, i)) * _digits[i]; }
+  inline int get(T x, int i) { return x / _digits[i] % _radix; }
+  inline T set(T x, int i, int v) { return x + (v - get(x, i)) * _digits[i]; }
 
  private:
   vector<T> _digits;

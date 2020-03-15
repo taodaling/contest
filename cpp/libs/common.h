@@ -48,6 +48,8 @@ using std::uniform_real_distribution;
 using std::unique;
 using std::unordered_map;
 using std::vector;
+using std::tuple;
+using std::get;
 
 typedef unsigned int ui;
 typedef long long ll;

@@ -1,0 +1,28 @@
+In file included from C:/Users/DALT/IdeaProjects/contest/cpp/libs/common.h:14,
+                 from C:\Users\DALT\IdeaProjects\contest\cpp\database\Codeforces___acm_sgu_ru_archive___129__Inheritance\main.cpp:2:
+C:/Users/DALT/IdeaProjects/contest/cpp/libs/compiler_macro.h:6:30: warning: '-std=c++14' is not an option that controls warnings [-Wpragmas]
+ #pragma GCC diagnostic error "-std=c++14"
+                              ^~~~~~~~~~~~
+C:\Users\DALT\IdeaProjects\contest\cpp\database\Codeforces___acm_sgu_ru_archive___129__Inheritance\main.cpp: In function 'void solve(int, std::istream&, std::ostream&)':
+C:\Users\DALT\IdeaProjects\contest\cpp\database\Codeforces___acm_sgu_ru_archive___129__Inheritance\main.cpp:16:14: warning: statement has no effect [-Wunused-value]
+   dbg(border);
+              ^
+In file included from C:\Users\DALT\IdeaProjects\contest\cpp\database\Codeforces___acm_sgu_ru_archive___129__Inheritance\main.cpp:4:
+C:/Users/DALT/IdeaProjects/contest/cpp/libs/geo2.h: In instantiation of 'void geo2::ConvexHull(std::vector<geo2::Point<T> >&) [with T = long double]':
+C:\Users\DALT\IdeaProjects\contest\cpp\database\Codeforces___acm_sgu_ru_archive___129__Inheritance\main.cpp:15:26:   required from here
+C:/Users/DALT/IdeaProjects/contest/cpp/libs/geo2.h:318:21: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<geo2::Point<long double> >::size_type' {aka 'long long unsigned int'} [-Wsign-compare]
+   for (int i = 1; i < pts.size(); i++) {
+C:/Users/DALT/IdeaProjects/contest/cpp/libs/geo2.h: In instantiation of 'bool geo2::SortByOrder<T>::operator()(const geo2::Point<T>&, const geo2::Point<T>&) [with T = long double]':
+C:/Users/DALT/IdeaProjects/contest/cpp/libs/geo2.h:300:12:   required from 'void geo2::ConvexHull(std::vector<geo2::Point<T> >&) [with T = long double]'
+C:\Users\DALT\IdeaProjects\contest\cpp\database\Codeforces___acm_sgu_ru_archive___129__Inheritance\main.cpp:15:26:   required from here
+C:/Users/DALT/IdeaProjects/contest/cpp/libs/geo2.h:39:36: warning: suggest parentheses around '&&' within '||' [-Wparentheses]
+     return a.x < b.x || a.x == b.x && a.y < b.y;
+                         ~~~~~~~~~~~^~~~~~~~~~~~
+C:/Users/DALT/IdeaProjects/contest/cpp/libs/geo2.h: In instantiation of 'bool geo2::Point<T>::half() const [with T = long double]':
+C:/Users/DALT/IdeaProjects/contest/cpp/libs/geo2.h:47:18:   required from 'bool geo2::SortByPolarAngle<T>::operator()(const geo2::Point<T>&, const geo2::Point<T>&) [with T = long double]'
+C:/Users/DALT/IdeaProjects/contest/cpp/libs/geo2.h:64:40:   required from 'bool geo2::SortByPolarAngleWithOrigin<T>::operator()(const geo2::Point<T>&, const geo2::Point<T>&) [with T = long double]'
+C:/Users/DALT/IdeaProjects/contest/cpp/libs/geo2.h:309:12:   required from 'void geo2::ConvexHull(std::vector<geo2::Point<T> >&) [with T = long double]'
+C:\Users\DALT\IdeaProjects\contest\cpp\database\Codeforces___acm_sgu_ru_archive___129__Inheritance\main.cpp:15:26:   required from here
+C:/Users/DALT/IdeaProjects/contest/cpp/libs/geo2.h:32:46: warning: suggest parentheses around '&&' within '||' [-Wparentheses]
+   bool half() const { return y > 0 || y == 0 && x < 0; }
+                                       ~~~~~~~^~~~~~~~

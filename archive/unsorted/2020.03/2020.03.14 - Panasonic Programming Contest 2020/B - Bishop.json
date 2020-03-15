@@ -1,0 +1,54 @@
+{
+  "name" : "B - Bishop",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4 5\n",
+    "output" : "10\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "7 3\n",
+    "output" : "11\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "1000000000 1000000000\n",
+    "output" : "500000000000000000\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "6 3",
+    "output" : "9",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "3 3",
+    "index" : 4,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.BBishop",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.03.14",
+  "contestName" : "Panasonic Programming Contest 2020",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

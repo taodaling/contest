@@ -4,6 +4,26 @@
 #include "common.h"
 
 namespace reader {
+
+class Input {
+ private:
+  istream &_in;
+
+ public:
+  Input(istream &is) : _in(is) {}
+  template <class T>
+  T read() {
+    T tmp;
+    _in >> tmp;
+    return tmp;
+  }
+  int ri() { return read<int>(); }
+  ll rl() { return read<ll>(); }
+  double rd() { return read<double>(); }
+  char rc() { return read<char>(); }
+  string rs() { return read<string>(); }
+};
+
 class StringReader {
  private:
   const string &_s;

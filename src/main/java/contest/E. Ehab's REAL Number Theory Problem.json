@@ -1,0 +1,62 @@
+{
+  "name" : "E. Ehab's REAL Number Theory Problem",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3\n1 4 6\n",
+    "output" : "1\n",
+    "index" : 0,
+    "active" : false
+  }, {
+    "input" : "4\n2 3 6 6\n",
+    "output" : "2\n",
+    "index" : 1,
+    "active" : false
+  }, {
+    "input" : "3\n6 15 10\n",
+    "output" : "3\n",
+    "index" : 2,
+    "active" : false
+  }, {
+    "input" : "4\n2 3 5 7\n",
+    "output" : "-1\n",
+    "index" : 3,
+    "active" : false
+  }, {
+    "input" : "1\n97969",
+    "index" : 4,
+    "active" : false
+  }, {
+    "input" : "10\n156061 407179 418073 366313 500501 767881 595087 746969 147319 693799 129769 576647 233161 990181 622103 606077 916733 783323 408703 330697 544927 693337 777473 855461 252383 818429 682439 214939 599693 124349 116593 970969 828899 457817 872089 151007 612929 408437 621701 101627 798911 491213 36307 437201 565813 474737 300967 229799 854899 630997 648379 689597 176629 169913 606383 811729 824269 401993 625637 918899 366307 313679 804919 571331 742711 428551 593141 748613 634241 869899 431671 712913",
+    "index" : 5,
+    "active" : false
+  }, {
+    "input" : "5\n2 5 6 35 21",
+    "index" : 6,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.EEhabsREALNumberTheoryProblem",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.03.15",
+  "contestName" : "Codeforces Round #628 (Div. 2)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

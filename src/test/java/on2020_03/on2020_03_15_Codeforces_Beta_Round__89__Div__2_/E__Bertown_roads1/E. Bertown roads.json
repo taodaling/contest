@@ -1,0 +1,40 @@
+{
+  "name" : "E. Bertown roads",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "6 8\n1 2\n2 3\n1 3\n4 5\n4 6\n5 6\n2 4\n3 5\n",
+    "output" : "1 2\n2 3\n3 1\n4 5\n5 6\n6 4\n4 2\n3 5\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "6 7\n1 2\n2 3\n1 3\n4 5\n4 6\n5 6\n2 4\n",
+    "output" : "0\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_03.on2020_03_15_Codeforces_Beta_Round__89__Div__2_.E__Bertown_roads1.EBertownRoads",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.03.15",
+  "contestName" : "Codeforces Beta Round #89 (Div. 2)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

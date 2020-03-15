@@ -62,6 +62,8 @@ using std::uniform_real_distribution;
 using std::unique;
 using std::unordered_map;
 using std::vector;
+using std::tuple;
+using std::get;
 
 typedef unsigned int ui;
 typedef long long ll;
@@ -121,20 +123,56 @@ const double PI = 3.14159265358979323846;
 #define C0(x) memset(x, 0, sizeof(x))
 #define C1(x) memset(x, -1, sizeof(x))
 
+#define double long double
+
+bool solve(vector<ll> &vec, double &ans) {
+  ll a = 1;
+  ll b = 0;
+  for (ll v : vec) {
+    a = -a;
+    b = 2 * v - b;
+  }
+  if (a - 1 == 0) {
+    if (b != 0) {
+      return false;
+    }
+    ans = 0;
+    return true;
+  }
+
+  ans = (double)-b / (a - 1);
+  return true;
+}
+
+ll read(istream &in) {
+  double x;
+  in >> x;
+  return (ll)(x * 1000);
+}
+
 void solve(int testId, istream &in, ostream &out) {
-  int k, n;
-  in >> k >> n;
-  vector<int> cnts(10);
+  int n;
+  in >> n;
+  vector<ll> xs(n);
+  vector<ll> ys(n);
   for (int i = 0; i < n; i++) {
-    string s;
-    in >> s;
-    cnts[s[0] - '0']++;
+    xs[i] = read(in);
+    ys[i] = read(in);
   }
-  int ans = 2;
-  for (int i = 0; i < 10; i++) {
-    ans += (cnts[i] + k - 1) / k;
+  double x0, y0;
+  bool valid = solve(xs, x0) && solve(ys, y0);
+  if (!valid) {
+    out << "NO";
+    return;
   }
-  out << ans;
+
+  out << "YES" << endl;
+  out << x0 / 1000 << ' ' << y0 / 1000 << endl;
+  for (int i = 0; i < n - 1; i++) {
+    x0 = 2 * xs[i] - x0;
+    y0 = 2 * ys[i] - y0;
+    out << x0 / 1000 << ' ' << y0 / 1000 << endl;
+  }
 }
 
 RUN_ONCE
