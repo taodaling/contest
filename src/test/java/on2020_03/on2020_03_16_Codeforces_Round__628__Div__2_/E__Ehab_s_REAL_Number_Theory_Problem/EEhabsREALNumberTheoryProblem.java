@@ -1,4 +1,4 @@
-package on2020_03.on2020_03_15_Codeforces_Round__628__Div__2_.E__Ehab_s_REAL_Number_Theory_Problem;
+package on2020_03.on2020_03_16_Codeforces_Round__628__Div__2_.E__Ehab_s_REAL_Number_Theory_Problem;
 
 
 
@@ -13,14 +13,10 @@ import template.primitve.generated.datastructure.IntegerHashMap;
 import template.primitve.generated.datastructure.IntegerIterator;
 import template.primitve.generated.datastructure.IntegerList;
 import template.primitve.generated.datastructure.IntegerMultiWayStack;
-import template.utils.Debug;
 
-import java.util.Deque;
 import java.util.List;
 
 public class EEhabsREALNumberTheoryProblem {
-    Debug debug = new Debug(false);
-
     public void solve(int testNumber, FastInput in, FastOutput out) {
         int n = in.readInt();
         int[] a = new int[n];
@@ -63,17 +59,17 @@ public class EEhabsREALNumberTheoryProblem {
             Graph.addUndirectedEdge(g, primeToIndex.get(collect.get(0)), primeToIndex.get(collect.get(1)));
         }
 
-        UndirectedOneWeightMinCircle circle = new UndirectedOneWeightMinCircle(g);
-        circle.optimize(sieve.getPrimeCount());
+        IntegerList circle = new IntegerList(n);
+        UndirectedOneWeightMinCircle minCircle = new UndirectedOneWeightMinCircle(g);
+        minCircle.optimize(sieve.getPrimeCount(), circle);
         for (int i = 0; sieve.get(i) < 1000; i++) {
-            circle.optimize(i);
+            minCircle.optimize(i, circle);
         }
 
-        IntegerList c = circle.getCircle();
-        if (c == null) {
+        if (circle.size() == 0) {
             out.println(-1);
             return;
         }
-        out.println(c.size());
+        out.println(circle.size());
     }
 }

@@ -28,6 +28,10 @@ public class LongBIT {
         return sum;
     }
 
+    public long query(int l, int r) {
+        return query(r) - query(l - 1);
+    }
+
     /**
      * 将A[i]更新为A[i]+mod
      */

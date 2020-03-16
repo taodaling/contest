@@ -1,6 +1,5 @@
 package contest;
 
-import template.datastructure.OppositeDSU;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.math.Bits;

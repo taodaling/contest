@@ -28,6 +28,10 @@ public class DoubleBIT {
         return sum;
     }
 
+    public double query(int l, int r) {
+        return query(r) - query(l - 1);
+    }
+
     /**
      * 将A[i]更新为A[i]+mod
      */

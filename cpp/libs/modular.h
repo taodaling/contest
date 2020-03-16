@@ -1,7 +1,8 @@
 #ifndef MODULAR_H
 #define MODULAR_H
 
-#include <iostream>
+#include "common.h"
+#include "gcd.h"
 
 namespace modular {
 template <class T>
@@ -39,16 +40,9 @@ inline T Modpow(T x, long long n, T m) {
 
 template <typename T>
 T Inverse(T a, T m) {
-  T u = 0, v = 1;
-  while (a != 0) {
-    T t = m / a;
-    m -= t * a;
-    swap(a, m);
-    u -= t * v;
-    swap(u, v);
-  }
-  assert(m == 1);
-  return u;
+  int x, y;
+  gcd::Extgcd(a, m, x, y);
+  return Mod(x, m);
 }
 
 template <class T, T M>

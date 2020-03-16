@@ -122,56 +122,70 @@ const double PI = 3.14159265358979323846;
 
 #define C0(x) memset(x, 0, sizeof(x))
 #define C1(x) memset(x, -1, sizeof(x))
+#ifndef GCD_H
+#define GCD_H
 
-#define double long double
 
-bool solve(vector<ll> &vec, double &ans) {
-  ll a = 1;
-  ll b = 0;
-  for (ll v : vec) {
-    a = -a;
-    b = 2 * v - b;
-  }
-  if (a - 1 == 0) {
-    if (b != 0) {
-      return false;
-    }
-    ans = 0;
-    return true;
-  }
 
-  ans = (double)-b / (a - 1);
-  return true;
+namespace gcd {
+template <typename T>
+T Gcd0(T a, T b) {
+  return b ? Gcd0(b, a % b) : a;
 }
 
-ll read(istream &in) {
-  double x;
-  in >> x;
-  return (ll)(x * 1000);
+template <typename T>
+T Gcd(T a, T b) {
+  if (a < b) {
+    swap(a, b);
+  }
+  return Gcd0(a, b);
 }
+
+template <typename T>
+T  Extgcd0(T a, T b, T &x, T &y) {
+  if (!b) {
+    x = 1;
+    y = 0;
+    return a;
+  }
+  T ans = Extgcd0(b, a % b, y, x);
+  y = y - x * (a / b);
+  return ans;
+}
+
+/**
+ * Find gcd(a, b) and expression xa+yb=g
+ */
+template <typename T>
+T Extgcd(T a, T b, T &x, T &y) {
+  if (a >= b) {
+    return Extgcd0(a, b, x, y);
+  }
+  return Extgcd0(b, a, y, x);
+}
+}  // namespace gcd
+
+#endif
 
 void solve(int testId, istream &in, ostream &out) {
-  int n;
-  in >> n;
-  vector<ll> xs(n);
-  vector<ll> ys(n);
-  for (int i = 0; i < n; i++) {
-    xs[i] = read(in);
-    ys[i] = read(in);
-  }
-  double x0, y0;
-  bool valid = solve(xs, x0) && solve(ys, y0);
-  if (!valid) {
-    out << "NO";
-    return;
+  int n, k;
+  in >> n >> k;
+  int base = k / n;
+  k %= n;
+
+  int a;
+  int b;
+  gcd::Extgcd(k, n, a, b);  // modular::Inverse(k, n);
+  int step = (a % n + n) % n;
+
+  vector<int> ans(n, base);
+  for (int i = 0, j = 0; i < k; i++, j = (j + step) % n) {
+    ans[j]++;
   }
 
-  out << "YES" << endl;
-  out << x0 / 1000 << ' ' << y0 / 1000 << endl;
-  for (int i = 0; i < n - 1; i++) {
-    x0 = 2 * xs[i] - x0;
-    y0 = 2 * ys[i] - y0;
-    out << x0 / 1000 << ' ' << y0 / 1000 << endl;
+  rotate(ans.begin(), ans.begin() + 1, ans.end());
+  for (int x : ans) {
+    out << x << ' ';
   }
 }
 
