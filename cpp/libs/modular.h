@@ -45,6 +45,32 @@ T Inverse(T a, T m) {
   return Mod(x, m);
 }
 
+/**
+ * O(n + logn)
+ */
+template <class T>
+T Extgcd(vector<T> &arg, vector<T> &coes, T mod) {
+  int n = arg.size();
+  if (n == 0) {
+    return 0;
+  }
+  coes.resize(n);
+  vector<T> gs(n);
+  gs[0] = arg[0];
+  for (int i = 1; i < n; i++) {
+    gs[i] = gcd::Gcd(gs[i - 1], arg[i]);
+  }
+  T prod = 1;
+  for (int i = n - 1; i >= 1; i--) {
+    T a, b;
+    gcd::Extgcd0(gs[i - 1], arg[i], a, b);
+    coes[i] = Modmul(b, prod, mod);
+    prod = Modmul(prod, a, mod);
+  }
+  coes[0] = prod;
+  return gs[n - 1];
+}
+
 template <class T, T M>
 class Modular {
  public:
