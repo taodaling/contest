@@ -1,7 +1,6 @@
 package template.primitve.generated.datastructure;
 
 
-import template.rand.Hash;
 import template.rand.Hasher;
 
 import java.util.Arrays;

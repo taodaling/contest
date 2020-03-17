@@ -5,7 +5,6 @@ package contest;
 import template.datastructure.PreXor;
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.rand.ModifiableWholeHash;
 import template.string.Manacher;
 
 import java.util.Arrays;

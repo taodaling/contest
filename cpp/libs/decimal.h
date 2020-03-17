@@ -3,6 +3,11 @@
 
 namespace decimal {
 
+ll Merge(int a, int b) {
+  static ll mask = (1ll << 32) - 1;
+  return (a << 32) | (b & mask);
+}
+
 template <class T>
 T CeilDiv(T a, T b) {
   if (b < 0) {

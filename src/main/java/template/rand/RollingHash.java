@@ -1,64 +1,37 @@
 package template.rand;
 
-import template.math.Modular;
-import template.math.Power;
 import template.primitve.generated.datastructure.IntegerDequeImpl;
 
 public class RollingHash {
-    public static final Modular MOD = new Modular((int) (1e9 + 7));
-    private int inverse;
-    private int[] xs;
-    private IntegerDequeImpl deque;
-    private int hash;
+    HashData hd;
+    IntegerDequeImpl dq;
+    int h;
 
-    public RollingHash(RollingHash model) {
-        inverse = model.inverse;
-        deque = new IntegerDequeImpl(0);
-        xs = model.xs;
+    public RollingHash(HashData hd) {
+        this.hd = hd;
+        dq = new IntegerDequeImpl(hd.pow.length);
     }
 
-    public RollingHash(int size, int x) {
-        deque = new IntegerDequeImpl(size);
-        xs = new int[size + 1];
-        inverse = new Power(MOD).inverseByFermat(x);
-        xs[0] = 1;
-        for (int i = 1; i <= size; i++) {
-            xs[i] = MOD.mul(xs[i - 1], x);
-        }
+    public void reset() {
+        h = 0;
+        dq.clear();
     }
 
-    public void clear() {
-        hash = 0;
-        deque.clear();
-    }
-
-    public int hash() {
-        return hash;
-    }
-
-    public int hashVerbose() {
-        return MOD.plus(hash, xs[deque.size()]);
-    }
-
-    public void addLast(int v) {
-        hash = MOD.plus(hash, MOD.mul(v, xs[deque.size()]));
-        deque.addLast(v);
-    }
-
-    public boolean isEmpty() {
-        return deque.isEmpty();
-    }
-
-    public int size() {
-        return deque.size();
+    public void addLast(int x) {
+        h = hd.mod.plus(h, (long) hd.pow[dq.size()] * x);
+        dq.addLast(x);
     }
 
     public void removeFirst() {
-        hash = MOD.mul(MOD.subtract(hash, deque.removeFirst()), inverse);
+        h = hd.mod.subtract(h, dq.removeFirst());
+        h = hd.mod.mul(h, hd.inv[1]);
     }
 
-    @Override
-    public String toString() {
-        return hash + "=rand(" + deque + ")";
+    public int hash(boolean verbose) {
+        int ans = h;
+        if (verbose) {
+            ans = hd.mod.plus(ans, hd.pow[dq.size()]);
+        }
+        return ans;
     }
 }

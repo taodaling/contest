@@ -2,7 +2,6 @@ package contest;
 
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.rand.AppendableHash;
 
 public class ECompressWords {
     public void solve(int testNumber, FastInput in, FastOutput out) {
