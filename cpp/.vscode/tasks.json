@@ -12,6 +12,10 @@
                 "-D",
                 "LOCAL"
             ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
         }
     ],
     "version": "2.0.0"

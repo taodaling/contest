@@ -37,15 +37,15 @@ struct HashData {
   }
 };
 
-template <int N, int X>
+template <int N, int M, int X>
 class PartialHash {
  private:
   using Mint = modular::Modular<int, (int)1e9 + 7>;
   Mint _h[N + 1];
-  const HashData<N, X> &_hd;
+  const HashData<M, X> &_hd;
 
  public:
-  PartialHash(const HashData<N, X> &hd) : _hd(hd) {}
+  PartialHash(const HashData<M, X> &hd) : _hd(hd) { assert(N <= M); }
 
   void reset(const function<int(int)> &func, int l, int r) {
     assert(l <= r);
@@ -54,16 +54,16 @@ class PartialHash {
     }
     Mint x = _h[l] = func(l) * _hd.pow[l];
     for (int i = l + 1; i <= r; i++) {
-      _h[i] = _h[i - 1] + func(i);
+      _h[i] = _h[i - 1] + func(i) * _hd.pow[i];
     }
   }
 
-  int hash(int l, int r, bool verbose) {
+  int hash(int l, int r, bool verbose = false) {
     Mint h = _h[r];
     if (l > 0) {
       h -= _h[l - 1];
+      h *= _hd.inv[l];
     }
-    h *= _hd.inv[l];
     if (verbose) {
       h += _hd.pow[r - l + 1];
     }
@@ -71,16 +71,16 @@ class PartialHash {
   }
 };
 
-template <int N, int X>
+template <int N, int M, int X>
 class RollingHash {
  private:
   using Mint = modular::Modular<int, (int)1e9 + 7>;
   deque<int> _dq;
   Mint _h;
-  const HashData<N, X> &_hd;
+  const HashData<M, X> &_hd;
 
  public:
-  RollingHash(const HashData<N, X> &hd) : _hd(hd) {}
+  RollingHash(const HashData<M, X> &hd) : _hd(hd) { assert(N <= M); }
 
   void reset(const function<int(int)> &func, int l, int r) {
     _h = 0;
@@ -98,7 +98,7 @@ class RollingHash {
     _dq.push_back(v);
   }
 
-  int hash(bool verbose) {
+  int hash(bool verbose = false) {
     Mint h = _h;
     if (verbose) {
       h += _hd.pow[_dq.size()];
@@ -107,16 +107,16 @@ class RollingHash {
   }
 };
 
-template <int N, int X>
+template <int N, int M, int X>
 class ModifiableHash {
  private:
   using Mint = modular::Modular<int, (int)1e9 + 7>;
   Mint _vals[N];
   Mint _h;
-  const HashData<N, X> &_hd;
+  const HashData<M, X> &_hd;
 
  public:
-  ModifiableHash(const HashData<N, X> &hd) : _hd(hd) {}
+  ModifiableHash(const HashData<M, X> &hd) : _hd(hd) {}
 
   void reset() {
     for (int i = 0; i < N; i++) {
@@ -125,7 +125,7 @@ class ModifiableHash {
     _h = 0;
   }
 
-  int set(int i, int x) {
+  void set(int i, int x) {
     _h += (x - _vals[i]) * _hd.pow[i];
     _vals[i] = x;
   }

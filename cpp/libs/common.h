@@ -55,6 +55,7 @@ typedef unsigned int ui;
 typedef long long ll;
 typedef long double ld;
 typedef unsigned long long ull;
+typedef unsigned char byte;
 std::mt19937 rng(std::chrono::steady_clock::now().time_since_epoch().count());
 
 const double E = 2.7182818284590452354;

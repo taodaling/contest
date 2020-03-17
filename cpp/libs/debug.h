@@ -3,7 +3,7 @@
 #include "prettyprint.h"
 
 #ifdef LOCAL
-#define dbg(args...)                       \
+#define dbg(args...)                         \
   {                                          \
     string _s = #args;                       \
     replace(_s.begin(), _s.end(), ',', ' '); \
@@ -17,10 +17,10 @@ void err(std::istream_iterator<string> it, T a, Args... args) {
   cerr << *it << " = " << a << endl;
   err(++it, args...);
 }
+#define dbg2(x) cerr << #x << "=" << (x) << endl
 #else
 #define dbg(args...) 42
+#define dbg2(x) 42
 #endif
 
 #endif
-
-

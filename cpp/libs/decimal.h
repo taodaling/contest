@@ -5,7 +5,7 @@ namespace decimal {
 
 ll Merge(int a, int b) {
   static ll mask = (1ll << 32) - 1;
-  return (a << 32) | (b & mask);
+  return ((ll)a << 32) | ((ll)b & mask);
 }
 
 template <class T>
