@@ -6,7 +6,9 @@
 
 namespace geo2 {
 
-const double PREC = 1e-10;
+#ifndef PREC
+#define PREC = 1e-10
+#endif
 
 template <class T>
 bool IsZero(T x) {

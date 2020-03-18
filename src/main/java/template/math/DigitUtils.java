@@ -135,7 +135,7 @@ public class DigitUtils {
     private static long mask32 = (1L << 32) - 1;
 
     public static long asLong(int high, int low) {
-        return ((((long) high)) << 32) | (((long) low) & mask32);
+        return (((long) high) << 32) | (((long) low) & mask32);
     }
 
     public static int highBit(long x) {

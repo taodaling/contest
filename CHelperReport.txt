@@ -1,2 +1,2 @@
-63 src/main/java/contest/E. Ehab's REAL Number Theory Problem.json
+34 src/main/java/contest/UOJ0003.json
 0

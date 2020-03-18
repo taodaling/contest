@@ -4,7 +4,7 @@ import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntUnaryOperator;
 
 /**
- * Used to find the minimum value of a lower convex.
+ * Used to find the maximum value of a lower convex.
  * Assume f(-inf)<...<f(ans)=f(ans+1)=...=f(ans+k)>...>f(inf)
  */
 public class DoubleTernarySearch {

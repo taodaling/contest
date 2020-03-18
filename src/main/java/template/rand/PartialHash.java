@@ -11,7 +11,7 @@ public class PartialHash {
         hash = new int[hd.pow.length];
     }
 
-    public <T> void populate(IntUnaryOperator function, int l, int r) {
+    public void populate(IntUnaryOperator function, int l, int r) {
         if (l > 0) {
             hash[l - 1] = 0;
         }

@@ -71,6 +71,23 @@ T Extgcd(vector<T> &arg, vector<T> &coes, T mod) {
   return gs[n - 1];
 }
 
+/**
+ * O(n), inverse 1, 2, ..., n - 1
+ */
+template <class T>
+void InverseRange(vector<T> &vec, T mod) {
+  int n = vec.size();
+  if (n <= 1) {
+    return;
+  }
+  vec[1] = 1;
+  for (int i = 2; i < n; i++) {
+    T k = mod / i;
+    T r = mod % i;
+    vec[i] = Modmul(-k, vec[r], mod);
+  }
+}
+
 template <class T, T M>
 class Modular {
  public:
