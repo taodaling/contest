@@ -596,457 +596,671 @@ void err(std::istream_iterator<string> it, T a, Args... args) {
 
 #endif
 
-#ifndef GEO2_H
-#define GEO2_H
+#ifndef DECIMAL_H
+#define DECIMAL_H
 
+namespace decimal {
 
-#ifndef UTIL_H
-#define UTIL_H
+ll Merge(int a, int b) {
+  static ll mask = (1ll << 32) - 1;
+  return ((ll)a << 32) | ((ll)b & mask);
+}
 
-
-
-namespace util {
-vector<int> Range(int l, int r) {
-  vector<int> ans;
-  ans.reserve(r - l + 1);
-  for (int i = l; i <= r; i++) {
-    ans.push_back(i);
+template <class T>
+T CeilDiv(T a, T b) {
+  if (b < 0) {
+    a = -a;
+    b = -b;
   }
-  return ans;
-}
-}  // namespace util
-
-#endif
-
-namespace geo2 {
-
-const double PREC = 1e-10;
-
-template <class T>
-bool IsZero(T x) {
-  return -PREC <= x && x <= PREC;
-}
-template <>
-bool IsZero<int>(int x) {
-  return x == 0;
-}
-template <>
-bool IsZero<ll>(ll x) {
-  return x == 0;
-}
-
-template <class T>
-struct Point {
-  T x, y;
-  Point(T a, T b) : x(a), y(b) {}
-  Point() { Point(0, 0); }
-  Point<T> conj() const { return {x, -y}; }
-  T square() const { return x * x + y * y; }
-  double abs() const { return sqrt(square()); }
-  bool half() const { return y > 0 || y == 0 && x < 0; }
-};
-
-template <class T>
-class SortByOrder {
- public:
-  bool operator()(const Point<T> &a, const Point<T> &b) {
-    return a.x < b.x || a.x == b.x && a.y < b.y;
+  T div = a / b;
+  if (b * div < a) {
+    div++;
   }
-};
+  return div;
+}
 
 template <class T>
-class SortByPolarAngle {
- public:
-  bool operator()(const Point<T> &a, const Point<T> &b) {
-    if (a.half() != b.half()) {
-      return a.half() < b.half();
-    }
-    return Orient(a, b) > 0;
+T FloorDiv(T a, T b) {
+  if (b < 0) {
+    a = -a;
+    b = -b;
   }
-};
-
-template <class T>
-class SortByPolarAngleWithOrigin {
- private:
-  Point<T> _origin;
-  SortByPolarAngle<T> _sa;
-
- public:
-  SortByPolarAngleWithOrigin(const Point<T> origin) : _origin(origin) {}
-
-  bool operator()(const Point<T> &a, const Point<T> &b) {
-    return _sa(a - _origin, b - _origin);
+  T div = a / b;
+  if (b * div > a) {
+    div--;
   }
-};
-
-template <class T>
-Point<T> operator+(const Point<T> &a, const Point<T> &b) {
-  return {a.x + b.x, a.y + b.y};
+  return div;
 }
 
 template <class T>
-Point<T> operator-(const Point<T> &a, const Point<T> &b) {
-  return {a.x - b.x, a.y - b.y};
+T RoundToInt(double x) {
+  return x >= 0 ? x + 0.5 : x - 0.5;
 }
-
-template <class T>
-Point<T> operator*(const Point<T> &a, T b) {
-  return {a.x * b, a.y * b};
-}
-
-template <class T>
-Point<T> operator*(T b, const Point<T> &a) {
-  return {a.x * b, a.y * b};
-}
-
-template <class T>
-Point<T> operator*(const Point<T> &a, const Point<T> &b) {
-  return {a.x * b.x - a.y * b.y, a.x * b.y + a.y * b.x};
-}
-
-template <class T>
-Point<T> operator/(const Point<T> &a, T b) {
-  return {a.x / b, a.y / b};
-}
-
-template <class T>
-Point<T> operator/(const Point<T> &a, const Point<T> &b) {
-  return a * (b.conj() / b.square());
-}
-
-template <class T>
-bool operator==(const Point<T> &a, const Point<T> &b) {
-  return a.x == b.x && a.y == b.y;
-}
-template <class T>
-bool operator!=(const Point<T> &a, const Point<T> &b) {
-  return !(a == b);
-}
-template <class T>
-ostream &operator<<(ostream &os, const Point<T> &pt) {
-  os << "(" << pt.x << "," << pt.y << ")";
-  return os;
-}
-template <class T>
-istream &operator>>(istream &is, Point<T> &pt) {
-  is >> pt.x >> pt.y;
-  return is;
-}
-
 template <class T>
 int Sign(T x) {
-  return IsZero(x) ? 0 : x > 0 ? 1 : -1;
+  return x < 0 ? -1 : x > 0 ? 1 : 0;
 }
-
 template <class T>
-Point<T> Translate(const Point<T> &v, const Point<T> &p) {
-  return p + v;
-}
-
-template <class T>
-Point<T> Scale(const Point<T> &c, T factor, const Point<T> &p) {
-  return c + (p - c) * factor;
-}
-
-template <class T>
-Point<T> Rotate(const Point<T> &pt, double a) {
-  double c = std::cos(a);
-  double s = std::sin(a);
-  return {pt.x * c - pt.y * s, pt.x * s + pt.y * c};
-}
-
-template <class T>
-Point<T> Rotate(const Point<T> &origin, const Point<T> &pt, double a) {
-  return Rotate(pt - origin, a) + origin;
-}
-
-template <class T>
-Point<T> Perp(const Point<T> &pt) {
-  return {-pt.y, pt.x};
-}
-
-template <class T>
-Point<T> LinearTransformTo(const Point<T> &p, const Point<T> &fp,
-                           const Point<T> &q, const Point<T> &fq,
-                           const Point<T> &req) {
-  return fp + (req - p) * (fq - fp) / (q - p);
-}
-
-template <class T>
-T Dot(const Point<T> &a, const Point<T> &b) {
-  return a.x * b.x + a.y * b.y;
-}
-
-template <class T>
-T Dot(T x1, T y1, T x2, T y2) {
-  return x1 * x2 + y1 * y2;
-}
-
-template <class T>
-bool IsPerp(const Point<T> &a, const Point<T> &b) {
-  return Dot(a, b) == 0;
-}
-
-template <class T>
-double Angle(const Point<T> &a, const Point<T> &b) {
-  return std::acos(clamp(Dot(a, b) / a.abs() / b.abs()), -1.0, 1.0);
-}
-
-template <class T>
-T Cross(const Point<T> &a, const Point<T> &b) {
-  return a.x * b.y - a.y * b.x;
-}
-
-template <class T>
-T Cross(const Point<T> &origin, const Point<T> &a, const Point<T> &b) {
-  return Cross(a - origin, b - origin);
-}
-
-template <class T>
-int Orient(const Point<T> &b, const Point<T> &c) {
-  return Sign(Cross(b, c));
-}
-
-template <class T>
-int Orient(const Point<T> &a, const Point<T> &b, const Point<T> &c) {
-  return Orient(b - a, c - a);
-}
-
-template <class T>
-bool InAngle(const Point<T> &a, const Point<T> &b, const Point<T> &c,
-             const Point<T> &p) {
-  assert(Orient(a, b, c) != 0);
-  if (Orient(a, b, c) < 0) {
-    swap(b, c);
+bool IsPlusOverflow(T a, T b) {
+  if (Sign(a) != Sign(b)) {
+    return false;
   }
-  return Orient(a, b, p) >= 0 && Orient(a, c, p) <= 0;
-}
-
-template <class T>
-double OrientedAngle(const Point<T> &a, const Point<T> &b, const Point<T> &c) {
-  if (Orient(a, b, c) >= 0) {
-    return Angle(b - a, c - a);
+  if (a < 0) {
+    return a + b > 0;
   } else {
-    return 2 * PI - Angle(b - a, c - a);
+    return a + b < 0;
   }
 }
-
 template <class T>
-bool IsConvex(const vector<Point<T>> &p) {
-  bool hasPos = false, hasNeg = false;
-  for (int i = 0, n = p.size(); i < n; i++) {
-    int o = Orient(p[i], p[(i + 1) % n], p[(i + 2) % n]);
-    if (o > 0) hasPos = true;
-    if (o < 0) hasNeg = true;
+bool IsMultiplicationOverflow(T a, T b, T limit) {
+  if (limit < 0) {
+    limit = -limit;
   }
-  return !(hasPos & hasNeg);
+  if (a < 0) {
+    a = -a;
+  }
+  if (b < 0) {
+    b = -b;
+  }
+  if (a == 0 || b == 0) {
+    return false;
+  }
+  // a * b > limit => a > limit / b
+  return a > limit / b;
+}
+}  // namespace decimal
+
+#endif
+#ifndef HASH_H
+#define HASH_H
+
+
+#ifndef MODULAR_H
+#define MODULAR_H
+
+
+#ifndef GCD_H
+#define GCD_H
+
+
+
+namespace gcd {
+template <typename T>
+T Gcd0(T a, T b) {
+  return b ? Gcd0(b, a % b) : a;
+}
+
+template <typename T>
+T Gcd(T a, T b) {
+  if (a < b) {
+    swap(a, b);
+  }
+  return Gcd0(a, b);
+}
+
+template <typename T>
+T Extgcd0(T a, T b, T &x, T &y) {
+  if (!b) {
+    x = 1;
+    y = 0;
+    return a;
+  }
+  T ans = Extgcd0(b, a % b, y, x);
+  y = y - x * (a / b);
+  return ans;
 }
 
 /**
- * 判断c是否落在以a与b为直径两端的圆中（包含边界）
+ * Find gcd(a, b) and expression xa+yb=g
  */
-template <class T>
-bool InDisk(const Point<T> &a, const Point<T> &b, const Point<T> &c) {
-  return Sign(Dot(a - c, b - c)) <= 0;
-}
-
-template <class T>
-bool OnSegment(const Point<T> &a, const Point<T> &b, const Point<T> &c) {
-  return Orient(a, b, c) == 0 && InDisk(a, b, c);
-}
-
-template <class T>
-int Above(const Point<T> &a, const Point<T> &b) {
-  return b.y >= a.y ? 1 : 0;
-}
-
-template <class T>
-bool CrossRay(const Point<T> &a, const Point<T> &p, const Point<T> &q) {
-  return (Above(a, q) - Above(a, p)) * Orient(a, p, q) > 0;
+template <typename T>
+T Extgcd(T a, T b, T &x, T &y) {
+  if (a >= b) {
+    return Extgcd0(a, b, x, y);
+  }
+  return Extgcd0(b, a, y, x);
 }
 
 /**
- * 判断某个顶点是否落在矩形内，1表示矩形内，2表示矩形边缘�?0表示矩形�?
+ * O(n + logn)
  */
 template <class T>
-int InPolygon(const vector<Point<T>> &polygon, const Point<T> &pt) {
-  int cross = 0;
-  for (int i = 0, n = polygon.size(); i < n; i++) {
-    Point<T> cur = polygon[i];
-    Point<T> next = polygon[(i + 1) % n];
-    if (OnSegment(cur, next, pt)) {
-      return 2;
-    }
-    if (CrossRay(pt, cur, next)) {
-      cross++;
-    }
+T Extgcd(vector<T> &arg, vector<T> &coes) {
+  int n = arg.size();
+  if (n == 0) {
+    return 0;
   }
-  return cross % 2;
+  coes.resize(n);
+  vector<T> gs(n);
+  gs[0] = arg[0];
+  for (int i = 1; i < n; i++) {
+    gs[i] = Gcd(gs[i - 1], arg[i]);
+  }
+  T prod = 1;
+  for (int i = n - 1; i >= 1; i--) {
+    T a, b;
+    Extgcd0(gs[i - 1], arg[i], a, b);
+    coes[i] = b * prod;
+    prod *= a;
+  }
+  coes[0] = prod;
+  return gs[n - 1];
 }
 
-template <class T>
-int InPolygon(const vector<pair<Point<T>, Point<T>>> &polygonBorder,
-              const Point<T> &pt) {
-  int cross = 0;
-  for (auto &seg : polygonBorder) {
-    const Point<T> &cur = seg.first;
-    const Point<T> &next = seg.second;
-    if (OnSegment(cur, next, pt)) {
-      return 2;
-    }
-    if (CrossRay(pt, cur, next)) {
-      cross++;
-    }
-  }
-  return cross % 2;
-}
-
-/**
- * 生成逆时针凸�?
- */
-template <class T>
-void ConvexHull(vector<Point<T>> &pts) {
-  assert(pts.size() >= 2);
-  int index = 0;
-  int n = pts.size();
-  SortByOrder<T> sbo;
-  for (int i = 0; i < n; i++) {
-    if (sbo(pts[i], pts[index])) {
-      index = i;
-    }
-  }
-  swap(pts[0], pts[index]);
-  SortByPolarAngleWithOrigin<T> sba(pts[0]);
-  sort(pts.begin() + 1, pts.end(), sba);
-  int tail = 1;
-  for (int i = 2; i < n; i++) {
-    if (sba(pts[tail], pts[i])) {
-      pts[++tail] = pts[i];
-    } else if ((pts[tail] - pts[0]).square() < (pts[i] - pts[0]).square()) {
-      pts[tail] = pts[i];
-    }
-  }
-  pts.erase(pts.begin() + tail + 1, pts.end());
-  deque<Point<T>> stk;
-  stk.push_back(pts[0]);
-  for (int i = 1; i < pts.size(); i++) {
-    while (stk.size() >= 2) {
-      Point<T> last = stk.back();
-      stk.pop_back();
-      Point<T> &second = stk.back();
-      if (Orient(second, last, pts[i]) > 0) {
-        stk.push_back(last);
-        break;
-      }
-    }
-    stk.push_back(pts[i]);
-  }
-
-  pts.assign(stk.begin(), stk.end());
-}
-
-/**
- * 获取线段a->b与线段c->d的交�?
- */
-template <class T>
-bool ProperIntersect(Point<T> &a, Point<T> &b, Point<T> &c, Point<T> &d,
-                     Point<T> &ans) {
-  T oa = Cross(c, d, a);
-  T ob = Cross(c, d, b);
-  T oc = Cross(a, b, c);
-  T od = Cross(a, b, d);
-
-  if (oa * ob < 0 && oc * od < 0) {
-    ans = (a * ob - b * oa) / (ob - oa);
-    return true;
-  }
-  return false;
-}
-
-/**
- * 判断线段交点
- */
-template <class T>
-bool Intersect(Point<T> a, Point<T> b, Point<T> c, Point<T> d, Point<T> &ans) {
-  bool find = ProperIntersect(a, b, c, d, ans);
-  if (!find && OnSegment(a, b, c)) {
-    ans = c;
-    find = true;
-  }
-  if (!find && OnSegment(a, b, d)) {
-    ans = d;
-    find = true;
-  }
-  if (!find && OnSegment(c, d, a)) {
-    ans = a;
-    find = true;
-  }
-  if (!find && OnSegment(c, d, b)) {
-    ans = b;
-    find = true;
-  }
-  return find;
-}
-}  // namespace geo2
+}  // namespace gcd
 
 #endif
 
-#define doouble long double
-#define EPS 1e-8
-using pt = geo2::Point<double>;
-
-
-double Round(double x) {
+namespace modular {
+template <class T>
+inline T Mod(T x, T m) {
+  x %= m;
   if (x < 0) {
-    return -Round(-x);
-  }
-  if ((ll)(x + EPS) != (ll)(x)) {
-    return ceil(x);
-  }
-  if ((ll)(x - EPS) != (ll)x) {
-    return floor(x);
+    x += m;
   }
   return x;
 }
 
-void solve(int testId, istream &in, ostream &out) {
-  int x1, y1, x2, y2;
-  int n;
-  in >> x1 >> y1 >> x2 >> y2 >> n;
-  if (x1 == x2 || y1 == y2) {
-    out << "no solution";
-    return;
-  }
-  pt src(x1, y1);
-  pt dst(x2, y2);
-
-  int step = x1 < x2 ? 1 : -1;
-  for (int i = x1 + step; i != x2 + step; i += step) {
-    pt l = geo2::Scale(src, (double)(i - x1 - step) / (double)(x2 - x1), dst);
-    pt r = geo2::Scale(src, (double)(i - x1) / (double)(x2 - x1), dst);
-    l.y = Round(l.y);
-    r.y = Round(r.y);
-
-    pair<int, int> p(floor(min(l.y, r.y)), ceil(max(l.y, r.y)));
-    int cnt = p.second - p.first;
-
-    if (cnt > 1) {
-      dbg(l, r, i, p);
-    }
-    dbg(cnt);
-    if (n > cnt) {
-      n -= cnt;
-    } else {
-      if (y1 < y2) {
-        out << min(i - step, i) << ' ' << p.first + n - 1 << endl;
-      } else {
-        out << min(i - step, i) << ' ' << p.second - n << endl;
-      }
-      return;
-    }
-  }
-
-  out << "no solution";
+template <class T>
+inline T Modmul(T a, T b, T m) {
+  T k = (T)((long double)a / m * b + 0.5);
+  return Mod<T>(a * b - k * m, m);
 }
 
-RUN_ONCE
+template <>
+inline int Modmul<int>(int a, int b, int m) {
+  return Mod<long long>((long long)a * b, m);
+}
+
+template <class T>
+inline T Modpow(T x, long long n, T m) {
+  if (n == 0) {
+    return Mod<T>(1, m);
+  }
+  T ans = Modpow<T>(x, n >> 1, m);
+  ans = Modmul<T>(ans, ans, m);
+  if (n & 1) {
+    ans = Modmul<T>(ans, x, m);
+  }
+  return ans;
+}
+
+template <typename T>
+T Inverse(T a, T m) {
+  int x, y;
+  gcd::Extgcd(a, m, x, y);
+  return Mod(x, m);
+}
+
+/**
+ * O(n + logn)
+ */
+template <class T>
+T Extgcd(vector<T> &arg, vector<T> &coes, T mod) {
+  int n = arg.size();
+  if (n == 0) {
+    return 0;
+  }
+  coes.resize(n);
+  vector<T> gs(n);
+  gs[0] = arg[0];
+  for (int i = 1; i < n; i++) {
+    gs[i] = gcd::Gcd(gs[i - 1], arg[i]);
+  }
+  T prod = 1;
+  for (int i = n - 1; i >= 1; i--) {
+    T a, b;
+    gcd::Extgcd0(gs[i - 1], arg[i], a, b);
+    coes[i] = Modmul(b, prod, mod);
+    prod = Modmul(prod, a, mod);
+  }
+  coes[0] = prod;
+  return gs[n - 1];
+}
+
+/**
+ * O(n), inverse 1, 2, ..., n - 1
+ */
+template <class T>
+void InverseRange(vector<T> &vec, T mod) {
+  int n = vec.size();
+  if (n <= 1) {
+    return;
+  }
+  vec[1] = 1;
+  for (int i = 2; i < n; i++) {
+    T k = mod / i;
+    T r = mod % i;
+    vec[i] = Modmul(-k, vec[r], mod);
+  }
+}
+
+template <class T, T M>
+class Modular {
+ public:
+  Modular() { set(0); }
+  Modular(const T &val) { set(val); }
+  void set(const T &x) { _v = Mod(x, M); }
+  Modular(const Modular<T, M> &val) { _v = val._v; }
+  Modular<T, M> &operator=(const Modular<T, M> &y) {
+    _v = y._v;
+    return *this;
+  }
+  const T &operator()() const { return _v; }
+  T &operator()() { return _v; }
+  Modular<T, M> &operator-=(const Modular<T, M> &y) {
+    _v = Mod(_v - y._v, M);
+    return *this;
+  }
+  Modular<T, M> &operator+=(const Modular<T, M> &y) {
+    _v = Mod(_v + y._v, M);
+    return *this;
+  }
+
+  Modular<T, M> &operator*=(const Modular<T, M> &y) {
+    _v = Modmul(_v, y._v, M);
+    return *this;
+  }
+  Modular<T, M> &operator/=(const Modular<T, M> &y) {
+    (*this) *= y.inverse();
+    return *this;
+  }
+  Modular<T, M> pow(long long exp) const { return Modpow(_v, exp, M); }
+  Modular<T, M> inverse() const { return modular::Inverse(_v, M); }
+
+ private:
+  T _v;
+};
+
+template <class T, T M>
+Modular<T, M> operator+(const Modular<T, M> &a, const Modular<T, M> &b) {
+  Modular<T, M> ans = a;
+  ans += b;
+  return ans;
+}
+template <class T, T M>
+Modular<T, M> operator+(const T &a, const Modular<T, M> &b) {
+  Modular<T, M> ans = a;
+  ans += b;
+  return ans;
+}
+template <class T, T M>
+Modular<T, M> operator+(const Modular<T, M> &a, const T &b) {
+  Modular<T, M> ans = a;
+  ans += b;
+  return ans;
+}
+template <class T, T M>
+Modular<T, M> operator-(const Modular<T, M> &a, const Modular<T, M> &b) {
+  Modular<T, M> ans = a;
+  ans -= b;
+  return ans;
+}
+template <class T, T M>
+Modular<T, M> operator-(const T &a, const Modular<T, M> &b) {
+  Modular<T, M> ans = a;
+  ans -= b;
+  return ans;
+}
+template <class T, T M>
+Modular<T, M> operator-(const Modular<T, M> &a, const T &b) {
+  Modular<T, M> ans = a;
+  ans -= b;
+  return ans;
+}
+template <class T, T M>
+Modular<T, M> operator*(const Modular<T, M> &a, const Modular<T, M> &b) {
+  Modular<T, M> ans = a;
+  ans *= b;
+  return ans;
+}
+template <class T, T M>
+Modular<T, M> operator*(const T &a, const Modular<T, M> &b) {
+  Modular<T, M> ans = a;
+  ans *= b;
+  return ans;
+}
+template <class T, T M>
+Modular<T, M> operator*(const Modular<T, M> &a, const T &b) {
+  Modular<T, M> ans = a;
+  ans *= b;
+  return ans;
+}
+template <class T, T M>
+Modular<T, M> operator/(const Modular<T, M> &a, const Modular<T, M> &b) {
+  Modular<T, M> ans = a;
+  ans /= b;
+  return ans;
+}
+template <class T, T M>
+Modular<T, M> operator/(const T &a, const Modular<T, M> &b) {
+  Modular<T, M> ans = a;
+  ans /= b;
+  return ans;
+}
+template <class T, T M>
+Modular<T, M> operator/(const Modular<T, M> &a, const T &b) {
+  Modular<T, M> ans = a;
+  ans /= b;
+  return ans;
+}
+template <class T, T M>
+Modular<T, M> operator==(const Modular<T, M> &a, const Modular<T, M> &b) {
+  return a() == b();
+}
+template <class T, T M>
+Modular<T, M> operator==(const Modular<T, M> &a, const T &b) {
+  return a() == Modular<T, M>(b);
+}
+template <class T, T M>
+Modular<T, M> operator==(const T &a, const Modular<T, M> &b) {
+  return Modular<T, M>(a) == b;
+}
+template <class T, T M>
+Modular<T, M> operator!=(const Modular<T, M> &a, const Modular<T, M> &b) {
+  return a() != b();
+}
+template <class T, T M>
+Modular<T, M> operator!=(const Modular<T, M> &a, const T &b) {
+  return a() != Modular<T, M>(b);
+}
+template <class T, T M>
+Modular<T, M> operator!=(const T &a, const Modular<T, M> &b) {
+  return Modular<T, M>(a) != b;
+}
+template <class T, T M>
+std::ostream &operator<<(std::ostream &out, const Modular<T, M> &v) {
+  return out << v();
+}
+template <class T, T M>
+std::istream &operator>>(std::istream &in, const Modular<T, M> &v) {
+  T x;
+  in >> x;
+  v.set(x);
+  return in;
+}
+}  // namespace modular
+
+#endif
+
+namespace hash {
+struct CustomHash {
+  static uint64_t splitmix64(uint64_t x) {
+    // http://xorshift.di.unimi.it/splitmix64.c
+    x += 0x9e3779b97f4a7c15;
+    x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9;
+    x = (x ^ (x >> 27)) * 0x94d049bb133111eb;
+    return x ^ (x >> 31);
+  }
+
+  size_t operator()(uint64_t x) const {
+    static const uint64_t FIXED_RANDOM =
+        std::chrono::steady_clock::now().time_since_epoch().count();
+    return splitmix64(x + FIXED_RANDOM);
+  }
+};
+
+template <int N, int X>
+struct HashData {
+  using Mint = modular::Modular<int, (int)1e9 + 7>;
+  Mint inv[N + 1];
+  Mint pow[N + 1];
+  HashData() {
+    pow[0] = inv[0] = 1;
+    Mint x(X);
+    Mint invX = 1 / x;
+    for (int i = 1; i <= N; i++) {
+      inv[i] = inv[i - 1] * invX;
+      pow[i] = pow[i - 1] * x;
+    }
+  }
+};
+
+template <int N, int M, int X>
+class PartialHash {
+ private:
+  using Mint = modular::Modular<int, (int)1e9 + 7>;
+  Mint _h[N + 1];
+  const HashData<M, X> &_hd;
+
+ public:
+  PartialHash(const HashData<M, X> &hd) : _hd(hd) { assert(N <= M); }
+
+  void reset(const function<int(int)> &func, int l, int r) {
+    assert(l <= r);
+    if (l > 0) {
+      _h[l - 1] = 0;
+    }
+    Mint x = _h[l] = func(l) * _hd.pow[l];
+    for (int i = l + 1; i <= r; i++) {
+      _h[i] = _h[i - 1] + func(i) * _hd.pow[i];
+    }
+  }
+
+  int hash(int l, int r, bool verbose = false) {
+    Mint h = _h[r];
+    if (l > 0) {
+      h -= _h[l - 1];
+      h *= _hd.inv[l];
+    }
+    if (verbose) {
+      h += _hd.pow[r - l + 1];
+    }
+    return h();
+  }
+};
+
+template <int N, int M, int X>
+class RollingHash {
+ private:
+  using Mint = modular::Modular<int, (int)1e9 + 7>;
+  deque<int> _dq;
+  Mint _h;
+  const HashData<M, X> &_hd;
+
+ public:
+  RollingHash(const HashData<M, X> &hd) : _hd(hd) { assert(N <= M); }
+
+  void reset() {
+    _h = 0;
+    _dq.clear();
+  }
+
+  void pop() {
+    _h -= _dq.front();
+    _h *= _hd.inv[1];
+    _dq.pop_front();
+  }
+
+  void push(int v) {
+    _h += _hd.pow[_dq.size()] * v;
+    _dq.push_back(v);
+  }
+
+  int hash(bool verbose = false) {
+    Mint h = _h;
+    if (verbose) {
+      h += _hd.pow[_dq.size()];
+    }
+    return h();
+  }
+};
+
+template <int N, int M, int X>
+class ModifiableHash {
+ private:
+  using Mint = modular::Modular<int, (int)1e9 + 7>;
+  Mint _vals[N];
+  Mint _h;
+  const HashData<M, X> &_hd;
+
+ public:
+  ModifiableHash(const HashData<M, X> &hd) : _hd(hd) {}
+
+  void reset() {
+    for (int i = 0; i < N; i++) {
+      _vals[i] = 0;
+    }
+    _h = 0;
+  }
+
+  void set(int i, int x) {
+    _h += (x - _vals[i]) * _hd.pow[i];
+    _vals[i] = x;
+  }
+
+  int hash() { return _h(); }
+};
+
+}  // namespace hash
+
+#endif
+#ifndef VERSION_ARRAY_H
+#define VERSION_ARRAY_H
+
+
+
+namespace version_array {
+template <class T, int N>
+class VersionArray {
+ private:
+  T _data[N];
+  int _version[N];
+  T _def;
+  int _now;
+  inline void access(int i) {
+    if (_version[i] != _now) {
+      _version[i] = _now;
+      _data[i] = _def;
+    }
+  }
+
+ public:
+  VersionArray(const T &def = 0) : _def(def), _now(0) { C0(_version); }
+  inline void clear() { _now++; }
+  inline T &operator[](int i) {
+    access(i);
+    return _data[i];
+  }
+};
+}  // namespace version_array
+
+#endif
+
+using decimal::Merge;
+
+int va[3][5];
+hash::HashData<30, 31> hd31;
+hash::HashData<30, 61> hd61;
+hash::RollingHash<30, 30, 31> rh31(hd31);
+hash::RollingHash<30, 30, 61> rh61(hd61);
+
+int Mex(int i) {
+  int ans = 0;
+  while (va[i][ans]) {
+    ans++;
+  }
+  return ans;
+}
+
+int Sg(vector<int> &sg, int pBegin, int pLen, ll n) {
+  if (n >= pBegin) {
+    n = pBegin + (n - pBegin) % pLen;
+  }
+  return sg[n];
+}
+
+void solve(int testId, istream &in, ostream &out) {
+  int n, x, y, z;
+  in >> n >> x >> y >> z;
+  vector<vector<int>> sg(3);
+  rh31.reset();
+  rh61.reset();
+  unordered_map<ll, int, hash::CustomHash> umap;
+  for (int i = 0; i < 3; i++) {
+    sg[i].push_back(0);
+  }
+  for (int i = 1; i < 5; i++) {
+    C0(va);
+    for (int j = 0; j < 3; j++) {
+      va[j][sg[0][max(0, i - x)]]++;
+    }
+    va[0][sg[1][max(0, i - y)]]++;
+    va[2][sg[1][max(0, i - y)]]++;
+    va[0][sg[2][max(0, i - z)]]++;
+    va[1][sg[2][max(0, i - z)]]++;
+
+    for (int j = 0; j < 3; j++) {
+      sg[j].push_back(Mex(j));
+    }
+  }
+
+  for (int i = 0; i < 5; i++) {
+    for (int j = 0; j < 3; j++) {
+      rh31.push(sg[j][i]);
+      rh61.push(sg[j][i]);
+    }
+  }
+
+  int periodBegin = -1;
+  int periodLength = -1;
+  for (int i = 5;; i++) {
+    ll key = Merge(rh31.hash(), rh61.hash());
+    if (umap.find(key) != umap.end()) {
+      periodBegin = umap[key];
+      periodLength = i - periodBegin;
+      break;
+    }
+    umap[key] = i;
+
+    for (int j = 0; j < 3; j++) {
+      rh31.pop();
+      rh61.pop();
+    }
+
+    C0(va);
+    for (int j = 0; j < 3; j++) {
+      va[j][sg[0][i - x]]++;
+    }
+    va[0][sg[1][i - y]]++;
+    va[2][sg[1][i - y]]++;
+    va[0][sg[2][i - z]]++;
+    va[1][sg[2][i - z]]++;
+
+    for (int j = 0; j < 3; j++) {
+      sg[j].push_back(Mex(j));
+      rh31.push(sg[j][i]);
+      rh61.push(sg[j][i]);
+    }
+  }
+
+  dbg(periodBegin, periodLength);
+  dbg(sg);
+  int sum = 0;
+  vector<ll> a(n);
+  for (int i = 0; i < n; i++) {
+    in >> a[i];
+    sum ^= Sg(sg[0], periodBegin, periodLength, a[i]);
+  }
+
+  int ans = 0;
+  for (int i = 0; i < n; i++) {
+    int tmp = sum ^ Sg(sg[0], periodBegin, periodLength, a[i]);
+    if ((tmp ^ Sg(sg[0], periodBegin, periodLength, max<ll>(0, a[i] - x))) ==
+        0) {
+      ans++;
+    }
+    if ((tmp ^ Sg(sg[1], periodBegin, periodLength, max<ll>(0, a[i] - y))) ==
+        0) {
+      ans++;
+    }
+    if ((tmp ^ Sg(sg[2], periodBegin, periodLength, max<ll>(0, a[i] - z))) ==
+        0) {
+      ans++;
+    }
+  }
+
+  out << ans << endl;
+}
+
+RUN_MULTI

@@ -7,7 +7,7 @@
 namespace geo2 {
 
 #ifndef PREC
-#define PREC = 1e-10
+#define PREC 1e-10
 #endif
 
 template <class T>

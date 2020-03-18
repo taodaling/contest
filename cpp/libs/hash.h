@@ -82,18 +82,18 @@ class RollingHash {
  public:
   RollingHash(const HashData<M, X> &hd) : _hd(hd) { assert(N <= M); }
 
-  void reset(const function<int(int)> &func, int l, int r) {
+  void reset() {
     _h = 0;
     _dq.clear();
   }
 
-  void removeFirst() {
+  void pop() {
     _h -= _dq.front();
     _h *= _hd.inv[1];
     _dq.pop_front();
   }
 
-  void addLast(int v) {
+  void push(int v) {
     _h += _hd.pow[_dq.size()] * v;
     _dq.push_back(v);
   }
