@@ -19,10 +19,10 @@ public class KMPAutomaton {
     }
 
     /**
-     * Get the border of s[1...i]
+     * Get the border of s[0...i - 1]
      */
     public int maxBorder(int i) {
-        return fail[i];
+        return fail[i + 1];
     }
 
     public KMPAutomaton(KMPAutomaton automaton) {

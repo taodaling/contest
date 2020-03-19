@@ -1,26 +1,20 @@
 package template.string;
 
-import java.util.Arrays;
 import java.util.function.IntUnaryOperator;
 
-public class ZAlgorithm implements IntUnaryOperator {
-    public int[] z;
-
-    public int length() {
-        return z.length;
-    }
-
+public class ZAlgorithm {
     /**
-     * Provide sequence : s(0), s(1), ... , s(n - 1), calculate their z function
+     * Provide sequence : s(0), s(1), ... , s(n - 1), calculate their z function.<br>
+     * z[i]: The longest substring start at i which is also a prefix of s
      */
-    public ZAlgorithm(int n, IntUnaryOperator s) {
+    public static void generate(int[] z, IntUnaryOperator s) {
+        int n = z.length;
         if (n == 0) {
             return;
         }
 
         int l = 0;
         int r = -1;
-        z = new int[n];
         z[0] = n;
         for (int i = 1; i < n; i++) {
             if (r < i) {
@@ -41,15 +35,5 @@ public class ZAlgorithm implements IntUnaryOperator {
             r--;
             z[i] = r - l + 1;
         }
-    }
-
-    @Override
-    public int applyAsInt(int operand) {
-        return z[operand];
-    }
-
-    @Override
-    public String toString() {
-        return Arrays.toString(z);
     }
 }

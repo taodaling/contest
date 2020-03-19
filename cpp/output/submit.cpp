@@ -1,3 +1,6 @@
+#ifndef BINARY_SEARCH_H
+#define BINARY_SEARCH_H
+
 #ifndef COMMON_H
 #define COMMON_H
 
@@ -125,6 +128,147 @@ const double PI = 3.14159265358979323846;
 
 #define C0(x) memset(x, 0, sizeof(x))
 #define C1(x) memset(x, -1, sizeof(x))
+#ifndef DECIMAL_H
+#define DECIMAL_H
+
+namespace decimal {
+
+ll Merge(int a, int b) {
+  static ll mask = (1ll << 32) - 1;
+  return ((ll)a << 32) | ((ll)b & mask);
+}
+
+template <class T>
+T CeilDiv(T a, T b) {
+  if (b < 0) {
+    a = -a;
+    b = -b;
+  }
+  T div = a / b;
+  if (b * div < a) {
+    div++;
+  }
+  return div;
+}
+
+template <class T>
+T FloorDiv(T a, T b) {
+  if (b < 0) {
+    a = -a;
+    b = -b;
+  }
+  T div = a / b;
+  if (b * div > a) {
+    div--;
+  }
+  return div;
+}
+
+template <class T>
+T RoundToInt(double x) {
+  return x >= 0 ? x + 0.5 : x - 0.5;
+}
+template <class T>
+int Sign(T x) {
+  return x < 0 ? -1 : x > 0 ? 1 : 0;
+}
+template <class T>
+bool IsPlusOverflow(T a, T b) {
+  if (Sign(a) != Sign(b)) {
+    return false;
+  }
+  if (a < 0) {
+    return a + b > 0;
+  } else {
+    return a + b < 0;
+  }
+}
+template <class T>
+bool IsMultiplicationOverflow(T a, T b, T limit) {
+  if (limit < 0) {
+    limit = -limit;
+  }
+  if (a < 0) {
+    a = -a;
+  }
+  if (b < 0) {
+    b = -b;
+  }
+  if (a == 0 || b == 0) {
+    return false;
+  }
+  // a * b > limit => a > limit / b
+  return a > limit / b;
+}
+}  // namespace decimal
+
+#endif
+
+namespace binary_search {
+template <class T>
+T BinarySearch(T l, T r, const function<bool(T)> &func) {
+  assert(l <= r);
+  while (l < r) {
+    T mid = (l + r) >> 1;
+    if (func(mid)) {
+      r = mid;
+    } else {
+      l = mid + 1;
+    }
+  }
+  return l;
+}
+
+/**
+ * Used to find the maximum value of a lower convex.
+ * Assume f(-inf)<...<f(ans)=f(ans+1)=...=f(ans+k)>...>f(inf)
+ */
+template <class T>
+T TernarySearch(T l, T r, const function<T(T)> &func, T absolute, T relative) {
+  while (r - l > absolute) {
+    if (r < 0 && (r - l) / -r <= relative || l > 0 && (r - l) / l <= relative) {
+      break;
+    }
+    T dist = (r - l) / 3;
+    T ml = l + dist;
+    T mr = r - dist;
+    if (func(ml) < func(mr)) {
+      l = ml;
+    } else {
+      r = mr;
+    }
+  }
+  return (l + r) / 2;
+}
+
+/**
+ * Used to find the maximum value of a lower convex.
+ * Assume f(-inf)<...<f(ans)=f(ans+1)=...=f(ans+k)>...>f(inf)
+ */
+template <class T>
+T TernarySearch(T l, T r, const function<T(T)> &func) {
+  while (r - l > 2) {
+    T ml = l + decimal::FloorDiv(r - l, 3);
+    T mr = r - decimal::CeilDiv(r - l, 3);
+    if (func(ml) < func(mr)) {
+      l = ml;
+    } else {
+      r = mr;
+    }
+  }
+  while (l < r) {
+    if (func(l) >= func(r)) {
+      r--;
+    } else {
+      l++;
+    }
+  }
+  return l;
+}
+}  // namespace binary_search
+
+#endif
+
 #ifndef DEBUG_H
 #define DEBUG_H
 //          Copyright Louis Delacroix 2010 - 2014.
@@ -596,671 +740,93 @@ void err(std::istream_iterator<string> it, T a, Args... args) {
 
 #endif
 
-#ifndef DECIMAL_H
-#define DECIMAL_H
 
-namespace decimal {
+using binary_search::BinarySearch;
 
-ll Merge(int a, int b) {
-  static ll mask = (1ll << 32) - 1;
-  return ((ll)a << 32) | ((ll)b & mask);
-}
+vector<int> dq;
+vector<vector<pair<int, ll>>> adj;
+vector<pair<ll, ll>> factors;
+vector<ll> depths;
+vector<ll> dp;
 
-template <class T>
-T CeilDiv(T a, T b) {
-  if (b < 0) {
-    a = -a;
-    b = -b;
-  }
-  T div = a / b;
-  if (b * div < a) {
-    div++;
-  }
-  return div;
+bool LessThan(double x1, double y1, double x2, double y2, double x3,
+              double y3) {
+  return (x2 - x1) / (y2 - y1) < (x3 - x2) / (y3 - y2);
 }
 
-template <class T>
-T FloorDiv(T a, T b) {
-  if (b < 0) {
-    a = -a;
-    b = -b;
-  }
-  T div = a / b;
-  if (b * div > a) {
-    div--;
-  }
-  return div;
-}
+void Dfs(int root, int p, ll depth, int l, int r) {
+  dbg(root, l, r, p, depth);
+  dbg2(vector<int>(dq.begin() + l, dq.begin() + r + 1));
 
-template <class T>
-T RoundToInt(double x) {
-  return x >= 0 ? x + 0.5 : x - 0.5;
-}
-template <class T>
-int Sign(T x) {
-  return x < 0 ? -1 : x > 0 ? 1 : 0;
-}
-template <class T>
-bool IsPlusOverflow(T a, T b) {
-  if (Sign(a) != Sign(b)) {
-    return false;
-  }
-  if (a < 0) {
-    return a + b > 0;
-  } else {
-    return a + b < 0;
-  }
-}
-template <class T>
-bool IsMultiplicationOverflow(T a, T b, T limit) {
-  if (limit < 0) {
-    limit = -limit;
-  }
-  if (a < 0) {
-    a = -a;
-  }
-  if (b < 0) {
-    b = -b;
-  }
-  if (a == 0 || b == 0) {
-    return false;
-  }
-  // a * b > limit => a > limit / b
-  return a > limit / b;
-}
-}  // namespace decimal
+  depths[root] = depth;
 
-#endif
-#ifndef HASH_H
-#define HASH_H
-
-
-#ifndef MODULAR_H
-#define MODULAR_H
-
-
-#ifndef GCD_H
-#define GCD_H
-
-
-
-namespace gcd {
-template <typename T>
-T Gcd0(T a, T b) {
-  return b ? Gcd0(b, a % b) : a;
-}
-
-template <typename T>
-T Gcd(T a, T b) {
-  if (a < b) {
-    swap(a, b);
-  }
-  return Gcd0(a, b);
-}
-
-template <typename T>
-T Extgcd0(T a, T b, T &x, T &y) {
-  if (!b) {
-    x = 1;
-    y = 0;
-    return a;
-  }
-  T ans = Extgcd0(b, a % b, y, x);
-  y = y - x * (a / b);
-  return ans;
-}
-
-/**
- * Find gcd(a, b) and expression xa+yb=g
- */
-template <typename T>
-T Extgcd(T a, T b, T &x, T &y) {
-  if (a >= b) {
-    return Extgcd0(a, b, x, y);
-  }
-  return Extgcd0(b, a, y, x);
-}
-
-/**
- * O(n + logn)
- */
-template <class T>
-T Extgcd(vector<T> &arg, vector<T> &coes) {
-  int n = arg.size();
-  if (n == 0) {
-    return 0;
-  }
-  coes.resize(n);
-  vector<T> gs(n);
-  gs[0] = arg[0];
-  for (int i = 1; i < n; i++) {
-    gs[i] = Gcd(gs[i - 1], arg[i]);
-  }
-  T prod = 1;
-  for (int i = n - 1; i >= 1; i--) {
-    T a, b;
-    Extgcd0(gs[i - 1], arg[i], a, b);
-    coes[i] = b * prod;
-    prod *= a;
-  }
-  coes[0] = prod;
-  return gs[n - 1];
-}
-
-}  // namespace gcd
-
-#endif
-
-namespace modular {
-template <class T>
-inline T Mod(T x, T m) {
-  x %= m;
-  if (x < 0) {
-    x += m;
-  }
-  return x;
-}
-
-template <class T>
-inline T Modmul(T a, T b, T m) {
-  T k = (T)((long double)a / m * b + 0.5);
-  return Mod<T>(a * b - k * m, m);
-}
-
-template <>
-inline int Modmul<int>(int a, int b, int m) {
-  return Mod<long long>((long long)a * b, m);
-}
-
-template <class T>
-inline T Modpow(T x, long long n, T m) {
-  if (n == 0) {
-    return Mod<T>(1, m);
-  }
-  T ans = Modpow<T>(x, n >> 1, m);
-  ans = Modmul<T>(ans, ans, m);
-  if (n & 1) {
-    ans = Modmul<T>(ans, x, m);
-  }
-  return ans;
-}
-
-template <typename T>
-T Inverse(T a, T m) {
-  int x, y;
-  gcd::Extgcd(a, m, x, y);
-  return Mod(x, m);
-}
-
-/**
- * O(n + logn)
- */
-template <class T>
-T Extgcd(vector<T> &arg, vector<T> &coes, T mod) {
-  int n = arg.size();
-  if (n == 0) {
-    return 0;
-  }
-  coes.resize(n);
-  vector<T> gs(n);
-  gs[0] = arg[0];
-  for (int i = 1; i < n; i++) {
-    gs[i] = gcd::Gcd(gs[i - 1], arg[i]);
-  }
-  T prod = 1;
-  for (int i = n - 1; i >= 1; i--) {
-    T a, b;
-    gcd::Extgcd0(gs[i - 1], arg[i], a, b);
-    coes[i] = Modmul(b, prod, mod);
-    prod = Modmul(prod, a, mod);
-  }
-  coes[0] = prod;
-  return gs[n - 1];
-}
-
-/**
- * O(n), inverse 1, 2, ..., n - 1
- */
-template <class T>
-void InverseRange(vector<T> &vec, T mod) {
-  int n = vec.size();
-  if (n <= 1) {
-    return;
-  }
-  vec[1] = 1;
-  for (int i = 2; i < n; i++) {
-    T k = mod / i;
-    T r = mod % i;
-    vec[i] = Modmul(-k, vec[r], mod);
-  }
-}
-
-template <class T, T M>
-class Modular {
- public:
-  Modular() { set(0); }
-  Modular(const T &val) { set(val); }
-  void set(const T &x) { _v = Mod(x, M); }
-  Modular(const Modular<T, M> &val) { _v = val._v; }
-  Modular<T, M> &operator=(const Modular<T, M> &y) {
-    _v = y._v;
-    return *this;
-  }
-  const T &operator()() const { return _v; }
-  T &operator()() { return _v; }
-  Modular<T, M> &operator-=(const Modular<T, M> &y) {
-    _v = Mod(_v - y._v, M);
-    return *this;
-  }
-  Modular<T, M> &operator+=(const Modular<T, M> &y) {
-    _v = Mod(_v + y._v, M);
-    return *this;
-  }
-
-  Modular<T, M> &operator*=(const Modular<T, M> &y) {
-    _v = Modmul(_v, y._v, M);
-    return *this;
-  }
-  Modular<T, M> &operator/=(const Modular<T, M> &y) {
-    (*this) *= y.inverse();
-    return *this;
-  }
-  Modular<T, M> pow(long long exp) const { return Modpow(_v, exp, M); }
-  Modular<T, M> inverse() const { return modular::Inverse(_v, M); }
-
- private:
-  T _v;
-};
-
-template <class T, T M>
-Modular<T, M> operator+(const Modular<T, M> &a, const Modular<T, M> &b) {
-  Modular<T, M> ans = a;
-  ans += b;
-  return ans;
-}
-template <class T, T M>
-Modular<T, M> operator+(const T &a, const Modular<T, M> &b) {
-  Modular<T, M> ans = a;
-  ans += b;
-  return ans;
-}
-template <class T, T M>
-Modular<T, M> operator+(const Modular<T, M> &a, const T &b) {
-  Modular<T, M> ans = a;
-  ans += b;
-  return ans;
-}
-template <class T, T M>
-Modular<T, M> operator-(const Modular<T, M> &a, const Modular<T, M> &b) {
-  Modular<T, M> ans = a;
-  ans -= b;
-  return ans;
-}
-template <class T, T M>
-Modular<T, M> operator-(const T &a, const Modular<T, M> &b) {
-  Modular<T, M> ans = a;
-  ans -= b;
-  return ans;
-}
-template <class T, T M>
-Modular<T, M> operator-(const Modular<T, M> &a, const T &b) {
-  Modular<T, M> ans = a;
-  ans -= b;
-  return ans;
-}
-template <class T, T M>
-Modular<T, M> operator*(const Modular<T, M> &a, const Modular<T, M> &b) {
-  Modular<T, M> ans = a;
-  ans *= b;
-  return ans;
-}
-template <class T, T M>
-Modular<T, M> operator*(const T &a, const Modular<T, M> &b) {
-  Modular<T, M> ans = a;
-  ans *= b;
-  return ans;
-}
-template <class T, T M>
-Modular<T, M> operator*(const Modular<T, M> &a, const T &b) {
-  Modular<T, M> ans = a;
-  ans *= b;
-  return ans;
-}
-template <class T, T M>
-Modular<T, M> operator/(const Modular<T, M> &a, const Modular<T, M> &b) {
-  Modular<T, M> ans = a;
-  ans /= b;
-  return ans;
-}
-template <class T, T M>
-Modular<T, M> operator/(const T &a, const Modular<T, M> &b) {
-  Modular<T, M> ans = a;
-  ans /= b;
-  return ans;
-}
-template <class T, T M>
-Modular<T, M> operator/(const Modular<T, M> &a, const T &b) {
-  Modular<T, M> ans = a;
-  ans /= b;
-  return ans;
-}
-template <class T, T M>
-Modular<T, M> operator==(const Modular<T, M> &a, const Modular<T, M> &b) {
-  return a() == b();
-}
-template <class T, T M>
-Modular<T, M> operator==(const Modular<T, M> &a, const T &b) {
-  return a() == Modular<T, M>(b);
-}
-template <class T, T M>
-Modular<T, M> operator==(const T &a, const Modular<T, M> &b) {
-  return Modular<T, M>(a) == b;
-}
-template <class T, T M>
-Modular<T, M> operator!=(const Modular<T, M> &a, const Modular<T, M> &b) {
-  return a() != b();
-}
-template <class T, T M>
-Modular<T, M> operator!=(const Modular<T, M> &a, const T &b) {
-  return a() != Modular<T, M>(b);
-}
-template <class T, T M>
-Modular<T, M> operator!=(const T &a, const Modular<T, M> &b) {
-  return Modular<T, M>(a) != b;
-}
-template <class T, T M>
-std::ostream &operator<<(std::ostream &out, const Modular<T, M> &v) {
-  return out << v();
-}
-template <class T, T M>
-std::istream &operator>>(std::istream &in, const Modular<T, M> &v) {
-  T x;
-  in >> x;
-  v.set(x);
-  return in;
-}
-}  // namespace modular
-
-#endif
-
-namespace hash {
-struct CustomHash {
-  static uint64_t splitmix64(uint64_t x) {
-    // http://xorshift.di.unimi.it/splitmix64.c
-    x += 0x9e3779b97f4a7c15;
-    x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9;
-    x = (x ^ (x >> 27)) * 0x94d049bb133111eb;
-    return x ^ (x >> 31);
-  }
-
-  size_t operator()(uint64_t x) const {
-    static const uint64_t FIXED_RANDOM =
-        std::chrono::steady_clock::now().time_since_epoch().count();
-    return splitmix64(x + FIXED_RANDOM);
-  }
-};
-
-template <int N, int X>
-struct HashData {
-  using Mint = modular::Modular<int, (int)1e9 + 7>;
-  Mint inv[N + 1];
-  Mint pow[N + 1];
-  HashData() {
-    pow[0] = inv[0] = 1;
-    Mint x(X);
-    Mint invX = 1 / x;
-    for (int i = 1; i <= N; i++) {
-      inv[i] = inv[i - 1] * invX;
-      pow[i] = pow[i - 1] * x;
+  l = BinarySearch<int>(l, r, [&](int mid) {
+    if (mid == r) {
+      return true;
     }
-  }
-};
+    int p1 = dq[mid + 1];
+    int p0 = dq[mid];
+    return (dp[p1] - dp[p0]) > (depths[p1] - depths[p0]) * factors[root].first;
+  });
 
-template <int N, int M, int X>
-class PartialHash {
- private:
-  using Mint = modular::Modular<int, (int)1e9 + 7>;
-  Mint _h[N + 1];
-  const HashData<M, X> &_hd;
+  int from = dq[l];
+  dbg(root, from);
+  dp[root] = dp[from] + (depths[root] - depths[from]) * factors[root].first +
+             factors[root].second;
 
- public:
-  PartialHash(const HashData<M, X> &hd) : _hd(hd) { assert(N <= M); }
-
-  void reset(const function<int(int)> &func, int l, int r) {
-    assert(l <= r);
-    if (l > 0) {
-      _h[l - 1] = 0;
+  function<bool(int)> checker2 = [&](int mid) {
+    if (mid == l) {
+      return false;
     }
-    Mint x = _h[l] = func(l) * _hd.pow[l];
-    for (int i = l + 1; i <= r; i++) {
-      _h[i] = _h[i - 1] + func(i) * _hd.pow[i];
+    int p1 = dq[mid];
+    int p0 = dq[mid - 1];
+    return !LessThan(dp[p0], depths[p0], dp[p1], depths[p1], dp[root],
+                     depths[root]);
+  };
+  r = BinarySearch<int>(l, r, checker2);
+  if (checker2(r)) {
+    r--;
+  }
+  int recover = dq[r + 1];
+  dq[r + 1] = root;
+
+  for (auto &e : adj[root]) {
+    if (e.first == p) {
+      continue;
     }
+    Dfs(e.first, root, depth + e.second, l, r + 1);
   }
 
-  int hash(int l, int r, bool verbose = false) {
-    Mint h = _h[r];
-    if (l > 0) {
-      h -= _h[l - 1];
-      h *= _hd.inv[l];
-    }
-    if (verbose) {
-      h += _hd.pow[r - l + 1];
-    }
-    return h();
-  }
-};
-
-template <int N, int M, int X>
-class RollingHash {
- private:
-  using Mint = modular::Modular<int, (int)1e9 + 7>;
-  deque<int> _dq;
-  Mint _h;
-  const HashData<M, X> &_hd;
-
- public:
-  RollingHash(const HashData<M, X> &hd) : _hd(hd) { assert(N <= M); }
-
-  void reset() {
-    _h = 0;
-    _dq.clear();
-  }
-
-  void pop() {
-    _h -= _dq.front();
-    _h *= _hd.inv[1];
-    _dq.pop_front();
-  }
-
-  void push(int v) {
-    _h += _hd.pow[_dq.size()] * v;
-    _dq.push_back(v);
-  }
-
-  int hash(bool verbose = false) {
-    Mint h = _h;
-    if (verbose) {
-      h += _hd.pow[_dq.size()];
-    }
-    return h();
-  }
-};
-
-template <int N, int M, int X>
-class ModifiableHash {
- private:
-  using Mint = modular::Modular<int, (int)1e9 + 7>;
-  Mint _vals[N];
-  Mint _h;
-  const HashData<M, X> &_hd;
-
- public:
-  ModifiableHash(const HashData<M, X> &hd) : _hd(hd) {}
-
-  void reset() {
-    for (int i = 0; i < N; i++) {
-      _vals[i] = 0;
-    }
-    _h = 0;
-  }
-
-  void set(int i, int x) {
-    _h += (x - _vals[i]) * _hd.pow[i];
-    _vals[i] = x;
-  }
-
-  int hash() { return _h(); }
-};
-
-}  // namespace hash
-
-#endif
-#ifndef VERSION_ARRAY_H
-#define VERSION_ARRAY_H
-
-
-
-namespace version_array {
-template <class T, int N>
-class VersionArray {
- private:
-  T _data[N];
-  int _version[N];
-  T _def;
-  int _now;
-  inline void access(int i) {
-    if (_version[i] != _now) {
-      _version[i] = _now;
-      _data[i] = _def;
-    }
-  }
-
- public:
-  VersionArray(const T &def = 0) : _def(def), _now(0) { C0(_version); }
-  inline void clear() { _now++; }
-  inline T &operator[](int i) {
-    access(i);
-    return _data[i];
-  }
-};
-}  // namespace version_array
-
-#endif
-
-using decimal::Merge;
-
-int va[3][5];
-hash::HashData<30, 31> hd31;
-hash::HashData<30, 61> hd61;
-hash::RollingHash<30, 30, 31> rh31(hd31);
-hash::RollingHash<30, 30, 61> rh61(hd61);
-
-int Mex(int i) {
-  int ans = 0;
-  while (va[i][ans]) {
-    ans++;
-  }
-  return ans;
-}
-
-int Sg(vector<int> &sg, int pBegin, int pLen, ll n) {
-  if (n >= pBegin) {
-    n = pBegin + (n - pBegin) % pLen;
-  }
-  return sg[n];
+  dq[r + 1] = recover;
 }
 
 void solve(int testId, istream &in, ostream &out) {
-  int n, x, y, z;
-  in >> n >> x >> y >> z;
-  vector<vector<int>> sg(3);
-  rh31.reset();
-  rh61.reset();
-  unordered_map<ll, int, hash::CustomHash> umap;
-  for (int i = 0; i < 3; i++) {
-    sg[i].push_back(0);
-  }
-  for (int i = 1; i < 5; i++) {
-    C0(va);
-    for (int j = 0; j < 3; j++) {
-      va[j][sg[0][max(0, i - x)]]++;
-    }
-    va[0][sg[1][max(0, i - y)]]++;
-    va[2][sg[1][max(0, i - y)]]++;
-    va[0][sg[2][max(0, i - z)]]++;
-    va[1][sg[2][max(0, i - z)]]++;
+  int n;
+  in >> n;
+  dq.resize(n);
+  adj.resize(n);
+  factors.resize(n);
+  depths.resize(n);
+  dp.resize(n);
 
-    for (int j = 0; j < 3; j++) {
-      sg[j].push_back(Mex(j));
-    }
+  for (int i = 1; i < n; i++) {
+    int f;
+    ll s, p, q;
+    in >> f >> s >> p >> q;
+    f--;
+    adj[i].emplace_back(f, s);
+    adj[f].emplace_back(i, s);
+    factors[i].first = p;
+    factors[i].second = q;
   }
 
-  for (int i = 0; i < 5; i++) {
-    for (int j = 0; j < 3; j++) {
-      rh31.push(sg[j][i]);
-      rh61.push(sg[j][i]);
-    }
+  for (auto &e : adj[0]) {
+    Dfs(e.first, 0, e.second, 0, 0);
   }
 
-  int periodBegin = -1;
-  int periodLength = -1;
-  for (int i = 5;; i++) {
-    ll key = Merge(rh31.hash(), rh61.hash());
-    if (umap.find(key) != umap.end()) {
-      periodBegin = umap[key];
-      periodLength = i - periodBegin;
-      break;
-    }
-    umap[key] = i;
-
-    for (int j = 0; j < 3; j++) {
-      rh31.pop();
-      rh61.pop();
-    }
-
-    C0(va);
-    for (int j = 0; j < 3; j++) {
-      va[j][sg[0][i - x]]++;
-    }
-    va[0][sg[1][i - y]]++;
-    va[2][sg[1][i - y]]++;
-    va[0][sg[2][i - z]]++;
-    va[1][sg[2][i - z]]++;
-
-    for (int j = 0; j < 3; j++) {
-      sg[j].push_back(Mex(j));
-      rh31.push(sg[j][i]);
-      rh61.push(sg[j][i]);
-    }
+  for (int i = 1; i < n; i++) {
+    out << dp[i] << endl;
   }
-
-  dbg(periodBegin, periodLength);
-  dbg(sg);
-  int sum = 0;
-  vector<ll> a(n);
-  for (int i = 0; i < n; i++) {
-    in >> a[i];
-    sum ^= Sg(sg[0], periodBegin, periodLength, a[i]);
-  }
-
-  int ans = 0;
-  for (int i = 0; i < n; i++) {
-    int tmp = sum ^ Sg(sg[0], periodBegin, periodLength, a[i]);
-    if ((tmp ^ Sg(sg[0], periodBegin, periodLength, max<ll>(0, a[i] - x))) ==
-        0) {
-      ans++;
-    }
-    if ((tmp ^ Sg(sg[1], periodBegin, periodLength, max<ll>(0, a[i] - y))) ==
-        0) {
-      ans++;
-    }
-    if ((tmp ^ Sg(sg[2], periodBegin, periodLength, max<ll>(0, a[i] - z))) ==
-        0) {
-      ans++;
-    }
-  }
-
-  out << ans << endl;
 }
 
-RUN_MULTI
+RUN_ONCE

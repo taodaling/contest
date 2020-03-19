@@ -60,6 +60,11 @@ public class DoubleGeqSlopeOptimizer {
         return t1;
     }
 
+    public void since(int id) {
+        while (!deque.isEmpty() && deque.peekFirst().id < id) {
+            deque.removeFirst();
+        }
+    }
 
     public int getBestChoice(double s) {
         while (deque.size() >= 2) {

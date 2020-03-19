@@ -1,0 +1,16 @@
+In file included from C:/Users/daltao/IdeaProjects/contest/cpp/libs/common.h:14,
+                 from C:/Users/daltao/IdeaProjects/contest/cpp/libs/binary_search.h:4,
+                 from C:\Users\daltao\IdeaProjects\contest\cpp\database\Luogu_Online_Judge___P3994_____\main.cpp:1:
+C:/Users/daltao/IdeaProjects/contest/cpp/libs/compiler_macro.h:6:30: warning: '-std=c++14' is not an option that controls warnings [-Wpragmas]
+ #pragma GCC diagnostic error "-std=c++14"
+                              ^~~~~~~~~~~~
+C:\Users\daltao\IdeaProjects\contest\cpp\database\Luogu_Online_Judge___P3994_____\main.cpp: In function 'void Dfs(int, int, ll, int, int)':
+C:\Users\daltao\IdeaProjects\contest\cpp\database\Luogu_Online_Judge___P3994_____\main.cpp:19:28: warning: statement has no effect [-Wunused-value]
+   dbg(root, l, r, p, depth);
+                            ^
+C:\Users\daltao\IdeaProjects\contest\cpp\database\Luogu_Online_Judge___P3994_____\main.cpp:20:56: warning: statement has no effect [-Wunused-value]
+   dbg2(vector<int>(dq.begin() + l, dq.begin() + r + 1));
+                                                        ^
+C:\Users\daltao\IdeaProjects\contest\cpp\database\Luogu_Online_Judge___P3994_____\main.cpp:34:18: warning: statement has no effect [-Wunused-value]
+   dbg(root, from);
+                  ^
