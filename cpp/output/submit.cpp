@@ -740,88 +740,96 @@ void err(std::istream_iterator<string> it, T a, Args... args) {
 
 #endif
 
+#define double long double
 
 using binary_search::BinarySearch;
 
-vector<int> dq;
-vector<vector<pair<int, ll>>> adj;
-vector<pair<ll, ll>> factors;
-vector<ll> depths;
-vector<ll> dp;
+struct Vertex {
+  ll l;
+  ll p;
+  ll q;
+};
 
-bool LessThan(double x1, double y1, double x2, double y2, double x3,
-              double y3) {
-  return (x2 - x1) / (y2 - y1) < (x3 - x2) / (y3 - y2);
+vector<Vertex> vs;
+vector<vector<pair<int, ll>>> adj;
+vector<ll> dp;
+vector<ll> depths;
+vector<ll> dq;
+
+double Slope(double x1, double y1, double x2, double y2) {
+  return (y2 - y1) / (x2 - x1);
 }
 
-void Dfs(int root, int p, ll depth, int l, int r) {
-  dbg(root, l, r, p, depth);
-  dbg2(vector<int>(dq.begin() + l, dq.begin() + r + 1));
-
+void Dfs(int root, int p, ll depth, int r) {
+  dbg2(root);
+  dbg2(vector<int>(dq.begin(), dq.begin() + r + 1));
   depths[root] = depth;
 
-  l = BinarySearch<int>(l, r, [&](int mid) {
+  function<bool(int)> check1 = [&](int mid) {
+    if (depths[root] - depths[dq[mid]] > vs[root].l) {
+      return false;
+    }
+
     if (mid == r) {
       return true;
     }
-    int p1 = dq[mid + 1];
-    int p0 = dq[mid];
-    return (dp[p1] - dp[p0]) > (depths[p1] - depths[p0]) * factors[root].first;
-  });
 
-  int from = dq[l];
-  dbg(root, from);
-  dp[root] = dp[from] + (depths[root] - depths[from]) * factors[root].first +
-             factors[root].second;
+    int i0 = dq[mid];
+    int i1 = dq[mid + 1];
+    return !(dp[i1] - dp[i0] <= vs[root].p * (depths[i1] - depths[i0]));
+  };
 
-  function<bool(int)> checker2 = [&](int mid) {
-    if (mid == l) {
+  int l = BinarySearch<int>(0, r, check1);
+  dbg(root, l, dq[l]);
+  dp[root] = dp[dq[l]] + (depths[root] - depths[dq[l]]) * vs[root].p + vs[root].q;
+
+  function<bool(int)> check2 = [&](int mid) {
+    if (mid == 0) {
       return false;
     }
-    int p1 = dq[mid];
-    int p0 = dq[mid - 1];
-    return !LessThan(dp[p0], depths[p0], dp[p1], depths[p1], dp[root],
-                     depths[root]);
+    int i0 = dq[mid - 1];
+    int i1 = dq[mid];
+    return Slope(depths[i0], dp[i0], depths[i1], dp[i1]) >=
+           Slope(depths[i1], dp[i1], depths[root], dp[root]);
   };
-  r = BinarySearch<int>(l, r, checker2);
-  if (checker2(r)) {
+  r = BinarySearch<int>(0, r, check2);
+  if (check2(r)) {
     r--;
   }
   int recover = dq[r + 1];
   dq[r + 1] = root;
-
   for (auto &e : adj[root]) {
     if (e.first == p) {
       continue;
     }
-    Dfs(e.first, root, depth + e.second, l, r + 1);
+    Dfs(e.first, root, depth + e.second, r + 1);
   }
-
   dq[r + 1] = recover;
 }
 
 void solve(int testId, istream &in, ostream &out) {
-  int n;
-  in >> n;
-  dq.resize(n);
-  adj.resize(n);
-  factors.resize(n);
-  depths.resize(n);
-  dp.resize(n);
+  int n, t;
+  in >> n >> t;
 
+  vs.resize(n);
+  adj.resize(n);
+  dp.resize(n);
+  depths.resize(n);
+  dq.resize(n);
   for (int i = 1; i < n; i++) {
     int f;
-    ll s, p, q;
-    in >> f >> s >> p >> q;
+    ll s, p, q, l;
+    in >> f >> s >> p >> q >> l;
     f--;
+    vs[i].p = p;
+    vs[i].q = q;
+    vs[i].l = l;
     adj[i].emplace_back(f, s);
     adj[f].emplace_back(i, s);
-    factors[i].first = p;
-    factors[i].second = q;
   }
 
   for (auto &e : adj[0]) {
-    Dfs(e.first, 0, e.second, 0, 0);
+    Dfs(e.first, 0, e.second, 0);
   }
 
   for (int i = 1; i < n; i++) {
