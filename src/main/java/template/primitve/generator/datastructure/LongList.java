@@ -199,20 +199,12 @@ public class LongList implements Cloneable {
         return Arrays.binarySearch(data, 0, size, x);
     }
 
-    public int ceilBinarySearchIndex(long x) {
-        return SequenceUtils.ceilIndex(data, x, 0, size - 1);
-    }
-
-    public int floorBinarySearchIndex(long x) {
-        return SequenceUtils.floorIndex(data, x, 0, size - 1);
-    }
-
     public int leftBound(long x) {
-        return SequenceUtils.leftBound(data, x, 0, size - 1);
+        return SequenceUtils.upperBound(data, x, 0, size - 1);
     }
 
     public int rightBound(long x) {
-        return SequenceUtils.rightBound(data, x, 0, size - 1);
+        return SequenceUtils.lowerBound(data, x, 0, size - 1);
     }
 
     public void push(int x) {

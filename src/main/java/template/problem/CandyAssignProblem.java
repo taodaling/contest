@@ -106,7 +106,7 @@ public class CandyAssignProblem {
      */
     public long deliverBetween(int i) {
         tmp.location = i;
-        int index = SequenceUtils.rightBound(candies, tmp, 0, candieCnt - 1, Candy.sortByA);
+        int index = SequenceUtils.lowerBound(candies, tmp, 0, candieCnt - 1, Candy.sortByA);
         if (index < 0) {
             index = candieCnt - 1;
         }

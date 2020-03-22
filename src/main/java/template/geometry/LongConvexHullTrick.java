@@ -2,13 +2,15 @@ package template.geometry;
 
 import template.math.DigitUtils;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.TreeSet;
 
 /**
  * Maintain lots of lines and support querying the max y overall lines inserted at some point x.
  */
 public class LongConvexHullTrick implements Iterable<LongConvexHullTrick.Line> {
-    static final long INF = (long) 2e18;
+    static final long INF = Long.MAX_VALUE / 2;
 
     public static class Line {
         long a;
@@ -29,7 +31,7 @@ public class LongConvexHullTrick implements Iterable<LongConvexHullTrick.Line> {
         static Comparator<Line> sortByL = (x, y) -> Long.compare(x.l, y.l);
 
         public boolean isEmpty() {
-            return r < l;
+            return r <= l;
         }
     }
 
@@ -37,17 +39,10 @@ public class LongConvexHullTrick implements Iterable<LongConvexHullTrick.Line> {
     TreeSet<Line> setSortedByL = new TreeSet<>(Line.sortByL);
 
     //y.a > x.a
-    private long rightBoundOfXPrefX(Line x, Line y) {
-        //x.a * r + x.b >= y.a * r + y.b
-        //x.a * (r + 1) + x.b < y.a * (r + 1) + y.b
-        //r * (y.a - x.a) <= x.b - y.b
-        //r <= (x.b - y.b) / (y.a - x.a)
-        return (x.b - y.b) / (y.a - x.a);
+    private long intersect(Line x, Line y) {
+        return DigitUtils.ceilDiv(x.b - y.b, y.a - x.a);
     }
 
-    private long rightBoundOfXPrefY(Line x, Line y) {
-        return DigitUtils.floorDiv(x.b - y.b - 1, y.a - x.a);
-    }
 
     private void removeLine(Line line) {
         setSortedByA.remove(line);
@@ -88,16 +83,13 @@ public class LongConvexHullTrick implements Iterable<LongConvexHullTrick.Line> {
                 }
             }
 
-            long r = rightBoundOfXPrefX(floor, line);
-            if (r > floor.r + 1) {
-                return line;
-            }
-            if (r < floor.l) {
+            long r = intersect(floor, line);
+            if (r <= floor.l) {
                 removeLine(floor);
                 continue;
             }
             floor.r = r;
-            line.l = r + 1;
+            line.l = r;
             break;
         }
 
@@ -107,17 +99,13 @@ public class LongConvexHullTrick implements Iterable<LongConvexHullTrick.Line> {
                 line.r = INF;
                 break;
             }
-            long r = rightBoundOfXPrefY(line, ceil);
-            if (r < ceil.l - 1) {
-                return line;
-            }
-            removeLine(ceil);
+            long r = intersect(line, ceil);
             if (r >= ceil.r) {
+                removeLine(ceil);
                 continue;
             }
-            ceil.l = r + 1;
+            ceil.l = r;
             line.r = r;
-            addLine(ceil);
             break;
         }
 
@@ -130,6 +118,22 @@ public class LongConvexHullTrick implements Iterable<LongConvexHullTrick.Line> {
     public void clear() {
         setSortedByL.clear();
         setSortedByA.clear();
+    }
+
+    public static LongConvexHullTrick merge(LongConvexHullTrick a, LongConvexHullTrick b) {
+        if (a.setSortedByA.size() > b.setSortedByA.size()) {
+            LongConvexHullTrick tmp = a;
+            a = b;
+            b = tmp;
+        }
+        for (Line line : a) {
+            b.insert(line.a, line.b);
+        }
+        return b;
+    }
+
+    public boolean isEmpty() {
+        return setSortedByA.isEmpty();
     }
 
     @Override

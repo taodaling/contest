@@ -1,6 +1,5 @@
 package contest;
 
-import template.graph.UndirectedEulerTrace;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.primitve.generated.datastructure.IntegerList;

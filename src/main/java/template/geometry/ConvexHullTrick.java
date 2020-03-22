@@ -14,8 +14,8 @@ public class ConvexHullTrick implements Iterable<ConvexHullTrick.Line> {
         // y = ax + b
         double a;
         double b;
-        double lx;
-        double rx;
+        double l;
+        double r;
 
         static Comparator<Line> orderByA = new Comparator<Line>() {
             @Override
@@ -26,7 +26,7 @@ public class ConvexHullTrick implements Iterable<ConvexHullTrick.Line> {
         static Comparator<Line> orderByLx = new Comparator<Line>() {
             @Override
             public int compare(Line o1, Line o2) {
-                return Double.compare(o1.lx, o2.lx);
+                return Double.compare(o1.l, o2.l);
             }
         };
 
@@ -37,11 +37,6 @@ public class ConvexHullTrick implements Iterable<ConvexHullTrick.Line> {
 
         public double y(double x) {
             return a * x + b;
-        }
-
-        //a1x+b1=a2x+b2=>(a1-a2)x=b2-b1=>x=(b2-b1)/(a1-a2)
-        public static double intersectAt(Line a, Line b) {
-            return (b.b - a.b) / (a.a - b.a);
         }
 
         @Override
@@ -59,98 +54,101 @@ public class ConvexHullTrick implements Iterable<ConvexHullTrick.Line> {
         public String toString() {
             return a + "x+" + b;
         }
+
+        public boolean isEmpty() {
+            return r <= l;
+        }
     }
 
-    private TreeSet<Line> setOrderByA = new TreeSet(Line.orderByA);
-    private TreeSet<Line> setOrderByLx = new TreeSet(Line.orderByLx);
+    private TreeSet<Line> setSortedByA = new TreeSet<>(Line.orderByA);
+    private TreeSet<Line> setSortedByL = new TreeSet<>(Line.orderByLx);
 
     private Line queryLine = new Line(0, 0);
 
     public boolean isEmpty() {
-        return setOrderByA.isEmpty();
+        return setSortedByA.isEmpty();
     }
 
     public double query(double x) {
-        if (setOrderByLx.isEmpty()) {
+        if (setSortedByL.isEmpty()) {
             return -INF;
         }
-        queryLine.lx = x;
-        Line line = setOrderByLx.floor(queryLine);
+        queryLine.l = x;
+        Line line = setSortedByL.floor(queryLine);
         return line.y(x);
     }
 
+    //y.a > x.a
+    private double intersect(Line x, Line y) {
+        return (x.b - y.b) / (y.a - x.a);
+    }
+
+    private void removeLine(Line line) {
+        setSortedByA.remove(line);
+        setSortedByL.remove(line);
+    }
+
+    private void addLine(Line line) {
+        setSortedByA.add(line);
+        setSortedByL.add(line);
+    }
+
     public Line insert(double a, double b) {
-        Line newLine = new Line(a, b);
-        boolean add = true;
-        while (add) {
-            Line prev = setOrderByA.floor(newLine);
-            if (prev == null) {
-                newLine.lx = -INF;
+        Line line = new Line(a, b);
+        while (true) {
+            Line floor = setSortedByA.floor(line);
+            if (floor == null) {
+                line.l = -INF;
                 break;
             }
-            if (prev.a == newLine.a) {
-                if (prev.b >= newLine.b) {
-                    add = false;
-                    break;
+            if (floor.a == line.a) {
+                if (floor.b >= line.b) {
+                    return line;
                 } else {
-                    setOrderByA.remove(prev);
-                    setOrderByLx.remove(prev);
-                }
-            } else {
-                double lx = Line.intersectAt(prev, newLine);
-                if (lx <= prev.lx) {
-                    setOrderByA.remove(prev);
-                    setOrderByLx.remove(prev);
-                } else if (lx > prev.rx) {
-                    add = false;
-                    break;
-                } else {
-                    prev.rx = lx;
-                    newLine.lx = lx;
-                    break;
+                    removeLine(floor);
+                    continue;
                 }
             }
+
+            double r = intersect(floor, line);
+            if (r <= floor.l) {
+                removeLine(floor);
+                continue;
+            }
+            floor.r = r;
+            line.l = r;
+            break;
         }
 
-        while (add) {
-            Line next = setOrderByA.ceiling(newLine);
-            if (next == null) {
-                newLine.rx = INF;
+        while (true) {
+            Line ceil = setSortedByA.ceiling(line);
+            if (ceil == null) {
+                line.r = INF;
                 break;
             }
-            double rx = Line.intersectAt(newLine, next);
-            if (rx >= next.rx) {
-                setOrderByA.remove(next);
-                setOrderByLx.remove(next);
-            } else if (rx < next.lx || (newLine.lx >= rx)) {
-                Line lastLine = setOrderByA.floor(newLine);
-                if (lastLine != null) {
-                    lastLine.rx = next.lx;
-                }
-                add = false;
-                break;
-            } else {
-                next.lx = rx;
-                newLine.rx = rx;
-                break;
+            double r = intersect(line, ceil);
+            if (r >= ceil.r) {
+                removeLine(ceil);
+                continue;
             }
+            ceil.l = r;
+            line.r = r;
+            break;
         }
 
-        if (add) {
-            setOrderByA.add(newLine);
-            setOrderByLx.add(newLine);
+        if (!line.isEmpty()) {
+            addLine(line);
         }
-
-        return newLine;
+        return line;
     }
 
     @Override
     public Iterator<Line> iterator() {
-        return setOrderByA.iterator();
+        return setSortedByA.iterator();
     }
 
     public static ConvexHullTrick merge(ConvexHullTrick a, ConvexHullTrick b) {
-        if (a.setOrderByA.size() > b.setOrderByA.size()) {
+        if (a.setSortedByA.size() > b.setSortedByA.size()) {
             ConvexHullTrick tmp = a;
             a = b;
             b = tmp;
@@ -162,9 +160,10 @@ public class ConvexHullTrick implements Iterable<ConvexHullTrick.Line> {
     }
 
     public void clear() {
-        setOrderByA.clear();
-        setOrderByLx.clear();
+        setSortedByA.clear();
+        setSortedByL.clear();
     }
+
 
     @Override
     public String toString() {

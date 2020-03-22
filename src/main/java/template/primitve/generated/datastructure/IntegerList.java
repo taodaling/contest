@@ -199,20 +199,12 @@ public class IntegerList implements Cloneable {
         return Arrays.binarySearch(data, 0, size, x);
     }
 
-    public int ceilBinarySearchIndex(int x) {
-        return SequenceUtils.ceilIndex(data, x, 0, size - 1);
-    }
-
-    public int floorBinarySearchIndex(int x) {
-        return SequenceUtils.floorIndex(data, x, 0, size - 1);
-    }
-
     public int leftBound(int x) {
-        return SequenceUtils.leftBound(data, x, 0, size - 1);
+        return SequenceUtils.upperBound(data, x, 0, size - 1);
     }
 
     public int rightBound(int x) {
-        return SequenceUtils.rightBound(data, x, 0, size - 1);
+        return SequenceUtils.lowerBound(data, x, 0, size - 1);
     }
 
     public void push(int x) {

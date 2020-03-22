@@ -2,7 +2,6 @@ package contest;
 
 import template.graph.Graph;
 import template.graph.UndirectedEdge;
-import template.graph.UndirectedEulerTrace;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.primitve.generated.datastructure.IntegerDeque;

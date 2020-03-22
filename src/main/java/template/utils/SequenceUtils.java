@@ -11,7 +11,7 @@ public class SequenceUtils {
     /**
      * Find a index k while data[k] >= x and data[k - 1] < x. If it doesn't exist, r+1 will return.
      */
-    public static int leftBound(int[] data, int x, int l, int r) {
+    public static int upperBound(int[] data, int x, int l, int r) {
         int excess = r + 1;
         while (l < r) {
             int m = (l + r) >>> 1;
@@ -27,7 +27,7 @@ public class SequenceUtils {
     /**
      * Find a index k while data[k] >= x and data[k - 1] < x. If it doesn't exist, r+1 will return.
      */
-    public static <T> int leftBound(T[] data, T x, int l, int r, Comparator<T> comp) {
+    public static <T> int upperBound(T[] data, T x, int l, int r, Comparator<T> comp) {
         int excess = r + 1;
         while (l < r) {
             int m = (l + r) >>> 1;
@@ -41,9 +41,25 @@ public class SequenceUtils {
     }
 
     /**
+     * Find a index k while data[k] >= x and data[k - 1] < x. If it doesn't exist, r+1 will return.
+     */
+    public static <T> int upperBound(List<T> data, T x, int l, int r, Comparator<T> comp) {
+        int excess = r + 1;
+        while (l < r) {
+            int m = (l + r) >>> 1;
+            if (comp.compare(data.get(m), x) < 0) {
+                l = m + 1;
+            } else {
+                r = m;
+            }
+        }
+        return comp.compare(data.get(l), x) >= 0 ? l : excess;
+    }
+
+    /**
      * Find a index k while data[k] <= x and data[k + 1] > x. If it doesn't exist, l-1 will return.
      */
-    public static int rightBound(int[] data, int x, int l, int r) {
+    public static int lowerBound(int[] data, int x, int l, int r) {
         int excess = l - 1;
         while (l < r) {
             int m = (l + r + 1) >>> 1;
@@ -59,7 +75,7 @@ public class SequenceUtils {
     /**
      * Find a index k while data[k] >= x and data[k - 1] < x. If it doesn't exist, r+1 will return.
      */
-    public static int leftBound(long[] data, long x, int l, int r) {
+    public static int upperBound(long[] data, long x, int l, int r) {
         int excess = r + 1;
         while (l < r) {
             int m = (l + r) >>> 1;
@@ -75,7 +91,7 @@ public class SequenceUtils {
     /**
      * Find a index k while data[k] <= x and data[k + 1] > x. If it doesn't exist, l-1 will return.
      */
-    public static int rightBound(long[] data, long x, int l, int r) {
+    public static int lowerBound(long[] data, long x, int l, int r) {
         int excess = l - 1;
         while (l < r) {
             int m = (l + r + 1) >>> 1;
@@ -91,7 +107,7 @@ public class SequenceUtils {
     /**
      * Find a index k while data[k] >= x and data[k - 1] < x. If it doesn't exist, r+1 will return.
      */
-    public static int leftBound(double[] data, double x, int l, int r) {
+    public static int upperBound(double[] data, double x, int l, int r) {
         int excess = r + 1;
         while (l < r) {
             int m = (l + r) >>> 1;
@@ -107,7 +123,7 @@ public class SequenceUtils {
     /**
      * Find a index k while data[k] <= x and data[k + 1] > x. If it doesn't exist, l-1 will return.
      */
-    public static int rightBound(double[] data, double x, int l, int r) {
+    public static int lowerBound(double[] data, double x, int l, int r) {
         int excess = l - 1;
         while (l < r) {
             int m = (l + r + 1) >>> 1;
@@ -123,7 +139,7 @@ public class SequenceUtils {
     /**
      * Find a index k while data[k] <= x and data[k + 1] > x. If it doesn't exist, l-1 will return.
      */
-    public static <T> int rightBound(T[] data, T x, int l, int r, Comparator<T> comp) {
+    public static <T> int lowerBound(T[] data, T x, int l, int r, Comparator<T> comp) {
         int excess = l - 1;
         while (l < r) {
             int m = (l + r + 1) >>> 1;
@@ -136,108 +152,29 @@ public class SequenceUtils {
         return comp.compare(data[l], x) <= 0 ? l : excess;
     }
 
+
+    /**
+     * Find a index k while data[k] <= x and data[k + 1] > x. If it doesn't exist, l-1 will return.
+     */
+    public static <T> int lowerBound(List<T> data, T x, int l, int r, Comparator<T> comp) {
+        int excess = l - 1;
+        while (l < r) {
+            int m = (l + r + 1) >>> 1;
+            if (comp.compare(data.get(m), x) <= 0) {
+                l = m;
+            } else {
+                r = m - 1;
+            }
+        }
+        return comp.compare(data.get(l), x) <= 0 ? l : excess;
+    }
+
     public static int countElementOccurrenceInSortedArray(int[] data, int x, int l, int r) {
-        int lBound = leftBound(data, x, l, r);
+        int lBound = upperBound(data, x, l, r);
         if (lBound > r || data[lBound] != x) {
             return 0;
         }
-        return rightBound(data, x, l, r) - lBound + 1;
-    }
-
-    public static int floorIndex(int[] data, int x, int l, int r) {
-        int index = Arrays.binarySearch(data, l, r + 1, x);
-        if (index < 0) {
-            return -(index + 1) - 1;
-        }
-        return index;
-    }
-
-    public static int floorIndex(long[] data, long x, int l, int r) {
-        int index = Arrays.binarySearch(data, l, r + 1, x);
-        if (index < 0) {
-            return -(index + 1) - 1;
-        }
-        return index;
-    }
-
-    public static <T> int floorIndex(T[] data, T x, int l, int r, Comparator<T> comparator) {
-        int index = Arrays.binarySearch(data, l, r + 1, x, comparator);
-        if (index < 0) {
-            return -(index + 1) - 1;
-        }
-        return index;
-    }
-
-    public static <T> int ceilIndex(T[] data, T x, int l, int r, Comparator<T> comparator) {
-        int index = Arrays.binarySearch(data, l, r + 1, x, comparator);
-        if (index < 0) {
-            return -(index + 1);
-        }
-        return index;
-    }
-
-    public static int ceilIndex(int[] data, int x, int l, int r) {
-        int index = Arrays.binarySearch(data, l, r + 1, x);
-        if (index < 0) {
-            return -(index + 1);
-        }
-        return index;
-    }
-
-    public static int ceilIndex(long[] data, long x, int l, int r) {
-        int index = Arrays.binarySearch(data, l, r + 1, x);
-        if (index < 0) {
-            return -(index + 1);
-        }
-        return index;
-    }
-
-    public static int floorIndex(double[] data, double x, int l, int r) {
-        int index = Arrays.binarySearch(data, l, r + 1, x);
-        if (index < 0) {
-            return -(index + 1) - 1;
-        }
-        return index;
-    }
-
-    public static int ceilIndex(double[] data, double x, int l, int r) {
-        int index = Arrays.binarySearch(data, l, r + 1, x);
-        if (index < 0) {
-            return -(index + 1);
-        }
-        return index;
-    }
-
-    public static int floorIndex(char[] data, char x, int l, int r) {
-        int index = Arrays.binarySearch(data, l, r + 1, x);
-        if (index < 0) {
-            return -(index + 1) - 1;
-        }
-        return index;
-    }
-
-    public static int ceilIndex(char[] data, char x, int l, int r) {
-        int index = Arrays.binarySearch(data, l, r + 1, x);
-        if (index < 0) {
-            return -(index + 1);
-        }
-        return index;
-    }
-
-    public static int floorIndex(byte[] data, byte x, int l, int r) {
-        int index = Arrays.binarySearch(data, l, r + 1, x);
-        if (index < 0) {
-            return -(index + 1) - 1;
-        }
-        return index;
-    }
-
-    public static int ceilIndex(byte[] data, byte x, int l, int r) {
-        int index = Arrays.binarySearch(data, l, r + 1, x);
-        if (index < 0) {
-            return -(index + 1);
-        }
-        return index;
+        return lowerBound(data, x, l, r) - lBound + 1;
     }
 
     public static int[] wrapArray(int... x) {

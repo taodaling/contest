@@ -2,7 +2,6 @@ package contest;
 
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.utils.DiffUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
