@@ -1,0 +1,35 @@
+{
+  "name" : "D. Infinite Path",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3\n4\n1 3 4 2\n1 2 2 3\n5\n2 3 4 5 1\n1 2 3 4 5\n8\n7 4 5 6 1 8 3 2\n5 3 6 4 7 5 8 4\n",
+    "output" : "1\n5\n2\n",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_03.on2020_03_23_Educational_Codeforces_Round_84__Rated_for_Div__2_.D__Infinite_Path.DInfinitePath",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.03.23",
+  "contestName" : "Educational Codeforces Round 84 (Rated for Div. 2)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

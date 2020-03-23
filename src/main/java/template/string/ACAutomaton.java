@@ -5,9 +5,6 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 
-/**
- * Created by dalt on 2018/5/25.
- */
 public class ACAutomaton {
     private final int MIN_CHARACTER;
     private final int MAX_CHARACTER;
