@@ -34,6 +34,14 @@ public class ModGussianElimination {
         mat[row][m] = val;
     }
 
+    public void setLeft(int row, int col, int val) {
+        mat[row][col] = val;
+    }
+
+    public int[] getSolutions() {
+        return solutions;
+    }
+
     public boolean solve() {
         for (int i = 0; i <= n; i++) {
             for (int j = 0; j <= m; j++) {

@@ -21,21 +21,9 @@ public class DSU {
         if (p[a] == p[p[a]]) {
             return p[a];
         }
-        int ans = find(p[a]);
-        refreshParent(a, p[a], ans);
-        return ans;
+        return p[a] = find(p[a]);
     }
 
-    protected void refreshParent(int a, int old, int refresh) {
-        p[a] = refresh;
-    }
-
-    /**
-     * link a into subtree of b
-     */
-    protected void link(int a, int b) {
-        p[a] = b;
-    }
 
     public final void merge(int a, int b) {
         a = find(a);
@@ -47,9 +35,9 @@ public class DSU {
             rank[a]++;
         }
         if (rank[a] > rank[b]) {
-            link(b, a);
+            p[b] = a;
         } else {
-            link(a, b);
+            p[a] = b;
         }
     }
 }

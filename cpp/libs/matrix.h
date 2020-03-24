@@ -3,6 +3,9 @@
 #include "common.h"
 
 namespace matrix {
+
+using namespace modular;
+
 template <class T>
 vector<vector<T>> CreateUnitMatrix(int n) {
   vector<vector<T>> res(n, vector<T>(n));
@@ -17,6 +20,7 @@ vector<vector<T>> &operator+=(vector<vector<T>> &a,
     for (size_t j = 0; j < a[0].size(); j++) a[i][j] += b[i][j];
   return a;
 }
+
 
 template <class T>
 vector<vector<T>> operator+(vector<vector<T>> a, const vector<vector<T>> &b) {
