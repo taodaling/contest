@@ -13,7 +13,6 @@ import java.io.UncheckedIOException;
 import java.util.List;
 import java.io.Closeable;
 import java.io.Writer;
-import java.util.BitSet;
 import java.util.ArrayDeque;
 import java.io.InputStream;
 
@@ -44,9 +43,10 @@ public class Main {
     static class GLettersAndQuestionMarks {
         Debug debug = new Debug(true);
         char[] buf = new char[1000000];
-        int charset = 14;
+        int charset = 'n' - 'a' + 1;
 
         public void solve(int testNumber, FastInput in, FastOutput out) {
+            debug.debug("charset", charset);
             int k = in.readInt();
             ACAutomaton ac = new ACAutomaton('a', 'n');
             for (int i = 0; i < k; i++) {
@@ -71,16 +71,23 @@ public class Main {
 
             int[] transfer = new int[m];
             long[] collect = new long[m];
-            BitSet bs = new BitSet(1 << charset);
-            bs.set(0);
+            List<Integer>[] dq = new List[charset + 1];
+            for (int i = 0; i <= charset; i++) {
+                dq[i] = new ArrayList<>();
+            }
+            for (int i = 0; i <= mask; i++) {
+                dq[Integer.bitCount(i)].add(i);
+            }
+
+            int now = 0;
             for (int i = 0; i < n; i++) {
                 //debug.debug("last", last);
                 int l = i;
                 int r = nextQuest(buf, i, n);
                 debug.debug("l", l);
                 debug.debug("r", r);
+                debug.debug("now", now);
                 i = r;
-
 
                 for (int j = 0; j < m; j++) {
                     transfer[j] = j;
@@ -94,12 +101,13 @@ public class Main {
                     }
                 }
 
-                SequenceUtils.deepFill(cur, -inf);
-
-
                 if (r != n) {
-                    BitSet next = new BitSet(1 << charset);
-                    for (int t = bs.nextSetBit(0); t != -1; t = bs.nextSetBit(t + 1)) {
+                    for (int x : dq[now + 1]) {
+                        for (int j = 0; j < m; j++) {
+                            cur[j][x] = -inf;
+                        }
+                    }
+                    for (int t : dq[now]) {
                         for (int z = 0; z < charset; z++) {
                             if (Bits.bitAt(t, z) == 1) {
                                 continue;
@@ -108,14 +116,18 @@ public class Main {
                                 int nid = nodes[transfer[j]].next[z].id;
                                 int bit = Bits.setBit(t, z, true);
                                 cur[nid][bit] = Math.max(cur[nid][bit], last[j][t] + collect[j] + nodes[nid].weight);
-                                next.set(bit);
                             }
                         }
                     }
 
-                    bs = next;
+                    now++;
                 } else {
-                    for (int t = bs.nextSetBit(0); t != -1; t = bs.nextSetBit(t + 1)) {
+                    for (int x : dq[now]) {
+                        for (int j = 0; j < m; j++) {
+                            cur[j][x] = -inf;
+                        }
+                    }
+                    for (int t : dq[now]) {
                         for (int j = 0; j < m; j++) {
                             cur[transfer[j]][t] = Math.max(cur[transfer[j]][t], last[j][t] + collect[j]);
                         }
@@ -124,13 +136,11 @@ public class Main {
                 long[][] tmp = cur;
                 cur = last;
                 last = tmp;
-
-                continue;
             }
 
             long max = -inf;
-            for (int i = 0; i < m; i++) {
-                for (int j = 0; j <= mask; j++) {
+            for (int j : dq[now]) {
+                for (int i = 0; i < m; i++) {
                     max = Math.max(max, last[i][j]);
                 }
             }
@@ -141,7 +151,7 @@ public class Main {
         public int nextQuest(char[] buf, int i, int n) {
             for (int j = i; j < n; j++) {
                 if (buf[j] == '?') {
-                    return i;
+                    return j;
                 }
             }
             return n;
@@ -263,116 +273,6 @@ public class Main {
 
     }
 
-    static class FastOutput implements AutoCloseable, Closeable, Appendable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
-
-        public FastOutput append(CharSequence csq) {
-            cache.append(csq);
-            return this;
-        }
-
-        public FastOutput append(CharSequence csq, int start, int end) {
-            cache.append(csq, start, end);
-            return this;
-        }
-
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput append(char c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput append(long c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput println(long c) {
-            return append(c).println();
-        }
-
-        public FastOutput println() {
-            cache.append(System.lineSeparator());
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        }
-
-        public String toString() {
-            return cache.toString();
-        }
-
-    }
-
-    static class Debug {
-        private boolean offline;
-        private PrintStream out = System.err;
-
-        public Debug(boolean enable) {
-            offline = enable && System.getSecurityManager() == null;
-        }
-
-        public Debug debug(String name, int x) {
-            if (offline) {
-                debug(name, "" + x);
-            }
-            return this;
-        }
-
-        public Debug debug(String name, String x) {
-            if (offline) {
-                out.printf("%s=%s", name, x);
-                out.println();
-            }
-            return this;
-        }
-
-    }
-
-    static class SequenceUtils {
-        public static void deepFill(Object array, long val) {
-            if (!array.getClass().isArray()) {
-                throw new IllegalArgumentException();
-            }
-            if (array instanceof long[]) {
-                long[] longArray = (long[]) array;
-                Arrays.fill(longArray, val);
-            } else {
-                Object[] objArray = (Object[]) array;
-                for (Object obj : objArray) {
-                    deepFill(obj, val);
-                }
-            }
-        }
-
-    }
-
     static class Bits {
         private Bits() {
         }
@@ -459,6 +359,116 @@ public class Main {
             }
 
             return offset - originalOffset;
+        }
+
+    }
+
+    static class Debug {
+        private boolean offline;
+        private PrintStream out = System.err;
+
+        public Debug(boolean enable) {
+            offline = enable && System.getSecurityManager() == null;
+        }
+
+        public Debug debug(String name, int x) {
+            if (offline) {
+                debug(name, "" + x);
+            }
+            return this;
+        }
+
+        public Debug debug(String name, String x) {
+            if (offline) {
+                out.printf("%s=%s", name, x);
+                out.println();
+            }
+            return this;
+        }
+
+    }
+
+    static class FastOutput implements AutoCloseable, Closeable, Appendable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
+
+        public FastOutput append(CharSequence csq) {
+            cache.append(csq);
+            return this;
+        }
+
+        public FastOutput append(CharSequence csq, int start, int end) {
+            cache.append(csq, start, end);
+            return this;
+        }
+
+        public FastOutput(Writer os) {
+            this.os = os;
+        }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput append(char c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput append(long c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput println(long c) {
+            return append(c).println();
+        }
+
+        public FastOutput println() {
+            cache.append(System.lineSeparator());
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            return this;
+        }
+
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+
+        public String toString() {
+            return cache.toString();
+        }
+
+    }
+
+    static class SequenceUtils {
+        public static void deepFill(Object array, long val) {
+            if (!array.getClass().isArray()) {
+                throw new IllegalArgumentException();
+            }
+            if (array instanceof long[]) {
+                long[] longArray = (long[]) array;
+                Arrays.fill(longArray, val);
+            } else {
+                Object[] objArray = (Object[]) array;
+                for (Object obj : objArray) {
+                    deepFill(obj, val);
+                }
+            }
         }
 
     }
