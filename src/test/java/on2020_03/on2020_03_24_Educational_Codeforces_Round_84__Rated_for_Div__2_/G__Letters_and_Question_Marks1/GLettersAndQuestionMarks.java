@@ -1,4 +1,6 @@
-package contest;
+package on2020_03.on2020_03_24_Educational_Codeforces_Round_84__Rated_for_Div__2_.G__Letters_and_Question_Marks1;
+
+
 
 
 import template.binary.Bits;
