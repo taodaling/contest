@@ -35,6 +35,16 @@ struct Point {
 };
 
 template <class T>
+bool operator<(const Point<T> &a, const Point<T> &b) {
+  return a.x == b.x ? a.y < b.y : a.x < b.x;
+}
+
+template <class T>
+bool operator>(const Point<T> &a, const Point<T> &b) {
+  return a.x == b.x ? a.y > b.y : a.x > b.x;
+}
+
+template <class T>
 class SortByOrder {
  public:
   bool operator()(const Point<T> &a, const Point<T> &b) {

@@ -2,7 +2,7 @@ package template.primitve.generated.graph;
 
 import template.graph.DirectedEdge;
 
-public class DoubleFlowEdge<T extends DoubleFlowEdge> extends DirectedEdge {
+public class DoubleFlowEdge<T extends DoubleFlowEdge<T>> extends DirectedEdge {
     public double flow;
     public boolean real;
     public T rev;
@@ -11,5 +11,10 @@ public class DoubleFlowEdge<T extends DoubleFlowEdge> extends DirectedEdge {
         super(to);
         this.flow = flow;
         this.real = real;
+    }
+
+    @Override
+    public String toString() {
+        return rev.to + "-[" + flow + "/" + (flow + rev.flow) + "]->" + to;
     }
 }

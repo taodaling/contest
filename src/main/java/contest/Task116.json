@@ -1,0 +1,35 @@
+{
+  "name" : "Task116",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "10 15 9 10\n9 1 17 18\n9 2 12 13\n9 3 11 12\n1 5 3 4\n1 6 6 7\n1 7 7 8\n2 5 9 10\n2 6 2 3\n2 7 0 1\n3 5 3 4\n3 6 1 2\n3 7 6 7\n5 10 16 17\n6 10 10 11\n7 10 14 15\n",
+    "output" : "43\n",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.Task116",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.03.25",
+  "contestName" : "LibreOJ",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : false
+}

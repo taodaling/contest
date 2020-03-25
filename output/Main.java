@@ -1,19 +1,16 @@
 import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.Deque;
-import java.util.ArrayList;
-import java.io.OutputStreamWriter;
 import java.io.OutputStream;
-import java.io.PrintStream;
-import java.util.Collection;
+import java.util.Arrays;
+import java.util.ListIterator;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.io.UncheckedIOException;
 import java.util.List;
 import java.io.Closeable;
 import java.io.Writer;
-import java.util.ArrayDeque;
+import java.io.OutputStreamWriter;
 import java.io.InputStream;
 
 /**
@@ -22,9 +19,7 @@ import java.io.InputStream;
  */
 public class Main {
     public static void main(String[] args) throws Exception {
-        Thread thread = new Thread(null, new TaskAdapter(), "", 1 << 27);
-        thread.start();
-        thread.join();
+        new TaskAdapter().run();
     }
 
     static class TaskAdapter implements Runnable {
@@ -34,261 +29,68 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            GLettersAndQuestionMarks solver = new GLettersAndQuestionMarks();
+            Task117 solver = new Task117();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class GLettersAndQuestionMarks {
-        Debug debug = new Debug(true);
-        char[] buf = new char[1000000];
-        int charset = 'n' - 'a' + 1;
-
+    static class Task117 {
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            debug.debug("charset", charset);
-            int k = in.readInt();
-            ACAutomaton ac = new ACAutomaton('a', 'n');
-            for (int i = 0; i < k; i++) {
-                int n = in.readString(buf, 0);
-                ac.beginBuilding();
-                for (int j = 0; j < n; j++) {
-                    ac.build(buf[j]);
-                }
-                ac.getBuildLast().weight += in.readInt();
-            }
-            ac.endBuilding();
-            ACAutomaton.Node[] nodes = ac.getAllNodes().toArray(new ACAutomaton.Node[0]);
-            int m = nodes.length;
-            int n = in.readString(buf, 0);
+            int n = in.readInt();
+            int m = in.readInt();
+            int src = n;
+            int dst = n + 1;
+            int a = in.readInt() - 1;
+            int b = in.readInt() - 1;
+            List<IntegerFlowEdge>[] g = IntegerFlow.createFlow(n + 2);
+            IntegerFlowEdge[] edges = new IntegerFlowEdge[m];
+            int[] fix = new int[m];
+            for (int i = 0; i < m; i++) {
+                int s = in.readInt() - 1;
+                int t = in.readInt() - 1;
+                int l = in.readInt();
+                int r = in.readInt();
 
-            int mask = (1 << charset) - 1;
-            long[][] cur = new long[m][1 + mask];
-            long[][] last = new long[m][1 + mask];
-            long inf = (long) 1e18;
-            SequenceUtils.deepFill(last, -inf);
-            last[0][0] = 0;
-
-            int[] transfer = new int[m];
-            long[] collect = new long[m];
-            List<Integer>[] dq = new List[charset + 1];
-            for (int i = 0; i <= charset; i++) {
-                dq[i] = new ArrayList<>();
-            }
-            for (int i = 0; i <= mask; i++) {
-                dq[Integer.bitCount(i)].add(i);
+                fix[i] = l;
+                edges[i] = IntegerFlow.addEdge(g, s, t, r - l);
+                IntegerFlow.addEdge(g, s, dst, l);
+                IntegerFlow.addEdge(g, src, t, l);
             }
 
-            int now = 0;
-            for (int i = 0; i < n; i++) {
-                //debug.debug("last", last);
-                int l = i;
-                int r = nextQuest(buf, i, n);
-                debug.debug("l", l);
-                debug.debug("r", r);
-                debug.debug("now", now);
-                i = r;
+            IntegerFlowEdge extra = IntegerFlow.addEdge(g, b, a, (int) 1e9);
 
-                for (int j = 0; j < m; j++) {
-                    transfer[j] = j;
-                    collect[j] = 0;
+            IntegerDinic isap = new IntegerDinic(n + 2);
+            isap.apply(g, src, dst, (int) 1e9);
+            boolean valid = true;
+            for (IntegerFlowEdge e : g[src]) {
+                if (e.rev.flow > 0) {
+                    valid = false;
                 }
-                for (int j = l; j < r; j++) {
-                    int offset = buf[j] - 'a';
-                    for (int t = 0; t < m; t++) {
-                        transfer[t] = nodes[transfer[t]].next[offset].id;
-                        collect[t] += nodes[transfer[t]].weight;
-                    }
-                }
-
-                if (r != n) {
-                    for (int x : dq[now + 1]) {
-                        for (int j = 0; j < m; j++) {
-                            cur[j][x] = -inf;
-                        }
-                    }
-                    for (int t : dq[now]) {
-                        for (int z = 0; z < charset; z++) {
-                            if (Bits.bitAt(t, z) == 1) {
-                                continue;
-                            }
-                            for (int j = 0; j < m; j++) {
-                                int nid = nodes[transfer[j]].next[z].id;
-                                int bit = Bits.setBit(t, z, true);
-                                cur[nid][bit] = Math.max(cur[nid][bit], last[j][t] + collect[j] + nodes[nid].weight);
-                            }
-                        }
-                    }
-
-                    now++;
-                } else {
-                    for (int x : dq[now]) {
-                        for (int j = 0; j < m; j++) {
-                            cur[j][x] = -inf;
-                        }
-                    }
-                    for (int t : dq[now]) {
-                        for (int j = 0; j < m; j++) {
-                            cur[transfer[j]][t] = Math.max(cur[transfer[j]][t], last[j][t] + collect[j]);
-                        }
-                    }
-                }
-                long[][] tmp = cur;
-                cur = last;
-                last = tmp;
             }
-
-            long max = -inf;
-            for (int j : dq[now]) {
-                for (int i = 0; i < m; i++) {
-                    max = Math.max(max, last[i][j]);
+            for (IntegerFlowEdge e : g[dst]) {
+                if (e.flow > 0) {
+                    valid = false;
                 }
             }
 
-            out.println(max);
-        }
-
-        public int nextQuest(char[] buf, int i, int n) {
-            for (int j = i; j < n; j++) {
-                if (buf[j] == '?') {
-                    return j;
-                }
+            if (!valid) {
+                out.println("please go home to sleep");
+                return;
             }
-            return n;
+
+            int flow = extra.flow;
+            extra.flow = extra.rev.flow = 0;
+            flow -= isap.apply(g, b, a, (int) 1e9);
+            out.println(flow);
         }
 
     }
 
-    static class ACAutomaton {
-        private final int MIN_CHARACTER;
-        private final int MAX_CHARACTER;
-        private final int RANGE;
-        private ACAutomaton.Node root;
-        private ACAutomaton.Node buildLast;
-        private List<ACAutomaton.Node> allNodes = new ArrayList();
+    static interface IntegerIterator {
+        boolean hasNext();
 
-        public ACAutomaton.Node getBuildLast() {
-            return buildLast;
-        }
-
-        public List<ACAutomaton.Node> getAllNodes() {
-            return allNodes;
-        }
-
-        private ACAutomaton.Node addNode() {
-            ACAutomaton.Node node = new ACAutomaton.Node(RANGE);
-            node.id = allNodes.size();
-            allNodes.add(node);
-            return node;
-        }
-
-        public ACAutomaton(int minCharacter, int maxCharacter) {
-            MIN_CHARACTER = minCharacter;
-            MAX_CHARACTER = maxCharacter;
-            RANGE = maxCharacter - minCharacter + 1;
-            root = addNode();
-        }
-
-        public void beginBuilding() {
-            buildLast = root;
-        }
-
-        public void endBuilding() {
-            Deque<ACAutomaton.Node> deque = new ArrayDeque(allNodes.size());
-            for (int i = 0; i < RANGE; i++) {
-                if (root.next[i] != null) {
-                    deque.addLast(root.next[i]);
-                }
-            }
-
-            while (!deque.isEmpty()) {
-                ACAutomaton.Node head = deque.removeFirst();
-                ACAutomaton.Node fail = visit(head.father.fail, head.index);
-                if (fail == null) {
-                    head.fail = root;
-                } else {
-                    head.fail = fail.next[head.index];
-                }
-                head.weight += head.fail.weight;
-                head.preSum = head.cnt + head.fail.preSum;
-                for (int i = 0; i < RANGE; i++) {
-                    if (head.next[i] != null) {
-                        deque.addLast(head.next[i]);
-                    }
-                }
-            }
-
-            for (int i = 0; i < RANGE; i++) {
-                if (root.next[i] != null) {
-                    deque.addLast(root.next[i]);
-                } else {
-                    root.next[i] = root;
-                }
-            }
-            while (!deque.isEmpty()) {
-                ACAutomaton.Node head = deque.removeFirst();
-                for (int i = 0; i < RANGE; i++) {
-                    if (head.next[i] != null) {
-                        deque.addLast(head.next[i]);
-                    } else {
-                        head.next[i] = head.fail.next[i];
-                    }
-                }
-            }
-        }
-
-        public ACAutomaton.Node visit(ACAutomaton.Node trace, int index) {
-            while (trace != null && trace.next[index] == null) {
-                trace = trace.fail;
-            }
-            return trace;
-        }
-
-        public void build(char c) {
-            int index = c - MIN_CHARACTER;
-            if (buildLast.next[index] == null) {
-                ACAutomaton.Node node = addNode();
-                node.father = buildLast;
-                node.index = index;
-                buildLast.next[index] = node;
-            }
-            buildLast = buildLast.next[index];
-        }
-
-        public static class Node {
-            public ACAutomaton.Node[] next;
-            ACAutomaton.Node fail;
-            ACAutomaton.Node father;
-            int index;
-            int id;
-            int cnt;
-            int preSum;
-            long weight;
-
-            public Node(int range) {
-                next = new ACAutomaton.Node[range];
-            }
-
-        }
-
-    }
-
-    static class Bits {
-        private Bits() {
-        }
-
-        public static int bitAt(int x, int i) {
-            return (x >>> i) & 1;
-        }
-
-        public static int setBit(int x, int i, boolean v) {
-            if (v) {
-                x |= 1 << i;
-            } else {
-                x &= ~(1 << i);
-            }
-            return x;
-        }
+        int next();
 
     }
 
@@ -349,43 +151,6 @@ public class Main {
             return val;
         }
 
-        public int readString(char[] data, int offset) {
-            skipBlank();
-
-            int originalOffset = offset;
-            while (next > 32) {
-                data[offset++] = (char) next;
-                next = read();
-            }
-
-            return offset - originalOffset;
-        }
-
-    }
-
-    static class Debug {
-        private boolean offline;
-        private PrintStream out = System.err;
-
-        public Debug(boolean enable) {
-            offline = enable && System.getSecurityManager() == null;
-        }
-
-        public Debug debug(String name, int x) {
-            if (offline) {
-                debug(name, "" + x);
-            }
-            return this;
-        }
-
-        public Debug debug(String name, String x) {
-            if (offline) {
-                out.printf("%s=%s", name, x);
-                out.println();
-            }
-            return this;
-        }
-
     }
 
     static class FastOutput implements AutoCloseable, Closeable, Appendable {
@@ -415,12 +180,21 @@ public class Main {
             return this;
         }
 
-        public FastOutput append(long c) {
+        public FastOutput append(int c) {
             cache.append(c);
             return this;
         }
 
-        public FastOutput println(long c) {
+        public FastOutput append(String c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput println(String c) {
+            return append(c).println();
+        }
+
+        public FastOutput println(int c) {
             return append(c).println();
         }
 
@@ -455,20 +229,249 @@ public class Main {
 
     }
 
-    static class SequenceUtils {
-        public static void deepFill(Object array, long val) {
-            if (!array.getClass().isArray()) {
-                throw new IllegalArgumentException();
-            }
-            if (array instanceof long[]) {
-                long[] longArray = (long[]) array;
-                Arrays.fill(longArray, val);
+    static class IntegerDequeImpl implements IntegerDeque {
+        private int[] data;
+        private int bpos;
+        private int epos;
+        private static final int[] EMPTY = new int[0];
+        private int n;
+
+        public IntegerDequeImpl(int cap) {
+            if (cap == 0) {
+                data = EMPTY;
             } else {
-                Object[] objArray = (Object[]) array;
-                for (Object obj : objArray) {
-                    deepFill(obj, val);
+                data = new int[cap];
+            }
+            bpos = 0;
+            epos = 0;
+            n = cap;
+        }
+
+        private void expandSpace(int len) {
+            while (n < len) {
+                n = Math.max(n + 10, n * 2);
+            }
+            int[] newData = new int[n];
+            if (bpos <= epos) {
+                if (bpos < epos) {
+                    System.arraycopy(data, bpos, newData, 0, epos - bpos);
+                }
+            } else {
+                System.arraycopy(data, bpos, newData, 0, data.length - bpos);
+                System.arraycopy(data, 0, newData, data.length - bpos, epos);
+            }
+            epos = size();
+            bpos = 0;
+            data = newData;
+        }
+
+        public IntegerIterator iterator() {
+            return new IntegerIterator() {
+                int index = bpos;
+
+
+                public boolean hasNext() {
+                    return index != epos;
+                }
+
+
+                public int next() {
+                    int ans = data[index];
+                    index = IntegerDequeImpl.this.next(index);
+                    return ans;
+                }
+            };
+        }
+
+        public int removeFirst() {
+            int ans = data[bpos];
+            bpos = next(bpos);
+            return ans;
+        }
+
+        public void addLast(int x) {
+            ensureMore();
+            data[epos] = x;
+            epos = next(epos);
+        }
+
+        public void clear() {
+            bpos = epos = 0;
+        }
+
+        private int next(int x) {
+            return x + 1 >= n ? 0 : x + 1;
+        }
+
+        private void ensureMore() {
+            if (next(epos) == bpos) {
+                expandSpace(n + 1);
+            }
+        }
+
+        public int size() {
+            int ans = epos - bpos;
+            if (ans < 0) {
+                ans += data.length;
+            }
+            return ans;
+        }
+
+        public boolean isEmpty() {
+            return bpos == epos;
+        }
+
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            for (IntegerIterator iterator = iterator(); iterator.hasNext(); ) {
+                builder.append(iterator.next()).append(' ');
+            }
+            return builder.toString();
+        }
+
+    }
+
+    static class IntegerFlow {
+        public static <T extends IntegerFlowEdge> void send(T edge, int flow) {
+            edge.flow += flow;
+            edge.rev.flow -= flow;
+        }
+
+        public static IntegerFlowEdge addEdge(List<IntegerFlowEdge>[] g, int s, int t, int cap) {
+            IntegerFlowEdge real = new IntegerFlowEdge(t, 0, true);
+            IntegerFlowEdge virtual = new IntegerFlowEdge(s, cap, false);
+            real.rev = virtual;
+            virtual.rev = real;
+            g[s].add(real);
+            g[t].add(virtual);
+            return real;
+        }
+
+        public static List<IntegerFlowEdge>[] createFlow(int n) {
+            List<IntegerFlowEdge>[] g = new List[n];
+            for (int i = 0; i < n; i++) {
+                g[i] = new ArrayList<>();
+            }
+            return g;
+        }
+
+        public static <T extends IntegerFlowEdge> void bfsForFlow(List<T>[] g, int s, int[] dist, int inf, IntegerDeque deque) {
+            Arrays.fill(dist, 0, g.length, inf);
+            dist[s] = 0;
+            deque.clear();
+            deque.addLast(s);
+            while (!deque.isEmpty()) {
+                int head = deque.removeFirst();
+                for (T e : g[head]) {
+                    if (e.flow > 0 && dist[e.to] == inf) {
+                        dist[e.to] = dist[head] + 1;
+                        deque.addLast(e.to);
+                    }
                 }
             }
+        }
+
+    }
+
+    static interface IntegerDeque extends IntegerStack {
+        int removeFirst();
+
+    }
+
+    static class IntegerFlowEdge<T extends IntegerFlowEdge<T>> extends DirectedEdge {
+        public int flow;
+        public boolean real;
+        public T rev;
+
+        public IntegerFlowEdge(int to, int flow, boolean real) {
+            super(to);
+            this.flow = flow;
+            this.real = real;
+        }
+
+        public String toString() {
+            return rev.to + "-[" + flow + "/" + (flow + rev.flow) + "]->" + to;
+        }
+
+    }
+
+    static interface IntegerStack {
+        void addLast(int x);
+
+        boolean isEmpty();
+
+        void clear();
+
+    }
+
+    static class DirectedEdge {
+        public int to;
+
+        public DirectedEdge(int to) {
+            this.to = to;
+        }
+
+        public String toString() {
+            return "->" + to;
+        }
+
+    }
+
+    static interface IntegerMaximumFlow {
+    }
+
+    static class IntegerDinic implements IntegerMaximumFlow {
+        List<IntegerFlowEdge>[] g;
+        int s;
+        int t;
+        IntegerDeque deque;
+        int[] dists;
+        ListIterator<IntegerFlowEdge>[] iterators;
+
+        public IntegerDinic(int vertexNum) {
+            deque = new IntegerDequeImpl(vertexNum);
+            dists = new int[vertexNum];
+            iterators = new ListIterator[vertexNum];
+        }
+
+        public int send(int root, int flow) {
+            if (root == t) {
+                return flow;
+            }
+            int snapshot = flow;
+            while (iterators[root].hasNext()) {
+                IntegerFlowEdge e = iterators[root].next();
+                int remain;
+                if (dists[e.to] + 1 != dists[root] || (remain = e.rev.flow) == 0) {
+                    continue;
+                }
+                int sent = send(e.to, Math.min(flow, remain));
+                flow -= sent;
+                IntegerFlow.send(e, sent);
+                if (flow == 0) {
+                    iterators[root].previous();
+                    break;
+                }
+            }
+            return snapshot - flow;
+        }
+
+        public int apply(List<IntegerFlowEdge>[] g, int s, int t, int send) {
+            this.s = s;
+            this.t = t;
+            this.g = g;
+            int flow = 0;
+            while (flow < send) {
+                IntegerFlow.bfsForFlow(g, t, dists, Integer.MAX_VALUE, deque);
+                if (dists[s] == Integer.MAX_VALUE) {
+                    break;
+                }
+                for (int i = 0; i < g.length; i++) {
+                    iterators[i] = g[i].listIterator();
+                }
+                flow += send(s, send - flow);
+            }
+            return flow;
         }
 
     }
