@@ -3,7 +3,7 @@
 
 #include "common.h"
 
-namespace flow {
+namespace max_flow {
 
 template <class T>
 struct FlowEdge {
