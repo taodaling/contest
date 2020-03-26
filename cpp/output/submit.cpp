@@ -597,128 +597,90 @@ void err(std::istream_iterator<string> it, T a, Args... args) {
 #endif
 
 
-namespace quadtree {
-/**
- * 00 01
- * 10 11
- */
-class QuadTree {
- private:
-  QuadTree *s00, *s01, *s10, *s11;
-  static QuadTree *NIL;
-  int cnt;
-  int size;
-  int tag;
-
-  QuadTree() : cnt(0), size(0), tag(-1) {}
-  void modify(int x) {
-    if (this == NIL) {
-      return;
-    }
-    tag = x;
-    cnt = x * size;
+int MinOne(vector<int> vec) {
+  if(vec.size() <= 0){
+    return 1e9;
   }
-  void pushUp() {
-    size = s00->size + s01->size + s10->size + s11->size;
-    cnt = s00->cnt + s01->cnt + s10->cnt + s11->cnt;
-  }
-  void pushDown() {
-    if (this == NIL) {
-      return;
-    }
-    if (tag != -1) {
-      s00->modify(tag);
-      s01->modify(tag);
-      s10->modify(tag);
-      s11->modify(tag);
-      tag = -1;
-    }
-  }
+  sort(vec.begin(), vec.end());
+  return vec[0];
+}
 
- public:
-  static QuadTree *build(int x1, int x2, int y1, int y2) {
-    if (x1 > x2 || y1 > y2) {
-      return NIL;
-    }
-    QuadTree *ans = new QuadTree();
-    int xm = (x1 + x2) >> 1;
-    int ym = (y1 + y2) >> 1;
-    if (x1 < x2 || y1 < y2) {
-      ans->s00 = build(x1, xm, y1, ym);
-      ans->s01 = build(x1, xm, ym + 1, y2);
-      ans->s10 = build(xm + 1, x2, y1, ym);
-      ans->s11 = build(xm + 1, x2, ym + 1, y2);
-      ans->pushUp();
-    } else {
-      ans->size = 1;
-    }
-    return ans;
+int MinTwo(vector<int> vec) {
+  if(vec.size() <= 1){
+    return 1e9;
   }
-
-#define NO_INTERSECTION (tx1 > x2 || tx2 < x1 || ty1 > y2 || ty2 < y1)
-#define COVER (tx1 <= x1 && x2 <= tx2 && ty1 <= y1 && y2 <= ty2)
-
-  void update(int tx1, int tx2, int ty1, int ty2, int x1, int x2, int y1,
-              int y2, int color) {
-    if (NO_INTERSECTION) {
-      return;
-    }
-    if (COVER) {
-      modify(color);
-      return;
-    }
-    int mx = (x1 + x2) >> 1;
-    int my = (y1 + y2) >> 1;
-    pushDown();
-    s00->update(tx1, tx2, ty1, ty2, x1, mx, y1, my, color);
-    s01->update(tx1, tx2, ty1, ty2, x1, mx, my + 1, y2, color);
-    s10->update(tx1, tx2, ty1, ty2, mx + 1, x2, y1, my, color);
-    s11->update(tx1, tx2, ty1, ty2, mx + 1, x2, my + 1, y2, color);
-    pushUp();
-  }
-
-  int query(int tx1, int tx2, int ty1, int ty2, int x1, int x2, int y1,
-            int y2) {
-    if (NO_INTERSECTION) {
-      return 0;
-    }
-    if (COVER) {
-      return cnt;
-    }
-    int mx = (x1 + x2) >> 1;
-    int my = (y1 + y2) >> 1;
-    pushDown();
-    return s00->query(tx1, tx2, ty1, ty2, x1, mx, y1, my) +
-           s01->query(tx1, tx2, ty1, ty2, x1, mx, my + 1, y2) +
-           s10->query(tx1, tx2, ty1, ty2, mx + 1, x2, y1, my) +
-           s11->query(tx1, tx2, ty1, ty2, mx + 1, x2, my + 1, y2);
-  }
-};
-
-QuadTree *QuadTree::NIL = new QuadTree();
-}  // namespace quadtree
+  sort(vec.begin(), vec.end());
+  return vec[0] + vec[1];
+}
 
 void solve(int testId, istream &in, ostream &out) {
   int n, m;
   in >> n >> m;
-  quadtree::QuadTree *qt = quadtree::QuadTree::build(1, n, 1, n);
-  qt->update(1, n, 1, n, 1, n, 1, n, 1);
-  dbg2(qt->query(1, n, 1, n, 1, n, 1, n));
-  for (int i = 0; i < m; i++) {
-    int x1, y1, x2, y2;
-    char c;
-    in >> x1 >> y1 >> x2 >> y2 >> c;
-    int t = min(x1, x2);
-    int b = max(x1, x2);
-    int l = min(y1, y2);
-    int r = max(y1, y2);
-    int color = c == 'b' ? 0 : 1;
-    qt->update(t, b, l, r, 1, n, 1, n, color);
-    dbg2(qt->query(1, n, 1, n, 1, n, 1, n));
+
+  vector<int> a(n + 1);
+  for (int i = 1; i <= n; i++) {
+    in >> a[i];
   }
 
-  int cnt = qt->query(1, n, 1, n, 1, n, 1, n);
-  out << cnt;
+  if (n == m) {
+    out << MinTwo(vector<int>(a.begin() + 1, a.end()));
+    return;
+  }
+  if (n < 2 * m) {
+    int l = 1;
+    int lr = n - m + 1;
+    int rl = m;
+    int rr = n;
+    dbg(l, lr, rl, rr);
+
+    int ans1 = MinOne(vector<int>(a.begin() + l, a.begin() + lr)) +
+               MinOne(vector<int>(a.begin() + lr, a.begin() + rl + 1)) +
+               MinOne(vector<int>(a.begin() + rl + 1, a.end()));
+
+    int ans2 = MinTwo(vector<int>(a.begin() + lr, a.begin() + rl + 1));
+
+    int ans3 = MinTwo(vector<int>(a.begin() + l, a.begin() + lr)) +
+               MinTwo(vector<int>(a.begin() + rl + 1, a.end()));
+
+    out << min(ans1, min(ans2, ans3));
+    return;
+  }
+
+  vector<int> dp(n + 1, 1e9);
+  vector<int> premin(n + 1, 1e9);
+  vector<int> postmin(n + 1, 1e9);
+
+  premin[1] = a[1];
+  for (int i = 2; i <= n; i++) {
+    premin[i] = min(premin[i - 1], a[i]);
+  }
+
+  postmin[n] = a[n];
+  for (int i = n - 1; i >= 1; i--) {
+    postmin[i] = min(postmin[i + 1], a[i]);
+  }
+
+  for (int i = 2; i <= m; i++) {
+    dp[i] = a[i] + premin[i - 1];
+  }
+
+  for (int i = m + 1; i <= n - m; i++) {
+    for (int j = i - 1; i - j < m; j--) {
+      dp[i] = min(dp[i], a[i] + dp[j]);
+    }
+  }
+
+  int ans = 1e9;
+  for (int i = n - m + 1; i < n; i++) {
+    for (int j = n - m; i - j < m; j--) {
+      dp[i] = min(dp[i], a[i] + dp[j] + postmin[i + 1]);
+    }
+    ans = min(ans, dp[i]);
+  }
+
+  dbg(premin, postmin);
+  dbg(dp);
+  out << ans;
 }
 
 RUN_ONCE

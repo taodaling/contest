@@ -1,7 +1,7 @@
 #ifndef BIT_H
 #define BIT_H
 
-namespace bit {
+namespace binary_index_tree {
 /**
  * Description: $N$-S range sum query with point updateate
  * Source: https://codeforces.com/blog/entry/64914

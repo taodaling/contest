@@ -4,8 +4,6 @@
 
 namespace matrix {
 
-using namespace modular;
-
 template <class T>
 vector<vector<T>> CreateUnitMatrix(int n) {
   vector<vector<T>> res(n, vector<T>(n));
