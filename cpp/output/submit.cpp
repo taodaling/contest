@@ -596,228 +596,129 @@ void err(std::istream_iterator<string> it, T a, Args... args) {
 
 #endif
 
-#ifndef FLOW_H
-#define FLOW_H
 
-
-
-namespace max_flow {
-
-template <class T>
-struct FlowEdge {
-  int rev;
-  T flow;
-  bool real;
-  int to;
-
-  FlowEdge(int rv, T f, bool r, int t) : rev(rv), flow(f), real(r), to(t) {}
-};
-
-template <class T>
-ostream &operator<<(ostream &os, FlowEdge<T> &e) {
-  os << "{ flow = " << e.flow << ", real = " << e.real << ", to = " << e.to
-     << "}";
-  return os;
-}
-
-template <class T>
-ostream &operator<<(ostream &os, vector<vector<FlowEdge<T>>> &g) {
-  for (int i = 0; i < g.size(); i++) {
-    for (FlowEdge<T> &e : g[i]) {
-      if (e.real) {
-        os << i << "-" << e.flow << "(" << g[e.to][e.rev].flow << ")"
-           << "->" << e.to << endl;
-      }
-    }
-  }
-  return os;
-}
-
-template <class T>
-void Reset(vector<vector<FlowEdge<T>>> &g) {
-  for (vector<FlowEdge<T>> &v : g) {
-    for (FlowEdge<T> &t : v) {
-      if (t.real) {
-        t.rev->flow += t.flow;
-        t.flow = 0;
-      }
-    }
-  }
-}
-
-template <class T>
-inline void Send(vector<vector<FlowEdge<T>>> &g, FlowEdge<T> &e, T flow) {
-  e.flow += flow;
-  g[e.to][e.rev].flow -= flow;
-}
-
-template <class T>
-void AddEdge(vector<vector<FlowEdge<T>>> &g, int u, int v, T cap) {
-  if (u != v) {
-    g[u].emplace_back(g[v].size(), 0, true, v);
-    g[v].emplace_back(g[u].size() - 1, cap, false, u);
-  } else {
-    g[u].emplace_back(g[u].size() + 1, 0, true, u);
-    g[u].emplace_back(g[u].size() - 1, cap, false, u);
-  }
-}
-
-template <class T>
-class MaxFlow {
- public:
-  virtual T send(vector<vector<FlowEdge<T>>> &g, int src, int dst, T inf) = 0;
-};
-
-template <class T>
-class ISAP : public MaxFlow<T> {
+namespace quadtree {
+/**
+ * 00 01
+ * 10 11
+ */
+class QuadTree {
  private:
-  vector<int> _dist;
-  vector<int> _distCnt;
-  int _src;
-  int _dst;
+  QuadTree *s00, *s01, *s10, *s11;
+  static QuadTree *NIL;
+  int cnt;
+  int size;
+  int tag;
 
-  void bfs(vector<vector<FlowEdge<T>>> &g, int inf) {
-    deque<int> dq;
-    fill(_dist.begin(), _dist.end(), inf);
-    _dist[_dst] = 0;
-    dq.push_back(_dst);
-
-    while (!dq.empty()) {
-      int head = dq.front();
-      dq.pop_front();
-      for (FlowEdge<T> &e : g[head]) {
-        if (e.flow == 0 || _dist[e.to] <= _dist[head] + 1) {
-          continue;
-        }
-        _dist[e.to] = _dist[head] + 1;
-        dq.push_back(e.to);
-      }
+  QuadTree() : cnt(0), size(0), tag(-1) {}
+  void modify(int x) {
+    if (this == NIL) {
+      return;
     }
+    tag = x;
+    cnt = x * size;
   }
-
-  T dfs(vector<vector<FlowEdge<T>>> &g, int root, T flow) {
-    if (root == _dst) {
-      return flow;
+  void pushUp() {
+    size = s00->size + s01->size + s10->size + s11->size;
+    cnt = s00->cnt + s01->cnt + s10->cnt + s11->cnt;
+  }
+  void pushDown() {
+    if (this == NIL) {
+      return;
     }
-    T snapshot = flow;
-    for (FlowEdge<T> &e : g[root]) {
-      if (_dist[e.to] != _dist[root] - 1 || g[e.to][e.rev].flow == 0) {
-        continue;
-      }
-      T sent = dfs(g, e.to, min(flow, g[e.to][e.rev].flow));
-      flow -= sent;
-      Send(g, e, sent);
-      if (flow == 0) {
-        break;
-      }
+    if (tag != -1) {
+      s00->modify(tag);
+      s01->modify(tag);
+      s10->modify(tag);
+      s11->modify(tag);
+      tag = -1;
     }
-    if (flow > 0) {
-      _distCnt[_dist[root]]--;
-      _dist[root]++;
-      _distCnt[_dist[root]]++;
-      if (_distCnt[_dist[root] - 1] == 0) {
-        _distCnt[_dist[_src]]--;
-        _dist[_src] = g.size();
-        _distCnt[_dist[_src]]++;
-      }
-    }
-
-    return snapshot - flow;
   }
 
  public:
-  T send(vector<vector<FlowEdge<T>>> &g, int src, int dst, T inf) {
-    int n = g.size();
-    _dist.resize(n);
-    _distCnt.resize(n + 2);
-    fill(_distCnt.begin(), _distCnt.end(), 0);
-    _src = src;
-    _dst = dst;
-    bfs(g, n);
-    for (int i = 0; i < n; i++) {
-      _distCnt[_dist[i]]++;
+  static QuadTree *build(int x1, int x2, int y1, int y2) {
+    if (x1 > x2 || y1 > y2) {
+      return NIL;
     }
-
-    T total = 0;
-    while (total < inf && _dist[_src] < n) {
-      total += dfs(g, _src, inf - total);
+    QuadTree *ans = new QuadTree();
+    int xm = (x1 + x2) >> 1;
+    int ym = (y1 + y2) >> 1;
+    if (x1 < x2 || y1 < y2) {
+      ans->s00 = build(x1, xm, y1, ym);
+      ans->s01 = build(x1, xm, ym + 1, y2);
+      ans->s10 = build(xm + 1, x2, y1, ym);
+      ans->s11 = build(xm + 1, x2, ym + 1, y2);
+      ans->pushUp();
+    } else {
+      ans->size = 1;
     }
+    return ans;
+  }
 
-    return total;
+#define NO_INTERSECTION (tx1 > x2 || tx2 < x1 || ty1 > y2 || ty2 < y1)
+#define COVER (tx1 <= x1 && x2 <= tx2 && ty1 <= y1 && y2 <= ty2)
+
+  void update(int tx1, int tx2, int ty1, int ty2, int x1, int x2, int y1,
+              int y2, int color) {
+    if (NO_INTERSECTION) {
+      return;
+    }
+    if (COVER) {
+      modify(color);
+      return;
+    }
+    int mx = (x1 + x2) >> 1;
+    int my = (y1 + y2) >> 1;
+    pushDown();
+    s00->update(tx1, tx2, ty1, ty2, x1, mx, y1, my, color);
+    s01->update(tx1, tx2, ty1, ty2, x1, mx, my + 1, y2, color);
+    s10->update(tx1, tx2, ty1, ty2, mx + 1, x2, y1, my, color);
+    s11->update(tx1, tx2, ty1, ty2, mx + 1, x2, my + 1, y2, color);
+    pushUp();
+  }
+
+  int query(int tx1, int tx2, int ty1, int ty2, int x1, int x2, int y1,
+            int y2) {
+    if (NO_INTERSECTION) {
+      return 0;
+    }
+    if (COVER) {
+      return cnt;
+    }
+    int mx = (x1 + x2) >> 1;
+    int my = (y1 + y2) >> 1;
+    pushDown();
+    return s00->query(tx1, tx2, ty1, ty2, x1, mx, y1, my) +
+           s01->query(tx1, tx2, ty1, ty2, x1, mx, my + 1, y2) +
+           s10->query(tx1, tx2, ty1, ty2, mx + 1, x2, y1, my) +
+           s11->query(tx1, tx2, ty1, ty2, mx + 1, x2, my + 1, y2);
   }
 };
 
-}  // namespace flow
-
-#endif
-
-using namespace max_flow;
-using Edge = FlowEdge<ll>;
+QuadTree *QuadTree::NIL = new QuadTree();
+}  // namespace quadtree
 
 void solve(int testId, istream &in, ostream &out) {
   int n, m;
   in >> n >> m;
-  int src = n;
-  int dst = n + 1;
-  int a = 0;
-  int b = n - 1;
-  vector<vector<Edge>> g(n + 2);
-  vector<pair<int, int>> edges(m);
-  vector<int> fix(m);
+  quadtree::QuadTree *qt = quadtree::QuadTree::build(1, n, 1, n);
+  qt->update(1, n, 1, n, 1, n, 1, n, 1);
+  dbg2(qt->query(1, n, 1, n, 1, n, 1, n));
   for (int i = 0; i < m; i++) {
-    int u, v, z, c;
-    in >> u >> v >> z >> c;
-    u--;
-    v--;
-    int l = c ? z : 0;
-    edges[i].first = u;
-    edges[i].second = g[u].size();
-    fix[i] = l;
-    AddEdge<ll>(g, u, v, z - l);
-    AddEdge<ll>(g, u, dst, l);
-    AddEdge<ll>(g, src, v, l);
+    int x1, y1, x2, y2;
+    char c;
+    in >> x1 >> y1 >> x2 >> y2 >> c;
+    int t = min(x1, x2);
+    int b = max(x1, x2);
+    int l = min(y1, y2);
+    int r = max(y1, y2);
+    int color = c == 'b' ? 0 : 1;
+    qt->update(t, b, l, r, 1, n, 1, n, color);
+    dbg2(qt->query(1, n, 1, n, 1, n, 1, n));
   }
 
-  AddEdge<ll>(g, b, a, (ll)1e18);
-  bool valid = true;
-  ISAP<ll> isap;
-  isap.send(g, src, dst, (ll)1e18);
-
-  dbg(g);
-  for (auto &e : g[src]) {
-    if (g[e.to][e.rev].flow > 0) {
-      valid = false;
-    }
-  }
-  for (auto &e : g[dst]) {
-    if (e.flow > 0) {
-      valid = false;
-    }
-  }
-
-  if (!valid) {
-    out << "Impossible";
-    return;
-  }
-
-  ll f = g[b].back().flow;
-  g[b].pop_back();
-  g[a].pop_back();
-
-  f -= isap.send(g, b, a, (ll)1e18);
-
-  if (f < 0) {
-    f += isap.send(g, a, b, -f);
-  }
-
-  dbg(g);
-
-  out << f << endl;
-  for (int i = 0; i < m; i++) {
-    auto &e = g[edges[i].first][edges[i].second];
-    ll flow = e.flow + fix[i];
-    out << flow << ' ';
-  }
+  int cnt = qt->query(1, n, 1, n, 1, n, 1, n);
+  out << cnt;
 }
 
 RUN_ONCE
