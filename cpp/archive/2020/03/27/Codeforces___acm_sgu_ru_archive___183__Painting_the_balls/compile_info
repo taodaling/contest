@@ -1,0 +1,22 @@
+In file included from C:/Users/daltao/IdeaProjects/contest/cpp/libs/common.h:14,
+                 from C:/Users/daltao/IdeaProjects/contest/cpp/libs/bits.h:4,
+                 from C:\Users\daltao\IdeaProjects\contest\cpp\database\Codeforces___acm_sgu_ru_archive___183__Painting_the_balls\main.cpp:1:
+C:/Users/daltao/IdeaProjects/contest/cpp/libs/compiler_macro.h:6:30: warning: '-std=c++14' is not an option that controls warnings [-Wpragmas]
+ #pragma GCC diagnostic error "-std=c++14"
+                              ^~~~~~~~~~~~
+C:\Users\daltao\IdeaProjects\contest\cpp\database\Codeforces___acm_sgu_ru_archive___183__Painting_the_balls\main.cpp: In function 'int bf(int, int, std::vector<int>)':
+C:\Users\daltao\IdeaProjects\contest\cpp\database\Codeforces___acm_sgu_ru_archive___183__Painting_the_balls\main.cpp:27:24: warning: statement has no effect [-Wunused-value]
+       dbg(bitset<5>(i));
+                        ^
+C:\Users\daltao\IdeaProjects\contest\cpp\database\Codeforces___acm_sgu_ru_archive___183__Painting_the_balls\main.cpp: In function 'int solve(int, int, std::vector<int>)':
+C:\Users\daltao\IdeaProjects\contest\cpp\database\Codeforces___acm_sgu_ru_archive___183__Painting_the_balls\main.cpp:63:8: warning: statement has no effect [-Wunused-value]
+ dbg(dp);
+        ^
+C:\Users\daltao\IdeaProjects\contest\cpp\database\Codeforces___acm_sgu_ru_archive___183__Painting_the_balls\main.cpp: In function 'void stress()':
+C:\Users\daltao\IdeaProjects\contest\cpp\database\Codeforces___acm_sgu_ru_archive___183__Painting_the_balls\main.cpp:78:27: warning: statement has no effect [-Wunused-value]
+       dbg(n, m, a, a1, a2);
+                           ^
+C:\Users\daltao\IdeaProjects\contest\cpp\database\Codeforces___acm_sgu_ru_archive___183__Painting_the_balls\main.cpp: In function 'void solve(int, std::istream&, std::ostream&)':
+C:\Users\daltao\IdeaProjects\contest\cpp\database\Codeforces___acm_sgu_ru_archive___183__Painting_the_balls\main.cpp:94:20: warning: statement has no effect [-Wunused-value]
+   dbg2(bf(n, m, a));
+                    ^

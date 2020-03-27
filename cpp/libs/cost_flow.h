@@ -3,7 +3,7 @@
 
 #include "common.h"
 
-namespace costflow {
+namespace cost_flow {
 
 template <class T>
 struct CostFlowEdge {

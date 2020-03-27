@@ -125,562 +125,303 @@ const double PI = 3.14159265358979323846;
 
 #define C0(x) memset(x, 0, sizeof(x))
 #define C1(x) memset(x, -1, sizeof(x))
-#ifndef DEBUG_H
-#define DEBUG_H
-//          Copyright Louis Delacroix 2010 - 2014.
-// Distributed under the Boost Software License, Version 1.0.
-//    (See accompanying file LICENSE_1_0.txt or copy at
-//          http://www.boost.org/LICENSE_1_0.txt)
-//
-// A pretty printing library for C++
-//
-// Usage:
-// Include this header, and operator<< will "just work".
-
-#ifndef H_PRETTY_PRINT
-#define H_PRETTY_PRINT
-
-#include <cstddef>
-#include <iterator>
-#include <memory>
-#include <ostream>
-#include <set>
-#include <tuple>
-#include <type_traits>
-#include <unordered_set>
-#include <utility>
-#include <valarray>
-
-namespace pretty_print
-{
-    namespace detail
-    {
-        // SFINAE type trait to detect whether T::const_iterator exists.
-
-        struct sfinae_base
-        {
-            using yes = char;
-            using no  = yes[2];
-        };
-
-        template <typename T>
-        struct has_const_iterator : private sfinae_base
-        {
-        private:
-            template <typename C> static yes & test(typename C::const_iterator*);
-            template <typename C> static no  & test(...);
-        public:
-            static const bool value = sizeof(test<T>(nullptr)) == sizeof(yes);
-            using type =  T;
-        };
-
-        template <typename T>
-        struct has_begin_end : private sfinae_base
-        {
-        private:
-            template <typename C>
-            static yes & f(typename std::enable_if<
-                std::is_same<decltype(static_cast<typename C::const_iterator(C::*)() const>(&C::begin)),
-                             typename C::const_iterator(C::*)() const>::value>::type *);
-
-            template <typename C> static no & f(...);
-
-            template <typename C>
-            static yes & g(typename std::enable_if<
-                std::is_same<decltype(static_cast<typename C::const_iterator(C::*)() const>(&C::end)),
-                             typename C::const_iterator(C::*)() const>::value, void>::type*);
-
-            template <typename C> static no & g(...);
-
-        public:
-            static bool const beg_value = sizeof(f<T>(nullptr)) == sizeof(yes);
-            static bool const end_value = sizeof(g<T>(nullptr)) == sizeof(yes);
-        };
-
-    }  // namespace detail
+#ifndef MATCH_H
+#define MATCH_H
 
 
-    // Holds the delimiter values for a specific character type
 
-    template <typename TChar>
-    struct delimiters_values
-    {
-        using char_type = TChar;
-        const char_type * prefix;
-        const char_type * delimiter;
-        const char_type * postfix;
-    };
+namespace match {
+class BipartiteMatch {
+ private:
+  vector<int> _partner[2];
+  vector<vector<int>> _g[2];
+  vector<int> _time[2];
+  int _now;
 
+  bool release(int side, int i) {
+    if (_time[side][i] == _now) {
+      return false;
+    }
+    _time[side][i] = _now;
+    if (_partner[side][i] == -1) {
+      return true;
+    }
+    return bind(1 ^ side, _partner[side][i]);
+  }
+  bool bind(int side, int i) {
+    if (_time[side][i] == _now) {
+      return false;
+    }
+    _time[side][i] = _now;
+    for (int node : _g[side][i]) {
+      if (release(1 ^ side, node)) {
+        _partner[side][i] = node;
+        _partner[1 ^ side][node] = i;
+        return true;
+      }
+    }
+    return false;
+  }
 
-    // Defines the delimiter values for a specific container and character type
+  void dfs(int side, int node) {
+    if (_time[side][node] == _now) {
+      return;
+    }
+    _time[side][node] = _now;
+    for (int next : _g[side][node]) {
+      dfs(1 ^ side, next);
+    }
+  }
 
-    template <typename T, typename TChar>
-    struct delimiters
-    {
-        using type = delimiters_values<TChar>;
-        static const type values; 
-    };
+ public:
+  BipartiteMatch(int l, int r) {
+    int size[]{l, r};
+    _now = 0;
+    for (int i = 0; i < 2; i++) {
+      _partner[i].resize(size[i]);
+      _time[i].resize(size[i]);
+      _g[i].resize(size[i]);
+      fill(_partner[i].begin(), _partner[i].end(), -1);
+    }
+  }
 
+  void addEdge(int a, int b, bool greedy) {
+    _g[0][a].push_back(b);
+    _g[1][b].push_back(a);
+    if (greedy && _partner[0][a] == -1 && _partner[1][b] == -1) {
+      _partner[0][a] = b;
+      _partner[1][b] = a;
+    }
+  }
 
-    // Functor to print containers. You can use this directly if you want
-    // to specificy a non-default delimiters type. The printing logic can
-    // be customized by specializing the nested template.
+  int matchLeft(int i) {
+    if (_partner[0][i] == -1) {
+      _now++;
+      bind(0, i);
+    }
+    return _partner[0][i];
+  }
+  int matchRight(int i) {
+    if (_partner[1][i] == -1) {
+      _now++;
+      bind(1, i);
+    }
+    return _partner[1][i];
+  }
 
-    template <typename T,
-              typename TChar = char,
-              typename TCharTraits = ::std::char_traits<TChar>,
-              typename TDelimiters = delimiters<T, TChar>>
-    struct print_container_helper
-    {
-        using delimiters_type = TDelimiters;
-        using ostream_type = std::basic_ostream<TChar, TCharTraits>;
+  void minVertexCover(vector<vector<bool>> &status) {
+    _now++;
+    for (int i = 0; i < _time[1].size(); i++) {
+      if (_partner[1][i] == -1) {
+        dfs(1, i);
+      }
+    }
+    for (int i = 0; i < 2; i++) {
+      fill(status[i].begin(), status[i].end(), false);
+    }
+    for (int i = 0; i < _time[0].size(); i++) {
+      status[0][i] = _time[0][i] == _now;
+    }
+    for (int i = 0; i < _time[1].size(); i++) {
+      status[1][i] = _time[1][i] != _now;
+    }
+  }
+};
 
-        template <typename U>
-        struct printer
-        {
-            static void print_body(const U & c, ostream_type & stream)
-            {
-                using std::begin;
-                using std::end;
+template <int N>
+struct GeneralMatch {
+ private:
+  int pre[N + 1];
+  bool edges[N + 1][N + 1];
+  int mate[N + 1];
+  int link[N + 1];
+  int vis[N + 1];
+  int fa[N + 1];
+  int que[N + 1];
+  int hd;
+  int tl;
+  int ss[N + 1];
+  int tim;
+  int find(int x) { return fa[x] == x ? x : (fa[x] = find(fa[x])); }
 
-                auto it = begin(c);
-                const auto the_end = end(c);
+  int lca(int x, int y) {
+    ++tim;
+    while (ss[x] != tim) {
+      if (x != 0) {
+        ss[x] = tim;
+        x = find(link[mate[x]]);
+      }
+      int tmp = x;
+      x = y;
+      y = tmp;
+    }
+    return x;
+  }
 
-                if (it != the_end)
-                {
-                    for ( ; ; )
-                    {
-                        stream << *it;
+  void flower(int x, int y, int p) {
+    while (find(x) != p) {
+      link[x] = y;
+      fa[y = mate[x]] = fa[x] = p;
+      if (vis[y] == 1) vis[que[tl++] = y] = 2;
+      x = link[y];
+    }
+  }
 
-                    if (++it == the_end) break;
-
-                    if (delimiters_type::values.delimiter != NULL)
-                        stream << delimiters_type::values.delimiter;
-                    }
-                }
+  bool match(int x) {
+    hd = tl = 0;
+    for (int i = 1; i <= N; ++i) vis[fa[i] = i] = 0;
+    vis[que[tl++] = x] = 2;
+    while (hd < tl) {
+      x = que[hd++];
+      for (int u = 1; u <= N; u++) {
+        if (!edges[x][u]) {
+          continue;
+        }
+        if (0 == vis[u]) {
+          vis[u] = 1;
+          link[u] = x;
+          if (0 == mate[u]) {
+            while (0 != x) {
+              x = mate[link[u]];
+              mate[mate[u] = link[u]] = u;
+              u = x;
             }
-        };
-
-        print_container_helper(const T & container)
-        : container_(container)
-        { }
-
-        inline void operator()(ostream_type & stream) const
-        {
-            if (delimiters_type::values.prefix != NULL)
-                stream << delimiters_type::values.prefix;
-
-            printer<T>::print_body(container_, stream);
-
-            if (delimiters_type::values.postfix != NULL)
-                stream << delimiters_type::values.postfix;
+            return true;
+          } else
+            vis[que[tl++] = mate[u]] = 2;
+        } else if (vis[u] == 2 && find(u) != find(x)) {
+          int p = lca(x, u);
+          flower(x, u, p);
+          flower(u, x, p);
         }
-
-    private:
-        const T & container_;
-    };
-
-    // Specialization for pairs
-
-    template <typename T, typename TChar, typename TCharTraits, typename TDelimiters>
-    template <typename T1, typename T2>
-    struct print_container_helper<T, TChar, TCharTraits, TDelimiters>::printer<std::pair<T1, T2>>
-    {
-        using ostream_type = typename print_container_helper<T, TChar, TCharTraits, TDelimiters>::ostream_type;
-
-        static void print_body(const std::pair<T1, T2> & c, ostream_type & stream)
-        {
-            stream << c.first;
-            if (print_container_helper<T, TChar, TCharTraits, TDelimiters>::delimiters_type::values.delimiter != NULL)
-                stream << print_container_helper<T, TChar, TCharTraits, TDelimiters>::delimiters_type::values.delimiter;
-            stream << c.second;
-        }
-    };
-
-    // Specialization for tuples
-
-    template <typename T, typename TChar, typename TCharTraits, typename TDelimiters>
-    template <typename ...Args>
-    struct print_container_helper<T, TChar, TCharTraits, TDelimiters>::printer<std::tuple<Args...>>
-    {
-        using ostream_type = typename print_container_helper<T, TChar, TCharTraits, TDelimiters>::ostream_type;
-        using element_type = std::tuple<Args...>;
-
-        template <std::size_t I> struct Int { };
-
-        static void print_body(const element_type & c, ostream_type & stream)
-        {
-            tuple_print(c, stream, Int<0>());
-        }
-
-        static void tuple_print(const element_type &, ostream_type &, Int<sizeof...(Args)>)
-        {
-        }
-
-        static void tuple_print(const element_type & c, ostream_type & stream,
-                                typename std::conditional<sizeof...(Args) != 0, Int<0>, std::nullptr_t>::type)
-        {
-            stream << std::get<0>(c);
-            tuple_print(c, stream, Int<1>());
-        }
-
-        template <std::size_t N>
-        static void tuple_print(const element_type & c, ostream_type & stream, Int<N>)
-        {
-            if (print_container_helper<T, TChar, TCharTraits, TDelimiters>::delimiters_type::values.delimiter != NULL)
-                stream << print_container_helper<T, TChar, TCharTraits, TDelimiters>::delimiters_type::values.delimiter;
-
-            stream << std::get<N>(c);
-
-            tuple_print(c, stream, Int<N + 1>());
-        }
-    };
-
-    // Prints a print_container_helper to the specified stream.
-
-    template<typename T, typename TChar, typename TCharTraits, typename TDelimiters>
-    inline std::basic_ostream<TChar, TCharTraits> & operator<<(
-        std::basic_ostream<TChar, TCharTraits> & stream,
-        const print_container_helper<T, TChar, TCharTraits, TDelimiters> & helper)
-    {
-        helper(stream);
-        return stream;
+      }
     }
-
-
-    // Basic is_container template; specialize to derive from std::true_type for all desired container types
-
-    template <typename T>
-    struct is_container : public std::integral_constant<bool,
-                                                        detail::has_const_iterator<T>::value &&
-                                                        detail::has_begin_end<T>::beg_value  &&
-                                                        detail::has_begin_end<T>::end_value> { };
-
-    template <typename T, std::size_t N>
-    struct is_container<T[N]> : std::true_type { };
-
-    template <std::size_t N>
-    struct is_container<char[N]> : std::false_type { };
-
-    template <typename T>
-    struct is_container<std::valarray<T>> : std::true_type { };
-
-    template <typename T1, typename T2>
-    struct is_container<std::pair<T1, T2>> : std::true_type { };
-
-    template <typename ...Args>
-    struct is_container<std::tuple<Args...>> : std::true_type { };
-
-
-    // Default delimiters
-
-    template <typename T> struct delimiters<T, char> { static const delimiters_values<char> values; };
-    template <typename T> const delimiters_values<char> delimiters<T, char>::values = { "[", ", ", "]" };
-    template <typename T> struct delimiters<T, wchar_t> { static const delimiters_values<wchar_t> values; };
-    template <typename T> const delimiters_values<wchar_t> delimiters<T, wchar_t>::values = { L"[", L", ", L"]" };
-
-
-    // Delimiters for (multi)set and unordered_(multi)set
-
-    template <typename T, typename TComp, typename TAllocator>
-    struct delimiters< ::std::set<T, TComp, TAllocator>, char> { static const delimiters_values<char> values; };
-
-    template <typename T, typename TComp, typename TAllocator>
-    const delimiters_values<char> delimiters< ::std::set<T, TComp, TAllocator>, char>::values = { "{", ", ", "}" };
-
-    template <typename T, typename TComp, typename TAllocator>
-    struct delimiters< ::std::set<T, TComp, TAllocator>, wchar_t> { static const delimiters_values<wchar_t> values; };
-
-    template <typename T, typename TComp, typename TAllocator>
-    const delimiters_values<wchar_t> delimiters< ::std::set<T, TComp, TAllocator>, wchar_t>::values = { L"{", L", ", L"}" };
-
-    template <typename T, typename TComp, typename TAllocator>
-    struct delimiters< ::std::multiset<T, TComp, TAllocator>, char> { static const delimiters_values<char> values; };
-
-    template <typename T, typename TComp, typename TAllocator>
-    const delimiters_values<char> delimiters< ::std::multiset<T, TComp, TAllocator>, char>::values = { "{", ", ", "}" };
-
-    template <typename T, typename TComp, typename TAllocator>
-    struct delimiters< ::std::multiset<T, TComp, TAllocator>, wchar_t> { static const delimiters_values<wchar_t> values; };
-
-    template <typename T, typename TComp, typename TAllocator>
-    const delimiters_values<wchar_t> delimiters< ::std::multiset<T, TComp, TAllocator>, wchar_t>::values = { L"{", L", ", L"}" };
-
-    template <typename T, typename THash, typename TEqual, typename TAllocator>
-    struct delimiters< ::std::unordered_set<T, THash, TEqual, TAllocator>, char> { static const delimiters_values<char> values; };
-
-    template <typename T, typename THash, typename TEqual, typename TAllocator>
-    const delimiters_values<char> delimiters< ::std::unordered_set<T, THash, TEqual, TAllocator>, char>::values = { "{", ", ", "}" };
-
-    template <typename T, typename THash, typename TEqual, typename TAllocator>
-    struct delimiters< ::std::unordered_set<T, THash, TEqual, TAllocator>, wchar_t> { static const delimiters_values<wchar_t> values; };
-
-    template <typename T, typename THash, typename TEqual, typename TAllocator>
-    const delimiters_values<wchar_t> delimiters< ::std::unordered_set<T, THash, TEqual, TAllocator>, wchar_t>::values = { L"{", L", ", L"}" };
-
-    template <typename T, typename THash, typename TEqual, typename TAllocator>
-    struct delimiters< ::std::unordered_multiset<T, THash, TEqual, TAllocator>, char> { static const delimiters_values<char> values; };
-
-    template <typename T, typename THash, typename TEqual, typename TAllocator>
-    const delimiters_values<char> delimiters< ::std::unordered_multiset<T, THash, TEqual, TAllocator>, char>::values = { "{", ", ", "}" };
-
-    template <typename T, typename THash, typename TEqual, typename TAllocator>
-    struct delimiters< ::std::unordered_multiset<T, THash, TEqual, TAllocator>, wchar_t> { static const delimiters_values<wchar_t> values; };
-
-    template <typename T, typename THash, typename TEqual, typename TAllocator>
-    const delimiters_values<wchar_t> delimiters< ::std::unordered_multiset<T, THash, TEqual, TAllocator>, wchar_t>::values = { L"{", L", ", L"}" };
-
-
-    // Delimiters for pair and tuple
-
-    template <typename T1, typename T2> struct delimiters<std::pair<T1, T2>, char> { static const delimiters_values<char> values; };
-    template <typename T1, typename T2> const delimiters_values<char> delimiters<std::pair<T1, T2>, char>::values = { "(", ", ", ")" };
-    template <typename T1, typename T2> struct delimiters< ::std::pair<T1, T2>, wchar_t> { static const delimiters_values<wchar_t> values; };
-    template <typename T1, typename T2> const delimiters_values<wchar_t> delimiters< ::std::pair<T1, T2>, wchar_t>::values = { L"(", L", ", L")" };
-
-    template <typename ...Args> struct delimiters<std::tuple<Args...>, char> { static const delimiters_values<char> values; };
-    template <typename ...Args> const delimiters_values<char> delimiters<std::tuple<Args...>, char>::values = { "(", ", ", ")" };
-    template <typename ...Args> struct delimiters< ::std::tuple<Args...>, wchar_t> { static const delimiters_values<wchar_t> values; };
-    template <typename ...Args> const delimiters_values<wchar_t> delimiters< ::std::tuple<Args...>, wchar_t>::values = { L"(", L", ", L")" };
-
-
-    // Type-erasing helper class for easy use of custom delimiters.
-    // Requires TCharTraits = std::char_traits<TChar> and TChar = char or wchar_t, and MyDelims needs to be defined for TChar.
-    // Usage: "cout << pretty_print::custom_delims<MyDelims>(x)".
-
-    struct custom_delims_base
-    {
-        virtual ~custom_delims_base() { }
-        virtual std::ostream & stream(::std::ostream &) = 0;
-        virtual std::wostream & stream(::std::wostream &) = 0;
-    };
-
-    template <typename T, typename Delims>
-    struct custom_delims_wrapper : custom_delims_base
-    {
-        custom_delims_wrapper(const T & t_) : t(t_) { }
-
-        std::ostream & stream(std::ostream & s)
-        {
-            return s << print_container_helper<T, char, std::char_traits<char>, Delims>(t);
-        }
-
-        std::wostream & stream(std::wostream & s)
-        {
-            return s << print_container_helper<T, wchar_t, std::char_traits<wchar_t>, Delims>(t);
-        }
-
-    private:
-        const T & t;
-    };
-
-    template <typename Delims>
-    struct custom_delims
-    {
-        template <typename Container>
-        custom_delims(const Container & c) : base(new custom_delims_wrapper<Container, Delims>(c)) { }
-
-        std::unique_ptr<custom_delims_base> base;
-    };
-
-    template <typename TChar, typename TCharTraits, typename Delims>
-    inline std::basic_ostream<TChar, TCharTraits> & operator<<(std::basic_ostream<TChar, TCharTraits> & s, const custom_delims<Delims> & p)
-    {
-        return p.base->stream(s);
-    }
-
-
-    // A wrapper for a C-style array given as pointer-plus-size.
-    // Usage: std::cout << pretty_print_array(arr, n) << std::endl;
-
-    template<typename T>
-    struct array_wrapper_n
-    {
-        typedef const T * const_iterator;
-        typedef T value_type;
-
-        array_wrapper_n(const T * const a, size_t n) : _array(a), _n(n) { }
-        inline const_iterator begin() const { return _array; }
-        inline const_iterator end() const { return _array + _n; }
-
-    private:
-        const T * const _array;
-        size_t _n;
-    };
-
-
-    // A wrapper for hash-table based containers that offer local iterators to each bucket.
-    // Usage: std::cout << bucket_print(m, 4) << std::endl;  (Prints bucket 5 of container m.)
-
-    template <typename T>
-    struct bucket_print_wrapper
-    {
-        typedef typename T::const_local_iterator const_iterator;
-        typedef typename T::size_type size_type;
-
-        const_iterator begin() const
-        {
-            return m_map.cbegin(n);
-        }
-
-        const_iterator end() const
-        {
-            return m_map.cend(n);
-        }
-
-        bucket_print_wrapper(const T & m, size_type bucket) : m_map(m), n(bucket) { }
-
-    private:
-        const T & m_map;
-        const size_type n;
-    };
-
-}   // namespace pretty_print
-
-
-// Global accessor functions for the convenience wrappers
-
-template<typename T>
-inline pretty_print::array_wrapper_n<T> pretty_print_array(const T * const a, size_t n)
-{
-    return pretty_print::array_wrapper_n<T>(a, n);
-}
-
-template <typename T> pretty_print::bucket_print_wrapper<T>
-bucket_print(const T & m, typename T::size_type n)
-{
-    return pretty_print::bucket_print_wrapper<T>(m, n);
-}
-
-
-// Main magic entry point: An overload snuck into namespace std.
-// Can we do better?
-
-namespace std
-{
-    // Prints a container to the stream using default delimiters
-
-    template<typename T, typename TChar, typename TCharTraits>
-    inline typename enable_if< ::pretty_print::is_container<T>::value,
-                              basic_ostream<TChar, TCharTraits> &>::type
-    operator<<(basic_ostream<TChar, TCharTraits> & stream, const T & container)
-    {
-        return stream << ::pretty_print::print_container_helper<T, TChar, TCharTraits>(container);
-    }
-}
-
-
-
-#endif  // H_PRETTY_PRINT
-
-#ifdef LOCAL
-#define dbg(args...)                         \
-  {                                          \
-    string _s = #args;                       \
-    replace(_s.begin(), _s.end(), ',', ' '); \
-    stringstream _ss(_s);                    \
-    istream_iterator<string> _it(_ss);       \
-    err(_it, args);                          \
+    return false;
   }
-void err(std::istream_iterator<string> it) {}
-template <typename T, typename... Args>
-void err(std::istream_iterator<string> it, T a, Args... args) {
-  cerr << *it << " = " << a << endl;
-  err(++it, args...);
-}
-#define dbg2(x) cerr << #x << "=" << (x) << endl
-#else
-#define dbg(args...) 42
-#define dbg2(x) 42
-#endif
+
+ public:
+  void reset() {
+    C0(pre);
+    C0(edges);
+    C0(mate);
+    C0(link);
+    C0(vis);
+    C0(fa);
+    C0(que);
+    C0(ss);
+    hd = 0;
+    tl = 0;
+    tim = 0;
+  }
+
+  /**
+   * -1 represent no mate
+   */
+  inline int mateOf(int i) { return mate[i + 1] - 1; }
+
+  inline void addEdge(int x, int y) {
+    edges[x + 1][y + 1] = edges[y + 1][x + 1] = true;
+  }
+
+  int maxMatch() {
+    int total = 0;
+    for (int i = 1; i <= N; i++) {
+      for (int j = i + 1; j <= N; j++) {
+        if (edges[i][j] && mate[i] == 0 && mate[j] == 0) {
+          mate[i] = j;
+          mate[j] = i;
+          total++;
+        }
+      }
+    }
+
+    for (int i = 1; i <= N; i++) {
+      if (mate[i] == 0 && match(i)) {
+        total++;
+      }
+    }
+    return total;
+  }
+};
+}  // namespace match
 
 #endif
 
+using match::BipartiteMatch;
 
-int MinOne(vector<int> vec) {
-  if(vec.size() <= 0){
-    return 1e9;
-  }
-  sort(vec.begin(), vec.end());
-  return vec[0];
-}
+int n;
 
-int MinTwo(vector<int> vec) {
-  if(vec.size() <= 1){
-    return 1e9;
-  }
-  sort(vec.begin(), vec.end());
-  return vec[0] + vec[1];
-}
+int IdOf(int i, int j) { return i * n + j; }
 
 void solve(int testId, istream &in, ostream &out) {
-  int n, m;
-  in >> n >> m;
-
-  vector<int> a(n + 1);
-  for (int i = 1; i <= n; i++) {
-    in >> a[i];
+  int p;
+  in >> n >> p;
+  vector<vector<bool>> mat(n, vector<bool>(n));
+  for (int i = 0; i < p; i++) {
+    int x, y;
+    in >> x >> y;
+    mat[x - 1][y - 1] = true;
   }
 
-  if (n == m) {
-    out << MinTwo(vector<int>(a.begin() + 1, a.end()));
-    return;
-  }
-  if (n < 2 * m) {
-    int l = 1;
-    int lr = n - m + 1;
-    int rl = m;
-    int rr = n;
-    dbg(l, lr, rl, rr);
-
-    int ans1 = MinOne(vector<int>(a.begin() + l, a.begin() + lr)) +
-               MinOne(vector<int>(a.begin() + lr, a.begin() + rl + 1)) +
-               MinOne(vector<int>(a.begin() + rl + 1, a.end()));
-
-    int ans2 = MinTwo(vector<int>(a.begin() + lr, a.begin() + rl + 1));
-
-    int ans3 = MinTwo(vector<int>(a.begin() + l, a.begin() + lr)) +
-               MinTwo(vector<int>(a.begin() + rl + 1, a.end()));
-
-    out << min(ans1, min(ans2, ans3));
-    return;
-  }
-
-  vector<int> dp(n + 1, 1e9);
-  vector<int> premin(n + 1, 1e9);
-  vector<int> postmin(n + 1, 1e9);
-
-  premin[1] = a[1];
-  for (int i = 2; i <= n; i++) {
-    premin[i] = min(premin[i - 1], a[i]);
-  }
-
-  postmin[n] = a[n];
-  for (int i = n - 1; i >= 1; i--) {
-    postmin[i] = min(postmin[i + 1], a[i]);
-  }
-
-  for (int i = 2; i <= m; i++) {
-    dp[i] = a[i] + premin[i - 1];
-  }
-
-  for (int i = m + 1; i <= n - m; i++) {
-    for (int j = i - 1; i - j < m; j--) {
-      dp[i] = min(dp[i], a[i] + dp[j]);
+  BipartiteMatch bm(n * n, n * n);
+  vector<vector<int>> dirs{{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+      if (mat[i][j] || (i + j) % 2 == 1) {
+        continue;
+      }
+      for (auto &d : dirs) {
+        int ni = i + d[0];
+        int nj = j + d[1];
+        if (ni < 0 || nj < 0 || ni >= n || nj >= n || mat[ni][nj]) {
+          continue;
+        }
+        bm.addEdge(IdOf(i, j), IdOf(ni, nj), true);
+      }
     }
   }
 
-  int ans = 1e9;
-  for (int i = n - m + 1; i < n; i++) {
-    for (int j = n - m; i - j < m; j--) {
-      dp[i] = min(dp[i], a[i] + dp[j] + postmin[i + 1]);
+  int match = 0;
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+      if (mat[i][j] || (i + j) % 2 == 1) {
+        continue;
+      }
+      match += bm.matchLeft(IdOf(i, j)) >= 0;
     }
-    ans = min(ans, dp[i]);
   }
 
-  dbg(premin, postmin);
-  dbg(dp);
-  out << ans;
+  if (match * 2 + p != n * n) {
+    out << "No";
+    return;
+  }
+  out << "Yes" << endl;
+  vector<pair<int, int>> vertical;
+  vector<pair<int, int>> horizontal;
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+      if (mat[i][j] || (i + j) % 2 == 1) {
+        continue;
+      }
+      int op = bm.matchLeft(IdOf(i, j));
+      int r = op / n;
+      int c = op % n;
+      if (r == i) {
+        horizontal.emplace_back(i, min(j, c));
+      } else {
+        vertical.emplace_back(min(i, r), j);
+      }
+    }
+  }
+
+  out << vertical.size() << endl;
+  for(auto &p : vertical){
+    out << p.first + 1 << ' ' << p.second + 1 << endl;
+  }
+  out << horizontal.size() << endl;
+  for (auto &p : horizontal) {
+    out << p.first + 1 << ' ' << p.second + 1 << endl;
+  }
 }
 
 RUN_ONCE
