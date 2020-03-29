@@ -6,8 +6,8 @@ import java.util.Deque;
 import java.util.List;
 
 public class ACAutomaton {
-    private final int MIN_CHARACTER;
-    private final int MAX_CHARACTER;
+    private final int minCharacter;
+    private final int maxCharacter;
     private final int RANGE;
     private Node root;
     private Node buildLast;
@@ -34,8 +34,8 @@ public class ACAutomaton {
     }
 
     public ACAutomaton(int minCharacter, int maxCharacter) {
-        MIN_CHARACTER = minCharacter;
-        MAX_CHARACTER = maxCharacter;
+        this.minCharacter = minCharacter;
+        this.maxCharacter = maxCharacter;
         RANGE = maxCharacter - minCharacter + 1;
         root = addNode();
     }
@@ -95,7 +95,7 @@ public class ACAutomaton {
     }
 
     public void build(char c) {
-        int index = c - MIN_CHARACTER;
+        int index = c - minCharacter;
         if (buildLast.next[index] == null) {
             Node node = addNode();
             node.father = buildLast;
@@ -110,7 +110,7 @@ public class ACAutomaton {
     }
 
     public void match(char c) {
-        int index = c - MIN_CHARACTER;
+        int index = c - minCharacter;
         matchLast = matchLast.next[index];
     }
 
@@ -147,9 +147,9 @@ public class ACAutomaton {
             next = new Node[range];
         }
 
-//        @Override
-//        public String toString() {
-//            return father == null ? "" : (father.toString() + (char) (MIN_CHARACTER + index));
-//        }
+        @Override
+        public String toString() {
+            return father == null ? "" : (father.toString() + (char) ('a' + index));
+        }
     }
 }

@@ -9,6 +9,10 @@ public class ModGussianElimination {
     int n;
     int m;
 
+    public int rank() {
+        return rank;
+    }
+
     public ModGussianElimination(int n, int m, Modular modular) {
         this.n = n;
         this.m = m;
@@ -28,7 +32,6 @@ public class ModGussianElimination {
         }
         solutions = mat[n];
     }
-
 
     public void setRight(int row, int val) {
         mat[row][m] = val;

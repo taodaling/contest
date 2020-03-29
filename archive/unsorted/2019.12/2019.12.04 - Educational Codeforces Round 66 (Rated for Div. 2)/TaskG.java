@@ -1,7 +1,6 @@
 package contest;
 
 import template.datastructure.IntDequeBeta;
-import template.datastructure.LiChaoSegment;
 import template.geometry.ConvexHullTrick;
 import template.io.FastInput;
 import template.io.FastOutput;

@@ -1,184 +1,118 @@
 package template.datastructure;
 
-public class LiChaoSegment implements Cloneable {
-    LiChaoSegment left;
-    LiChaoSegment right;
-    Line line;
-    double l;
-    double r;
-    double m;
+import template.primitve.generated.datastructure.IntToLongFunction;
 
-    private LiChaoSegment() {
-    }
+public class LiChaoSegment {
+    static final long INF = Long.MAX_VALUE / 2;
 
     public static class Line {
-        // y = ax + b
-        double a;
-        double b;
+        public long a;
+        public long b;
 
-        public Line(double a, double b) {
+        public Line(long a, long b) {
             this.a = a;
             this.b = b;
         }
 
-        public double y(double x) {
+        public long apply(long x) {
             return a * x + b;
         }
 
-        //a1x+b1=a2x+b2=>(a1-a2)x=b2-b1=>x=(b2-b1)/(a1-a2)
-        public static double intersectAt(Line a, Line b) {
-            return (b.b - a.b) / (a.a - b.a);
-        }
-
         @Override
-        public String toString() {
-            return a + "x+" + b;
+        public boolean equals(Object obj) {
+            Line line = (Line) obj;
+            return line.a == a && line.b == b;
+        }
+
+        public static double intersectAt(Line a, Line b) {
+            //a1 x + b1 = a2 x + b2
+            return (double) (b.b - a.b) / (a.a - b.a);
         }
     }
 
-    public static LiChaoSegment build(int l, int r, double[] vals) {
-        LiChaoSegment segment = new LiChaoSegment();
-        int m = (l + r) >> 1;
-        segment.l = vals[l];
-        segment.r = vals[r];
-        segment.m = vals[m];
-        if (l != r) {
-            segment.left = build(l, m, vals);
-            segment.right = build(m + 1, r, vals);
+
+    public void pushUp() {
+    }
+
+    public void pushDown() {
+    }
+
+    private static final Line BOTTOM = new Line(0, -INF);
+
+    LiChaoSegment left, right;
+    Line line = BOTTOM;
+
+    public LiChaoSegment(int l, int r) {
+        if (l < r) {
+            int m = (l + r) >> 1;
+            left = new LiChaoSegment(l, m);
+            right = new LiChaoSegment(m + 1, r);
+            pushUp();
+        } else {
         }
-        return segment;
     }
 
-    public static boolean checkOutOfRange(int ll, int rr, int l, int r) {
-        return ll > r || rr < l;
-    }
-
-    public static boolean checkCoverage(int ll, int rr, int l, int r) {
+    private boolean covered(int ll, int rr, int l, int r) {
         return ll <= l && rr >= r;
     }
 
-    public static void update(int ll, int rr, int l, int r, Line line, LiChaoSegment segment) {
-        if (checkOutOfRange(ll, rr, l, r)) {
+    private boolean noIntersection(int ll, int rr, int l, int r) {
+        return ll > r || rr < l;
+    }
+
+    public void update(int ll, int rr, int l, int r, Line line, IntToLongFunction func) {
+        if (noIntersection(ll, rr, l, r)) {
             return;
         }
+
         int m = (l + r) >> 1;
-        if (checkCoverage(ll, rr, l, r)) {
-            if (segment.line == null) {
-                segment.line = line;
+        if (covered(ll, rr, l, r)) {
+            pushDown();
+            Line line1 = this.line;
+            Line line2 = line;
+            if (line1.a > line2.a) {
+                Line tmp = line1;
+                line1 = line2;
+                line2 = tmp;
+            }
+            if (line1.a == line2.a) {
+                this.line = line1.b >= line2.b ? line1 : line2;
                 return;
             }
-            Line largerA, smallerA;
-            if (line.a < segment.line.a) {
-                largerA = segment.line;
-                smallerA = line;
-            } else {
-                largerA = line;
-                smallerA = segment.line;
-            }
-            if (Math.abs(smallerA.a - largerA.a) < 1e-10) {
-                if (smallerA.b >= largerA.b) {
-                    segment.line = smallerA;
-                } else {
-                    segment.line = largerA;
+            double intersect = Line.intersectAt(line1, line2);
+            long mid = func.apply(m);
+            if (mid >= intersect) {
+                this.line = line2;
+                if(left != null) {
+                    left.update(ll, rr, l, m, line1, func);
                 }
-                return;
-            }
-            double x = Line.intersectAt(smallerA, largerA);
-            if (x <= segment.l) {
-                segment.line = largerA;
-                return;
-            }
-            if (x >= segment.r) {
-                segment.line = smallerA;
-                return;
-            }
-            if (x <= segment.m) {
-                segment.line = largerA;
-                update(ll, rr, l, m, smallerA, segment.left);
             } else {
-                segment.line = smallerA;
-                update(ll, rr, m + 1, r, largerA, segment.right);
+                this.line = line1;
+                if(right != null) {
+                    right.update(ll, rr, m + 1, r, line2, func);
+                }
             }
+            pushUp();
             return;
         }
-        update(ll, rr, l, m, line, segment.left);
-        update(ll, rr, m + 1, r, line, segment.right);
+
+        pushDown();
+        left.update(ll, rr, l, m, line, func);
+        right.update(ll, rr, m + 1, r, line, func);
+        pushUp();
     }
 
-    public static LiChaoSegment updatePersistently(int ll, int rr, int l, int r, Line line, LiChaoSegment segment) {
-        if (checkOutOfRange(ll, rr, l, r)) {
-            return segment;
+    public long query(int ll, int rr, int l, int r, long x) {
+        if (noIntersection(ll, rr, l, r)) {
+            return -INF;
         }
-        segment = segment.clone();
-        int m = (l + r) >> 1;
-        if (checkCoverage(ll, rr, l, r)) {
-            if (segment.line == null) {
-                segment.line = line;
-                return segment;
-            }
-            Line largerA, smallerA;
-            if (line.a < segment.line.a) {
-                largerA = segment.line;
-                smallerA = line;
-            } else {
-                largerA = line;
-                smallerA = segment.line;
-            }
-            if (Math.abs(smallerA.a - largerA.a) < 1e-10) {
-                if (smallerA.b >= largerA.b) {
-                    segment.line = smallerA;
-                } else {
-                    segment.line = largerA;
-                }
-                return segment;
-            }
-            double x = Line.intersectAt(smallerA, largerA);
-            if (x <= segment.l) {
-                segment.line = largerA;
-                return segment;
-            }
-            if (x >= segment.r) {
-                segment.line = smallerA;
-                return segment;
-            }
-            if (x <= segment.m) {
-                segment.line = largerA;
-                segment.left = updatePersistently(ll, rr, l, m, smallerA, segment.left);
-            } else {
-                segment.line = smallerA;
-                segment.right = updatePersistently(ll, rr, m + 1, r, largerA, segment.right);
-            }
-            return segment;
-        }
-        segment.left = updatePersistently(ll, rr, l, m, line, segment.left);
-        segment.right = updatePersistently(ll, rr, m + 1, r, line, segment.right);
-        return segment;
-    }
-
-    public double eval(double x) {
-        return line == null ? Double.MIN_VALUE : line.y(x);
-    }
-
-    public static double query(int x, double actual, int l, int r, LiChaoSegment segment) {
-        if (checkOutOfRange(x, x, l, r)) {
-            return Double.MIN_VALUE;
-        }
-        if (l == r) {
-            return segment.eval(actual);
+        if (covered(ll, rr, l, r)) {
+            return line.apply(x);
         }
         int m = (l + r) >> 1;
-        return Math.max(Math.max(
-                query(x, actual, l, m, segment.left),
-                query(x, actual, m + 1, r, segment.right)),
-                segment.eval(actual));
-    }
-
-    @Override
-    public LiChaoSegment clone() {
-        try {
-            return (LiChaoSegment) super.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new RuntimeException(e);
-        }
+        long ans = Math.max(left.query(ll, rr, l, m, x),
+                right.query(ll, rr, m + 1, r, x));
+        ans = Math.max(ans, line.apply(x));
+        return ans;
     }
 }

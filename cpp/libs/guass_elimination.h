@@ -13,7 +13,7 @@ class ModGussianElimination {
   int _n;
   int _m;
   T _mod;
-  template<class V>
+  template <class V>
   friend ostream& operator<<(ostream& os, const ModGussianElimination<V>& e);
 
  public:
@@ -24,6 +24,8 @@ class ModGussianElimination {
     _mod = modular;
     _rank = 0;
   }
+
+  int rank() { return _rank; }
 
   void clear(int n, int m) {
     _n = n;
@@ -116,7 +118,7 @@ class ModGussianElimination {
   vector<T>& solution() { return _mat[_n]; }
 };
 
-template<class V>
+template <class V>
 ostream& operator<<(ostream& os, const ModGussianElimination<V>& e) {
   for (int i = 0; i <= e._n; i++) {
     for (int j = 0; j <= e._m; j++) {

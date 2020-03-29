@@ -1,5 +1,5 @@
-#ifndef FLOW_H
-#define FLOW_H
+#ifndef MAX_FLOW_H
+#define MAX_FLOW_H
 
 #include "common.h"
 

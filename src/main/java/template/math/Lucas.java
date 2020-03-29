@@ -14,6 +14,9 @@ public class Lucas {
         this.modulus = composite.modular.m;
     }
 
+    /**
+     * O(\log_p \min(n, m))
+     */
     public int composite(long m, long n) {
         if (n == 0) {
             return 1;

@@ -1,16 +1,16 @@
 import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Arrays;
-import java.util.ListIterator;
-import java.io.IOException;
+import java.util.Random;
 import java.util.ArrayList;
+import java.io.OutputStreamWriter;
+import java.io.OutputStream;
+import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.List;
 import java.io.Closeable;
 import java.io.Writer;
-import java.io.OutputStreamWriter;
 import java.io.InputStream;
 
 /**
@@ -29,68 +29,445 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            Task117 solver = new Task117();
+            Robot solver = new Robot();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class Task117 {
+    static class Robot {
+        public LCSegment.Line inverse(LCSegment.Line line) {
+            return new LCSegment.Line(-line.a, -line.b);
+        }
+
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
             int m = in.readInt();
-            int src = n;
-            int dst = n + 1;
-            int a = in.readInt() - 1;
-            int b = in.readInt() - 1;
-            List<IntegerFlowEdge>[] g = IntegerFlow.createFlow(n + 2);
-            IntegerFlowEdge[] edges = new IntegerFlowEdge[m];
-            int[] fix = new int[m];
+
+            LCSegment.Line[] pos = new LCSegment.Line[n];
+            int[] modifyTime = new int[n];
+            for (int i = 0; i < n; i++) {
+                pos[i] = new LCSegment.Line(0, in.readInt());
+            }
+
+            List<Update> updates = new ArrayList<>(m);
+            IntegerList qs = new IntegerList(m);
+            IntegerList times = new IntegerList(m + 1);
+            times.add(0);
+            char[] cmd = new char[100];
             for (int i = 0; i < m; i++) {
-                int s = in.readInt() - 1;
-                int t = in.readInt() - 1;
-                int l = in.readInt();
-                int r = in.readInt();
-
-                fix[i] = l;
-                edges[i] = IntegerFlow.addEdge(g, s, t, r - l);
-                IntegerFlow.addEdge(g, s, dst, l);
-                IntegerFlow.addEdge(g, src, t, l);
-            }
-
-            IntegerFlowEdge extra = IntegerFlow.addEdge(g, b, a, (int) 1e9);
-
-            IntegerDinic isap = new IntegerDinic(n + 2);
-            isap.apply(g, src, dst, (int) 1e9);
-            boolean valid = true;
-            for (IntegerFlowEdge e : g[src]) {
-                if (e.rev.flow > 0) {
-                    valid = false;
-                }
-            }
-            for (IntegerFlowEdge e : g[dst]) {
-                if (e.flow > 0) {
-                    valid = false;
+                int t = in.readInt();
+                times.add(t);
+                in.readString(cmd, 0);
+                if (cmd[0] == 'c') {
+                    Update update = new Update();
+                    update.time = t;
+                    update.k = in.readInt() - 1;
+                    update.x = in.readInt();
+                    updates.add(update);
+                } else {
+                    qs.add(t);
                 }
             }
 
-            if (!valid) {
-                out.println("please go home to sleep");
-                return;
+            IntegerDiscreteMap dm = new IntegerDiscreteMap(times.getData(), 0, times.size());
+            IntToLongFunction func = i -> dm.iThElement(i);
+            LCSegment top = new LCSegment(dm.minRank(), dm.maxRank());
+            LCSegment bot = new LCSegment(dm.minRank(), dm.maxRank());
+
+            for (Update u : updates) {
+                int l = dm.rankOf(modifyTime[u.k]);
+                int r = dm.rankOf(u.time);
+                top.update(l, r, dm.minRank(), dm.maxRank(), pos[u.k], func);
+                bot.update(l, r, dm.minRank(), dm.maxRank(), inverse(pos[u.k]), func);
+                modifyTime[u.k] = u.time;
+                pos[u.k] = new LCSegment.Line(u.x, pos[u.k].apply(modifyTime[u.k]) - u.x * (long) modifyTime[u.k]);
             }
 
-            int flow = extra.flow;
-            extra.flow = extra.rev.flow = 0;
-            flow -= isap.apply(g, b, a, (int) 1e9);
-            out.println(flow);
+            for (int i = 0; i < n; i++) {
+                int l = dm.rankOf(modifyTime[i]);
+                int r = dm.maxRank();
+                top.update(l, r, dm.minRank(), dm.maxRank(), pos[i], func);
+                bot.update(l, r, dm.minRank(), dm.maxRank(), inverse(pos[i]), func);
+            }
+
+            for (int i = 0; i < qs.size(); i++) {
+                int t = qs.get(i);
+                int r = dm.rankOf(t);
+                long cand1 = top.query(r, r, dm.minRank(), dm.maxRank(), t);
+                long cand2 = bot.query(r, r, dm.minRank(), dm.maxRank(), t);
+                out.println(Math.max(cand1, cand2));
+            }
         }
 
     }
 
-    static interface IntegerIterator {
-        boolean hasNext();
+    static interface IntToLongFunction {
+        long apply(int x);
 
-        int next();
+    }
+
+    static class IntegerDiscreteMap {
+        int[] val;
+        int f;
+        int t;
+
+        public IntegerDiscreteMap(int[] val, int f, int t) {
+            Randomized.shuffle(val, f, t);
+            Arrays.sort(val, f, t);
+            int wpos = f + 1;
+            for (int i = f + 1; i < t; i++) {
+                if (val[i] == val[i - 1]) {
+                    continue;
+                }
+                val[wpos++] = val[i];
+            }
+            this.val = val;
+            this.f = f;
+            this.t = wpos;
+        }
+
+        public int rankOf(int x) {
+            return Arrays.binarySearch(val, f, t, x) - f;
+        }
+
+        public int iThElement(int i) {
+            return val[f + i];
+        }
+
+        public int minRank() {
+            return 0;
+        }
+
+        public int maxRank() {
+            return t - f - 1;
+        }
+
+        public String toString() {
+            return Arrays.toString(Arrays.copyOfRange(val, f, t));
+        }
+
+    }
+
+    static class IntegerList implements Cloneable {
+        private int size;
+        private int cap;
+        private int[] data;
+        private static final int[] EMPTY = new int[0];
+
+        public int[] getData() {
+            return data;
+        }
+
+        public IntegerList(int cap) {
+            this.cap = cap;
+            if (cap == 0) {
+                data = EMPTY;
+            } else {
+                data = new int[cap];
+            }
+        }
+
+        public IntegerList(IntegerList list) {
+            this.size = list.size;
+            this.cap = list.cap;
+            this.data = Arrays.copyOf(list.data, size);
+        }
+
+        public IntegerList() {
+            this(0);
+        }
+
+        public void ensureSpace(int req) {
+            if (req > cap) {
+                while (cap < req) {
+                    cap = Math.max(cap + 10, 2 * cap);
+                }
+                data = Arrays.copyOf(data, cap);
+            }
+        }
+
+        private void checkRange(int i) {
+            if (i < 0 || i >= size) {
+                throw new ArrayIndexOutOfBoundsException("invalid index " + i);
+            }
+        }
+
+        public int get(int i) {
+            checkRange(i);
+            return data[i];
+        }
+
+        public void add(int x) {
+            ensureSpace(size + 1);
+            data[size++] = x;
+        }
+
+        public void addAll(int[] x, int offset, int len) {
+            ensureSpace(size + len);
+            System.arraycopy(x, offset, data, size, len);
+            size += len;
+        }
+
+        public void addAll(IntegerList list) {
+            addAll(list.data, 0, list.size);
+        }
+
+        public int size() {
+            return size;
+        }
+
+        public int[] toArray() {
+            return Arrays.copyOf(data, size);
+        }
+
+        public String toString() {
+            return Arrays.toString(toArray());
+        }
+
+        public boolean equals(Object obj) {
+            if (!(obj instanceof IntegerList)) {
+                return false;
+            }
+            IntegerList other = (IntegerList) obj;
+            return SequenceUtils.equal(data, 0, size - 1, other.data, 0, other.size - 1);
+        }
+
+        public int hashCode() {
+            int h = 1;
+            for (int i = 0; i < size; i++) {
+                h = h * 31 + Integer.hashCode(data[i]);
+            }
+            return h;
+        }
+
+        public IntegerList clone() {
+            IntegerList ans = new IntegerList();
+            ans.addAll(this);
+            return ans;
+        }
+
+    }
+
+    static class LCSegment {
+        static final long INF = Long.MAX_VALUE / 2;
+        private static final LCSegment.Line BOTTOM = new LCSegment.Line(0, -INF);
+        LCSegment left;
+        LCSegment right;
+        LCSegment.Line line = BOTTOM;
+
+        public void pushUp() {
+        }
+
+        public void pushDown() {
+        }
+
+        public LCSegment(int l, int r) {
+            if (l < r) {
+                int m = (l + r) >> 1;
+                left = new LCSegment(l, m);
+                right = new LCSegment(m + 1, r);
+                pushUp();
+            } else {
+            }
+        }
+
+        private boolean covered(int ll, int rr, int l, int r) {
+            return ll <= l && rr >= r;
+        }
+
+        private boolean noIntersection(int ll, int rr, int l, int r) {
+            return ll > r || rr < l;
+        }
+
+        public void update(int ll, int rr, int l, int r, LCSegment.Line line, IntToLongFunction func) {
+            if (noIntersection(ll, rr, l, r)) {
+                return;
+            }
+
+            int m = (l + r) >> 1;
+            if (covered(ll, rr, l, r)) {
+                pushDown();
+                LCSegment.Line line1 = this.line;
+                LCSegment.Line line2 = line;
+                if (line1.a > line2.a) {
+                    LCSegment.Line tmp = line1;
+                    line1 = line2;
+                    line2 = tmp;
+                }
+                if (line1.a == line2.a) {
+                    this.line = line1.b >= line2.b ? line1 : line2;
+                    return;
+                }
+                double intersect = LCSegment.Line.intersectAt(line1, line2);
+                long mid = func.apply(m);
+                if (mid >= intersect) {
+                    this.line = line2;
+                    if (left != null) {
+                        left.update(ll, rr, l, m, line1, func);
+                    }
+                } else {
+                    this.line = line1;
+                    if (right != null) {
+                        right.update(ll, rr, m + 1, r, line2, func);
+                    }
+                }
+                pushUp();
+                return;
+            }
+
+            pushDown();
+            left.update(ll, rr, l, m, line, func);
+            right.update(ll, rr, m + 1, r, line, func);
+            pushUp();
+        }
+
+        public long query(int ll, int rr, int l, int r, long x) {
+            if (noIntersection(ll, rr, l, r)) {
+                return -INF;
+            }
+            if (covered(ll, rr, l, r)) {
+                return line.apply(x);
+            }
+            int m = (l + r) >> 1;
+            long ans = Math.max(left.query(ll, rr, l, m, x),
+                    right.query(ll, rr, m + 1, r, x));
+            ans = Math.max(ans, line.apply(x));
+            return ans;
+        }
+
+        public static class Line {
+            public long a;
+            public long b;
+
+            public Line(long a, long b) {
+                this.a = a;
+                this.b = b;
+            }
+
+            public long apply(long x) {
+                return a * x + b;
+            }
+
+            public boolean equals(Object obj) {
+                LCSegment.Line line = (LCSegment.Line) obj;
+                return line.a == a && line.b == b;
+            }
+
+            public static double intersectAt(LCSegment.Line a, LCSegment.Line b) {
+                //a1 x + b1 = a2 x + b2
+                return (double) (b.b - a.b) / (a.a - b.a);
+            }
+
+        }
+
+    }
+
+    static class Update {
+        int time;
+        int k;
+        int x;
+
+    }
+
+    static class SequenceUtils {
+        public static boolean equal(int[] a, int al, int ar, int[] b, int bl, int br) {
+            if ((ar - al) != (br - bl)) {
+                return false;
+            }
+            for (int i = al, j = bl; i <= ar; i++, j++) {
+                if (a[i] != b[j]) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+    }
+
+    static class FastOutput implements AutoCloseable, Closeable, Appendable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
+
+        public FastOutput append(CharSequence csq) {
+            cache.append(csq);
+            return this;
+        }
+
+        public FastOutput append(CharSequence csq, int start, int end) {
+            cache.append(csq, start, end);
+            return this;
+        }
+
+        public FastOutput(Writer os) {
+            this.os = os;
+        }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput append(char c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput append(long c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput println(long c) {
+            return append(c).println();
+        }
+
+        public FastOutput println() {
+            cache.append(System.lineSeparator());
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            return this;
+        }
+
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+
+        public String toString() {
+            return cache.toString();
+        }
+
+    }
+
+    static class Randomized {
+        private static Random random = new Random();
+
+        public static void shuffle(int[] data, int from, int to) {
+            to--;
+            for (int i = from; i <= to; i++) {
+                int s = nextInt(i, to);
+                int tmp = data[i];
+                data[i] = data[s];
+                data[s] = tmp;
+            }
+        }
+
+        public static int nextInt(int l, int r) {
+            return random.nextInt(r - l + 1) + l;
+        }
 
     }
 
@@ -151,327 +528,16 @@ public class Main {
             return val;
         }
 
-    }
+        public int readString(char[] data, int offset) {
+            skipBlank();
 
-    static class FastOutput implements AutoCloseable, Closeable, Appendable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
-
-        public FastOutput append(CharSequence csq) {
-            cache.append(csq);
-            return this;
-        }
-
-        public FastOutput append(CharSequence csq, int start, int end) {
-            cache.append(csq, start, end);
-            return this;
-        }
-
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput append(char c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput append(int c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput append(String c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput println(String c) {
-            return append(c).println();
-        }
-
-        public FastOutput println(int c) {
-            return append(c).println();
-        }
-
-        public FastOutput println() {
-            cache.append(System.lineSeparator());
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
+            int originalOffset = offset;
+            while (next > 32) {
+                data[offset++] = (char) next;
+                next = read();
             }
-            return this;
-        }
 
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        }
-
-        public String toString() {
-            return cache.toString();
-        }
-
-    }
-
-    static class IntegerDequeImpl implements IntegerDeque {
-        private int[] data;
-        private int bpos;
-        private int epos;
-        private static final int[] EMPTY = new int[0];
-        private int n;
-
-        public IntegerDequeImpl(int cap) {
-            if (cap == 0) {
-                data = EMPTY;
-            } else {
-                data = new int[cap];
-            }
-            bpos = 0;
-            epos = 0;
-            n = cap;
-        }
-
-        private void expandSpace(int len) {
-            while (n < len) {
-                n = Math.max(n + 10, n * 2);
-            }
-            int[] newData = new int[n];
-            if (bpos <= epos) {
-                if (bpos < epos) {
-                    System.arraycopy(data, bpos, newData, 0, epos - bpos);
-                }
-            } else {
-                System.arraycopy(data, bpos, newData, 0, data.length - bpos);
-                System.arraycopy(data, 0, newData, data.length - bpos, epos);
-            }
-            epos = size();
-            bpos = 0;
-            data = newData;
-        }
-
-        public IntegerIterator iterator() {
-            return new IntegerIterator() {
-                int index = bpos;
-
-
-                public boolean hasNext() {
-                    return index != epos;
-                }
-
-
-                public int next() {
-                    int ans = data[index];
-                    index = IntegerDequeImpl.this.next(index);
-                    return ans;
-                }
-            };
-        }
-
-        public int removeFirst() {
-            int ans = data[bpos];
-            bpos = next(bpos);
-            return ans;
-        }
-
-        public void addLast(int x) {
-            ensureMore();
-            data[epos] = x;
-            epos = next(epos);
-        }
-
-        public void clear() {
-            bpos = epos = 0;
-        }
-
-        private int next(int x) {
-            return x + 1 >= n ? 0 : x + 1;
-        }
-
-        private void ensureMore() {
-            if (next(epos) == bpos) {
-                expandSpace(n + 1);
-            }
-        }
-
-        public int size() {
-            int ans = epos - bpos;
-            if (ans < 0) {
-                ans += data.length;
-            }
-            return ans;
-        }
-
-        public boolean isEmpty() {
-            return bpos == epos;
-        }
-
-        public String toString() {
-            StringBuilder builder = new StringBuilder();
-            for (IntegerIterator iterator = iterator(); iterator.hasNext(); ) {
-                builder.append(iterator.next()).append(' ');
-            }
-            return builder.toString();
-        }
-
-    }
-
-    static class IntegerFlow {
-        public static <T extends IntegerFlowEdge> void send(T edge, int flow) {
-            edge.flow += flow;
-            edge.rev.flow -= flow;
-        }
-
-        public static IntegerFlowEdge addEdge(List<IntegerFlowEdge>[] g, int s, int t, int cap) {
-            IntegerFlowEdge real = new IntegerFlowEdge(t, 0, true);
-            IntegerFlowEdge virtual = new IntegerFlowEdge(s, cap, false);
-            real.rev = virtual;
-            virtual.rev = real;
-            g[s].add(real);
-            g[t].add(virtual);
-            return real;
-        }
-
-        public static List<IntegerFlowEdge>[] createFlow(int n) {
-            List<IntegerFlowEdge>[] g = new List[n];
-            for (int i = 0; i < n; i++) {
-                g[i] = new ArrayList<>();
-            }
-            return g;
-        }
-
-        public static <T extends IntegerFlowEdge> void bfsForFlow(List<T>[] g, int s, int[] dist, int inf, IntegerDeque deque) {
-            Arrays.fill(dist, 0, g.length, inf);
-            dist[s] = 0;
-            deque.clear();
-            deque.addLast(s);
-            while (!deque.isEmpty()) {
-                int head = deque.removeFirst();
-                for (T e : g[head]) {
-                    if (e.flow > 0 && dist[e.to] == inf) {
-                        dist[e.to] = dist[head] + 1;
-                        deque.addLast(e.to);
-                    }
-                }
-            }
-        }
-
-    }
-
-    static interface IntegerDeque extends IntegerStack {
-        int removeFirst();
-
-    }
-
-    static class IntegerFlowEdge<T extends IntegerFlowEdge<T>> extends DirectedEdge {
-        public int flow;
-        public boolean real;
-        public T rev;
-
-        public IntegerFlowEdge(int to, int flow, boolean real) {
-            super(to);
-            this.flow = flow;
-            this.real = real;
-        }
-
-        public String toString() {
-            return rev.to + "-[" + flow + "/" + (flow + rev.flow) + "]->" + to;
-        }
-
-    }
-
-    static interface IntegerStack {
-        void addLast(int x);
-
-        boolean isEmpty();
-
-        void clear();
-
-    }
-
-    static class DirectedEdge {
-        public int to;
-
-        public DirectedEdge(int to) {
-            this.to = to;
-        }
-
-        public String toString() {
-            return "->" + to;
-        }
-
-    }
-
-    static interface IntegerMaximumFlow {
-    }
-
-    static class IntegerDinic implements IntegerMaximumFlow {
-        List<IntegerFlowEdge>[] g;
-        int s;
-        int t;
-        IntegerDeque deque;
-        int[] dists;
-        ListIterator<IntegerFlowEdge>[] iterators;
-
-        public IntegerDinic(int vertexNum) {
-            deque = new IntegerDequeImpl(vertexNum);
-            dists = new int[vertexNum];
-            iterators = new ListIterator[vertexNum];
-        }
-
-        public int send(int root, int flow) {
-            if (root == t) {
-                return flow;
-            }
-            int snapshot = flow;
-            while (iterators[root].hasNext()) {
-                IntegerFlowEdge e = iterators[root].next();
-                int remain;
-                if (dists[e.to] + 1 != dists[root] || (remain = e.rev.flow) == 0) {
-                    continue;
-                }
-                int sent = send(e.to, Math.min(flow, remain));
-                flow -= sent;
-                IntegerFlow.send(e, sent);
-                if (flow == 0) {
-                    iterators[root].previous();
-                    break;
-                }
-            }
-            return snapshot - flow;
-        }
-
-        public int apply(List<IntegerFlowEdge>[] g, int s, int t, int send) {
-            this.s = s;
-            this.t = t;
-            this.g = g;
-            int flow = 0;
-            while (flow < send) {
-                IntegerFlow.bfsForFlow(g, t, dists, Integer.MAX_VALUE, deque);
-                if (dists[s] == Integer.MAX_VALUE) {
-                    break;
-                }
-                for (int i = 0; i < g.length; i++) {
-                    iterators[i] = g[i].listIterator();
-                }
-                flow += send(s, send - flow);
-            }
-            return flow;
+            return offset - originalOffset;
         }
 
     }

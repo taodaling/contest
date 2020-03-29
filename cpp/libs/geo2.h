@@ -264,7 +264,7 @@ bool CrossRay(const Point<T> &a, const Point<T> &p, const Point<T> &q) {
 }
 
 /**
- * 判断某个顶点是否落在矩形内，1表示矩形内，2表示矩形边缘，0表示矩形外
+ * 判断某个顶点是否落在多边形内，1表示多边形内，2表示多边形边缘，0表示多边形外
  */
 template <class T>
 int InPolygon(const vector<Point<T>> &polygon, const Point<T> &pt) {
@@ -344,11 +344,11 @@ void ConvexHull(vector<Point<T>> &pts) {
 }
 
 /**
- * 获取线段a->b与线段c->d的交点
+ * 获取线段a->b与线段c->d的交点（不考虑端点）
  */
 template <class T>
-bool ProperIntersect(Point<T> &a, Point<T> &b, Point<T> &c, Point<T> &d,
-                     Point<T> &ans) {
+bool ProperIntersect(const Point<T> &a, const Point<T> &b, const Point<T> &c,
+                     const Point<T> &d, Point<T> &ans) {
   T oa = Cross(c, d, a);
   T ob = Cross(c, d, b);
   T oc = Cross(a, b, c);
@@ -365,7 +365,8 @@ bool ProperIntersect(Point<T> &a, Point<T> &b, Point<T> &c, Point<T> &d,
  * 判断线段交点
  */
 template <class T>
-bool Intersect(Point<T> a, Point<T> b, Point<T> c, Point<T> d, Point<T> &ans) {
+bool Intersect(const Point<T> &a, const Point<T> &b, const Point<T> &c,
+               const Point<T> &d, Point<T> &ans) {
   bool find = ProperIntersect(a, b, c, d, ans);
   if (!find && OnSegment(a, b, c)) {
     ans = c;
