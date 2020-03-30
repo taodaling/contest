@@ -280,6 +280,18 @@ public class Point implements Cloneable {
         return cross % 2;
     }
 
+    /**
+     * 计算多边形面积（如果以逆时针给定顶点，则结果符号为正数，否则为负数）
+     */
+    public static double area(List<Point> polygon) {
+        double ans = 0;
+        int n = polygon.size();
+        for (int i = 0; i < n; i++) {
+            ans += cross(polygon.get(i), polygon.get((i + 1) % n));
+        }
+        return ans / 2;
+    }
+
     public static double dist2(Point a, Point b) {
         double dx = a.x - b.x;
         double dy = a.y - b.y;

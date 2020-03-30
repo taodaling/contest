@@ -71,7 +71,8 @@ class SortByPolarAngleWithOrigin {
 
  public:
   SortByPolarAngleWithOrigin(const Point<T> origin) : _origin(origin) {}
-
+  SortByPolarAngleWithOrigin() {}
+  void setOrigin(const Point<T> &origin) { _origin = origin; }
   bool operator()(const Point<T> &a, const Point<T> &b) {
     return _sa(a - _origin, b - _origin);
   }
@@ -385,6 +386,16 @@ bool Intersect(const Point<T> &a, const Point<T> &b, const Point<T> &c,
     find = true;
   }
   return find;
+}
+
+template <class T>
+double Area(const vector<Point<T>> &polygon) {
+  double ans = 0;
+  int n = polygon.size();
+  for (int i = 0; i < n; i++) {
+    ans += Cross(polygon[i], polygon[(i + 1) % n]);
+  }
+  return ans / 2.0;
 }
 }  // namespace geo2
 

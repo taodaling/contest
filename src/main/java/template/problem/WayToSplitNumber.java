@@ -14,7 +14,7 @@ import java.util.Arrays;
  */
 public class WayToSplitNumber {
     public static void main(String[] args){
-        System.out.println(new WayToSplitNumber(2000, new Modular(1e9 + 7)).wayOf(2000));
+        System.out.println(new WayToSplitNumber(10, new Modular(1e9 + 7)).wayOf(20));
     }
 
     int[] ways;
