@@ -1,0 +1,30 @@
+In file included from C:/Users/daltao/IdeaProjects/contest/cpp/libs/common.h:14,
+                 from C:\Users\daltao\IdeaProjects\contest\cpp\database\Codeforces___acm_sgu_ru_archive___206__Roads\main.cpp:1:
+C:/Users/daltao/IdeaProjects/contest/cpp/libs/compiler_macro.h:6:30: warning: '-std=c++14' is not an option that controls warnings [-Wpragmas]
+ #pragma GCC diagnostic error "-std=c++14"
+                              ^~~~~~~~~~~~
+C:\Users\daltao\IdeaProjects\contest\cpp\database\Codeforces___acm_sgu_ru_archive___206__Roads\main.cpp: In function 'void solve(int, std::istream&, std::ostream&)':
+C:\Users\daltao\IdeaProjects\contest\cpp\database\Codeforces___acm_sgu_ru_archive___206__Roads\main.cpp:56:23: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<int>::size_type' {aka 'long long unsigned int'} [-Wsign-compare]
+     for (int j = 1; j < trace.size(); j++) {
+                     ~~^~~~~~~~~~~~~~
+C:\Users\daltao\IdeaProjects\contest\cpp\database\Codeforces___acm_sgu_ru_archive___206__Roads\main.cpp:62:11: warning: statement has no effect [-Wunused-value]
+   dbg(mat);
+           ^
+C:\Users\daltao\IdeaProjects\contest\cpp\database\Codeforces___acm_sgu_ru_archive___206__Roads\main.cpp:66:13: warning: statement has no effect [-Wunused-value]
+   dbg(edges);
+             ^
+C:\Users\daltao\IdeaProjects\contest\cpp\database\Codeforces___acm_sgu_ru_archive___206__Roads\main.cpp:67:10: warning: statement has no effect [-Wunused-value]
+   dbg(km);
+          ^
+In file included from C:\Users\daltao\IdeaProjects\contest\cpp\database\Codeforces___acm_sgu_ru_archive___206__Roads\main.cpp:3:
+C:/Users/daltao/IdeaProjects/contest/cpp/libs/km_algo.h: In instantiation of 'km_algo::KMAlgo<V>::KMAlgo(const std::vector<std::vector<_Tp> >&) [with V = int]':
+C:\Users\daltao\IdeaProjects\contest\cpp\database\Codeforces___acm_sgu_ru_archive___206__Roads\main.cpp:63:30:   required from here
+C:/Users/daltao/IdeaProjects/contest/cpp/libs/km_algo.h:19:5: warning: 'km_algo::KMAlgo<int>::INF' will be initialized after [-Wreorder]
+   V INF;
+     ^~~
+C:/Users/daltao/IdeaProjects/contest/cpp/libs/km_algo.h:14:13: warning:   'std::vector<int> km_algo::KMAlgo<int>::xl' [-Wreorder]
+   vector<V> xl;                    // X标号值
+             ^~
+C:/Users/daltao/IdeaProjects/contest/cpp/libs/km_algo.h:22:3: warning:   when initialized here [-Wreorder]
+   KMAlgo(const vector<vector<V>> &t)
+   ^~~~~~

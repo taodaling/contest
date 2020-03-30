@@ -2,7 +2,7 @@ package on2020_02.on2020_02_23_Codeforces_Round__511__Div__1_.B__Little_C_Loves_
 
 
 
-import template.graph.KMAlgo;
+import template.graph.HungaryAlgo;
 import template.io.FastInput;
 import template.io.FastOutput;
 
@@ -27,7 +27,7 @@ public class BLittleCLoves3II {
             m -= extra - extra % 6;
         }
 
-        KMAlgo km = new KMAlgo(n * m, n * m);
+        HungaryAlgo km = new HungaryAlgo(n * m, n * m);
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
                 if ((i + j) % 2 != 0) {

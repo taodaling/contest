@@ -1,16 +1,13 @@
 import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.Random;
-import java.util.ArrayList;
-import java.io.OutputStreamWriter;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.util.List;
 import java.io.Closeable;
 import java.io.Writer;
+import java.io.OutputStreamWriter;
 import java.io.InputStream;
 
 /**
@@ -29,358 +26,39 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            Robot solver = new Robot();
+            P1559 solver = new P1559();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class Robot {
-        public LCSegment.Line inverse(LCSegment.Line line) {
-            return new LCSegment.Line(-line.a, -line.b);
-        }
-
+    static class P1559 {
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            int m = in.readInt();
 
-            LCSegment.Line[] pos = new LCSegment.Line[n];
-            int[] modifyTime = new int[n];
-            for (int i = 0; i < n; i++) {
-                pos[i] = new LCSegment.Line(0, in.readInt());
-            }
-
-            List<Update> updates = new ArrayList<>(m);
-            IntegerList qs = new IntegerList(m);
-            IntegerList times = new IntegerList(m + 1);
-            times.add(0);
-            char[] cmd = new char[100];
-            for (int i = 0; i < m; i++) {
-                int t = in.readInt();
-                times.add(t);
-                in.readString(cmd, 0);
-                if (cmd[0] == 'c') {
-                    Update update = new Update();
-                    update.time = t;
-                    update.k = in.readInt() - 1;
-                    update.x = in.readInt();
-                    updates.add(update);
-                } else {
-                    qs.add(t);
-                }
-            }
-
-            IntegerDiscreteMap dm = new IntegerDiscreteMap(times.getData(), 0, times.size());
-            IntToLongFunction func = i -> dm.iThElement(i);
-            LCSegment top = new LCSegment(dm.minRank(), dm.maxRank());
-            LCSegment bot = new LCSegment(dm.minRank(), dm.maxRank());
-
-            for (Update u : updates) {
-                int l = dm.rankOf(modifyTime[u.k]);
-                int r = dm.rankOf(u.time);
-                top.update(l, r, dm.minRank(), dm.maxRank(), pos[u.k], func);
-                bot.update(l, r, dm.minRank(), dm.maxRank(), inverse(pos[u.k]), func);
-                modifyTime[u.k] = u.time;
-                pos[u.k] = new LCSegment.Line(u.x, pos[u.k].apply(modifyTime[u.k]) - u.x * (long) modifyTime[u.k]);
-            }
+            int[][] boyToGirl = new int[n][n];
+            int[][] girlToBoy = new int[n][n];
 
             for (int i = 0; i < n; i++) {
-                int l = dm.rankOf(modifyTime[i]);
-                int r = dm.maxRank();
-                top.update(l, r, dm.minRank(), dm.maxRank(), pos[i], func);
-                bot.update(l, r, dm.minRank(), dm.maxRank(), inverse(pos[i]), func);
-            }
-
-            for (int i = 0; i < qs.size(); i++) {
-                int t = qs.get(i);
-                int r = dm.rankOf(t);
-                long cand1 = top.query(r, r, dm.minRank(), dm.maxRank(), t);
-                long cand2 = bot.query(r, r, dm.minRank(), dm.maxRank(), t);
-                out.println(Math.max(cand1, cand2));
-            }
-        }
-
-    }
-
-    static interface IntToLongFunction {
-        long apply(int x);
-
-    }
-
-    static class IntegerDiscreteMap {
-        int[] val;
-        int f;
-        int t;
-
-        public IntegerDiscreteMap(int[] val, int f, int t) {
-            Randomized.shuffle(val, f, t);
-            Arrays.sort(val, f, t);
-            int wpos = f + 1;
-            for (int i = f + 1; i < t; i++) {
-                if (val[i] == val[i - 1]) {
-                    continue;
-                }
-                val[wpos++] = val[i];
-            }
-            this.val = val;
-            this.f = f;
-            this.t = wpos;
-        }
-
-        public int rankOf(int x) {
-            return Arrays.binarySearch(val, f, t, x) - f;
-        }
-
-        public int iThElement(int i) {
-            return val[f + i];
-        }
-
-        public int minRank() {
-            return 0;
-        }
-
-        public int maxRank() {
-            return t - f - 1;
-        }
-
-        public String toString() {
-            return Arrays.toString(Arrays.copyOfRange(val, f, t));
-        }
-
-    }
-
-    static class IntegerList implements Cloneable {
-        private int size;
-        private int cap;
-        private int[] data;
-        private static final int[] EMPTY = new int[0];
-
-        public int[] getData() {
-            return data;
-        }
-
-        public IntegerList(int cap) {
-            this.cap = cap;
-            if (cap == 0) {
-                data = EMPTY;
-            } else {
-                data = new int[cap];
-            }
-        }
-
-        public IntegerList(IntegerList list) {
-            this.size = list.size;
-            this.cap = list.cap;
-            this.data = Arrays.copyOf(list.data, size);
-        }
-
-        public IntegerList() {
-            this(0);
-        }
-
-        public void ensureSpace(int req) {
-            if (req > cap) {
-                while (cap < req) {
-                    cap = Math.max(cap + 10, 2 * cap);
-                }
-                data = Arrays.copyOf(data, cap);
-            }
-        }
-
-        private void checkRange(int i) {
-            if (i < 0 || i >= size) {
-                throw new ArrayIndexOutOfBoundsException("invalid index " + i);
-            }
-        }
-
-        public int get(int i) {
-            checkRange(i);
-            return data[i];
-        }
-
-        public void add(int x) {
-            ensureSpace(size + 1);
-            data[size++] = x;
-        }
-
-        public void addAll(int[] x, int offset, int len) {
-            ensureSpace(size + len);
-            System.arraycopy(x, offset, data, size, len);
-            size += len;
-        }
-
-        public void addAll(IntegerList list) {
-            addAll(list.data, 0, list.size);
-        }
-
-        public int size() {
-            return size;
-        }
-
-        public int[] toArray() {
-            return Arrays.copyOf(data, size);
-        }
-
-        public String toString() {
-            return Arrays.toString(toArray());
-        }
-
-        public boolean equals(Object obj) {
-            if (!(obj instanceof IntegerList)) {
-                return false;
-            }
-            IntegerList other = (IntegerList) obj;
-            return SequenceUtils.equal(data, 0, size - 1, other.data, 0, other.size - 1);
-        }
-
-        public int hashCode() {
-            int h = 1;
-            for (int i = 0; i < size; i++) {
-                h = h * 31 + Integer.hashCode(data[i]);
-            }
-            return h;
-        }
-
-        public IntegerList clone() {
-            IntegerList ans = new IntegerList();
-            ans.addAll(this);
-            return ans;
-        }
-
-    }
-
-    static class LCSegment {
-        static final long INF = Long.MAX_VALUE / 2;
-        private static final LCSegment.Line BOTTOM = new LCSegment.Line(0, -INF);
-        LCSegment left;
-        LCSegment right;
-        LCSegment.Line line = BOTTOM;
-
-        public void pushUp() {
-        }
-
-        public void pushDown() {
-        }
-
-        public LCSegment(int l, int r) {
-            if (l < r) {
-                int m = (l + r) >> 1;
-                left = new LCSegment(l, m);
-                right = new LCSegment(m + 1, r);
-                pushUp();
-            } else {
-            }
-        }
-
-        private boolean covered(int ll, int rr, int l, int r) {
-            return ll <= l && rr >= r;
-        }
-
-        private boolean noIntersection(int ll, int rr, int l, int r) {
-            return ll > r || rr < l;
-        }
-
-        public void update(int ll, int rr, int l, int r, LCSegment.Line line, IntToLongFunction func) {
-            if (noIntersection(ll, rr, l, r)) {
-                return;
-            }
-
-            int m = (l + r) >> 1;
-            if (covered(ll, rr, l, r)) {
-                pushDown();
-                LCSegment.Line line1 = this.line;
-                LCSegment.Line line2 = line;
-                if (line1.a > line2.a) {
-                    LCSegment.Line tmp = line1;
-                    line1 = line2;
-                    line2 = tmp;
-                }
-                if (line1.a == line2.a) {
-                    this.line = line1.b >= line2.b ? line1 : line2;
-                    return;
-                }
-                double intersect = LCSegment.Line.intersectAt(line1, line2);
-                long mid = func.apply(m);
-                if (mid >= intersect) {
-                    this.line = line2;
-                    if (left != null) {
-                        left.update(ll, rr, l, m, line1, func);
-                    }
-                } else {
-                    this.line = line1;
-                    if (right != null) {
-                        right.update(ll, rr, m + 1, r, line2, func);
-                    }
-                }
-                pushUp();
-                return;
-            }
-
-            pushDown();
-            left.update(ll, rr, l, m, line, func);
-            right.update(ll, rr, m + 1, r, line, func);
-            pushUp();
-        }
-
-        public long query(int ll, int rr, int l, int r, long x) {
-            if (noIntersection(ll, rr, l, r)) {
-                return -INF;
-            }
-            if (covered(ll, rr, l, r)) {
-                return line.apply(x);
-            }
-            int m = (l + r) >> 1;
-            long ans = Math.max(left.query(ll, rr, l, m, x),
-                    right.query(ll, rr, m + 1, r, x));
-            ans = Math.max(ans, line.apply(x));
-            return ans;
-        }
-
-        public static class Line {
-            public long a;
-            public long b;
-
-            public Line(long a, long b) {
-                this.a = a;
-                this.b = b;
-            }
-
-            public long apply(long x) {
-                return a * x + b;
-            }
-
-            public boolean equals(Object obj) {
-                LCSegment.Line line = (LCSegment.Line) obj;
-                return line.a == a && line.b == b;
-            }
-
-            public static double intersectAt(LCSegment.Line a, LCSegment.Line b) {
-                //a1 x + b1 = a2 x + b2
-                return (double) (b.b - a.b) / (a.a - b.a);
-            }
-
-        }
-
-    }
-
-    static class Update {
-        int time;
-        int k;
-        int x;
-
-    }
-
-    static class SequenceUtils {
-        public static boolean equal(int[] a, int al, int ar, int[] b, int bl, int br) {
-            if ((ar - al) != (br - bl)) {
-                return false;
-            }
-            for (int i = al, j = bl; i <= ar; i++, j++) {
-                if (a[i] != b[j]) {
-                    return false;
+                for (int j = 0; j < n; j++) {
+                    boyToGirl[i][j] = in.readInt();
                 }
             }
-            return true;
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    girlToBoy[i][j] = in.readInt();
+                }
+            }
+
+            long[][] mat = new long[n][n];
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    mat[i][j] = (long) boyToGirl[i][j] * girlToBoy[j][i];
+                }
+            }
+            KMAlgo km = new KMAlgo(mat);
+            long ans = km.solve();
+            out.println(ans);
         }
 
     }
@@ -452,25 +130,6 @@ public class Main {
 
     }
 
-    static class Randomized {
-        private static Random random = new Random();
-
-        public static void shuffle(int[] data, int from, int to) {
-            to--;
-            for (int i = from; i <= to; i++) {
-                int s = nextInt(i, to);
-                int tmp = data[i];
-                data[i] = data[s];
-                data[s] = tmp;
-            }
-        }
-
-        public static int nextInt(int l, int r) {
-            return random.nextInt(r - l + 1) + l;
-        }
-
-    }
-
     static class FastInput {
         private final InputStream is;
         private byte[] buf = new byte[1 << 20];
@@ -528,16 +187,121 @@ public class Main {
             return val;
         }
 
-        public int readString(char[] data, int offset) {
-            skipBlank();
+    }
 
-            int originalOffset = offset;
-            while (next > 32) {
-                data[offset++] = (char) next;
-                next = read();
+    static class KMAlgo {
+        private static final long INF = (long) 2e18;
+        private long[][] table = null;
+        private long[] xl = null;
+        private long[] yl = null;
+        private int[] xMatch = null;
+        private int[] yMatch = null;
+        private int n = 0;
+
+        public KMAlgo(long[][] table) {
+            this.table = table;
+            this.n = table.length;
+            this.xl = new long[n];
+            this.yl = new long[n];
+            Arrays.fill(xl, -INF);
+            for (int x = 0; x < n; x++) {
+                for (int y = 0; y < n; y++) {
+                    if (table[x][y] > xl[x]) {
+                        xl[x] = table[x][y];
+                    }
+                }
             }
+            this.xMatch = new int[n];
+            this.yMatch = new int[n];
+            Arrays.fill(xMatch, -1);
+            Arrays.fill(yMatch, -1);
+        }
 
-            return offset - originalOffset;
+        public long solve() { // 入口，输入权重矩阵
+            for (int x = 0; x < n; x++) {
+                bfs(x);
+            }
+            long value = 0;
+            for (int x = 0; x < n; x++) {
+                value += table[x][xMatch[x]];
+            }
+            return value;
+        }
+
+        private void bfs(int startX) {    // 为一个x点寻找匹配
+            boolean find = false;
+            int endY = -1;
+            int[] yPre = new int[n];      // 标识搜索路径上y点的前一个点
+            boolean[] S = new boolean[n], T = new boolean[n]; // S集合，T集合
+            long[] slackY = new long[n];    // Y点的松弛变量
+            Arrays.fill(yPre, -1);
+            Arrays.fill(slackY, INF);
+            int[] queue = new int[n];     // 队列
+            int qs = 0, qe = 0;           // 队列开始结束索引
+            queue[qe++] = startX;
+            while (!find) {       // 循环直到找到匹配
+                while (qs < qe && !find) {   // 队列不为空
+                    int x = queue[qs++];
+                    S[x] = true;
+                    for (int y = 0; y < n; y++) {
+                        if (T[y]) {
+                            continue;
+                        }
+                        long tmp = xl[x] + yl[y] - table[x][y];
+                        if (tmp == 0) {  // 相等子树中的边
+                            T[y] = true;
+                            yPre[y] = x;
+                            if (yMatch[y] == -1) {
+                                endY = y;
+                                find = true;
+                                break;
+                            } else {
+                                queue[qe++] = yMatch[y];
+                            }
+                        } else if (slackY[y] > tmp) { // 不在相等子树中的边，看是否能够更新松弛变量
+                            slackY[y] = tmp;
+                            yPre[y] = x;
+                        }
+                    }
+                }
+                if (find) {
+                    break;
+                }
+                long a = INF;
+                for (int y = 0; y < n; y++) {  // 找到最小的松弛值
+                    if (!T[y]) {
+                        a = Math.min(a, slackY[y]);
+                    }
+                }
+                for (int i = 0; i < n; i++) {  // 根据a修改标号值
+                    if (S[i]) {
+                        xl[i] -= a;
+                    }
+                    if (T[i]) {
+                        yl[i] += a;
+                    }
+                }
+                qs = qe = 0;
+                for (int y = 0; y < n; y++) {        // 重要！！！控制修改标号之后需要检查的x点
+                    if (!T[y] && slackY[y] == a) {   // 查看那些y点新加入到T集合，注意，这些y点的前向x点都记录在了yPre里面，所以这些x点不用再次入队
+                        T[y] = true;
+                        if (yMatch[y] == -1) {       // 新加入的y点没有匹配，那么就找到可扩路了
+                            endY = y;
+                            find = true;
+                            break;
+                        } else {   // 新加入的y点已经有匹配了，将它匹配的x加到队列
+                            queue[qe++] = yMatch[y];
+                        }
+                    }
+                    slackY[y] -= a;   // 所有松弛值减去a。(对于T集合中的松弛值已经没用了，对于不在T集合里面的y点，
+                }                     // 它们的松弛值是通过S集合中的x点求出的，S集合中的x点的标号值在上面都减去了a，所以这里松弛值也要减去a)
+            }
+            while (endY != -1) {    // 找到可扩路最后的y点后，回溯并扩充
+                int preX = yPre[endY], preY = xMatch[preX];
+                xMatch[preX] = endY;
+                yMatch[endY] = preX;
+                endY = preY;
+            }
         }
 
     }
