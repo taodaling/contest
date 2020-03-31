@@ -2,9 +2,10 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.io.UncheckedIOException;
+import java.util.List;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
@@ -16,7 +17,9 @@ import java.io.InputStream;
  */
 public class Main {
     public static void main(String[] args) throws Exception {
-        new TaskAdapter().run();
+        Thread thread = new Thread(null, new TaskAdapter(), "", 1 << 27);
+        thread.start();
+        thread.join();
     }
 
     static class TaskAdapter implements Runnable {
@@ -26,106 +29,87 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            P1559 solver = new P1559();
+            FIndependentSet solver = new FIndependentSet();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class P1559 {
+    static class FIndependentSet {
+        Modular mod = new Modular(998244353);
+
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-
-            int[][] boyToGirl = new int[n][n];
-            int[][] girlToBoy = new int[n][n];
-
+            Node[] nodes = new Node[n];
             for (int i = 0; i < n; i++) {
-                for (int j = 0; j < n; j++) {
-                    boyToGirl[i][j] = in.readInt();
-                }
+                nodes[i] = new Node();
+                nodes[i].id = i;
             }
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < n; j++) {
-                    girlToBoy[i][j] = in.readInt();
-                }
+            for (int i = 0; i < n - 1; i++) {
+                Node a = nodes[in.readInt() - 1];
+                Node b = nodes[in.readInt() - 1];
+                a.next.add(b);
+                b.next.add(a);
             }
 
-            long[][] mat = new long[n][n];
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < n; j++) {
-                    mat[i][j] = (long) boyToGirl[i][j] * girlToBoy[j][i];
+            dfs(nodes[0], null);
+            int ans = 0;
+            for (int i = 0; i < 2; i++) {
+                for (int j = 0; j < 2; j++) {
+                    if (i < j) {
+                        continue;
+                    }
+                    ans = mod.plus(ans, nodes[0].dp[i][j]);
                 }
             }
-            KMAlgo km = new KMAlgo(mat);
-            long ans = km.solve();
+            ans = mod.subtract(ans, 1);
             out.println(ans);
+        }
+
+        public void dfs(Node root, Node p) {
+            for (int j = 0; j < 2; j++) {
+                root.dp[0][j] = 1;
+            }
+            for (Node node : root.next) {
+                if (node == p) {
+                    continue;
+                }
+                dfs(node, root);
+                {
+                    //1 0
+                    int a = mod.plus(node.dp[0][0], mod.plus(node.dp[0][1], mod.plus(node.dp[1][0], node.dp[1][1])));
+                    int b = mod.plus(node.dp[0][0], mod.plus(node.dp[1][0], node.dp[1][1]));
+                    root.dp[1][0] = mod.plus(mod.mul(root.dp[1][0], mod.plus(a, b)), mod.mul(a, root.dp[0][0]));
+                }
+                {
+                    //0 0
+                    int a = mod.plus(node.dp[1][1], mod.plus(node.dp[0][0], node.dp[1][0]));
+                    root.dp[0][0] = mod.mul(root.dp[0][0], a);
+                }
+                {
+                    //1 1
+                    int a = mod.plus(node.dp[0][0], node.dp[1][0]);
+                    int b = mod.plus(node.dp[0][0], mod.plus(node.dp[1][0], node.dp[1][1]));
+                    root.dp[1][1] = mod.plus(mod.mul(root.dp[1][1], mod.plus(a, b)), mod.mul(a, root.dp[0][1]));
+                }
+                {
+                    //0 1
+                    int a = mod.plus(node.dp[1][1], mod.plus(node.dp[0][0], node.dp[1][0]));
+                    root.dp[0][1] = mod.mul(root.dp[0][1], a);
+                }
+
+            }
         }
 
     }
 
-    static class FastOutput implements AutoCloseable, Closeable, Appendable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
-
-        public FastOutput append(CharSequence csq) {
-            cache.append(csq);
-            return this;
-        }
-
-        public FastOutput append(CharSequence csq, int start, int end) {
-            cache.append(csq, start, end);
-            return this;
-        }
-
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput append(char c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput append(long c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput println(long c) {
-            return append(c).println();
-        }
-
-        public FastOutput println() {
-            cache.append(System.lineSeparator());
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        }
+    static class Node {
+        int[][] dp = new int[2][2];
+        List<Node> next = new ArrayList<>();
+        int id;
 
         public String toString() {
-            return cache.toString();
+            return "" + id;
         }
 
     }
@@ -189,119 +173,124 @@ public class Main {
 
     }
 
-    static class KMAlgo {
-        private static final long INF = (long) 2e18;
-        private long[][] table = null;
-        private long[] xl = null;
-        private long[] yl = null;
-        private int[] xMatch = null;
-        private int[] yMatch = null;
-        private int n = 0;
+    static class FastOutput implements AutoCloseable, Closeable, Appendable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
 
-        public KMAlgo(long[][] table) {
-            this.table = table;
-            this.n = table.length;
-            this.xl = new long[n];
-            this.yl = new long[n];
-            Arrays.fill(xl, -INF);
-            for (int x = 0; x < n; x++) {
-                for (int y = 0; y < n; y++) {
-                    if (table[x][y] > xl[x]) {
-                        xl[x] = table[x][y];
-                    }
-                }
-            }
-            this.xMatch = new int[n];
-            this.yMatch = new int[n];
-            Arrays.fill(xMatch, -1);
-            Arrays.fill(yMatch, -1);
+        public FastOutput append(CharSequence csq) {
+            cache.append(csq);
+            return this;
         }
 
-        public long solve() { // 入口，输入权重矩阵
-            for (int x = 0; x < n; x++) {
-                bfs(x);
-            }
-            long value = 0;
-            for (int x = 0; x < n; x++) {
-                value += table[x][xMatch[x]];
-            }
-            return value;
+        public FastOutput append(CharSequence csq, int start, int end) {
+            cache.append(csq, start, end);
+            return this;
         }
 
-        private void bfs(int startX) {    // 为一个x点寻找匹配
-            boolean find = false;
-            int endY = -1;
-            int[] yPre = new int[n];      // 标识搜索路径上y点的前一个点
-            boolean[] S = new boolean[n], T = new boolean[n]; // S集合，T集合
-            long[] slackY = new long[n];    // Y点的松弛变量
-            Arrays.fill(yPre, -1);
-            Arrays.fill(slackY, INF);
-            int[] queue = new int[n];     // 队列
-            int qs = 0, qe = 0;           // 队列开始结束索引
-            queue[qe++] = startX;
-            while (!find) {       // 循环直到找到匹配
-                while (qs < qe && !find) {   // 队列不为空
-                    int x = queue[qs++];
-                    S[x] = true;
-                    for (int y = 0; y < n; y++) {
-                        if (T[y]) {
-                            continue;
-                        }
-                        long tmp = xl[x] + yl[y] - table[x][y];
-                        if (tmp == 0) {  // 相等子树中的边
-                            T[y] = true;
-                            yPre[y] = x;
-                            if (yMatch[y] == -1) {
-                                endY = y;
-                                find = true;
-                                break;
-                            } else {
-                                queue[qe++] = yMatch[y];
-                            }
-                        } else if (slackY[y] > tmp) { // 不在相等子树中的边，看是否能够更新松弛变量
-                            slackY[y] = tmp;
-                            yPre[y] = x;
-                        }
-                    }
-                }
-                if (find) {
-                    break;
-                }
-                long a = INF;
-                for (int y = 0; y < n; y++) {  // 找到最小的松弛值
-                    if (!T[y]) {
-                        a = Math.min(a, slackY[y]);
-                    }
-                }
-                for (int i = 0; i < n; i++) {  // 根据a修改标号值
-                    if (S[i]) {
-                        xl[i] -= a;
-                    }
-                    if (T[i]) {
-                        yl[i] += a;
-                    }
-                }
-                qs = qe = 0;
-                for (int y = 0; y < n; y++) {        // 重要！！！控制修改标号之后需要检查的x点
-                    if (!T[y] && slackY[y] == a) {   // 查看那些y点新加入到T集合，注意，这些y点的前向x点都记录在了yPre里面，所以这些x点不用再次入队
-                        T[y] = true;
-                        if (yMatch[y] == -1) {       // 新加入的y点没有匹配，那么就找到可扩路了
-                            endY = y;
-                            find = true;
-                            break;
-                        } else {   // 新加入的y点已经有匹配了，将它匹配的x加到队列
-                            queue[qe++] = yMatch[y];
-                        }
-                    }
-                    slackY[y] -= a;   // 所有松弛值减去a。(对于T集合中的松弛值已经没用了，对于不在T集合里面的y点，
-                }                     // 它们的松弛值是通过S集合中的x点求出的，S集合中的x点的标号值在上面都减去了a，所以这里松弛值也要减去a)
+        public FastOutput(Writer os) {
+            this.os = os;
+        }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput append(char c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput append(int c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput println(int c) {
+            return append(c).println();
+        }
+
+        public FastOutput println() {
+            cache.append(System.lineSeparator());
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
             }
-            while (endY != -1) {    // 找到可扩路最后的y点后，回溯并扩充
-                int preX = yPre[endY], preY = xMatch[preX];
-                xMatch[preX] = endY;
-                yMatch[endY] = preX;
-                endY = preY;
+            return this;
+        }
+
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
             }
+        }
+
+        public String toString() {
+            return cache.toString();
+        }
+
+    }
+
+    static class Modular {
+        int m;
+
+        public Modular(int m) {
+            this.m = m;
+        }
+
+        public Modular(long m) {
+            this.m = (int) m;
+            if (this.m != m) {
+                throw new IllegalArgumentException();
+            }
+        }
+
+        public Modular(double m) {
+            this.m = (int) m;
+            if (this.m != m) {
+                throw new IllegalArgumentException();
+            }
+        }
+
+        public int valueOf(int x) {
+            x %= m;
+            if (x < 0) {
+                x += m;
+            }
+            return x;
+        }
+
+        public int valueOf(long x) {
+            x %= m;
+            if (x < 0) {
+                x += m;
+            }
+            return (int) x;
+        }
+
+        public int mul(int x, int y) {
+            return valueOf((long) x * y);
+        }
+
+        public int plus(int x, int y) {
+            return valueOf(x + y);
+        }
+
+        public int subtract(int x, int y) {
+            return valueOf(x - y);
+        }
+
+        public String toString() {
+            return "mod " + m;
         }
 
     }

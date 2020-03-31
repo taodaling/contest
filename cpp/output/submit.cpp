@@ -597,143 +597,148 @@ void err(std::istream_iterator<string> it, T a, Args... args) {
 #endif
 
 
-vector<vector<ll>> penalties;
-vector<ll> minPenaltiesA;
-vector<int> minPenaltiesAChar;
-vector<ll> minPenaltiesB;
-vector<int> minPenaltiesBChar;
-vector<int> a;
-vector<int> b;
-int n;
-int m;
-int charset;
-vector<int> indexToChar;
-vector<int> charToIndex;
-vector<vector<ll>> dp;
-vector<vector<pair<int, int>>> last;
-ll inf = 1e18;
+vector<vector<int>> g;
+vector<int> subtree;
+vector<int> colors;
+vector<int> coloredBy;
+int b;
+int order;
 
-ll Dp(int i, int j) {
-  if (i < 0 || j < 0) {
-    return inf;
+void DfsForSize(int root, int p) {
+  subtree[root] = 1;
+  for (int node : g[root]) {
+    if (node == p) {
+      continue;
+    }
+    DfsForSize(node, root);
+    subtree[root] += subtree[node];
   }
-  if (dp[i][j] == -1) {
-    if (i == 0 && j == 0) {
-      return dp[i][j] = 0;
+}
+
+int DfsForCentroid(int root, int p, int total) {
+  int size = total - subtree[root];
+  for (int node : g[root]) {
+    if (node == p) {
+      continue;
     }
-    dp[i][j] = inf;
-    if (i > 0 && j > 0) {
-      ll cand = Dp(i - 1, j - 1) + penalties[a[i - 1]][b[j - 1]];
-      if (dp[i][j] > cand) {
-        dp[i][j] = cand;
-        last[i][j].first = last[i][j].second = -1;
-      }
-    }
-    if (i > 0) {
-      ll cand = Dp(i - 1, j) + minPenaltiesA[a[i - 1]];
-      if (dp[i][j] > cand) {
-        dp[i][j] = cand;
-        last[i][j].first = -1;
-        last[i][j].second = minPenaltiesAChar[a[i - 1]];
-      }
-    }
-    if (j > 0) {
-      ll cand = Dp(i, j - 1) + minPenaltiesB[b[j - 1]];
-      if (dp[i][j] > cand) {
-        dp[i][j] = cand;
-        last[i][j].first = minPenaltiesBChar[b[j - 1]];
-        last[i][j].second = -1;
-      }
+    size = max(size, subtree[node]);
+    int ans = DfsForCentroid(node, root, total);
+    if (ans >= 0) {
+      return ans;
     }
   }
-  return dp[i][j];
+  if (size * 2 <= total) {
+    return root;
+  }
+  return -1;
+}
+
+void DfsForPaint(int root, int p, int c, int by) {
+  assert(colors[root] == 0);
+  colors[root] = c;
+  coloredBy[root] = by;
+  for (int node : g[root]) {
+    if (node == p) {
+      continue;
+    }
+    DfsForPaint(node, root, c, by);
+  }
+}
+
+void Erase(vector<int> &vec, int x) {
+  for (int i = vec.size() - 1; i >= 0; i--) {
+    if (vec[i] == x) {
+      vec.erase(vec.begin() + i);
+      return;
+    }
+  }
+}
+
+vector<int> pend;
+
+void Dac(int root) {
+  DfsForSize(root, -1);
+  if (subtree[root] <= 3 * b) {
+    DfsForPaint(root, -1, ++order, root);
+    return;
+  }
+
+  root = DfsForCentroid(root, -1, subtree[root]);
+  DfsForSize(root, -1);
+  sort(g[root].begin(), g[root].end(),
+       [&](auto a, auto b) { return subtree[a] < subtree[b]; });
+
+  int sum = subtree[root];
+  if (subtree[g[root].back()] >= b) {
+    while (g[root].size()) {
+      int back = g[root].back();
+      if (subtree[back] < b || sum - subtree[back] < b) {
+        break;
+      }
+      sum -= subtree[back];
+      g[root].pop_back();
+      Erase(g[back], root);
+      Dac(back);
+    }
+  }
+
+  if (sum <= 3 * b || g[root].size() && subtree[g[root].back()] >= b) {
+    Dac(root);
+    return;
+  }
+
+  pend.clear();
+  sum = 0;
+  for (int node : g[root]) {
+    pend.push_back(node);
+    sum += subtree[node];
+    if (sum >= b) {
+      ++order;
+      for (int x : pend) {
+        DfsForPaint(x, root, order, root);
+      }
+      pend.clear();
+      sum = 0;
+    }
+  }
+  if (pend.size() > 0) {
+    for (int x : pend) {
+      DfsForPaint(x, root, order, root);
+    }
+    pend.clear();
+  }
+  colors[root] = order;
+  coloredBy[root] = root;
 }
 
 void solve(int testId, istream &in, ostream &out) {
-  string cs;
-  string as, bs;
-  in >> cs;
-  in >> as >> bs;
-  n = as.size();
-  m = bs.size();
-  charset = cs.length();
-  indexToChar.assign(cs.begin(), cs.end());
-  charToIndex.resize(500);
-  for (int i = 0; i < charset; i++) {
-    charToIndex[indexToChar[i]] = i;
+  int n;
+  in >> n >> b;
+  g.resize(n);
+  colors.resize(n);
+  subtree.resize(n);
+  coloredBy.resize(n);
+  for (int i = 0; i < n - 1; i++) {
+    int a, b;
+    in >> a >> b;
+    a--;
+    b--;
+    g[a].push_back(b);
+    g[b].push_back(a);
   }
 
-  for (char &c : as) {
-    a.push_back(charToIndex[c]);
-  }
-  for (char &c : bs) {
-    b.push_back(charToIndex[c]);
-  }
-  dbg(a, b);
-
-  penalties.resize(charset, vector<ll>(charset));
-  minPenaltiesA.resize(charset, inf);
-  minPenaltiesB.resize(charset, inf);
-  minPenaltiesAChar.resize(charset);
-  minPenaltiesBChar.resize(charset);
-  for (int i = 0; i < charset; i++) {
-    for (int j = 0; j < charset; j++) {
-      in >> penalties[i][j];
-      if (minPenaltiesA[i] > penalties[i][j]) {
-        minPenaltiesA[i] = penalties[i][j];
-        minPenaltiesAChar[i] = j;
-      }
-      if (minPenaltiesB[j] > penalties[i][j]) {
-        minPenaltiesB[j] = penalties[i][j];
-        minPenaltiesBChar[j] = i;
-      }
-    }
-  }
-
-  dbg(penalties, minPenaltiesA, minPenaltiesB, minPenaltiesAChar,
-      minPenaltiesBChar);
-
-  last.resize(n + 1, vector<pair<int, int>>(m + 1, {-1, -1}));
-  dp.resize(n + 1, vector<ll>(m + 1, -1));
-
-  ll ans = Dp(n, m);
-  dbg(dp);
-  out << ans << endl;
-  vector<int> s1;
-  vector<int> s2;
-
-  int i = n;
-  int j = m;
-  while (true) {
-    if (i == 0 && j == 0) {
-      break;
-    }
-    int ni = i;
-    int nj = j;
-    if (last[i][j].first == -1) {
-      s1.push_back(a[i - 1]);
-      ni--;
-    } else {
-      s1.push_back(last[i][j].first);
-    }
-    if (last[i][j].second == -1) {
-      s2.push_back(b[j - 1]);
-      nj--;
-    } else {
-      s2.push_back(last[i][j].second);
-    }
-    i = ni;
-    j = nj;
-  }
-
-  reverse(s1.begin(), s1.end());
-  reverse(s2.begin(), s2.end());
-  for (int c : s1) {
-    out << (char)indexToChar[c];
+  Dac(0);
+  dbg(colors, order);
+  dbg(coloredBy);
+  out << order << endl;
+  vector<int> centers(order + 1, -1);
+  for (int i = 0; i < n; i++) {
+    centers[colors[i]] = max(centers[colors[i]], i);
+    out << colors[i] << ' ';
   }
   out << endl;
-  for (int c : s2) {
-    out << (char)indexToChar[c];
+  for (int i = 1; i <= order; i++) {
+    out << coloredBy[centers[i]] + 1 << ' ';
   }
 }
 
