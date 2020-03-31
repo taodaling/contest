@@ -8,7 +8,7 @@ import java.util.List;
 public class ACAutomaton {
     private final int minCharacter;
     private final int maxCharacter;
-    private final int RANGE;
+    private final int range;
     private Node root;
     private Node buildLast;
     private Node matchLast;
@@ -27,7 +27,7 @@ public class ACAutomaton {
     }
 
     private Node addNode() {
-        Node node = new Node(RANGE);
+        Node node = new Node(range);
         node.id = allNodes.size();
         allNodes.add(node);
         return node;
@@ -36,7 +36,7 @@ public class ACAutomaton {
     public ACAutomaton(int minCharacter, int maxCharacter) {
         this.minCharacter = minCharacter;
         this.maxCharacter = maxCharacter;
-        RANGE = maxCharacter - minCharacter + 1;
+        range = maxCharacter - minCharacter + 1;
         root = addNode();
     }
 
@@ -46,7 +46,7 @@ public class ACAutomaton {
 
     public void endBuilding() {
         Deque<Node> deque = new ArrayDeque(allNodes.size());
-        for (int i = 0; i < RANGE; i++) {
+        for (int i = 0; i < range; i++) {
             if (root.next[i] != null) {
                 deque.addLast(root.next[i]);
             }
@@ -61,14 +61,14 @@ public class ACAutomaton {
                 head.fail = fail.next[head.index];
             }
             head.preSum = head.cnt + head.fail.preSum;
-            for (int i = 0; i < RANGE; i++) {
+            for (int i = 0; i < range; i++) {
                 if (head.next[i] != null) {
                     deque.addLast(head.next[i]);
                 }
             }
         }
 
-        for (int i = 0; i < RANGE; i++) {
+        for (int i = 0; i < range; i++) {
             if (root.next[i] != null) {
                 deque.addLast(root.next[i]);
             } else {
@@ -77,7 +77,7 @@ public class ACAutomaton {
         }
         while (!deque.isEmpty()) {
             Node head = deque.removeFirst();
-            for (int i = 0; i < RANGE; i++) {
+            for (int i = 0; i < range; i++) {
                 if (head.next[i] != null) {
                     deque.addLast(head.next[i]);
                 } else {

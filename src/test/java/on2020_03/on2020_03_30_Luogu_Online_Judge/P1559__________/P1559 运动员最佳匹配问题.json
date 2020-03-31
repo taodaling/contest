@@ -18,7 +18,7 @@
   "location" : "src/main/java/contest",
   "vmArgs" : "-Xmx125M",
   "mainClass" : "Main",
-  "taskClass" : "contest.P1559",
+  "taskClass" : "on2020_03.on2020_03_30_Luogu_Online_Judge.P1559__________.P1559",
   "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
   "checkerParameters" : "",
   "testClasses" : [ ],
