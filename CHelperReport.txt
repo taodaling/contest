@@ -1,2 +1,2 @@
-45 src/main/java/contest/F. Independent Set.json
+62 src/main/java/contest/F. Edge coloring of bipartite graph.json
 0

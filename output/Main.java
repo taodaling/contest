@@ -3,9 +3,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.io.UncheckedIOException;
-import java.util.List;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
@@ -29,146 +27,36 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            FIndependentSet solver = new FIndependentSet();
+            FEdgeColoringOfBipartiteGraph solver = new FEdgeColoringOfBipartiteGraph();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class FIndependentSet {
-        Modular mod = new Modular(998244353);
-
+    static class FEdgeColoringOfBipartiteGraph {
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            int n = in.readInt();
-            Node[] nodes = new Node[n];
-            for (int i = 0; i < n; i++) {
-                nodes[i] = new Node();
-                nodes[i].id = i;
-            }
-            for (int i = 0; i < n - 1; i++) {
-                Node a = nodes[in.readInt() - 1];
-                Node b = nodes[in.readInt() - 1];
-                a.next.add(b);
-                b.next.add(a);
+            int a = in.readInt();
+            int b = in.readInt();
+            int m = in.readInt();
+            boolean[][] g = new boolean[a][b];
+            int[][] colors = new int[a][b];
+            int[][] edges = new int[2][m];
+            for (int i = 0; i < m; i++) {
+                int u = in.readInt() - 1;
+                int v = in.readInt() - 1;
+                g[u][v] = true;
+                edges[0][i] = u;
+                edges[1][i] = v;
             }
 
-            dfs(nodes[0], null);
-            int ans = 0;
-            for (int i = 0; i < 2; i++) {
-                for (int j = 0; j < 2; j++) {
-                    if (i < j) {
-                        continue;
-                    }
-                    ans = mod.plus(ans, nodes[0].dp[i][j]);
-                }
-            }
-            ans = mod.subtract(ans, 1);
+            BipartiteGraphEdgeColoring bgec = new BipartiteGraphEdgeColoring(a, b);
+            int ans = bgec.solve(g, colors);
             out.println(ans);
-        }
-
-        public void dfs(Node root, Node p) {
-            for (int j = 0; j < 2; j++) {
-                root.dp[0][j] = 1;
+            for (int i = 0; i < m; i++) {
+                int u = edges[0][i];
+                int v = edges[1][i];
+                out.append(colors[u][v] + 1).append(' ');
             }
-            for (Node node : root.next) {
-                if (node == p) {
-                    continue;
-                }
-                dfs(node, root);
-                {
-                    //1 0
-                    int a = mod.plus(node.dp[0][0], mod.plus(node.dp[0][1], mod.plus(node.dp[1][0], node.dp[1][1])));
-                    int b = mod.plus(node.dp[0][0], mod.plus(node.dp[1][0], node.dp[1][1]));
-                    root.dp[1][0] = mod.plus(mod.mul(root.dp[1][0], mod.plus(a, b)), mod.mul(a, root.dp[0][0]));
-                }
-                {
-                    //0 0
-                    int a = mod.plus(node.dp[1][1], mod.plus(node.dp[0][0], node.dp[1][0]));
-                    root.dp[0][0] = mod.mul(root.dp[0][0], a);
-                }
-                {
-                    //1 1
-                    int a = mod.plus(node.dp[0][0], node.dp[1][0]);
-                    int b = mod.plus(node.dp[0][0], mod.plus(node.dp[1][0], node.dp[1][1]));
-                    root.dp[1][1] = mod.plus(mod.mul(root.dp[1][1], mod.plus(a, b)), mod.mul(a, root.dp[0][1]));
-                }
-                {
-                    //0 1
-                    int a = mod.plus(node.dp[1][1], mod.plus(node.dp[0][0], node.dp[1][0]));
-                    root.dp[0][1] = mod.mul(root.dp[0][1], a);
-                }
-
-            }
-        }
-
-    }
-
-    static class Node {
-        int[][] dp = new int[2][2];
-        List<Node> next = new ArrayList<>();
-        int id;
-
-        public String toString() {
-            return "" + id;
-        }
-
-    }
-
-    static class FastInput {
-        private final InputStream is;
-        private byte[] buf = new byte[1 << 20];
-        private int bufLen;
-        private int bufOffset;
-        private int next;
-
-        public FastInput(InputStream is) {
-            this.is = is;
-        }
-
-        private int read() {
-            while (bufLen == bufOffset) {
-                bufOffset = 0;
-                try {
-                    bufLen = is.read(buf);
-                } catch (IOException e) {
-                    bufLen = -1;
-                }
-                if (bufLen == -1) {
-                    return -1;
-                }
-            }
-            return buf[bufOffset++];
-        }
-
-        public void skipBlank() {
-            while (next >= 0 && next <= 32) {
-                next = read();
-            }
-        }
-
-        public int readInt() {
-            int sign = 1;
-
-            skipBlank();
-            if (next == '+' || next == '-') {
-                sign = next == '+' ? 1 : -1;
-                next = read();
-            }
-
-            int val = 0;
-            if (sign == 1) {
-                while (next >= '0' && next <= '9') {
-                    val = val * 10 + next - '0';
-                    next = read();
-                }
-            } else {
-                while (next >= '0' && next <= '9') {
-                    val = val * 10 - next + '0';
-                    next = read();
-                }
-            }
-
-            return val;
         }
 
     }
@@ -240,57 +128,173 @@ public class Main {
 
     }
 
-    static class Modular {
-        int m;
+    static class BipartiteGraphEdgeColoring {
+        int[][] left;
+        int[][] right;
+        int[][] colors;
 
-        public Modular(int m) {
-            this.m = m;
+        public BipartiteGraphEdgeColoring(int n, int m) {
+            left = new int[n][Math.max(n, m)];
+            right = new int[m][Math.max(n, m)];
         }
 
-        public Modular(long m) {
-            this.m = (int) m;
-            if (this.m != m) {
-                throw new IllegalArgumentException();
+        public void paint(int a, int b, int c) {
+            int old = colors[a][b];
+            if (old != -1) {
+                if (left[a][old] == b) {
+                    left[a][old] = -1;
+                }
+                if (right[b][old] == a) {
+                    right[b][old] = -1;
+                }
+            }
+            colors[a][b] = c;
+            left[a][c] = b;
+            right[b][c] = a;
+        }
+
+        public void dfs(int b, int c1, int c2) {
+            if (right[b][c2] == -1) {
+                return;
+            }
+            int na = right[b][c2];
+            int nb = left[na][c1];
+            if (nb != -1) {
+                dfs(nb, c1, c2);
+                paint(na, nb, c2);
+            }
+            paint(na, b, c1);
+        }
+
+        public int solve(boolean[][] g, int[][] colors) {
+            if (g.length == 0 || g[0].length == 0) {
+                return 0;
+            }
+            int n = g.length;
+            int m = g[0].length;
+            this.colors = colors;
+            int deg = 0;
+            for (int i = 0; i < n; i++) {
+                int local = 0;
+                for (int j = 0; j < m; j++) {
+                    local += g[i][j] ? 1 : 0;
+                }
+                deg = Math.max(deg, local);
+            }
+            for (int j = 0; j < m; j++) {
+                int local = 0;
+                for (int i = 0; i < n; i++) {
+                    local += g[i][j] ? 1 : 0;
+                }
+                deg = Math.max(deg, local);
+            }
+
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < m; j++) {
+                    colors[i][j] = -1;
+                }
+            }
+
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < deg; j++) {
+                    left[i][j] = -1;
+                }
+            }
+            for (int i = 0; i < m; i++) {
+                for (int j = 0; j < deg; j++) {
+                    right[i][j] = -1;
+                }
+            }
+
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < m; j++) {
+                    if (!g[i][j]) {
+                        continue;
+                    }
+                    int c = -1;
+                    int ca = -1;
+                    int cb = -1;
+                    for (int k = 0; k < deg; k++) {
+                        if (left[i][k] == -1 && right[j][k] == -1) {
+                            c = k;
+                            break;
+                        }
+                        if (left[i][k] == -1) {
+                            cb = k;
+                        }
+                        if (right[j][k] == -1) {
+                            ca = k;
+                        }
+                    }
+                    if (c != -1) {
+                        paint(i, j, c);
+                        continue;
+                    }
+                    dfs(j, ca, cb);
+                    paint(i, j, cb);
+                }
+            }
+
+            return deg;
+        }
+
+    }
+
+    static class FastInput {
+        private final InputStream is;
+        private byte[] buf = new byte[1 << 20];
+        private int bufLen;
+        private int bufOffset;
+        private int next;
+
+        public FastInput(InputStream is) {
+            this.is = is;
+        }
+
+        private int read() {
+            while (bufLen == bufOffset) {
+                bufOffset = 0;
+                try {
+                    bufLen = is.read(buf);
+                } catch (IOException e) {
+                    bufLen = -1;
+                }
+                if (bufLen == -1) {
+                    return -1;
+                }
+            }
+            return buf[bufOffset++];
+        }
+
+        public void skipBlank() {
+            while (next >= 0 && next <= 32) {
+                next = read();
             }
         }
 
-        public Modular(double m) {
-            this.m = (int) m;
-            if (this.m != m) {
-                throw new IllegalArgumentException();
+        public int readInt() {
+            int sign = 1;
+
+            skipBlank();
+            if (next == '+' || next == '-') {
+                sign = next == '+' ? 1 : -1;
+                next = read();
             }
-        }
 
-        public int valueOf(int x) {
-            x %= m;
-            if (x < 0) {
-                x += m;
+            int val = 0;
+            if (sign == 1) {
+                while (next >= '0' && next <= '9') {
+                    val = val * 10 + next - '0';
+                    next = read();
+                }
+            } else {
+                while (next >= '0' && next <= '9') {
+                    val = val * 10 - next + '0';
+                    next = read();
+                }
             }
-            return x;
-        }
 
-        public int valueOf(long x) {
-            x %= m;
-            if (x < 0) {
-                x += m;
-            }
-            return (int) x;
-        }
-
-        public int mul(int x, int y) {
-            return valueOf((long) x * y);
-        }
-
-        public int plus(int x, int y) {
-            return valueOf(x + y);
-        }
-
-        public int subtract(int x, int y) {
-            return valueOf(x - y);
-        }
-
-        public String toString() {
-            return "mod " + m;
+            return val;
         }
 
     }
