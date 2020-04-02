@@ -71,31 +71,33 @@ class MaxFlow {
 };
 
 template <class T>
+void Bfs(vector<vector<FlowEdge<T>>> &g, int inf, vector<int> &_dist,
+         int _dst) {
+  deque<int> dq;
+  fill(_dist.begin(), _dist.end(), inf);
+  _dist[_dst] = 0;
+  dq.push_back(_dst);
+
+  while (!dq.empty()) {
+    int head = dq.front();
+    dq.pop_front();
+    for (FlowEdge<T> &e : g[head]) {
+      if (e.flow == 0 || _dist[e.to] <= _dist[head] + 1) {
+        continue;
+      }
+      _dist[e.to] = _dist[head] + 1;
+      dq.push_back(e.to);
+    }
+  }
+}
+
+template <class T>
 class ISAP : public MaxFlow<T> {
  private:
   vector<int> _dist;
   vector<int> _distCnt;
   int _src;
   int _dst;
-
-  void bfs(vector<vector<FlowEdge<T>>> &g, int inf) {
-    deque<int> dq;
-    fill(_dist.begin(), _dist.end(), inf);
-    _dist[_dst] = 0;
-    dq.push_back(_dst);
-
-    while (!dq.empty()) {
-      int head = dq.front();
-      dq.pop_front();
-      for (FlowEdge<T> &e : g[head]) {
-        if (e.flow == 0 || _dist[e.to] <= _dist[head] + 1) {
-          continue;
-        }
-        _dist[e.to] = _dist[head] + 1;
-        dq.push_back(e.to);
-      }
-    }
-  }
 
   T dfs(vector<vector<FlowEdge<T>>> &g, int root, T flow) {
     if (root == _dst) {
@@ -135,7 +137,7 @@ class ISAP : public MaxFlow<T> {
     fill(_distCnt.begin(), _distCnt.end(), 0);
     _src = src;
     _dst = dst;
-    bfs(g, n);
+    Bfs(g, n, _dist, _dst);
     for (int i = 0; i < n; i++) {
       _distCnt[_dist[i]]++;
     }
@@ -149,6 +151,61 @@ class ISAP : public MaxFlow<T> {
   }
 };
 
-}  // namespace flow
+template <class T>
+class Dinic : public MaxFlow<T> {
+private:
+  int _s;
+  int _t;
+  vector<int> dists;
+  vector<typename vector<FlowEdge<T>>::iterator> iterators;
+  vector<typename vector<FlowEdge<T>>::iterator> ends;
+  T send(vector<vector<FlowEdge<T>>> &g, int root, T flow) {
+    if (root == _t) {
+      return flow;
+    }
+    T snapshot = flow;
+    while (iterators[root] != ends[root]) {
+      FlowEdge<T> &e = *iterators[root];
+      iterators[root]++;
+      T remain;
+      if (dists[e.to] + 1 != dists[root] || (remain = g[e.to][e.rev].flow) == 0) {
+        continue;
+      }
+      T sent = send(g, e.to, min(flow, remain));
+      flow -= sent;
+      Send(g, e, sent);
+      if (flow == 0) {
+        iterators[root]--;
+        break;
+      }
+    }
+    return snapshot - flow;
+  }
+
+ public:
+  Dinic(int vertexNum)
+      : dists(vertexNum), iterators(vertexNum), ends(vertexNum) {}
+
+  T send(vector<vector<FlowEdge<T>>> &g, int s, int t, T inf) {
+    _s = s;
+    _t = t;
+    T flow = 0;
+    int n = g.size();
+    while (flow < inf) {
+      Bfs(g, n, dists, t);
+      if (dists[s] == n) {
+        break;
+      }
+      for (int i = 0; i < n; i++) {
+        iterators[i] = g[i].begin();
+        ends[i] = g[i].end();
+      }
+      flow += send(g, s, inf - flow);
+    }
+    return flow;
+  }
+};
+
+}  // namespace max_flow
 
 #endif

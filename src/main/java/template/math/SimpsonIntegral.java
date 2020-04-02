@@ -1,10 +1,10 @@
 package template.math;
 
-public class SimpsonRule {
+public class SimpsonIntegral {
     private final double eps;
     private Function function;
 
-    public SimpsonRule(double eps, Function function) {
+    public SimpsonIntegral(double eps, Function function) {
         this.eps = eps;
         this.function = function;
     }

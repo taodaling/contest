@@ -1,3 +1,6 @@
+#ifndef BINARY_SEARCH_H
+#define BINARY_SEARCH_H
+
 #ifndef COMMON_H
 #define COMMON_H
 
@@ -16,7 +19,6 @@
 
 #ifndef LOCAL
 
-#pragma GCC diagnostic error "-std=c++14"
 #pragma GCC target("avx")
 #pragma GCC optimize(3)
 #pragma GCC optimize("Ofast")
@@ -125,6 +127,358 @@ const double PI = 3.14159265358979323846;
 
 #define C0(x) memset(x, 0, sizeof(x))
 #define C1(x) memset(x, -1, sizeof(x))
+#ifndef DECIMAL_H
+#define DECIMAL_H
+
+namespace decimal {
+
+ll Merge(int a, int b) {
+  static ll mask = (1ll << 32) - 1;
+  return ((ll)a << 32) | ((ll)b & mask);
+}
+
+template <class T>
+T CeilDiv(T a, T b) {
+  if (b < 0) {
+    a = -a;
+    b = -b;
+  }
+  T div = a / b;
+  if (b * div < a) {
+    div++;
+  }
+  return div;
+}
+
+template <class T>
+T FloorDiv(T a, T b) {
+  if (b < 0) {
+    a = -a;
+    b = -b;
+  }
+  T div = a / b;
+  if (b * div > a) {
+    div--;
+  }
+  return div;
+}
+
+template <class T>
+T RoundToInt(double x) {
+  return x >= 0 ? x + 0.5 : x - 0.5;
+}
+template <class T>
+int Sign(T x) {
+  return x < 0 ? -1 : x > 0 ? 1 : 0;
+}
+template <class T>
+bool IsPlusOverflow(T a, T b) {
+  if (Sign(a) != Sign(b)) {
+    return false;
+  }
+  if (a < 0) {
+    return a + b > 0;
+  } else {
+    return a + b < 0;
+  }
+}
+template <class T>
+bool IsMultiplicationOverflow(T a, T b, T limit) {
+  if (limit < 0) {
+    limit = -limit;
+  }
+  if (a < 0) {
+    a = -a;
+  }
+  if (b < 0) {
+    b = -b;
+  }
+  if (a == 0 || b == 0) {
+    return false;
+  }
+  // a * b > limit => a > limit / b
+  return a > limit / b;
+}
+}  // namespace decimal
+
+#endif
+
+namespace binary_search {
+template <class T>
+T BinarySearch(T l, T r, const function<bool(T)> &func) {
+  assert(l <= r);
+  while (l < r) {
+    T mid = (l + r) >> 1;
+    if (func(mid)) {
+      r = mid;
+    } else {
+      l = mid + 1;
+    }
+  }
+  return l;
+}
+
+/**
+ * Used to find the maximum value of a lower convex.
+ * Assume f(-inf)<...<f(ans)=f(ans+1)=...=f(ans+k)>...>f(inf)
+ */
+template <class T>
+T TernarySearch(T l, T r, const function<T(T)> &func, T absolute, T relative) {
+  while (r - l > absolute) {
+    if (r < 0 && (r - l) / -r <= relative || l > 0 && (r - l) / l <= relative) {
+      break;
+    }
+    T dist = (r - l) / 3;
+    T ml = l + dist;
+    T mr = r - dist;
+    if (func(ml) < func(mr)) {
+      l = ml;
+    } else {
+      r = mr;
+    }
+  }
+  return (l + r) / 2;
+}
+
+/**
+ * Used to find the maximum value of a lower convex.
+ * Assume f(-inf)<...<f(ans)=f(ans+1)=...=f(ans+k)>...>f(inf)
+ */
+template <class T>
+T TernarySearch(T l, T r, const function<T(T)> &func) {
+  while (r - l > 2) {
+    T ml = l + decimal::FloorDiv(r - l, 3);
+    T mr = r - decimal::CeilDiv(r - l, 3);
+    if (func(ml) < func(mr)) {
+      l = ml;
+    } else {
+      r = mr;
+    }
+  }
+  while (l < r) {
+    if (func(l) >= func(r)) {
+      r--;
+    } else {
+      l++;
+    }
+  }
+  return l;
+}
+}  // namespace binary_search
+
+#endif
+
+#ifndef MAX_FLOW_H
+#define MAX_FLOW_H
+
+
+
+namespace max_flow {
+
+template <class T>
+struct FlowEdge {
+  int rev;
+  T flow;
+  bool real;
+  int to;
+
+  FlowEdge(int rv, T f, bool r, int t) : rev(rv), flow(f), real(r), to(t) {}
+};
+
+template <class T>
+ostream &operator<<(ostream &os, FlowEdge<T> &e) {
+  os << "{ flow = " << e.flow << ", real = " << e.real << ", to = " << e.to
+     << "}";
+  return os;
+}
+
+template <class T>
+ostream &operator<<(ostream &os, vector<vector<FlowEdge<T>>> &g) {
+  for (int i = 0; i < g.size(); i++) {
+    for (FlowEdge<T> &e : g[i]) {
+      if (e.real) {
+        os << i << "-" << e.flow << "(" << g[e.to][e.rev].flow << ")"
+           << "->" << e.to << endl;
+      }
+    }
+  }
+  return os;
+}
+
+template <class T>
+void Reset(vector<vector<FlowEdge<T>>> &g) {
+  for (vector<FlowEdge<T>> &v : g) {
+    for (FlowEdge<T> &t : v) {
+      if (t.real) {
+        t.rev->flow += t.flow;
+        t.flow = 0;
+      }
+    }
+  }
+}
+
+template <class T>
+inline void Send(vector<vector<FlowEdge<T>>> &g, FlowEdge<T> &e, T flow) {
+  e.flow += flow;
+  g[e.to][e.rev].flow -= flow;
+}
+
+template <class T>
+void AddEdge(vector<vector<FlowEdge<T>>> &g, int u, int v, T cap) {
+  if (u != v) {
+    g[u].emplace_back(g[v].size(), 0, true, v);
+    g[v].emplace_back(g[u].size() - 1, cap, false, u);
+  } else {
+    g[u].emplace_back(g[u].size() + 1, 0, true, u);
+    g[u].emplace_back(g[u].size() - 1, cap, false, u);
+  }
+}
+
+template <class T>
+class MaxFlow {
+ public:
+  virtual T send(vector<vector<FlowEdge<T>>> &g, int src, int dst, T inf) = 0;
+};
+
+template <class T>
+void Bfs(vector<vector<FlowEdge<T>>> &g, int inf, vector<int> &_dist,
+         int _dst) {
+  deque<int> dq;
+  fill(_dist.begin(), _dist.end(), inf);
+  _dist[_dst] = 0;
+  dq.push_back(_dst);
+
+  while (!dq.empty()) {
+    int head = dq.front();
+    dq.pop_front();
+    for (FlowEdge<T> &e : g[head]) {
+      if (e.flow == 0 || _dist[e.to] <= _dist[head] + 1) {
+        continue;
+      }
+      _dist[e.to] = _dist[head] + 1;
+      dq.push_back(e.to);
+    }
+  }
+}
+
+template <class T>
+class ISAP : public MaxFlow<T> {
+ private:
+  vector<int> _dist;
+  vector<int> _distCnt;
+  int _src;
+  int _dst;
+
+  T dfs(vector<vector<FlowEdge<T>>> &g, int root, T flow) {
+    if (root == _dst) {
+      return flow;
+    }
+    T snapshot = flow;
+    for (FlowEdge<T> &e : g[root]) {
+      if (_dist[e.to] != _dist[root] - 1 || g[e.to][e.rev].flow == 0) {
+        continue;
+      }
+      T sent = dfs(g, e.to, min(flow, g[e.to][e.rev].flow));
+      flow -= sent;
+      Send(g, e, sent);
+      if (flow == 0) {
+        break;
+      }
+    }
+    if (flow > 0) {
+      _distCnt[_dist[root]]--;
+      _dist[root]++;
+      _distCnt[_dist[root]]++;
+      if (_distCnt[_dist[root] - 1] == 0) {
+        _distCnt[_dist[_src]]--;
+        _dist[_src] = g.size();
+        _distCnt[_dist[_src]]++;
+      }
+    }
+
+    return snapshot - flow;
+  }
+
+ public:
+  T send(vector<vector<FlowEdge<T>>> &g, int src, int dst, T inf) {
+    int n = g.size();
+    _dist.resize(n);
+    _distCnt.resize(n + 2);
+    fill(_distCnt.begin(), _distCnt.end(), 0);
+    _src = src;
+    _dst = dst;
+    Bfs(g, n, _dist, _dst);
+    for (int i = 0; i < n; i++) {
+      _distCnt[_dist[i]]++;
+    }
+
+    T total = 0;
+    while (total < inf && _dist[_src] < n) {
+      total += dfs(g, _src, inf - total);
+    }
+
+    return total;
+  }
+};
+
+template <class T>
+class Dinic : public MaxFlow<T> {
+private:
+  int _s;
+  int _t;
+  vector<int> dists;
+  vector<typename vector<FlowEdge<T>>::iterator> iterators;
+  vector<typename vector<FlowEdge<T>>::iterator> ends;
+  T send(vector<vector<FlowEdge<T>>> &g, int root, T flow) {
+    if (root == _t) {
+      return flow;
+    }
+    T snapshot = flow;
+    while (iterators[root] != ends[root]) {
+      FlowEdge<T> &e = *iterators[root];
+      iterators[root]++;
+      T remain;
+      if (dists[e.to] + 1 != dists[root] || (remain = g[e.to][e.rev].flow) == 0) {
+        continue;
+      }
+      T sent = send(g, e.to, min(flow, remain));
+      flow -= sent;
+      Send(g, e, sent);
+      if (flow == 0) {
+        iterators[root]--;
+        break;
+      }
+    }
+    return snapshot - flow;
+  }
+
+ public:
+  Dinic(int vertexNum)
+      : dists(vertexNum), iterators(vertexNum), ends(vertexNum) {}
+
+  T send(vector<vector<FlowEdge<T>>> &g, int s, int t, T inf) {
+    _s = s;
+    _t = t;
+    T flow = 0;
+    int n = g.size();
+    while (flow < inf) {
+      Bfs(g, n, dists, t);
+      if (dists[s] == n) {
+        break;
+      }
+      for (int i = 0; i < n; i++) {
+        iterators[i] = g[i].begin();
+        ends[i] = g[i].end();
+      }
+      flow += send(g, s, inf - flow);
+    }
+    return flow;
+  }
+};
+
+}  // namespace max_flow
+
+#endif
 #ifndef DEBUG_H
 #define DEBUG_H
 //          Copyright Louis Delacroix 2010 - 2014.
@@ -597,148 +951,73 @@ void err(std::istream_iterator<string> it, T a, Args... args) {
 #endif
 
 
-vector<vector<int>> g;
-vector<int> subtree;
-vector<int> colors;
-vector<int> coloredBy;
-int b;
-int order;
+using namespace max_flow;
+typedef max_flow::FlowEdge<int> fe;
 
-void DfsForSize(int root, int p) {
-  subtree[root] = 1;
-  for (int node : g[root]) {
-    if (node == p) {
-      continue;
-    }
-    DfsForSize(node, root);
-    subtree[root] += subtree[node];
-  }
-}
-
-int DfsForCentroid(int root, int p, int total) {
-  int size = total - subtree[root];
-  for (int node : g[root]) {
-    if (node == p) {
-      continue;
-    }
-    size = max(size, subtree[node]);
-    int ans = DfsForCentroid(node, root, total);
-    if (ans >= 0) {
-      return ans;
-    }
-  }
-  if (size * 2 <= total) {
-    return root;
-  }
-  return -1;
-}
-
-void DfsForPaint(int root, int p, int c, int by) {
-  assert(colors[root] == 0);
-  colors[root] = c;
-  coloredBy[root] = by;
-  for (int node : g[root]) {
-    if (node == p) {
-      continue;
-    }
-    DfsForPaint(node, root, c, by);
-  }
-}
-
-void Erase(vector<int> &vec, int x) {
-  for (int i = vec.size() - 1; i >= 0; i--) {
-    if (vec[i] == x) {
-      vec.erase(vec.begin() + i);
-      return;
-    }
-  }
-}
-
-vector<int> pend;
-
-void Dac(int root) {
-  DfsForSize(root, -1);
-  if (subtree[root] <= 3 * b) {
-    DfsForPaint(root, -1, ++order, root);
-    return;
-  }
-
-  root = DfsForCentroid(root, -1, subtree[root]);
-  DfsForSize(root, -1);
-  sort(g[root].begin(), g[root].end(),
-       [&](auto a, auto b) { return subtree[a] < subtree[b]; });
-
-  int sum = subtree[root];
-  if (subtree[g[root].back()] >= b) {
-    while (g[root].size()) {
-      int back = g[root].back();
-      if (subtree[back] < b || sum - subtree[back] < b) {
-        break;
-      }
-      sum -= subtree[back];
-      g[root].pop_back();
-      Erase(g[back], root);
-      Dac(back);
-    }
-  }
-
-  if (sum <= 3 * b || g[root].size() && subtree[g[root].back()] >= b) {
-    Dac(root);
-    return;
-  }
-
-  pend.clear();
-  sum = 0;
-  for (int node : g[root]) {
-    pend.push_back(node);
-    sum += subtree[node];
-    if (sum >= b) {
-      ++order;
-      for (int x : pend) {
-        DfsForPaint(x, root, order, root);
-      }
-      pend.clear();
-      sum = 0;
-    }
-  }
-  if (pend.size() > 0) {
-    for (int x : pend) {
-      DfsForPaint(x, root, order, root);
-    }
-    pend.clear();
-  }
-  colors[root] = order;
-  coloredBy[root] = root;
-}
+int n;
+inline int Left(int i) { return i; }
+inline int Right(int i) { return i + n; }
+inline int Src() { return n + n; }
+inline int Dst() { return Src() + 1; }
 
 void solve(int testId, istream &in, ostream &out) {
-  int n;
-  in >> n >> b;
-  g.resize(n);
-  colors.resize(n);
-  subtree.resize(n);
-  coloredBy.resize(n);
-  for (int i = 0; i < n - 1; i++) {
-    int a, b;
-    in >> a >> b;
-    a--;
-    b--;
-    g[a].push_back(b);
-    g[b].push_back(a);
+  in >> n;
+  vector<vector<int>> mat(n, vector<int>(n));
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+      in >> mat[i][j];
+    }
   }
 
-  Dac(0);
-  dbg(colors, order);
-  dbg(coloredBy);
-  out << order << endl;
-  vector<int> centers(order + 1, -1);
+  vector<vector<fe>> g(Dst() + 1);
+  max_flow::ISAP<int> dinic;
   for (int i = 0; i < n; i++) {
-    centers[colors[i]] = max(centers[colors[i]], i);
-    out << colors[i] << ' ';
+    for (int j = 0; j < n; j++) {
+      AddEdge(g, Left(i), Right(j), 1);
+    }
   }
-  out << endl;
-  for (int i = 1; i <= order; i++) {
-    out << coloredBy[centers[i]] + 1 << ' ';
+  for (int i = 0; i < n; i++) {
+    AddEdge(g, Src(), Left(i), 1);
+    AddEdge(g, Right(i), Dst(), 1);
+  }
+
+  function<bool(int)> checker = [&](int mid) {
+    for (int i = 0; i < n; i++) {
+      for (int j = 0; j < n; j++) {
+        auto &e = g[i][j];
+        if (mat[i][j] <= mid) {
+          e.flow = 0;
+          g[e.to][e.rev].flow = 1;
+        } else {
+          e.flow = 0;
+          g[e.to][e.rev].flow = 0;
+        }
+      }
+    }
+    for(auto &e : g[Src()]){
+      e.flow = 0;
+      g[e.to][e.rev].flow = 1;
+    }
+    for(auto &e : g[Dst()]){
+      e.flow = 1;
+      g[e.to][e.rev].flow = 0;
+    }
+dbg(g);
+    
+    int flow = dinic.send(g, Src(), Dst(), n);
+    return flow >= n;
+  };
+
+  int mid = binary_search::BinarySearch((int)-1e6, (int)1e6, checker);
+  checker(mid);
+
+  out << mid << endl;
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+      if (g[i][j].flow > 0) {
+        out << i + 1 << ' ' << j + 1 << endl;
+      }
+    }
   }
 }
 
