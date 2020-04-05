@@ -1,0 +1,35 @@
+{
+  "name" : "Indicium",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2\n3 6\n2 3\n",
+    "output" : "Case #1: POSSIBLE\n2 1 3\n3 2 1\n1 3 2\nCase #2: IMPOSSIBLE\n",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Solution",
+  "taskClass" : "contest.Indicium",
+  "checkerClass" : "contest.IndiciumChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "contest.IndiciumTestCase" ],
+  "date" : "2020.04.04",
+  "contestName" : "Qualification Round 2020 - Code Jam 2020",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

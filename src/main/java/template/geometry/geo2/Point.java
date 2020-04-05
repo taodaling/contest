@@ -315,4 +315,16 @@ public class Point implements Cloneable {
     public String toString() {
         return String.format("(%.6f, %.6f)", x, y);
     }
+
+    /**
+     * distance from c to line (a, b)
+     */
+    public double distanceToLine(Point a, Point b, Point c) {
+        double len = dist(a, b);
+        if (len == 0) {
+            return dist(a, c);
+        }
+        double area2 = Math.abs(cross(minus(a, c), minus(b, c)));
+        return area2 / len;
+    }
 }

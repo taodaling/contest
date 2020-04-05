@@ -1,0 +1,35 @@
+{
+  "name" : "B. Dreamoon Likes Sequences",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "10\n1 1000000000\n2 999999999\n3 99999998\n4 9999997\n5 999996\n6 99995\n7 9994\n8 993\n9 92\n10 1\n",
+    "output" : "1\n3\n5\n11\n17\n23\n29\n59\n89\n0\n",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_04.on2020_04_03_Codeforces_Round__631__Div__1____Thanks__Denis_aramis_Shitov_.B__Dreamoon_Likes_Sequences.BDreamoonLikesSequences",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.04.03",
+  "contestName" : "Codeforces Round #631 (Div. 1) - Thanks, Denis aramis Shitov!",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

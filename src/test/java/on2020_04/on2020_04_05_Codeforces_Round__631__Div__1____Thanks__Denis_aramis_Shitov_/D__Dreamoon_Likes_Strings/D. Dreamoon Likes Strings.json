@@ -1,0 +1,62 @@
+{
+  "name" : "D. Dreamoon Likes Strings",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "1\naabbcc\n\n\n\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "1\naaabbb",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "1\naaa",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "1\nabacad",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "1\naaaaa",
+    "index" : 4,
+    "active" : true
+  }, {
+    "input" : "1\nabccabc",
+    "index" : 5,
+    "active" : true
+  }, {
+    "input" : "1\naaab",
+    "index" : 6,
+    "active" : true
+  }, {
+    "input" : "1\naabbcc",
+    "index" : 7,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_04.on2020_04_05_Codeforces_Round__631__Div__1____Thanks__Denis_aramis_Shitov_.D__Dreamoon_Likes_Strings.DDreamoonLikesStrings",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.04.05",
+  "contestName" : "Codeforces Round #631 (Div. 1) - Thanks, Denis aramis Shitov!",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

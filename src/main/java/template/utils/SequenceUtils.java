@@ -215,6 +215,12 @@ public class SequenceUtils {
         data[j] = tmp;
     }
 
+    public static <T> void swap(boolean[] data, int i, int j) {
+        boolean tmp = data[i];
+        data[i] = data[j];
+        data[j] = tmp;
+    }
+
     public static void swap(IntegerList data, int i, int j) {
         int tmp = data.get(i);
         data.set(i, data.get(j));

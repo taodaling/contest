@@ -1,2 +1,2 @@
-62 src/main/java/contest/F. Edge coloring of bipartite graph.json
+35 src/main/java/contest/Indicium.json
 0

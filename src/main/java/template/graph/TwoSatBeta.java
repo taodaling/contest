@@ -19,7 +19,7 @@ public class TwoSatBeta {
     public TwoSatBeta(int n, int m) {
         values = new boolean[n * 2];
         sets = new int[n * 2];
-        edges = new IntegerMultiWayStack(n * 2, m * 2);
+        edges = new IntegerMultiWayStack(n * 2, m);
         dfns = new int[n * 2];
         lows = new int[n * 2];
         instk = new boolean[n * 2];
@@ -41,7 +41,7 @@ public class TwoSatBeta {
         deque.clear();
         dfn = 0;
 
-        for(int i = 0; i < sets.length; i++) {
+        for (int i = 0; i < sets.length; i++) {
             tarjan(i);
         }
         for (int i = 0; i < n; i++) {
@@ -55,7 +55,7 @@ public class TwoSatBeta {
         }
 
         Arrays.fill(dfns, 0);
-        for(int i = 0; i < sets.length; i++) {
+        for (int i = 0; i < sets.length; i++) {
             assign(i);
         }
         return true;
@@ -70,7 +70,7 @@ public class TwoSatBeta {
             int node = iterator.next();
             assign(node);
         }
-        if(sets[root] == root) {
+        if (sets[root] == root) {
             values[root] = !values[sets[negate(root)]];
         }
     }
@@ -131,19 +131,33 @@ public class TwoSatBeta {
     }
 
     public void same(int a, int b) {
-        edges.addLast(a, b);
-        edges.addLast(b, a);
+        deduce(a, b);
+        deduce(b, a);
     }
 
     public void xor(int a, int b) {
         same(a, negate(b));
     }
 
-    public void atLeastOneIsFalse(int a, int b){
+    public void atLeastOneIsFalse(int a, int b) {
         deduce(a, negate(b));
     }
 
-    public void atLeastOneIsTrue(int a, int b){
+    public void atLeastOneIsTrue(int a, int b) {
         or(a, b);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder ans = new StringBuilder();
+        for (int i = 0; i < n; i++) {
+            ans.append(valueOf(i)).append(',');
+        }
+        if (ans.length() > 0) {
+            ans.setLength(ans.length() - 1);
+        }
+        ans.append('\n');
+        ans.append(edges);
+        return ans.toString();
     }
 }
