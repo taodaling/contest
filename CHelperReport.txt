@@ -1,2 +1,2 @@
-35 src/main/java/contest/Indicium.json
+70 src/main/java/contest/U34895 【模板】字符串的最小表示.json
 0

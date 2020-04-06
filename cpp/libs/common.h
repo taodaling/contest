@@ -63,7 +63,9 @@ std::mt19937 rng(std::chrono::steady_clock::now().time_since_epoch().count());
 const double E = 2.7182818284590452354;
 const double PI = 3.14159265358979323846;
 
-#define mp make_pair
+#define X(x) (x).first
+#define Y(x) (x).second
+
 
 #ifdef LOCAL
 #define PREPARE_INPUT                                  \
