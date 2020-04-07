@@ -19,6 +19,26 @@ T BinarySearch(T l, T r, const function<bool(T)> &func) {
   return l;
 }
 
+template <class T>
+T BinarySearch(T l, T r, const function<bool(T)> &func, T absolute,
+               T relative) {
+  assert(l <= r);
+  while (r - l > absolute) {
+    if ((r < 0 && (r - l) < -r * relative) ||
+        (l > 0 && (r - l) < l * relative)) {
+      break;
+    }
+
+    T mid = (l + r) / 2.0;
+    if (func(mid)) {
+      r = mid;
+    } else {
+      l = mid;
+    }
+  }
+  return (l + r) / 2.0;
+}
+
 /**
  * Used to find the maximum value of a lower convex.
  * Assume f(-inf)<...<f(ans)=f(ans+1)=...=f(ans+k)>...>f(inf)
@@ -42,7 +62,7 @@ T TernarySearch(T l, T r, const function<T(T)> &func, T absolute, T relative) {
 }
 
 /**
- * Used to find the maximum value of a lower convex.
+ * Used to find the maximum value of a Upper convex.
  * Assume f(-inf)<...<f(ans)=f(ans+1)=...=f(ans+k)>...>f(inf)
  */
 template <class T>

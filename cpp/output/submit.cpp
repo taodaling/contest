@@ -1,3 +1,6 @@
+#ifndef BINARY_SEARCH_H
+#define BINARY_SEARCH_H
+
 #ifndef COMMON_H
 #define COMMON_H
 
@@ -126,380 +129,279 @@ const double PI = 3.14159265358979323846;
 
 #define C0(x) memset(x, 0, sizeof(x))
 #define C1(x) memset(x, -1, sizeof(x))
-#ifndef MODULAR_H
-#define MODULAR_H
+#ifndef DECIMAL_H
+#define DECIMAL_H
 
+namespace decimal {
 
-#ifndef GCD_H
-#define GCD_H
-
-
-
-namespace gcd {
-template <typename T>
-T Gcd0(T a, T b) {
-  return b ? Gcd0(b, a % b) : a;
+ll Merge(int a, int b) {
+  static ll mask = (1ll << 32) - 1;
+  return ((ll)a << 32) | ((ll)b & mask);
 }
 
-template <typename T>
-T Gcd(T a, T b) {
-  if (a < b) {
-    swap(a, b);
-  }
-  return Gcd0(a, b);
-}
-
-template <typename T>
-T Extgcd0(T a, T b, T &x, T &y) {
-  if (!b) {
-    x = 1;
-    y = 0;
-    return a;
-  }
-  T ans = Extgcd0(b, a % b, y, x);
-  y = y - x * (a / b);
-  return ans;
-}
-
-/**
- * Find gcd(a, b) and expression xa+yb=g
- */
-template <typename T>
-T Extgcd(T a, T b, T &x, T &y) {
-  if (a >= b) {
-    return Extgcd0(a, b, x, y);
-  }
-  return Extgcd0(b, a, y, x);
-}
-
-/**
- * O(n + logn)
- */
 template <class T>
-T Extgcd(vector<T> &arg, vector<T> &coes) {
-  int n = arg.size();
-  if (n == 0) {
-    return 0;
+T CeilDiv(T a, T b) {
+  if (b < 0) {
+    a = -a;
+    b = -b;
   }
-  coes.resize(n);
-  vector<T> gs(n);
-  gs[0] = arg[0];
-  for (int i = 1; i < n; i++) {
-    gs[i] = Gcd(gs[i - 1], arg[i]);
+  T div = a / b;
+  if (b * div < a) {
+    div++;
   }
-  T prod = 1;
-  for (int i = n - 1; i >= 1; i--) {
-    T a, b;
-    Extgcd0(gs[i - 1], arg[i], a, b);
-    coes[i] = b * prod;
-    prod *= a;
-  }
-  coes[0] = prod;
-  return gs[n - 1];
+  return div;
 }
 
-}  // namespace gcd
+template <class T>
+T FloorDiv(T a, T b) {
+  if (b < 0) {
+    a = -a;
+    b = -b;
+  }
+  T div = a / b;
+  if (b * div > a) {
+    div--;
+  }
+  return div;
+}
+
+template <class T>
+T RoundToInt(double x) {
+  return x >= 0 ? x + 0.5 : x - 0.5;
+}
+template <class T>
+int Sign(T x) {
+  return x < 0 ? -1 : x > 0 ? 1 : 0;
+}
+template <class T>
+bool IsPlusOverflow(T a, T b) {
+  if (Sign(a) != Sign(b)) {
+    return false;
+  }
+  if (a < 0) {
+    return a + b > 0;
+  } else {
+    return a + b < 0;
+  }
+}
+template <class T>
+bool IsMultiplicationOverflow(T a, T b, T limit) {
+  if (limit < 0) {
+    limit = -limit;
+  }
+  if (a < 0) {
+    a = -a;
+  }
+  if (b < 0) {
+    b = -b;
+  }
+  if (a == 0 || b == 0) {
+    return false;
+  }
+  // a * b > limit => a > limit / b
+  return a > limit / b;
+}
+}  // namespace decimal
 
 #endif
 
-namespace modular {
+namespace binary_search {
 template <class T>
-inline T Mod(T x, T m) {
-  x %= m;
-  if (x < 0) {
-    x += m;
+T BinarySearch(T l, T r, const function<bool(T)> &func) {
+  assert(l <= r);
+  while (l < r) {
+    T mid = (l + r) >> 1;
+    if (func(mid)) {
+      r = mid;
+    } else {
+      l = mid + 1;
+    }
   }
-  return x;
-}
-
-template <class T>
-inline T Modmul(T a, T b, T m) {
-  T k = (T)((long double)a / m * b + 0.5);
-  return Mod<T>(a * b - k * m, m);
-}
-
-template <>
-inline int Modmul<int>(int a, int b, int m) {
-  return Mod<long long>((long long)a * b, m);
+  return l;
 }
 
 template <class T>
-inline T Modpow(T x, long long n, T m) {
-  if (n == 0) {
-    return Mod<T>(1, m);
-  }
-  T ans = Modpow<T>(x, n >> 1, m);
-  ans = Modmul<T>(ans, ans, m);
-  if (n & 1) {
-    ans = Modmul<T>(ans, x, m);
-  }
-  return ans;
-}
+T BinarySearch(T l, T r, const function<bool(T)> &func, T absolute,
+               T relative) {
+  assert(l <= r);
+  while (r - l > absolute) {
+    if ((r < 0 && (r - l) < -r * relative) ||
+        (l > 0 && (r - l) < l * relative)) {
+      break;
+    }
 
-template <typename T>
-T Inverse(T a, T m) {
-  int x, y;
-  gcd::Extgcd(a, m, x, y);
-  return Mod(x, m);
+    T mid = (l + r) / 2.0;
+    if (func(mid)) {
+      r = mid;
+    } else {
+      l = mid;
+    }
+  }
+  return (l + r) / 2.0;
 }
 
 /**
- * O(n + logn)
+ * Used to find the maximum value of a lower convex.
+ * Assume f(-inf)<...<f(ans)=f(ans+1)=...=f(ans+k)>...>f(inf)
  */
 template <class T>
-T Extgcd(vector<T> &arg, vector<T> &coes, T mod) {
-  int n = arg.size();
-  if (n == 0) {
-    return 0;
+T TernarySearch(T l, T r, const function<T(T)> &func, T absolute, T relative) {
+  while (r - l > absolute) {
+    if (r < 0 && (r - l) / -r <= relative || l > 0 && (r - l) / l <= relative) {
+      break;
+    }
+    T dist = (r - l) / 3;
+    T ml = l + dist;
+    T mr = r - dist;
+    if (func(ml) < func(mr)) {
+      l = ml;
+    } else {
+      r = mr;
+    }
   }
-  coes.resize(n);
-  vector<T> gs(n);
-  gs[0] = arg[0];
-  for (int i = 1; i < n; i++) {
-    gs[i] = gcd::Gcd(gs[i - 1], arg[i]);
-  }
-  T prod = 1;
-  for (int i = n - 1; i >= 1; i--) {
-    T a, b;
-    gcd::Extgcd0(gs[i - 1], arg[i], a, b);
-    coes[i] = Modmul(b, prod, mod);
-    prod = Modmul(prod, a, mod);
-  }
-  coes[0] = prod;
-  return gs[n - 1];
+  return (l + r) / 2;
 }
 
 /**
- * O(n), inverse 1, 2, ..., n - 1
+ * Used to find the maximum value of a Upper convex.
+ * Assume f(-inf)<...<f(ans)=f(ans+1)=...=f(ans+k)>...>f(inf)
  */
 template <class T>
-void InverseRange(vector<T> &vec, T mod) {
-  int n = vec.size();
-  if (n <= 1) {
-    return;
+T TernarySearch(T l, T r, const function<T(T)> &func) {
+  while (r - l > 2) {
+    T ml = l + decimal::FloorDiv(r - l, 3);
+    T mr = r - decimal::CeilDiv(r - l, 3);
+    if (func(ml) < func(mr)) {
+      l = ml;
+    } else {
+      r = mr;
+    }
   }
-  vec[1] = 1;
-  for (int i = 2; i < n; i++) {
-    T k = mod / i;
-    T r = mod % i;
-    vec[i] = Modmul(-k, vec[r], mod);
+  while (l < r) {
+    if (func(l) >= func(r)) {
+      r--;
+    } else {
+      l++;
+    }
   }
+  return l;
 }
+}  // namespace binary_search
 
-template <class T, T M>
-class Modular {
- public:
-  Modular() { set(0); }
-  Modular(const T &val) { set(val); }
-  void set(const T &x) { _v = Mod(x, M); }
-  Modular(const Modular<T, M> &val) { _v = val._v; }
-  Modular<T, M> &operator=(const Modular<T, M> &y) {
-    _v = y._v;
-    return *this;
-  }
-  const T &operator()() const { return _v; }
-  T &operator()() { return _v; }
-  Modular<T, M> &operator-=(const Modular<T, M> &y) {
-    _v = Mod(_v - y._v, M);
-    return *this;
-  }
-  Modular<T, M> &operator+=(const Modular<T, M> &y) {
-    _v = Mod(_v + y._v, M);
-    return *this;
-  }
+#endif
 
-  Modular<T, M> &operator*=(const Modular<T, M> &y) {
-    _v = Modmul(_v, y._v, M);
-    return *this;
-  }
-  Modular<T, M> &operator/=(const Modular<T, M> &y) {
-    (*this) *= y.inverse();
-    return *this;
-  }
-  Modular<T, M> pow(long long exp) const { return Modpow(_v, exp, M); }
-  Modular<T, M> inverse() const { return modular::Inverse(_v, M); }
 
- private:
-  T _v;
+const int LOG = 7;
+const double PREC = 1e-4;
+
+struct Edge {
+  int to;
+  int t;
+  int c;
 };
 
-template <class T, T M>
-Modular<T, M> operator+(const Modular<T, M> &a, const Modular<T, M> &b) {
-  Modular<T, M> ans = a;
-  ans += b;
-  return ans;
-}
-template <class T, T M>
-Modular<T, M> operator+(const T &a, const Modular<T, M> &b) {
-  Modular<T, M> ans = a;
-  ans += b;
-  return ans;
-}
-template <class T, T M>
-Modular<T, M> operator+(const Modular<T, M> &a, const T &b) {
-  Modular<T, M> ans = a;
-  ans += b;
-  return ans;
-}
-template <class T, T M>
-Modular<T, M> operator-(const Modular<T, M> &a, const Modular<T, M> &b) {
-  Modular<T, M> ans = a;
-  ans -= b;
-  return ans;
-}
-template <class T, T M>
-Modular<T, M> operator-(const T &a, const Modular<T, M> &b) {
-  Modular<T, M> ans = a;
-  ans -= b;
-  return ans;
-}
-template <class T, T M>
-Modular<T, M> operator-(const Modular<T, M> &a, const T &b) {
-  Modular<T, M> ans = a;
-  ans -= b;
-  return ans;
-}
-template <class T, T M>
-Modular<T, M> operator*(const Modular<T, M> &a, const Modular<T, M> &b) {
-  Modular<T, M> ans = a;
-  ans *= b;
-  return ans;
-}
-template <class T, T M>
-Modular<T, M> operator*(const T &a, const Modular<T, M> &b) {
-  Modular<T, M> ans = a;
-  ans *= b;
-  return ans;
-}
-template <class T, T M>
-Modular<T, M> operator*(const Modular<T, M> &a, const T &b) {
-  Modular<T, M> ans = a;
-  ans *= b;
-  return ans;
-}
-template <class T, T M>
-Modular<T, M> operator/(const Modular<T, M> &a, const Modular<T, M> &b) {
-  Modular<T, M> ans = a;
-  ans /= b;
-  return ans;
-}
-template <class T, T M>
-Modular<T, M> operator/(const T &a, const Modular<T, M> &b) {
-  Modular<T, M> ans = a;
-  ans /= b;
-  return ans;
-}
-template <class T, T M>
-Modular<T, M> operator/(const Modular<T, M> &a, const T &b) {
-  Modular<T, M> ans = a;
-  ans /= b;
-  return ans;
-}
-template <class T, T M>
-Modular<T, M> operator==(const Modular<T, M> &a, const Modular<T, M> &b) {
-  return a() == b();
-}
-template <class T, T M>
-Modular<T, M> operator==(const Modular<T, M> &a, const T &b) {
-  return a() == Modular<T, M>(b);
-}
-template <class T, T M>
-Modular<T, M> operator==(const T &a, const Modular<T, M> &b) {
-  return Modular<T, M>(a) == b;
-}
-template <class T, T M>
-Modular<T, M> operator!=(const Modular<T, M> &a, const Modular<T, M> &b) {
-  return a() != b();
-}
-template <class T, T M>
-Modular<T, M> operator!=(const Modular<T, M> &a, const T &b) {
-  return a() != Modular<T, M>(b);
-}
-template <class T, T M>
-Modular<T, M> operator!=(const T &a, const Modular<T, M> &b) {
-  return Modular<T, M>(a) != b;
-}
-template <class T, T M>
-std::ostream &operator<<(std::ostream &out, const Modular<T, M> &v) {
-  return out << v();
-}
-template <class T, T M>
-std::istream &operator>>(std::istream &in, const Modular<T, M> &v) {
-  T x;
-  in >> x;
-  v.set(x);
-  return in;
-}
-}  // namespace modular
+vector<vector<Edge>> g;
 
-#endif
+vector<vector<vector<double>>> best;
+vector<vector<vector<int>>> middle;
 
-#ifndef MAXIMUM_REPRESENTATION_H
-#define MAXIMUM_REPRESENTATION_H
+bool Check(double c) {
+  double inf = 1e30;
 
-
-
-namespace maximum_representation {
-int MaximumRepresentation(const function<int(int)> &func, int n) {
-  int i = 0;
-  int j = i + 1;
-  while (j < n) {
-    int k = 0;
-    while (k < n && func((i + k) % n) == func((j + k) % n)) {
-      k++;
-    }
-    if (func((i + k) % n) >= func((j + k) % n)) {
-      j = j + k + 1;
-    } else {
-      int next = j;
-      j = max(j + 1, i + k + 1);
-      i = next;
+  int n = g.size();
+  for (int i = 0; i < LOG; i++) {
+    for (int j = 0; j < n; j++) {
+      for (int k = 0; k < n; k++) {
+        best[i][j][k] = -inf;
+        middle[i][j][k] = -1;
+      }
     }
   }
-  return i;
+
+  for (int i = 0; i < n; i++) {
+    for (auto &e : g[i]) {
+      if (best[0][i][e.to] + PREC < e.c - c * e.t) {
+        best[0][i][e.to] = e.c - c * e.t;
+      }
+    }
+  }
+
+  for (int r = 1; r < LOG; r++) {
+    for (int i = 0; i < n; i++) {
+      for (int j = 0; j < n; j++) {
+        best[r][i][j] = best[r - 1][i][j];
+        middle[r][i][j] = -1;
+        for (int k = 0; k < n; k++) {
+          if (best[r][i][j] + PREC < best[r - 1][i][k] + best[r - 1][k][j]) {
+            best[r][i][j] = best[r - 1][i][k] + best[r - 1][k][j];
+            middle[r][i][j] = k;
+          }
+        }
+      }
+    }
+  }
+
+  double mx = 0;
+  for (int i = 0; i < n; i++) {
+    mx = max(mx, best[LOG - 1][i][i]);
+  }
+
+  return mx <= 0;
 }
-}  // namespace maximum_representation
 
-#endif
+vector<int> trace;
 
-using modular::Mod;
+void Record(int r, int i, int j) {
+  if (r == 0) {
+    trace.push_back(i);
+    trace.push_back(j);
+    return;
+  }
+
+  int mid = middle[r][i][j];
+  if (mid == -1) {
+    return Record(r - 1, i, j);
+  }
+  Record(r - 1, i, mid);
+  trace.pop_back();
+  Record(r - 1, mid, j);
+}
 
 void solve(int testId, istream &in, ostream &out) {
-  int n;
-  int k;
-  in >> n >> k;
-  k %= n;
+  int n, m;
+  in >> n >> m;
+  g.resize(n);
+  best.resize(LOG, vector<vector<double>>(n, vector<double>(n)));
+  middle.resize(LOG, vector<vector<int>>(n, vector<int>(n)));
 
-  vector<int> ds(n);
-  for (int i = 0; i < n; i++) {
-    char c;
-    in >> c;
-    ds[i] = c - '0';
+  for (int i = 0; i < m; i++) {
+    int u, v, c, t;
+    in >> u >> v >> c >> t;
+    u--;
+    v--;
+    g[u].push_back({to : v, t : t, c : c});
   }
 
-  int g = gcd::Gcd(n, k);
-  
-  vector<string> all;
-  all.reserve(g);
-  for(int i = 0; i < g; i++){
-    int index = maximum_representation::MaximumRepresentation([&](int j){return ds[(i + (ll)j * k) % n];}, n / g);
-    std::stringstream ss;
-    for(int j = 0; j < n / g; j++){
-      ss << ds[(i + (ll)(j + index) * k) % n];
-    }
-    all.push_back(ss.str());
-  }
+  double c = binary_search::BinarySearch<double>(0, 100, Check, 1e-6, 1e-6);
+  Check(c);
 
   int index = 0;
-  for(int i = 1; i < all.size(); i++){
-    if(all[i] > all[index]){
+  for (int i = 1; i < n; i++) {
+    if (best[LOG - 1][i][i] > best[LOG - 1][index][index]) {
       index = i;
     }
   }
 
-  string &s = all[index];
-  for(int i = 0; i < n; i++){
-    out << s[i % s.length()];
+  if (best[LOG - 1][index][index] < 0) {
+    out << 0;
+    return;
+  }
+
+  Record(LOG - 1, index, index);
+  trace.pop_back();
+  out << trace.size() << endl;
+  for (int x : trace) {
+    out << x + 1 << ' ';
   }
 }
 

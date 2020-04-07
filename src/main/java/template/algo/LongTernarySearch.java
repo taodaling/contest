@@ -4,7 +4,7 @@ import template.math.DigitUtils;
 import java.util.function.LongUnaryOperator;
 
 /**
- * Used to find the maximum value of a lower convex.
+ * Used to find the maximum value of a upper convex.
  * Assume f(-inf)<...<f(ans)=f(ans+1)=...=f(ans+k)>...>f(inf)
  */
 public class LongTernarySearch {
