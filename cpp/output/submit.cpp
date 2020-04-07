@@ -1,6 +1,3 @@
-#ifndef BINARY_SEARCH_H
-#define BINARY_SEARCH_H
-
 #ifndef COMMON_H
 #define COMMON_H
 
@@ -129,280 +126,261 @@ const double PI = 3.14159265358979323846;
 
 #define C0(x) memset(x, 0, sizeof(x))
 #define C1(x) memset(x, -1, sizeof(x))
-#ifndef DECIMAL_H
-#define DECIMAL_H
+#ifndef MATCH_H
+#define MATCH_H
 
-namespace decimal {
 
-ll Merge(int a, int b) {
-  static ll mask = (1ll << 32) - 1;
-  return ((ll)a << 32) | ((ll)b & mask);
-}
 
-template <class T>
-T CeilDiv(T a, T b) {
-  if (b < 0) {
-    a = -a;
-    b = -b;
+namespace match {
+class BipartiteMatch {
+ private:
+  vector<int> _partner[2];
+  vector<vector<int>> _g[2];
+  vector<int> _time[2];
+  int _now;
+
+  bool release(int side, int i) {
+    if (_time[side][i] == _now) {
+      return false;
+    }
+    _time[side][i] = _now;
+    if (_partner[side][i] == -1) {
+      return true;
+    }
+    return bind(1 ^ side, _partner[side][i]);
   }
-  T div = a / b;
-  if (b * div < a) {
-    div++;
-  }
-  return div;
-}
-
-template <class T>
-T FloorDiv(T a, T b) {
-  if (b < 0) {
-    a = -a;
-    b = -b;
-  }
-  T div = a / b;
-  if (b * div > a) {
-    div--;
-  }
-  return div;
-}
-
-template <class T>
-T RoundToInt(double x) {
-  return x >= 0 ? x + 0.5 : x - 0.5;
-}
-template <class T>
-int Sign(T x) {
-  return x < 0 ? -1 : x > 0 ? 1 : 0;
-}
-template <class T>
-bool IsPlusOverflow(T a, T b) {
-  if (Sign(a) != Sign(b)) {
+  bool bind(int side, int i) {
+    if (_time[side][i] == _now) {
+      return false;
+    }
+    _time[side][i] = _now;
+    for (int node : _g[side][i]) {
+      if (release(1 ^ side, node)) {
+        _partner[side][i] = node;
+        _partner[1 ^ side][node] = i;
+        return true;
+      }
+    }
     return false;
   }
-  if (a < 0) {
-    return a + b > 0;
-  } else {
-    return a + b < 0;
-  }
-}
-template <class T>
-bool IsMultiplicationOverflow(T a, T b, T limit) {
-  if (limit < 0) {
-    limit = -limit;
-  }
-  if (a < 0) {
-    a = -a;
-  }
-  if (b < 0) {
-    b = -b;
-  }
-  if (a == 0 || b == 0) {
-    return false;
-  }
-  // a * b > limit => a > limit / b
-  return a > limit / b;
-}
-}  // namespace decimal
 
-#endif
-
-namespace binary_search {
-template <class T>
-T BinarySearch(T l, T r, const function<bool(T)> &func) {
-  assert(l <= r);
-  while (l < r) {
-    T mid = (l + r) >> 1;
-    if (func(mid)) {
-      r = mid;
-    } else {
-      l = mid + 1;
+  void dfs(int side, int node) {
+    if (_time[side][node] == _now) {
+      return;
+    }
+    _time[side][node] = _now;
+    for (int next : _g[side][node]) {
+      dfs(1 ^ side, next);
     }
   }
-  return l;
-}
 
-template <class T>
-T BinarySearch(T l, T r, const function<bool(T)> &func, T absolute,
-               T relative) {
-  assert(l <= r);
-  while (r - l > absolute) {
-    if ((r < 0 && (r - l) < -r * relative) ||
-        (l > 0 && (r - l) < l * relative)) {
-      break;
-    }
-
-    T mid = (l + r) / 2.0;
-    if (func(mid)) {
-      r = mid;
-    } else {
-      l = mid;
+ public:
+  BipartiteMatch(int l, int r) {
+    int size[]{l, r};
+    _now = 0;
+    for (int i = 0; i < 2; i++) {
+      _partner[i].resize(size[i]);
+      _time[i].resize(size[i]);
+      _g[i].resize(size[i]);
+      fill(_partner[i].begin(), _partner[i].end(), -1);
     }
   }
-  return (l + r) / 2.0;
-}
 
-/**
- * Used to find the maximum value of a lower convex.
- * Assume f(-inf)<...<f(ans)=f(ans+1)=...=f(ans+k)>...>f(inf)
- */
-template <class T>
-T TernarySearch(T l, T r, const function<T(T)> &func, T absolute, T relative) {
-  while (r - l > absolute) {
-    if (r < 0 && (r - l) / -r <= relative || l > 0 && (r - l) / l <= relative) {
-      break;
-    }
-    T dist = (r - l) / 3;
-    T ml = l + dist;
-    T mr = r - dist;
-    if (func(ml) < func(mr)) {
-      l = ml;
-    } else {
-      r = mr;
+  void addEdge(int a, int b, bool greedy) {
+    _g[0][a].push_back(b);
+    _g[1][b].push_back(a);
+    if (greedy && _partner[0][a] == -1 && _partner[1][b] == -1) {
+      _partner[0][a] = b;
+      _partner[1][b] = a;
     }
   }
-  return (l + r) / 2;
-}
 
-/**
- * Used to find the maximum value of a Upper convex.
- * Assume f(-inf)<...<f(ans)=f(ans+1)=...=f(ans+k)>...>f(inf)
- */
-template <class T>
-T TernarySearch(T l, T r, const function<T(T)> &func) {
-  while (r - l > 2) {
-    T ml = l + decimal::FloorDiv(r - l, 3);
-    T mr = r - decimal::CeilDiv(r - l, 3);
-    if (func(ml) < func(mr)) {
-      l = ml;
-    } else {
-      r = mr;
+  int matchLeft(int i) {
+    if (_partner[0][i] == -1) {
+      _now++;
+      bind(0, i);
+    }
+    return _partner[0][i];
+  }
+  int matchRight(int i) {
+    if (_partner[1][i] == -1) {
+      _now++;
+      bind(1, i);
+    }
+    return _partner[1][i];
+  }
+
+  void minVertexCover(vector<vector<bool>> &status) {
+    _now++;
+    for (int i = 0; i < _time[1].size(); i++) {
+      if (_partner[1][i] == -1) {
+        dfs(1, i);
+      }
+    }
+    for (int i = 0; i < 2; i++) {
+      fill(status[i].begin(), status[i].end(), false);
+    }
+    for (int i = 0; i < _time[0].size(); i++) {
+      status[0][i] = _time[0][i] == _now;
+    }
+    for (int i = 0; i < _time[1].size(); i++) {
+      status[1][i] = _time[1][i] != _now;
     }
   }
-  while (l < r) {
-    if (func(l) >= func(r)) {
-      r--;
-    } else {
-      l++;
-    }
-  }
-  return l;
-}
-}  // namespace binary_search
-
-#endif
-
-
-const int LOG = 7;
-const double PREC = 1e-4;
-
-struct Edge {
-  int to;
-  int t;
-  int c;
 };
 
-vector<vector<Edge>> g;
+template <int N>
+struct GeneralMatch {
+ private:
+  int pre[N + 1];
+  bool edges[N + 1][N + 1];
+  int mate[N + 1];
+  int link[N + 1];
+  int vis[N + 1];
+  int fa[N + 1];
+  int que[N + 1];
+  int hd;
+  int tl;
+  int ss[N + 1];
+  int tim;
+  int find(int x) { return fa[x] == x ? x : (fa[x] = find(fa[x])); }
 
-vector<vector<vector<double>>> best;
-vector<vector<vector<int>>> middle;
-
-bool Check(double c) {
-  double inf = 1e30;
-
-  int n = g.size();
-  for (int i = 0; i < LOG; i++) {
-    for (int j = 0; j < n; j++) {
-      for (int k = 0; k < n; k++) {
-        best[i][j][k] = -inf;
-        middle[i][j][k] = -1;
+  int lca(int x, int y) {
+    ++tim;
+    while (ss[x] != tim) {
+      if (x != 0) {
+        ss[x] = tim;
+        x = find(link[mate[x]]);
       }
+      int tmp = x;
+      x = y;
+      y = tmp;
+    }
+    return x;
+  }
+
+  void flower(int x, int y, int p) {
+    while (find(x) != p) {
+      link[x] = y;
+      fa[y = mate[x]] = fa[x] = p;
+      if (vis[y] == 1) vis[que[tl++] = y] = 2;
+      x = link[y];
     }
   }
 
-  for (int i = 0; i < n; i++) {
-    for (auto &e : g[i]) {
-      if (best[0][i][e.to] + PREC < e.c - c * e.t) {
-        best[0][i][e.to] = e.c - c * e.t;
-      }
-    }
-  }
-
-  for (int r = 1; r < LOG; r++) {
-    for (int i = 0; i < n; i++) {
-      for (int j = 0; j < n; j++) {
-        best[r][i][j] = best[r - 1][i][j];
-        middle[r][i][j] = -1;
-        for (int k = 0; k < n; k++) {
-          if (best[r][i][j] + PREC < best[r - 1][i][k] + best[r - 1][k][j]) {
-            best[r][i][j] = best[r - 1][i][k] + best[r - 1][k][j];
-            middle[r][i][j] = k;
-          }
+  bool match(int x) {
+    hd = tl = 0;
+    for (int i = 1; i <= N; ++i) vis[fa[i] = i] = 0;
+    vis[que[tl++] = x] = 2;
+    while (hd < tl) {
+      x = que[hd++];
+      for (int u = 1; u <= N; u++) {
+        if (!edges[x][u]) {
+          continue;
+        }
+        if (0 == vis[u]) {
+          vis[u] = 1;
+          link[u] = x;
+          if (0 == mate[u]) {
+            while (0 != x) {
+              x = mate[link[u]];
+              mate[mate[u] = link[u]] = u;
+              u = x;
+            }
+            return true;
+          } else
+            vis[que[tl++] = mate[u]] = 2;
+        } else if (vis[u] == 2 && find(u) != find(x)) {
+          int p = lca(x, u);
+          flower(x, u, p);
+          flower(u, x, p);
         }
       }
     }
+    return false;
   }
 
-  double mx = 0;
-  for (int i = 0; i < n; i++) {
-    mx = max(mx, best[LOG - 1][i][i]);
+ public:
+  void reset() {
+    C0(pre);
+    C0(edges);
+    C0(mate);
+    C0(link);
+    C0(vis);
+    C0(fa);
+    C0(que);
+    C0(ss);
+    hd = 0;
+    tl = 0;
+    tim = 0;
   }
 
-  return mx <= 0;
-}
+  /**
+   * -1 represent no mate
+   */
+  inline int mateOf(int i) { return mate[i + 1] - 1; }
 
-vector<int> trace;
-
-void Record(int r, int i, int j) {
-  if (r == 0) {
-    trace.push_back(i);
-    trace.push_back(j);
-    return;
+  inline void addEdge(int x, int y) {
+    edges[x + 1][y + 1] = edges[y + 1][x + 1] = true;
   }
 
-  int mid = middle[r][i][j];
-  if (mid == -1) {
-    return Record(r - 1, i, j);
+  int maxMatch() {
+    int total = 0;
+    for (int i = 1; i <= N; i++) {
+      for (int j = i + 1; j <= N; j++) {
+        if (edges[i][j] && mate[i] == 0 && mate[j] == 0) {
+          mate[i] = j;
+          mate[j] = i;
+          total++;
+        }
+      }
+    }
+
+    for (int i = 1; i <= N; i++) {
+      if (mate[i] == 0 && match(i)) {
+        total++;
+      }
+    }
+    return total;
   }
-  Record(r - 1, i, mid);
-  trace.pop_back();
-  Record(r - 1, mid, j);
-}
+};
+}  // namespace match
+
+#endif
 
 void solve(int testId, istream &in, ostream &out) {
-  int n, m;
-  in >> n >> m;
-  g.resize(n);
-  best.resize(LOG, vector<vector<double>>(n, vector<double>(n)));
-  middle.resize(LOG, vector<vector<int>>(n, vector<int>(n)));
-
-  for (int i = 0; i < m; i++) {
-    int u, v, c, t;
-    in >> u >> v >> c >> t;
-    u--;
-    v--;
-    g[u].push_back({to : v, t : t, c : c});
-  }
-
-  double c = binary_search::BinarySearch<double>(0, 100, Check, 1e-6, 1e-6);
-  Check(c);
-
-  int index = 0;
-  for (int i = 1; i < n; i++) {
-    if (best[LOG - 1][i][i] > best[LOG - 1][index][index]) {
-      index = i;
+  int n, k;
+  in >> n >> k;
+  match::BipartiteMatch bm(n, 2 * k);
+  for (int i = 0; i < n; i++) {
+    int m;
+    in >> m;
+    for (int j = 0; j < m; j++) {
+      int x;
+      in >> x;
+      x--;
+      bm.addEdge(i, x, true);
+      bm.addEdge(i, x + k, true);
     }
   }
 
-  if (best[LOG - 1][index][index] < 0) {
-    out << 0;
+  int maxMatch = 0;
+  for (int i = 0; i < n; i++) {
+    maxMatch += bm.matchLeft(i) != -1;
+  }
+
+  if (maxMatch < k * 2) {
+    out << "NO";
     return;
   }
 
-  Record(LOG - 1, index, index);
-  trace.pop_back();
-  out << trace.size() << endl;
-  for (int x : trace) {
-    out << x + 1 << ' ';
+  out << "YES" << endl;
+  for (int i = 0; i < k; i++) {
+    out << 2 << ' ' << bm.matchRight(i) + 1 << ' ' << bm.matchRight(i + k) + 1
+        << endl;
   }
+
+
 }
 
 RUN_ONCE

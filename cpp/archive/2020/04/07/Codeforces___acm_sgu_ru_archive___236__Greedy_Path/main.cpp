@@ -2,7 +2,7 @@
 #include "../../libs/common.h"
 
 const int LOG = 7;
-const double PREC = 1e-4;
+const double PREC = 1e-6;
 
 struct Edge {
   int to;
@@ -11,7 +11,6 @@ struct Edge {
 };
 
 vector<vector<Edge>> g;
-vector<int> trace;
 vector<int> dists;
 vector<int> prev;
 vector<bool> inque;
@@ -25,7 +24,7 @@ bool Check(double c) {
   fill(dists.begin(), dists.end(), 0);
   fill(prev.begin(), prev.end(), -1);
   fill(inque.begin(), inque.end(), true);
-  fill(visited.begin(), visited.end(), false);
+  fill(visited.begin(), visited.end(), 0);
   deque<int> dq;
   for (int i = 0; i < n; i++) {
     dq.push_back(i);
@@ -40,7 +39,7 @@ bool Check(double c) {
       return false;
     }
     for (auto &e : g[head]) {
-      if (dists[e.to] <= PREC + dists[head] + Fix(e, c)) {
+      if (dists[e.to] < dists[head] + Fix(e, c)) {
         continue;
       }
       dists[e.to] = dists[head] + Fix(e, c);
@@ -72,26 +71,54 @@ void solve(int testId, istream &in, ostream &out) {
     g[u].push_back({to : v, t : t, c : c});
   }
 
-  double c = binary_search::BinarySearch<double>(0, 100, Check, 1e-6, 1e-6);
-  Check(c);
-
-  int index = 0;
-  for (int i = 1; i < n; i++) {
-    if (best[LOG - 1][i][i] > best[LOG - 1][index][index]) {
-      index = i;
+  double c;
+  {
+    double l = 0;
+    double r = 100;
+    while (r - l > 1e-8) {
+      double m = (l + r) / 2;
+      if (Check(m)) {
+        r = m;
+      } else {
+        l = m;
+      }
     }
+    c = l;
   }
-
-  if (best[LOG - 1][index][index] < 0) {
+  
+  if (Check(c)) {
     out << 0;
     return;
   }
 
-  Record(LOG - 1, index, index);
-  trace.pop_back();
-  out << trace.size() << endl;
-  for (int x : trace) {
-    out << x + 1 << ' ';
+  int index = -1;
+  for (int i = 0; i < n; i++) {
+    if (visited[i] > n) {
+      index = i;
+      break;
+    }
+  }
+
+  int l, r;
+  vector<int> occur(n, -1);
+  vector<int> trace;
+  while (index != -1 && trace.size() <= n) {
+    trace.push_back(index);
+    index = prev[index];
+  }
+  for (int i = 0; i < trace.size(); i++) {
+    if (occur[trace[i]] == -1) {
+      occur[trace[i]] = i;
+    } else {
+      l = occur[trace[i]];
+      r = i - 1;
+      break;
+    }
+  }
+
+  out << r - l + 1 << endl;
+  for (int i = r; i >= l; i--) {
+    out << trace[i] + 1 << ' ';
   }
 }
 
