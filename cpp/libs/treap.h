@@ -45,7 +45,7 @@ class Treap {
    */
   static pair<Treap *, Treap *> SplitByRank(Treap *root, int rank) {
     if (root == NIL) {
-      return mp(NIL, NIL);
+      return make_pair(NIL, NIL);
     }
     root->pushDown();
     pair<Treap *, Treap *> result;
@@ -99,7 +99,7 @@ class Treap {
    */
   static pair<Treap *, Treap *> SplitByKey(Treap *root, int key) {
     if (root == NIL) {
-      return mp(NIL, NIL);
+      return make_pair(NIL, NIL);
     }
     root->pushDown();
     pair<Treap *, Treap *> result;
@@ -131,6 +131,22 @@ class Treap {
       }
     }
     return treap->_key;
+  }
+
+  static int GetRankByKey(Treap *treap, int key) {
+    int rank = 0;
+    while (treap != NIL) {
+      if (treap->_key == key) {
+        rank += treap->_left->_size + 1;
+        return rank;
+      } else if (treap->_key < key) {
+        rank += treap->_left->_size + 1;
+        treap = treap->_right;
+      } else {
+        treap = treap->_left;
+      }
+    }
+    return rank;
   }
 };
 

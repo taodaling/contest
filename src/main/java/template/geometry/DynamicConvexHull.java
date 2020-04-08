@@ -13,6 +13,13 @@ public class DynamicConvexHull {
         this.center = center;
     }
 
+    public DynamicConvexHull(Point2D a, Point2D b, Point2D c) {
+        this(new Point2D((a.x + b.x + c.x) / 3, (a.y + b.y + c.y) / 3));
+        add(a);
+        add(b);
+        add(c);
+    }
+
     private Map.Entry<Double, Point2D> clockwise(Double theta) {
         Map.Entry<Double, Point2D> floor = pts.floorEntry(theta);
         if (floor == null) {

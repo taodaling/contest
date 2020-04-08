@@ -1,0 +1,40 @@
+{
+  "name" : "10 Kinds of People",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "1 4\n1100\n2\n1 1 1 4\n1 1 1 1\n",
+    "output" : "neither\ndecimal\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "10 20\n11111111111111111111\n11000000000000000101\n11111111111111110000\n11111111111111110000\n11000000000000000111\n00011111111111111111\n00111111111111111111\n10000000000000001111\n11111111111111111111\n11111111111111111111\n3\n2 3 8 16\n8 1 7 3\n1 1 10 20\n",
+    "output" : "binary\ndecimal\nneither\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.KindsOfPeople",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.04.08",
+  "contestName" : "Kattis Archive",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

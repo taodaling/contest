@@ -245,7 +245,7 @@ public class Point implements Cloneable {
     }
 
     /**
-     * 判断某个顶点是否落在矩形内，1表示矩形内，2表示矩形边缘，0表示矩形外
+     * 判断某个顶点是否落在矩形内，1表示矩形内，2表示矩形边缘，0表示矩形外，顶点逆时针放置
      */
     public static int inPolygon(List<Point> polygon, Point pt) {
         int cross = 0;

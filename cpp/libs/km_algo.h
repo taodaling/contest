@@ -11,10 +11,10 @@ template <class V>
 class KMAlgo {
  private:
   const vector<vector<V>> &table;  // 权重矩阵（方阵）
-  vector<V> xl;                    // X标号值
-  vector<V> yl;                    // Y标号值
-  vector<int> xMatch;              // X点对应的匹配点
-  vector<int> yMatch;              // Y点对应的匹配点
+  vector<V> leftLabel;                    // X标号值
+  vector<V> rightLabel;                    // Y标号值
+  vector<int> leftPartner;              // X点对应的匹配点
+  vector<int> rightPartner;              // Y点对应的匹配点
   int n;                           // 矩阵维度
   V INF;
 
@@ -22,27 +22,27 @@ class KMAlgo {
   KMAlgo(const vector<vector<V>> &t)
       : table(t),
         INF(numeric_limits<V>::max() / 2),
-        xl(t.size(), -INF),
-        yl(t.size()),
-        xMatch(t.size(), -1),
-        yMatch(t.size(), -1),
+        leftLabel(t.size(), -INF),
+        rightLabel(t.size()),
+        leftPartner(t.size(), -1),
+        rightPartner(t.size(), -1),
         n(table.size()) {
     for (int x = 0; x < n; x++) {
       for (int y = 0; y < n; y++) {
-        if (table[x][y] > xl[x]) {
-          xl[x] = table[x][y];
+        if (table[x][y] > leftLabel[x]) {
+          leftLabel[x] = table[x][y];
         }
       }
     }
   }
 
-  int getXMatch(int i) { return xMatch[i]; }
+  int getLeftPartner(int i) const { return leftPartner[i]; }
 
-  int getYMatch(int i) { return yMatch[i]; }
+  int getRightPartner(int i) const { return rightPartner[i]; }
 
-  V getXL(int i) { return xl[i]; }
+  V getLeftLabel(int i) const { return leftLabel[i]; }
 
-  V getYL(int i) { return yl[i]; }
+  V getRightLabel(int i) const { return rightLabel[i]; }
 
   V solve() {  // 入口，输入权重矩阵
     for (int x = 0; x < n; x++) {
@@ -50,7 +50,7 @@ class KMAlgo {
     }
     V value = 0;
     for (int x = 0; x < n; x++) {
-      value += table[x][xMatch[x]];
+      value += table[x][leftPartner[x]];
     }
     return value;
   }
@@ -73,16 +73,16 @@ class KMAlgo {
           if (T[y]) {
             continue;
           }
-          V tmp = xl[x] + yl[y] - table[x][y];
+          V tmp = leftLabel[x] + rightLabel[y] - table[x][y];
           if (tmp == 0) {  // 相等子树中的边
             T[y] = true;
             yPre[y] = x;
-            if (yMatch[y] == -1) {
+            if (rightPartner[y] == -1) {
               endY = y;
               find = true;
               break;
             } else {
-              que[qe++] = yMatch[y];
+              que[qe++] = rightPartner[y];
             }
           } else if (slackY[y] >
                      tmp) {  // 不在相等子树中的边，看是否能够更新松弛变量
@@ -102,10 +102,10 @@ class KMAlgo {
       }
       for (int i = 0; i < n; i++) {  // 根据a修改标号值
         if (S[i]) {
-          xl[i] -= a;
+          leftLabel[i] -= a;
         }
         if (T[i]) {
-          yl[i] += a;
+          rightLabel[i] += a;
         }
       }
       qs = qe = 0;
@@ -114,12 +114,12 @@ class KMAlgo {
             slackY[y] ==
                 a) {  // 查看那些y点新加入到T集合，注意，这些y点的前向x点都记录在了yPre里面，所以这些x点不用再次入队
           T[y] = true;
-          if (yMatch[y] == -1) {  // 新加入的y点没有匹配，那么就找到可扩路了
+          if (rightPartner[y] == -1) {  // 新加入的y点没有匹配，那么就找到可扩路了
             endY = y;
             find = true;
             break;
           } else {  // 新加入的y点已经有匹配了，将它匹配的x加到队列
-            que[qe++] = yMatch[y];
+            que[qe++] = rightPartner[y];
           }
         }
         slackY[y] -=
@@ -127,9 +127,9 @@ class KMAlgo {
       }  // 它们的松弛值是通过S集合中的x点求出的，S集合中的x点的标号值在上面都减去了a，所以这里松弛值也要减去a)
     }
     while (endY != -1) {  // 找到可扩路最后的y点后，回溯并扩充
-      int preX = yPre[endY], preY = xMatch[preX];
-      xMatch[preX] = endY;
-      yMatch[endY] = preX;
+      int preX = yPre[endY], preY = leftPartner[preX];
+      leftPartner[preX] = endY;
+      rightPartner[endY] = preX;
       endY = preY;
     }
   }
@@ -142,14 +142,17 @@ template <class T>
 ostream &operator<<(ostream &os, const KMAlgo<T> &algo) {
   os << "X: ";
   for (int i = 0; i < algo.n; i++) {
-    os << algo.xl[i] << ' ';
+    os << algo.leftLabel[i] << ' ';
   }
   os << endl;
   os << "Y: ";
   for (int i = 0; i < algo.n; i++) {
-    os << algo.yl[i] << ' ';
+    os << algo.rightLabel[i] << ' ';
   }
   os << endl;
+  for(int i = 0; i < algo.n; i++){
+    os << i << ' ' << algo.getLeftPartner(i) << endl;
+  }
   return os;
 }
 }  // namespace km_algo

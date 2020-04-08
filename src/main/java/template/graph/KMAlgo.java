@@ -9,45 +9,45 @@ public class KMAlgo {
     private static final long INF = (long) 2e18;
 
     private long[][] table = null;     // 权重矩阵（方阵）
-    private long[] xl = null;          // X标号值
-    private long[] yl = null;          // Y标号值
-    private int[] xMatch = null;      // X点对应的匹配点
-    private int[] yMatch = null;      // Y点对应的匹配点
-    private int n = 0;                // 矩阵维度
+    private long[] leftLabel = null;          // X标号值
+    private long[] rightLabel = null;          // Y标号值
+    private int[] leftPartner = null;      // X点对应的匹配点
+    private int[] rightPartner = null;      // Y点对应的匹配点
+    private int n;                // 矩阵维度
 
     public KMAlgo(long[][] table) {
         this.table = table;
         this.n = table.length;
-        this.xl = new long[n];
-        this.yl = new long[n];
-        Arrays.fill(xl, -INF);
+        this.leftLabel = new long[n];
+        this.rightLabel = new long[n];
+        Arrays.fill(leftLabel, -INF);
         for (int x = 0; x < n; x++) {
             for (int y = 0; y < n; y++) {
-                if (table[x][y] > xl[x]) {
-                    xl[x] = table[x][y];
+                if (table[x][y] > leftLabel[x]) {
+                    leftLabel[x] = table[x][y];
                 }
             }
         }
-        this.xMatch = new int[n];
-        this.yMatch = new int[n];
-        Arrays.fill(xMatch, -1);
-        Arrays.fill(yMatch, -1);
+        this.leftPartner = new int[n];
+        this.rightPartner = new int[n];
+        Arrays.fill(leftPartner, -1);
+        Arrays.fill(rightPartner, -1);
     }
 
-    public int getXMatch(int i) {
-        return xMatch[i];
+    public int getLeftPartner(int i) {
+        return leftPartner[i];
     }
 
-    public int getYMatch(int i) {
-        return yMatch[i];
+    public int getRightPartner(int i) {
+        return rightPartner[i];
     }
 
-    public long getXL(int i) {
-        return xl[i];
+    public long getLeftLabel(int i) {
+        return leftLabel[i];
     }
 
-    public long getYL(int i) {
-        return yl[i];
+    public long getRightLabel(int i) {
+        return rightLabel[i];
     }
 
     public long solve() { // 入口，输入权重矩阵
@@ -56,7 +56,7 @@ public class KMAlgo {
         }
         long value = 0;
         for (int x = 0; x < n; x++) {
-            value += table[x][xMatch[x]];
+            value += table[x][leftPartner[x]];
         }
         return value;
     }
@@ -80,16 +80,16 @@ public class KMAlgo {
                     if (T[y]) {
                         continue;
                     }
-                    long tmp = xl[x] + yl[y] - table[x][y];
+                    long tmp = leftLabel[x] + rightLabel[y] - table[x][y];
                     if (tmp == 0) {  // 相等子树中的边
                         T[y] = true;
                         yPre[y] = x;
-                        if (yMatch[y] == -1) {
+                        if (rightPartner[y] == -1) {
                             endY = y;
                             find = true;
                             break;
                         } else {
-                            queue[qe++] = yMatch[y];
+                            queue[qe++] = rightPartner[y];
                         }
                     } else if (slackY[y] > tmp) { // 不在相等子树中的边，看是否能够更新松弛变量
                         slackY[y] = tmp;
@@ -108,31 +108,31 @@ public class KMAlgo {
             }
             for (int i = 0; i < n; i++) {  // 根据a修改标号值
                 if (S[i]) {
-                    xl[i] -= a;
+                    leftLabel[i] -= a;
                 }
                 if (T[i]) {
-                    yl[i] += a;
+                    rightLabel[i] += a;
                 }
             }
             qs = qe = 0;
             for (int y = 0; y < n; y++) {        // 重要！！！控制修改标号之后需要检查的x点
                 if (!T[y] && slackY[y] == a) {   // 查看那些y点新加入到T集合，注意，这些y点的前向x点都记录在了yPre里面，所以这些x点不用再次入队
                     T[y] = true;
-                    if (yMatch[y] == -1) {       // 新加入的y点没有匹配，那么就找到可扩路了
+                    if (rightPartner[y] == -1) {       // 新加入的y点没有匹配，那么就找到可扩路了
                         endY = y;
                         find = true;
                         break;
                     } else {   // 新加入的y点已经有匹配了，将它匹配的x加到队列
-                        queue[qe++] = yMatch[y];
+                        queue[qe++] = rightPartner[y];
                     }
                 }
                 slackY[y] -= a;   // 所有松弛值减去a。(对于T集合中的松弛值已经没用了，对于不在T集合里面的y点，
             }                     // 它们的松弛值是通过S集合中的x点求出的，S集合中的x点的标号值在上面都减去了a，所以这里松弛值也要减去a)
         }
         while (endY != -1) {    // 找到可扩路最后的y点后，回溯并扩充
-            int preX = yPre[endY], preY = xMatch[preX];
-            xMatch[preX] = endY;
-            yMatch[endY] = preX;
+            int preX = yPre[endY], preY = leftPartner[preX];
+            leftPartner[preX] = endY;
+            rightPartner[endY] = preX;
             endY = preY;
         }
     }

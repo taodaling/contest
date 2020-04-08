@@ -28,13 +28,13 @@ public class Treap implements Cloneable {
     }
 
     public void pushDown() {
-        if(this == NIL){
+        if (this == NIL) {
             return;
         }
     }
 
     public void pushUp() {
-        if(this == NIL){
+        if (this == NIL) {
             return;
         }
         size = left.size + right.size + 1;
@@ -146,5 +146,21 @@ public class Treap implements Cloneable {
             }
         }
         return treap.key;
+    }
+
+    public static int getRankByKey(Treap treap, int k) {
+        int rank = 0;
+        while (treap != NIL) {
+            if (treap.key == k) {
+                rank += treap.left.size + 1;
+                return rank;
+            } else if (treap.key < k) {
+                rank += treap.left.size + 1;
+                treap = treap.right;
+            } else {
+                treap = treap.left;
+            }
+        }
+        return rank;
     }
 }

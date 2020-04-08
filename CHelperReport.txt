@@ -1,2 +1,2 @@
-70 src/main/java/contest/U34895 【模板】字符串的最小表示.json
+50 src/main/java/contest/253. Theodore Roosevelt.json
 0

@@ -265,7 +265,7 @@ bool CrossRay(const Point<T> &a, const Point<T> &p, const Point<T> &q) {
 }
 
 /**
- * 判断某个顶点是否落在多边形内，1表示多边形内，2表示多边形边缘，0表示多边形外
+ * 判断某个顶点是否落在多边形内，1表示多边形内，2表示多边形边缘，0表示多边形外，顶点逆时针放置
  */
 template <class T>
 int InPolygon(const vector<Point<T>> &polygon, const Point<T> &pt) {
