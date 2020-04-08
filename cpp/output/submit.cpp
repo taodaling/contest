@@ -597,359 +597,55 @@ void err(std::istream_iterator<string> it, T a, Args... args) {
 
 #endif
 
-#ifndef MODULAR_H
-#define MODULAR_H
 
+vector<pair<int, int>> props;
+int dp[500][11][11][11][11];
 
-#ifndef GCD_H
-#define GCD_H
-
-
-
-namespace gcd {
-template <typename T>
-T Gcd0(T a, T b) {
-  return b ? Gcd0(b, a % b) : a;
-}
-
-template <typename T>
-T Gcd(T a, T b) {
-  if (a < b) {
-    swap(a, b);
-  }
-  return Gcd0(a, b);
-}
-
-template <typename T>
-T Extgcd0(T a, T b, T &x, T &y) {
-  if (!b) {
-    x = 1;
-    y = 0;
-    return a;
-  }
-  T ans = Extgcd0(b, a % b, y, x);
-  y = y - x * (a / b);
-  return ans;
-}
-
-/**
- * Find gcd(a, b) and expression xa+yb=g
- */
-template <typename T>
-T Extgcd(T a, T b, T &x, T &y) {
-  if (a >= b) {
-    return Extgcd0(a, b, x, y);
-  }
-  return Extgcd0(b, a, y, x);
-}
-
-/**
- * O(n + logn)
- */
-template <class T>
-T Extgcd(vector<T> &arg, vector<T> &coes) {
-  int n = arg.size();
-  if (n == 0) {
+int Dp(int i, int d1, int d2, int d3, int d4) {
+  if (i <= 0) {
     return 0;
   }
-  coes.resize(n);
-  vector<T> gs(n);
-  gs[0] = arg[0];
-  for (int i = 1; i < n; i++) {
-    gs[i] = Gcd(gs[i - 1], arg[i]);
-  }
-  T prod = 1;
-  for (int i = n - 1; i >= 1; i--) {
-    T a, b;
-    Extgcd0(gs[i - 1], arg[i], a, b);
-    coes[i] = b * prod;
-    prod *= a;
-  }
-  coes[0] = prod;
-  return gs[n - 1];
-}
-
-}  // namespace gcd
-
-#endif
-
-namespace modular {
-template <class T>
-inline T Mod(T x, T m) {
-  x %= m;
-  if (x < 0) {
-    x += m;
-  }
-  return x;
-}
-
-template <class T>
-inline T Modmul(T a, T b, T m) {
-  T k = (T)((long double)a / m * b + 0.5);
-  return Mod<T>(a * b - k * m, m);
-}
-
-template <>
-inline int Modmul<int>(int a, int b, int m) {
-  return Mod<long long>((long long)a * b, m);
-}
-
-template <class T>
-inline T Modpow(T x, long long n, T m) {
-  if (n == 0) {
-    return Mod<T>(1, m);
-  }
-  T ans = Modpow<T>(x, n >> 1, m);
-  ans = Modmul<T>(ans, ans, m);
-  if (n & 1) {
-    ans = Modmul<T>(ans, x, m);
-  }
-  return ans;
-}
-
-template <typename T>
-T Inverse(T a, T m) {
-  int x, y;
-  gcd::Extgcd(a, m, x, y);
-  return Mod(x, m);
-}
-
-/**
- * O(n + logn)
- */
-template <class T>
-T Extgcd(vector<T> &arg, vector<T> &coes, T mod) {
-  int n = arg.size();
-  if (n == 0) {
-    return 0;
-  }
-  coes.resize(n);
-  vector<T> gs(n);
-  gs[0] = arg[0];
-  for (int i = 1; i < n; i++) {
-    gs[i] = gcd::Gcd(gs[i - 1], arg[i]);
-  }
-  T prod = 1;
-  for (int i = n - 1; i >= 1; i--) {
-    T a, b;
-    gcd::Extgcd0(gs[i - 1], arg[i], a, b);
-    coes[i] = Modmul(b, prod, mod);
-    prod = Modmul(prod, a, mod);
-  }
-  coes[0] = prod;
-  return gs[n - 1];
-}
-
-/**
- * O(n), inverse 1, 2, ..., n - 1
- */
-template <class T>
-void InverseRange(vector<T> &vec, T mod) {
-  int n = vec.size();
-  if (n <= 1) {
-    return;
-  }
-  vec[1] = 1;
-  for (int i = 2; i < n; i++) {
-    T k = mod / i;
-    T r = mod % i;
-    vec[i] = Modmul(-k, vec[r], mod);
-  }
-}
-
-template <class T, T M>
-class Modular {
- public:
-  Modular() { set(0); }
-  Modular(const T &val) { set(val); }
-  void set(const T &x) { _v = Mod(x, M); }
-  Modular(const Modular<T, M> &val) { _v = val._v; }
-  Modular<T, M> &operator=(const Modular<T, M> &y) {
-    _v = y._v;
-    return *this;
-  }
-  const T &operator()() const { return _v; }
-  T &operator()() { return _v; }
-  Modular<T, M> &operator-=(const Modular<T, M> &y) {
-    _v = Mod(_v - y._v, M);
-    return *this;
-  }
-  Modular<T, M> &operator+=(const Modular<T, M> &y) {
-    _v = Mod(_v + y._v, M);
-    return *this;
-  }
-
-  Modular<T, M> &operator*=(const Modular<T, M> &y) {
-    _v = Modmul(_v, y._v, M);
-    return *this;
-  }
-  Modular<T, M> &operator/=(const Modular<T, M> &y) {
-    (*this) *= y.inverse();
-    return *this;
-  }
-  Modular<T, M> pow(long long exp) const { return Modpow(_v, exp, M); }
-  Modular<T, M> inverse() const { return modular::Inverse(_v, M); }
-
- private:
-  T _v;
-};
-
-template <class T, T M>
-Modular<T, M> operator+(const Modular<T, M> &a, const Modular<T, M> &b) {
-  Modular<T, M> ans = a;
-  ans += b;
-  return ans;
-}
-template <class T, T M>
-Modular<T, M> operator+(const T &a, const Modular<T, M> &b) {
-  Modular<T, M> ans = a;
-  ans += b;
-  return ans;
-}
-template <class T, T M>
-Modular<T, M> operator+(const Modular<T, M> &a, const T &b) {
-  Modular<T, M> ans = a;
-  ans += b;
-  return ans;
-}
-template <class T, T M>
-Modular<T, M> operator-(const Modular<T, M> &a, const Modular<T, M> &b) {
-  Modular<T, M> ans = a;
-  ans -= b;
-  return ans;
-}
-template <class T, T M>
-Modular<T, M> operator-(const T &a, const Modular<T, M> &b) {
-  Modular<T, M> ans = a;
-  ans -= b;
-  return ans;
-}
-template <class T, T M>
-Modular<T, M> operator-(const Modular<T, M> &a, const T &b) {
-  Modular<T, M> ans = a;
-  ans -= b;
-  return ans;
-}
-template <class T, T M>
-Modular<T, M> operator*(const Modular<T, M> &a, const Modular<T, M> &b) {
-  Modular<T, M> ans = a;
-  ans *= b;
-  return ans;
-}
-template <class T, T M>
-Modular<T, M> operator*(const T &a, const Modular<T, M> &b) {
-  Modular<T, M> ans = a;
-  ans *= b;
-  return ans;
-}
-template <class T, T M>
-Modular<T, M> operator*(const Modular<T, M> &a, const T &b) {
-  Modular<T, M> ans = a;
-  ans *= b;
-  return ans;
-}
-template <class T, T M>
-Modular<T, M> operator/(const Modular<T, M> &a, const Modular<T, M> &b) {
-  Modular<T, M> ans = a;
-  ans /= b;
-  return ans;
-}
-template <class T, T M>
-Modular<T, M> operator/(const T &a, const Modular<T, M> &b) {
-  Modular<T, M> ans = a;
-  ans /= b;
-  return ans;
-}
-template <class T, T M>
-Modular<T, M> operator/(const Modular<T, M> &a, const T &b) {
-  Modular<T, M> ans = a;
-  ans /= b;
-  return ans;
-}
-template <class T, T M>
-Modular<T, M> operator==(const Modular<T, M> &a, const Modular<T, M> &b) {
-  return a() == b();
-}
-template <class T, T M>
-Modular<T, M> operator==(const Modular<T, M> &a, const T &b) {
-  return a() == Modular<T, M>(b);
-}
-template <class T, T M>
-Modular<T, M> operator==(const T &a, const Modular<T, M> &b) {
-  return Modular<T, M>(a) == b;
-}
-template <class T, T M>
-Modular<T, M> operator!=(const Modular<T, M> &a, const Modular<T, M> &b) {
-  return a() != b();
-}
-template <class T, T M>
-Modular<T, M> operator!=(const Modular<T, M> &a, const T &b) {
-  return a() != Modular<T, M>(b);
-}
-template <class T, T M>
-Modular<T, M> operator!=(const T &a, const Modular<T, M> &b) {
-  return Modular<T, M>(a) != b;
-}
-template <class T, T M>
-std::ostream &operator<<(std::ostream &out, const Modular<T, M> &v) {
-  return out << v();
-}
-template <class T, T M>
-std::istream &operator>>(std::istream &in, const Modular<T, M> &v) {
-  T x;
-  in >> x;
-  v.set(x);
-  return in;
-}
-}  // namespace modular
-
-#endif
-
-using modular::Mod;
-
-struct Node {
-  int prev;
-  int next;
-  int val;
-};
-
-Node nodes[2000000];
-
-void solve(int testId, istream& in, ostream& out) {
-  int n, q;
-  in >> n >> q;
-
-  for (int i = 0; i < n; i++) {
-    nodes[i].val = i;
-  }
-  for (int i = 1; i < n; i++) {
-    nodes[i].prev = i - 1;
-  }
-  for (int i = 0; i < n - 1; i++) {
-    nodes[i].next = i + 1;
-  }
-  nodes[0].prev = n - 1;
-  nodes[n - 1].next = 0;
-
-  int now = 0;
-  for (int i = 0; i < n - 1; i++) {
-    int rm = -1;
-    if (nodes[now].val & 1) {
-      for (int i = 0; i < q; i++) {
-        now = nodes[now].next;
+  if (dp[i][d1][d2][d3][d4] == -1) {
+    dp[i][d1][d2][d3][d4] = Dp(i - 1, 10, d1, d2, d3);
+    for (int j = 0; j < props.size(); j++) {
+      int add = X(props[j]);
+      int rest = Y(props[j]);
+      if (d1 == j) {
+        continue;
       }
-      rm = nodes[now].prev;
-    } else {
-      for (int i = 0; i < q; i++) {
-        now = nodes[now].prev;
+      if (d2 == j && rest > 1) {
+        continue;
       }
-      rm = nodes[now].next;
+      if (d3 == j && rest > 2) {
+        continue;
+      }
+      if (d4 == j && rest > 3) {
+        continue;
+      }
+      dp[i][d1][d2][d3][d4] =
+          max(dp[i][d1][d2][d3][d4], Dp(i - 1, j, d1, d2, d3) + add);
     }
-    nodes[nodes[rm].prev].next = nodes[rm].next;
-    nodes[nodes[rm].next].prev = nodes[rm].prev;
   }
 
-  out << nodes[now].val;
+  return dp[i][d1][d2][d3][d4];
+}
+
+void solve(int testId, istream &in, ostream &out) {
+  int m, n;
+  in >> m >> n;
+  props.resize(n);
+  for (int i = 0; i < n; i++) {
+    in >> X(props[i]) >> Y(props[i]);
+  }
+
+  C1(dp);
+
+  for (int i = 0;; i++) {
+    if (Dp(i, 10, 10, 10, 10) >= m) {
+      out << i;
+      return;
+    }
+  }
 }
 
 RUN_ONCE

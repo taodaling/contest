@@ -2,14 +2,12 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintStream;
+import java.util.Arrays;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.util.AbstractMap;
-import java.util.TreeMap;
 import java.io.Closeable;
-import java.util.Map;
 import java.io.Writer;
-import java.util.Map.Entry;
 import java.io.OutputStreamWriter;
 import java.io.InputStream;
 
@@ -19,7 +17,9 @@ import java.io.InputStream;
  */
 public class Main {
     public static void main(String[] args) throws Exception {
-        new TaskAdapter().run();
+        Thread thread = new Thread(null, new TaskAdapter(), "", 1 << 27);
+        thread.start();
+        thread.join();
     }
 
     static class TaskAdapter implements Runnable {
@@ -29,40 +29,49 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            TheodoreRoosevelt solver = new TheodoreRoosevelt();
+            CEugeneAndAnArray solver = new CEugeneAndAnArray();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class TheodoreRoosevelt {
+    static class CEugeneAndAnArray {
+        Debug debug = new Debug(true);
+
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            int m = in.readInt();
-            int k = in.readInt();
-            Point2D a = readPoint2D(in);
-            Point2D b = readPoint2D(in);
-            Point2D c = readPoint2D(in);
-            DynamicConvexHull dch = new DynamicConvexHull(a, b, c);
-            for (int i = 3; i < n; i++) {
-                dch.add(readPoint2D(in));
+            long[] a = new long[n];
+            for (int i = 0; i < n; i++) {
+                a[i] = in.readInt();
             }
-            int hit = 0;
-            for (int i = 0; i < m; i++) {
-                Point2D pt = readPoint2D(in);
-                if (dch.contain(pt, true)) {
-                    hit++;
+
+            LongPreSum lps = new LongPreSum(a);
+            LongHashMap lhm = new LongHashMap(n + 1, false);
+            lhm.put(0, n);
+            int[] rights = new int[n];
+            for (int i = n - 1; i >= 0; i--) {
+                long suffix = lps.post(i);
+                rights[i] = (int) lhm.getOrDefault(suffix, n + 1) - 1;
+                lhm.put(suffix, i);
+            }
+
+            IntegerRMQ rmq = new IntegerRMQ(rights, Integer::compare);
+            int r = 0;
+            long ans = 0;
+            for (int i = 0; i < n; i++) {
+                r = Math.max(r, i);
+                int until = rights[rmq.query(i, r)];
+                while (r + 1 < n && r + 1 < until && a[r + 1] != 0) {
+                    r++;
+                    until = (int) Math.min(until, rights[r]);
+                }
+                if (r < until) {
+                    ans += r - i + 1;
                 }
             }
-            if (hit >= k) {
-                out.println("YES");
-            } else {
-                out.println("NO");
-            }
-        }
 
-        public Point2D readPoint2D(FastInput in) {
-            return new Point2D(in.readInt(), in.readInt());
+            debug.debug("rights", rights);
+            out.println(ans);
         }
 
     }
@@ -94,12 +103,12 @@ public class Main {
             return this;
         }
 
-        public FastOutput append(String c) {
+        public FastOutput append(long c) {
             cache.append(c);
             return this;
         }
 
-        public FastOutput println(String c) {
+        public FastOutput println(long c) {
             return append(c).println();
         }
 
@@ -134,44 +143,408 @@ public class Main {
 
     }
 
-    static class GeometryUtils {
-        public static final double PREC = 1e-15;
+    static interface LongEntryIterator {
+        boolean hasNext();
 
-        public static double valueOf(double x) {
-            return x > -PREC && x < PREC ? 0 : x;
+        void next();
+
+        long getEntryKey();
+
+        long getEntryValue();
+
+    }
+
+    static class Hasher {
+        private long time = System.nanoTime() + System.currentTimeMillis();
+
+        private int shuffle(long x) {
+            x += time;
+            x += 0x9e3779b97f4a7c15L;
+            x = (x ^ (x >>> 30)) * 0xbf58476d1ce4e5b9L;
+            x = (x ^ (x >>> 27)) * 0x94d049bb133111ebL;
+            return (int) (x ^ (x >>> 31));
         }
 
-        public static boolean near(double a, double b) {
-            return valueOf(a - b) == 0;
-        }
-
-        public static double cross(double x1, double y1, double x2, double y2) {
-            return valueOf(x1 * y2 - y1 * x2);
-        }
-
-        public static double theta(double y, double x) {
-            double theta = Math.atan2(y, x);
-            if (theta < 0) {
-                theta += Math.PI * 2;
-            }
-            return theta;
+        public int hash(long x) {
+            return shuffle(x);
         }
 
     }
 
-    static class Line2D {
-        public final Point2D a;
-        public final Point2D b;
-        public final Point2D d;
+    static class LongPreSum {
+        private long[] pre;
+        private int n;
 
-        public Line2D(Point2D a, Point2D b) {
-            this.a = a;
-            this.b = b;
-            d = new Point2D(b.x - a.x, b.y - a.y);
+        public LongPreSum(int n) {
+            pre = new long[n];
+        }
+
+        public void populate(long[] a) {
+            n = a.length;
+            pre[0] = a[0];
+            for (int i = 1; i < n; i++) {
+                pre[i] = pre[i - 1] + a[i];
+            }
+        }
+
+        public LongPreSum(long[] a) {
+            this(a.length);
+            populate(a);
+        }
+
+        public long prefix(int i) {
+            if (i < 0) {
+                return 0;
+            }
+            return pre[Math.min(i, n - 1)];
+        }
+
+        public long post(int i) {
+            return pre[n - 1] - prefix(i - 1);
+        }
+
+    }
+
+    static class CachedLog2 {
+        private static final int BITS = 16;
+        private static final int LIMIT = 1 << BITS;
+        private static final byte[] CACHE = new byte[LIMIT];
+
+        static {
+            int b = 0;
+            for (int i = 0; i < LIMIT; i++) {
+                while ((1 << (b + 1)) <= i) {
+                    b++;
+                }
+                CACHE[i] = (byte) b;
+            }
+        }
+
+        public static int ceilLog(int x) {
+            int ans = floorLog(x);
+            if ((1 << ans) < x) {
+                ans++;
+            }
+            return ans;
+        }
+
+        public static int floorLog(int x) {
+            return x < LIMIT ? CACHE[x] : (BITS + CACHE[x >>> BITS]);
+        }
+
+    }
+
+    static class LongHashMap {
+        private int[] slot;
+        private int[] next;
+        private long[] keys;
+        private long[] values;
+        private int alloc;
+        private boolean[] removed;
+        private int mask;
+        private int size;
+        private boolean rehash;
+        private Hasher hasher = new Hasher();
+
+        public LongHashMap(int cap, boolean rehash) {
+            this.mask = (1 << (32 - Integer.numberOfLeadingZeros(cap - 1))) - 1;
+            slot = new int[mask + 1];
+            next = new int[cap + 1];
+            keys = new long[cap + 1];
+            values = new long[cap + 1];
+            removed = new boolean[cap + 1];
+            this.rehash = rehash;
+        }
+
+        private void doubleCapacity() {
+            int newSize = Math.max(next.length + 10, next.length * 2);
+            next = Arrays.copyOf(next, newSize);
+            keys = Arrays.copyOf(keys, newSize);
+            values = Arrays.copyOf(values, newSize);
+            removed = Arrays.copyOf(removed, newSize);
+        }
+
+        public void alloc() {
+            alloc++;
+            if (alloc >= next.length) {
+                doubleCapacity();
+            }
+            next[alloc] = 0;
+            removed[alloc] = false;
+            size++;
+        }
+
+        private void rehash() {
+            int[] newSlots = new int[Math.max(16, slot.length * 2)];
+            int newMask = newSlots.length - 1;
+            for (int i = 0; i < slot.length; i++) {
+                if (slot[i] == 0) {
+                    continue;
+                }
+                int head = slot[i];
+                while (head != 0) {
+                    int n = next[head];
+                    int s = hash(keys[head]) & newMask;
+                    next[head] = newSlots[s];
+                    newSlots[s] = head;
+                    head = n;
+                }
+            }
+            this.slot = newSlots;
+            this.mask = newMask;
+        }
+
+        private int hash(long x) {
+            return hasher.hash(x);
+        }
+
+        public void put(long x, long y) {
+            put(x, y, true);
+        }
+
+        public void put(long x, long y, boolean cover) {
+            int h = hash(x);
+            int s = h & mask;
+            if (slot[s] == 0) {
+                alloc();
+                slot[s] = alloc;
+                keys[alloc] = x;
+                values[alloc] = y;
+            } else {
+                int index = findIndexOrLastEntry(s, x);
+                if (keys[index] != x) {
+                    alloc();
+                    next[index] = alloc;
+                    keys[alloc] = x;
+                    values[alloc] = y;
+                } else if (cover) {
+                    values[index] = y;
+                }
+            }
+            if (rehash && size >= slot.length) {
+                rehash();
+            }
+        }
+
+        public long getOrDefault(long x, long def) {
+            int h = hash(x);
+            int s = h & mask;
+            if (slot[s] == 0) {
+                return def;
+            }
+            int index = findIndexOrLastEntry(s, x);
+            return keys[index] == x ? values[index] : def;
+        }
+
+        private int findIndexOrLastEntry(int s, long x) {
+            int iter = slot[s];
+            while (keys[iter] != x) {
+                if (next[iter] != 0) {
+                    iter = next[iter];
+                } else {
+                    return iter;
+                }
+            }
+            return iter;
+        }
+
+        public LongEntryIterator iterator() {
+            return new LongEntryIterator() {
+                int index = 1;
+                int readIndex = -1;
+
+
+                public boolean hasNext() {
+                    while (index <= alloc && removed[index]) {
+                        index++;
+                    }
+                    return index <= alloc;
+                }
+
+
+                public long getEntryKey() {
+                    return keys[readIndex];
+                }
+
+
+                public long getEntryValue() {
+                    return values[readIndex];
+                }
+
+
+                public void next() {
+                    if (!hasNext()) {
+                        throw new IllegalStateException();
+                    }
+                    readIndex = index;
+                    index++;
+                }
+            };
         }
 
         public String toString() {
-            return d.toString();
+            LongEntryIterator iterator = iterator();
+            StringBuilder builder = new StringBuilder("{");
+            while (iterator.hasNext()) {
+                iterator.next();
+                builder.append(iterator.getEntryKey()).append("->").append(iterator.getEntryValue()).append(',');
+            }
+            if (builder.charAt(builder.length() - 1) == ',') {
+                builder.setLength(builder.length() - 1);
+            }
+            builder.append('}');
+            return builder.toString();
+        }
+
+    }
+
+    static interface IntegerComparator {
+        public int compare(int a, int b);
+
+    }
+
+    static class Debug {
+        private boolean offline;
+        private PrintStream out = System.err;
+        static int[] empty = new int[0];
+
+        public Debug(boolean enable) {
+            offline = enable && System.getSecurityManager() == null;
+        }
+
+        public Debug debug(String name, Object x) {
+            return debug(name, x, empty);
+        }
+
+        public Debug debug(String name, Object x, int... indexes) {
+            if (offline) {
+                if (x == null || !x.getClass().isArray()) {
+                    out.append(name);
+                    for (int i : indexes) {
+                        out.printf("[%d]", i);
+                    }
+                    out.append("=").append("" + x);
+                    out.println();
+                } else {
+                    indexes = Arrays.copyOf(indexes, indexes.length + 1);
+                    if (x instanceof byte[]) {
+                        byte[] arr = (byte[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof short[]) {
+                        short[] arr = (short[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof boolean[]) {
+                        boolean[] arr = (boolean[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof char[]) {
+                        char[] arr = (char[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof int[]) {
+                        int[] arr = (int[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof float[]) {
+                        float[] arr = (float[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof double[]) {
+                        double[] arr = (double[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof long[]) {
+                        long[] arr = (long[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else {
+                        Object[] arr = (Object[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    }
+                }
+            }
+            return this;
+        }
+
+    }
+
+    static class IntegerRMQ {
+        public static final int NIL = Integer.MIN_VALUE;
+        int[] data;
+        int[] vals;
+        IntegerComparator comp;
+        int n;
+
+        private int left(int i) {
+            return i << 1;
+        }
+
+        private int right(int i) {
+            return (i << 1) | 1;
+        }
+
+        public IntegerRMQ(int[] vals, IntegerComparator comp) {
+            this.comp = comp;
+            n = vals.length;
+            n = 1 << CachedLog2.ceilLog(n);
+            this.vals = vals;
+            data = new int[2 * n];
+            build(vals, 0, n - 1, 1);
+        }
+
+        private int merge(int a, int b) {
+            if (a == NIL || b == NIL) {
+                return a == NIL ? b : a;
+            }
+            return comp.compare(vals[a], vals[b]) < 0 ? a : b;
+        }
+
+        private void build(int[] vals, int l, int r, int i) {
+            if (l < r) {
+                int m = (l + r) >> 1;
+                build(vals, l, m, left(i));
+                build(vals, m + 1, r, right(i));
+                data[i] = merge(data[left(i)], data[right(i)]);
+            } else {
+                data[i] = l >= vals.length ? NIL : l;
+            }
+        }
+
+        public int query(int l, int r) {
+            return query(l, r, 0, n - 1, 1);
+        }
+
+        private int query(int ll, int rr, int l, int r, int i) {
+            if (ll > r || l > rr) {
+                return NIL;
+            }
+            if (ll <= l && r <= rr) {
+                return data[i];
+            }
+            int m = (l + r) >> 1;
+            return merge(query(ll, rr, l, m, left(i)),
+                    query(ll, rr, m + 1, r, right(i)));
         }
 
     }
@@ -231,156 +604,6 @@ public class Main {
             }
 
             return val;
-        }
-
-    }
-
-    static class Segment2D extends Line2D {
-        public Segment2D(Point2D a, Point2D b) {
-            super(a, b);
-        }
-
-        public boolean contain(Point2D p) {
-            return GeometryUtils.cross(p.x - a.x, p.y - a.y, d.x, d.y) == 0
-                    && GeometryUtils.valueOf(p.x - Math.min(a.x, b.x)) >= 0
-                    && GeometryUtils.valueOf(p.x - Math.max(a.x, b.x)) <= 0
-                    && GeometryUtils.valueOf(p.y - Math.min(a.y, b.y)) >= 0
-                    && GeometryUtils.valueOf(p.y - Math.max(a.y, b.y)) <= 0;
-        }
-
-        public boolean containWithoutEndpoint(Point2D p) {
-            return contain(p) && !p.equals(a) && !p.equals(b);
-        }
-
-    }
-
-    static class Point2D {
-        public final double x;
-        public final double y;
-
-        public Point2D(double x, double y) {
-            this.x = x;//GeometryUtils.valueOf(x);
-            this.y = y;//GeometryUtils.valueOf(y);
-        }
-
-        public double distance2Between(Point2D another) {
-            double dx = x - another.x;
-            double dy = y - another.y;
-            return dx * dx + dy * dy;
-        }
-
-        public double cross(Point2D a, Point2D b) {
-            return GeometryUtils.cross(a.x - x, a.y - y, b.x - x, b.y - y);
-        }
-
-        public String toString() {
-            return String.format("(%f, %f)", x, y);
-        }
-
-        public int hashCode() {
-            return (int) (Double.doubleToLongBits(x) * 31 + Double.doubleToLongBits(y));
-        }
-
-        public boolean equals(Object obj) {
-            Point2D other = (Point2D) obj;
-            return x == other.x && y == other.y;
-        }
-
-    }
-
-    static class DynamicConvexHull {
-        private TreeMap<Double, Point2D> pts = new TreeMap<>((a, b) -> GeometryUtils.near(a, b) ? 0 : a.compareTo(b));
-        private Point2D center;
-
-        public DynamicConvexHull(Point2D center) {
-            this.center = center;
-        }
-
-        public DynamicConvexHull(Point2D a, Point2D b, Point2D c) {
-            this(new Point2D((a.x + b.x + c.x) / 3, (a.y + b.y + c.y) / 3));
-            add(a);
-            add(b);
-            add(c);
-        }
-
-        private Map.Entry<Double, Point2D> clockwise(Double theta) {
-            Map.Entry<Double, Point2D> floor = pts.floorEntry(theta);
-            if (floor == null) {
-                floor = pts.lastEntry();
-            }
-            return floor;
-        }
-
-        private Map.Entry<Double, Point2D> countclockwise(Double theta) {
-            Map.Entry<Double, Point2D> ceil = pts.ceilingEntry(theta);
-            if (ceil == null) {
-                ceil = pts.firstEntry();
-            }
-            return ceil;
-        }
-
-        private boolean contain(Point2D point, Double theta, boolean close) {
-            Point2D cw = clockwise(theta).getValue();
-            Point2D ccw = countclockwise(theta).getValue();
-
-            if (cw == ccw) {
-                Segment2D seg = new Segment2D(center, ccw);
-                if (close) {
-                    return seg.contain(point);
-                }
-                return seg.containWithoutEndpoint(point);
-            }
-
-            if (close) {
-                return center.cross(cw, point) >= 0 && cw.cross(ccw, point) >= 0 && ccw.cross(center, point) >= 0;
-            }
-            return center.cross(cw, point) > 0 && cw.cross(ccw, point) > 0 && ccw.cross(center, point) > 0;
-        }
-
-        public boolean contain(Point2D point, boolean close) {
-            if (pts.isEmpty()) {
-                return false;
-            }
-            return contain(point, GeometryUtils.theta(point.y - center.y, point.x - center.x), close);
-        }
-
-        public void add(Point2D point) {
-            Double theta = GeometryUtils.theta(point.y - center.y, point.x - center.x);
-            if (pts.size() < 3) {
-                Point2D exists = pts.get(theta);
-                if (exists != null && center.distance2Between(exists) >= center.distance2Between(point)) {
-                    return;
-                }
-                pts.put(theta, point);
-                return;
-            }
-
-            if (contain(point, theta, true)) {
-                return;
-            }
-
-            // clockwise
-            while (pts.size() >= 3) {
-                Map.Entry<Double, Point2D> cw = clockwise(theta);
-                pts.remove(cw.getKey());
-                Point2D next = clockwise(theta).getValue();
-                if (point.cross(cw.getValue(), next) < 0) {
-                    pts.put(cw.getKey(), cw.getValue());
-                    break;
-                }
-            }
-            // counterclockwise
-            while (pts.size() >= 3) {
-                Map.Entry<Double, Point2D> ccw = countclockwise(theta);
-                pts.remove(ccw.getKey());
-                Point2D next = countclockwise(theta).getValue();
-                if (point.cross(ccw.getValue(), next) > 0) {
-                    pts.put(ccw.getKey(), ccw.getValue());
-                    break;
-                }
-            }
-
-            pts.put(theta, point);
         }
 
     }

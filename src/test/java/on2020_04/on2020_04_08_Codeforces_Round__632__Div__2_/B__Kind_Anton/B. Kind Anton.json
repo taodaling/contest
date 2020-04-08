@@ -1,0 +1,35 @@
+{
+  "name" : "B. Kind Anton",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5\n3\n1 -1 0\n1 1 -2\n3\n0 1 1\n0 2 2\n2\n1 0\n1 41\n2\n-1 0\n-1 -41\n5\n0 1 -1 1 -1\n1 1 -1 1 -1\n",
+    "output" : "YES\nNO\nYES\nYES\nNO\n",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_04.on2020_04_08_Codeforces_Round__632__Div__2_.B__Kind_Anton.BKindAnton",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.04.08",
+  "contestName" : "Codeforces Round #632 (Div. 2)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}
