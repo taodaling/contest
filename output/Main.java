@@ -2,14 +2,18 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.util.Arrays;
+import java.util.Collection;
 import java.io.IOException;
-import java.util.Random;
+import java.util.HashMap;
+import java.util.Deque;
+import java.util.ArrayList;
 import java.io.UncheckedIOException;
+import java.util.List;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
+import java.util.ArrayDeque;
 import java.io.InputStream;
 
 /**
@@ -18,9 +22,7 @@ import java.io.InputStream;
  */
 public class Main {
     public static void main(String[] args) throws Exception {
-        Thread thread = new Thread(null, new TaskAdapter(), "", 1 << 27);
-        thread.start();
-        thread.join();
+        new TaskAdapter().run();
     }
 
     static class TaskAdapter implements Runnable {
@@ -30,141 +32,197 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            FKateAndImperfection solver = new FKateAndImperfection();
+            Travel solver = new Travel();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class FKateAndImperfection {
-        Debug debug = new Debug(true);
+    static class Travel {
+        HashMap<String, Integer> boyNames = new HashMap<>(800);
+        HashMap<String, Integer> girlNames = new HashMap<>(800);
+        List<String> boys = new ArrayList<>(800);
+        List<String> girls = new ArrayList<>(800);
+
+        public int readBoyIndex(FastInput in) {
+            String name = in.readString();
+            Integer index = boyNames.get(name);
+            if (index == null) {
+                index = boys.size();
+                boys.add(name);
+                boyNames.put(name, index);
+            }
+            return index;
+        }
+
+        public int readGirlIndex(FastInput in) {
+            String name = in.readString();
+            Integer index = girlNames.get(name);
+            if (index == null) {
+                index = girls.size();
+                girls.add(name);
+                girlNames.put(name, index);
+            }
+            return index;
+        }
 
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            int[] factors = new int[n + 1];
-            factors[1] = 1;
-            for (int i = 1; i <= n; i++) {
-                for (int j = i + i; j <= n; j += i) {
-                    factors[j] = i;
+            int[][] boyPref = new int[n][n];
+            int[][] girlPref = new int[n][n];
+            for (int i = 0; i < n; i++) {
+                int index = readBoyIndex(in);
+                for (int j = 0; j < n; j++) {
+                    boyPref[index][readGirlIndex(in)] = n - j;
                 }
             }
-            debug.debug("factors", factors);
-            Randomized.shuffle(factors, 1, n + 1);
-            Arrays.sort(factors, 1, n + 1);
-            for (int i = 2; i <= n; i++) {
-                out.append(factors[i]).append(' ');
+            for (int i = 0; i < n; i++) {
+                int index = readGirlIndex(in);
+                for (int j = 0; j < n; j++) {
+                    girlPref[index][readBoyIndex(in)] = n - j;
+                }
+            }
+
+            out.println("YES");
+            StableMarriage sm = new StableMarriage(boyPref, girlPref);
+            for (int i = 0; i < n; i++) {
+                out.append(boys.get(i)).append(' ').append(girls.get(sm.wifeOf(i))).println();
             }
         }
 
     }
 
-    static class Debug {
-        private boolean offline;
-        private PrintStream out = System.err;
-        static int[] empty = new int[0];
+    static class StableMarriage {
+        private StableMarriage.Girl[] girls;
+        private StableMarriage.Boy[] boys;
 
-        public Debug(boolean enable) {
-            offline = enable && System.getSecurityManager() == null;
-        }
+        public StableMarriage(final int[][] boyFavors, final int[][] girlFavors) {
+            int n = boyFavors.length;
+            boys = new StableMarriage.Boy[n];
+            girls = new StableMarriage.Girl[n];
+            for (int i = 0; i < n; i++) {
+                girls[i] = new StableMarriage.Girl();
+                girls[i].id = i;
+            }
+            for (int i = 0; i < n; i++) {
+                final StableMarriage.Boy boy = new StableMarriage.Boy();
+                boy.id = i;
+                Arrays.sort(girls, (a, b) -> -Integer.compare(boyFavors[boy.id][a.id], boyFavors[boy.id][b.id]));
+                boy.remainChoices.addAll(Arrays.asList(girls));
+                boys[i] = boy;
+            }
+            Arrays.sort(girls, (a, b) -> Integer.compare(a.id, b.id));
 
-        public Debug debug(String name, Object x) {
-            return debug(name, x, empty);
-        }
-
-        public Debug debug(String name, Object x, int... indexes) {
-            if (offline) {
-                if (x == null || !x.getClass().isArray()) {
-                    out.append(name);
-                    for (int i : indexes) {
-                        out.printf("[%d]", i);
-                    }
-                    out.append("=").append("" + x);
-                    out.println();
+            Deque<StableMarriage.Boy> unmarried = new ArrayDeque<>(Arrays.asList(boys));
+            while (!unmarried.isEmpty()) {
+                StableMarriage.Boy head = unmarried.removeFirst();
+                StableMarriage.Girl girl = head.remainChoices.removeFirst();
+                if (girl.fere == null) {
+                    combine(head, girl);
+                } else if (girlFavors[girl.id][girl.fere.id] < girlFavors[girl.id][head.id]) {
+                    girl.fere.fere = null;
+                    unmarried.addLast(girl.fere);
+                    combine(head, girl);
                 } else {
-                    indexes = Arrays.copyOf(indexes, indexes.length + 1);
-                    if (x instanceof byte[]) {
-                        byte[] arr = (byte[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof short[]) {
-                        short[] arr = (short[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof boolean[]) {
-                        boolean[] arr = (boolean[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof char[]) {
-                        char[] arr = (char[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof int[]) {
-                        int[] arr = (int[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof float[]) {
-                        float[] arr = (float[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof double[]) {
-                        double[] arr = (double[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof long[]) {
-                        long[] arr = (long[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else {
-                        Object[] arr = (Object[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    }
+                    unmarried.addFirst(head);
                 }
+            }
+        }
+
+        public int wifeOf(int id) {
+            return boys[id].fere.id;
+        }
+
+        private void combine(StableMarriage.Boy boy, StableMarriage.Girl girl) {
+            boy.fere = girl;
+            girl.fere = boy;
+        }
+
+        private static class Girl {
+            StableMarriage.Boy fere;
+            int id;
+
+        }
+
+        private static class Boy {
+            StableMarriage.Girl fere;
+            Deque<StableMarriage.Girl> remainChoices = new ArrayDeque<>();
+            int id;
+
+        }
+
+    }
+
+    static class FastOutput implements AutoCloseable, Closeable, Appendable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
+
+        public FastOutput append(CharSequence csq) {
+            cache.append(csq);
+            return this;
+        }
+
+        public FastOutput append(CharSequence csq, int start, int end) {
+            cache.append(csq, start, end);
+            return this;
+        }
+
+        public FastOutput(Writer os) {
+            this.os = os;
+        }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput append(char c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput append(String c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput println(String c) {
+            return append(c).println();
+        }
+
+        public FastOutput println() {
+            cache.append(System.lineSeparator());
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
             }
             return this;
         }
 
-    }
-
-    static class Randomized {
-        private static Random random = new Random();
-
-        public static void shuffle(int[] data, int from, int to) {
-            to--;
-            for (int i = from; i <= to; i++) {
-                int s = nextInt(i, to);
-                int tmp = data[i];
-                data[i] = data[s];
-                data[s] = tmp;
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
             }
         }
 
-        public static int nextInt(int l, int r) {
-            return random.nextInt(r - l + 1) + l;
+        public String toString() {
+            return cache.toString();
         }
 
     }
 
     static class FastInput {
         private final InputStream is;
+        private StringBuilder defaultStringBuf = new StringBuilder(1 << 13);
         private byte[] buf = new byte[1 << 20];
         private int bufLen;
         private int bufOffset;
@@ -220,62 +278,20 @@ public class Main {
             return val;
         }
 
-    }
+        public String readString(StringBuilder builder) {
+            skipBlank();
 
-    static class FastOutput implements AutoCloseable, Closeable, Appendable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
-
-        public FastOutput append(CharSequence csq) {
-            cache.append(csq);
-            return this;
-        }
-
-        public FastOutput append(CharSequence csq, int start, int end) {
-            cache.append(csq, start, end);
-            return this;
-        }
-
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput append(char c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput append(int c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
+            while (next > 32) {
+                builder.append((char) next);
+                next = read();
             }
-            return this;
+
+            return builder.toString();
         }
 
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        }
-
-        public String toString() {
-            return cache.toString();
+        public String readString() {
+            defaultStringBuf.setLength(0);
+            return readString(defaultStringBuf);
         }
 
     }

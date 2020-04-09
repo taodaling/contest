@@ -19,6 +19,13 @@ public class StableMarriage {
         int id;
     }
 
+    /**
+     * O(n^2\log_2n)
+     * <br>
+     * boyFavors[i][j] means how much the boy i like the girl j. The same for girlFavors.
+     * @param boyFavors every boy has n girls in preference list
+     * @param girlFavors every girl has n boys in preference list
+     */
     public StableMarriage(final int[][] boyFavors, final int[][] girlFavors) {
         int n = boyFavors.length;
         boys = new Boy[n];

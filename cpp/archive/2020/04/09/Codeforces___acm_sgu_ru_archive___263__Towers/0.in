@@ -1,0 +1,23 @@
+22
+towers
+put 2 5
+put 1 6
+put 3 6
+put 3 3
+towers
+length 1
+put 6 3
+put 5 4
+length 2
+tcubes 2 1
+tcubes 2 2
+towers
+cubes 1
+cubes 2
+put 4 3
+towers
+cubes 1
+tput 1 6 50
+cubes 1
+tcubes 1 6
+length 1
