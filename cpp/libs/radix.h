@@ -12,7 +12,7 @@ class Radix {
     assert(radix > 1);
     T limit = numeric_limits<T>::max();
     _digits.push_back(1);
-    while (!decimal::IsMultiplicationOverflow(_digits.back(), radix, limit)) {
+    while (!decimal::IsMultiplicationOverflow<T>(_digits.back(), radix, limit)) {
       _digits.push_back(_digits.back() * radix);
     }
   }

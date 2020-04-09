@@ -19,6 +19,9 @@ public class PrimitiveRoot {
     }
 
     public int findMinPrimitiveRoot() {
+        if (mod.getMod() == 2) {
+            return 1;
+        }
         return findMinPrimitiveRoot(2);
     }
 

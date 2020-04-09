@@ -5,6 +5,7 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.io.IOException;
+import java.util.Random;
 import java.io.UncheckedIOException;
 import java.io.Closeable;
 import java.io.Writer;
@@ -29,377 +30,31 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            CEugeneAndAnArray solver = new CEugeneAndAnArray();
+            FKateAndImperfection solver = new FKateAndImperfection();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class CEugeneAndAnArray {
+    static class FKateAndImperfection {
         Debug debug = new Debug(true);
 
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            long[] a = new long[n];
-            for (int i = 0; i < n; i++) {
-                a[i] = in.readInt();
-            }
-
-            LongPreSum lps = new LongPreSum(a);
-            LongHashMap lhm = new LongHashMap(n + 1, false);
-            lhm.put(0, n);
-            int[] rights = new int[n];
-            for (int i = n - 1; i >= 0; i--) {
-                long suffix = lps.post(i);
-                rights[i] = (int) lhm.getOrDefault(suffix, n + 1) - 1;
-                lhm.put(suffix, i);
-            }
-
-            IntegerRMQ rmq = new IntegerRMQ(rights, Integer::compare);
-            int r = 0;
-            long ans = 0;
-            for (int i = 0; i < n; i++) {
-                r = Math.max(r, i);
-                int until = rights[rmq.query(i, r)];
-                while (r + 1 < n && r + 1 < until && a[r + 1] != 0) {
-                    r++;
-                    until = (int) Math.min(until, rights[r]);
-                }
-                if (r < until) {
-                    ans += r - i + 1;
+            int[] factors = new int[n + 1];
+            factors[1] = 1;
+            for (int i = 1; i <= n; i++) {
+                for (int j = i + i; j <= n; j += i) {
+                    factors[j] = i;
                 }
             }
-
-            debug.debug("rights", rights);
-            out.println(ans);
-        }
-
-    }
-
-    static class FastOutput implements AutoCloseable, Closeable, Appendable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
-
-        public FastOutput append(CharSequence csq) {
-            cache.append(csq);
-            return this;
-        }
-
-        public FastOutput append(CharSequence csq, int start, int end) {
-            cache.append(csq, start, end);
-            return this;
-        }
-
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput append(char c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput append(long c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput println(long c) {
-            return append(c).println();
-        }
-
-        public FastOutput println() {
-            cache.append(System.lineSeparator());
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
+            debug.debug("factors", factors);
+            Randomized.shuffle(factors, 1, n + 1);
+            Arrays.sort(factors, 1, n + 1);
+            for (int i = 2; i <= n; i++) {
+                out.append(factors[i]).append(' ');
             }
         }
-
-        public String toString() {
-            return cache.toString();
-        }
-
-    }
-
-    static interface LongEntryIterator {
-        boolean hasNext();
-
-        void next();
-
-        long getEntryKey();
-
-        long getEntryValue();
-
-    }
-
-    static class Hasher {
-        private long time = System.nanoTime() + System.currentTimeMillis();
-
-        private int shuffle(long x) {
-            x += time;
-            x += 0x9e3779b97f4a7c15L;
-            x = (x ^ (x >>> 30)) * 0xbf58476d1ce4e5b9L;
-            x = (x ^ (x >>> 27)) * 0x94d049bb133111ebL;
-            return (int) (x ^ (x >>> 31));
-        }
-
-        public int hash(long x) {
-            return shuffle(x);
-        }
-
-    }
-
-    static class LongPreSum {
-        private long[] pre;
-        private int n;
-
-        public LongPreSum(int n) {
-            pre = new long[n];
-        }
-
-        public void populate(long[] a) {
-            n = a.length;
-            pre[0] = a[0];
-            for (int i = 1; i < n; i++) {
-                pre[i] = pre[i - 1] + a[i];
-            }
-        }
-
-        public LongPreSum(long[] a) {
-            this(a.length);
-            populate(a);
-        }
-
-        public long prefix(int i) {
-            if (i < 0) {
-                return 0;
-            }
-            return pre[Math.min(i, n - 1)];
-        }
-
-        public long post(int i) {
-            return pre[n - 1] - prefix(i - 1);
-        }
-
-    }
-
-    static class CachedLog2 {
-        private static final int BITS = 16;
-        private static final int LIMIT = 1 << BITS;
-        private static final byte[] CACHE = new byte[LIMIT];
-
-        static {
-            int b = 0;
-            for (int i = 0; i < LIMIT; i++) {
-                while ((1 << (b + 1)) <= i) {
-                    b++;
-                }
-                CACHE[i] = (byte) b;
-            }
-        }
-
-        public static int ceilLog(int x) {
-            int ans = floorLog(x);
-            if ((1 << ans) < x) {
-                ans++;
-            }
-            return ans;
-        }
-
-        public static int floorLog(int x) {
-            return x < LIMIT ? CACHE[x] : (BITS + CACHE[x >>> BITS]);
-        }
-
-    }
-
-    static class LongHashMap {
-        private int[] slot;
-        private int[] next;
-        private long[] keys;
-        private long[] values;
-        private int alloc;
-        private boolean[] removed;
-        private int mask;
-        private int size;
-        private boolean rehash;
-        private Hasher hasher = new Hasher();
-
-        public LongHashMap(int cap, boolean rehash) {
-            this.mask = (1 << (32 - Integer.numberOfLeadingZeros(cap - 1))) - 1;
-            slot = new int[mask + 1];
-            next = new int[cap + 1];
-            keys = new long[cap + 1];
-            values = new long[cap + 1];
-            removed = new boolean[cap + 1];
-            this.rehash = rehash;
-        }
-
-        private void doubleCapacity() {
-            int newSize = Math.max(next.length + 10, next.length * 2);
-            next = Arrays.copyOf(next, newSize);
-            keys = Arrays.copyOf(keys, newSize);
-            values = Arrays.copyOf(values, newSize);
-            removed = Arrays.copyOf(removed, newSize);
-        }
-
-        public void alloc() {
-            alloc++;
-            if (alloc >= next.length) {
-                doubleCapacity();
-            }
-            next[alloc] = 0;
-            removed[alloc] = false;
-            size++;
-        }
-
-        private void rehash() {
-            int[] newSlots = new int[Math.max(16, slot.length * 2)];
-            int newMask = newSlots.length - 1;
-            for (int i = 0; i < slot.length; i++) {
-                if (slot[i] == 0) {
-                    continue;
-                }
-                int head = slot[i];
-                while (head != 0) {
-                    int n = next[head];
-                    int s = hash(keys[head]) & newMask;
-                    next[head] = newSlots[s];
-                    newSlots[s] = head;
-                    head = n;
-                }
-            }
-            this.slot = newSlots;
-            this.mask = newMask;
-        }
-
-        private int hash(long x) {
-            return hasher.hash(x);
-        }
-
-        public void put(long x, long y) {
-            put(x, y, true);
-        }
-
-        public void put(long x, long y, boolean cover) {
-            int h = hash(x);
-            int s = h & mask;
-            if (slot[s] == 0) {
-                alloc();
-                slot[s] = alloc;
-                keys[alloc] = x;
-                values[alloc] = y;
-            } else {
-                int index = findIndexOrLastEntry(s, x);
-                if (keys[index] != x) {
-                    alloc();
-                    next[index] = alloc;
-                    keys[alloc] = x;
-                    values[alloc] = y;
-                } else if (cover) {
-                    values[index] = y;
-                }
-            }
-            if (rehash && size >= slot.length) {
-                rehash();
-            }
-        }
-
-        public long getOrDefault(long x, long def) {
-            int h = hash(x);
-            int s = h & mask;
-            if (slot[s] == 0) {
-                return def;
-            }
-            int index = findIndexOrLastEntry(s, x);
-            return keys[index] == x ? values[index] : def;
-        }
-
-        private int findIndexOrLastEntry(int s, long x) {
-            int iter = slot[s];
-            while (keys[iter] != x) {
-                if (next[iter] != 0) {
-                    iter = next[iter];
-                } else {
-                    return iter;
-                }
-            }
-            return iter;
-        }
-
-        public LongEntryIterator iterator() {
-            return new LongEntryIterator() {
-                int index = 1;
-                int readIndex = -1;
-
-
-                public boolean hasNext() {
-                    while (index <= alloc && removed[index]) {
-                        index++;
-                    }
-                    return index <= alloc;
-                }
-
-
-                public long getEntryKey() {
-                    return keys[readIndex];
-                }
-
-
-                public long getEntryValue() {
-                    return values[readIndex];
-                }
-
-
-                public void next() {
-                    if (!hasNext()) {
-                        throw new IllegalStateException();
-                    }
-                    readIndex = index;
-                    index++;
-                }
-            };
-        }
-
-        public String toString() {
-            LongEntryIterator iterator = iterator();
-            StringBuilder builder = new StringBuilder("{");
-            while (iterator.hasNext()) {
-                iterator.next();
-                builder.append(iterator.getEntryKey()).append("->").append(iterator.getEntryValue()).append(',');
-            }
-            if (builder.charAt(builder.length() - 1) == ',') {
-                builder.setLength(builder.length() - 1);
-            }
-            builder.append('}');
-            return builder.toString();
-        }
-
-    }
-
-    static interface IntegerComparator {
-        public int compare(int a, int b);
 
     }
 
@@ -489,62 +144,21 @@ public class Main {
 
     }
 
-    static class IntegerRMQ {
-        public static final int NIL = Integer.MIN_VALUE;
-        int[] data;
-        int[] vals;
-        IntegerComparator comp;
-        int n;
+    static class Randomized {
+        private static Random random = new Random();
 
-        private int left(int i) {
-            return i << 1;
-        }
-
-        private int right(int i) {
-            return (i << 1) | 1;
-        }
-
-        public IntegerRMQ(int[] vals, IntegerComparator comp) {
-            this.comp = comp;
-            n = vals.length;
-            n = 1 << CachedLog2.ceilLog(n);
-            this.vals = vals;
-            data = new int[2 * n];
-            build(vals, 0, n - 1, 1);
-        }
-
-        private int merge(int a, int b) {
-            if (a == NIL || b == NIL) {
-                return a == NIL ? b : a;
-            }
-            return comp.compare(vals[a], vals[b]) < 0 ? a : b;
-        }
-
-        private void build(int[] vals, int l, int r, int i) {
-            if (l < r) {
-                int m = (l + r) >> 1;
-                build(vals, l, m, left(i));
-                build(vals, m + 1, r, right(i));
-                data[i] = merge(data[left(i)], data[right(i)]);
-            } else {
-                data[i] = l >= vals.length ? NIL : l;
+        public static void shuffle(int[] data, int from, int to) {
+            to--;
+            for (int i = from; i <= to; i++) {
+                int s = nextInt(i, to);
+                int tmp = data[i];
+                data[i] = data[s];
+                data[s] = tmp;
             }
         }
 
-        public int query(int l, int r) {
-            return query(l, r, 0, n - 1, 1);
-        }
-
-        private int query(int ll, int rr, int l, int r, int i) {
-            if (ll > r || l > rr) {
-                return NIL;
-            }
-            if (ll <= l && r <= rr) {
-                return data[i];
-            }
-            int m = (l + r) >> 1;
-            return merge(query(ll, rr, l, m, left(i)),
-                    query(ll, rr, m + 1, r, right(i)));
+        public static int nextInt(int l, int r) {
+            return random.nextInt(r - l + 1) + l;
         }
 
     }
@@ -604,6 +218,64 @@ public class Main {
             }
 
             return val;
+        }
+
+    }
+
+    static class FastOutput implements AutoCloseable, Closeable, Appendable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
+
+        public FastOutput append(CharSequence csq) {
+            cache.append(csq);
+            return this;
+        }
+
+        public FastOutput append(CharSequence csq, int start, int end) {
+            cache.append(csq, start, end);
+            return this;
+        }
+
+        public FastOutput(Writer os) {
+            this.os = os;
+        }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput append(char c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput append(int c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            return this;
+        }
+
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+
+        public String toString() {
+            return cache.toString();
         }
 
     }

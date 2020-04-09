@@ -27,15 +27,12 @@ public class ModPrimeRoot {
         x = mod.valueOf(x);
         k = powMod.valueOf(k);
         if (x == 0) {
-            if (k == 0) {
-                return;
-            }
             list.add(0);
             return;
         }
         if (k == 0) {
             if (x == 1) {
-                for (int i = 0, end = mod.getMod(); i < end; i++) {
+                for (int i = 1, end = mod.getMod(); i < end; i++) {
                     list.add(i);
                 }
                 return;
