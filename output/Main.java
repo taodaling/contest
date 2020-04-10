@@ -3,17 +3,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
-import java.util.Collection;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Deque;
-import java.util.ArrayList;
 import java.io.UncheckedIOException;
-import java.util.List;
+import java.math.BigDecimal;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
-import java.util.ArrayDeque;
 import java.io.InputStream;
 
 /**
@@ -32,197 +27,116 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            Travel solver = new Travel();
+            OptimistVsPessimist solver = new OptimistVsPessimist();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class Travel {
-        HashMap<String, Integer> boyNames = new HashMap<>(800);
-        HashMap<String, Integer> girlNames = new HashMap<>(800);
-        List<String> boys = new ArrayList<>(800);
-        List<String> girls = new ArrayList<>(800);
-
-        public int readBoyIndex(FastInput in) {
-            String name = in.readString();
-            Integer index = boyNames.get(name);
-            if (index == null) {
-                index = boys.size();
-                boys.add(name);
-                boyNames.put(name, index);
-            }
-            return index;
-        }
-
-        public int readGirlIndex(FastInput in) {
-            String name = in.readString();
-            Integer index = girlNames.get(name);
-            if (index == null) {
-                index = girls.size();
-                girls.add(name);
-                girlNames.put(name, index);
-            }
-            return index;
-        }
-
+    static class OptimistVsPessimist {
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            int[][] boyPref = new int[n][n];
-            int[][] girlPref = new int[n][n];
+            int k = in.readInt();
+            double[] areas = new double[n];
+            int inf = (int) 1e8;
             for (int i = 0; i < n; i++) {
-                int index = readBoyIndex(in);
-                for (int j = 0; j < n; j++) {
-                    boyPref[index][readGirlIndex(in)] = n - j;
+                double l = inf;
+                double r = -inf;
+                double b = inf;
+                double t = -inf;
+                for (int j = 0; j < 4; j++) {
+                    double x = in.readInt();
+                    double y = in.readInt();
+                    l = Math.min(l, x);
+                    r = Math.max(r, x);
+                    b = Math.min(b, y);
+                    t = Math.max(t, y);
                 }
-            }
-            for (int i = 0; i < n; i++) {
-                int index = readGirlIndex(in);
-                for (int j = 0; j < n; j++) {
-                    girlPref[index][readBoyIndex(in)] = n - j;
-                }
-            }
 
-            out.println("YES");
-            StableMarriage sm = new StableMarriage(boyPref, girlPref);
-            for (int i = 0; i < n; i++) {
-                out.append(boys.get(i)).append(' ').append(girls.get(sm.wifeOf(i))).println();
-            }
-        }
-
-    }
-
-    static class StableMarriage {
-        private StableMarriage.Girl[] girls;
-        private StableMarriage.Boy[] boys;
-
-        public StableMarriage(final int[][] boyFavors, final int[][] girlFavors) {
-            int n = boyFavors.length;
-            boys = new StableMarriage.Boy[n];
-            girls = new StableMarriage.Girl[n];
-            for (int i = 0; i < n; i++) {
-                girls[i] = new StableMarriage.Girl();
-                girls[i].id = i;
-            }
-            for (int i = 0; i < n; i++) {
-                final StableMarriage.Boy boy = new StableMarriage.Boy();
-                boy.id = i;
-                Arrays.sort(girls, (a, b) -> -Integer.compare(boyFavors[boy.id][a.id], boyFavors[boy.id][b.id]));
-                boy.remainChoices.addAll(Arrays.asList(girls));
-                boys[i] = boy;
-            }
-            Arrays.sort(girls, (a, b) -> Integer.compare(a.id, b.id));
-
-            Deque<StableMarriage.Boy> unmarried = new ArrayDeque<>(Arrays.asList(boys));
-            while (!unmarried.isEmpty()) {
-                StableMarriage.Boy head = unmarried.removeFirst();
-                StableMarriage.Girl girl = head.remainChoices.removeFirst();
-                if (girl.fere == null) {
-                    combine(head, girl);
-                } else if (girlFavors[girl.id][girl.fere.id] < girlFavors[girl.id][head.id]) {
-                    girl.fere.fere = null;
-                    unmarried.addLast(girl.fere);
-                    combine(head, girl);
+                Point2 center = new Point2((l + r) / 2.0, (b + t) / 2.0);
+                Point2 c1 = new Point2(in.readInt(), in.readInt());
+                Point2 c2 = new Point2(in.readInt(), in.readInt());
+                if (Point2.onSegment(center, c1, c2) || Point2.onSegment(center, c2, c1)) {
+                    areas[i] = 0;
                 } else {
-                    unmarried.addFirst(head);
+                    areas[i] = (r - l) * (t - b) / 2.0;
                 }
             }
-        }
 
-        public int wifeOf(int id) {
-            return boys[id].fere.id;
-        }
-
-        private void combine(StableMarriage.Boy boy, StableMarriage.Girl girl) {
-            boy.fere = girl;
-            girl.fere = boy;
-        }
-
-        private static class Girl {
-            StableMarriage.Boy fere;
-            int id;
-
-        }
-
-        private static class Boy {
-            StableMarriage.Girl fere;
-            Deque<StableMarriage.Girl> remainChoices = new ArrayDeque<>();
-            int id;
-
+            Arrays.sort(areas);
+            double max = 0;
+            double min = 0;
+            for (int i = 0; i < k; i++) {
+                min += areas[i];
+                max += areas[n - 1 - i];
+            }
+            out.append(min).append(' ').append(max);
         }
 
     }
 
-    static class FastOutput implements AutoCloseable, Closeable, Appendable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
+    static class Point2 implements Cloneable {
+        public final double x;
+        public final double y;
 
-        public FastOutput append(CharSequence csq) {
-            cache.append(csq);
-            return this;
+        public Point2(double x, double y) {
+            this.x = x;
+            this.y = y;
         }
 
-        public FastOutput append(CharSequence csq, int start, int end) {
-            cache.append(csq, start, end);
-            return this;
+        public Point2() {
+            this(0, 0);
         }
 
-        public FastOutput(Writer os) {
-            this.os = os;
+        public static double dot(double x1, double y1, double x2, double y2) {
+            return x1 * x2 + y1 * y2;
         }
 
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
+        private static double cross(double x1, double y1, double x2, double y2) {
+            return x1 * y2 - y1 * x2;
         }
 
-        public FastOutput append(char c) {
-            cache.append(c);
-            return this;
+        public static int orient(Point2 a, Point2 b, Point2 c) {
+            return GeoConstant.sign(cross(b.x - a.x, b.y - a.y, c.x - a.x, c.y - a.y));
         }
 
-        public FastOutput append(String c) {
-            cache.append(c);
-            return this;
+        public static boolean inDisk(Point2 a, Point2 b, Point2 c) {
+            return GeoConstant.sign(dot(a.x - c.x, a.y - c.y, b.x - c.x, b.y - c.y)) <= 0;
         }
 
-        public FastOutput println(String c) {
-            return append(c).println();
+        public static boolean onSegment(Point2 a, Point2 b, Point2 c) {
+            return orient(a, b, c) == 0 && inDisk(a, b, c);
         }
 
-        public FastOutput println() {
-            cache.append(System.lineSeparator());
-            return this;
-        }
-
-        public FastOutput flush() {
+        public Point2 clone() {
             try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
+                return (Point2) super.clone();
+            } catch (CloneNotSupportedException e) {
+                throw new RuntimeException(e);
             }
         }
 
         public String toString() {
-            return cache.toString();
+            return String.format("(%.6f, %.6f)", x, y);
+        }
+
+    }
+
+    static class GeoConstant {
+        public static final double PREC = 1e-6;
+
+        public static boolean isZero(double x) {
+            return -PREC <= x && x <= PREC;
+        }
+
+        public static int sign(double x) {
+            return isZero(x) ? 0 : x < 0 ? -1 : 1;
         }
 
     }
 
     static class FastInput {
         private final InputStream is;
-        private StringBuilder defaultStringBuf = new StringBuilder(1 << 13);
         private byte[] buf = new byte[1 << 20];
         private int bufLen;
         private int bufOffset;
@@ -278,20 +192,62 @@ public class Main {
             return val;
         }
 
-        public String readString(StringBuilder builder) {
-            skipBlank();
+    }
 
-            while (next > 32) {
-                builder.append((char) next);
-                next = read();
-            }
+    static class FastOutput implements AutoCloseable, Closeable, Appendable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
 
-            return builder.toString();
+        public FastOutput append(CharSequence csq) {
+            cache.append(csq);
+            return this;
         }
 
-        public String readString() {
-            defaultStringBuf.setLength(0);
-            return readString(defaultStringBuf);
+        public FastOutput append(CharSequence csq, int start, int end) {
+            cache.append(csq, start, end);
+            return this;
+        }
+
+        public FastOutput(Writer os) {
+            this.os = os;
+        }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput append(char c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput append(double c) {
+            cache.append(new BigDecimal(c).toPlainString());
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            return this;
+        }
+
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+
+        public String toString() {
+            return cache.toString();
         }
 
     }

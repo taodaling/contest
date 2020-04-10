@@ -1,29 +1,26 @@
 package template.geometry.geo2;
 
+import template.geometry.GeoConstant;
 import template.math.DigitUtils;
 
 import java.util.Comparator;
 import java.util.List;
 
-public class IntegerPoint {
-    public static final Comparator<IntegerPoint> SORT_BY_POLAR_ANGLE = (a, b) ->
+public class IntegerPoint2 {
+    public static final Comparator<IntegerPoint2> SORT_BY_POLAR_ANGLE = (a, b) ->
     {
         if (a.half() != b.half()) {
             return a.half() - b.half();
         }
         return orient(b, a);
     };
-    public static final IntegerPoint ORIGIN = new IntegerPoint(0, 0);
+    public static final IntegerPoint2 ORIGIN = new IntegerPoint2(0, 0);
 
     public final long x, y;
 
-    public IntegerPoint(long x, long y) {
+    public IntegerPoint2(long x, long y) {
         this.x = x;
         this.y = y;
-    }
-
-    public IntegerPoint() {
-        this(0, 0);
     }
 
     public double arg() {
@@ -45,39 +42,39 @@ public class IntegerPoint {
         return Math.sqrt(square());
     }
 
-    public IntegerPoint conj() {
-        return new IntegerPoint(x, -y);
+    public IntegerPoint2 conj() {
+        return new IntegerPoint2(x, -y);
     }
 
-    public IntegerPoint perpendicular() {
-        return new IntegerPoint(-y, x);
+    public IntegerPoint2 perpendicular() {
+        return new IntegerPoint2(-y, x);
     }
 
-    public static IntegerPoint plus(IntegerPoint a, IntegerPoint b) {
-        return new IntegerPoint(a.x + b.x, a.y + b.y);
+    public static IntegerPoint2 plus(IntegerPoint2 a, IntegerPoint2 b) {
+        return new IntegerPoint2(a.x + b.x, a.y + b.y);
     }
 
-    public static IntegerPoint minus(IntegerPoint a, IntegerPoint b) {
-        return new IntegerPoint(a.x - b.x, a.y - b.y);
+    public static IntegerPoint2 minus(IntegerPoint2 a, IntegerPoint2 b) {
+        return new IntegerPoint2(a.x - b.x, a.y - b.y);
     }
 
-    public static IntegerPoint mul(IntegerPoint a, long d) {
-        return new IntegerPoint(a.x * d, a.y * d);
+    public static IntegerPoint2 mul(IntegerPoint2 a, long d) {
+        return new IntegerPoint2(a.x * d, a.y * d);
     }
 
-    public static IntegerPoint div(IntegerPoint a, long d) {
-        return new IntegerPoint(a.x / d, a.y / d);
+    public static IntegerPoint2 div(IntegerPoint2 a, long d) {
+        return new IntegerPoint2(a.x / d, a.y / d);
     }
 
-    public static IntegerPoint mul(IntegerPoint a, IntegerPoint b) {
-        return new IntegerPoint(a.x * b.x - a.y * b.y, a.x * b.y + a.y * b.x);
+    public static IntegerPoint2 mul(IntegerPoint2 a, IntegerPoint2 b) {
+        return new IntegerPoint2(a.x * b.x - a.y * b.y, a.x * b.y + a.y * b.x);
     }
 
-    public static IntegerPoint div(IntegerPoint a, IntegerPoint b) {
+    public static IntegerPoint2 div(IntegerPoint2 a, IntegerPoint2 b) {
         return div(mul(a, b.conj()), b.square());
     }
 
-    public static long dot(IntegerPoint a, IntegerPoint b) {
+    public static long dot(IntegerPoint2 a, IntegerPoint2 b) {
         return a.x * b.x + a.y * b.y;
     }
 
@@ -85,11 +82,11 @@ public class IntegerPoint {
         return x1 * x2 + y1 * y2;
     }
 
-    public static long cross(IntegerPoint a, IntegerPoint b) {
+    public static long cross(IntegerPoint2 a, IntegerPoint2 b) {
         return a.x * b.y - a.y * b.x;
     }
 
-    public static long cross(IntegerPoint a, IntegerPoint b, IntegerPoint c) {
+    public static long cross(IntegerPoint2 a, IntegerPoint2 b, IntegerPoint2 c) {
         return cross(b.x - a.x, b.y - a.y,
                 c.x - a.x, c.y - a.y);
     }
@@ -98,40 +95,40 @@ public class IntegerPoint {
         return x1 * y2 - y1 * x2;
     }
 
-    public static boolean isPerpendicular(IntegerPoint a, IntegerPoint b) {
-        return Geo2Constant.isZero(dot(a, b));
+    public static boolean isPerpendicular(IntegerPoint2 a, IntegerPoint2 b) {
+        return GeoConstant.isZero(dot(a, b));
     }
 
-    public static boolean isParallel(IntegerPoint a, IntegerPoint b) {
-        return Geo2Constant.isZero(cross(a, b));
+    public static boolean isParallel(IntegerPoint2 a, IntegerPoint2 b) {
+        return GeoConstant.isZero(cross(a, b));
     }
 
     /**
      * 获得[0,pi) angle
      */
-    public static double angle(IntegerPoint a, IntegerPoint b) {
+    public static double angle(IntegerPoint2 a, IntegerPoint2 b) {
         return Math.acos(DigitUtils.clamp(dot(a, b) / a.abs() / b.abs(), -1.0, 1.0));
     }
 
-    public static int orient(IntegerPoint b, IntegerPoint c) {
-        return Geo2Constant.sign(cross(b, c));
+    public static int orient(IntegerPoint2 b, IntegerPoint2 c) {
+        return GeoConstant.sign(cross(b, c));
     }
 
-    public static int orient(IntegerPoint a, IntegerPoint b, IntegerPoint c) {
-        return Geo2Constant.sign(cross(b.x - a.x, b.y - a.y, c.x - a.x, c.y - a.y));
+    public static int orient(IntegerPoint2 a, IntegerPoint2 b, IntegerPoint2 c) {
+        return GeoConstant.sign(cross(b.x - a.x, b.y - a.y, c.x - a.x, c.y - a.y));
     }
 
-    public static boolean inAngle(IntegerPoint a, IntegerPoint b, IntegerPoint c,
-                                  IntegerPoint p) {
+    public static boolean inAngle(IntegerPoint2 a, IntegerPoint2 b, IntegerPoint2 c,
+                                  IntegerPoint2 p) {
         if (orient(a, b, c) < 0) {
-            IntegerPoint tmp = b;
+            IntegerPoint2 tmp = b;
             b = c;
             c = tmp;
         }
         return orient(a, b, p) >= 0 && orient(a, c, p) <= 0;
     }
 
-    public static double orientedAngle(IntegerPoint a, IntegerPoint b, IntegerPoint c) {
+    public static double orientedAngle(IntegerPoint2 a, IntegerPoint2 b, IntegerPoint2 c) {
         double angle = angle(minus(b, a), minus(c, a));
         if (orient(a, b, c) >= 0) {
             return angle;
@@ -140,7 +137,7 @@ public class IntegerPoint {
         }
     }
 
-    public static boolean isConvex(List<IntegerPoint> p) {
+    public static boolean isConvex(List<IntegerPoint2> p) {
         boolean hasPos = false, hasNeg = false;
         for (int i = 0, n = p.size(); i < n; i++) {
             int o = orient(p.get(i), p.get((i + 1) % n), p.get((i + 2) % n));
@@ -150,40 +147,40 @@ public class IntegerPoint {
         return !(hasPos & hasNeg);
     }
 
-    public static IntegerPoint translate(IntegerPoint pt, IntegerPoint vec) {
+    public static IntegerPoint2 translate(IntegerPoint2 pt, IntegerPoint2 vec) {
         return plus(pt, vec);
     }
 
-    public static IntegerPoint scale(IntegerPoint pt, long d) {
+    public static IntegerPoint2 scale(IntegerPoint2 pt, long d) {
         return mul(pt, d);
     }
 
-    public static IntegerPoint scale(IntegerPoint origin, IntegerPoint pt, long d) {
+    public static IntegerPoint2 scale(IntegerPoint2 origin, IntegerPoint2 pt, long d) {
         return plus(origin, mul(minus(pt, origin), d));
     }
 
-    public static IntegerPoint linearTransform(IntegerPoint p, IntegerPoint fp, IntegerPoint q, IntegerPoint fq, IntegerPoint r) {
+    public static IntegerPoint2 linearTransform(IntegerPoint2 p, IntegerPoint2 fp, IntegerPoint2 q, IntegerPoint2 fq, IntegerPoint2 r) {
         return plus(fp, mul(minus(r, p), div(minus(fq, fp), minus(q, p))));
     }
 
     /**
      * 判断c是否落在以a与b为直径两端的圆中（包含边界）
      */
-    public static boolean inDisk(IntegerPoint a, IntegerPoint b, IntegerPoint c) {
-        return Geo2Constant.sign(dot(a.x - c.x, a.y - c.y, b.x - c.x, b.y - c.y)) <= 0;
+    public static boolean inDisk(IntegerPoint2 a, IntegerPoint2 b, IntegerPoint2 c) {
+        return GeoConstant.sign(dot(a.x - c.x, a.y - c.y, b.x - c.x, b.y - c.y)) <= 0;
     }
 
     /**
      * 判断c是否在a到b的线段上
      */
-    public static boolean onSegment(IntegerPoint a, IntegerPoint b, IntegerPoint c) {
+    public static boolean onSegment(IntegerPoint2 a, IntegerPoint2 b, IntegerPoint2 c) {
         return orient(a, b, c) == 0 && inDisk(a, b, c);
     }
 
     /**
      * 获取线段a->b与线段c->d的交点
      */
-    public static IntegerPoint properIntersect(IntegerPoint a, IntegerPoint b, IntegerPoint c, IntegerPoint d) {
+    public static IntegerPoint2 properIntersect(IntegerPoint2 a, IntegerPoint2 b, IntegerPoint2 c, IntegerPoint2 d) {
         long oa = cross(c, d, a);
         long ob = cross(c, d, b);
         long oc = cross(a, b, c);
@@ -195,8 +192,8 @@ public class IntegerPoint {
         return null;
     }
 
-    public static IntegerPoint intersect(IntegerPoint a, IntegerPoint b, IntegerPoint c, IntegerPoint d) {
-        IntegerPoint pt = properIntersect(a, b, c, d);
+    public static IntegerPoint2 intersect(IntegerPoint2 a, IntegerPoint2 b, IntegerPoint2 c, IntegerPoint2 d) {
+        IntegerPoint2 pt = properIntersect(a, b, c, d);
         if (pt == null && onSegment(a, b, c)) {
             pt = c;
         }
@@ -212,22 +209,22 @@ public class IntegerPoint {
         return pt;
     }
 
-    private static int above(IntegerPoint a, IntegerPoint b) {
+    private static int above(IntegerPoint2 a, IntegerPoint2 b) {
         return b.y >= a.y ? 1 : 0;
     }
 
-    private static boolean crossRay(IntegerPoint a, IntegerPoint p, IntegerPoint q) {
+    private static boolean crossRay(IntegerPoint2 a, IntegerPoint2 p, IntegerPoint2 q) {
         return (above(a, q) - above(a, p)) * orient(a, p, q) > 0;
     }
 
     /**
      * 判断某个顶点是否落在矩形内，1表示矩形内，2表示矩形边缘，0表示矩形外
      */
-    public static int inPolygon(List<IntegerPoint> polygon, IntegerPoint pt) {
+    public static int inPolygon(List<IntegerPoint2> polygon, IntegerPoint2 pt) {
         int cross = 0;
         for (int i = 0, n = polygon.size(); i < n; i++) {
-            IntegerPoint cur = polygon.get(i);
-            IntegerPoint next = polygon.get((i + 1) % n);
+            IntegerPoint2 cur = polygon.get(i);
+            IntegerPoint2 next = polygon.get((i + 1) % n);
             if (onSegment(cur, next, pt)) {
                 return 2;
             }
@@ -241,11 +238,11 @@ public class IntegerPoint {
     /**
      * 判断某个顶点是否落在矩形内，1表示矩形内，2表示矩形边缘，0表示矩形外
      */
-    public static int inPolygonBorder(List<IntegerPoint[]> polygon, IntegerPoint pt) {
+    public static int inPolygonBorder(List<IntegerPoint2[]> polygon, IntegerPoint2 pt) {
         int cross = 0;
-        for (IntegerPoint[] pts : polygon) {
-            IntegerPoint cur = pts[0];
-            IntegerPoint next = pts[1];
+        for (IntegerPoint2[] pts : polygon) {
+            IntegerPoint2 cur = pts[0];
+            IntegerPoint2 next = pts[1];
             if (onSegment(cur, next, pt)) {
                 return 2;
             }
@@ -256,20 +253,20 @@ public class IntegerPoint {
         return cross % 2;
     }
 
-    public static long dist2(IntegerPoint a, IntegerPoint b) {
+    public static long dist2(IntegerPoint2 a, IntegerPoint2 b) {
         long dx = a.x - b.x;
         long dy = a.y - b.y;
         return dx * dx + dy * dy;
     }
 
-    public static double dist(IntegerPoint a, IntegerPoint b) {
+    public static double dist(IntegerPoint2 a, IntegerPoint2 b) {
         return Math.sqrt(dist2(a, b));
     }
 
     @Override
-    public IntegerPoint clone() {
+    public IntegerPoint2 clone() {
         try {
-            return (IntegerPoint) super.clone();
+            return (IntegerPoint2) super.clone();
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException(e);
         }
