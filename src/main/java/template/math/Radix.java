@@ -42,12 +42,12 @@ public class Radix {
         return pow[i];
     }
 
-    public int getBit(long x, int i) {
+    public int get(long x, int i) {
         return (int) (x / pow[i] % base);
     }
 
     public long setBit(long x, int i, long val) {
-        return x + (val - getBit(x, i)) * pow[i];
+        return x + (val - get(x, i)) * pow[i];
     }
 
     public int bitCount() {

@@ -4,7 +4,7 @@ import java.util.function.LongUnaryOperator;
 
 public class ExpressionSolver {
     private static ExtGCD extGCD = new ExtGCD();
-    private static LinearIntegerRange range = new LinearIntegerRange();
+    private static LinearFunctionCut range = new LinearFunctionCut();
 
     /**
      * Find ka=b(mod c) where k is the minimum possible non negative integer. <br>

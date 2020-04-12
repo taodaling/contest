@@ -1,0 +1,31 @@
+{
+  "name" : "CardboardBoxes",
+  "signature" : {
+    "name" : "count",
+    "result" : "long",
+    "arguments" : [ "long" ],
+    "argumentNames" : [ "S" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "47" ],
+    "result" : "0",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "470" ],
+    "result" : "6",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "4700" ],
+    "result" : "106",
+    "index" : 2,
+    "active" : true
+  } ],
+  "date" : "2020.04.12",
+  "contestName" : "TopCoder SRM #783",
+  "testClasses" : [ ],
+  "fqn" : "contest.CardboardBoxes",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

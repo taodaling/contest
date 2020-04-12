@@ -1,0 +1,31 @@
+{
+  "name" : "PaintItBlack",
+  "signature" : {
+    "name" : "findWalk",
+    "result" : "int[]",
+    "arguments" : [ "int", "int", "int[]", "int[]" ],
+    "argumentNames" : [ "n", "u", "a", "b" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "2", "0", "0", "1" ],
+    "result" : "0 1 0",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "3", "0", "0 1", "1 2" ],
+    "result" : "",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "4", "2", "0 1 2 3", "1 2 3 0" ],
+    "result" : "2 3 0 1 2",
+    "index" : 2,
+    "active" : true
+  } ],
+  "date" : "2020.04.11",
+  "contestName" : "TopCoder SRM #782",
+  "testClasses" : [ ],
+  "fqn" : "on2020_04.on2020_04_11_TopCoder_SRM__782.PaintItBlack.PaintItBlack",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

@@ -1,0 +1,45 @@
+{
+  "name" : "B. Edge Weight Assignment",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "6\n1 3\n2 3\n3 4\n4 5\n5 6\n",
+    "output" : "1 4\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "6\n1 3\n2 3\n3 4\n4 5\n4 6\n",
+    "output" : "3 3\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "7\n1 2\n2 7\n3 4\n4 7\n5 6\n6 7\n",
+    "output" : "1 6\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_04.on2020_04_12_Codeforces_Round__633__Div__1_.B__Edge_Weight_Assignment.BEdgeWeightAssignment",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.04.12",
+  "contestName" : "Codeforces Round #633 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

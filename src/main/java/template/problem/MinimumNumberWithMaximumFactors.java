@@ -9,8 +9,8 @@ import java.util.Arrays;
 
 public class MinimumNumberWithMaximumFactors {
     public static void main(String[] args) {
-        System.out.println(MinimumNumberWithMaximumFactors.find((long) 2e5));
-        //System.out.println(MinimumNumberWithMaximumFactors.divisionRelation(978217616376000L));
+        System.out.println(MinimumNumberWithMaximumFactors.find((long) 1e15));
+        System.out.println(MinimumNumberWithMaximumFactors.divisionRelation(978217616376000L));
         System.out.println(Arrays.toString(MinimumNumberWithMaximumFactors.maximumPrimeFactor((long) 1e12)));
         // System.out.println(new LongPollardRho().findAllFactors(978217616376000L));
     }

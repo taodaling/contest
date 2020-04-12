@@ -1,0 +1,36 @@
+{
+  "name" : "ABBAReplace",
+  "signature" : {
+    "name" : "countSteps",
+    "result" : "int",
+    "arguments" : [ "String", "int", "int", "int" ],
+    "argumentNames" : [ "Sprefix", "N", "seed", "threshold" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "AABABB", "6", "0", "0" ],
+    "result" : "4",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "", "0", "4", "7" ],
+    "result" : "0",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "ABBABAABABBBABBBB", "17", "0", "0" ],
+    "result" : "11",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "AABAA", "17", "47474747", "1000000000" ],
+    "result" : "10",
+    "index" : 3,
+    "active" : true
+  } ],
+  "date" : "2020.04.12",
+  "contestName" : "TopCoder SRM #783",
+  "testClasses" : [ ],
+  "fqn" : "on2020_04.on2020_04_12_TopCoder_SRM__783.ABBAReplace.ABBAReplace",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

@@ -1,18 +1,27 @@
 package template.math;
 
+import java.util.Arrays;
+
 public class GuassianElimination {
     double[][] mat;
-    double[] solutions;
     int rank;
-    static final double PREC = 1e-8;
+    final double prec;
     int n;
     int m;
+    boolean[] independent;
+    double[] solutions;
 
-    public GuassianElimination(int n, int m) {
+    public GuassianElimination(int n, int m, double prec) {
+        this.prec = prec;
         this.n = n;
         this.m = m;
         mat = new double[n + 1][m + 1];
         solutions = mat[n];
+        independent = new boolean[m];
+    }
+
+    public double[][] getMat() {
+        return mat;
     }
 
     public void clear(int n, int m) {
@@ -24,6 +33,7 @@ public class GuassianElimination {
             }
         }
         solutions = mat[n];
+        Arrays.fill(independent, false);
     }
 
 
@@ -44,7 +54,7 @@ public class GuassianElimination {
                 }
             }
 
-            if (Math.abs(mat[maxRow][i]) <= PREC) {
+            if (Math.abs(mat[maxRow][i]) <= prec) {
                 continue;
             }
             swapRow(now, maxRow);
@@ -61,7 +71,7 @@ public class GuassianElimination {
         }
 
         for (int i = now; i < n; i++) {
-            if (Math.abs(mat[i][m]) > PREC) {
+            if (Math.abs(mat[i][m]) > prec) {
                 return false;
             }
         }
@@ -70,12 +80,13 @@ public class GuassianElimination {
         for (int i = now - 1; i >= 0; i--) {
             int x = -1;
             for (int j = 0; j < m; j++) {
-                if (Math.abs(mat[i][j]) > PREC) {
+                if (Math.abs(mat[i][j]) > prec) {
                     x = j;
                     break;
                 }
             }
             mat[n][x] = mat[i][m] / mat[i][x];
+            independent[x] = true;
             for (int j = i - 1; j >= 0; j--) {
                 if (mat[j][x] == 0) {
                     continue;
@@ -105,6 +116,18 @@ public class GuassianElimination {
         for (int k = 0; k < m; k++) {
             mat[i][k] /= f;
         }
+    }
+
+    public int getRank() {
+        return rank;
+    }
+
+    public double[] getSolutions(){
+        return solutions;
+    }
+
+    public boolean[] getIndependent() {
+        return independent;
     }
 
     @Override

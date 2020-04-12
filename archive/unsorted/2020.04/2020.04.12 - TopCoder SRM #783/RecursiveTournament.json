@@ -1,0 +1,36 @@
+{
+  "name" : "RecursiveTournament",
+  "signature" : {
+    "name" : "count",
+    "result" : "int",
+    "arguments" : [ "String[]", "int" ],
+    "argumentNames" : [ "graph", "k" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "NYNфNNYфYNN", "2" ],
+    "result" : "355",
+    "index" : 0,
+    "active" : false
+  }, {
+    "arguments" : [ "NYYфNNYфNNN", "2" ],
+    "result" : "9",
+    "index" : 1,
+    "active" : false
+  }, {
+    "arguments" : [ "NYNфNNYфYNN", "1" ],
+    "result" : "4",
+    "index" : 2,
+    "active" : false
+  }, {
+    "arguments" : [ "NYYYNNYNNYYNNYYYYYNNYNNфNNYNYYNYYNNNYNYNYNNNNYYфNNNNYNNNNYNYYNYYNYYNYNNфNYYNYNNNYNNYYYNYYYNNYYNфYNNNNNYYNYNNYYNNYNYNYYYфYNYYYNNNYNYNYNYNNYNYNYNфNYYYNYNNNYYNNNNYNNNNYNNфYNYYNYYNYYYNYNYYYNYNNYYфYNYNYNYNNYYYNYNYNYYYNYNфNYNYNYNNNNYNYYYNNYYYNYNфNYYYYNNNNNNNNYNYYNNYNYNфYYNNYYYYNYYNNYYYYNYYYNYфYNNNNNYNYNYYNNNNYNYNYNYфNYYNNYYYNNNNYNYNNNNYNYNфNNNYYNYNYNYNYNNYNNNYNNYфNYNNYYNNNYNNYYNNYNYYNYNфNNYNNYYNYYNNNYYNNNYNNNNфNYNNYNYYNNYYYYYYYNYYYNNфYYNYNYYNNNYNNYYNNNNNYNYфYYYYYNYYNNNNYNNNYNYNYNNфNYNNNYNYYYYNNYYYYNNNNNYфYNYNNNYNNNNYYNYNYYYYYNYфYNYYNYYNYYYNNYNYYYNYNNN", "1000" ],
+    "result" : "71573222",
+    "index" : 3,
+    "active" : false
+  } ],
+  "date" : "2020.04.12",
+  "contestName" : "TopCoder SRM #783",
+  "testClasses" : [ "contest.RecursiveTournamentTestCase" ],
+  "fqn" : "contest.RecursiveTournament",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

@@ -1,0 +1,35 @@
+{
+  "name" : "Square Dance",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4\n1 1\n15\n3 3\n1 1 1\n1 2 1\n1 1 1\n1 3\n3 1 2\n1 3\n1 2 3\n",
+    "output" : "Case #1: 15\nCase #2: 16\nCase #3: 14\nCase #4: 14\n",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Solution",
+  "taskClass" : "on2020_04.on2020_04_11_Round_1A_2020___Code_Jam_2020.Square_Dance.SquareDance",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.04.11",
+  "contestName" : "Round 1A 2020 - Code Jam 2020",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

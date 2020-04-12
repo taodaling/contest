@@ -1,0 +1,40 @@
+{
+  "name" : "F. Strange Function",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "11\n4 1 3 3 7 8 7 9 10 7 11\n3 5 0 -2 5 3 6 7 8 2 4\n3\n3 7 10\n",
+    "output" : "YES\n20\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "6\n2 1 5 3 6 5\n3 -9 0 16 22 -14\n4\n2 3 5 6\n",
+    "output" : "NO\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.FStrangeFunction",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.04.12",
+  "contestName" : "Educational Codeforces Round 85 (Rated for Div. 2)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

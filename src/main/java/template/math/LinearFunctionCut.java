@@ -1,15 +1,15 @@
 package template.math;
 
-public class LinearIntegerRange {
+public class LinearFunctionCut {
     private long l;
     private long r;
 
-    public LinearIntegerRange(long l, long r) {
+    public LinearFunctionCut(long l, long r) {
         this.l = l;
         this.r = r;
     }
 
-    public LinearIntegerRange() {
+    public LinearFunctionCut() {
         this(Long.MIN_VALUE, Long.MAX_VALUE);
     }
 

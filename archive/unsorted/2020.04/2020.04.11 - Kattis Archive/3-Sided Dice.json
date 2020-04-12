@@ -1,0 +1,68 @@
+{
+  "name" : "3-Sided Dice",
+  "testType" : "MULTI_EOF",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "0 0 10000\n0 10000 0\n10000 0 0\n3000 4000 3000\n\n0 0 10000\n0 10000 0\n3000 4000 3000\n10000 0 0\n\n0 0 0\n",
+    "output" : "YES\nNO\n",
+    "index" : 0,
+    "active" : false
+  }, {
+    "input" : "10000 0 0\n0 10000 0\n0 0 10000\n0 10001 1\n\n0 0 0",
+    "output" : "NO",
+    "index" : 1,
+    "active" : false
+  }, {
+    "input" : "5000 5000 0\n0 5000 5000\n5000 0 5000\n5000 5000 0\n0 0 0",
+    "output" : "NO",
+    "index" : 2,
+    "active" : false
+  }, {
+    "input" : "\n5000 5000 0\n5000 5000 0\n10000 0 0\n6000 4000 0",
+    "index" : 3,
+    "active" : false
+  }, {
+    "input" : "5000 5000 0\n5000 5000 0\n10000 0 0\n10000 0 0",
+    "output" : "NO",
+    "index" : 4,
+    "active" : false
+  }, {
+    "input" : "10000 0 0\n10000 0 0\n5000 0 5000\n10000 0 0\n\n10000 0 0\n10000 0 0\n5000 5000 0\n10000 0 0\n\n10000 0 0\n0 10000 0\n0 0 10000\n1 1 9998\n\n10000 0 0\n0 10000 0\n0 0 10000\n1 9900 99",
+    "output" : "NO\nNO\nYES\nYES",
+    "index" : 5,
+    "active" : false
+  }, {
+    "input" : "0 0 10000\n0 0 0\n10000 0 0\n448 0 9500",
+    "output" : "YES",
+    "index" : 6,
+    "active" : false
+  }, {
+    "input" : "1 9999 0\n9999 1 0\n0 0 10000\n4000 4000 2000",
+    "index" : 7,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.SidedDice",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.04.11",
+  "contestName" : "Kattis Archive",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

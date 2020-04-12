@@ -28,6 +28,12 @@ public class LinearProgramming {
     int n;
     int m;
 
+    /**
+     *
+     * @param n constraint number
+     * @param m variable number
+     * @param prec precision
+     */
     public LinearProgramming(int n, int m, double prec) {
         this.prec = prec;
         this.n = n;
