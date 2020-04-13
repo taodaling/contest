@@ -1,0 +1,41 @@
+{
+  "name" : "CatAndMice",
+  "signature" : {
+    "name" : "countDirections",
+    "result" : "long",
+    "arguments" : [ "int", "int" ],
+    "argumentNames" : [ "N", "C" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "2", "2" ],
+    "result" : "8",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "2", "1" ],
+    "result" : "8",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "19", "3" ],
+    "result" : "48",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "1234", "3" ],
+    "result" : "180608",
+    "index" : 3,
+    "active" : true
+  }, {
+    "arguments" : [ "1234", "1212" ],
+    "result" : "0",
+    "index" : 4,
+    "active" : true
+  } ],
+  "date" : "2020.04.13",
+  "contestName" : "TopCoder SRM #760",
+  "testClasses" : [ ],
+  "fqn" : "on2020_04.on2020_04_13_TopCoder_SRM__760.CatAndMice.CatAndMice",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

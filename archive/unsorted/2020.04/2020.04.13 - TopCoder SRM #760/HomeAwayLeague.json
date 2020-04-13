@@ -1,0 +1,26 @@
+{
+  "name" : "HomeAwayLeague",
+  "signature" : {
+    "name" : "matches",
+    "result" : "int",
+    "arguments" : [ "int" ],
+    "argumentNames" : [ "x" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "4" ],
+    "result" : "12",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "8" ],
+    "result" : "15120",
+    "index" : 1,
+    "active" : true
+  } ],
+  "date" : "2020.04.13",
+  "contestName" : "TopCoder SRM #760",
+  "testClasses" : [ ],
+  "fqn" : "contest.HomeAwayLeague",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

@@ -1,3 +1,6 @@
+#ifndef BINARY_SEARCH_H
+#define BINARY_SEARCH_H
+
 #ifndef COMMON_H
 #define COMMON_H
 
@@ -126,748 +129,284 @@ const double PI = 3.14159265358979323846;
 
 #define C0(x) memset(x, 0, sizeof(x))
 #define C1(x) memset(x, -1, sizeof(x))
-#ifndef DEBUG_H
-#define DEBUG_H
-//          Copyright Louis Delacroix 2010 - 2014.
-// Distributed under the Boost Software License, Version 1.0.
-//    (See accompanying file LICENSE_1_0.txt or copy at
-//          http://www.boost.org/LICENSE_1_0.txt)
-//
-// A pretty printing library for C++
-//
-// Usage:
-// Include this header, and operator<< will "just work".
+#ifndef DECIMAL_H
+#define DECIMAL_H
 
-#ifndef H_PRETTY_PRINT
-#define H_PRETTY_PRINT
+namespace decimal {
 
-#include <cstddef>
-#include <iterator>
-#include <memory>
-#include <ostream>
-#include <set>
-#include <tuple>
-#include <type_traits>
-#include <unordered_set>
-#include <utility>
-#include <valarray>
-
-namespace pretty_print
-{
-    namespace detail
-    {
-        // SFINAE type trait to detect whether T::const_iterator exists.
-
-        struct sfinae_base
-        {
-            using yes = char;
-            using no  = yes[2];
-        };
-
-        template <typename T>
-        struct has_const_iterator : private sfinae_base
-        {
-        private:
-            template <typename C> static yes & test(typename C::const_iterator*);
-            template <typename C> static no  & test(...);
-        public:
-            static const bool value = sizeof(test<T>(nullptr)) == sizeof(yes);
-            using type =  T;
-        };
-
-        template <typename T>
-        struct has_begin_end : private sfinae_base
-        {
-        private:
-            template <typename C>
-            static yes & f(typename std::enable_if<
-                std::is_same<decltype(static_cast<typename C::const_iterator(C::*)() const>(&C::begin)),
-                             typename C::const_iterator(C::*)() const>::value>::type *);
-
-            template <typename C> static no & f(...);
-
-            template <typename C>
-            static yes & g(typename std::enable_if<
-                std::is_same<decltype(static_cast<typename C::const_iterator(C::*)() const>(&C::end)),
-                             typename C::const_iterator(C::*)() const>::value, void>::type*);
-
-            template <typename C> static no & g(...);
-
-        public:
-            static bool const beg_value = sizeof(f<T>(nullptr)) == sizeof(yes);
-            static bool const end_value = sizeof(g<T>(nullptr)) == sizeof(yes);
-        };
-
-    }  // namespace detail
-
-
-    // Holds the delimiter values for a specific character type
-
-    template <typename TChar>
-    struct delimiters_values
-    {
-        using char_type = TChar;
-        const char_type * prefix;
-        const char_type * delimiter;
-        const char_type * postfix;
-    };
-
-
-    // Defines the delimiter values for a specific container and character type
-
-    template <typename T, typename TChar>
-    struct delimiters
-    {
-        using type = delimiters_values<TChar>;
-        static const type values; 
-    };
-
-
-    // Functor to print containers. You can use this directly if you want
-    // to specificy a non-default delimiters type. The printing logic can
-    // be customized by specializing the nested template.
-
-    template <typename T,
-              typename TChar = char,
-              typename TCharTraits = ::std::char_traits<TChar>,
-              typename TDelimiters = delimiters<T, TChar>>
-    struct print_container_helper
-    {
-        using delimiters_type = TDelimiters;
-        using ostream_type = std::basic_ostream<TChar, TCharTraits>;
-
-        template <typename U>
-        struct printer
-        {
-            static void print_body(const U & c, ostream_type & stream)
-            {
-                using std::begin;
-                using std::end;
-
-                auto it = begin(c);
-                const auto the_end = end(c);
-
-                if (it != the_end)
-                {
-                    for ( ; ; )
-                    {
-                        stream << *it;
-
-                    if (++it == the_end) break;
-
-                    if (delimiters_type::values.delimiter != NULL)
-                        stream << delimiters_type::values.delimiter;
-                    }
-                }
-            }
-        };
-
-        print_container_helper(const T & container)
-        : container_(container)
-        { }
-
-        inline void operator()(ostream_type & stream) const
-        {
-            if (delimiters_type::values.prefix != NULL)
-                stream << delimiters_type::values.prefix;
-
-            printer<T>::print_body(container_, stream);
-
-            if (delimiters_type::values.postfix != NULL)
-                stream << delimiters_type::values.postfix;
-        }
-
-    private:
-        const T & container_;
-    };
-
-    // Specialization for pairs
-
-    template <typename T, typename TChar, typename TCharTraits, typename TDelimiters>
-    template <typename T1, typename T2>
-    struct print_container_helper<T, TChar, TCharTraits, TDelimiters>::printer<std::pair<T1, T2>>
-    {
-        using ostream_type = typename print_container_helper<T, TChar, TCharTraits, TDelimiters>::ostream_type;
-
-        static void print_body(const std::pair<T1, T2> & c, ostream_type & stream)
-        {
-            stream << c.first;
-            if (print_container_helper<T, TChar, TCharTraits, TDelimiters>::delimiters_type::values.delimiter != NULL)
-                stream << print_container_helper<T, TChar, TCharTraits, TDelimiters>::delimiters_type::values.delimiter;
-            stream << c.second;
-        }
-    };
-
-    // Specialization for tuples
-
-    template <typename T, typename TChar, typename TCharTraits, typename TDelimiters>
-    template <typename ...Args>
-    struct print_container_helper<T, TChar, TCharTraits, TDelimiters>::printer<std::tuple<Args...>>
-    {
-        using ostream_type = typename print_container_helper<T, TChar, TCharTraits, TDelimiters>::ostream_type;
-        using element_type = std::tuple<Args...>;
-
-        template <std::size_t I> struct Int { };
-
-        static void print_body(const element_type & c, ostream_type & stream)
-        {
-            tuple_print(c, stream, Int<0>());
-        }
-
-        static void tuple_print(const element_type &, ostream_type &, Int<sizeof...(Args)>)
-        {
-        }
-
-        static void tuple_print(const element_type & c, ostream_type & stream,
-                                typename std::conditional<sizeof...(Args) != 0, Int<0>, std::nullptr_t>::type)
-        {
-            stream << std::get<0>(c);
-            tuple_print(c, stream, Int<1>());
-        }
-
-        template <std::size_t N>
-        static void tuple_print(const element_type & c, ostream_type & stream, Int<N>)
-        {
-            if (print_container_helper<T, TChar, TCharTraits, TDelimiters>::delimiters_type::values.delimiter != NULL)
-                stream << print_container_helper<T, TChar, TCharTraits, TDelimiters>::delimiters_type::values.delimiter;
-
-            stream << std::get<N>(c);
-
-            tuple_print(c, stream, Int<N + 1>());
-        }
-    };
-
-    // Prints a print_container_helper to the specified stream.
-
-    template<typename T, typename TChar, typename TCharTraits, typename TDelimiters>
-    inline std::basic_ostream<TChar, TCharTraits> & operator<<(
-        std::basic_ostream<TChar, TCharTraits> & stream,
-        const print_container_helper<T, TChar, TCharTraits, TDelimiters> & helper)
-    {
-        helper(stream);
-        return stream;
-    }
-
-
-    // Basic is_container template; specialize to derive from std::true_type for all desired container types
-
-    template <typename T>
-    struct is_container : public std::integral_constant<bool,
-                                                        detail::has_const_iterator<T>::value &&
-                                                        detail::has_begin_end<T>::beg_value  &&
-                                                        detail::has_begin_end<T>::end_value> { };
-
-    template <typename T, std::size_t N>
-    struct is_container<T[N]> : std::true_type { };
-
-    template <std::size_t N>
-    struct is_container<char[N]> : std::false_type { };
-
-    template <typename T>
-    struct is_container<std::valarray<T>> : std::true_type { };
-
-    template <typename T1, typename T2>
-    struct is_container<std::pair<T1, T2>> : std::true_type { };
-
-    template <typename ...Args>
-    struct is_container<std::tuple<Args...>> : std::true_type { };
-
-
-    // Default delimiters
-
-    template <typename T> struct delimiters<T, char> { static const delimiters_values<char> values; };
-    template <typename T> const delimiters_values<char> delimiters<T, char>::values = { "[", ", ", "]" };
-    template <typename T> struct delimiters<T, wchar_t> { static const delimiters_values<wchar_t> values; };
-    template <typename T> const delimiters_values<wchar_t> delimiters<T, wchar_t>::values = { L"[", L", ", L"]" };
-
-
-    // Delimiters for (multi)set and unordered_(multi)set
-
-    template <typename T, typename TComp, typename TAllocator>
-    struct delimiters< ::std::set<T, TComp, TAllocator>, char> { static const delimiters_values<char> values; };
-
-    template <typename T, typename TComp, typename TAllocator>
-    const delimiters_values<char> delimiters< ::std::set<T, TComp, TAllocator>, char>::values = { "{", ", ", "}" };
-
-    template <typename T, typename TComp, typename TAllocator>
-    struct delimiters< ::std::set<T, TComp, TAllocator>, wchar_t> { static const delimiters_values<wchar_t> values; };
-
-    template <typename T, typename TComp, typename TAllocator>
-    const delimiters_values<wchar_t> delimiters< ::std::set<T, TComp, TAllocator>, wchar_t>::values = { L"{", L", ", L"}" };
-
-    template <typename T, typename TComp, typename TAllocator>
-    struct delimiters< ::std::multiset<T, TComp, TAllocator>, char> { static const delimiters_values<char> values; };
-
-    template <typename T, typename TComp, typename TAllocator>
-    const delimiters_values<char> delimiters< ::std::multiset<T, TComp, TAllocator>, char>::values = { "{", ", ", "}" };
-
-    template <typename T, typename TComp, typename TAllocator>
-    struct delimiters< ::std::multiset<T, TComp, TAllocator>, wchar_t> { static const delimiters_values<wchar_t> values; };
-
-    template <typename T, typename TComp, typename TAllocator>
-    const delimiters_values<wchar_t> delimiters< ::std::multiset<T, TComp, TAllocator>, wchar_t>::values = { L"{", L", ", L"}" };
-
-    template <typename T, typename THash, typename TEqual, typename TAllocator>
-    struct delimiters< ::std::unordered_set<T, THash, TEqual, TAllocator>, char> { static const delimiters_values<char> values; };
-
-    template <typename T, typename THash, typename TEqual, typename TAllocator>
-    const delimiters_values<char> delimiters< ::std::unordered_set<T, THash, TEqual, TAllocator>, char>::values = { "{", ", ", "}" };
-
-    template <typename T, typename THash, typename TEqual, typename TAllocator>
-    struct delimiters< ::std::unordered_set<T, THash, TEqual, TAllocator>, wchar_t> { static const delimiters_values<wchar_t> values; };
-
-    template <typename T, typename THash, typename TEqual, typename TAllocator>
-    const delimiters_values<wchar_t> delimiters< ::std::unordered_set<T, THash, TEqual, TAllocator>, wchar_t>::values = { L"{", L", ", L"}" };
-
-    template <typename T, typename THash, typename TEqual, typename TAllocator>
-    struct delimiters< ::std::unordered_multiset<T, THash, TEqual, TAllocator>, char> { static const delimiters_values<char> values; };
-
-    template <typename T, typename THash, typename TEqual, typename TAllocator>
-    const delimiters_values<char> delimiters< ::std::unordered_multiset<T, THash, TEqual, TAllocator>, char>::values = { "{", ", ", "}" };
-
-    template <typename T, typename THash, typename TEqual, typename TAllocator>
-    struct delimiters< ::std::unordered_multiset<T, THash, TEqual, TAllocator>, wchar_t> { static const delimiters_values<wchar_t> values; };
-
-    template <typename T, typename THash, typename TEqual, typename TAllocator>
-    const delimiters_values<wchar_t> delimiters< ::std::unordered_multiset<T, THash, TEqual, TAllocator>, wchar_t>::values = { L"{", L", ", L"}" };
-
-
-    // Delimiters for pair and tuple
-
-    template <typename T1, typename T2> struct delimiters<std::pair<T1, T2>, char> { static const delimiters_values<char> values; };
-    template <typename T1, typename T2> const delimiters_values<char> delimiters<std::pair<T1, T2>, char>::values = { "(", ", ", ")" };
-    template <typename T1, typename T2> struct delimiters< ::std::pair<T1, T2>, wchar_t> { static const delimiters_values<wchar_t> values; };
-    template <typename T1, typename T2> const delimiters_values<wchar_t> delimiters< ::std::pair<T1, T2>, wchar_t>::values = { L"(", L", ", L")" };
-
-    template <typename ...Args> struct delimiters<std::tuple<Args...>, char> { static const delimiters_values<char> values; };
-    template <typename ...Args> const delimiters_values<char> delimiters<std::tuple<Args...>, char>::values = { "(", ", ", ")" };
-    template <typename ...Args> struct delimiters< ::std::tuple<Args...>, wchar_t> { static const delimiters_values<wchar_t> values; };
-    template <typename ...Args> const delimiters_values<wchar_t> delimiters< ::std::tuple<Args...>, wchar_t>::values = { L"(", L", ", L")" };
-
-
-    // Type-erasing helper class for easy use of custom delimiters.
-    // Requires TCharTraits = std::char_traits<TChar> and TChar = char or wchar_t, and MyDelims needs to be defined for TChar.
-    // Usage: "cout << pretty_print::custom_delims<MyDelims>(x)".
-
-    struct custom_delims_base
-    {
-        virtual ~custom_delims_base() { }
-        virtual std::ostream & stream(::std::ostream &) = 0;
-        virtual std::wostream & stream(::std::wostream &) = 0;
-    };
-
-    template <typename T, typename Delims>
-    struct custom_delims_wrapper : custom_delims_base
-    {
-        custom_delims_wrapper(const T & t_) : t(t_) { }
-
-        std::ostream & stream(std::ostream & s)
-        {
-            return s << print_container_helper<T, char, std::char_traits<char>, Delims>(t);
-        }
-
-        std::wostream & stream(std::wostream & s)
-        {
-            return s << print_container_helper<T, wchar_t, std::char_traits<wchar_t>, Delims>(t);
-        }
-
-    private:
-        const T & t;
-    };
-
-    template <typename Delims>
-    struct custom_delims
-    {
-        template <typename Container>
-        custom_delims(const Container & c) : base(new custom_delims_wrapper<Container, Delims>(c)) { }
-
-        std::unique_ptr<custom_delims_base> base;
-    };
-
-    template <typename TChar, typename TCharTraits, typename Delims>
-    inline std::basic_ostream<TChar, TCharTraits> & operator<<(std::basic_ostream<TChar, TCharTraits> & s, const custom_delims<Delims> & p)
-    {
-        return p.base->stream(s);
-    }
-
-
-    // A wrapper for a C-style array given as pointer-plus-size.
-    // Usage: std::cout << pretty_print_array(arr, n) << std::endl;
-
-    template<typename T>
-    struct array_wrapper_n
-    {
-        typedef const T * const_iterator;
-        typedef T value_type;
-
-        array_wrapper_n(const T * const a, size_t n) : _array(a), _n(n) { }
-        inline const_iterator begin() const { return _array; }
-        inline const_iterator end() const { return _array + _n; }
-
-    private:
-        const T * const _array;
-        size_t _n;
-    };
-
-
-    // A wrapper for hash-table based containers that offer local iterators to each bucket.
-    // Usage: std::cout << bucket_print(m, 4) << std::endl;  (Prints bucket 5 of container m.)
-
-    template <typename T>
-    struct bucket_print_wrapper
-    {
-        typedef typename T::const_local_iterator const_iterator;
-        typedef typename T::size_type size_type;
-
-        const_iterator begin() const
-        {
-            return m_map.cbegin(n);
-        }
-
-        const_iterator end() const
-        {
-            return m_map.cend(n);
-        }
-
-        bucket_print_wrapper(const T & m, size_type bucket) : m_map(m), n(bucket) { }
-
-    private:
-        const T & m_map;
-        const size_type n;
-    };
-
-}   // namespace pretty_print
-
-
-// Global accessor functions for the convenience wrappers
-
-template<typename T>
-inline pretty_print::array_wrapper_n<T> pretty_print_array(const T * const a, size_t n)
-{
-    return pretty_print::array_wrapper_n<T>(a, n);
+ll Merge(int a, int b) {
+  static ll mask = (1ll << 32) - 1;
+  return ((ll)a << 32) | ((ll)b & mask);
 }
 
-template <typename T> pretty_print::bucket_print_wrapper<T>
-bucket_print(const T & m, typename T::size_type n)
-{
-    return pretty_print::bucket_print_wrapper<T>(m, n);
-}
-
-
-// Main magic entry point: An overload snuck into namespace std.
-// Can we do better?
-
-namespace std
-{
-    // Prints a container to the stream using default delimiters
-
-    template<typename T, typename TChar, typename TCharTraits>
-    inline typename enable_if< ::pretty_print::is_container<T>::value,
-                              basic_ostream<TChar, TCharTraits> &>::type
-    operator<<(basic_ostream<TChar, TCharTraits> & stream, const T & container)
-    {
-        return stream << ::pretty_print::print_container_helper<T, TChar, TCharTraits>(container);
-    }
-}
-
-
-
-#endif  // H_PRETTY_PRINT
-
-#ifdef LOCAL
-#define dbg(args...)                         \
-  {                                          \
-    string _s = #args;                       \
-    replace(_s.begin(), _s.end(), ',', ' '); \
-    stringstream _ss(_s);                    \
-    istream_iterator<string> _it(_ss);       \
-    err(_it, args);                          \
+template <class T>
+T CeilDiv(T a, T b) {
+  if (b < 0) {
+    a = -a;
+    b = -b;
   }
-void err(std::istream_iterator<string> it) {}
-template <typename T, typename... Args>
-void err(std::istream_iterator<string> it, T a, Args... args) {
-  cerr << *it << " = " << a << endl;
-  err(++it, args...);
+  T div = a / b;
+  if (b * div < a) {
+    div++;
+  }
+  return div;
 }
-#define dbg2(x) cerr << #x << "=" << (x) << endl
-#else
-#define dbg(args...) 42
-#define dbg2(x) 42
+
+template <class T>
+T FloorDiv(T a, T b) {
+  if (b < 0) {
+    a = -a;
+    b = -b;
+  }
+  T div = a / b;
+  if (b * div > a) {
+    div--;
+  }
+  return div;
+}
+
+template <class T>
+T RoundToInt(double x) {
+  return x >= 0 ? x + 0.5 : x - 0.5;
+}
+template <class T>
+int Sign(T x) {
+  return x < 0 ? -1 : x > 0 ? 1 : 0;
+}
+template <class T>
+bool IsPlusOverflow(T a, T b) {
+  if (Sign(a) != Sign(b)) {
+    return false;
+  }
+  if (a < 0) {
+    return a + b > 0;
+  } else {
+    return a + b < 0;
+  }
+}
+template <class T>
+bool IsMultiplicationOverflow(T a, T b, T limit) {
+  if (limit < 0) {
+    limit = -limit;
+  }
+  if (a < 0) {
+    a = -a;
+  }
+  if (b < 0) {
+    b = -b;
+  }
+  if (a == 0 || b == 0) {
+    return false;
+  }
+  // a * b > limit => a > limit / b
+  return a > limit / b;
+}
+}  // namespace decimal
+
 #endif
+
+namespace binary_search {
+template <class T>
+T BinarySearch(T l, T r, const function<bool(T)> &func) {
+  assert(l <= r);
+  while (l < r) {
+    T mid = (l + r) >> 1;
+    if (func(mid)) {
+      r = mid;
+    } else {
+      l = mid + 1;
+    }
+  }
+  return l;
+}
+
+template <class T>
+T BinarySearch(T l, T r, const function<bool(T)> &func, T absolute,
+               T relative) {
+  assert(l <= r);
+  while (r - l > absolute) {
+    if ((r < 0 && (r - l) < -r * relative) ||
+        (l > 0 && (r - l) < l * relative)) {
+      break;
+    }
+
+    T mid = (l + r) / 2.0;
+    if (func(mid)) {
+      r = mid;
+    } else {
+      l = mid;
+    }
+  }
+  return (l + r) / 2.0;
+}
+
+/**
+ * Used to find the maximum value of a lower convex.
+ * Assume f(-inf)<...<f(ans)=f(ans+1)=...=f(ans+k)>...>f(inf)
+ */
+template <class T>
+T TernarySearch(T l, T r, const function<T(T)> &func, T absolute, T relative) {
+  while (r - l > absolute) {
+    if (r < 0 && (r - l) / -r <= relative || l > 0 && (r - l) / l <= relative) {
+      break;
+    }
+    T dist = (r - l) / 3;
+    T ml = l + dist;
+    T mr = r - dist;
+    if (func(ml) < func(mr)) {
+      l = ml;
+    } else {
+      r = mr;
+    }
+  }
+  return (l + r) / 2;
+}
+
+/**
+ * Used to find the maximum value of a Upper convex.
+ * Assume f(-inf)<...<f(ans)=f(ans+1)=...=f(ans+k)>...>f(inf)
+ */
+template <class T>
+T TernarySearch(T l, T r, const function<T(T)> &func) {
+  while (r - l > 2) {
+    T ml = l + decimal::FloorDiv(r - l, 3);
+    T mr = r - decimal::CeilDiv(r - l, 3);
+    if (func(ml) < func(mr)) {
+      l = ml;
+    } else {
+      r = mr;
+    }
+  }
+  while (l < r) {
+    if (func(l) >= func(r)) {
+      r--;
+    } else {
+      l++;
+    }
+  }
+  return l;
+}
+}  // namespace binary_search
 
 #endif
 
 
-namespace treap {
-class Treap {
- private:
-  Treap(bool x) {
-    Treap();
-    _left = this;
-    _right = this;
-    _size = 0;
+using std::cin;
+using std::cout;
+
+bool less(int x, int y) {
+  cout << "? " << x << " " <<  y << endl;
+  cout.flush();
+  string ans;
+  cin >> ans;
+  if (ans == ("e")) {
+    exit(-1);
   }
+  return ans == ("y");
+}
 
- public:
-  Treap() {
-    _left = NIL;
-    _right = NIL;
-    _size = 1;
-    _key = 0;
+bool leq(int x, int y) { return !less(y, x); }
+
+bool geq(int x, int y) { return less(y, x); }
+
+void answer(int a) {
+  cout << "! " << a << endl;
+  cout.flush();
+}
+
+int nextInt() { return uniform_int_distribution<int>(1, 1e9)(rng); }
+
+int pow(int x, int n) { return n == 0 ? 1 : x * pow(x, n - 1); }
+
+int log(int x, int y) {
+  int ans = 0;
+  while (y % x == 0) {
+    y /= x;
+    ans++;
   }
+  return ans;
+}
 
-  static Treap *NIL;
-  Treap *_left;
-  Treap *_right;
-  int _size;
-  int _key;
-
-  void pushDown() {
-    if (this == NIL) {
-      return;
-    }
-  }
-
-  void pushUp() {
-    if (this == NIL) {
-      return;
-    }
-    _size = _left->_size + _right->_size + 1;
-  }
-
-  /**
-   * split by rank and the node whose rank is argument will stored at result[0]
-   */
-  static pair<Treap *, Treap *> SplitByRank(Treap *root, int rank) {
-    if (root == NIL) {
-      return make_pair(NIL, NIL);
-    }
-    root->pushDown();
-    pair<Treap *, Treap *> result;
-    if (root->_left->_size >= rank) {
-      result = SplitByRank(root->_left, rank);
-      root->_left = result.second;
-      result.second = root;
-    } else {
-      result =
-          SplitByRank(root->_right, rank - (root->_size - root->_right->_size));
-      root->_right = result.first;
-      result.first = root;
-    }
-    root->pushUp();
-    return result;
-  }
-
-  static Treap *Merge(Treap *a, Treap *b) {
-    if (a == NIL) {
-      return b;
-    }
-    if (b == NIL) {
-      return a;
-    }
-    if (uniform_int_distribution<int>(1, a->_size + b->_size)(rng) <=
-        a->_size) {
-      a->pushDown();
-      a->_right = Merge(a->_right, b);
-      a->pushUp();
-      return a;
-    } else {
-      b->pushDown();
-      b->_left = Merge(a, b->_left);
-      b->pushUp();
-      return b;
+void solve() {
+  int x = 0;
+  int y = 0;
+  while (true) {
+    x = nextInt();
+    y = x + nextInt();
+    if (leq(y, x)) {
+      break;
     }
   }
 
-  static Treap *DeepClone(const Treap *root) {
-    if (root == NIL) {
-      return NIL;
-    }
-    Treap *cl = new Treap(*root);
-    cl->_left = DeepClone(cl->_left);
-    cl->_right = DeepClone(cl->_right);
-    return cl;
-  }
-
-  /**
-   * nodes with key <= arguments will stored at result[0]
-   */
-  static pair<Treap *, Treap *> SplitByKey(Treap *root, int key) {
-    if (root == NIL) {
-      return make_pair(NIL, NIL);
-    }
-    root->pushDown();
-    pair<Treap *, Treap *> result;
-    if (root->_key > key) {
-      result = SplitByKey(root->_left, key);
-      root->_left = result.second;
-      result.second = root;
-    } else {
-      result = SplitByKey(root->_right, key);
-      root->_right = result.first;
-      result.first = root;
-    }
-    root->pushUp();
-    return result;
-  }
-
-  static int GetKeyByRank(Treap *treap, int k) {
-    while (treap->_size > 1) {
-      treap->pushDown();
-      if (treap->_left->_size >= k) {
-        treap = treap->_left;
+  int parents;
+  {
+    ll l = x;
+    ll r = y;
+    while (r - l > 1) {
+      ll m = (l + r) >> 1;
+      if (geq(m, r)) {
+        l = m;
       } else {
-        k -= treap->_left->_size;
-        if (k == 1) {
-          break;
-        }
-        k--;
-        treap = treap->_right;
+        // m > l
+        r = m;
       }
     }
-    return treap->_key;
-  }
-
-  static int GetRankByKey(Treap *treap, int key) {
-    int rank = 0;
-    while (treap != NIL) {
-      if (treap->_key == key) {
-        rank += treap->_left->_size + 1;
-        return rank;
-      } else if (treap->_key < key) {
-        rank += treap->_left->_size + 1;
-        treap = treap->_right;
+    if (r > l) {
+      if (geq(r, l)) {
+        r = l;
       } else {
-        treap = treap->_left;
+        l = r;
       }
     }
-    return rank;
+    parents = l;
   }
-};
 
-Treap *Treap::NIL = new Treap(false);
-
-void dfs(ostream &out, Treap *root) {
-  if (root == Treap::NIL) {
-    return;
+  vector<int> primes;
+  int tmp = parents;
+  for (int i = 2; i * i <= tmp; i++) {
+    if (tmp % i != 0) {
+      continue;
+    }
+    primes.push_back(i);
+    while (tmp % i == 0) {
+      tmp /= i;
+    }
   }
-  root->pushDown();
-  dfs(out, root->_left);
-  out << root->_key << ',';
-  dfs(out, root->_right);
-}
-ostream &operator<<(ostream &out, const Treap *root) {
-  dfs(out, Treap::DeepClone(root));
-  return out;
-}
-}  // namespace treap
 
-using namespace treap;
-using pt = pair<Treap *, Treap *>;
-
-vector<int> cubes(1000000 + 100);
-vector<int> length(1000000 + 100);
-vector<ll> total(1000000 + 100);
-Treap *root = Treap::NIL;
-
-int getByRank(int rank) { return Treap::GetKeyByRank(root, rank); }
-
-int nearKey(int key) {
-  int prev = -1;
-  pt split = Treap::SplitByKey(root, key);
-  if (X(split)->_size > 0) {
-    prev = Treap::GetKeyByRank(X(split), X(split)->_size);
+  if (tmp > 1) {
+    primes.push_back(tmp);
   }
-  root = Treap::Merge(X(split), Y(split));
-  return prev;
-}
 
-void removeKey(int key) {
-  pt split = Treap::SplitByKey(root, key);
-  pt lsplit = Treap::SplitByKey(X(split), key - 1);
-  X(split) = X(lsplit);
-  root = Treap::Merge(X(split), Y(split));
-}
+  int ans = 1;
+  for (int p : primes) {
+    int l = 0;
+    int r = log(p, parents);
 
-void addKey(int key) {
-  Treap *t = new Treap();
-  t->_key = key;
-  pt split = Treap::SplitByKey(root, key);
-  X(split) = Treap::Merge(X(split), t);
-  root = Treap::Merge(X(split), Y(split));
-}
-
-void MergeKey(int a, int b) {
-  if (a > b) {
-    swap(a, b);
+    int remain = binary_search::BinarySearch<int>(l, r, [&](int mid) {
+      int cand = parents / pow(p, r - mid);
+      return leq(cand, 0);
+    });
+    ans *= pow(p, remain);
   }
-  if (a + length[a] < b) {
-    return;
-  }
-  removeKey(b);
-  length[a] += length[b];
-  total[a] += total[b];
+
+  answer(ans);
 }
 
 void solve(int testId, istream &in, ostream &out) {
-  stringstream ss;
-
-  int n;
-  in >> n;
-  for (int i = 0; i < n; i++) {
-    string s;
-    in >> s;
-    if (s == "put") {
-      int x, c;
-      in >> x >> c;
-      cubes[x] += c;
-      if (cubes[x] == c) {
-        length[x] = 1;
-        total[x] += c;
-        addKey(x);
-        if (cubes[x + 1]) {
-          MergeKey(x, x + 1);
-        }
-        if (cubes[x - 1]) {
-          MergeKey(nearKey(x - 1), x);
-        }
-      }else{
-        int offset = nearKey(x);
-        total[offset] += c;
-      }
-    } else if (s == "tput") {
-      int t, x, c;
-      in >> t >> x >> c;
-      int offset = getByRank(t);
-      cubes[offset + x - 1] += c;
-      total[offset] += c;
-    } else if (s == "towers") {
-      int ans = root->_size;
-      ss << ans << " towers" << endl;
-    } else if (s == "length") {
-      int t;
-      in >> t;
-      int offset = getByRank(t);
-      ss << "length of " << t << "th tower is " << length[offset] << endl;
-    } else if (s == "cubes") {
-      int t;
-      in >> t;
-      int offset = getByRank(t);
-      ss << total[offset] << " cubes in " << t << "th tower" << endl;
-    } else if (s == "tcubes") {
-      int t, x;
-      in >> t >> x;
-      int offset = getByRank(t);
-      ss << cubes[offset + x - 1] << " cubes in " << x << "th column of " << t
-         << "th tower" << endl;
-    } else {
-      exit(1);
+  while (true) {
+    string cmd;
+    in >> cmd;
+    if (cmd == ("start")) {
+      solve();
+      continue;
     }
-
-    dbg(root);
+    if (cmd == ("mistake")) {
+      exit(-1);
+    }
+    if (cmd == ("end")) {
+      return;
+    }
   }
-
-  out << ss.str();
 }
 
 RUN_ONCE

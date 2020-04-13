@@ -1,2 +1,2 @@
-46 src/main/java/contest/G. Substring Search.json
+39 src/main/java/contest/A. Grid game.json
 0
