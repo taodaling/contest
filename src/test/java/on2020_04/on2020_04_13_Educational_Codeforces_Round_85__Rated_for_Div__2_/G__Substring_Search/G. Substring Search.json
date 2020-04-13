@@ -1,0 +1,40 @@
+{
+  "name" : "G. Substring Search",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2 3 1 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26\nabc\nabcaaba\n",
+    "output" : "11001\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "3 15 2 7 9 12 26 8 21 18 17 20 14 4 25 13 5 19 1 24 16 23 6 10 22 11\naca\naccbcbacbbbcbccbbcbbbcbcaccccaacbbcaaaccaabbbaccacccbccabacbbccbccbabcbcccbaacacaaaccbbacbcbacabbcaa",
+    "output" : "10101000000100000000010011110000000001100000011011010101000000100101010101001010001000001010100000",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx512M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_04.on2020_04_13_Educational_Codeforces_Round_85__Rated_for_Div__2_.G__Substring_Search.GSubstringSearch",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.04.13",
+  "contestName" : "Educational Codeforces Round 85 (Rated for Div. 2)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

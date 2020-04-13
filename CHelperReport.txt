@@ -1,3 +1,2 @@
-49 src/main/java/contest/D. Nested Rubber Bands.json
-1
-2
+46 src/main/java/contest/G. Substring Search.json
+0

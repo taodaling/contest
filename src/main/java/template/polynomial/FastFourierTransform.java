@@ -68,22 +68,22 @@ public class FastFourierTransform {
         }
     }
 
-    private static void add(double r1, double i1, double r2, double i2, double[][] r, int i) {
+    public static void add(double r1, double i1, double r2, double i2, double[][] r, int i) {
         r[0][i] = r1 + r2;
         r[1][i] = i1 + i2;
     }
 
-    private static void sub(double r1, double i1, double r2, double i2, double[][] r, int i) {
+    public static void sub(double r1, double i1, double r2, double i2, double[][] r, int i) {
         r[0][i] = r1 - r2;
         r[1][i] = i1 - i2;
     }
 
-    private static void mul(double r1, double i1, double r2, double i2, double[][] r, int i) {
+    public static void mul(double r1, double i1, double r2, double i2, double[][] r, int i) {
         r[0][i] = r1 * r2 - i1 * i2;
         r[1][i] = r1 * i2 + i1 * r2;
     }
 
-    private static void div(double r1, double i1, double r2, double[][] r, int i) {
+    public static void div(double r1, double i1, double r2, double[][] r, int i) {
         r[0][i] = r1 / r2;
         r[1][i] = i1 / r2;
     }
