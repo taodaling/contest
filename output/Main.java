@@ -2,10 +2,10 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintStream;
+import java.util.Arrays;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.io.UncheckedIOException;
-import java.util.List;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
@@ -29,186 +29,139 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            CJohnnySolving solver = new CJohnnySolving();
+            ENikitaAndOrderStatistics solver = new ENikitaAndOrderStatistics();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class CJohnnySolving {
+    static class ENikitaAndOrderStatistics {
+        Debug debug = new Debug(true);
+
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            int m = in.readInt();
-            int k = in.readInt();
-
-            Node[] nodes = new Node[n];
+            int x = in.readInt();
+            int[] a = new int[n];
             for (int i = 0; i < n; i++) {
-                nodes[i] = new Node();
-                nodes[i].id = i;
+                a[i] = in.readInt() < x ? 1 : 0;
             }
-            for (int i = 0; i < m; i++) {
-                Node a = nodes[in.readInt() - 1];
-                Node b = nodes[in.readInt() - 1];
-                a.next.add(b);
-                b.next.add(a);
-            }
-
-            dfs(nodes[0], null, 0);
-            Node maxDepth = null;
-            for (Node node : nodes) {
-                if (maxDepth == null || maxDepth.depth < node.depth) {
-                    maxDepth = node;
-                }
-            }
-
-            List<Node> trace = new ArrayList<>(n);
-            if (maxDepth.depth >= DigitUtils.ceilDiv(n, k)) {
-                up(maxDepth, nodes[0], trace);
-                out.println("PATH");
-                out.println(trace.size());
-                for (Node node : trace) {
-                    out.append(node.id + 1).append(' ');
-                }
-                return;
-            }
-
-            out.println("CYCLES");
-            int cnt = 0;
+            int[] prefixCnt = new int[n + 1];
+            prefixCnt[0]++;
+            long[] ans = new long[n + 1];
+            IntegerPreSum ps = new IntegerPreSum(a);
             for (int i = 0; i < n; i++) {
-                if (!nodes[i].leaf) {
-                    continue;
+                int prefix = ps.prefix(i);
+                ans[0] += prefixCnt[prefix];
+                prefixCnt[prefix]++;
+            }
+
+            debug.debug("prefixCnt", prefixCnt);
+            int proper = Log2.ceilLog(n + n + 1);
+            double[][] p1 = new double[2][1 << proper];
+            double[][] p2 = new double[2][1 << proper];
+            for (int i = 0; i <= n; i++) {
+                p1[0][i] = prefixCnt[i];
+                p2[0][i] = prefixCnt[i];
+            }
+            SequenceUtils.reverse(p1[0], 0, n);
+            FastFourierTransform.dft(p1, proper);
+            FastFourierTransform.dft(p2, proper);
+            FastFourierTransform.dotMul(p1, p2, p1, proper);
+            FastFourierTransform.idft(p1, proper);
+            SequenceUtils.reverse(p1[0], 0, n);
+            SequenceUtils.reverse(p1[1], 0, n);
+
+            out.append(ans[0]).append(' ');
+            for (int i = 1; i <= n; i++) {
+                long val = DigitUtils.round(p1[0][i]);
+                out.append(val).append(' ');
+            }
+        }
+
+    }
+
+    static class FastFourierTransform {
+        private static double[][] realLevels = new double[30][];
+        private static double[][] imgLevels = new double[30][];
+
+        private static void prepareLevel(int i) {
+            if (realLevels[i] == null) {
+                realLevels[i] = new double[1 << i];
+                imgLevels[i] = new double[1 << i];
+                for (int j = 0, s = 1 << i; j < s; j++) {
+                    realLevels[i][j] = Math.cos(Math.PI / s * j);
+                    imgLevels[i][j] = Math.sin(Math.PI / s * j);
                 }
-                cnt++;
-                if (cnt > k) {
-                    continue;
+            }
+        }
+
+        public static void dotMul(double[][] a, double[][] b, double[][] c, int m) {
+            for (int i = 0, n = 1 << m; i < n; i++) {
+                mul(a[0][i], a[1][i], b[0][i], b[1][i], c, i);
+            }
+        }
+
+        public static void dft(double[][] p, int m) {
+            int n = 1 << m;
+
+            int shift = 32 - Integer.numberOfTrailingZeros(n);
+            for (int i = 1; i < n; i++) {
+                int j = Integer.reverse(i << shift);
+                if (i < j) {
+                    SequenceUtils.swap(p[0], i, j);
+                    SequenceUtils.swap(p[1], i, j);
                 }
-                Node a = nodes[i].next.get(0);
-                Node b = nodes[i].next.get(1);
-                trace.clear();
-                if ((nodes[i].depth - a.depth + 1) % 3 != 0) {
-                    up(nodes[i], a, trace);
-                } else if ((nodes[i].depth - b.depth + 1) % 3 != 0) {
-                    up(nodes[i], b, trace);
-                } else {
-                    trace.add(nodes[i]);
-                    if (a.depth < b.depth) {
-                        Node tmp = a;
-                        a = b;
-                        b = tmp;
+            }
+
+            double[][] t = new double[2][1];
+            for (int d = 0; d < m; d++) {
+                int s = 1 << d;
+                int s2 = s << 1;
+                prepareLevel(d);
+                for (int i = 0; i < n; i += s2) {
+                    for (int j = 0; j < s; j++) {
+                        int a = i + j;
+                        int b = a + s;
+                        mul(realLevels[d][j], imgLevels[d][j], p[0][b], p[1][b], t, 0);
+                        sub(p[0][a], p[1][a], t[0][0], t[1][0], p, b);
+                        add(p[0][a], p[1][a], t[0][0], t[1][0], p, a);
                     }
-                    up(a, b, trace);
-                }
-                out.println(trace.size());
-                for (Node node : trace) {
-                    out.append(node.id + 1).append(' ');
-                }
-                out.println();
-            }
-        }
-
-        public void up(Node root, Node target, List<Node> trace) {
-            trace.add(root);
-            if (target != root) {
-                up(root.p, target, trace);
-            }
-        }
-
-        public void dfs(Node root, Node p, int d) {
-            root.depth = d;
-            root.p = p;
-            root.next.remove(p);
-
-            for (Node node : root.next) {
-                if (node.depth == -1) {
-                    dfs(node, root, d + 1);
-                    root.leaf = false;
                 }
             }
         }
 
-    }
+        public static void idft(double[][] p, int m) {
+            dft(p, m);
 
-    static class Node {
-        Node p;
-        List<Node> next = new ArrayList<>();
-        boolean leaf = true;
-        int depth = -1;
-        int id;
-
-    }
-
-    static class FastOutput implements AutoCloseable, Closeable, Appendable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
-
-        public FastOutput append(CharSequence csq) {
-            cache.append(csq);
-            return this;
-        }
-
-        public FastOutput append(CharSequence csq, int start, int end) {
-            cache.append(csq, start, end);
-            return this;
-        }
-
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput append(char c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput append(int c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput append(String c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput println(String c) {
-            return append(c).println();
-        }
-
-        public FastOutput println(int c) {
-            return append(c).println();
-        }
-
-        public FastOutput println() {
-            cache.append(System.lineSeparator());
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
+            int n = 1 << m;
+            div(p[0][0], p[1][0], n, p, 0);
+            div(p[0][n / 2], p[1][n / 2], n, p, n / 2);
+            for (int i = 1, until = n / 2; i < until; i++) {
+                double a = p[0][n - i];
+                double b = p[1][n - i];
+                div(p[0][i], p[1][i], n, p, n - i);
+                div(a, b, n, p, i);
             }
         }
 
-        public String toString() {
-            return cache.toString();
+        public static void add(double r1, double i1, double r2, double i2, double[][] r, int i) {
+            r[0][i] = r1 + r2;
+            r[1][i] = i1 + i2;
+        }
+
+        public static void sub(double r1, double i1, double r2, double i2, double[][] r, int i) {
+            r[0][i] = r1 - r2;
+            r[1][i] = i1 - i2;
+        }
+
+        public static void mul(double r1, double i1, double r2, double i2, double[][] r, int i) {
+            r[0][i] = r1 * r2 - i1 * i2;
+            r[1][i] = r1 * i2 + i1 * r2;
+        }
+
+        public static void div(double r1, double i1, double r2, double[][] r, int i) {
+            r[0][i] = r1 / r2;
+            r[1][i] = i1 / r2;
         }
 
     }
@@ -272,23 +225,214 @@ public class Main {
 
     }
 
+    static class SequenceUtils {
+        public static void swap(double[] data, int i, int j) {
+            double tmp = data[i];
+            data[i] = data[j];
+            data[j] = tmp;
+        }
+
+        public static void reverse(double[] data, int l, int r) {
+            while (l < r) {
+                swap(data, l, r);
+                l++;
+                r--;
+            }
+        }
+
+    }
+
+    static class IntegerPreSum {
+        private int[] pre;
+        private int n;
+
+        public IntegerPreSum(int n) {
+            pre = new int[n];
+        }
+
+        public void populate(int[] a) {
+            n = a.length;
+            pre[0] = a[0];
+            for (int i = 1; i < n; i++) {
+                pre[i] = pre[i - 1] + a[i];
+            }
+        }
+
+        public IntegerPreSum(int[] a) {
+            this(a.length);
+            populate(a);
+        }
+
+        public int prefix(int i) {
+            if (i < 0) {
+                return 0;
+            }
+            return pre[Math.min(i, n - 1)];
+        }
+
+    }
+
     static class DigitUtils {
         private DigitUtils() {
         }
 
-        public static int floorDiv(int a, int b) {
-            return a < 0 ? -ceilDiv(-a, b) : a / b;
+        public static long round(double x) {
+            if (x >= 0) {
+                return (long) (x + 0.5);
+            } else {
+                return (long) (x - 0.5);
+            }
         }
 
-        public static int ceilDiv(int a, int b) {
-            if (a < 0) {
-                return -floorDiv(-a, b);
+    }
+
+    static class FastOutput implements AutoCloseable, Closeable, Appendable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
+
+        public FastOutput append(CharSequence csq) {
+            cache.append(csq);
+            return this;
+        }
+
+        public FastOutput append(CharSequence csq, int start, int end) {
+            cache.append(csq, start, end);
+            return this;
+        }
+
+        public FastOutput(Writer os) {
+            this.os = os;
+        }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput append(char c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput append(long c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
             }
-            int c = a / b;
-            if (c * b < a) {
-                return c + 1;
+            return this;
+        }
+
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
             }
-            return c;
+        }
+
+        public String toString() {
+            return cache.toString();
+        }
+
+    }
+
+    static class Debug {
+        private boolean offline;
+        private PrintStream out = System.err;
+        static int[] empty = new int[0];
+
+        public Debug(boolean enable) {
+            offline = enable && System.getSecurityManager() == null;
+        }
+
+        public Debug debug(String name, Object x) {
+            return debug(name, x, empty);
+        }
+
+        public Debug debug(String name, Object x, int... indexes) {
+            if (offline) {
+                if (x == null || !x.getClass().isArray()) {
+                    out.append(name);
+                    for (int i : indexes) {
+                        out.printf("[%d]", i);
+                    }
+                    out.append("=").append("" + x);
+                    out.println();
+                } else {
+                    indexes = Arrays.copyOf(indexes, indexes.length + 1);
+                    if (x instanceof byte[]) {
+                        byte[] arr = (byte[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof short[]) {
+                        short[] arr = (short[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof boolean[]) {
+                        boolean[] arr = (boolean[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof char[]) {
+                        char[] arr = (char[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof int[]) {
+                        int[] arr = (int[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof float[]) {
+                        float[] arr = (float[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof double[]) {
+                        double[] arr = (double[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof long[]) {
+                        long[] arr = (long[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else {
+                        Object[] arr = (Object[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    }
+                }
+            }
+            return this;
+        }
+
+    }
+
+    static class Log2 {
+        public static int ceilLog(int x) {
+            return 32 - Integer.numberOfLeadingZeros(x - 1);
         }
 
     }

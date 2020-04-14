@@ -1,6 +1,7 @@
 package template.utils;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiFunction;
@@ -44,5 +45,20 @@ public class CollectionUtils {
             }
         }
         return true;
+    }
+
+    public static <T> Set<T> intersect(Set<T> a, Set<T> b) {
+        if (a.size() > b.size()) {
+            Set<T> tmp = a;
+            a = b;
+            b = tmp;
+        }
+        Set<T> ans = new HashSet<>(a.size());
+        for (T val : a) {
+            if (b.contains(val)) {
+                ans.add(val);
+            }
+        }
+        return ans;
     }
 }
