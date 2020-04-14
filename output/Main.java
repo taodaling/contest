@@ -3,7 +3,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.io.UncheckedIOException;
+import java.util.List;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
@@ -27,26 +29,111 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            AGridGame solver = new AGridGame();
+            CJohnnySolving solver = new CJohnnySolving();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class AGridGame {
+    static class CJohnnySolving {
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            char[] s = in.readString().toCharArray();
-            int[] cnts = new int[2];
-            for (char c : s) {
-                int v = c - '0';
-                if (v == 0) {
-                    out.append(3).append(' ').append(cnts[v] % 4 + 1).println();
-                } else {
-                    out.append(1).append(' ').append(cnts[v] % 2 * 2 + 1).println();
+            int n = in.readInt();
+            int m = in.readInt();
+            int k = in.readInt();
+
+            Node[] nodes = new Node[n];
+            for (int i = 0; i < n; i++) {
+                nodes[i] = new Node();
+                nodes[i].id = i;
+            }
+            for (int i = 0; i < m; i++) {
+                Node a = nodes[in.readInt() - 1];
+                Node b = nodes[in.readInt() - 1];
+                a.next.add(b);
+                b.next.add(a);
+            }
+
+            dfs(nodes[0], null, 0);
+            Node maxDepth = null;
+            for (Node node : nodes) {
+                if (maxDepth == null || maxDepth.depth < node.depth) {
+                    maxDepth = node;
                 }
-                cnts[v]++;
+            }
+
+            List<Node> trace = new ArrayList<>(n);
+            if (maxDepth.depth >= DigitUtils.ceilDiv(n, k)) {
+                up(maxDepth, nodes[0], trace);
+                out.println("PATH");
+                out.println(trace.size());
+                for (Node node : trace) {
+                    out.append(node.id + 1).append(' ');
+                }
+                return;
+            }
+
+            out.println("CYCLES");
+            int cnt = 0;
+            for (int i = 0; i < n; i++) {
+                if (!nodes[i].leaf) {
+                    continue;
+                }
+                cnt++;
+                if (cnt > k) {
+                    continue;
+                }
+                Node a = nodes[i].next.get(0);
+                Node b = nodes[i].next.get(1);
+                trace.clear();
+                if ((nodes[i].depth - a.depth + 1) % 3 != 0) {
+                    up(nodes[i], a, trace);
+                } else if ((nodes[i].depth - b.depth + 1) % 3 != 0) {
+                    up(nodes[i], b, trace);
+                } else {
+                    trace.add(nodes[i]);
+                    if (a.depth < b.depth) {
+                        Node tmp = a;
+                        a = b;
+                        b = tmp;
+                    }
+                    up(a, b, trace);
+                }
+                out.println(trace.size());
+                for (Node node : trace) {
+                    out.append(node.id + 1).append(' ');
+                }
+                out.println();
             }
         }
+
+        public void up(Node root, Node target, List<Node> trace) {
+            trace.add(root);
+            if (target != root) {
+                up(root.p, target, trace);
+            }
+        }
+
+        public void dfs(Node root, Node p, int d) {
+            root.depth = d;
+            root.p = p;
+            root.next.remove(p);
+
+            for (Node node : root.next) {
+                if (node.depth == -1) {
+                    dfs(node, root, d + 1);
+                    root.leaf = false;
+                }
+            }
+        }
+
+    }
+
+    static class Node {
+        Node p;
+        List<Node> next = new ArrayList<>();
+        boolean leaf = true;
+        int depth = -1;
+        int id;
 
     }
 
@@ -82,6 +169,19 @@ public class Main {
             return this;
         }
 
+        public FastOutput append(String c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput println(String c) {
+            return append(c).println();
+        }
+
+        public FastOutput println(int c) {
+            return append(c).println();
+        }
+
         public FastOutput println() {
             cache.append(System.lineSeparator());
             return this;
@@ -115,7 +215,6 @@ public class Main {
 
     static class FastInput {
         private final InputStream is;
-        private StringBuilder defaultStringBuf = new StringBuilder(1 << 13);
         private byte[] buf = new byte[1 << 20];
         private int bufLen;
         private int bufOffset;
@@ -146,20 +245,50 @@ public class Main {
             }
         }
 
-        public String readString(StringBuilder builder) {
-            skipBlank();
+        public int readInt() {
+            int sign = 1;
 
-            while (next > 32) {
-                builder.append((char) next);
+            skipBlank();
+            if (next == '+' || next == '-') {
+                sign = next == '+' ? 1 : -1;
                 next = read();
             }
 
-            return builder.toString();
+            int val = 0;
+            if (sign == 1) {
+                while (next >= '0' && next <= '9') {
+                    val = val * 10 + next - '0';
+                    next = read();
+                }
+            } else {
+                while (next >= '0' && next <= '9') {
+                    val = val * 10 - next + '0';
+                    next = read();
+                }
+            }
+
+            return val;
         }
 
-        public String readString() {
-            defaultStringBuf.setLength(0);
-            return readString(defaultStringBuf);
+    }
+
+    static class DigitUtils {
+        private DigitUtils() {
+        }
+
+        public static int floorDiv(int a, int b) {
+            return a < 0 ? -ceilDiv(-a, b) : a / b;
+        }
+
+        public static int ceilDiv(int a, int b) {
+            if (a < 0) {
+                return -floorDiv(-a, b);
+            }
+            int c = a / b;
+            if (c * b < a) {
+                return c + 1;
+            }
+            return c;
         }
 
     }

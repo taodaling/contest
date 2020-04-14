@@ -7,6 +7,9 @@ import template.utils.Debug;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * O(V+Elog2V)
+ */
 public class DominatorTree {
     List<? extends DirectedEdge>[] g;
     IntegerMultiWayStack in;

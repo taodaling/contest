@@ -1,2 +1,3 @@
-39 src/main/java/contest/A. Grid game.json
-0
+44 src/main/java/contest/C. Johnny Solving.json
+1
+1

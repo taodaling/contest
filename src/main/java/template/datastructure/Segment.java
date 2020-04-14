@@ -4,6 +4,9 @@ public class Segment implements Cloneable {
     private Segment left;
     private Segment right;
 
+    private void modify() {
+    }
+
     public void pushUp() {
     }
 
@@ -34,6 +37,7 @@ public class Segment implements Cloneable {
             return;
         }
         if (covered(ll, rr, l, r)) {
+            modify();
             return;
         }
         pushDown();
