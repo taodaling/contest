@@ -15,6 +15,17 @@ public class LinearBasis implements Cloneable {
         Arrays.fill(map, 0);
     }
 
+    public long[] toArray() {
+        long[] ans = new long[size];
+        int tail = 0;
+        for (int i = 63; i >= 0; i--) {
+            if (map[i] != 0) {
+                ans[tail++] = map[i];
+            }
+        }
+        return ans;
+    }
+
     private void afterAddBit(int bit) {
         for (int i = 63; i >= 0; i--) {
             if (i == bit || map[i] == 0) {

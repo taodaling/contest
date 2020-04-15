@@ -1,0 +1,35 @@
+{
+  "name" : "B. Xenia and Colorful Gems",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5\n2 2 3\n7 8\n6 3\n3 1 4\n1 1 1\n1\n1\n1000000000\n2 2 2\n1 2\n5 4\n6 7\n2 2 2\n1 2\n3 4\n6 7\n3 4 1\n3 2 1\n7 3 3 4\n6\n",
+    "output" : "14\n1999999996000000002\n24\n24\n14\n",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.BXeniaAndColorfulGems",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.04.15",
+  "contestName" : "Codeforces - Codeforces Round #635 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

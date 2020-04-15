@@ -1,0 +1,41 @@
+{
+  "name" : "LexicographicPartition",
+  "signature" : {
+    "name" : "positiveSum",
+    "result" : "int[]",
+    "arguments" : [ "int", "int[]", "int", "int" ],
+    "argumentNames" : [ "n", "Aprefix", "seed", "Arange" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "3", "3 -7 8", "1", "1" ],
+    "result" : "2 1 2",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "5", "0 1 0 1 2", "42", "47" ],
+    "result" : "3 2 2 1",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "5", "-1 2 -3 4 -5", "777", "4747" ],
+    "result" : "-1",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "1", "0", "12", "34" ],
+    "result" : "-1",
+    "index" : 3,
+    "active" : true
+  }, {
+    "arguments" : [ "10", "4 -7 4 -7", "123456789", "5447" ],
+    "result" : "6 1 5 1 1 1 1",
+    "index" : 4,
+    "active" : true
+  } ],
+  "date" : "2020.04.15",
+  "contestName" : "TopCoder SRM #762",
+  "testClasses" : [ ],
+  "fqn" : "contest.LexicographicPartition",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

@@ -1,0 +1,36 @@
+{
+  "name" : "StrawberryHard",
+  "signature" : {
+    "name" : "competitive",
+    "result" : "int",
+    "arguments" : [ "int", "int", "int", "int", "int" ],
+    "argumentNames" : [ "n", "k", "Arange", "Brange", "seed" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "1", "3", "2", "7", "0" ],
+    "result" : "571428576",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "6", "3", "3", "3", "740562" ],
+    "result" : "1",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "7", "3", "3", "3", "740562" ],
+    "result" : "753086426",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "7", "5", "11", "13", "47" ],
+    "result" : "931930680",
+    "index" : 3,
+    "active" : true
+  } ],
+  "date" : "2020.04.15",
+  "contestName" : "TopCoder SRM #762",
+  "testClasses" : [ ],
+  "fqn" : "contest.StrawberryHard",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

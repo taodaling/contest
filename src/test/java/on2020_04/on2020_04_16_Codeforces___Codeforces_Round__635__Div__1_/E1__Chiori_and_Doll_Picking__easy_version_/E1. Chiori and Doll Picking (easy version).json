@@ -1,0 +1,44 @@
+{
+  "name" : "E1. Chiori and Doll Picking (easy version)",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4 4\n3 5 8 14\n",
+    "output" : "2 2 6 6 0 \n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "6 7\n11 45 14 9 19 81\n",
+    "output" : "1 2 11 20 15 10 5 0 \n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "35 35\n1\n2\n4\n8\n16\n32\n64\n128\n256\n512\n1024\n2048\n4096\n8192\n16384\n32768\n65536\n131072\n262144\n524288\n1048576\n2097152\n4194304\n8388608\n16777216\n33554432\n67108864\n134217728\n268435456\n536870912\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx512M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_04.on2020_04_16_Codeforces___Codeforces_Round__635__Div__1_.E1__Chiori_and_Doll_Picking__easy_version_.E1ChioriAndDollPickingEasyVersion",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.04.16",
+  "contestName" : "Codeforces - Codeforces Round #635 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

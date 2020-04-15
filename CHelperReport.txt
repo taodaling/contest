@@ -1,2 +1,2 @@
-42 src/main/java/contest/Connected Graph.json
+69 src/main/java/contest/E1. Chiori and Doll Picking (easy version).json
 0
