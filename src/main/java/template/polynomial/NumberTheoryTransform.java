@@ -73,7 +73,6 @@ NumberTheoryTransform {
                 }
             }
         }
-
     }
 
     public void idft(int[] p, int m) {
