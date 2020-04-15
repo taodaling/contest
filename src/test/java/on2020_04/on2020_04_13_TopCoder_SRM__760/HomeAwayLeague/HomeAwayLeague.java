@@ -2,7 +2,7 @@ package on2020_04.on2020_04_13_TopCoder_SRM__760.HomeAwayLeague;
 
 
 
-import template.math.Composite;
+import template.math.Combination;
 import template.math.Factorial;
 import template.math.Modular;
 
@@ -11,7 +11,7 @@ public class HomeAwayLeague {
         int m = n / 2;
         Modular mod = new Modular(1e9 + 7);
         Factorial factorial = new Factorial((int) 1e6, mod);
-        Composite comp = new Composite(factorial);
+        Combination comp = new Combination(factorial);
 
         int a = mod.mul(comp.composite(n, m), factorial.fact(m));
         int b = 0;

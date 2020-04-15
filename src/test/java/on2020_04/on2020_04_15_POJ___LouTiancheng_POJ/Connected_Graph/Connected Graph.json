@@ -1,0 +1,35 @@
+{
+  "name" : "Connected Graph",
+  "testType" : "MULTI_EOF",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "1\n2\n3\n4\n0\n",
+    "output" : "1\n1\n4\n38\n",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx300M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_04.on2020_04_15_POJ___LouTiancheng_POJ.Connected_Graph.ConnectedGraph",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.04.15",
+  "contestName" : "POJ - LouTiancheng@POJ",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : false
+}

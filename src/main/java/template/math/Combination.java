@@ -3,17 +3,17 @@ package template.math;
 /**
  * Composition
  */
-public class Composite {
+public class Combination {
     final Factorial factorial;
     final Modular modular;
 
-    public Composite(Factorial factorial) {
+    public Combination(Factorial factorial) {
         this.factorial = factorial;
         this.modular = factorial.getModular();
     }
 
 
-    public Composite(int limit, Modular modular) {
+    public Combination(int limit, Modular modular) {
         this(new Factorial(limit, modular));
     }
 

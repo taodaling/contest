@@ -1,2 +1,2 @@
-57 src/main/java/contest/E. Nikita and Order Statistics.json
+42 src/main/java/contest/Connected Graph.json
 0

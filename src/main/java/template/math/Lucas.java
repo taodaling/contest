@@ -1,17 +1,15 @@
 package template.math;
 
-import template.math.Composite;
-
 /**
  * Lucas algorithm
  */
 public class Lucas {
-    private final Composite composite;
+    private final Combination combination;
     private int modulus;
 
-    public Lucas(Composite composite) {
-        this.composite = composite;
-        this.modulus = composite.modular.m;
+    public Lucas(Combination combination) {
+        this.combination = combination;
+        this.modulus = combination.modular.m;
     }
 
     /**
@@ -21,7 +19,7 @@ public class Lucas {
         if (n == 0) {
             return 1;
         }
-        return composite.modular.mul(composite.composite((int) (m % modulus), (int) (n % modulus)),
+        return combination.modular.mul(combination.composite((int) (m % modulus), (int) (n % modulus)),
                         composite(m / modulus, n / modulus));
     }
 }
