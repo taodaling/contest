@@ -1,2 +1,2 @@
-69 src/main/java/contest/E1. Chiori and Doll Picking (easy version).json
+45 src/main/java/contest/C. Riverside Curio.json
 0

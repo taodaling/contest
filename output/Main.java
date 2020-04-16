@@ -1,14 +1,12 @@
 import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.io.OutputStreamWriter;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.io.Closeable;
 import java.io.Writer;
+import java.io.OutputStreamWriter;
 import java.io.InputStream;
 
 /**
@@ -29,430 +27,151 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            E1ChioriAndDollPickingEasyVersion solver = new E1ChioriAndDollPickingEasyVersion();
+            CRiversideCurio solver = new CRiversideCurio();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class E1ChioriAndDollPickingEasyVersion {
-        Debug debug = new Debug(true);
-        Modular mod = new Modular(998244353);
-        int[] cnt;
-
+    static class CRiversideCurio {
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            int m = in.readInt();
-            long[] a = new long[n];
-            LinearBasis lb = new LinearBasis();
-            LongList list = new LongList();
+            int[] m = new int[n];
             for (int i = 0; i < n; i++) {
-                a[i] = in.readLong();
+                m[i] = in.readInt();
+            }
 
-                if (lb.add(a[i])) {
-                    list.add(a[i]);
+            IntegerDeque dq = new IntegerDequeImpl(n);
+            int k = 0;
+            long p = 0;
+            for (int i = 0; i < n; i++) {
+                while (k < m[i]) {
+                    k++;
+                    int index = dq.removeLast();
+                    p += n - index;
                 }
-            }
-
-            cnt = new int[m + 1];
-            long[] set = lb.toArray();
-
-            debug.debug("set", set);
-            for (int i = 0; i < set.length; i++) {
-                int exp = m - i - 1;
-                if (Bits.bitAt(set[i], exp) == 0) {
-                    int index = -1;
-                    for (int j = m - 1; j >= 0; j--) {
-                        if (Bits.bitAt(set[i], j) == 1) {
-                            index = j;
-                            break;
-                        }
-                    }
-                    for (int j = 0; j < set.length; j++) {
-                        set[j] = Bits.swapBit(set[j], exp, index);
-                    }
-                }
-            }
-            for (long x : set) {
-                debug.debug("e", Long.toString(x, 2));
-            }
-            if (set.length <= 29) {
-                dfs(set, 0, set.length - 1);
-            } else {
-                int[][][] dp = new int[set.length + 1][set.length + 1][1 << (m - set.length)];
-                dp[0][0][0] = 1;
-                int mask = dp[0][0].length - 1;
-                for (int i = 1; i <= set.length; i++) {
-                    long val = set[i - 1];
-                    int tail = (int) (val & mask);
-                    for (int j = 0; j <= set.length; j++) {
-                        for (int k = 0; k <= mask; k++) {
-                            dp[i][j][k] = dp[i - 1][j][k];
-                            if (j > 0) {
-                                dp[i][j][k] = mod.plus(dp[i][j][k], dp[i - 1][j - 1][k ^ tail]);
-                            }
-                        }
-                    }
-                }
-
-                for (int i = 0; i <= set.length; i++) {
-                    for (int j = 0; j <= mask; j++) {
-                        int index = i + Integer.bitCount(j);
-                        if (index <= m) {
-                            cnt[index] = mod.plus(cnt[index], dp[set.length][i][j]);
-                        }
-                    }
-                }
-            }
-
-            Power power = new Power(mod);
-            int factor = power.pow(2, n - set.length);
-            for (int i = 0; i <= m; i++) {
-                out.append(mod.mul(factor, cnt[i])).append(' ');
-            }
-
-        }
-
-        public void dfs(long[] set, long xor, int i) {
-            if (i < 0) {
-                cnt[Long.bitCount(xor)]++;
-                return;
-            }
-            dfs(set, xor, i - 1);
-            dfs(set, xor ^ set[i], i - 1);
-        }
-
-    }
-
-    static class Debug {
-        private boolean offline;
-        private PrintStream out = System.err;
-        static int[] empty = new int[0];
-
-        public Debug(boolean enable) {
-            offline = enable && System.getSecurityManager() == null;
-        }
-
-        public Debug debug(String name, String x) {
-            if (offline) {
-                out.printf("%s=%s", name, x);
-                out.println();
-            }
-            return this;
-        }
-
-        public Debug debug(String name, Object x) {
-            return debug(name, x, empty);
-        }
-
-        public Debug debug(String name, Object x, int... indexes) {
-            if (offline) {
-                if (x == null || !x.getClass().isArray()) {
-                    out.append(name);
-                    for (int i : indexes) {
-                        out.printf("[%d]", i);
-                    }
-                    out.append("=").append("" + x);
-                    out.println();
+                if (k == m[i]) {
+                    k++;
+                    p += n - i;
                 } else {
-                    indexes = Arrays.copyOf(indexes, indexes.length + 1);
-                    if (x instanceof byte[]) {
-                        byte[] arr = (byte[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof short[]) {
-                        short[] arr = (short[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof boolean[]) {
-                        boolean[] arr = (boolean[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof char[]) {
-                        char[] arr = (char[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof int[]) {
-                        int[] arr = (int[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof float[]) {
-                        float[] arr = (float[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof double[]) {
-                        double[] arr = (double[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof long[]) {
-                        long[] arr = (long[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else {
-                        Object[] arr = (Object[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    }
+                    dq.addLast(i);
                 }
             }
-            return this;
+
+            p -= n;
+            for (int i = 0; i < n; i++) {
+                p -= m[i];
+            }
+
+            out.println(p);
         }
 
     }
 
-    static class LongList implements Cloneable {
-        private int size;
-        private int cap;
-        private long[] data;
-        private static final long[] EMPTY = new long[0];
+    static interface IntegerDeque extends IntegerStack {
+    }
 
-        public LongList(int cap) {
-            this.cap = cap;
+    static interface IntegerStack {
+        void addLast(int x);
+
+        int removeLast();
+
+    }
+
+    static class IntegerDequeImpl implements IntegerDeque {
+        private int[] data;
+        private int bpos;
+        private int epos;
+        private static final int[] EMPTY = new int[0];
+        private int n;
+
+        public IntegerDequeImpl(int cap) {
             if (cap == 0) {
                 data = EMPTY;
             } else {
-                data = new long[cap];
+                data = new int[cap];
             }
+            bpos = 0;
+            epos = 0;
+            n = cap;
         }
 
-        public LongList(LongList list) {
-            this.size = list.size;
-            this.cap = list.cap;
-            this.data = Arrays.copyOf(list.data, size);
-        }
-
-        public LongList() {
-            this(0);
-        }
-
-        public void ensureSpace(int req) {
-            if (req > cap) {
-                while (cap < req) {
-                    cap = Math.max(cap + 10, 2 * cap);
+        private void expandSpace(int len) {
+            while (n < len) {
+                n = Math.max(n + 10, n * 2);
+            }
+            int[] newData = new int[n];
+            if (bpos <= epos) {
+                if (bpos < epos) {
+                    System.arraycopy(data, bpos, newData, 0, epos - bpos);
                 }
-                data = Arrays.copyOf(data, cap);
-            }
-        }
-
-        public void add(long x) {
-            ensureSpace(size + 1);
-            data[size++] = x;
-        }
-
-        public void addAll(long[] x, int offset, int len) {
-            ensureSpace(size + len);
-            System.arraycopy(x, offset, data, size, len);
-            size += len;
-        }
-
-        public void addAll(LongList list) {
-            addAll(list.data, 0, list.size);
-        }
-
-        public long[] toArray() {
-            return Arrays.copyOf(data, size);
-        }
-
-        public String toString() {
-            return Arrays.toString(toArray());
-        }
-
-        public boolean equals(Object obj) {
-            if (!(obj instanceof LongList)) {
-                return false;
-            }
-            LongList other = (LongList) obj;
-            return SequenceUtils.equal(data, 0, size - 1, other.data, 0, other.size - 1);
-        }
-
-        public int hashCode() {
-            int h = 1;
-            for (int i = 0; i < size; i++) {
-                h = h * 31 + Long.hashCode(data[i]);
-            }
-            return h;
-        }
-
-        public LongList clone() {
-            LongList ans = new LongList();
-            ans.addAll(this);
-            return ans;
-        }
-
-    }
-
-    static class Bits {
-        private Bits() {
-        }
-
-        public static int bitAt(long x, int i) {
-            return (int) ((x >>> i) & 1);
-        }
-
-        public static long setBit(long x, int i, boolean v) {
-            if (v) {
-                x |= 1L << i;
             } else {
-                x &= ~(1L << i);
+                System.arraycopy(data, bpos, newData, 0, data.length - bpos);
+                System.arraycopy(data, 0, newData, data.length - bpos, epos);
             }
-            return x;
+            epos = size();
+            bpos = 0;
+            data = newData;
         }
 
-        public static long swapBit(long x, int i, int j) {
-            int bi = bitAt(x, i);
-            int bj = bitAt(x, j);
-            x = setBit(x, i, bj == 1);
-            x = setBit(x, j, bi == 1);
-            return x;
-        }
+        public IntegerIterator iterator() {
+            return new IntegerIterator() {
+                int index = bpos;
 
-    }
 
-    static class LinearBasis implements Cloneable {
-        private long[] map = new long[64];
-        private int size;
-
-        public long[] toArray() {
-            long[] ans = new long[size];
-            int tail = 0;
-            for (int i = 63; i >= 0; i--) {
-                if (map[i] != 0) {
-                    ans[tail++] = map[i];
+                public boolean hasNext() {
+                    return index != epos;
                 }
+
+
+                public int next() {
+                    int ans = data[index];
+                    index = IntegerDequeImpl.this.next(index);
+                    return ans;
+                }
+            };
+        }
+
+        public int removeLast() {
+            int ans = data[last(epos)];
+            epos = last(epos);
+            return ans;
+        }
+
+        public void addLast(int x) {
+            ensureMore();
+            data[epos] = x;
+            epos = next(epos);
+        }
+
+        private int last(int x) {
+            return (x == 0 ? n : x) - 1;
+        }
+
+        private int next(int x) {
+            return x + 1 >= n ? 0 : x + 1;
+        }
+
+        private void ensureMore() {
+            if (next(epos) == bpos) {
+                expandSpace(n + 1);
+            }
+        }
+
+        public int size() {
+            int ans = epos - bpos;
+            if (ans < 0) {
+                ans += data.length;
             }
             return ans;
         }
 
-        private void afterAddBit(int bit) {
-            for (int i = 63; i >= 0; i--) {
-                if (i == bit || map[i] == 0) {
-                    continue;
-                }
-                if (bitAt(map[i], bit) == 1) {
-                    map[i] ^= map[bit];
-                }
-            }
-        }
-
-        public boolean add(long val) {
-            for (int i = 63; i >= 0 && val != 0; i--) {
-                if (bitAt(val, i) == 0) {
-                    continue;
-                }
-                val ^= map[i];
-            }
-            if (val != 0) {
-                int log = 63 - Long.numberOfLeadingZeros(val);
-                map[log] = val;
-                size++;
-                afterAddBit(log);
-                return true;
-            }
-            return false;
-        }
-
-        private long bitAt(long val, int i) {
-            return (val >>> i) & 1;
-        }
-
-        public LinearBasis clone() {
-            try {
-                LinearBasis ans = (LinearBasis) super.clone();
-                ans.map = ans.map.clone();
-                return ans;
-            } catch (CloneNotSupportedException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-    }
-
-    static class Power {
-        final Modular modular;
-
-        public Power(Modular modular) {
-            this.modular = modular;
-        }
-
-        public int pow(int x, int n) {
-            if (n == 0) {
-                return modular.valueOf(1);
-            }
-            long r = pow(x, n >> 1);
-            r = modular.valueOf(r * r);
-            if ((n & 1) == 1) {
-                r = modular.valueOf(r * x);
-            }
-            return (int) r;
-        }
-
-    }
-
-    static class Modular {
-        int m;
-
-        public Modular(int m) {
-            this.m = m;
-        }
-
-        public Modular(long m) {
-            this.m = (int) m;
-            if (this.m != m) {
-                throw new IllegalArgumentException();
-            }
-        }
-
-        public Modular(double m) {
-            this.m = (int) m;
-            if (this.m != m) {
-                throw new IllegalArgumentException();
-            }
-        }
-
-        public int valueOf(int x) {
-            x %= m;
-            if (x < 0) {
-                x += m;
-            }
-            return x;
-        }
-
-        public int valueOf(long x) {
-            x %= m;
-            if (x < 0) {
-                x += m;
-            }
-            return (int) x;
-        }
-
-        public int mul(int x, int y) {
-            return valueOf((long) x * y);
-        }
-
-        public int plus(int x, int y) {
-            return valueOf(x + y);
-        }
-
         public String toString() {
-            return "mod " + m;
+            StringBuilder builder = new StringBuilder();
+            for (IntegerIterator iterator = iterator(); iterator.hasNext(); ) {
+                builder.append(iterator.next()).append(' ');
+            }
+            return builder.toString();
         }
 
     }
@@ -514,31 +233,6 @@ public class Main {
             return val;
         }
 
-        public long readLong() {
-            int sign = 1;
-
-            skipBlank();
-            if (next == '+' || next == '-') {
-                sign = next == '+' ? 1 : -1;
-                next = read();
-            }
-
-            long val = 0;
-            if (sign == 1) {
-                while (next >= '0' && next <= '9') {
-                    val = val * 10 + next - '0';
-                    next = read();
-                }
-            } else {
-                while (next >= '0' && next <= '9') {
-                    val = val * 10 - next + '0';
-                    next = read();
-                }
-            }
-
-            return val;
-        }
-
     }
 
     static class FastOutput implements AutoCloseable, Closeable, Appendable {
@@ -568,8 +262,17 @@ public class Main {
             return this;
         }
 
-        public FastOutput append(int c) {
+        public FastOutput append(long c) {
             cache.append(c);
+            return this;
+        }
+
+        public FastOutput println(long c) {
+            return append(c).println();
+        }
+
+        public FastOutput println() {
+            cache.append(System.lineSeparator());
             return this;
         }
 
@@ -599,18 +302,10 @@ public class Main {
 
     }
 
-    static class SequenceUtils {
-        public static boolean equal(long[] a, int al, int ar, long[] b, int bl, int br) {
-            if ((ar - al) != (br - bl)) {
-                return false;
-            }
-            for (int i = al, j = bl; i <= ar; i++, j++) {
-                if (a[i] != b[j]) {
-                    return false;
-                }
-            }
-            return true;
-        }
+    static interface IntegerIterator {
+        boolean hasNext();
+
+        int next();
 
     }
 }
