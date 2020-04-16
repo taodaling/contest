@@ -1,4 +1,6 @@
-package contest;
+package on2020_04.on2020_04_16_Codeforces___Codeforces_Round__635__Div__1_.E1__Chiori_and_Doll_Picking__easy_version_0;
+
+
 
 
 import template.binary.Bits;

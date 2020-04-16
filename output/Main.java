@@ -59,7 +59,7 @@ public class Main {
 
             debug.debug("set", set);
             for (int i = 0; i < set.length; i++) {
-                int exp = m - i + 1;
+                int exp = m - i - 1;
                 if (Bits.bitAt(set[i], exp) == 0) {
                     int index = -1;
                     for (int j = m - 1; j >= 0; j--) {
@@ -76,7 +76,7 @@ public class Main {
             for (long x : set) {
                 debug.debug("e", Long.toString(x, 2));
             }
-            if (set.length <= 2) {
+            if (set.length <= 29) {
                 dfs(set, 0, set.length - 1);
             } else {
                 int[][][] dp = new int[set.length + 1][set.length + 1][1 << (m - set.length)];
@@ -120,65 +120,6 @@ public class Main {
             }
             dfs(set, xor, i - 1);
             dfs(set, xor ^ set[i], i - 1);
-        }
-
-    }
-
-    static class LinearBasis implements Cloneable {
-        private long[] map = new long[64];
-        private int size;
-
-        public long[] toArray() {
-            long[] ans = new long[size];
-            int tail = 0;
-            for (int i = 63; i >= 0; i--) {
-                if (map[i] != 0) {
-                    ans[tail++] = map[i];
-                }
-            }
-            return ans;
-        }
-
-        private void afterAddBit(int bit) {
-            for (int i = 63; i >= 0; i--) {
-                if (i == bit || map[i] == 0) {
-                    continue;
-                }
-                if (bitAt(map[i], bit) == 1) {
-                    map[i] ^= map[bit];
-                }
-            }
-        }
-
-        public boolean add(long val) {
-            for (int i = 63; i >= 0 && val != 0; i--) {
-                if (bitAt(val, i) == 0) {
-                    continue;
-                }
-                val ^= map[i];
-            }
-            if (val != 0) {
-                int log = 63 - Long.numberOfLeadingZeros(val);
-                map[log] = val;
-                size++;
-                afterAddBit(log);
-                return true;
-            }
-            return false;
-        }
-
-        private long bitAt(long val, int i) {
-            return (val >>> i) & 1;
-        }
-
-        public LinearBasis clone() {
-            try {
-                LinearBasis ans = (LinearBasis) super.clone();
-                ans.map = ans.map.clone();
-                return ans;
-            } catch (CloneNotSupportedException e) {
-                throw new RuntimeException(e);
-            }
         }
 
     }
@@ -358,17 +299,109 @@ public class Main {
 
     }
 
-    static class SequenceUtils {
-        public static boolean equal(long[] a, int al, int ar, long[] b, int bl, int br) {
-            if ((ar - al) != (br - bl)) {
-                return false;
+    static class Bits {
+        private Bits() {
+        }
+
+        public static int bitAt(long x, int i) {
+            return (int) ((x >>> i) & 1);
+        }
+
+        public static long setBit(long x, int i, boolean v) {
+            if (v) {
+                x |= 1L << i;
+            } else {
+                x &= ~(1L << i);
             }
-            for (int i = al, j = bl; i <= ar; i++, j++) {
-                if (a[i] != b[j]) {
-                    return false;
+            return x;
+        }
+
+        public static long swapBit(long x, int i, int j) {
+            int bi = bitAt(x, i);
+            int bj = bitAt(x, j);
+            x = setBit(x, i, bj == 1);
+            x = setBit(x, j, bi == 1);
+            return x;
+        }
+
+    }
+
+    static class LinearBasis implements Cloneable {
+        private long[] map = new long[64];
+        private int size;
+
+        public long[] toArray() {
+            long[] ans = new long[size];
+            int tail = 0;
+            for (int i = 63; i >= 0; i--) {
+                if (map[i] != 0) {
+                    ans[tail++] = map[i];
                 }
             }
-            return true;
+            return ans;
+        }
+
+        private void afterAddBit(int bit) {
+            for (int i = 63; i >= 0; i--) {
+                if (i == bit || map[i] == 0) {
+                    continue;
+                }
+                if (bitAt(map[i], bit) == 1) {
+                    map[i] ^= map[bit];
+                }
+            }
+        }
+
+        public boolean add(long val) {
+            for (int i = 63; i >= 0 && val != 0; i--) {
+                if (bitAt(val, i) == 0) {
+                    continue;
+                }
+                val ^= map[i];
+            }
+            if (val != 0) {
+                int log = 63 - Long.numberOfLeadingZeros(val);
+                map[log] = val;
+                size++;
+                afterAddBit(log);
+                return true;
+            }
+            return false;
+        }
+
+        private long bitAt(long val, int i) {
+            return (val >>> i) & 1;
+        }
+
+        public LinearBasis clone() {
+            try {
+                LinearBasis ans = (LinearBasis) super.clone();
+                ans.map = ans.map.clone();
+                return ans;
+            } catch (CloneNotSupportedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+    }
+
+    static class Power {
+        final Modular modular;
+
+        public Power(Modular modular) {
+            this.modular = modular;
+        }
+
+        public int pow(int x, int n) {
+            if (n == 0) {
+                return modular.valueOf(1);
+            }
+            long r = pow(x, n >> 1);
+            r = modular.valueOf(r * r);
+            if ((n & 1) == 1) {
+                r = modular.valueOf(r * x);
+            }
+            return (int) r;
         }
 
     }
@@ -420,27 +453,6 @@ public class Main {
 
         public String toString() {
             return "mod " + m;
-        }
-
-    }
-
-    static class Power {
-        final Modular modular;
-
-        public Power(Modular modular) {
-            this.modular = modular;
-        }
-
-        public int pow(int x, int n) {
-            if (n == 0) {
-                return modular.valueOf(1);
-            }
-            long r = pow(x, n >> 1);
-            r = modular.valueOf(r * r);
-            if ((n & 1) == 1) {
-                r = modular.valueOf(r * x);
-            }
-            return (int) r;
         }
 
     }
@@ -587,29 +599,17 @@ public class Main {
 
     }
 
-    static class Bits {
-        private Bits() {
-        }
-
-        public static int bitAt(long x, int i) {
-            return (int) ((x >>> i) & 1);
-        }
-
-        public static long setBit(long x, int i, boolean v) {
-            if (v) {
-                x |= 1L << i;
-            } else {
-                x &= ~(1L << i);
+    static class SequenceUtils {
+        public static boolean equal(long[] a, int al, int ar, long[] b, int bl, int br) {
+            if ((ar - al) != (br - bl)) {
+                return false;
             }
-            return x;
-        }
-
-        public static long swapBit(long x, int i, int j) {
-            int bi = bitAt(x, i);
-            int bj = bitAt(x, j);
-            x = setBit(x, i, bj == 1);
-            x = setBit(x, j, bi == 1);
-            return x;
+            for (int i = al, j = bl; i <= ar; i++, j++) {
+                if (a[i] != b[j]) {
+                    return false;
+                }
+            }
+            return true;
         }
 
     }
