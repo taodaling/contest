@@ -17,7 +17,7 @@ public class LongMinQueue {
         data.clear();
     }
 
-    public void addLast(int val) {
+    public void addLast(long val) {
         data.addLast(val);
         while (!minQueue.isEmpty() && comparator.compare(minQueue.peekLast(), val) > 0) {
             minQueue.removeLast();

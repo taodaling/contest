@@ -1,4 +1,6 @@
-package contest;
+package on2020_04.on2020_04_16_TopCoder_SRM__763.RootItRight1;
+
+
 
 import java.util.ArrayList;
 import java.util.Arrays;

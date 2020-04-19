@@ -19,7 +19,7 @@ public class Lucas {
         if (n == 0) {
             return 1;
         }
-        return combination.modular.mul(combination.composite((int) (m % modulus), (int) (n % modulus)),
+        return combination.modular.mul(combination.combination((int) (m % modulus), (int) (n % modulus)),
                         composite(m / modulus, n / modulus));
     }
 }

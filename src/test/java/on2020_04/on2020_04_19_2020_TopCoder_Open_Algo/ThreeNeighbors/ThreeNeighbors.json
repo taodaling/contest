@@ -1,0 +1,31 @@
+{
+  "name" : "ThreeNeighbors",
+  "signature" : {
+    "name" : "construct",
+    "result" : "String[]",
+    "arguments" : [ "int" ],
+    "argumentNames" : [ "N" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "2" ],
+    "result" : ".....ф.XX..ф.X.X.ф.X...ф.....",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "6" ],
+    "result" : "........ф.XXX..X.ф..X..X..ф..X..X..ф..X...X.ф........",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "1" ],
+    "result" : "XXXXфXXXXф.XXX",
+    "index" : 2,
+    "active" : true
+  } ],
+  "date" : "2020.04.19",
+  "contestName" : "2020 TopCoder Open Algo",
+  "testClasses" : [ ],
+  "fqn" : "on2020_04.on2020_04_19_2020_TopCoder_Open_Algo.ThreeNeighbors.ThreeNeighbors",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

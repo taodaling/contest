@@ -1,2 +1,2 @@
-45 src/main/java/contest/C. Riverside Curio.json
+36 src/main/java/contest/SteelMill.json
 0

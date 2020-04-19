@@ -1,0 +1,36 @@
+{
+  "name" : "BlindBoxSets",
+  "signature" : {
+    "name" : "expectedPurchases",
+    "result" : "double",
+    "arguments" : [ "int", "int" ],
+    "argumentNames" : [ "numSets", "numItems" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "1", "1" ],
+    "result" : "1.0",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "1", "2" ],
+    "result" : "3.0",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "2", "1" ],
+    "result" : "2.0",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "2", "2" ],
+    "result" : "5.5",
+    "index" : 3,
+    "active" : true
+  } ],
+  "date" : "2020.04.19",
+  "contestName" : "2020 TopCoder Open Algo",
+  "testClasses" : [ ],
+  "fqn" : "on2020_04.on2020_04_19_2020_TopCoder_Open_Algo.BlindBoxSets.BlindBoxSets",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

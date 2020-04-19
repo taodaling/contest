@@ -1,16 +1,18 @@
 package template.polynomial;
 
-import template.binary.CachedLog2;
 import template.binary.Log2;
-import template.math.*;
+import template.math.Modular;
+import template.math.Power;
+import template.math.PrimitiveRoot;
 import template.primitve.generated.datastructure.IntegerList;
-import template.utils.SequenceUtils;
 import template.utils.Buffer;
+import template.utils.SequenceUtils;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.BitSet;
+import java.util.PriorityQueue;
 
-public class
-NumberTheoryTransform {
+public class NumberTheoryTransform {
     public static final NumberTheoryTransform STANDARD =
             new NumberTheoryTransform(new Modular(998244353), 3);
     private Modular modular;
@@ -19,7 +21,6 @@ NumberTheoryTransform {
     private int[] wCache = new int[30];
     private int[] invCache = new int[30];
     public static Buffer<IntegerList> listBuffer = Polynomials.listBuffer;
-    private Log2 log2 = new Log2();
 
     public NumberTheoryTransform(Modular mod) {
         this(mod, mod.getMod() == 998244353 ? 3 : new PrimitiveRoot(mod.getMod()).findMinPrimitiveRoot());
@@ -208,7 +209,7 @@ NumberTheoryTransform {
         a = clone(a);
         b = clone(b);
         int rank = a.size() + b.size() - 1;
-        int proper = CachedLog2.ceilLog(rank + 1);
+        int proper = Log2.ceilLog(rank + 1);
         a.expandWith(0, 1 << proper);
         b.expandWith(0, 1 << proper);
         ans.clear();
@@ -224,7 +225,7 @@ NumberTheoryTransform {
 
     public void pow2(IntegerList a) {
         int rankAns = (a.size() - 1) * 2;
-        int proper = log2.ceilLog(rankAns + 1);
+        int proper = Log2.ceilLog(rankAns + 1);
         a.expandWith(0, (1 << proper));
         dft(a.getData(), proper);
         dotMul(a.getData(), a.getData(), a.getData(), proper);
@@ -232,6 +233,9 @@ NumberTheoryTransform {
         Polynomials.normalize(a);
     }
 
+    /**
+     * 多项式多点插值
+     */
     public void multiApply(IntegerList p, IntegerList x, IntegerList y) {
         int l = 0;
         int r = x.size() - 1;
@@ -256,7 +260,7 @@ NumberTheoryTransform {
     private void divide(IntegerList a, IntegerList b, IntegerList c, IntegerList r) {
         Polynomials.normalize(a);
         Polynomials.normalize(b);
-        int proper = 1 + CachedLog2.ceilLog(Math.max(a.size(), b.size()));
+        int proper = 1 + Log2.ceilLog(Math.max(a.size(), b.size()));
         a.expandWith(0, 1 << proper);
         b.expandWith(0, 1 << proper);
         c.expandWith(0, 1 << proper);
@@ -310,7 +314,7 @@ NumberTheoryTransform {
 
     private void multiplyAndStoreAnswerIntoA(IntegerList a, IntegerList b) {
         int rankAns = a.size() - 1 + b.size() - 1;
-        int proper = log2.ceilLog(rankAns + 1);
+        int proper = Log2.ceilLog(rankAns + 1);
         a.expandWith(0, (1 << proper));
         b.expandWith(0, (1 << proper));
         dft(a.getData(), proper);

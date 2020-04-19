@@ -1,0 +1,31 @@
+{
+  "name" : "AveragePrice",
+  "signature" : {
+    "name" : "nonDuplicatedAverage",
+    "result" : "double",
+    "arguments" : [ "int[]" ],
+    "argumentNames" : [ "prices" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "10 20 10" ],
+    "result" : "15.0",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "1 2 3 4 5" ],
+    "result" : "3.0",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "10 10 10 10 10 10" ],
+    "result" : "10.0",
+    "index" : 2,
+    "active" : true
+  } ],
+  "date" : "2020.04.19",
+  "contestName" : "2020 TopCoder Open Algo",
+  "testClasses" : [ ],
+  "fqn" : "contest.AveragePrice",
+  "failOnOverflow" : false,
+  "memoryLimit" : "64M"
+}
