@@ -1,5 +1,6 @@
 package template.utils;
 
+import template.primitve.generated.datastructure.IntToIntegerFunction;
 import template.primitve.generated.datastructure.IntegerList;
 
 import java.util.Arrays;
@@ -22,6 +23,38 @@ public class SequenceUtils {
             }
         }
         return data[l] >= x ? l : excess;
+    }
+
+    /**
+     * Find a index k while f(data[k]) >= 0 and f(data[k - 1]) < 0. If it doesn't exist, r+1 will return.
+     */
+    public static int upperBound(int[] data, int l, int r, IntToIntegerFunction f) {
+        int excess = r + 1;
+        while (l < r) {
+            int m = (l + r) >>> 1;
+            if (f.apply(data[m]) < 0) {
+                l = m + 1;
+            } else {
+                r = m;
+            }
+        }
+        return f.apply(data[l]) >= 0 ? l : excess;
+    }
+
+    /**
+     * Find a index k while data[k] <= x and data[k + 1] > x. If it doesn't exist, l-1 will return.
+     */
+    public static int lowerBound(int[] data, int l, int r, IntToIntegerFunction f) {
+        int excess = l - 1;
+        while (l < r) {
+            int m = (l + r + 1) >>> 1;
+            if (f.apply(data[m]) <= 0) {
+                l = m;
+            } else {
+                r = m - 1;
+            }
+        }
+        return f.apply(data[l]) <= 0 ? l : excess;
     }
 
     /**

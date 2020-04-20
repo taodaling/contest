@@ -1,6 +1,12 @@
 package template.utils;
 
-import template.primitve.generated.datastructure.*;
+import template.primitve.generated.datastructure.DoubleComparator;
+import template.primitve.generated.datastructure.IntToIntFunction;
+import template.primitve.generated.datastructure.IntToLongFunction;
+import template.primitve.generated.datastructure.IntegerComparator;
+import template.primitve.generated.datastructure.IntegerList;
+import template.primitve.generated.datastructure.LongComparator;
+import template.primitve.generated.datastructure.LongList;
 import template.rand.Randomized;
 
 import java.util.Arrays;
@@ -315,22 +321,50 @@ public class CompareUtils {
     }
 
     public static void radixSort(int[] data, int l, int r, IntToIntFunction func) {
+        int n = r - l + 1;
         INT_LIST_A.clear();
-        INT_LIST_A.addAll(data, l, r - l + 1);
+        INT_LIST_A.addAll(data, l, n);
         INT_LIST_B.clear();
-        INT_LIST_B.ensureSpace(r - l + 1);
+        INT_LIST_B.ensureSpace(n);
 
         for (int i = 0; i < 4; i += 2) {
-            radixSort0(INT_LIST_A.getData(), INT_LIST_B.getData(), BUF8, i * 8, func);
-            radixSort0(INT_LIST_B.getData(), INT_LIST_A.getData(), BUF8, (i + 1) * 8, func);
+            radixSort0(n, INT_LIST_A.getData(), INT_LIST_B.getData(), BUF8, i * 8, func);
+            radixSort0(n, INT_LIST_B.getData(), INT_LIST_A.getData(), BUF8, (i + 1) * 8, func);
         }
         System.arraycopy(INT_LIST_A.getData(), 0, data, l, r - l + 1);
     }
 
-    private static void radixSort0(int[] data, int[] output, int[] buf, int rightShift, IntToIntFunction func) {
+    private static void radixSort0(int n, int[] data, int[] output, int[] buf, int rightShift, IntToIntFunction func) {
         Arrays.fill(buf, 0);
         int mask = buf.length - 1;
-        int n = data.length;
+        for (int i = 0; i < n; i++) {
+            buf[(int) ((func.apply(data[i]) >>> rightShift) & mask)]++;
+        }
+        for (int i = 1; i < buf.length; i++) {
+            buf[i] += buf[i - 1];
+        }
+        for (int i = n - 1; i >= 0; i--) {
+            output[--buf[(int) ((func.apply(data[i]) >>> rightShift) & mask)]] = data[i];
+        }
+    }
+
+    public static void radixSortLong(int[] data, int l, int r, IntToLongFunction func) {
+        int n = r - l + 1;
+        INT_LIST_A.clear();
+        INT_LIST_A.addAll(data, l, n);
+        INT_LIST_B.clear();
+        INT_LIST_B.ensureSpace(n);
+
+        for (int i = 0; i < 8; i += 2) {
+            radixSortLong0(n, INT_LIST_A.getData(), INT_LIST_B.getData(), BUF8, i * 8, func);
+            radixSortLong0(n, INT_LIST_B.getData(), INT_LIST_A.getData(), BUF8, (i + 1) * 8, func);
+        }
+        System.arraycopy(INT_LIST_A.getData(), 0, data, l, r - l + 1);
+    }
+
+    private static void radixSortLong0(int n, int[] data, int[] output, int[] buf, int rightShift, IntToLongFunction func) {
+        Arrays.fill(buf, 0);
+        int mask = buf.length - 1;
         for (int i = 0; i < n; i++) {
             buf[(int) ((func.apply(data[i]) >>> rightShift) & mask)]++;
         }
@@ -373,6 +407,16 @@ public class CompareUtils {
     public static void mergeAscending(int[] a, int al, int ar, int[] b, int bl, int br, int[] c, int cl) {
         while (al <= ar || bl <= br) {
             if (bl > br || (al <= ar && a[al] <= b[bl])) {
+                c[cl++] = a[al++];
+            } else {
+                c[cl++] = b[bl++];
+            }
+        }
+    }
+
+    public static void mergeAscending(int[] a, int al, int ar, int[] b, int bl, int br, int[] c, int cl, IntComparator comparator) {
+        while (al <= ar || bl <= br) {
+            if (bl > br || (al <= ar && comparator.compare(a[al], b[bl]) <= 0)) {
                 c[cl++] = a[al++];
             } else {
                 c[cl++] = b[bl++];

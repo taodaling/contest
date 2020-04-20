@@ -1,4 +1,4 @@
-package on2020_04.on2020_04_15_TopCoder_SRM__762.StrawberryHard;
+package on2020_04.on2020_04_20_TopCoder_SRM__761.AddPeriodic;
 
 import net.egork.chelper.tester.NewTopCoderTester;
 
@@ -8,7 +8,7 @@ import org.junit.Test;
 public class Main {
 	@Test
 	public void test() throws Exception {
-		if (!NewTopCoderTester.test("src/test/java/on2020_04/on2020_04_15_TopCoder_SRM__762/StrawberryHard/StrawberryHard.json"))
+		if (!NewTopCoderTester.test("src/test/java/on2020_04/on2020_04_20_TopCoder_SRM__761/AddPeriodic/AddPeriodic.json"))
 			Assert.fail();
 	}
 }

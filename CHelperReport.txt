@@ -1,2 +1,2 @@
-69 src/main/java/contest/E1. Chiori and Doll Picking (easy version).json
+38 src/main/java/contest/AddPeriodic.json
 0

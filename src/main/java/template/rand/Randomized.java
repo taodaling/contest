@@ -7,8 +7,6 @@ import java.util.Random;
  * Created by dalt on 2018/6/1.
  */
 public class Randomized {
-    private static Random random = new Random();
-
     public static void shuffle(int[] data) {
         shuffle(data, 0, data.length - 1);
     }
@@ -92,18 +90,18 @@ public class Randomized {
     }
 
     public static int nextInt(int l, int r) {
-        return random.nextInt(r - l + 1) + l;
+        return RandomWrapper.INSTANCE.nextInt(l, r);
     }
 
     public static void shuffle(char[] data) {
         shuffle(data, 0, data.length - 1);
     }
 
-    public static<T> void shuffle(List<T> list){
+    public static <T> void shuffle(List<T> list) {
         shuffle(list, 0, list.size());
     }
 
-    public static<T> void shuffle(List<T> list, int from, int to) {
+    public static <T> void shuffle(List<T> list, int from, int to) {
         to--;
         for (int i = from; i <= to; i++) {
             int s = nextInt(i, to);
