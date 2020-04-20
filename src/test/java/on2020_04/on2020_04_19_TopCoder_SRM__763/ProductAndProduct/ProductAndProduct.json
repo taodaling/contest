@@ -1,0 +1,36 @@
+{
+  "name" : "ProductAndProduct",
+  "signature" : {
+    "name" : "findExpectedProduct",
+    "result" : "int",
+    "arguments" : [ "int", "int[]", "int", "int" ],
+    "argumentNames" : [ "N", "B", "M", "seed" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "3", "1 2 3", "0", "0" ],
+    "result" : "6",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "3", "1 2 3", "1", "0" ],
+    "result" : "665496245",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "4", "0 0 0 0", "3", "0" ],
+    "result" : "0",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "100000", "", "100000", "369273885" ],
+    "result" : "164185046",
+    "index" : 3,
+    "active" : true
+  } ],
+  "date" : "2020.04.19",
+  "contestName" : "TopCoder SRM #763",
+  "testClasses" : [ ],
+  "fqn" : "on2020_04.on2020_04_19_TopCoder_SRM__763.ProductAndProduct.ProductAndProduct",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

@@ -30,6 +30,7 @@
   "date" : "2020.04.20",
   "contestName" : "TopCoder SRM #765",
   "testClasses" : [ ],
+  "fqn" : "contest.SteelMill",
   "failOnOverflow" : false,
   "memoryLimit" : "256M"
 }

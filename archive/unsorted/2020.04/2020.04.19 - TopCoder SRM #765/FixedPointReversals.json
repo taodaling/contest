@@ -1,0 +1,41 @@
+{
+  "name" : "FixedPointReversals",
+  "signature" : {
+    "name" : "sort",
+    "result" : "int[]",
+    "arguments" : [ "int[]", "int" ],
+    "argumentNames" : [ "A", "fixed" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "10 20 30 40 50", "2" ],
+    "result" : "",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "10 20 40 30 50", "2" ],
+    "result" : "-1",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "20 10 10 10 10 10", "4" ],
+    "result" : "0 6",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "1 50 40 30 20 10", "0" ],
+    "result" : "1 6",
+    "index" : 3,
+    "active" : true
+  }, {
+    "arguments" : [ "20 10 30 50 40", "2" ],
+    "result" : "0 2 3 5",
+    "index" : 4,
+    "active" : true
+  } ],
+  "date" : "2020.04.19",
+  "contestName" : "TopCoder SRM #765",
+  "testClasses" : [ ],
+  "fqn" : "contest.FixedPointReversals",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}
