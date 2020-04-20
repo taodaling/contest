@@ -1,0 +1,41 @@
+{
+  "name" : "HockeyPlayoff",
+  "signature" : {
+    "name" : "winProbability",
+    "result" : "int",
+    "arguments" : [ "int", "int", "int" ],
+    "argumentNames" : [ "winsNeeded", "AwinHome", "BwinHome" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "3", "0", "100" ],
+    "result" : "0",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "4", "100", "0" ],
+    "result" : "999300007",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "600", "50", "50" ],
+    "result" : "594375906",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "4", "53", "57" ],
+    "result" : "942200194",
+    "index" : 3,
+    "active" : true
+  }, {
+    "arguments" : [ "7", "93", "87" ],
+    "result" : "545426737",
+    "index" : 4,
+    "active" : true
+  } ],
+  "date" : "2020.04.20",
+  "contestName" : "TopCoder SRM #766",
+  "testClasses" : [ ],
+  "fqn" : "contest.HockeyPlayoff",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

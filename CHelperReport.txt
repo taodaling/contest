@@ -1,2 +1,2 @@
-36 src/main/java/contest/SteelMill.json
+45 src/main/java/contest/D. Picking Strings.json
 0

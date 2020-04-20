@@ -1,0 +1,36 @@
+{
+  "name" : "BannedBook",
+  "signature" : {
+    "name" : "passAround",
+    "result" : "int[]",
+    "arguments" : [ "String[]" ],
+    "argumentNames" : [ "friend" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "YNNфNYNфNNY" ],
+    "result" : "0 1 2",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "YYYYYфYYNNNфYNYNNфYNNYNфYNNNY" ],
+    "result" : "0 1 2 3 4",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "YYNNNфYYYNNфNYYYNфNNYYYфNNNYY" ],
+    "result" : "0 2 4 3 1",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "YYNNYNYNNфYYNNNYNNNфNNYNNNNNNфNNNYNNNNNфYNNNYNNNYфNYNNNYNYNфYNNNNNYNYфNNNNNYNYNфNNNNYNYNY" ],
+    "result" : "0 5 7 1 8 6 4 2 3",
+    "index" : 3,
+    "active" : true
+  } ],
+  "date" : "2020.04.20",
+  "contestName" : "TopCoder SRM #766",
+  "testClasses" : [ ],
+  "fqn" : "on2020_04.on2020_04_20_TopCoder_SRM__766.BannedBook.BannedBook",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}
