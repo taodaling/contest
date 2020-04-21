@@ -1,6 +1,6 @@
 package template.math;
 
-import template.polynomial.GravityModLagrangeInterpolation;
+import template.polynomial.ModGravityLagrangeInterpolation;
 
 public class ModMatrix {
     int[][] mat;
@@ -377,7 +377,7 @@ public class ModMatrix {
         return ans;
     }
 
-    public GravityModLagrangeInterpolation.Polynomial getCharacteristicPolynomial(Power pow) {
+    public ModGravityLagrangeInterpolation.Polynomial getCharacteristicPolynomial(Power pow) {
         Modular mod = pow.getModular();
         if (n != m) {
             throw new UnsupportedOperationException();
@@ -387,7 +387,7 @@ public class ModMatrix {
         heisenberg.asTopHeisenbergModMatrix(pow);
         ModMatrix copy = new ModMatrix(n, m);
 
-        GravityModLagrangeInterpolation gli = new GravityModLagrangeInterpolation(mod, n + 1);
+        ModGravityLagrangeInterpolation gli = new ModGravityLagrangeInterpolation(mod, n + 1);
         for (int i = 0; i <= n; i++) {
             copy.asSame(heisenberg);
             for (int j = 0; j < n; j++) {

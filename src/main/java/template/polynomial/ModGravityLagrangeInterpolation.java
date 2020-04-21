@@ -8,15 +8,15 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GravityModLagrangeInterpolation {
+public class ModGravityLagrangeInterpolation {
     private Power power;
     private Modular modular;
 
-    public GravityModLagrangeInterpolation(Modular modular, int expect) {
+    public ModGravityLagrangeInterpolation(Modular modular, int expect) {
         this(new Power(modular), expect);
     }
 
-    public GravityModLagrangeInterpolation(Power power, int expect) {
+    public ModGravityLagrangeInterpolation(Power power, int expect) {
         this.modular = power.getModular();
         this.power = power;
         xs = new Polynomial(expect);

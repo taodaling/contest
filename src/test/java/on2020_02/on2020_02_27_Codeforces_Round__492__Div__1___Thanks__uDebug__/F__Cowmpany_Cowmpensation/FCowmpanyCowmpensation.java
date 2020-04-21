@@ -5,7 +5,7 @@ package on2020_02.on2020_02_27_Codeforces_Round__492__Div__1___Thanks__uDebug__.
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.math.Modular;
-import template.polynomial.GravityModLagrangeInterpolation;
+import template.polynomial.ModGravityLagrangeInterpolation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,7 +27,7 @@ public class FCowmpanyCowmpensation {
             p.next.add(nodes[i]);
         }
         dfs(nodes[0]);
-        GravityModLagrangeInterpolation interpolation = new GravityModLagrangeInterpolation(mod, n + 1);
+        ModGravityLagrangeInterpolation interpolation = new ModGravityLagrangeInterpolation(mod, n + 1);
         for(int i = 0; i < n + 1; i++){
             interpolation.addPoint(i + 1, nodes[0].presum[i]);
         }

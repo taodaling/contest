@@ -1,2 +1,2 @@
-45 src/main/java/contest/D. Picking Strings.json
+44 src/main/java/contest/SpanningSubgraphs.json
 0

@@ -1,6 +1,6 @@
 package template.math;
 
-import template.polynomial.GravityModLagrangeInterpolation;
+import template.polynomial.ModGravityLagrangeInterpolation;
 import template.polynomial.Polynomials;
 import template.primitve.generated.datastructure.IntegerList;
 
@@ -60,7 +60,7 @@ public class ModMatrixLinearRecurrenceSolver {
      * O(n^3)
      */
     public ModMatrixLinearRecurrenceSolver(ModMatrix mat, IntegerList vec, Modular mod) {
-        GravityModLagrangeInterpolation.Polynomial p = mat.getCharacteristicPolynomial(new Power(mod));
+        ModGravityLagrangeInterpolation.Polynomial p = mat.getCharacteristicPolynomial(new Power(mod));
         IntegerList coe = p.toIntegerList();
         ModMatrix transpose = ModMatrix.transposition(mat);
         int m = coe.size();
