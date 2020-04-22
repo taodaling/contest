@@ -1,24 +1,87 @@
-package template.graph;
+package on2020_04.on2020_04_21_TopCoder_SRM__767.InThePathToMosque;
+
+
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.IntFunction;
-import java.util.function.IntToLongFunction;
 import java.util.function.LongBinaryOperator;
 
-public class HeavyLightDecompose {
-    private LongBinaryOperator op;
+public class InThePathToMosque {
+    public long solve(int n, int q, int A, int B, int t) {
+        int[] par = new int[n];
+        int[] w = new int[n];
+        int[] u = new int[q];
+        int[] f = new int[q];
 
-    public static class Segment implements Cloneable {
+        par[1] = 0;
+        for (int i = 2; i <= n - 1; i++) {
+            par[i] = Math.max(0, i - 1 - (int) (((long) par[i - 1] * A + B) % t));
+        }
+        w[1] = B;
+        for (int i = 2; i <= n - 1; i++) {
+            w[i] = (int) (((long) w[i - 1] * A + B) % (int) 1e9);
+        }
+        u[0] = B % n;
+        for (int i = 1; i <= q - 1; i++) {
+            u[i] = (int) (((long) u[i - 1] * A + B) % n);
+        }
+
+        f[0] = B;
+        for (int i = 1; i <= q - 1; i++) {
+            f[i] = (int) (((long) f[i - 1] * A + B) % (int) 1e9);
+        }
+
+        HeavyLightDecompose hld = new HeavyLightDecompose(n, 0);
+        for (int i = 1; i < n; i++) {
+            hld.addEdge(i, par[i]);
+            hld.nodes[i].b += w[i];
+        }
+        hld.finish();
+        long sum = 0;
+        for (int i = 0; i < q; i++) {
+            int end = hld.processPath(u[i], f[i]);
+            sum += end;
+        }
+        return sum;
+    }
+}
+
+class HeavyLightDecompose {
+
+    public static class SegmentQuery {
+        int index;
+        long sum;
+        boolean end;
+
+        public void reset(int sum) {
+            index = -1;
+            this.sum = sum;
+            end = false;
+        }
+    }
+
+    public static class Segment {
         private Segment left;
         private Segment right;
-        private long val;
+        private long a;
+        private long b;
+        private long min;
+        private long sum;
 
         public void pushUp() {
+            min = Math.min(left.min + right.sum, right.min);
+            sum = left.sum + right.sum;
         }
 
         public void modify(long x) {
-            this.val = x;
+            this.a += x;
+            reset();
+        }
+
+        public void reset() {
+            this.sum = a + b;
+            this.min = a - b;
         }
 
         public void pushDown() {
@@ -31,7 +94,9 @@ public class HeavyLightDecompose {
                 right = new Segment(m + 1, r, function);
                 pushUp();
             } else {
-                val = function.apply(l).val;
+                a = function.apply(l).a;
+                b = function.apply(l).b;
+                reset();
             }
         }
 
@@ -58,57 +123,25 @@ public class HeavyLightDecompose {
             pushUp();
         }
 
-        public long query(int ll, int rr, int l, int r, LongBinaryOperator op) {
-            if (noIntersection(ll, rr, l, r)) {
-                return 0;
-            }
-            if (covered(ll, rr, l, r)) {
-                return val;
-            }
-            pushDown();
-            int m = (l + r) >> 1;
-            return op.applyAsLong(left.query(ll, rr, l, m, op),
-                    right.query(ll, rr, m + 1, r, op));
-        }
-
-        private void toString(StringBuilder builder) {
-            if (left == null && right == null) {
-                builder.append("val").append(",");
+        public void query(int ll, int rr, int l, int r, SegmentQuery q) {
+            if (noIntersection(ll, rr, l, r) || q.end) {
                 return;
             }
+            q.index = l;
+            if (covered(ll, rr, l, r) && min + q.sum >= 0) {
+                q.sum += sum;
+                return;
+            }
+            if (l == r) {
+                q.sum += a;
+                q.end = true;
+                return;
+            }
+
             pushDown();
-            left.toString(builder);
-            right.toString(builder);
-        }
-
-        @Override
-        public String toString() {
-            StringBuilder builder = new StringBuilder();
-            deepClone().toString(builder);
-            if (builder.length() > 0) {
-                builder.setLength(builder.length() - 1);
-            }
-            return builder.toString();
-        }
-
-        private Segment deepClone() {
-            Segment seg = clone();
-            if (seg.left != null) {
-                seg.left = seg.left.deepClone();
-            }
-            if (seg.right != null) {
-                seg.right = seg.right.deepClone();
-            }
-            return seg;
-        }
-
-        @Override
-        protected Segment clone() {
-            try {
-                return (Segment) super.clone();
-            } catch (CloneNotSupportedException e) {
-                throw new RuntimeException(e);
-            }
+            int m = (l + r) >> 1;
+            right.query(ll, rr, m + 1, r, q);
+            left.query(ll, rr, l, m, q);
         }
     }
 
@@ -123,14 +156,16 @@ public class HeavyLightDecompose {
         HLDNode heavy;
         HLDNode father;
 
+        long a;
+        long b;
+
         @Override
         public String toString() {
             return "" + id;
         }
     }
 
-    public HeavyLightDecompose(LongBinaryOperator op, int n, int rootId) {
-        this.op = op;
+    public HeavyLightDecompose(int n, int rootId) {
         this.n = n;
         nodes = new HLDNode[n];
         for (int i = 0; i < n; i++) {
@@ -164,31 +199,15 @@ public class HeavyLightDecompose {
         segment = new Segment(1, n, i -> segIndexToNode[i]);
     }
 
-    public long processPath(int uId, int vId) {
+    public int processPath(int uId, int f) {
         HLDNode u = nodes[uId];
-        HLDNode v = nodes[vId];
-        long sum = 1;
-        while (u != v) {
-            if (u.link == v.link) {
-                if (u.size > v.size) {
-                    HLDNode tmp = u;
-                    u = v;
-                    v = tmp;
-                }
-                sum = op.applyAsLong(sum, segment.query(v.dfsOrderFrom + 1, u.dfsOrderFrom, 1, n, op));
-                u = v;
-            } else {
-                if (u.link.size > v.link.size) {
-                    HLDNode tmp = u;
-                    u = v;
-                    v = tmp;
-                }
-                sum = op.applyAsLong(sum, segment.query(u.link.dfsOrderFrom, u.dfsOrderFrom, 1, n, op));
-                u = u.link.father;
-            }
+        sq.reset(f);
+        while (!sq.end && u != null) {
+            segment.query(u.link.dfsOrderFrom, u.dfsOrderFrom, 1, n, sq);
+            u = u.link.father;
         }
-        sum = op.applyAsLong(sum, segment.query(u.dfsOrderFrom, u.dfsOrderFrom, 1, n, op));
-        return sum;
+        segment.update(sq.index, sq.index, 1, n, sq.sum);
+        return segIndexToNode[sq.index].id;
     }
 
     private static void dfs(HLDNode root, HLDNode father) {
@@ -221,6 +240,7 @@ public class HeavyLightDecompose {
         root.dfsOrderTo = order - 1;
     }
 
+    SegmentQuery sq = new SegmentQuery();
     int n;
     int order = 1;
     HLDNode root;

@@ -1,0 +1,31 @@
+{
+  "name" : "MahdiJumping",
+  "signature" : {
+    "name" : "minDis",
+    "result" : "long",
+    "arguments" : [ "int", "int", "int", "int", "int" ],
+    "argumentNames" : [ "n", "A", "B", "a", "b" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "7", "1", "1", "1", "5" ],
+    "result" : "6",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "5", "2", "2", "1", "2" ],
+    "result" : "3",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "5", "5", "5", "5", "5" ],
+    "result" : "20",
+    "index" : 2,
+    "active" : true
+  } ],
+  "date" : "2020.04.21",
+  "contestName" : "TopCoder SRM #767",
+  "testClasses" : [ ],
+  "fqn" : "on2020_04.on2020_04_21_TopCoder_SRM__767.MahdiJumping.MahdiJumping",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

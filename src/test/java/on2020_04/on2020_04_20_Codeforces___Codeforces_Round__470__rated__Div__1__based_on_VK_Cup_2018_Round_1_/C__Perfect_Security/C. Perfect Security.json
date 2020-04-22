@@ -1,0 +1,45 @@
+{
+  "name" : "C. Perfect Security",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3\n8 4 13\n17 2 7\n",
+    "output" : "10 3 28\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "5\n12 7 87 22 11\n18 39 9 12 16\n",
+    "output" : "0 14 69 6 44\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "10\n331415699 278745619 998190004 423175621 42983144 166555524 843586353 802130100 337889448 685310951\n226011312 266003835 342809544 504667531 529814910 684873393 817026985 844010788 993949858 1031395667\n",
+    "output" : "128965467 243912600 4281110 112029883 223689619 76924724 429589 119397893 613490433 362863284\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx512M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_04.on2020_04_20_Codeforces___Codeforces_Round__470__rated__Div__1__based_on_VK_Cup_2018_Round_1_.C__Perfect_Security.CPerfectSecurity",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.04.20",
+  "contestName" : "Codeforces - Codeforces Round #470 (rated, Div. 1, based on VK Cup 2018 Round 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}
