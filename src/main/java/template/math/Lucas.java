@@ -3,23 +3,31 @@ package template.math;
 /**
  * Lucas algorithm
  */
-public class Lucas {
-    private final Combination combination;
-    private int modulus;
+public class Lucas implements IntCombination, LongCombination {
+    private final IntCombination primeCombination;
+    private int mod;
 
-    public Lucas(Combination combination) {
-        this.combination = combination;
-        this.modulus = combination.modular.m;
+
+    public Lucas(IntCombination primeCombination, int mod) {
+        this.primeCombination = primeCombination;
+        this.mod = mod;
     }
+
+    @Override
+    public int combination(int m, int n) {
+        return combination((long) m, (long) n);
+    }
+
+
 
     /**
      * O(\log_p \min(n, m))
      */
-    public int composite(long m, long n) {
+    public int combination(long m, long n) {
         if (n == 0) {
-            return 1;
+            return 1 % mod;
         }
-        return combination.modular.mul(combination.combination((int) (m % modulus), (int) (n % modulus)),
-                        composite(m / modulus, n / modulus));
+        return (int) ((long) primeCombination.combination((int) (m % mod), (int) (n % mod)) *
+                combination(m / mod, n / mod) % mod);
     }
 }

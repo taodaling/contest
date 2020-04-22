@@ -1,13 +1,56 @@
-package template.math;
+package contest;
+
+import template.io.FastInput;
+import template.io.FastOutput;
+import template.math.DigitUtils;
+import template.math.ExtGCD;
+import template.math.IntExtCRT;
+import template.math.LongCombination;
+import template.math.Lucas;
+import template.math.Modular;
+import template.math.PollardRho;
+import template.math.Power;
+import template.math.PrimeCombination;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-/**
- * Extend lucas algorithm
- */
-public class ExtLucas implements LongCombination, Iterable<Map.Entry<Integer, LongCombination>> {
+public class TaskD {
+    public void solve(int testNumber, FastInput in, FastOutput out) {
+        int m = in.readInt();
+        int p = in.readInt();
+        int l = in.readInt();
+        int r = in.readInt();
+
+        ExtLucas lucas = new ExtLucas(p, m);
+
+        IntExtCRT crt = new IntExtCRT();
+
+        for (Map.Entry<Integer, LongCombination> entry : lucas) {
+            Modular mod = new Modular(entry.getKey());
+            LongCombination comb = entry.getValue();
+            long ans = 0;
+            for (int n = 0; n <= m; n++) {
+                long a = comb.combination(n, DigitUtils.ceilDiv(n + l, 2));
+                long b = comb.combination(n, DigitUtils.floorDiv(n + r, 2) + 1);
+                long c = comb.combination(m, n);
+
+                long local = mod.subtract(a, b);
+                local = mod.mul(local, c);
+                ans = mod.plus(ans, local);
+            }
+
+            crt.add((int) ans, entry.getKey());
+        }
+
+
+        out.println(crt.getValue());
+    }
+}
+
+
+class ExtLucas implements LongCombination, Iterable<Map.Entry<Integer, LongCombination>> {
     PollardRho pr = new PollardRho();
     Map<Integer, LongCombination> factorialMap = new HashMap();
     int p;
@@ -70,6 +113,7 @@ public class ExtLucas implements LongCombination, Iterable<Map.Entry<Integer, Lo
         Power power;
         ExtGCD extGCD = new ExtGCD();
         int[] g;
+        int[] pgc;
 
         /**
          * O(min(pc, m))
@@ -92,11 +136,19 @@ public class ExtLucas implements LongCombination, Iterable<Map.Entry<Integer, Lo
                     g[i] = modular.mul(g[i - 1], i);
                 }
             }
+
+            if(m >= pc) {
+                pgc = new int[(int) m + 1];
+                pgc[0] = 1;
+                for (int i = 1; i <= m; i++) {
+                    pgc[i] = modular.mul(pgc[i - 1], g[pc]);
+                }
+            }
         }
 
         /**
          * return m! (mod pc) without any factor which is multiple of p. <br>
-         * O(\log_p m \log_2 m)
+         * O(\log_p m)
          */
         private int fact(long m) {
             fact = 1;
@@ -104,8 +156,7 @@ public class ExtLucas implements LongCombination, Iterable<Map.Entry<Integer, Lo
             while (m > 1) {
                 exp += m / p;
                 if (m >= pc) {
-                    //There can be optimize to O(1), so this method provide O(\log_p m) time complexity.
-                    fact = modular.mul(fact, power.pow(g[pc], m / pc));
+                    fact = modular.mul(fact, pgc[(int) (m / pc)]);
                 }
                 fact = modular.mul(fact, g[(int) (m % pc)]);
                 m /= p;
@@ -116,7 +167,7 @@ public class ExtLucas implements LongCombination, Iterable<Map.Entry<Integer, Lo
 
         /**
          * Find C(m,n), it means choose n elements from a set whose size is m. <br>
-         * O(\log_p m \log_2 m)
+         * O(\log_p m)
          */
         public int combination(long m, long n) {
             if (m < n) {

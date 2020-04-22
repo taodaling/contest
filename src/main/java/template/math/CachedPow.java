@@ -29,10 +29,18 @@ public class CachedPow {
         return mod.mul(first[exp & mask], second[exp >> step]);
     }
 
+    public int pow(long exp) {
+        return pow(powMod.valueOf(exp));
+    }
+
     /**
      * return x^{-exp}
      */
     public int inverse(int exp) {
+        return pow(powMod.valueOf(-exp));
+    }
+
+    public int inverse(long exp) {
         return pow(powMod.valueOf(-exp));
     }
 }

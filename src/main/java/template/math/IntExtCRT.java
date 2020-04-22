@@ -21,6 +21,10 @@ public class IntExtCRT {
         return r;
     }
 
+    public int getModular() {
+        return m;
+    }
+
     public boolean isValid() {
         return valid;
     }

@@ -1,0 +1,58 @@
+{
+  "name" : "D - Nephren Runs a Cinema",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4 97 2 3\n",
+    "output" : "13\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "4 100 0 4\n",
+    "output" : "35\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "2 100 2 2",
+    "output" : "1",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "100000 223092870 0 100000",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "98760 1338557220 16384 65536",
+    "index" : 4,
+    "active" : true
+  }, {
+    "input" : "23333 764411904 0 23332",
+    "output" : "164956607",
+    "index" : 5,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_04.on2020_04_22_Codeforces_Round__449__Div__1_.D___Nephren_Runs_a_Cinema.TaskD",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.04.22",
+  "contestName" : "Codeforces Round #449 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}
