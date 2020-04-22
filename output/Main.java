@@ -1,12 +1,21 @@
 import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.PriorityQueue;
+import java.util.AbstractQueue;
+import java.util.Deque;
+import java.util.AbstractCollection;
+import java.io.OutputStreamWriter;
+import java.util.function.IntFunction;
 import java.io.OutputStream;
+import java.util.Iterator;
+import java.util.Collection;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.io.Closeable;
 import java.io.Writer;
-import java.io.OutputStreamWriter;
+import java.util.ArrayDeque;
 import java.io.InputStream;
 
 /**
@@ -27,68 +36,166 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            EWelcomeHomeChtholly solver = new EWelcomeHomeChtholly();
+            CEnvy solver = new CEnvy();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class EWelcomeHomeChtholly {
+    static class CEnvy {
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
             int m = in.readInt();
-
+            Edge[] edges = new Edge[m];
             Node[] nodes = new Node[n];
             for (int i = 0; i < n; i++) {
                 nodes[i] = new Node();
-                nodes[i].val = in.readInt();
+                nodes[i].id = i;
             }
-
-            int B = 250;
-            Block[] blocks = new Block[DigitUtils.ceilDiv(n, B)];
-            for (int i = 0; i < blocks.length; i++) {
-                blocks[i] = new Block(nodes, i * B, Math.min(n, (i + 1) * B) - 1);
-            }
-
             for (int i = 0; i < m; i++) {
-                int t = in.readInt();
-                int l = in.readInt() - 1;
-                int r = in.readInt() - 1;
-                int x = in.readInt();
-                if (t == 1) {
-                    for (Block b : blocks) {
-                        b.update(l, r, x);
-                    }
-                } else {
-                    int ans = 0;
-                    for (Block b : blocks) {
-                        ans += b.query(l, r, x);
-                    }
-                    out.println(ans);
+                edges[i] = new Edge();
+                edges[i].a = nodes[in.readInt() - 1];
+                edges[i].b = nodes[in.readInt() - 1];
+                edges[i].w = in.readInt();
+            }
+            Edge[] sortedByWeight = edges.clone();
+            Arrays.sort(sortedByWeight, (a, b) -> Integer.compare(a.w, b.w));
+
+            int q = in.readInt();
+            Query[] qs = new Query[q];
+            for (int i = 0; i < q; i++) {
+                int k = in.readInt();
+                Edge[] set = new Edge[k];
+                qs[i] = new Query();
+                for (int j = 0; j < k; j++) {
+                    set[j] = edges[in.readInt() - 1];
                 }
+                Arrays.sort(set, (a, b) -> Integer.compare(a.w, b.w));
+                qs[i].dq = new Range2DequeAdapter<>(j -> set[j], 0, k - 1);
+            }
+
+
+            PriorityQueue<Query> pq = new PriorityQueue<>(q, (a, b) -> Integer.compare(a.front, b.front));
+            for (int i = 0; i < q; i++) {
+                qs[i].front = qs[i].dq.peekFirst().w;
+                pq.add(qs[i]);
+            }
+            Deque<Node> sp = new ArrayDeque<>(n);
+            for (int i = 0; i < m && !pq.isEmpty(); i++) {
+                int w = sortedByWeight[i].w;
+                while (!pq.isEmpty() && pq.peek().dq.peekFirst().w <= w) {
+                    Query top = pq.remove();
+                    while (!top.dq.isEmpty() && top.dq.peekFirst().w <= w) {
+                        Edge head = top.dq.removeFirst();
+                        Node v = Node.merge(head.a, head.b);
+                        if (v == null) {
+                            top.valid = false;
+                            break;
+                        }
+                        sp.addLast(v);
+                    }
+                    while (!sp.isEmpty()) {
+                        Node.rollback(sp.removeLast());
+                    }
+                    if (top.valid && !top.dq.isEmpty()) {
+                        top.front = top.dq.peekFirst().w;
+                        pq.add(top);
+                    }
+                }
+                Node.merge(sortedByWeight[i].a, sortedByWeight[i].b);
+            }
+
+            for (Query query : qs) {
+                out.println(query.valid ? "YES" : "NO");
             }
         }
 
     }
 
-    static class DigitUtils {
-        private DigitUtils() {
+    static class Node {
+        Node p;
+        int rank = 1;
+        int id;
+
+        public Node find() {
+            Node root = this;
+            while (root.p != null) {
+                root = root.p;
+            }
+            return root;
         }
 
-        public static int floorDiv(int a, int b) {
-            return a < 0 ? -ceilDiv(-a, b) : a / b;
+        public static Node merge(Node a, Node b) {
+            a = a.find();
+            b = b.find();
+            if (a == b) {
+                return null;
+            }
+
+            if (a.rank > b.rank) {
+                Node tmp = a;
+                a = b;
+                b = tmp;
+            }
+            a.p = b;
+            b.rank += a.rank;
+            return a;
         }
 
-        public static int ceilDiv(int a, int b) {
-            if (a < 0) {
-                return -floorDiv(-a, b);
+        public static void rollback(Node node) {
+            for (Node trace = node.p; trace != null; trace = trace.p) {
+                trace.rank -= node.rank;
             }
-            int c = a / b;
-            if (c * b < a) {
-                return c + 1;
-            }
-            return c;
+            node.p = null;
         }
+
+    }
+
+    static class Range2DequeAdapter<T> implements SimplifiedDeque<T> {
+        IntFunction<T> data;
+        int l;
+        int r;
+
+        public Range2DequeAdapter(IntFunction<T> data, int l, int r) {
+            this.data = data;
+            this.l = l;
+            this.r = r;
+        }
+
+        public boolean isEmpty() {
+            return l > r;
+        }
+
+        public T peekFirst() {
+            return data.apply(l);
+        }
+
+        public T removeFirst() {
+            return data.apply(l++);
+        }
+
+        public Iterator<T> iterator() {
+            return new Iterator<T>() {
+                int iter = l;
+
+
+                public boolean hasNext() {
+                    return iter <= r;
+                }
+
+
+                public T next() {
+                    return data.apply(iter++);
+                }
+            };
+        }
+
+    }
+
+    static class Edge {
+        Node a;
+        Node b;
+        int w;
 
     }
 
@@ -119,12 +226,12 @@ public class Main {
             return this;
         }
 
-        public FastOutput append(int c) {
+        public FastOutput append(String c) {
             cache.append(c);
             return this;
         }
 
-        public FastOutput println(int c) {
+        public FastOutput println(String c) {
             return append(c).println();
         }
 
@@ -156,6 +263,13 @@ public class Main {
         public String toString() {
             return cache.toString();
         }
+
+    }
+
+    static interface SimplifiedDeque<T> extends SimplifiedStack<T> {
+        T peekFirst();
+
+        T removeFirst();
 
     }
 
@@ -218,162 +332,15 @@ public class Main {
 
     }
 
-    static class Node {
-        Node next;
-        Node prev;
-        int val;
-
-        public void reset() {
-            next = prev = this;
-        }
-
-        public static void merge(Node a, Node b) {
-            Node aTail = a.prev;
-            Node bTail = b.prev;
-            a.prev = bTail;
-            bTail.next = a;
-            aTail.next = b;
-            b.prev = aTail;
-        }
+    static interface SimplifiedStack<T> extends Iterable<T> {
+        boolean isEmpty();
 
     }
 
-    static class Block {
-        Node[] level;
-        int[] size;
-        int high;
-        Node[] nodes;
-        int l;
-        int r;
-        int tag;
-
-        public Block(Node[] nodes, int l, int r) {
-            this.nodes = nodes;
-            this.l = l;
-            this.r = r;
-            for (int i = l; i <= r; i++) {
-                high = Math.max(nodes[i].val, high);
-            }
-            level = new Node[high + 1];
-            size = new int[high + 1];
-            install();
-        }
-
-        private void uninstall() {
-            for (int i = l; i <= r; i++) {
-                int val = nodes[i].val;
-                if (level[val] == null) {
-                    continue;
-                }
-                level[val].prev.next = null;
-                for (Node head = level[val]; head != null; head = head.next) {
-                    head.val = val + tag;
-                }
-                level[val] = null;
-                size[val] = 0;
-            }
-            tag = 0;
-        }
-
-        private void install() {
-            for (int i = l; i <= r; i++) {
-                nodes[i].reset();
-            }
-
-            for (int i = l; i <= r; i++) {
-                if (level[nodes[i].val] != null) {
-                    Node.merge(level[nodes[i].val], nodes[i]);
-                }
-                level[nodes[i].val] = nodes[i];
-                size[nodes[i].val]++;
-            }
-        }
-
-        private void move(int i, int j) {
-            if (level[i] == null) {
-                return;
-            }
-            if (level[j] != null) {
-                Node.merge(level[i], level[j]);
-            }
-            level[j] = level[i];
-            level[i] = null;
-            level[j].val = j;
-            size[j] += size[i];
-            size[i] = 0;
-        }
-
-        public void adjust() {
-            while (level[high] == null) {
-                high--;
-            }
-        }
-
-        public void update(int ll, int rr, int x) {
-            ll = Math.max(ll, l);
-            rr = Math.min(rr, r);
-            if (rr < ll) {
-                return;
-            }
-            if (ll != l || rr != r) {
-                //not cover
-                uninstall();
-                for (int i = ll; i <= rr; i++) {
-                    if (nodes[i].val <= x) {
-                        continue;
-                    }
-                    nodes[i].val -= x;
-                }
-                install();
-                return;
-            }
-
-            adjust();
-            //cover
-            int mx = high + tag;
-            if (mx <= x) {
-                return;
-            }
-
-            if (x * 2 <= mx) {
-                for (int i = 1 - tag; i + tag <= x; i++) {
-                    move(i, i + x);
-                }
-                tag -= x;
-            } else {
-                for (int i = high; i + tag > x; i--) {
-                    move(i, i - x);
-                }
-            }
-        }
-
-        public int query(int ll, int rr, int x) {
-            ll = Math.max(ll, l);
-            rr = Math.min(rr, r);
-            if (rr < ll) {
-                return 0;
-            }
-            if (ll != l || rr != r) {
-                //not cover
-                uninstall();
-                int ans = 0;
-                for (int i = ll; i <= rr; i++) {
-                    if (nodes[i].val == x) {
-                        ans++;
-                    }
-                }
-                install();
-                return ans;
-            }
-
-            adjust();
-            //cover
-            x -= tag;
-            if (x >= 0 && x <= high) {
-                return size[x];
-            }
-            return 0;
-        }
+    static class Query {
+        SimplifiedDeque<Edge> dq;
+        boolean valid = true;
+        int front;
 
     }
 }

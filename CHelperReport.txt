@@ -1,2 +1,2 @@
-52 src/main/java/contest/E. Welcome home, Chtholly.json
+34 src/main/java/contest/C. Envy.json
 0
