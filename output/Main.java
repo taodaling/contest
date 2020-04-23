@@ -1,19 +1,14 @@
 import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.Deque;
-import java.util.function.Supplier;
-import java.io.OutputStreamWriter;
 import java.io.OutputStream;
-import java.io.PrintStream;
-import java.util.Collection;
+import java.util.Arrays;
 import java.io.IOException;
+import java.util.Random;
 import java.io.UncheckedIOException;
-import java.util.function.Consumer;
 import java.io.Closeable;
 import java.io.Writer;
-import java.util.ArrayDeque;
+import java.io.OutputStreamWriter;
 import java.io.InputStream;
 
 /**
@@ -34,302 +29,120 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            TaskE solver = new TaskE();
+            CNastyaAndUnexpectedGuest solver = new CNastyaAndUnexpectedGuest();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class TaskE {
-        int p = (int) (1e9 + 7);
-        Modular mod = new Modular(p);
-        Power power = new Power(mod);
-        Debug debug = new Debug(true);
-
+    static class CNastyaAndUnexpectedGuest {
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
             int m = in.readInt();
-            int[] a = new int[n];
-            for (int i = 0; i < n; i++) {
-                a[i] = in.readInt();
+            int[] d = new int[m];
+            for (int i = 0; i < m; i++) {
+                d[i] = in.readInt();
             }
+            Randomized.shuffle(d);
+            Arrays.sort(d);
 
-            IntegerList[] ps = new IntegerList[n];
-            for (int i = 0; i < n; i++) {
-                ps[i] = new IntegerList();
-                ps[i].add(a[i]);
-                ps[i].add(-1);
-            }
+            int g = in.readInt();
+            int r = in.readInt();
 
-            IntegerList c = new IntegerList();
-            Polynomials.dacMul(ps, c, mod);
+            boolean[][] dp = new boolean[m][g + 1];
+            dp[0][g] = true;
+            IntegerDeque pend = new IntegerDequeImpl(m);
+            LongDeque dq = new LongDequeImpl(m * (g + 1));
+            dq.addLast(merge(0, g));
+            int round = 0;
+            boolean valid = false;
 
-            c.expandWith(0, n + 1);
-            int exp = 0;
+            while (!dq.isEmpty()) {
+                round++;
+                while (!dq.isEmpty()) {
+                    long head = dq.removeFirst();
+                    int high = (int) (head >> 32);
+                    int low = (int) head;
+//                debug.debug("high", high);
+//                debug.debug("low", low);
+                    valid = valid || high == m - 1;
 
-            int top = 1;
-            int bot = 1;
-            int invN = power.inverseByFermat(n);
-            for (int i = 0; i <= n && i <= m; i++) {
-                int j = m - i;
-                if (i > 0) {
-                    top = mod.mul(top, j + 1);
-                    bot = mod.mul(bot, invN);
+                    if (low == 0) {
+                        pend.addLast(high);
+                        continue;
+                    }
+
+                    //left
+                    if (high > 0) {
+                        int leftTime = low - (d[high] - d[high - 1]);
+                        if (leftTime >= 0 && !dp[high - 1][leftTime]) {
+                            dp[high - 1][leftTime] = true;
+                            dq.addLast(merge(high - 1, leftTime));
+                        }
+                    }
+
+                    if (high < m - 1) {
+                        int rightTime = low - (d[high + 1] - d[high]);
+                        if (rightTime >= 0 && !dp[high + 1][rightTime]) {
+                            dp[high + 1][rightTime] = true;
+                            dq.addLast(merge(high + 1, rightTime));
+                        }
+                    }
                 }
-                int ci = c.get(i);
-                int local = mod.mul(top, bot);
-                local = mod.mul(local, ci);
-                exp = mod.plus(exp, local);
-            }
 
-            int prod = 1;
-            for (int i = 0; i < n; i++) {
-                prod = mod.mul(prod, a[i]);
-            }
+                if (valid) {
+                    int time = -1;
+                    for (int i = 0; i <= g; i++) {
+                        if (dp[m - 1][i]) {
+                            time = i;
+                        }
+                    }
 
-            debug.debug("prod", prod);
-            debug.debug("exp", exp);
-            debug.debug("c", c);
-            int ans = mod.subtract(prod, exp);
-            out.println(ans);
-        }
-
-    }
-
-    static class IntegerList implements Cloneable {
-        private int size;
-        private int cap;
-        private int[] data;
-        private static final int[] EMPTY = new int[0];
-
-        public int[] getData() {
-            return data;
-        }
-
-        public IntegerList(int cap) {
-            this.cap = cap;
-            if (cap == 0) {
-                data = EMPTY;
-            } else {
-                data = new int[cap];
-            }
-        }
-
-        public IntegerList(IntegerList list) {
-            this.size = list.size;
-            this.cap = list.cap;
-            this.data = Arrays.copyOf(list.data, size);
-        }
-
-        public IntegerList() {
-            this(0);
-        }
-
-        public void ensureSpace(int req) {
-            if (req > cap) {
-                while (cap < req) {
-                    cap = Math.max(cap + 10, 2 * cap);
+                    int cost = (round - 1) * (g + r) + g - time;
+                    out.println(cost);
+                    return;
                 }
-                data = Arrays.copyOf(data, cap);
-            }
-        }
 
-        private void checkRange(int i) {
-            if (i < 0 || i >= size) {
-                throw new ArrayIndexOutOfBoundsException("invalid index " + i);
-            }
-        }
+                while (!pend.isEmpty()) {
+                    int high = pend.removeFirst();
+                    int low = g;
 
-        public int get(int i) {
-            checkRange(i);
-            return data[i];
-        }
+                    if (high > 0) {
+                        int leftTime = low - (d[high] - d[high - 1]);
+                        if (leftTime >= 0 && !dp[high - 1][leftTime]) {
+                            dp[high - 1][leftTime] = true;
+                            dq.addLast(merge(high - 1, leftTime));
+                        }
+                    }
 
-        public void add(int x) {
-            ensureSpace(size + 1);
-            data[size++] = x;
-        }
-
-        public void addAll(int[] x, int offset, int len) {
-            ensureSpace(size + len);
-            System.arraycopy(x, offset, data, size, len);
-            size += len;
-        }
-
-        public void addAll(IntegerList list) {
-            addAll(list.data, 0, list.size);
-        }
-
-        public void expandWith(int x, int len) {
-            ensureSpace(len);
-            while (size < len) {
-                data[size++] = x;
-            }
-        }
-
-        public int size() {
-            return size;
-        }
-
-        public int[] toArray() {
-            return Arrays.copyOf(data, size);
-        }
-
-        public void clear() {
-            size = 0;
-        }
-
-        public String toString() {
-            return Arrays.toString(toArray());
-        }
-
-        public boolean equals(Object obj) {
-            if (!(obj instanceof IntegerList)) {
-                return false;
-            }
-            IntegerList other = (IntegerList) obj;
-            return SequenceUtils.equal(data, 0, size - 1, other.data, 0, other.size - 1);
-        }
-
-        public int hashCode() {
-            int h = 1;
-            for (int i = 0; i < size; i++) {
-                h = h * 31 + Integer.hashCode(data[i]);
-            }
-            return h;
-        }
-
-        public IntegerList clone() {
-            IntegerList ans = new IntegerList();
-            ans.addAll(this);
-            return ans;
-        }
-
-    }
-
-    static class Modular {
-        int m;
-
-        public Modular(int m) {
-            this.m = m;
-        }
-
-        public Modular(long m) {
-            this.m = (int) m;
-            if (this.m != m) {
-                throw new IllegalArgumentException();
-            }
-        }
-
-        public Modular(double m) {
-            this.m = (int) m;
-            if (this.m != m) {
-                throw new IllegalArgumentException();
-            }
-        }
-
-        public int valueOf(int x) {
-            x %= m;
-            if (x < 0) {
-                x += m;
-            }
-            return x;
-        }
-
-        public int valueOf(long x) {
-            x %= m;
-            if (x < 0) {
-                x += m;
-            }
-            return (int) x;
-        }
-
-        public int mul(int x, int y) {
-            return valueOf((long) x * y);
-        }
-
-        public int plus(int x, int y) {
-            return valueOf(x + y);
-        }
-
-        public int subtract(int x, int y) {
-            return valueOf(x - y);
-        }
-
-        public String toString() {
-            return "mod " + m;
-        }
-
-    }
-
-    static class Buffer<T> {
-        private Deque<T> deque;
-        private Supplier<T> supplier;
-        private Consumer<T> cleaner;
-
-        public Buffer(Supplier<T> supplier) {
-            this(supplier, (x) -> {
-            });
-        }
-
-        public Buffer(Supplier<T> supplier, Consumer<T> cleaner) {
-            this(supplier, cleaner, 0);
-        }
-
-        public Buffer(Supplier<T> supplier, Consumer<T> cleaner, int exp) {
-            this.supplier = supplier;
-            this.cleaner = cleaner;
-            deque = new ArrayDeque<>(exp);
-        }
-
-        public T alloc() {
-            return deque.isEmpty() ? supplier.get() : deque.removeFirst();
-        }
-
-        public void release(T e) {
-            cleaner.accept(e);
-            deque.addLast(e);
-        }
-
-    }
-
-    static class Power {
-        final Modular modular;
-
-        public Power(Modular modular) {
-            this.modular = modular;
-        }
-
-        public int pow(int x, int n) {
-            if (n == 0) {
-                return modular.valueOf(1);
-            }
-            long r = pow(x, n >> 1);
-            r = modular.valueOf(r * r);
-            if ((n & 1) == 1) {
-                r = modular.valueOf(r * x);
-            }
-            return (int) r;
-        }
-
-        public int inverseByFermat(int x) {
-            return pow(x, modular.m - 2);
-        }
-
-    }
-
-    static class SequenceUtils {
-        public static boolean equal(int[] a, int al, int ar, int[] b, int bl, int br) {
-            if ((ar - al) != (br - bl)) {
-                return false;
-            }
-            for (int i = al, j = bl; i <= ar; i++, j++) {
-                if (a[i] != b[j]) {
-                    return false;
+                    if (high < m - 1) {
+                        int rightTime = low - (d[high + 1] - d[high]);
+                        if (rightTime >= 0 && !dp[high + 1][rightTime]) {
+                            dp[high + 1][rightTime] = true;
+                            dq.addLast(merge(high + 1, rightTime));
+                        }
+                    }
                 }
             }
-            return true;
+
+            out.println(-1);
         }
+
+        public long merge(long a, long b) {
+            return (a << 32) | b;
+        }
+
+    }
+
+    static interface IntegerDeque extends IntegerStack {
+        int removeFirst();
+
+    }
+
+    static interface IntegerIterator {
+        boolean hasNext();
+
+        int next();
 
     }
 
@@ -392,103 +205,256 @@ public class Main {
 
     }
 
-    static class Debug {
-        private boolean offline;
-        private PrintStream out = System.err;
-        static int[] empty = new int[0];
+    static class RandomWrapper {
+        private Random random;
+        public static final RandomWrapper INSTANCE = new RandomWrapper(new Random());
 
-        public Debug(boolean enable) {
-            offline = enable && System.getSecurityManager() == null;
+        public RandomWrapper() {
+            this(new Random());
         }
 
-        public Debug debug(String name, int x) {
-            if (offline) {
-                debug(name, "" + x);
+        public RandomWrapper(Random random) {
+            this.random = random;
+        }
+
+        public int nextInt(int l, int r) {
+            return random.nextInt(r - l + 1) + l;
+        }
+
+    }
+
+    static interface LongDeque extends LongStack {
+        long removeFirst();
+
+    }
+
+    static class IntegerDequeImpl implements IntegerDeque {
+        private int[] data;
+        private int bpos;
+        private int epos;
+        private static final int[] EMPTY = new int[0];
+        private int n;
+
+        public IntegerDequeImpl(int cap) {
+            if (cap == 0) {
+                data = EMPTY;
+            } else {
+                data = new int[cap];
             }
-            return this;
+            bpos = 0;
+            epos = 0;
+            n = cap;
         }
 
-        public Debug debug(String name, String x) {
-            if (offline) {
-                out.printf("%s=%s", name, x);
-                out.println();
+        private void expandSpace(int len) {
+            while (n < len) {
+                n = Math.max(n + 10, n * 2);
             }
-            return this;
-        }
-
-        public Debug debug(String name, Object x) {
-            return debug(name, x, empty);
-        }
-
-        public Debug debug(String name, Object x, int... indexes) {
-            if (offline) {
-                if (x == null || !x.getClass().isArray()) {
-                    out.append(name);
-                    for (int i : indexes) {
-                        out.printf("[%d]", i);
-                    }
-                    out.append("=").append("" + x);
-                    out.println();
-                } else {
-                    indexes = Arrays.copyOf(indexes, indexes.length + 1);
-                    if (x instanceof byte[]) {
-                        byte[] arr = (byte[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof short[]) {
-                        short[] arr = (short[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof boolean[]) {
-                        boolean[] arr = (boolean[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof char[]) {
-                        char[] arr = (char[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof int[]) {
-                        int[] arr = (int[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof float[]) {
-                        float[] arr = (float[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof double[]) {
-                        double[] arr = (double[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof long[]) {
-                        long[] arr = (long[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else {
-                        Object[] arr = (Object[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    }
+            int[] newData = new int[n];
+            if (bpos <= epos) {
+                if (bpos < epos) {
+                    System.arraycopy(data, bpos, newData, 0, epos - bpos);
                 }
+            } else {
+                System.arraycopy(data, bpos, newData, 0, data.length - bpos);
+                System.arraycopy(data, 0, newData, data.length - bpos, epos);
             }
-            return this;
+            epos = size();
+            bpos = 0;
+            data = newData;
+        }
+
+        public IntegerIterator iterator() {
+            return new IntegerIterator() {
+                int index = bpos;
+
+
+                public boolean hasNext() {
+                    return index != epos;
+                }
+
+
+                public int next() {
+                    int ans = data[index];
+                    index = IntegerDequeImpl.this.next(index);
+                    return ans;
+                }
+            };
+        }
+
+        public int removeFirst() {
+            int ans = data[bpos];
+            bpos = next(bpos);
+            return ans;
+        }
+
+        public void addLast(int x) {
+            ensureMore();
+            data[epos] = x;
+            epos = next(epos);
+        }
+
+        private int next(int x) {
+            return x + 1 >= n ? 0 : x + 1;
+        }
+
+        private void ensureMore() {
+            if (next(epos) == bpos) {
+                expandSpace(n + 1);
+            }
+        }
+
+        public int size() {
+            int ans = epos - bpos;
+            if (ans < 0) {
+                ans += data.length;
+            }
+            return ans;
+        }
+
+        public boolean isEmpty() {
+            return bpos == epos;
+        }
+
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            for (IntegerIterator iterator = iterator(); iterator.hasNext(); ) {
+                builder.append(iterator.next()).append(' ');
+            }
+            return builder.toString();
+        }
+
+    }
+
+    static interface LongStack {
+        void addLast(long x);
+
+        boolean isEmpty();
+
+    }
+
+    static interface LongIterator {
+        boolean hasNext();
+
+        long next();
+
+    }
+
+    static class LongDequeImpl implements LongDeque {
+        private long[] data;
+        private int bpos;
+        private int epos;
+        private static final long[] EMPTY = new long[0];
+        private int n;
+
+        public LongDequeImpl(int cap) {
+            if (cap == 0) {
+                data = EMPTY;
+            } else {
+                data = new long[cap];
+            }
+            bpos = 0;
+            epos = 0;
+            n = cap;
+        }
+
+        private void expandSpace(int len) {
+            while (n < len) {
+                n = Math.max(n + 10, n * 2);
+            }
+            long[] newData = new long[n];
+            if (bpos <= epos) {
+                if (bpos < epos) {
+                    System.arraycopy(data, bpos, newData, 0, epos - bpos);
+                }
+            } else {
+                System.arraycopy(data, bpos, newData, 0, data.length - bpos);
+                System.arraycopy(data, 0, newData, data.length - bpos, epos);
+            }
+            epos = size();
+            bpos = 0;
+            data = newData;
+        }
+
+        public LongIterator iterator() {
+            return new LongIterator() {
+                int index = bpos;
+
+
+                public boolean hasNext() {
+                    return index != epos;
+                }
+
+
+                public long next() {
+                    long ans = data[index];
+                    index = LongDequeImpl.this.next(index);
+                    return ans;
+                }
+            };
+        }
+
+        public long removeFirst() {
+            long ans = data[bpos];
+            bpos = next(bpos);
+            return ans;
+        }
+
+        public void addLast(long x) {
+            ensureMore();
+            data[epos] = x;
+            epos = next(epos);
+        }
+
+        private int next(int x) {
+            return x + 1 >= n ? 0 : x + 1;
+        }
+
+        private void ensureMore() {
+            if (next(epos) == bpos) {
+                expandSpace(n + 1);
+            }
+        }
+
+        public int size() {
+            int ans = epos - bpos;
+            if (ans < 0) {
+                ans += data.length;
+            }
+            return ans;
+        }
+
+        public boolean isEmpty() {
+            return bpos == epos;
+        }
+
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            for (LongIterator iterator = iterator(); iterator.hasNext(); ) {
+                builder.append(iterator.next()).append(' ');
+            }
+            return builder.toString();
+        }
+
+    }
+
+    static class Randomized {
+        public static void shuffle(int[] data) {
+            shuffle(data, 0, data.length - 1);
+        }
+
+        public static void shuffle(int[] data, int from, int to) {
+            to--;
+            for (int i = from; i <= to; i++) {
+                int s = nextInt(i, to);
+                int tmp = data[i];
+                data[i] = data[s];
+                data[s] = tmp;
+            }
+        }
+
+        public static int nextInt(int l, int r) {
+            return RandomWrapper.INSTANCE.nextInt(l, r);
         }
 
     }
@@ -560,55 +526,10 @@ public class Main {
 
     }
 
-    static class Polynomials {
-        public static Buffer<IntegerList> listBuffer = new Buffer<>(IntegerList::new, list -> list.clear());
+    static interface IntegerStack {
+        void addLast(int x);
 
-        public static int rankOf(IntegerList p) {
-            int[] data = p.getData();
-            int r = p.size() - 1;
-            while (r >= 0 && data[r] == 0) {
-                r--;
-            }
-            return Math.max(0, r);
-        }
-
-        public static void mul(IntegerList a, IntegerList b, IntegerList c, Modular mod) {
-            int rA = rankOf(a);
-            int rB = rankOf(b);
-            c.clear();
-            c.expandWith(0, rA + rB + 1);
-            int[] aData = a.getData();
-            int[] bData = b.getData();
-            int[] cData = c.getData();
-            for (int i = 0; i <= rA; i++) {
-                for (int j = 0; j <= rB; j++) {
-                    cData[i + j] = mod.plus(cData[i + j], mod.mul(aData[i], bData[j]));
-                }
-            }
-        }
-
-        public static void dacMul(IntegerList[] ps, IntegerList output, Modular mod) {
-            IntegerList ans = dacMul(ps, 0, ps.length - 1, mod);
-            output.clear();
-            output.addAll(ans);
-            listBuffer.release(ans);
-        }
-
-        private static IntegerList dacMul(IntegerList[] ps, int l, int r, Modular mod) {
-            if (l == r) {
-                IntegerList alloc = listBuffer.alloc();
-                alloc.addAll(ps[l]);
-                return alloc;
-            }
-            int m = (l + r) >> 1;
-            IntegerList a = dacMul(ps, l, m, mod);
-            IntegerList b = dacMul(ps, m + 1, r, mod);
-            IntegerList alloc = listBuffer.alloc();
-            mul(a, b, alloc, mod);
-            listBuffer.release(a);
-            listBuffer.release(b);
-            return alloc;
-        }
+        boolean isEmpty();
 
     }
 }

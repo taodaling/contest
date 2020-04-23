@@ -1,0 +1,40 @@
+{
+  "name" : "C. Nastya and Unexpected Guest",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "15 5\n0 3 7 14 15\n11 11\n",
+    "output" : "45\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "13 4\n0 3 7 13\n9 9\n",
+    "output" : "-1\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.CNastyaAndUnexpectedGuest",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.04.23",
+  "contestName" : "Codeforces - Codeforces Round #637 (Div. 1) - Thanks, Ivan Belonogov!",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}
