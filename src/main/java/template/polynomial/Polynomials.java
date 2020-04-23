@@ -40,6 +40,29 @@ public class Polynomials {
         }
     }
 
+    public static void dacMul(IntegerList[] ps, IntegerList output, Modular mod) {
+        IntegerList ans = dacMul(ps, 0, ps.length - 1, mod);
+        output.clear();
+        output.addAll(ans);
+        listBuffer.release(ans);
+    }
+
+    private static IntegerList dacMul(IntegerList[] ps, int l, int r, Modular mod) {
+        if (l == r) {
+            IntegerList alloc = listBuffer.alloc();
+            alloc.addAll(ps[l]);
+            return alloc;
+        }
+        int m = (l + r) >> 1;
+        IntegerList a = dacMul(ps, l, m, mod);
+        IntegerList b = dacMul(ps, m + 1, r, mod);
+        IntegerList alloc = listBuffer.alloc();
+        mul(a, b, alloc, mod);
+        listBuffer.release(a);
+        listBuffer.release(b);
+        return alloc;
+    }
+
     public static void plus(IntegerList a, IntegerList b, IntegerList c, Modular mod) {
         int rA = rankOf(a);
         int rB = rankOf(b);
