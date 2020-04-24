@@ -1,2 +1,2 @@
-57 src/main/java/contest/C. Nastya and Unexpected Guest.json
+50 src/main/java/contest/F - Eating Symbols Hard.json
 0

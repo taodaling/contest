@@ -129,9 +129,11 @@ public class FastFourierTransform {
             inv[0][i] = inv[1][i] = 0;
         }
     }
+
     public static int[] multiplyMod(int[] a, int[] b, int m) {
         return multiplyMod(a, a.length, b, b.length, m);
     }
+
     public static int[] multiplyMod(int[] a, int aLen, int[] b, int bLen, int m) {
         int need = aLen + bLen - 1;
         int n = 1 << CachedLog2.ceilLog(need);

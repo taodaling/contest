@@ -2,9 +2,9 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.Arrays;
 import java.io.IOException;
-import java.util.Random;
 import java.io.UncheckedIOException;
 import java.io.Closeable;
 import java.io.Writer;
@@ -29,120 +29,551 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            CNastyaAndUnexpectedGuest solver = new CNastyaAndUnexpectedGuest();
+            TaskF solver = new TaskF();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class CNastyaAndUnexpectedGuest {
+    static class TaskF {
+        Modular mod = new Modular(1e9 + 7);
+        Power power = new Power(mod);
+        int[] xs = new int[]{31, 61};
+        int[] invXs = new int[]{power.inverseByFermat(xs[0]), power.inverseByFermat(xs[1])};
+        Debug debug = new Debug(false);
+
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            int m = in.readInt();
-            int[] d = new int[m];
-            for (int i = 0; i < m; i++) {
-                d[i] = in.readInt();
-            }
-            Randomized.shuffle(d);
-            Arrays.sort(d);
+            char[] s = new char[n];
+            in.readString(s, 0);
 
-            int g = in.readInt();
-            int r = in.readInt();
+            LinearFunction[][] pos = new LinearFunction[2][n];
+            LinearFunction[][] neg = new LinearFunction[2][n];
 
-            boolean[][] dp = new boolean[m][g + 1];
-            dp[0][g] = true;
-            IntegerDeque pend = new IntegerDequeImpl(m);
-            LongDeque dq = new LongDequeImpl(m * (g + 1));
-            dq.addLast(merge(0, g));
-            int round = 0;
-            boolean valid = false;
 
-            while (!dq.isEmpty()) {
-                round++;
-                while (!dq.isEmpty()) {
-                    long head = dq.removeFirst();
-                    int high = (int) (head >> 32);
-                    int low = (int) head;
-//                debug.debug("high", high);
-//                debug.debug("low", low);
-                    valid = valid || high == m - 1;
-
-                    if (low == 0) {
-                        pend.addLast(high);
-                        continue;
-                    }
-
-                    //left
-                    if (high > 0) {
-                        int leftTime = low - (d[high] - d[high - 1]);
-                        if (leftTime >= 0 && !dp[high - 1][leftTime]) {
-                            dp[high - 1][leftTime] = true;
-                            dq.addLast(merge(high - 1, leftTime));
-                        }
-                    }
-
-                    if (high < m - 1) {
-                        int rightTime = low - (d[high + 1] - d[high]);
-                        if (rightTime >= 0 && !dp[high + 1][rightTime]) {
-                            dp[high + 1][rightTime] = true;
-                            dq.addLast(merge(high + 1, rightTime));
-                        }
-                    }
-                }
-
-                if (valid) {
-                    int time = -1;
-                    for (int i = 0; i <= g; i++) {
-                        if (dp[m - 1][i]) {
-                            time = i;
-                        }
-                    }
-
-                    int cost = (round - 1) * (g + r) + g - time;
-                    out.println(cost);
-                    return;
-                }
-
-                while (!pend.isEmpty()) {
-                    int high = pend.removeFirst();
-                    int low = g;
-
-                    if (high > 0) {
-                        int leftTime = low - (d[high] - d[high - 1]);
-                        if (leftTime >= 0 && !dp[high - 1][leftTime]) {
-                            dp[high - 1][leftTime] = true;
-                            dq.addLast(merge(high - 1, leftTime));
-                        }
-                    }
-
-                    if (high < m - 1) {
-                        int rightTime = low - (d[high + 1] - d[high]);
-                        if (rightTime >= 0 && !dp[high + 1][rightTime]) {
-                            dp[high + 1][rightTime] = true;
-                            dq.addLast(merge(high + 1, rightTime));
-                        }
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < 2; j++) {
+                    switch (s[i]) {
+                        case '+':
+                            pos[j][i] = new LinearFunction(1, 1);
+                            neg[j][i] = new LinearFunction(1, -1);
+                            break;
+                        case '-':
+                            pos[j][i] = new LinearFunction(1, -1);
+                            neg[j][i] = new LinearFunction(1, 1);
+                            break;
+                        case '>':
+                            pos[j][i] = new LinearFunction(xs[j], 0);
+                            neg[j][i] = new LinearFunction(invXs[j], 0);
+                            break;
+                        case '<':
+                            pos[j][i] = new LinearFunction(invXs[j], 0);
+                            neg[j][i] = new LinearFunction(xs[j], 0);
+                            break;
                     }
                 }
             }
 
-            out.println(-1);
-        }
+            debug.debug("pos", pos);
+            debug.debug("neg", neg);
+            for (int i = n - 2; i >= 0; i--) {
+                for (int j = 0; j < 2; j++) {
+                    pos[j][i] = LinearFunction.merge(pos[j][i], pos[j][i + 1], mod);
+                    neg[j][i] = LinearFunction.merge(neg[j][i + 1], neg[j][i], mod);
+                }
+            }
 
-        public long merge(long a, long b) {
-            return (a << 32) | b;
+
+            debug.debug("pos", pos);
+            debug.debug("neg", neg);
+
+            int[] cs = new int[2];
+            for (int i = 0; i < 2; i++) {
+                cs[i] = pos[i][0].apply(0, mod);
+            }
+
+            debug.debug("cs", cs);
+
+            long ans = 0;
+            LongHashMap map = new LongHashMap(n, false);
+            map.put(0, 1);
+            for (int i = n - 1; i >= 0; i--) {
+                int c0 = neg[0][i].apply(cs[0], mod);
+                int c1 = neg[1][i].apply(cs[1], mod);
+                long c = DigitUtils.asLong(c0, c1);
+
+                long local = map.getOrDefault(c, 0);
+                ans += local;
+                if (local > 0) {
+                    debug.debug("i", i);
+                    debug.debug("local", local);
+                }
+
+                int d0 = neg[0][i].apply(0, mod);
+                int d1 = neg[1][i].apply(0, mod);
+                long d = DigitUtils.asLong(d0, d1);
+                map.put(d, map.getOrDefault(d, 0) + 1);
+            }
+
+            out.println(ans);
         }
 
     }
 
-    static interface IntegerDeque extends IntegerStack {
-        int removeFirst();
+    static class FastOutput implements AutoCloseable, Closeable, Appendable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
+
+        public FastOutput append(CharSequence csq) {
+            cache.append(csq);
+            return this;
+        }
+
+        public FastOutput append(CharSequence csq, int start, int end) {
+            cache.append(csq, start, end);
+            return this;
+        }
+
+        public FastOutput(Writer os) {
+            this.os = os;
+        }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput append(char c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput append(long c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput println(long c) {
+            return append(c).println();
+        }
+
+        public FastOutput println() {
+            cache.append(System.lineSeparator());
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            return this;
+        }
+
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+
+        public String toString() {
+            return cache.toString();
+        }
 
     }
 
-    static interface IntegerIterator {
-        boolean hasNext();
+    static class Modular {
+        int m;
 
-        int next();
+        public Modular(int m) {
+            this.m = m;
+        }
+
+        public Modular(long m) {
+            this.m = (int) m;
+            if (this.m != m) {
+                throw new IllegalArgumentException();
+            }
+        }
+
+        public Modular(double m) {
+            this.m = (int) m;
+            if (this.m != m) {
+                throw new IllegalArgumentException();
+            }
+        }
+
+        public int valueOf(int x) {
+            x %= m;
+            if (x < 0) {
+                x += m;
+            }
+            return x;
+        }
+
+        public int valueOf(long x) {
+            x %= m;
+            if (x < 0) {
+                x += m;
+            }
+            return (int) x;
+        }
+
+        public String toString() {
+            return "mod " + m;
+        }
+
+    }
+
+    static class LongHashMap {
+        private int[] slot;
+        private int[] next;
+        private long[] keys;
+        private long[] values;
+        private int alloc;
+        private boolean[] removed;
+        private int mask;
+        private int size;
+        private boolean rehash;
+        private Hasher hasher = new Hasher();
+
+        public LongHashMap(int cap, boolean rehash) {
+            this.mask = (1 << (32 - Integer.numberOfLeadingZeros(cap - 1))) - 1;
+            slot = new int[mask + 1];
+            next = new int[cap + 1];
+            keys = new long[cap + 1];
+            values = new long[cap + 1];
+            removed = new boolean[cap + 1];
+            this.rehash = rehash;
+        }
+
+        private void doubleCapacity() {
+            int newSize = Math.max(next.length + 10, next.length * 2);
+            next = Arrays.copyOf(next, newSize);
+            keys = Arrays.copyOf(keys, newSize);
+            values = Arrays.copyOf(values, newSize);
+            removed = Arrays.copyOf(removed, newSize);
+        }
+
+        public void alloc() {
+            alloc++;
+            if (alloc >= next.length) {
+                doubleCapacity();
+            }
+            next[alloc] = 0;
+            removed[alloc] = false;
+            size++;
+        }
+
+        private void rehash() {
+            int[] newSlots = new int[Math.max(16, slot.length * 2)];
+            int newMask = newSlots.length - 1;
+            for (int i = 0; i < slot.length; i++) {
+                if (slot[i] == 0) {
+                    continue;
+                }
+                int head = slot[i];
+                while (head != 0) {
+                    int n = next[head];
+                    int s = hash(keys[head]) & newMask;
+                    next[head] = newSlots[s];
+                    newSlots[s] = head;
+                    head = n;
+                }
+            }
+            this.slot = newSlots;
+            this.mask = newMask;
+        }
+
+        private int hash(long x) {
+            return hasher.hash(x);
+        }
+
+        public void put(long x, long y) {
+            put(x, y, true);
+        }
+
+        public void put(long x, long y, boolean cover) {
+            int h = hash(x);
+            int s = h & mask;
+            if (slot[s] == 0) {
+                alloc();
+                slot[s] = alloc;
+                keys[alloc] = x;
+                values[alloc] = y;
+            } else {
+                int index = findIndexOrLastEntry(s, x);
+                if (keys[index] != x) {
+                    alloc();
+                    next[index] = alloc;
+                    keys[alloc] = x;
+                    values[alloc] = y;
+                } else if (cover) {
+                    values[index] = y;
+                }
+            }
+            if (rehash && size >= slot.length) {
+                rehash();
+            }
+        }
+
+        public long getOrDefault(long x, long def) {
+            int h = hash(x);
+            int s = h & mask;
+            if (slot[s] == 0) {
+                return def;
+            }
+            int index = findIndexOrLastEntry(s, x);
+            return keys[index] == x ? values[index] : def;
+        }
+
+        private int findIndexOrLastEntry(int s, long x) {
+            int iter = slot[s];
+            while (keys[iter] != x) {
+                if (next[iter] != 0) {
+                    iter = next[iter];
+                } else {
+                    return iter;
+                }
+            }
+            return iter;
+        }
+
+        public LongEntryIterator iterator() {
+            return new LongEntryIterator() {
+                int index = 1;
+                int readIndex = -1;
+
+
+                public boolean hasNext() {
+                    while (index <= alloc && removed[index]) {
+                        index++;
+                    }
+                    return index <= alloc;
+                }
+
+
+                public long getEntryKey() {
+                    return keys[readIndex];
+                }
+
+
+                public long getEntryValue() {
+                    return values[readIndex];
+                }
+
+
+                public void next() {
+                    if (!hasNext()) {
+                        throw new IllegalStateException();
+                    }
+                    readIndex = index;
+                    index++;
+                }
+            };
+        }
+
+        public String toString() {
+            LongEntryIterator iterator = iterator();
+            StringBuilder builder = new StringBuilder("{");
+            while (iterator.hasNext()) {
+                iterator.next();
+                builder.append(iterator.getEntryKey()).append("->").append(iterator.getEntryValue()).append(',');
+            }
+            if (builder.charAt(builder.length() - 1) == ',') {
+                builder.setLength(builder.length() - 1);
+            }
+            builder.append('}');
+            return builder.toString();
+        }
+
+    }
+
+    static class LinearFunction {
+        public final int a;
+        public final int b;
+
+        public LinearFunction(int a, int b) {
+            this.a = a;
+            this.b = b;
+        }
+
+        public int apply(int x, Modular mod) {
+            return mod.valueOf((long) a * x + b);
+        }
+
+        public static LinearFunction merge(LinearFunction a, LinearFunction b, Modular mod) {
+            return new LinearFunction(mod.valueOf((long) a.a * b.a), mod.valueOf((long) a.a * b.b + a.b));
+        }
+
+        public boolean equals(Object obj) {
+            if (!(obj instanceof LinearFunction)) {
+                return false;
+            }
+            LinearFunction function = (LinearFunction) obj;
+            return function.a == a && function.b == b;
+        }
+
+        public int hashCode() {
+            return a * 31 + b;
+        }
+
+        public String toString() {
+            if (b >= 0) {
+                return a + "x+" + b;
+            }
+            return a + "x" + b;
+        }
+
+    }
+
+    static class Debug {
+        private boolean offline;
+        private PrintStream out = System.err;
+        static int[] empty = new int[0];
+
+        public Debug(boolean enable) {
+            offline = enable && System.getSecurityManager() == null;
+        }
+
+        public Debug debug(String name, int x) {
+            if (offline) {
+                debug(name, "" + x);
+            }
+            return this;
+        }
+
+        public Debug debug(String name, long x) {
+            if (offline) {
+                debug(name, "" + x);
+            }
+            return this;
+        }
+
+        public Debug debug(String name, String x) {
+            if (offline) {
+                out.printf("%s=%s", name, x);
+                out.println();
+            }
+            return this;
+        }
+
+        public Debug debug(String name, Object x) {
+            return debug(name, x, empty);
+        }
+
+        public Debug debug(String name, Object x, int... indexes) {
+            if (offline) {
+                if (x == null || !x.getClass().isArray()) {
+                    out.append(name);
+                    for (int i : indexes) {
+                        out.printf("[%d]", i);
+                    }
+                    out.append("=").append("" + x);
+                    out.println();
+                } else {
+                    indexes = Arrays.copyOf(indexes, indexes.length + 1);
+                    if (x instanceof byte[]) {
+                        byte[] arr = (byte[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof short[]) {
+                        short[] arr = (short[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof boolean[]) {
+                        boolean[] arr = (boolean[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof char[]) {
+                        char[] arr = (char[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof int[]) {
+                        int[] arr = (int[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof float[]) {
+                        float[] arr = (float[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof double[]) {
+                        double[] arr = (double[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof long[]) {
+                        long[] arr = (long[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else {
+                        Object[] arr = (Object[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    }
+                }
+            }
+            return this;
+        }
+
+    }
+
+    static class Power {
+        final Modular modular;
+
+        public Power(Modular modular) {
+            this.modular = modular;
+        }
+
+        public int pow(int x, int n) {
+            if (n == 0) {
+                return modular.valueOf(1);
+            }
+            long r = pow(x, n >> 1);
+            r = modular.valueOf(r * r);
+            if ((n & 1) == 1) {
+                r = modular.valueOf(r * x);
+            }
+            return (int) r;
+        }
+
+        public int inverseByFermat(int x) {
+            return pow(x, modular.m - 2);
+        }
+
+    }
+
+    static class DigitUtils {
+        private static long mask32 = (1L << 32) - 1;
+
+        private DigitUtils() {
+        }
+
+        public static long asLong(int high, int low) {
+            return (((long) high) << 32) | (((long) low) & mask32);
+        }
 
     }
 
@@ -203,333 +634,45 @@ public class Main {
             return val;
         }
 
-    }
+        public int readString(char[] data, int offset) {
+            skipBlank();
 
-    static class RandomWrapper {
-        private Random random;
-        public static final RandomWrapper INSTANCE = new RandomWrapper(new Random());
+            int originalOffset = offset;
+            while (next > 32) {
+                data[offset++] = (char) next;
+                next = read();
+            }
 
-        public RandomWrapper() {
-            this(new Random());
-        }
-
-        public RandomWrapper(Random random) {
-            this.random = random;
-        }
-
-        public int nextInt(int l, int r) {
-            return random.nextInt(r - l + 1) + l;
+            return offset - originalOffset;
         }
 
     }
 
-    static interface LongDeque extends LongStack {
-        long removeFirst();
-
-    }
-
-    static class IntegerDequeImpl implements IntegerDeque {
-        private int[] data;
-        private int bpos;
-        private int epos;
-        private static final int[] EMPTY = new int[0];
-        private int n;
-
-        public IntegerDequeImpl(int cap) {
-            if (cap == 0) {
-                data = EMPTY;
-            } else {
-                data = new int[cap];
-            }
-            bpos = 0;
-            epos = 0;
-            n = cap;
-        }
-
-        private void expandSpace(int len) {
-            while (n < len) {
-                n = Math.max(n + 10, n * 2);
-            }
-            int[] newData = new int[n];
-            if (bpos <= epos) {
-                if (bpos < epos) {
-                    System.arraycopy(data, bpos, newData, 0, epos - bpos);
-                }
-            } else {
-                System.arraycopy(data, bpos, newData, 0, data.length - bpos);
-                System.arraycopy(data, 0, newData, data.length - bpos, epos);
-            }
-            epos = size();
-            bpos = 0;
-            data = newData;
-        }
-
-        public IntegerIterator iterator() {
-            return new IntegerIterator() {
-                int index = bpos;
-
-
-                public boolean hasNext() {
-                    return index != epos;
-                }
-
-
-                public int next() {
-                    int ans = data[index];
-                    index = IntegerDequeImpl.this.next(index);
-                    return ans;
-                }
-            };
-        }
-
-        public int removeFirst() {
-            int ans = data[bpos];
-            bpos = next(bpos);
-            return ans;
-        }
-
-        public void addLast(int x) {
-            ensureMore();
-            data[epos] = x;
-            epos = next(epos);
-        }
-
-        private int next(int x) {
-            return x + 1 >= n ? 0 : x + 1;
-        }
-
-        private void ensureMore() {
-            if (next(epos) == bpos) {
-                expandSpace(n + 1);
-            }
-        }
-
-        public int size() {
-            int ans = epos - bpos;
-            if (ans < 0) {
-                ans += data.length;
-            }
-            return ans;
-        }
-
-        public boolean isEmpty() {
-            return bpos == epos;
-        }
-
-        public String toString() {
-            StringBuilder builder = new StringBuilder();
-            for (IntegerIterator iterator = iterator(); iterator.hasNext(); ) {
-                builder.append(iterator.next()).append(' ');
-            }
-            return builder.toString();
-        }
-
-    }
-
-    static interface LongStack {
-        void addLast(long x);
-
-        boolean isEmpty();
-
-    }
-
-    static interface LongIterator {
+    static interface LongEntryIterator {
         boolean hasNext();
 
-        long next();
+        void next();
+
+        long getEntryKey();
+
+        long getEntryValue();
 
     }
 
-    static class LongDequeImpl implements LongDeque {
-        private long[] data;
-        private int bpos;
-        private int epos;
-        private static final long[] EMPTY = new long[0];
-        private int n;
+    static class Hasher {
+        private long time = System.nanoTime() + System.currentTimeMillis();
 
-        public LongDequeImpl(int cap) {
-            if (cap == 0) {
-                data = EMPTY;
-            } else {
-                data = new long[cap];
-            }
-            bpos = 0;
-            epos = 0;
-            n = cap;
+        private int shuffle(long x) {
+            x += time;
+            x += 0x9e3779b97f4a7c15L;
+            x = (x ^ (x >>> 30)) * 0xbf58476d1ce4e5b9L;
+            x = (x ^ (x >>> 27)) * 0x94d049bb133111ebL;
+            return (int) (x ^ (x >>> 31));
         }
 
-        private void expandSpace(int len) {
-            while (n < len) {
-                n = Math.max(n + 10, n * 2);
-            }
-            long[] newData = new long[n];
-            if (bpos <= epos) {
-                if (bpos < epos) {
-                    System.arraycopy(data, bpos, newData, 0, epos - bpos);
-                }
-            } else {
-                System.arraycopy(data, bpos, newData, 0, data.length - bpos);
-                System.arraycopy(data, 0, newData, data.length - bpos, epos);
-            }
-            epos = size();
-            bpos = 0;
-            data = newData;
+        public int hash(long x) {
+            return shuffle(x);
         }
-
-        public LongIterator iterator() {
-            return new LongIterator() {
-                int index = bpos;
-
-
-                public boolean hasNext() {
-                    return index != epos;
-                }
-
-
-                public long next() {
-                    long ans = data[index];
-                    index = LongDequeImpl.this.next(index);
-                    return ans;
-                }
-            };
-        }
-
-        public long removeFirst() {
-            long ans = data[bpos];
-            bpos = next(bpos);
-            return ans;
-        }
-
-        public void addLast(long x) {
-            ensureMore();
-            data[epos] = x;
-            epos = next(epos);
-        }
-
-        private int next(int x) {
-            return x + 1 >= n ? 0 : x + 1;
-        }
-
-        private void ensureMore() {
-            if (next(epos) == bpos) {
-                expandSpace(n + 1);
-            }
-        }
-
-        public int size() {
-            int ans = epos - bpos;
-            if (ans < 0) {
-                ans += data.length;
-            }
-            return ans;
-        }
-
-        public boolean isEmpty() {
-            return bpos == epos;
-        }
-
-        public String toString() {
-            StringBuilder builder = new StringBuilder();
-            for (LongIterator iterator = iterator(); iterator.hasNext(); ) {
-                builder.append(iterator.next()).append(' ');
-            }
-            return builder.toString();
-        }
-
-    }
-
-    static class Randomized {
-        public static void shuffle(int[] data) {
-            shuffle(data, 0, data.length - 1);
-        }
-
-        public static void shuffle(int[] data, int from, int to) {
-            to--;
-            for (int i = from; i <= to; i++) {
-                int s = nextInt(i, to);
-                int tmp = data[i];
-                data[i] = data[s];
-                data[s] = tmp;
-            }
-        }
-
-        public static int nextInt(int l, int r) {
-            return RandomWrapper.INSTANCE.nextInt(l, r);
-        }
-
-    }
-
-    static class FastOutput implements AutoCloseable, Closeable, Appendable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
-
-        public FastOutput append(CharSequence csq) {
-            cache.append(csq);
-            return this;
-        }
-
-        public FastOutput append(CharSequence csq, int start, int end) {
-            cache.append(csq, start, end);
-            return this;
-        }
-
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput append(char c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput append(int c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput println(int c) {
-            return append(c).println();
-        }
-
-        public FastOutput println() {
-            cache.append(System.lineSeparator());
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        }
-
-        public String toString() {
-            return cache.toString();
-        }
-
-    }
-
-    static interface IntegerStack {
-        void addLast(int x);
-
-        boolean isEmpty();
 
     }
 }
