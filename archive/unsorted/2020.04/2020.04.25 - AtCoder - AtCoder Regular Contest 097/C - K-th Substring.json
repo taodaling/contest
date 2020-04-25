@@ -1,0 +1,45 @@
+{
+  "name" : "C - K-th Substring",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "aba\n4\n",
+    "output" : "b\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "atcoderandatcodeer\n5\n",
+    "output" : "andat\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "z\n1\n",
+    "output" : "z\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.CKThSubstring",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.04.25",
+  "contestName" : "AtCoder - AtCoder Regular Contest 097",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

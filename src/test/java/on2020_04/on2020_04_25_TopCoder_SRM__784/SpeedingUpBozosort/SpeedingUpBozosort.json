@@ -1,0 +1,51 @@
+{
+  "name" : "SpeedingUpBozosort",
+  "signature" : {
+    "name" : "expectedComparisons",
+    "result" : "double",
+    "arguments" : [ "int[]", "int" ],
+    "argumentNames" : [ "A", "numSwaps" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "1 2 3 4", "3" ],
+    "result" : "3.0",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "1 1 2 2 2", "5" ],
+    "result" : "4.0",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "10 0", "1" ],
+    "result" : "3.0",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "7 4", "47" ],
+    "result" : "3.0",
+    "index" : 3,
+    "active" : true
+  }, {
+    "arguments" : [ "5 3 1 4 2", "1" ],
+    "result" : "284.4791666666661",
+    "index" : 4,
+    "active" : true
+  }, {
+    "arguments" : [ "5 3 1 4 2", "3" ],
+    "result" : "215.35376724261207",
+    "index" : 5,
+    "active" : true
+  }, {
+    "arguments" : [ "1 1 2 1", "4" ],
+    "result" : "12.6",
+    "index" : 6,
+    "active" : true
+  } ],
+  "date" : "2020.04.25",
+  "contestName" : "TopCoder SRM #784",
+  "testClasses" : [ ],
+  "fqn" : "on2020_04.on2020_04_25_TopCoder_SRM__784.SpeedingUpBozosort.SpeedingUpBozosort",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

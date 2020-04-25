@@ -1,2 +1,3 @@
-50 src/main/java/contest/F - Eating Symbols Hard.json
-0
+40 src/main/java/contest/C. Tournament.json
+1
+3

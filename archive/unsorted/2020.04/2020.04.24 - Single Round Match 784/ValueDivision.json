@@ -1,0 +1,36 @@
+{
+  "name" : "ValueDivision",
+  "signature" : {
+    "name" : "getArray",
+    "result" : "int[]",
+    "arguments" : [ "int[]" ],
+    "argumentNames" : [ "A" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "1 5 7 4 5 4 1" ],
+    "result" : "1 2 7 3 5 4 1",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "7" ],
+    "result" : "7",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "7 4" ],
+    "result" : "7 4",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "7 7 7 7" ],
+    "result" : "4 5 6 7",
+    "index" : 3,
+    "active" : true
+  } ],
+  "date" : "2020.04.24",
+  "contestName" : "Single Round Match 784",
+  "testClasses" : [ ],
+  "fqn" : "contest.ValueDivision",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

@@ -1,0 +1,31 @@
+{
+  "name" : "TAASquares",
+  "signature" : {
+    "name" : "construct",
+    "result" : "String[]",
+    "arguments" : [ "int" ],
+    "argumentNames" : [ "N" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "4" ],
+    "result" : "2212ф2002ф0002ф2102",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "5" ],
+    "result" : "12222ф00012ф02221ф00110ф00122",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "1" ],
+    "result" : "1",
+    "index" : 2,
+    "active" : true
+  } ],
+  "date" : "2020.04.25",
+  "contestName" : "TopCoder SRM #784",
+  "testClasses" : [ ],
+  "fqn" : "on2020_04.on2020_04_25_TopCoder_SRM__784.TAASquares.TAASquares",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

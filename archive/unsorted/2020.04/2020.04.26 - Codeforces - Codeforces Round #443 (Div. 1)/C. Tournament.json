@@ -1,0 +1,65 @@
+{
+  "name" : "C. Tournament",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 2\n1 5\n5 1\n10 10\n",
+    "output" : "1\n2\n1\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "3 2\n2 2\n3 3\n1 10\n",
+    "output" : "1\n1\n3\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "3 2\n2 3\n1 1\n3 2\n",
+    "output" : "1\n1\n2\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "7 2\n5 5\n4 4\n3 3\n1 1\n2 6\n7 7\n10 6",
+    "output" : "1\n1\n1\n1\n4\n1\n2",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "5 2\n10 10\n5 5\n3 3\n2 6\n1 11",
+    "output" : "1\n1\n1\n1\n5",
+    "index" : 4,
+    "active" : true
+  }, {
+    "input" : "6 2\n10 10\n11 9\n5 5\n3 3\n2 6\n1 11",
+    "output" : "1\n2\n2\n2\n2\n6",
+    "index" : 5,
+    "active" : true
+  }, {
+    "input" : "5 3\n1 1 10\n2 2 11\n3 3 9\n4 4 15\n5 5 12",
+    "output" : "1\n1\n3\n1\n2",
+    "index" : 6,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.CTournament",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.04.26",
+  "contestName" : "Codeforces - Codeforces Round #443 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

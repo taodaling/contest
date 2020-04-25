@@ -1,0 +1,45 @@
+{
+  "name" : "E - Sorted and Sorted",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3\nB 1\nW 2\nB 3\nW 1\nW 3\nB 2\n",
+    "output" : "4\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "4\nB 4\nW 4\nB 3\nW 3\nB 2\nW 2\nB 1\nW 1\n",
+    "output" : "18\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "9\nW 3\nB 1\nB 4\nW 1\nB 5\nW 9\nW 2\nB 6\nW 5\nB 3\nW 8\nB 9\nW 7\nB 2\nB 8\nW 4\nW 6\nB 7\n",
+    "output" : "41\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.ESortedAndSorted",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.04.25",
+  "contestName" : "AtCoder - AtCoder Regular Contest 097",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

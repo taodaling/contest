@@ -1,0 +1,104 @@
+{
+  "name" : "F - Monochrome Cat",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5\n1 2\n2 3\n2 4\n4 5\nWBBWW\n",
+    "output" : "5\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "6\n3 1\n4 5\n2 6\n6 1\n3 4\nWWBWBB\n",
+    "output" : "7\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "1\nB\n",
+    "output" : "0\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "20\n2 19\n5 13\n6 4\n15 6\n12 19\n13 19\n3 11\n8 3\n3 20\n16 13\n7 14\n3 17\n7 8\n10 20\n11 9\n8 18\n8 2\n10 1\n6 13\nWBWBWBBWWWBBWWBBBBBW\n",
+    "output" : "21\n",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "3\n1 2\n2 3\nWBW",
+    "output" : "4",
+    "index" : 4,
+    "active" : true
+  }, {
+    "input" : "3\n1 2\n1 3\nBWW",
+    "output" : "4",
+    "index" : 5,
+    "active" : true
+  }, {
+    "input" : "2\n1 2\nWW",
+    "output" : "2",
+    "index" : 6,
+    "active" : true
+  }, {
+    "input" : "2\n1 2\nBB",
+    "output" : "0",
+    "index" : 7,
+    "active" : true
+  }, {
+    "input" : "5\n1 2\n1 3\n1 4\n1 5\nBWWWW",
+    "index" : 8,
+    "active" : true
+  }, {
+    "input" : "3\n1 2\n2 3\nWWW",
+    "output" : "3",
+    "index" : 9,
+    "active" : true
+  }, {
+    "input" : "4\n1 2\n1 3\n1 4\nWWWW",
+    "output" : "6",
+    "index" : 10,
+    "active" : true
+  }, {
+    "input" : "4\n1 2\n2 3\n3 4\nBWBB",
+    "output" : "1",
+    "index" : 11,
+    "active" : true
+  }, {
+    "input" : "6\n1 2\n2 3\n1 4\n1 5\n5 6\nWWWWWW",
+    "output" : "8",
+    "index" : 12,
+    "active" : true
+  }, {
+    "input" : "2\n1 2\nWW",
+    "output" : "2",
+    "index" : 13,
+    "active" : true
+  }, {
+    "input" : "8\n1 2\n2 3\n3 4\n1 5\n1 6\n6 7\n7 8\nWBBWWWWW",
+    "output" : "12",
+    "index" : 14,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_04.on2020_04_25_AtCoder___AtCoder_Regular_Contest_097.F___Monochrome_Cat.FMonochromeCat",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.04.25",
+  "contestName" : "AtCoder - AtCoder Regular Contest 097",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}
