@@ -22,7 +22,7 @@ public class IntegerModPowerLink {
             return val;
         }
         int prev = test(l + 1, r, limit);
-        return prev < limit ? DigitUtils.limitPow(val, prev, limit) : limit;
+        return prev < limit ? (int) DigitUtils.limitPow(val, prev, limit) : limit;
     }
 
     public int query(int l, int r, int m) {

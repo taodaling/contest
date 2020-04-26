@@ -194,17 +194,18 @@ public class DigitUtils {
         return DigitUtils.mod(a * b - k * mod, mod);
     }
 
-    public static int limitPow(int x, long n, int limit) {
+    public static long limitPow(long x, long n, long limit) {
         if (n == 0) {
             return Math.min(1, limit);
         }
-        int ans = limitPow(x, n / 2, limit);
-        ans = (int) Math.min((long) ans * ans, limit);
+        long ans = limitPow(x, n / 2, limit);
+        ans = DigitUtils.mul(ans, ans, limit, limit);
         if (n % 2 == 1) {
-            ans = (int) Math.min((long) ans * x, limit);
+            ans = DigitUtils.mul(ans, x, limit, limit);
         }
         return ans;
     }
+
 
     public static int modPow(int x, long n, int m) {
         if (n == 0) {

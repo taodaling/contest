@@ -40,7 +40,7 @@ public class IntegerModValueUtils {
             public int limit(int limit) {
                 int v1 = x.limit(limit);
                 int v2 = exp.limit(limit);
-                return DigitUtils.limitPow(v1, v2, limit);
+                return (int) DigitUtils.limitPow(v1, v2, limit);
             }
         };
     }

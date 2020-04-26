@@ -44,4 +44,15 @@ public class GravityLagrangeInterpolationTest {
         Assert.assertTrue(near(gli.getYByInterpolation(2), 3));
         Assert.assertTrue(near(gli.getYByInterpolation(-2), 7));
     }
+
+    @Test
+    public void test3(){
+        GravityLagrangeInterpolation gli = new GravityLagrangeInterpolation(0);
+        gli.addPoint(0, 0);
+        gli.addPoint(1, 1);
+        gli.addPoint(2, 1 + 4);
+        gli.addPoint(3, 1 + 4 + 9);
+        GravityLagrangeInterpolation.Polynomial p = gli.preparePolynomial();
+        System.out.println(p);
+    }
 }

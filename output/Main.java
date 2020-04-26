@@ -6,10 +6,7 @@ import java.io.PrintStream;
 import java.util.Arrays;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.util.TreeMap;
-import java.util.Map;
 import java.io.Closeable;
-import java.util.Map.Entry;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
 import java.io.InputStream;
@@ -32,112 +29,75 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            CTournament solver = new CTournament();
+            TaskD solver = new TaskD();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class CTournament {
-        TreeMap<Integer, Node>[] tops;
-        TreeMap<Integer, Node>[] bots;
-        int k;
-        Debug debug = new Debug(true);
+    static class TaskD {
+        Debug debug = new Debug(false);
 
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            k = in.readInt();
-
-            Node min = new Node(k);
-            tops = new TreeMap[k];
-            bots = new TreeMap[k];
-            for (int i = 0; i < k; i++) {
-                tops[i] = new TreeMap<>();
-                bots[i] = new TreeMap<>();
-                tops[i].put(0, min);
-                bots[i].put(0, min);
-            }
-
+            int[] A = new int[n];
+            int[] B = new int[n];
             for (int i = 0; i < n; i++) {
-                Node newer = new Node(k);
-                for (int j = 0; j < k; j++) {
-                    newer.bot[j] = newer.top[j] = in.readInt();
+                A[i] = in.readInt();
+            }
+            for (int i = 0; i < n; i++) {
+                B[i] = in.readInt();
+            }
+            long ans = 0;
+            for (int i = 0; i < 29; i++) {
+                int mask = (1 << (i + 1)) - 1;
+                CompareUtils.radixSort(A, 0, n - 1, a -> a & mask);
+                CompareUtils.radixSort(B, 0, n - 1, b -> b & mask);
+                int am = separate(A, 0, n - 1, 1 << i);
+                int bm = separate(B, 0, n - 1, 1 << i);
+
+                long cnt = countNotExceed(A, 0, am, B, bm + 1, n - 1, mask >>> 1)
+                        + countNotExceed(A, am + 1, n - 1, B, 0, bm, mask >>> 1)
+                        + countExceed(A, 0, am, B, 0, bm, mask >>> 1)
+                        + countExceed(A, am + 1, n - 1, B, bm + 1, n - 1, mask >>> 1);
+
+                ans = Bits.setBit(ans, i, (cnt % 2) == 1);
+                debug.debug("cnt", cnt);
+            }
+
+            out.println(ans);
+        }
+
+        public int separate(int[] A, int l, int r, int bit) {
+            int am = l - 1;
+            while (am + 1 <= r && (A[am + 1] & bit) == 0) {
+                am++;
+            }
+            return am;
+        }
+
+        public long countExceed(int[] a, int al, int ar, int[] b, int bl, int br, int mask) {
+            int l = br + 1;
+            long ans = 0;
+            for (int i = al; i <= ar; i++) {
+                while (l > bl && (b[l - 1] & mask) + (a[i] & mask) > mask) {
+                    l--;
                 }
+                ans += br - l + 1;
+            }
+            return ans;
+        }
 
-                Node top = null;
-                Node bot = null;
-                for (int j = 0; j < k; j++) {
-                    Map.Entry<Integer, Node> floor = tops[j].ceilingEntry(newer.top[j]);
-                    if (floor != null) {
-                        top = min(top, floor.getValue());
-                    }
-                    Map.Entry<Integer, Node> ceil = bots[j].floorEntry(newer.top[j]);
-                    if (ceil != null) {
-                        bot = max(bot, ceil.getValue());
-                    }
+        public long countNotExceed(int[] a, int al, int ar, int[] b, int bl, int br, int mask) {
+            int l = br;
+            long ans = 0;
+            for (int i = al; i <= ar; i++) {
+                while (l >= bl && (b[l] & mask) + (a[i] & mask) > mask) {
+                    l--;
                 }
-
-
-                debug.debug("newer", newer);
-                debug.debug("bot", bot);
-                debug.debug("top", top);
-                if (top == null) {
-                    install(newer);
-                } else if (bot.top[0] < top.top[0]) {
-                    //insert into the middle
-                    install(newer);
-                } else {
-                    //merge all
-                    uninstall(bot);
-                    while (bot != top) {
-                        Node prev = tops[0].floorEntry(bot.top[0]).getValue();
-                        uninstall(prev);
-                        prev.mergeInto(bot);
-                        bot = prev;
-                    }
-                    bot.mergeInto(newer);
-                    install(bot);
-                }
-
-                int ans = tops[0].lastEntry().getValue().size;
-                out.println(ans);
-
-                debug.debug("tops[0]", tops[0]);
+                ans += l - bl + 1;
             }
-        }
-
-        public void uninstall(Node node) {
-            for (int i = 0; i < k; i++) {
-                tops[i].remove(node.top[i]);
-                bots[i].remove(node.bot[i]);
-            }
-        }
-
-        public void install(Node node) {
-            for (int i = 0; i < k; i++) {
-                tops[i].put(node.top[i], node);
-                bots[i].put(node.bot[i], node);
-            }
-        }
-
-        public Node min(Node a, Node b) {
-            if (a == null) {
-                return b;
-            }
-            if (b == null) {
-                return a;
-            }
-            return a.top[0] < b.top[0] ? a : b;
-        }
-
-        public Node max(Node a, Node b) {
-            if (a == null) {
-                return b;
-            }
-            if (b == null) {
-                return a;
-            }
-            return a.top[0] > b.top[0] ? a : b;
+            return ans;
         }
 
     }
@@ -201,6 +161,110 @@ public class Main {
 
     }
 
+    static class IntegerList implements Cloneable {
+        private int size;
+        private int cap;
+        private int[] data;
+        private static final int[] EMPTY = new int[0];
+
+        public int[] getData() {
+            return data;
+        }
+
+        public IntegerList(int cap) {
+            this.cap = cap;
+            if (cap == 0) {
+                data = EMPTY;
+            } else {
+                data = new int[cap];
+            }
+        }
+
+        public IntegerList(IntegerList list) {
+            this.size = list.size;
+            this.cap = list.cap;
+            this.data = Arrays.copyOf(list.data, size);
+        }
+
+        public IntegerList() {
+            this(0);
+        }
+
+        public void ensureSpace(int req) {
+            if (req > cap) {
+                while (cap < req) {
+                    cap = Math.max(cap + 10, 2 * cap);
+                }
+                data = Arrays.copyOf(data, cap);
+            }
+        }
+
+        public void addAll(int[] x, int offset, int len) {
+            ensureSpace(size + len);
+            System.arraycopy(x, offset, data, size, len);
+            size += len;
+        }
+
+        public void addAll(IntegerList list) {
+            addAll(list.data, 0, list.size);
+        }
+
+        public int[] toArray() {
+            return Arrays.copyOf(data, size);
+        }
+
+        public void clear() {
+            size = 0;
+        }
+
+        public String toString() {
+            return Arrays.toString(toArray());
+        }
+
+        public boolean equals(Object obj) {
+            if (!(obj instanceof IntegerList)) {
+                return false;
+            }
+            IntegerList other = (IntegerList) obj;
+            return SequenceUtils.equal(data, 0, size - 1, other.data, 0, other.size - 1);
+        }
+
+        public int hashCode() {
+            int h = 1;
+            for (int i = 0; i < size; i++) {
+                h = h * 31 + Integer.hashCode(data[i]);
+            }
+            return h;
+        }
+
+        public IntegerList clone() {
+            IntegerList ans = new IntegerList();
+            ans.addAll(this);
+            return ans;
+        }
+
+    }
+
+    static interface IntToIntFunction {
+        int apply(int x);
+
+    }
+
+    static class SequenceUtils {
+        public static boolean equal(int[] a, int al, int ar, int[] b, int bl, int br) {
+            if ((ar - al) != (br - bl)) {
+                return false;
+            }
+            for (int i = al, j = bl; i <= ar; i++, j++) {
+                if (a[i] != b[j]) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+    }
+
     static class FastOutput implements AutoCloseable, Closeable, Appendable {
         private StringBuilder cache = new StringBuilder(10 << 20);
         private final Writer os;
@@ -228,12 +292,12 @@ public class Main {
             return this;
         }
 
-        public FastOutput append(int c) {
+        public FastOutput append(long c) {
             cache.append(c);
             return this;
         }
 
-        public FastOutput println(int c) {
+        public FastOutput println(long c) {
             return append(c).println();
         }
 
@@ -268,27 +332,55 @@ public class Main {
 
     }
 
-    static class Node {
-        int[] top;
-        int[] bot;
-        int size = 1;
-
-        public Node(int k) {
-            top = new int[k];
-            bot = new int[k];
+    static class Bits {
+        private Bits() {
         }
 
-        void mergeInto(Node other) {
-            int k = top.length;
-            for (int i = 0; i < k; i++) {
-                top[i] = Math.max(top[i], other.top[i]);
-                bot[i] = Math.min(bot[i], other.bot[i]);
+        public static long setBit(long x, int i, boolean v) {
+            if (v) {
+                x |= 1L << i;
+            } else {
+                x &= ~(1L << i);
             }
-            size += other.size;
+            return x;
         }
 
-        public String toString() {
-            return Arrays.toString(top) + " > " + Arrays.toString(bot);
+    }
+
+    static class CompareUtils {
+        private static final int[] BUF8 = new int[1 << 8];
+        private static final IntegerList INT_LIST_A = new IntegerList();
+        private static final IntegerList INT_LIST_B = new IntegerList();
+
+        private CompareUtils() {
+        }
+
+        public static void radixSort(int[] data, int l, int r, IntToIntFunction func) {
+            int n = r - l + 1;
+            INT_LIST_A.clear();
+            INT_LIST_A.addAll(data, l, n);
+            INT_LIST_B.clear();
+            INT_LIST_B.ensureSpace(n);
+
+            for (int i = 0; i < 4; i += 2) {
+                radixSort0(n, INT_LIST_A.getData(), INT_LIST_B.getData(), BUF8, i * 8, func);
+                radixSort0(n, INT_LIST_B.getData(), INT_LIST_A.getData(), BUF8, (i + 1) * 8, func);
+            }
+            System.arraycopy(INT_LIST_A.getData(), 0, data, l, r - l + 1);
+        }
+
+        private static void radixSort0(int n, int[] data, int[] output, int[] buf, int rightShift, IntToIntFunction func) {
+            Arrays.fill(buf, 0);
+            int mask = buf.length - 1;
+            for (int i = 0; i < n; i++) {
+                buf[(int) ((func.apply(data[i]) >>> rightShift) & mask)]++;
+            }
+            for (int i = 1; i < buf.length; i++) {
+                buf[i] += buf[i - 1];
+            }
+            for (int i = n - 1; i >= 0; i--) {
+                output[--buf[(int) ((func.apply(data[i]) >>> rightShift) & mask)]] = data[i];
+            }
         }
 
     }
@@ -296,83 +388,22 @@ public class Main {
     static class Debug {
         private boolean offline;
         private PrintStream out = System.err;
-        static int[] empty = new int[0];
 
         public Debug(boolean enable) {
             offline = enable && System.getSecurityManager() == null;
         }
 
-        public Debug debug(String name, Object x) {
-            return debug(name, x, empty);
+        public Debug debug(String name, long x) {
+            if (offline) {
+                debug(name, "" + x);
+            }
+            return this;
         }
 
-        public Debug debug(String name, Object x, int... indexes) {
+        public Debug debug(String name, String x) {
             if (offline) {
-                if (x == null || !x.getClass().isArray()) {
-                    out.append(name);
-                    for (int i : indexes) {
-                        out.printf("[%d]", i);
-                    }
-                    out.append("=").append("" + x);
-                    out.println();
-                } else {
-                    indexes = Arrays.copyOf(indexes, indexes.length + 1);
-                    if (x instanceof byte[]) {
-                        byte[] arr = (byte[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof short[]) {
-                        short[] arr = (short[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof boolean[]) {
-                        boolean[] arr = (boolean[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof char[]) {
-                        char[] arr = (char[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof int[]) {
-                        int[] arr = (int[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof float[]) {
-                        float[] arr = (float[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof double[]) {
-                        double[] arr = (double[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof long[]) {
-                        long[] arr = (long[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else {
-                        Object[] arr = (Object[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    }
-                }
+                out.printf("%s=%s", name, x);
+                out.println();
             }
             return this;
         }
