@@ -186,7 +186,7 @@ public class Matrix implements Cloneable {
             }
 
             if (l.mat[maxRow][i] == 0) {
-                throw new RuntimeException("Can't inverse current matrix");
+                throw new RuntimeException("Can't inverse singular matrix");
             }
             r.swapRow(i, maxRow);
             l.swapRow(i, maxRow);

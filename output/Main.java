@@ -2,8 +2,6 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintStream;
-import java.util.Arrays;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.io.Closeable;
@@ -29,75 +27,137 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            TaskD solver = new TaskD();
+            EPlacingRooks solver = new EPlacingRooks();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class TaskD {
-        Debug debug = new Debug(false);
-
+    static class EPlacingRooks {
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            int[] A = new int[n];
-            int[] B = new int[n];
-            for (int i = 0; i < n; i++) {
-                A[i] = in.readInt();
-            }
-            for (int i = 0; i < n; i++) {
-                B[i] = in.readInt();
-            }
-            long ans = 0;
-            for (int i = 0; i < 29; i++) {
-                int mask = (1 << (i + 1)) - 1;
-                CompareUtils.radixSort(A, 0, n - 1, a -> a & mask);
-                CompareUtils.radixSort(B, 0, n - 1, b -> b & mask);
-                int am = separate(A, 0, n - 1, 1 << i);
-                int bm = separate(B, 0, n - 1, 1 << i);
+            int k = in.readInt();
+            Modular mod = new Modular(998244353);
+            int m = n - k;
 
-                long cnt = countNotExceed(A, 0, am, B, bm + 1, n - 1, mask >>> 1)
-                        + countNotExceed(A, am + 1, n - 1, B, 0, bm, mask >>> 1)
-                        + countExceed(A, 0, am, B, 0, bm, mask >>> 1)
-                        + countExceed(A, am + 1, n - 1, B, bm + 1, n - 1, mask >>> 1);
-
-                ans = Bits.setBit(ans, i, (cnt % 2) == 1);
-                debug.debug("cnt", cnt);
+            if (k == 0) {
+                int ans = 1;
+                for (int i = 1; i <= n; i++) {
+                    ans = mod.mul(ans, i);
+                }
+                out.println(ans);
+                return;
+            }
+            if (m <= 0 || m > n) {
+                out.println(0);
+                return;
             }
 
+            PrimeCombination combination = new PrimeCombination(n, mod);
+            Power power = new Power(mod);
+            int ans = 0;
+            for (int i = 0; i <= m; i++) {
+                int local = combination.combination(m, i);
+                if (i % 2 == 1) {
+                    local = mod.valueOf(-local);
+                }
+                local = mod.mul(local, power.pow(m - i, n));
+                ans = mod.plus(ans, local);
+            }
+            ans = mod.mul(ans, combination.combination(n, m));
+
+            ans = mod.mul(ans, 2);
             out.println(ans);
         }
 
-        public int separate(int[] A, int l, int r, int bit) {
-            int am = l - 1;
-            while (am + 1 <= r && (A[am + 1] & bit) == 0) {
-                am++;
-            }
-            return am;
+    }
+
+    static interface IntCombination {
+    }
+
+    static class FastOutput implements AutoCloseable, Closeable, Appendable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
+
+        public FastOutput append(CharSequence csq) {
+            cache.append(csq);
+            return this;
         }
 
-        public long countExceed(int[] a, int al, int ar, int[] b, int bl, int br, int mask) {
-            int l = br + 1;
-            long ans = 0;
-            for (int i = al; i <= ar; i++) {
-                while (l > bl && (b[l - 1] & mask) + (a[i] & mask) > mask) {
-                    l--;
-                }
-                ans += br - l + 1;
-            }
-            return ans;
+        public FastOutput append(CharSequence csq, int start, int end) {
+            cache.append(csq, start, end);
+            return this;
         }
 
-        public long countNotExceed(int[] a, int al, int ar, int[] b, int bl, int br, int mask) {
-            int l = br;
-            long ans = 0;
-            for (int i = al; i <= ar; i++) {
-                while (l >= bl && (b[l] & mask) + (a[i] & mask) > mask) {
-                    l--;
-                }
-                ans += l - bl + 1;
+        public FastOutput(Writer os) {
+            this.os = os;
+        }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput append(char c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput append(int c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput println(int c) {
+            return append(c).println();
+        }
+
+        public FastOutput println() {
+            cache.append(System.lineSeparator());
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
             }
-            return ans;
+            return this;
+        }
+
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+
+        public String toString() {
+            return cache.toString();
+        }
+
+    }
+
+    static class InverseNumber {
+        int[] inv;
+
+        public InverseNumber(int[] inv, int limit, Modular modular) {
+            this.inv = inv;
+            inv[1] = 1;
+            int p = modular.getMod();
+            for (int i = 2; i <= limit; i++) {
+                int k = p / i;
+                int r = p % i;
+                inv[i] = modular.mul(-k, inv[r]);
+            }
+        }
+
+        public InverseNumber(int limit, Modular modular) {
+            this(new int[limit + 1], limit, modular);
         }
 
     }
@@ -161,251 +221,134 @@ public class Main {
 
     }
 
-    static class IntegerList implements Cloneable {
-        private int size;
-        private int cap;
-        private int[] data;
-        private static final int[] EMPTY = new int[0];
+    static class PrimeCombination implements IntCombination {
+        final Factorial factorial;
+        final Modular modular;
 
-        public int[] getData() {
-            return data;
+        public PrimeCombination(Factorial factorial) {
+            this.factorial = factorial;
+            this.modular = factorial.getModular();
         }
 
-        public IntegerList(int cap) {
-            this.cap = cap;
-            if (cap == 0) {
-                data = EMPTY;
-            } else {
-                data = new int[cap];
+        public PrimeCombination(int limit, Modular modular) {
+            this(new Factorial(limit, modular));
+        }
+
+        public int combination(int m, int n) {
+            if (n > m) {
+                return 0;
             }
-        }
-
-        public IntegerList(IntegerList list) {
-            this.size = list.size;
-            this.cap = list.cap;
-            this.data = Arrays.copyOf(list.data, size);
-        }
-
-        public IntegerList() {
-            this(0);
-        }
-
-        public void ensureSpace(int req) {
-            if (req > cap) {
-                while (cap < req) {
-                    cap = Math.max(cap + 10, 2 * cap);
-                }
-                data = Arrays.copyOf(data, cap);
-            }
-        }
-
-        public void addAll(int[] x, int offset, int len) {
-            ensureSpace(size + len);
-            System.arraycopy(x, offset, data, size, len);
-            size += len;
-        }
-
-        public void addAll(IntegerList list) {
-            addAll(list.data, 0, list.size);
-        }
-
-        public int[] toArray() {
-            return Arrays.copyOf(data, size);
-        }
-
-        public void clear() {
-            size = 0;
-        }
-
-        public String toString() {
-            return Arrays.toString(toArray());
-        }
-
-        public boolean equals(Object obj) {
-            if (!(obj instanceof IntegerList)) {
-                return false;
-            }
-            IntegerList other = (IntegerList) obj;
-            return SequenceUtils.equal(data, 0, size - 1, other.data, 0, other.size - 1);
-        }
-
-        public int hashCode() {
-            int h = 1;
-            for (int i = 0; i < size; i++) {
-                h = h * 31 + Integer.hashCode(data[i]);
-            }
-            return h;
-        }
-
-        public IntegerList clone() {
-            IntegerList ans = new IntegerList();
-            ans.addAll(this);
-            return ans;
+            return modular.mul(modular.mul(factorial.fact(m), factorial.invFact(n)), factorial.invFact(m - n));
         }
 
     }
 
-    static interface IntToIntFunction {
-        int apply(int x);
+    static class Modular {
+        int m;
 
-    }
-
-    static class SequenceUtils {
-        public static boolean equal(int[] a, int al, int ar, int[] b, int bl, int br) {
-            if ((ar - al) != (br - bl)) {
-                return false;
-            }
-            for (int i = al, j = bl; i <= ar; i++, j++) {
-                if (a[i] != b[j]) {
-                    return false;
-                }
-            }
-            return true;
+        public int getMod() {
+            return m;
         }
 
-    }
-
-    static class FastOutput implements AutoCloseable, Closeable, Appendable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
-
-        public FastOutput append(CharSequence csq) {
-            cache.append(csq);
-            return this;
+        public Modular(int m) {
+            this.m = m;
         }
 
-        public FastOutput append(CharSequence csq, int start, int end) {
-            cache.append(csq, start, end);
-            return this;
-        }
-
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput append(char c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput append(long c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput println(long c) {
-            return append(c).println();
-        }
-
-        public FastOutput println() {
-            cache.append(System.lineSeparator());
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
+        public Modular(long m) {
+            this.m = (int) m;
+            if (this.m != m) {
+                throw new IllegalArgumentException();
             }
         }
 
-        public String toString() {
-            return cache.toString();
+        public Modular(double m) {
+            this.m = (int) m;
+            if (this.m != m) {
+                throw new IllegalArgumentException();
+            }
         }
 
-    }
-
-    static class Bits {
-        private Bits() {
-        }
-
-        public static long setBit(long x, int i, boolean v) {
-            if (v) {
-                x |= 1L << i;
-            } else {
-                x &= ~(1L << i);
+        public int valueOf(int x) {
+            x %= m;
+            if (x < 0) {
+                x += m;
             }
             return x;
         }
 
-    }
-
-    static class CompareUtils {
-        private static final int[] BUF8 = new int[1 << 8];
-        private static final IntegerList INT_LIST_A = new IntegerList();
-        private static final IntegerList INT_LIST_B = new IntegerList();
-
-        private CompareUtils() {
+        public int valueOf(long x) {
+            x %= m;
+            if (x < 0) {
+                x += m;
+            }
+            return (int) x;
         }
 
-        public static void radixSort(int[] data, int l, int r, IntToIntFunction func) {
-            int n = r - l + 1;
-            INT_LIST_A.clear();
-            INT_LIST_A.addAll(data, l, n);
-            INT_LIST_B.clear();
-            INT_LIST_B.ensureSpace(n);
-
-            for (int i = 0; i < 4; i += 2) {
-                radixSort0(n, INT_LIST_A.getData(), INT_LIST_B.getData(), BUF8, i * 8, func);
-                radixSort0(n, INT_LIST_B.getData(), INT_LIST_A.getData(), BUF8, (i + 1) * 8, func);
-            }
-            System.arraycopy(INT_LIST_A.getData(), 0, data, l, r - l + 1);
+        public int mul(int x, int y) {
+            return valueOf((long) x * y);
         }
 
-        private static void radixSort0(int n, int[] data, int[] output, int[] buf, int rightShift, IntToIntFunction func) {
-            Arrays.fill(buf, 0);
-            int mask = buf.length - 1;
-            for (int i = 0; i < n; i++) {
-                buf[(int) ((func.apply(data[i]) >>> rightShift) & mask)]++;
-            }
-            for (int i = 1; i < buf.length; i++) {
-                buf[i] += buf[i - 1];
-            }
-            for (int i = n - 1; i >= 0; i--) {
-                output[--buf[(int) ((func.apply(data[i]) >>> rightShift) & mask)]] = data[i];
-            }
+        public int plus(int x, int y) {
+            return valueOf(x + y);
+        }
+
+        public String toString() {
+            return "mod " + m;
         }
 
     }
 
-    static class Debug {
-        private boolean offline;
-        private PrintStream out = System.err;
+    static class Factorial {
+        int[] fact;
+        int[] inv;
+        Modular modular;
 
-        public Debug(boolean enable) {
-            offline = enable && System.getSecurityManager() == null;
+        public Modular getModular() {
+            return modular;
         }
 
-        public Debug debug(String name, long x) {
-            if (offline) {
-                debug(name, "" + x);
+        public Factorial(int[] fact, int[] inv, InverseNumber in, int limit, Modular modular) {
+            this.modular = modular;
+            this.fact = fact;
+            this.inv = inv;
+            fact[0] = inv[0] = 1;
+            for (int i = 1; i <= limit; i++) {
+                fact[i] = modular.mul(fact[i - 1], i);
+                inv[i] = modular.mul(inv[i - 1], in.inv[i]);
             }
-            return this;
         }
 
-        public Debug debug(String name, String x) {
-            if (offline) {
-                out.printf("%s=%s", name, x);
-                out.println();
+        public Factorial(int limit, Modular modular) {
+            this(new int[limit + 1], new int[limit + 1], new InverseNumber(limit, modular), limit, modular);
+        }
+
+        public int fact(int n) {
+            return fact[n];
+        }
+
+        public int invFact(int n) {
+            return inv[n];
+        }
+
+    }
+
+    static class Power {
+        final Modular modular;
+
+        public Power(Modular modular) {
+            this.modular = modular;
+        }
+
+        public int pow(int x, int n) {
+            if (n == 0) {
+                return modular.valueOf(1);
             }
-            return this;
+            long r = pow(x, n >> 1);
+            r = modular.valueOf(r * r);
+            if ((n & 1) == 1) {
+                r = modular.valueOf(r * x);
+            }
+            return (int) r;
         }
 
     }
