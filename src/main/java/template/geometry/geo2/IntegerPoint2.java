@@ -62,17 +62,11 @@ public class IntegerPoint2 {
         return new IntegerPoint2(a.x * d, a.y * d);
     }
 
-    public static IntegerPoint2 div(IntegerPoint2 a, long d) {
-        return new IntegerPoint2(a.x / d, a.y / d);
-    }
 
     public static IntegerPoint2 mul(IntegerPoint2 a, IntegerPoint2 b) {
         return new IntegerPoint2(a.x * b.x - a.y * b.y, a.x * b.y + a.y * b.x);
     }
 
-    public static IntegerPoint2 div(IntegerPoint2 a, IntegerPoint2 b) {
-        return div(mul(a, b.conj()), b.square());
-    }
 
     public static long dot(IntegerPoint2 a, IntegerPoint2 b) {
         return a.x * b.x + a.y * b.y;
@@ -159,10 +153,6 @@ public class IntegerPoint2 {
         return plus(origin, mul(minus(pt, origin), d));
     }
 
-    public static IntegerPoint2 linearTransform(IntegerPoint2 p, IntegerPoint2 fp, IntegerPoint2 q, IntegerPoint2 fq, IntegerPoint2 r) {
-        return plus(fp, mul(minus(r, p), div(minus(fq, fp), minus(q, p))));
-    }
-
     /**
      * 判断c是否落在以a与b为直径两端的圆中（包含边界）
      */
@@ -218,7 +208,7 @@ public class IntegerPoint2 {
     }
 
     /**
-     * 判断某个顶点是否落在矩形内，1表示矩形内，2表示矩形边缘，0表示矩形外
+     * 判断某个顶点是否落在矩形内，1表示矩形内，2表示矩形边缘，0表示矩形外，顶点逆时针放置
      */
     public static int inPolygon(List<IntegerPoint2> polygon, IntegerPoint2 pt) {
         int cross = 0;

@@ -27,137 +27,27 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            EPlacingRooks solver = new EPlacingRooks();
-            solver.solve(1, in, out);
-            out.close();
+            AAddMoreZero solver = new AAddMoreZero();
+            try {
+                int testNumber = 1;
+                while (true)
+                    solver.solve(testNumber++, in, out);
+            } catch (UnknownError e) {
+                out.close();
+            }
         }
     }
 
-    static class EPlacingRooks {
+    static class AAddMoreZero {
+        double log = Math.log10(2);
+
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            int n = in.readInt();
-            int k = in.readInt();
-            Modular mod = new Modular(998244353);
-            int m = n - k;
-
-            if (k == 0) {
-                int ans = 1;
-                for (int i = 1; i <= n; i++) {
-                    ans = mod.mul(ans, i);
-                }
-                out.println(ans);
-                return;
+            if (!in.hasMore()) {
+                throw new UnknownError();
             }
-            if (m <= 0 || m > n) {
-                out.println(0);
-                return;
-            }
-
-            PrimeCombination combination = new PrimeCombination(n, mod);
-            Power power = new Power(mod);
-            int ans = 0;
-            for (int i = 0; i <= m; i++) {
-                int local = combination.combination(m, i);
-                if (i % 2 == 1) {
-                    local = mod.valueOf(-local);
-                }
-                local = mod.mul(local, power.pow(m - i, n));
-                ans = mod.plus(ans, local);
-            }
-            ans = mod.mul(ans, combination.combination(n, m));
-
-            ans = mod.mul(ans, 2);
-            out.println(ans);
-        }
-
-    }
-
-    static interface IntCombination {
-    }
-
-    static class FastOutput implements AutoCloseable, Closeable, Appendable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
-
-        public FastOutput append(CharSequence csq) {
-            cache.append(csq);
-            return this;
-        }
-
-        public FastOutput append(CharSequence csq, int start, int end) {
-            cache.append(csq, start, end);
-            return this;
-        }
-
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput append(char c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput append(int c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput println(int c) {
-            return append(c).println();
-        }
-
-        public FastOutput println() {
-            cache.append(System.lineSeparator());
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        }
-
-        public String toString() {
-            return cache.toString();
-        }
-
-    }
-
-    static class InverseNumber {
-        int[] inv;
-
-        public InverseNumber(int[] inv, int limit, Modular modular) {
-            this.inv = inv;
-            inv[1] = 1;
-            int p = modular.getMod();
-            for (int i = 2; i <= limit; i++) {
-                int k = p / i;
-                int r = p % i;
-                inv[i] = modular.mul(-k, inv[r]);
-            }
-        }
-
-        public InverseNumber(int limit, Modular modular) {
-            this(new int[limit + 1], limit, modular);
+            int m = in.readInt();
+            int ans = (int) (log * m);
+            out.printf("Case #%d: %d", testNumber, ans).println();
         }
 
     }
@@ -219,136 +109,72 @@ public class Main {
             return val;
         }
 
-    }
-
-    static class PrimeCombination implements IntCombination {
-        final Factorial factorial;
-        final Modular modular;
-
-        public PrimeCombination(Factorial factorial) {
-            this.factorial = factorial;
-            this.modular = factorial.getModular();
-        }
-
-        public PrimeCombination(int limit, Modular modular) {
-            this(new Factorial(limit, modular));
-        }
-
-        public int combination(int m, int n) {
-            if (n > m) {
-                return 0;
-            }
-            return modular.mul(modular.mul(factorial.fact(m), factorial.invFact(n)), factorial.invFact(m - n));
+        public boolean hasMore() {
+            skipBlank();
+            return next != -1;
         }
 
     }
 
-    static class Modular {
-        int m;
+    static class FastOutput implements AutoCloseable, Closeable, Appendable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
 
-        public int getMod() {
-            return m;
+        public FastOutput append(CharSequence csq) {
+            cache.append(csq);
+            return this;
         }
 
-        public Modular(int m) {
-            this.m = m;
+        public FastOutput append(CharSequence csq, int start, int end) {
+            cache.append(csq, start, end);
+            return this;
         }
 
-        public Modular(long m) {
-            this.m = (int) m;
-            if (this.m != m) {
-                throw new IllegalArgumentException();
+        public FastOutput(Writer os) {
+            this.os = os;
+        }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput append(char c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput printf(String format, Object... args) {
+            cache.append(String.format(format, args));
+            return this;
+        }
+
+        public FastOutput println() {
+            cache.append(System.lineSeparator());
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
             }
+            return this;
         }
 
-        public Modular(double m) {
-            this.m = (int) m;
-            if (this.m != m) {
-                throw new IllegalArgumentException();
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
             }
-        }
-
-        public int valueOf(int x) {
-            x %= m;
-            if (x < 0) {
-                x += m;
-            }
-            return x;
-        }
-
-        public int valueOf(long x) {
-            x %= m;
-            if (x < 0) {
-                x += m;
-            }
-            return (int) x;
-        }
-
-        public int mul(int x, int y) {
-            return valueOf((long) x * y);
-        }
-
-        public int plus(int x, int y) {
-            return valueOf(x + y);
         }
 
         public String toString() {
-            return "mod " + m;
-        }
-
-    }
-
-    static class Factorial {
-        int[] fact;
-        int[] inv;
-        Modular modular;
-
-        public Modular getModular() {
-            return modular;
-        }
-
-        public Factorial(int[] fact, int[] inv, InverseNumber in, int limit, Modular modular) {
-            this.modular = modular;
-            this.fact = fact;
-            this.inv = inv;
-            fact[0] = inv[0] = 1;
-            for (int i = 1; i <= limit; i++) {
-                fact[i] = modular.mul(fact[i - 1], i);
-                inv[i] = modular.mul(inv[i - 1], in.inv[i]);
-            }
-        }
-
-        public Factorial(int limit, Modular modular) {
-            this(new int[limit + 1], new int[limit + 1], new InverseNumber(limit, modular), limit, modular);
-        }
-
-        public int fact(int n) {
-            return fact[n];
-        }
-
-        public int invFact(int n) {
-            return inv[n];
-        }
-
-    }
-
-    static class Power {
-        final Modular modular;
-
-        public Power(Modular modular) {
-            this.modular = modular;
-        }
-
-        public int pow(int x, int n) {
-            if (n == 0) {
-                return modular.valueOf(1);
-            }
-            long r = pow(x, n >> 1);
-            r = modular.valueOf(r * r);
-            if ((n & 1) == 1) {
-                r = modular.valueOf(r * x);
-            }
-            return (int) r;
+            return cache.toString();
         }
 
     }

@@ -2,7 +2,7 @@ package template.datastructure;
 
 import template.primitve.generated.datastructure.IntToLongFunction;
 
-public class LiChaoSegment {
+public class LongLiChaoSegment {
     static final long INF = Long.MAX_VALUE / 2;
 
     public static class Line {
@@ -39,14 +39,14 @@ public class LiChaoSegment {
 
     private static final Line BOTTOM = new Line(0, -INF);
 
-    LiChaoSegment left, right;
+    LongLiChaoSegment left, right;
     Line line = BOTTOM;
 
-    public LiChaoSegment(int l, int r) {
+    public LongLiChaoSegment(int l, int r) {
         if (l < r) {
             int m = (l + r) >> 1;
-            left = new LiChaoSegment(l, m);
-            right = new LiChaoSegment(m + 1, r);
+            left = new LongLiChaoSegment(l, m);
+            right = new LongLiChaoSegment(m + 1, r);
             pushUp();
         } else {
         }
