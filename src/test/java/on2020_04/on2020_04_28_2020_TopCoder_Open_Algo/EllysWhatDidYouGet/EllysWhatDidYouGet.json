@@ -1,0 +1,40 @@
+{
+  "name" : "EllysWhatDidYouGet",
+  "signature" : {
+    "name" : "getCount",
+    "result" : "int",
+    "arguments" : [ "int" ],
+    "argumentNames" : [ "N" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "9" ],
+    "result" : "952",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "5" ],
+    "result" : "3515",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "13" ],
+    "result" : "456",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "42" ],
+    "result" : "149",
+    "index" : 3,
+    "active" : true
+  }, {
+    "arguments" : [ "100" ],
+    "index" : 4,
+    "active" : true
+  } ],
+  "date" : "2020.04.28",
+  "contestName" : "2020 TopCoder Open Algo",
+  "testClasses" : [ ],
+  "fqn" : "on2020_04.on2020_04_28_2020_TopCoder_Open_Algo.EllysWhatDidYouGet.EllysWhatDidYouGet",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

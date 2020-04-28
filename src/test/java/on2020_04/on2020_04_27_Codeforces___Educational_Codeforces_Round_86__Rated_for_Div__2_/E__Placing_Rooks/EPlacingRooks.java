@@ -2,15 +2,11 @@ package on2020_04.on2020_04_27_Codeforces___Educational_Codeforces_Round_86__Rat
 
 
 
-import combinatorics.Combinations;
 import template.io.FastInput;
 import template.io.FastOutput;
+import template.math.Combination;
 import template.math.Modular;
 import template.math.Power;
-import template.math.PrimeCombination;
-import template.primitve.generated.datastructure.IntegerList;
-
-import java.awt.*;
 
 public class EPlacingRooks {
     public void solve(int testNumber, FastInput in, FastOutput out) {
@@ -32,7 +28,7 @@ public class EPlacingRooks {
             return;
         }
 
-        PrimeCombination combination = new PrimeCombination(n, mod);
+        Combination combination = new Combination(n, mod);
         Power power = new Power(mod);
         int ans = 0;
         for (int i = 0; i <= m; i++) {

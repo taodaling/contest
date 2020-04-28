@@ -3,17 +3,17 @@ package template.math;
 /**
  * Composition
  */
-public class PrimeCombination implements IntCombination{
+public class Combination implements IntCombination{
     final Factorial factorial;
     final Modular modular;
 
-    public PrimeCombination(Factorial factorial) {
+    public Combination(Factorial factorial) {
         this.factorial = factorial;
         this.modular = factorial.getModular();
     }
 
 
-    public PrimeCombination(int limit, Modular modular) {
+    public Combination(int limit, Modular modular) {
         this(new Factorial(limit, modular));
     }
 

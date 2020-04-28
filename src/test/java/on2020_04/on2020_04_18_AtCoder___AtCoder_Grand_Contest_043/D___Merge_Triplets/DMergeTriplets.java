@@ -4,13 +4,13 @@ package on2020_04.on2020_04_18_AtCoder___AtCoder_Grand_Contest_043.D___Merge_Tri
 
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.math.PrimeCombination;
+import template.math.Combination;
 import template.math.Modular;
 import template.utils.SequenceUtils;
 
 public class DMergeTriplets {
     Modular mod;
-    PrimeCombination comb;
+    Combination comb;
     int zero;
     int[][] f;
     int inv2;
@@ -37,7 +37,7 @@ public class DMergeTriplets {
     public void solve(int testNumber, FastInput in, FastOutput out) {
         int n = in.readInt() * 3;
         mod = new Modular(in.readInt());
-        comb = new PrimeCombination(n, mod);
+        comb = new Combination(n, mod);
         zero = n;
         f = new int[n + 1][n + n + 1];
         SequenceUtils.deepFill(f, -1);

@@ -32,7 +32,7 @@ public class ExtLucas implements LongCombination, Iterable<Map.Entry<Integer, Lo
         for (Map.Entry<Integer, Integer> entry : factors.entrySet()) {
             LongCombination combination;
             if (entry.getKey().equals(entry.getValue())) {
-                combination = new Lucas(new PrimeCombination((int) Math.min(m, entry.getKey()), new Modular(entry.getKey())),
+                combination = new Lucas(new Combination((int) Math.min(m, entry.getKey()), new Modular(entry.getKey())),
                         entry.getKey());
             } else {
                 combination = new ExtLucasFactorial(entry.getKey(), entry.getValue(), m);

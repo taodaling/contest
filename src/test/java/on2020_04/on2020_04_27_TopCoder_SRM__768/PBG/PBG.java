@@ -2,14 +2,14 @@ package on2020_04.on2020_04_27_TopCoder_SRM__768.PBG;
 
 
 
+import template.math.Combination;
 import template.math.Modular;
 import template.math.Power;
-import template.math.PrimeCombination;
 
 public class PBG {
     Modular mod = new Modular(1e9 + 7);
     Power power = new Power(mod);
-    PrimeCombination combination = new PrimeCombination(10000, mod);
+    Combination combination = new Combination(10000, mod);
     int neg2 = power.inverseByFermat(2);
 
     public int findEV(int P, int B, int G) {

@@ -1,0 +1,36 @@
+{
+  "name" : "EllysCandies",
+  "signature" : {
+    "name" : "getWinner",
+    "result" : "String",
+    "arguments" : [ "int[]" ],
+    "argumentNames" : [ "boxes" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "4 2" ],
+    "result" : "Kris",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "1 1 1000" ],
+    "result" : "Elly",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "42 42 42 42 42 42 42 42" ],
+    "result" : "Kris",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "42 13 17 666 55 100 3 20 81 42 123" ],
+    "result" : "Elly",
+    "index" : 3,
+    "active" : true
+  } ],
+  "date" : "2020.04.28",
+  "contestName" : "2020 TopCoder Open Algo",
+  "testClasses" : [ ],
+  "fqn" : "on2020_04.on2020_04_28_2020_TopCoder_Open_Algo.EllysCandies.EllysCandies",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

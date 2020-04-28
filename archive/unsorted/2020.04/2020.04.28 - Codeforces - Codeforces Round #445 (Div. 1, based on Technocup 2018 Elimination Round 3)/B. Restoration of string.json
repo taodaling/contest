@@ -1,0 +1,60 @@
+{
+  "name" : "B. Restoration of string",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4\nmail\nai\nlru\ncf\n",
+    "output" : "cfmailru\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "3\nkek\npreceq\ncheburek\n",
+    "output" : "NO\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "4\nabc\nbcd\nbcde",
+    "output" : "abcde",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "4\niup\nxiu\na\neax",
+    "output" : "eaxiup",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "3\nquqwr",
+    "output" : "NO",
+    "index" : 4,
+    "active" : true
+  }, {
+    "input" : "2\nabcd\nbcda",
+    "output" : "NO",
+    "index" : 5,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.BRestorationOfString",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.04.28",
+  "contestName" : "Codeforces - Codeforces Round #445 (Div. 1, based on Technocup 2018 Elimination Round 3)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

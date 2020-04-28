@@ -2,7 +2,7 @@ package on2020_04.on2020_04_19_TopCoder_SRM__763.ProductAndProduct;
 
 
 
-import template.math.PrimeCombination;
+import template.math.Combination;
 import template.math.Modular;
 import template.polynomial.NumberTheoryTransform;
 import template.primitve.generated.datastructure.IntegerList;
@@ -30,7 +30,7 @@ public class ProductAndProduct {
             ps[i].add(C[i]);
         }
         Modular mod = new Modular(998244353);
-        PrimeCombination comb = new PrimeCombination(N + M, mod);
+        Combination comb = new Combination(N + M, mod);
         NumberTheoryTransform ntt = new NumberTheoryTransform(mod);
 
         IntegerList f = new IntegerList();

@@ -1,0 +1,40 @@
+{
+  "name" : "EllysDifferentPrimes",
+  "signature" : {
+    "name" : "getClosest",
+    "result" : "int",
+    "arguments" : [ "int" ],
+    "argumentNames" : [ "N" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "100" ],
+    "result" : "97",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "123457" ],
+    "result" : "123457",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "6661337" ],
+    "result" : "6701459",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "42424242" ],
+    "result" : "42398701",
+    "index" : 3,
+    "active" : true
+  }, {
+    "arguments" : [ "50000000" ],
+    "index" : 4,
+    "active" : true
+  } ],
+  "date" : "2020.04.28",
+  "contestName" : "2020 TopCoder Open Algo",
+  "testClasses" : [ ],
+  "fqn" : "on2020_04.on2020_04_28_2020_TopCoder_Open_Algo.EllysDifferentPrimes.EllysDifferentPrimes",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

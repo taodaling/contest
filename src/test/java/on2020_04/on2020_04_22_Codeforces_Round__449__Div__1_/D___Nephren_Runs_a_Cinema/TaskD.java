@@ -4,15 +4,8 @@ package on2020_04.on2020_04_22_Codeforces_Round__449__Div__1_.D___Nephren_Runs_a
 
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.math.DigitUtils;
-import template.math.ExtGCD;
-import template.math.IntExtCRT;
-import template.math.LongCombination;
-import template.math.Lucas;
-import template.math.Modular;
-import template.math.PollardRho;
-import template.math.Power;
-import template.math.PrimeCombination;
+import template.math.*;
+import template.math.Combination;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -77,7 +70,7 @@ class ExtLucas implements LongCombination, Iterable<Map.Entry<Integer, LongCombi
         for (Map.Entry<Integer, Integer> entry : factors.entrySet()) {
             LongCombination combination;
             if (entry.getKey().equals(entry.getValue())) {
-                combination = new Lucas(new PrimeCombination((int) Math.min(m, entry.getKey()), new Modular(entry.getKey())),
+                combination = new Lucas(new Combination((int) Math.min(m, entry.getKey()), new Modular(entry.getKey())),
                         entry.getKey());
             } else {
                 combination = new ExtLucasFactorial(entry.getKey(), entry.getValue(), m);
