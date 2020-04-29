@@ -71,7 +71,9 @@ public class Line2 {
     }
 
     public Point2 projection(Point2 pt) {
-        return Point2.minus(pt, Point2.mul(vec.perpendicular(), side0(pt) / vec.square()));
+        double factor = side0(pt) / vec.square();
+        return new Point2(pt.x - (-vec.y * factor), pt.y - vec.x * factor);
+        //return Point2.minus(pt, Point2.mul(vec.perpendicular(), side0(pt) / vec.square()));
     }
 
     public Point2 reflect(Point2 pt) {
@@ -79,6 +81,11 @@ public class Line2 {
     }
 
     public Comparator<Point2> sortPointAlongLine() {
-        return (a, b) -> Double.compare(Point2.dot(vec, a), Point2.dot(vec, b));
+        return (a, b) -> GeoConstant.compare(Point2.dot(vec, a), Point2.dot(vec, b));
+    }
+
+    @Override
+    public String toString() {
+        return -vec.y + "x + " + vec.x + "y = " + c;
     }
 }

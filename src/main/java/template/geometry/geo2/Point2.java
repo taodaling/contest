@@ -41,6 +41,10 @@ public class Point2 implements Cloneable {
         return Math.atan2(y, x);
     }
 
+    public Point2 negate() {
+        return new Point2(-x, -y);
+    }
+
     /**
      * (0, PI] for upper half return 1, (-PI, 0] for bottom half return 0
      */
@@ -139,6 +143,10 @@ public class Point2 implements Cloneable {
 
     public static boolean isParallel(Point2 a, Point2 b) {
         return GeoConstant.isZero(cross(a, b));
+    }
+
+    public static Point2 middle(Point2 a, Point2 b) {
+        return new Point2((a.x + b.x) / 2, (a.y + b.y) / 2);
     }
 
     /**
@@ -301,6 +309,13 @@ public class Point2 implements Cloneable {
             ans += cross(polygon.get(i), polygon.get((i + 1) % n));
         }
         return ans / 2;
+    }
+
+    /**
+     * Get mirror of a
+     */
+    public static Point2 mirror(Point2 symmetricCenter, Point2 a) {
+        return new Point2(symmetricCenter.x * 2 - a.x, symmetricCenter.y * 2 - a.y);
     }
 
     public static double dist2(Point2 a, Point2 b) {

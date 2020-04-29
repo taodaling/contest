@@ -1,0 +1,50 @@
+{
+  "name" : "F. Symmetric Projections",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3\n1 2\n2 1\n3 3\n",
+    "output" : "3\n",
+    "index" : 0,
+    "active" : false
+  }, {
+    "input" : "2\n4 3\n1 2\n",
+    "output" : "-1\n",
+    "index" : 1,
+    "active" : false
+  }, {
+    "input" : "9\n-1000000 -500000\n-750000 250000\n-500000 1000000\n-250000 -250000\n0 -1000000\n250000 750000\n500000 0\n750000 -750000\n1000000 500000",
+    "output" : "5",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "10\n-1000000 -777778\n-777778 555554\n-555556 333332\n-333334 111110\n-111112 999998\n111110 -333334\n333332 -1000000\n555554 -555556\n777776 -111112\n999998 777776",
+    "output" : "3",
+    "index" : 3,
+    "active" : false
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.FSymmetricProjections",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.04.29",
+  "contestName" : "Codeforces - Технокубок 2018 - Отборочный Раунд 3",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

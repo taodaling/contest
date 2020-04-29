@@ -2,12 +2,15 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintStream;
-import java.util.Arrays;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.ArrayList;
 import java.io.UncheckedIOException;
+import java.util.List;
 import java.io.Closeable;
+import java.util.Map;
 import java.io.Writer;
+import java.util.Map.Entry;
 import java.io.OutputStreamWriter;
 import java.io.InputStream;
 
@@ -29,250 +32,117 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            CMaximumElement solver = new CMaximumElement();
-            solver.solve(1, in, out);
-            out.close();
+            CColorfulTree solver = new CColorfulTree();
+            try {
+                int testNumber = 1;
+                while (true)
+                    solver.solve(testNumber++, in, out);
+            } catch (UnknownError e) {
+                out.close();
+            }
         }
     }
 
-    static class CMaximumElement {
-        Modular mod = new Modular(1e9 + 7);
-        Factorial factorial = new Factorial(1000000, mod);
-        int[] g;
-        int[] h;
-        int k;
-        Debug debug = new Debug(true);
+    static class CColorfulTree {
+        long subtract = 0;
 
         public void solve(int testNumber, FastInput in, FastOutput out) {
+            if (!in.hasMore()) {
+                throw new UnknownError();
+            }
+
+            subtract = 0;
+
             int n = in.readInt();
-            k = in.readInt();
+            Node[] nodes = new Node[n];
+            for (int i = 0; i < n; i++) {
+                nodes[i] = new Node();
+                nodes[i].color = in.readInt();
+            }
+            for (int i = 0; i < n - 1; i++) {
+                Node a = nodes[in.readInt() - 1];
+                Node b = nodes[in.readInt() - 1];
+                a.next.add(b);
+                b.next.add(a);
+            }
 
-            g = new int[n + 1];
-            h = new int[n + 1];
-            SequenceUtils.deepFill(g, -1);
-            SequenceUtils.deepFill(h, -1);
+            dfs(nodes[0], null);
+            for (int i = 1; i <= n; i++) {
+                int value = nodes[0].cnts.get(i);
+                remove(value);
+            }
 
-            int ans = mod.mul(factorial.fact(n - 1), h(n - 1));
-            int total = factorial.fact(n);
-
-            debug.debug("g", g);
-            debug.debug("h", h);
-
-            out.println(mod.subtract(total, ans));
+            long ans = pick2(n) * n - subtract;
+            out.printf("Case #%d: %d", testNumber, ans).println();
         }
 
-        public int h(int n) {
-            if (n < 0) {
-                return 0;
-            }
-            if (h[n] == -1) {
-                h[n] = mod.plus(h(n - 1), mod.mul(g(n), factorial.invFact(n)));
-            }
-            return h[n];
+        public long pick2(long x) {
+            return x * (x - 1) / 2;
         }
 
-        public int g(int n) {
-            if (g[n] == -1) {
-                if (n == 0) {
-                    return g[n] = 1;
+        public void remove(long b) {
+            subtract += pick2(b);
+        }
+
+        public void dfs(Node root, Node p) {
+            root.cnts.modAll(1);
+            root.cnts.modOne(root.color, -1);
+            for (Node node : root.next) {
+                if (node == p) {
+                    continue;
                 }
-                g[n] = mod.mul(factorial.fact(n - 1), mod.subtract(h(n - 1), h(n - k - 1)));
-            }
-            return g[n];
-        }
-
-    }
-
-    static class Modular {
-        int m;
-
-        public int getMod() {
-            return m;
-        }
-
-        public Modular(int m) {
-            this.m = m;
-        }
-
-        public Modular(long m) {
-            this.m = (int) m;
-            if (this.m != m) {
-                throw new IllegalArgumentException();
-            }
-        }
-
-        public Modular(double m) {
-            this.m = (int) m;
-            if (this.m != m) {
-                throw new IllegalArgumentException();
-            }
-        }
-
-        public int valueOf(int x) {
-            x %= m;
-            if (x < 0) {
-                x += m;
-            }
-            return x;
-        }
-
-        public int valueOf(long x) {
-            x %= m;
-            if (x < 0) {
-                x += m;
-            }
-            return (int) x;
-        }
-
-        public int mul(int x, int y) {
-            return valueOf((long) x * y);
-        }
-
-        public int plus(int x, int y) {
-            return valueOf(x + y);
-        }
-
-        public int subtract(int x, int y) {
-            return valueOf(x - y);
-        }
-
-        public String toString() {
-            return "mod " + m;
-        }
-
-    }
-
-    static class Factorial {
-        int[] fact;
-        int[] inv;
-        Modular modular;
-
-        public Factorial(int[] fact, int[] inv, InverseNumber in, int limit, Modular modular) {
-            this.modular = modular;
-            this.fact = fact;
-            this.inv = inv;
-            fact[0] = inv[0] = 1;
-            for (int i = 1; i <= limit; i++) {
-                fact[i] = modular.mul(fact[i - 1], i);
-                inv[i] = modular.mul(inv[i - 1], in.inv[i]);
-            }
-        }
-
-        public Factorial(int limit, Modular modular) {
-            this(new int[limit + 1], new int[limit + 1], new InverseNumber(limit, modular), limit, modular);
-        }
-
-        public int fact(int n) {
-            return fact[n];
-        }
-
-        public int invFact(int n) {
-            return inv[n];
-        }
-
-    }
-
-    static class SequenceUtils {
-        public static void deepFill(Object array, int val) {
-            if (!array.getClass().isArray()) {
-                throw new IllegalArgumentException();
-            }
-            if (array instanceof int[]) {
-                int[] intArray = (int[]) array;
-                Arrays.fill(intArray, val);
-            } else {
-                Object[] objArray = (Object[]) array;
-                for (Object obj : objArray) {
-                    deepFill(obj, val);
-                }
+                dfs(node, root);
+                int value = node.cnts.get(root.color);
+                node.cnts.modOne(root.color, -value);
+                remove(value);
+                root.cnts = MapHolder.merge(root.cnts, node.cnts);
             }
         }
 
     }
 
-    static class FastOutput implements AutoCloseable, Closeable, Appendable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
-
-        public FastOutput append(CharSequence csq) {
-            cache.append(csq);
-            return this;
-        }
-
-        public FastOutput append(CharSequence csq, int start, int end) {
-            cache.append(csq, start, end);
-            return this;
-        }
-
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput append(char c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput append(int c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput println(int c) {
-            return append(c).println();
-        }
-
-        public FastOutput println() {
-            cache.append(System.lineSeparator());
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        }
-
-        public String toString() {
-            return cache.toString();
-        }
+    static class Node {
+        int color;
+        List<Node> next = new ArrayList<>();
+        MapHolder cnts = new MapHolder();
 
     }
 
-    static class InverseNumber {
-        int[] inv;
+    static class MapHolder {
+        Map<Integer, Integer> cnt;
+        int all;
 
-        public InverseNumber(int[] inv, int limit, Modular modular) {
-            this.inv = inv;
-            inv[1] = 1;
-            int p = modular.getMod();
-            for (int i = 2; i <= limit; i++) {
-                int k = p / i;
-                int r = p % i;
-                inv[i] = modular.mul(-k, inv[r]);
-            }
+        public MapHolder(Map<Integer, Integer> cnt) {
+            this.cnt = cnt;
         }
 
-        public InverseNumber(int limit, Modular modular) {
-            this(new int[limit + 1], limit, modular);
+        public MapHolder() {
+            this(new HashMap<>());
+        }
+
+        public void modAll(int x) {
+            all += x;
+        }
+
+        public void modOne(Integer c, int x) {
+            cnt.put(c, cnt.getOrDefault(c, 0) + x);
+        }
+
+        public int get(Integer c) {
+            return cnt.getOrDefault(c, 0) + all;
+        }
+
+        public static MapHolder merge(MapHolder a, MapHolder b) {
+            if (a.cnt.size() > b.cnt.size()) {
+                MapHolder holder = a;
+                a = b;
+                b = holder;
+            }
+            b.all += a.all;
+            for (Map.Entry<Integer, Integer> entry : a.cnt.entrySet()) {
+                b.modOne(entry.getKey(), entry.getValue());
+            }
+            return b;
         }
 
     }
@@ -334,90 +204,72 @@ public class Main {
             return val;
         }
 
+        public boolean hasMore() {
+            skipBlank();
+            return next != -1;
+        }
+
     }
 
-    static class Debug {
-        private boolean offline;
-        private PrintStream out = System.err;
-        static int[] empty = new int[0];
+    static class FastOutput implements AutoCloseable, Closeable, Appendable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
 
-        public Debug(boolean enable) {
-            offline = enable && System.getSecurityManager() == null;
+        public FastOutput append(CharSequence csq) {
+            cache.append(csq);
+            return this;
         }
 
-        public Debug debug(String name, Object x) {
-            return debug(name, x, empty);
+        public FastOutput append(CharSequence csq, int start, int end) {
+            cache.append(csq, start, end);
+            return this;
         }
 
-        public Debug debug(String name, Object x, int... indexes) {
-            if (offline) {
-                if (x == null || !x.getClass().isArray()) {
-                    out.append(name);
-                    for (int i : indexes) {
-                        out.printf("[%d]", i);
-                    }
-                    out.append("=").append("" + x);
-                    out.println();
-                } else {
-                    indexes = Arrays.copyOf(indexes, indexes.length + 1);
-                    if (x instanceof byte[]) {
-                        byte[] arr = (byte[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof short[]) {
-                        short[] arr = (short[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof boolean[]) {
-                        boolean[] arr = (boolean[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof char[]) {
-                        char[] arr = (char[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof int[]) {
-                        int[] arr = (int[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof float[]) {
-                        float[] arr = (float[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof double[]) {
-                        double[] arr = (double[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof long[]) {
-                        long[] arr = (long[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else {
-                        Object[] arr = (Object[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    }
-                }
+        public FastOutput(Writer os) {
+            this.os = os;
+        }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput append(char c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput printf(String format, Object... args) {
+            cache.append(String.format(format, args));
+            return this;
+        }
+
+        public FastOutput println() {
+            cache.append(System.lineSeparator());
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
             }
             return this;
+        }
+
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+
+        public String toString() {
+            return cache.toString();
         }
 
     }
