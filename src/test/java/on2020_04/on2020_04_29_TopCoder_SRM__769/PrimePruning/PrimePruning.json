@@ -1,0 +1,35 @@
+{
+  "name" : "PrimePruning",
+  "signature" : {
+    "name" : "maximize",
+    "result" : "String",
+    "arguments" : [ "int", "int" ],
+    "argumentNames" : [ "N", "E" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "10", "0" ],
+    "result" : "cdfhlnrtxd",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "30", "5" ],
+    "result" : "nrtxdflprvbhjptvbfltxzdfj",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "30", "15" ],
+    "result" : "xvjptvbfltxzdfj",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "12300", "12000" ],
+    "index" : 3,
+    "active" : true
+  } ],
+  "date" : "2020.04.29",
+  "contestName" : "TopCoder SRM #769",
+  "testClasses" : [ ],
+  "fqn" : "on2020_04.on2020_04_29_TopCoder_SRM__769.PrimePruning.PrimePruning",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

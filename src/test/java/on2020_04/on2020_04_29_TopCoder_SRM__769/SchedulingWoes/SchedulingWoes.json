@@ -1,0 +1,36 @@
+{
+  "name" : "SchedulingWoes",
+  "signature" : {
+    "name" : "study",
+    "result" : "int",
+    "arguments" : [ "int", "int", "int[]", "int", "int[]", "int" ],
+    "argumentNames" : [ "N", "seed", "Dprefix", "maxD", "Tprefix", "factor" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "5", "0", "20 30 50 40 50", "474747", "10 5 20 30 10", "474747" ],
+    "result" : "4",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "7", "0", "3 1 4 7 2 5 6", "474747", "1 1 1 1 1 1 1", "424242" ],
+    "result" : "7",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "7", "0", "7 7 7 7 7 7 7", "123456", "3 1 4 7 2 5 6", "654321" ],
+    "result" : "3",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "30", "47", "1000 2000 3000", "4700", "900 347 152", "5" ],
+    "result" : "25",
+    "index" : 3,
+    "active" : true
+  } ],
+  "date" : "2020.04.29",
+  "contestName" : "TopCoder SRM #769",
+  "testClasses" : [ ],
+  "fqn" : "on2020_04.on2020_04_29_TopCoder_SRM__769.SchedulingWoes.SchedulingWoes",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

@@ -1,0 +1,36 @@
+{
+  "name" : "ThreeColorTrees",
+  "signature" : {
+    "name" : "construct",
+    "result" : "int[]",
+    "arguments" : [ "int" ],
+    "argumentNames" : [ "N" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "2" ],
+    "result" : "0",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "4" ],
+    "result" : "0 0 0",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "6" ],
+    "result" : "0 1 2 3 4",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "10" ],
+    "result" : "0 1 0 3 4 0 0 7 8",
+    "index" : 3,
+    "active" : true
+  } ],
+  "date" : "2020.04.29",
+  "contestName" : "TopCoder SRM #769",
+  "testClasses" : [ ],
+  "fqn" : "on2020_04.on2020_04_29_TopCoder_SRM__769.ThreeColorTrees.ThreeColorTrees",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}
