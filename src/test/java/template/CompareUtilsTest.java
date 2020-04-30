@@ -70,4 +70,20 @@ public class CompareUtilsTest {
         // Assert.assertArrayEquals(clone, data);
     }
 
+
+    @Test
+    public void radixSortIntFetchRangeTest() {
+        RandomWrapper rw = new RandomWrapper(new Random(0));
+        int n = 10000000;
+        int[] data = new int[n];
+        for (int i = 0; i < n; i++) {
+            data[i] = rw.nextInt(0, 1000000000);
+        }
+        // int[] clone = data.clone();
+        // Arrays.sort(clone, 0, n);
+        CompareUtils.radixSort(data, 100, n - 100, i -> i);
+        Assert.assertTrue(CompareUtils.notStrictAscending(data, 100, n - 100));
+        // Assert.assertArrayEquals(clone, data);
+    }
+
 }

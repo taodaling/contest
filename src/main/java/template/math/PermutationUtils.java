@@ -163,6 +163,10 @@ public class PermutationUtils {
         int[] r;
         int n;
 
+        public List<IntegerList> extractCircles() {
+            return extractCircles(1);
+        }
+
         public List<IntegerList> extractCircles(int threshold) {
             List<IntegerList> ans = new ArrayList<>(n);
             for (int i = 0; i < n; i = r[i] + 1) {

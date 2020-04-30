@@ -211,7 +211,7 @@ public class CompareUtils {
         return theKthSmallestElement(data, cmp, m, t, k - (m - f));
     }
 
-    public static<T> void quickSort(T[] data, Comparator<T> cmp, int f, int t) {
+    public static <T> void quickSort(T[] data, Comparator<T> cmp, int f, int t) {
         if (t - f <= THRESHOLD) {
             insertSort(data, cmp, f, t - 1);
             return;
@@ -313,119 +313,113 @@ public class CompareUtils {
 
     private static final int[] BUF8 = new int[1 << 8];
     private static final IntegerList INT_LIST_A = new IntegerList();
-    private static final IntegerList INT_LIST_B = new IntegerList();
     private static final LongList LONG_LIST_A = new LongList();
-    private static final LongList LONG_LIST_B = new LongList();
+
+    public static void ensureIntSpace(int n) {
+        INT_LIST_A.ensureSpace(n);
+    }
+
+    public static void ensureLongSpace(int n) {
+        LONG_LIST_A.ensureSpace(n);
+    }
 
     public static void radixSort(long[] data, int l, int r) {
         LONG_LIST_A.clear();
-        LONG_LIST_A.addAll(data, l, r - l + 1);
-        LONG_LIST_B.clear();
-        LONG_LIST_B.ensureSpace(r - l + 1);
+        LONG_LIST_A.ensureSpace(r - l + 1);
 
+        int n = r - l + 1;
         for (int i = 0; i < 8; i += 2) {
-            radixSort0(LONG_LIST_A.getData(), LONG_LIST_B.getData(), BUF8, i * 8);
-            radixSort0(LONG_LIST_B.getData(), LONG_LIST_A.getData(), BUF8, (i + 1) * 8);
+            radixSort0(data, l, r, LONG_LIST_A.getData(), 0, BUF8, i * 8);
+            radixSort0(LONG_LIST_A.getData(), 0, n - 1, data, l, BUF8, (i + 1) * 8);
         }
-        System.arraycopy(LONG_LIST_A.getData(), 0, data, l, r - l + 1);
     }
 
-    private static void radixSort0(long[] data, long[] output, int[] buf, int rightShift) {
+    private static void radixSort0(long[] data, int dl, int dr, long[] output, int ol, int[] buf, int rightShift) {
         Arrays.fill(buf, 0);
         int mask = buf.length - 1;
-        int n = data.length;
-        for (int i = 0; i < n; i++) {
+        for (int i = dl; i <= dr; i++) {
             buf[(int) ((data[i] >>> rightShift) & mask)]++;
         }
         for (int i = 1; i < buf.length; i++) {
             buf[i] += buf[i - 1];
         }
-        for (int i = n - 1; i >= 0; i--) {
-            output[--buf[(int) ((data[i] >>> rightShift) & mask)]] = data[i];
+        for (int i = dr; i >= dl; i--) {
+            output[ol + (--buf[(int) ((data[i] >>> rightShift) & mask)])] = data[i];
         }
     }
 
     public static void radixSort(int[] data, int l, int r, IntToIntFunction func) {
-        int n = r - l + 1;
         INT_LIST_A.clear();
-        INT_LIST_A.addAll(data, l, n);
-        INT_LIST_B.clear();
-        INT_LIST_B.ensureSpace(n);
+        INT_LIST_A.ensureSpace(r - l + 1);
 
+        int n = r - l + 1;
         for (int i = 0; i < 4; i += 2) {
-            radixSort0(n, INT_LIST_A.getData(), INT_LIST_B.getData(), BUF8, i * 8, func);
-            radixSort0(n, INT_LIST_B.getData(), INT_LIST_A.getData(), BUF8, (i + 1) * 8, func);
+            radixSort0(data, l, r, INT_LIST_A.getData(), 0, BUF8, i * 8, func);
+            radixSort0(INT_LIST_A.getData(), 0, n - 1, data, l, BUF8, (i + 1) * 8, func);
         }
-        System.arraycopy(INT_LIST_A.getData(), 0, data, l, r - l + 1);
     }
 
-    private static void radixSort0(int n, int[] data, int[] output, int[] buf, int rightShift, IntToIntFunction func) {
+    private static void radixSort0(int[] data, int dl, int dr, int[] output, int ol, int[] buf, int rightShift, IntToIntFunction func) {
         Arrays.fill(buf, 0);
         int mask = buf.length - 1;
-        for (int i = 0; i < n; i++) {
-            buf[(int) ((func.apply(data[i]) >>> rightShift) & mask)]++;
+        for (int i = dl; i <= dr; i++) {
+            buf[((func.apply(data[i]) >>> rightShift) & mask)]++;
         }
         for (int i = 1; i < buf.length; i++) {
             buf[i] += buf[i - 1];
         }
-        for (int i = n - 1; i >= 0; i--) {
-            output[--buf[(int) ((func.apply(data[i]) >>> rightShift) & mask)]] = data[i];
+        for (int i = dr; i >= dl; i--) {
+            output[ol + (--buf[((func.apply(data[i]) >>> rightShift) & mask)])] = data[i];
         }
     }
 
     public static void radixSortLong(int[] data, int l, int r, IntToLongFunction func) {
-        int n = r - l + 1;
         INT_LIST_A.clear();
-        INT_LIST_A.addAll(data, l, n);
-        INT_LIST_B.clear();
-        INT_LIST_B.ensureSpace(n);
+        INT_LIST_A.ensureSpace(r - l + 1);
 
+        int n = r - l + 1;
         for (int i = 0; i < 8; i += 2) {
-            radixSortLong0(n, INT_LIST_A.getData(), INT_LIST_B.getData(), BUF8, i * 8, func);
-            radixSortLong0(n, INT_LIST_B.getData(), INT_LIST_A.getData(), BUF8, (i + 1) * 8, func);
+            radixSortLong0(data, l, r, INT_LIST_A.getData(), 0, BUF8, i * 8, func);
+            radixSortLong0(INT_LIST_A.getData(), 0, n - 1, data, l, BUF8, (i + 1) * 8, func);
         }
-        System.arraycopy(INT_LIST_A.getData(), 0, data, l, r - l + 1);
     }
 
-    private static void radixSortLong0(int n, int[] data, int[] output, int[] buf, int rightShift, IntToLongFunction func) {
+    private static void radixSortLong0(int[] data, int dl, int dr, int[] output, int ol, int[] buf, int rightShift, IntToLongFunction func) {
         Arrays.fill(buf, 0);
         int mask = buf.length - 1;
-        for (int i = 0; i < n; i++) {
+        for (int i = dl; i <= dr; i++) {
             buf[(int) ((func.apply(data[i]) >>> rightShift) & mask)]++;
         }
         for (int i = 1; i < buf.length; i++) {
             buf[i] += buf[i - 1];
         }
-        for (int i = n - 1; i >= 0; i--) {
-            output[--buf[(int) ((func.apply(data[i]) >>> rightShift) & mask)]] = data[i];
+        for (int i = dr; i >= dl; i--) {
+            output[ol + (--buf[(int) ((func.apply(data[i]) >>> rightShift) & mask)])] = data[i];
         }
     }
 
     public static void radixSort(int[] data, int l, int r) {
         INT_LIST_A.clear();
-        INT_LIST_A.addAll(data, l, r - l + 1);
-        INT_LIST_B.clear();
-        INT_LIST_B.ensureSpace(r - l + 1);
+        INT_LIST_A.ensureSpace(r - l + 1);
 
-        for (int i = 0; i < 4; i += 2) {
-            radixSort0(INT_LIST_A.getData(), INT_LIST_B.getData(), BUF8, i * 8);
-            radixSort0(INT_LIST_B.getData(), INT_LIST_A.getData(), BUF8, (i + 1) * 8);
+        int n = r - l + 1;
+        for (int i = 0; i < 8; i += 2) {
+            radixSort0(data, l, r, INT_LIST_A.getData(), 0, BUF8, i * 8);
+            radixSort0(INT_LIST_A.getData(), 0, n - 1, data, l, BUF8, (i + 1) * 8);
         }
-        System.arraycopy(INT_LIST_A.getData(), 0, data, l, r - l + 1);
     }
 
-    private static void radixSort0(int[] data, int[] output, int[] buf, int rightShift) {
+    private static void radixSort0(int[] data, int dl, int dr, int[] output, int ol, int[] buf, int rightShift) {
         Arrays.fill(buf, 0);
         int mask = buf.length - 1;
-        int n = data.length;
-        for (int i = 0; i < n; i++) {
+        for (int i = dl; i <= dr; i++) {
             buf[(int) ((data[i] >>> rightShift) & mask)]++;
         }
         for (int i = 1; i < buf.length; i++) {
             buf[i] += buf[i - 1];
         }
-        for (int i = n - 1; i >= 0; i--) {
-            output[--buf[(int) ((data[i] >>> rightShift) & mask)]] = data[i];
+        for (int i = dr; i >= dl; i--) {
+            output[ol + (--buf[(int) ((data[i] >>> rightShift) & mask)])] = data[i];
         }
     }
 
