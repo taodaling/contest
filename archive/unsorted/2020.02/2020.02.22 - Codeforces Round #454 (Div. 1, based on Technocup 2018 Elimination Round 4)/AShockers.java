@@ -1,8 +1,7 @@
 package contest;
 
 import template.binary.Bits;
-import template.binary.CachedBitCount;
-import template.binary.CachedLog2;
+import template.binary.Log2;
 import template.io.FastInput;
 import template.io.FastOutput;
 

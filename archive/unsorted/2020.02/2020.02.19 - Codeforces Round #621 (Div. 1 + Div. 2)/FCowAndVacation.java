@@ -6,7 +6,7 @@ import template.graph.LcaOnTree;
 import template.graph.UndirectedEdge;
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.binary.CachedLog2;
+import template.binary.Log2;
 import template.primitve.generated.datastructure.IntegerDeque;
 import template.primitve.generated.datastructure.IntegerDequeImpl;
 import template.utils.SequenceUtils;
@@ -41,7 +41,7 @@ public class FCowAndVacation {
             return node;
         }
         int delta = depths[node] - d;
-        int log2 = CachedLog2.floorLog(delta);
+        int log2 = Log2.floorLog(delta);
         return climb(jump[node][log2], d);
     }
 

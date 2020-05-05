@@ -34,10 +34,13 @@ public class DSU {
         if (rank[a] == rank[b]) {
             rank[a]++;
         }
-        if (rank[a] > rank[b]) {
-            p[b] = a;
-        } else {
-            p[a] = b;
+
+        if (rank[a] < rank[b]) {
+            int tmp = a;
+            a = b;
+            b = tmp;
         }
+
+        p[b] = a;
     }
 }

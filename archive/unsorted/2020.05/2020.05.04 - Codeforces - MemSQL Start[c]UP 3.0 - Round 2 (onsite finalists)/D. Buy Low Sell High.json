@@ -1,0 +1,55 @@
+{
+  "name" : "D. Buy Low Sell High",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "9\n10 5 4 7 9 12 6 2 10\n",
+    "output" : "20\n",
+    "index" : 0,
+    "active" : false
+  }, {
+    "input" : "20\n3 1 4 1 5 9 2 6 5 3 5 8 9 7 9 3 2 3 8 4\n",
+    "output" : "41\n",
+    "index" : 1,
+    "active" : false
+  }, {
+    "input" : "3\n1 8 9",
+    "output" : "8",
+    "index" : 2,
+    "active" : false
+  }, {
+    "input" : "4\n1 8 9 10",
+    "output" : "9",
+    "index" : 3,
+    "active" : false
+  }, {
+    "input" : "5\n1 8 1 9 3",
+    "output" : "15",
+    "index" : 4,
+    "active" : false
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.DBuyLowSellHigh",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "contest.DBuyLowSellHighTestCase" ],
+  "date" : "2020.05.04",
+  "contestName" : "Codeforces - MemSQL Start[c]UP 3.0 - Round 2 (onsite finalists)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

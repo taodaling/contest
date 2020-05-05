@@ -1,0 +1,44 @@
+{
+  "name" : "E. Random Elections",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3\n01010101\n",
+    "output" : "216\n",
+    "index" : 0,
+    "active" : false
+  }, {
+    "input" : "3\n01101001\n",
+    "output" : "168\n",
+    "index" : 1,
+    "active" : false
+  }, {
+    "input" : "1\n10",
+    "index" : 2,
+    "active" : false
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.ERandomElections",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "contest.ERandomElectionsTestCase" ],
+  "date" : "2020.05.06",
+  "contestName" : "Codeforces - Codeforces Round #432 (Div. 1, based on IndiaHacks Final Round 2017)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

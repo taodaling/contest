@@ -2,7 +2,7 @@ package contest;
 
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.math.CachedLog2;
+import template.math.Log2;
 import template.math.DigitBase;
 import template.math.Modular;
 
@@ -122,7 +122,7 @@ class StringTree {
 
         this.l = l;
         this.r = r;
-        log = CachedLog2.ceilLog(maxDepth + 1);
+        log = Log2.ceilLog(maxDepth + 1);
         root = newTrieNode();
         max = newTrieNode(root, 0);
         min = newTrieNode(root, 0);
@@ -208,7 +208,7 @@ class StringTree {
             if (t.depth == d) {
                 return t;
             }
-            int log = CachedLog2.floorLog(t.depth - d);
+            int log = Log2.floorLog(t.depth - d);
             return gotoDepth(t.jump[log], d);
         }
 

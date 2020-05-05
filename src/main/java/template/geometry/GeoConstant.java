@@ -1,7 +1,7 @@
 package template.geometry;
 
 public class GeoConstant {
-    public static final double PREC = 1e-8;
+    public static final double PREC = 1e-10;
 
     public static boolean isZero(double x) {
         return -PREC <= x && x <= PREC;

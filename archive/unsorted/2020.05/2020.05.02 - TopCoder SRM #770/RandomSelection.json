@@ -1,0 +1,26 @@
+{
+  "name" : "RandomSelection",
+  "signature" : {
+    "name" : "expectedMaximum",
+    "result" : "double",
+    "arguments" : [ "int", "int", "int", "int", "int[]" ],
+    "argumentNames" : [ "n", "T", "seed", "Amod", "Aprefix" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "3", "1", "2", "10", "2" ],
+    "result" : "4.215277777777778",
+    "index" : 0,
+    "active" : false
+  }, {
+    "arguments" : [ "100000", "528274614", "192837", "574635344", "0" ],
+    "result" : "1.0994012979929392E9",
+    "index" : 1,
+    "active" : true
+  } ],
+  "date" : "2020.05.02",
+  "contestName" : "TopCoder SRM #770",
+  "testClasses" : [ ],
+  "fqn" : "contest.RandomSelection",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

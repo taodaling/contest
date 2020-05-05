@@ -1,0 +1,40 @@
+{
+  "name" : "F. Royal Questions",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2 3\n1 2 5\n1 2 1\n2 1 10\n",
+    "output" : "15\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "3 2\n1 2 10\n3 2 20\n",
+    "output" : "30\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx512M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.FRoyalQuestions",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.05.01",
+  "contestName" : "Codeforces - Codeforces Round #441 (Div. 1, by Moscow Team Olympiad)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

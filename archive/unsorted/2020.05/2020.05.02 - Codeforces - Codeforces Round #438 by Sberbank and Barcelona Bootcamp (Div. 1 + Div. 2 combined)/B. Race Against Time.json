@@ -1,0 +1,60 @@
+{
+  "name" : "B. Race Against Time",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "12 30 45 3 11\n",
+    "output" : "NO\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "12 0 1 12 1\n",
+    "output" : "YES\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "3 47 0 4 9\n",
+    "output" : "YES\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "12 30 45 1 5",
+    "output" : "YES",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "12 30 45 1 7",
+    "output" : "NO",
+    "index" : 4,
+    "active" : true
+  }, {
+    "input" : "12 30 45 1 1",
+    "output" : "YES",
+    "index" : 5,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.BRaceAgainstTime",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.05.02",
+  "contestName" : "Codeforces - Codeforces Round #438 by Sberbank and Barcelona Bootcamp (Div. 1 + Div. 2 combined)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

@@ -242,4 +242,26 @@ public class Polynomials {
             divide(a, b, c, remainder, pow);
         }
     }
+
+    /**
+     * return polynomial g while p * g = 1 (mod x^{2^m}).
+     * <br>
+     * You are supposed to guarantee the lengths of all arrays are greater than or equal to 2^{m + 1)}
+     */
+    public static void inverse(int[] p, int[] inv, int m, Modular mod) {
+        if (m == 0) {
+            inv[0] = new Power(mod).inverseExtGCD(p[0]);
+            return;
+        }
+        inverse(p, inv, m - 1, mod);
+        int n = 1 << m;
+        for (int i = 1 << (m - 1); i < n; i++) {
+            inv[i] = 0;
+        }
+        int[] ac = FastFourierTransform.multiplyMod(p, n, inv, n, mod.getMod());
+        int[] acc = FastFourierTransform.multiplyMod(ac, n, inv, n, mod.getMod());
+        for (int i = 0; i < n; i++) {
+            inv[i] = mod.subtract(mod.mul(inv[i], 2), acc[i]);
+        }
+    }
 }

@@ -1,0 +1,65 @@
+{
+  "name" : "A. Did you mean...",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "hellno\n",
+    "output" : "hell no \n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "abacaba\n",
+    "output" : "abacaba \n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "asdfasdf\n",
+    "output" : "asd fasd f \n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "helllllooooo",
+    "output" : "helllllooooo",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "tobeornottobe",
+    "output" : "tobeornottobe",
+    "index" : 4,
+    "active" : true
+  }, {
+    "input" : "oooooo",
+    "output" : "oooooo",
+    "index" : 5,
+    "active" : true
+  }, {
+    "input" : "tttttttttt",
+    "output" : "tttttttttt",
+    "index" : 6,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.ADidYouMean",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.05.04",
+  "contestName" : "Codeforces - Codeforces Round #434 (Div. 1, based on Technocup 2018 Elimination Round 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

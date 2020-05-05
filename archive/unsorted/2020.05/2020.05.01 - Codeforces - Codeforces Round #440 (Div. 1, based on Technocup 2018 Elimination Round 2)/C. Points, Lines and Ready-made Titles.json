@@ -1,0 +1,40 @@
+{
+  "name" : "C. Points, Lines and Ready-made Titles",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4\n1 1\n1 2\n2 1\n2 2\n",
+    "output" : "16\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "2\n-1 -1\n0 1\n",
+    "output" : "9\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.CPointsLinesAndReadyMadeTitles",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.05.01",
+  "contestName" : "Codeforces - Codeforces Round #440 (Div. 1, based on Technocup 2018 Elimination Round 2)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

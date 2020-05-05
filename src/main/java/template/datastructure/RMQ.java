@@ -1,6 +1,6 @@
 package template.datastructure;
 
-import template.binary.CachedLog2;
+import template.binary.Log2;
 
 import java.util.Comparator;
 
@@ -26,7 +26,7 @@ public class RMQ<T> {
     public RMQ(T[] vals, Comparator<T> comp) {
         this.comp = comp;
         n = vals.length;
-        n = 1 << CachedLog2.ceilLog(n);
+        n = 1 << Log2.ceilLog(n);
         this.vals = vals;
         data = new int[2 * n];
         build(vals, 0, n, 1);

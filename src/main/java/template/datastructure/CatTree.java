@@ -1,12 +1,12 @@
 package template.datastructure;
 
 import template.binary.Bits;
-import template.binary.CachedLog2;
+import template.binary.Log2;
 
 public class CatTree<S, E> {
     public CatTree(E[] data, int len, SetHandler<S, E> handler) {
         this.handler = handler;
-        int level = CachedLog2.ceilLog(len) + 1;
+        int level = Log2.ceilLog(len) + 1;
         levels = new Object[level][len];
         for (int i = 0; i < len; i++) {
             levels[0][i] = handler.makeSet(data[i]);

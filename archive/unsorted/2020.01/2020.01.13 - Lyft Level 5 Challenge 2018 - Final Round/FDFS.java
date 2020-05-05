@@ -3,7 +3,7 @@ package contest;
 import template.graph.LcaOnTree;
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.math.CachedLog2;
+import template.math.Log2;
 import template.math.DigitUtils;
 import template.primitve.generated.IntegerIterator;
 import template.primitve.generated.LongHashSet;
@@ -106,7 +106,7 @@ public class FDFS {
         if (depths[root] == depth) {
             return root;
         }
-        return climb(jumps[root][CachedLog2.floorLog(depths[root] - depth)], depth);
+        return climb(jumps[root][Log2.floorLog(depths[root] - depth)], depth);
     }
 
     void dfs(int root, int p, int depth) {

@@ -29,7 +29,7 @@ public class ErdosGallaiTheorem {
         CompareUtils.radixSort(degs, 0, degs.length - 1);
         SequenceUtils.reverse(degs, 0, degs.length - 1);
         int n = degs.length;
-        IntegerPreSum ps = new IntegerPreSum(degs);
+        IntegerPreSum ps = new IntegerPreSum(i -> degs[i], degs.length);
         long[] ss = new long[n + 1];
         int rIter = n;
         for (int i = n - 1; i >= 0; i--) {

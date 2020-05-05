@@ -1,6 +1,6 @@
 package contest;
 
-import template.binary.CachedLog2;
+import template.binary.Log2;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.math.CachedPow;
@@ -60,7 +60,7 @@ public class BLynyrdSkynyrd {
         if (k == 0) {
             return i;
         }
-        int log = CachedLog2.floorLog(k);
+        int log = Log2.floorLog(k);
         return jump(jump[i][log], k - (1 << log));
     }
 }

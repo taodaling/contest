@@ -8,17 +8,17 @@ public class IntegerPreSum {
         pre = new int[n];
     }
 
-    public void populate(int[] a) {
-        n = a.length;
-        pre[0] = a[0];
+    public void populate(IntToIntegerFunction a, int n) {
+        this.n = n;
+        pre[0] = a.apply(0);
         for (int i = 1; i < n; i++) {
-            pre[i] = pre[i - 1] + a[i];
+            pre[i] = pre[i - 1] + a.apply(i);
         }
     }
 
-    public IntegerPreSum(int[] a) {
-        this(a.length);
-        populate(a);
+    public IntegerPreSum(IntToIntegerFunction a, int n) {
+        this(n);
+        populate(a, n);
     }
 
     /**

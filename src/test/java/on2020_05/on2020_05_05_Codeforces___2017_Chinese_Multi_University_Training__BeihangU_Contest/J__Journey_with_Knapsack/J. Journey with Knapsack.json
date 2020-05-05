@@ -1,0 +1,40 @@
+{
+  "name" : "J. Journey with Knapsack",
+  "testType" : "MULTI_EOF",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "1 1\n1\n1\n2 2\n1 2\n3 4\n3 3\n1 2 3\n2 3 3\n",
+    "output" : "Case #1: 1\nCase #2: 2\nCase #3: 6\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "3 3\n1 2 3\n2 3 3",
+    "output" : "Case #1: 6\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx128M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_05.on2020_05_05_Codeforces___2017_Chinese_Multi_University_Training__BeihangU_Contest.J__Journey_with_Knapsack.JJourneyWithKnapsack",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "on2020_05.on2020_05_05_Codeforces___2017_Chinese_Multi_University_Training__BeihangU_Contest.J__Journey_with_Knapsack.JJourneyWithKnapsackTestCase" ],
+  "date" : "2020.05.05",
+  "contestName" : "Codeforces - 2017 Chinese Multi-University Training, BeihangU Contest",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

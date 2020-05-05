@@ -1,6 +1,6 @@
 package contest;
 
-import template.binary.CachedLog2;
+import template.binary.Log2;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.utils.CompareUtils;
@@ -19,7 +19,7 @@ public class APoweredAddition {
             if (a[i] >= last) {
                 last = a[i];
             } else {
-                time = Math.max(time, CachedLog2.floorLog(last - a[i]) + 1);
+                time = Math.max(time, Log2.floorLog(last - a[i]) + 1);
             }
         }
 

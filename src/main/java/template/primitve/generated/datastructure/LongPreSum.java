@@ -8,17 +8,17 @@ public class LongPreSum {
         pre = new long[n];
     }
 
-    public void populate(long[] a) {
-        n = a.length;
-        pre[0] = a[0];
+    public void populate(IntToLongFunction a, int n) {
+        this.n = n;
+        pre[0] = a.apply(0);
         for (int i = 1; i < n; i++) {
-            pre[i] = pre[i - 1] + a[i];
+            pre[i] = pre[i - 1] + a.apply(i);
         }
     }
 
-    public LongPreSum(long[] a) {
-        this(a.length);
-        populate(a);
+    public LongPreSum(IntToLongFunction a, int n) {
+        this(n);
+        populate(a, n);
     }
 
     /**

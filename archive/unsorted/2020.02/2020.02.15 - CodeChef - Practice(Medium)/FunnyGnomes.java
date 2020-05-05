@@ -2,7 +2,7 @@ package contest;
 
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.math.CachedLog2;
+import template.math.Log2;
 import template.primitve.generated.IntegerDeque;
 import template.primitve.generated.IntegerDequeImpl;
 
@@ -40,7 +40,7 @@ public class FunnyGnomes {
             BitSet state = new BitSet(n);
             state.set(x);
             while (k > 0) {
-                int log = CachedLog2.floorLog(k);
+                int log = Log2.floorLog(k);
                 state = merge(state, jump[log]);
                 k -= 1 << log;
             }

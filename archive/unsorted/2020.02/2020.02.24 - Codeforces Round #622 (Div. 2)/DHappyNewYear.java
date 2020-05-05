@@ -2,7 +2,6 @@ package contest;
 
 import template.algo.SubsetGenerator;
 import template.binary.Bits;
-import template.binary.CachedBitCount;
 import template.datastructure.Range2DequeAdapter;
 import template.datastructure.SimplifiedDeque;
 import template.io.FastInput;

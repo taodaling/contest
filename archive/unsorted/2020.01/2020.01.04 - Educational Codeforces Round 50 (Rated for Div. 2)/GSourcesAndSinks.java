@@ -3,7 +3,7 @@ package contest;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.math.Bits;
-import template.math.CachedLog2;
+import template.math.Log2;
 import template.primitve.generated.IntegerIterator;
 import template.primitve.generated.IntegerList;
 import template.primitve.generated.IntegerMultiWayStack;
@@ -54,7 +54,7 @@ public class GSourcesAndSinks {
         int[] merged = new int[1 << k];
         for (int i = 1; i < merged.length; i++) {
             int lb = Integer.lowestOneBit(i);
-            merged[i] = merged[i - lb] | access[CachedLog2.floorLog(lb)];
+            merged[i] = merged[i - lb] | access[Log2.floorLog(lb)];
         }
 
         for (int i = 1; i < merged.length - 1; i++) {

@@ -3,7 +3,7 @@ package contest;
 import numeric.NTT;
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.math.CachedLog2;
+import template.math.Log2;
 import template.math.Factorial;
 import template.math.Modular;
 import template.polynomial.NumberTheoryTransform;

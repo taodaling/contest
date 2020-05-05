@@ -1,6 +1,7 @@
 package template.string;
 
 
+import template.primitve.generated.datastructure.IntToIntFunction;
 import template.primitve.generated.datastructure.IntegerList;
 import template.primitve.generated.datastructure.IntegerMultiWayDeque;
 import template.utils.CompareUtils;
@@ -10,9 +11,9 @@ import template.utils.CompareUtils;
  */
 public class SAIS {
     private int l;
-    private int[] rank2Index;
-    private int[] index2Rank;
-    private int[] lcp;
+    public int[] rank2Index;
+    public int[] index2Rank;
+    public int[] lcp;
     private int[] data;
 
     /**
@@ -36,35 +37,22 @@ public class SAIS {
         return lcp[i];
     }
 
-    public SAIS(char[] array) {
-        this(array, 0, array.length - 1);
+    public SAIS(char[] s){
+        this(i -> s[i], 0, s.length - 1);
     }
 
-    public SAIS(int[] array) {
-        this(array, 0, array.length - 1);
+    public SAIS(int[] s){
+        this(i -> s[i], 0, s.length - 1);
     }
 
-    public SAIS(char[] array, int l, int r) {
-        if (l > r) {
-            throw new IllegalArgumentException();
-        }
-        this.l = l;
-        int n = r - l + 1;
-        data = new int[n];
-        for (int i = 0; i < n; i++) {
-            data[i] = array[i + l];
-        }
-        process();
-    }
-
-    public SAIS(int[] array, int l, int r) {
+    public SAIS(IntToIntFunction function, int l, int r) {
         if (l > r) {
             throw new IllegalArgumentException();
         }
         int n = r - l + 1;
         data = new int[n];
         for (int i = 0; i < n; i++) {
-            data[i] = array[i + l];
+            data[i] = function.apply(i + l);
         }
         process();
     }

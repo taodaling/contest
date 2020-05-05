@@ -1,0 +1,50 @@
+{
+  "name" : "C. Arpa and a game with Mojtaba",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4\n1 1 1 1\n",
+    "output" : "Arpa\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "4\n1 1 17 17\n",
+    "output" : "Mojtaba\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "4\n1 1 17 289\n",
+    "output" : "Arpa\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "5\n1 2 3 4 5\n",
+    "output" : "Arpa\n",
+    "index" : 3,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_05.on2020_05_05_Codeforces___Codeforces_Round__432__Div__1__based_on_IndiaHacks_Final_Round_2017_.C__Arpa_and_a_game_with_Mojtaba.CArpaAndAGameWithMojtaba",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.05.05",
+  "contestName" : "Codeforces - Codeforces Round #432 (Div. 1, based on IndiaHacks Final Round 2017)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

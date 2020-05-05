@@ -1,0 +1,31 @@
+{
+  "name" : "ShoppingSpree",
+  "signature" : {
+    "name" : "maxValue",
+    "result" : "int",
+    "arguments" : [ "int", "int[]", "int[]", "int[]", "int[]" ],
+    "argumentNames" : [ "k", "shirtValue", "jeansValue", "shirtType", "jeansType" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "1", "2", "3", "0", "0" ],
+    "result" : "5",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "3", "2 3 4", "3 2", "0 0 1 2", "0 1 0 1" ],
+    "result" : "14",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "1", "2 3 4", "3 2", "0 0 1 2", "0 1 0 1" ],
+    "result" : "6",
+    "index" : 2,
+    "active" : true
+  } ],
+  "date" : "2020.05.02",
+  "contestName" : "TopCoder SRM #770",
+  "testClasses" : [ ],
+  "fqn" : "contest.ShoppingSpree",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

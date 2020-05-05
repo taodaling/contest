@@ -8,6 +8,10 @@ public class HashData {
     public int[] inv;
     public int[] pow;
 
+    public HashData(int n, int p) {
+        this(n, p, RandomWrapper.INSTANCE.nextInt(3, p - 1));
+    }
+
     public HashData(int n, int p, int x) {
         this.mod = new Modular(p);
         n = Math.max(n, 1);

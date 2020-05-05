@@ -1,0 +1,31 @@
+{
+  "name" : "SmoothPermutations",
+  "signature" : {
+    "name" : "countPermutations",
+    "result" : "long",
+    "arguments" : [ "int", "int", "int", "int", "int[]", "int[]", "int[]" ],
+    "argumentNames" : [ "T", "M", "MX", "seed", "prefN", "prefK", "prefX" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "3", "100", "5", "4", "5 4", "3 2", "5 2" ],
+    "result" : "24",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "100", "1", "47", "47", "", "", "" ],
+    "result" : "0",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "100", "999999937", "123456", "47", "", "", "" ],
+    "result" : "24359438587",
+    "index" : 2,
+    "active" : true
+  } ],
+  "date" : "2020.05.04",
+  "contestName" : "TopCoder SRM #772",
+  "testClasses" : [ ],
+  "fqn" : "contest.SmoothPermutations",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

@@ -1,6 +1,6 @@
 package template.primitve.generated.datastructure;
 
-import template.binary.CachedLog2;
+import template.binary.Log2;
 
 import java.util.Arrays;
 
@@ -14,7 +14,7 @@ public class IntegerSparseTable {
     private IntegerBinaryFunction merger;
 
     public IntegerSparseTable(IntToIntegerFunction function, int length, IntegerBinaryFunction merger) {
-        int m = CachedLog2.floorLog(length);
+        int m = Log2.floorLog(length);
         st = new int[m + 1][length];
         this.merger = merger;
         for (int i = 0; i < length; i++) {
@@ -41,7 +41,7 @@ public class IntegerSparseTable {
      */
     public int query(int left, int right) {
         int queryLen = right - left + 1;
-        int bit = CachedLog2.floorLog(queryLen);
+        int bit = Log2.floorLog(queryLen);
         // x + 2^bit == right + 1
         // So x should be right + 1 - 2^bit - left=queryLen - 2^bit
         return merge(st[bit][left], st[bit][right + 1 - (1 << bit)]);

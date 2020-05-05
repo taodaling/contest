@@ -1,0 +1,41 @@
+{
+  "name" : "UnreliableRover",
+  "signature" : {
+    "name" : "getArea",
+    "result" : "long",
+    "arguments" : [ "String", "int[]", "int[]" ],
+    "argumentNames" : [ "direction", "minSteps", "maxSteps" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "N", "3", "5" ],
+    "result" : "3",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "NE", "3 3", "5 5" ],
+    "result" : "9",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "?", "0", "2" ],
+    "result" : "9",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "??N?", "0 0 0 0", "0 0 0 0" ],
+    "result" : "1",
+    "index" : 3,
+    "active" : true
+  }, {
+    "arguments" : [ "??E?", "0 0 3 0", "2 3 4 2" ],
+    "result" : "120",
+    "index" : 4,
+    "active" : true
+  } ],
+  "date" : "2020.05.05",
+  "contestName" : "TopCoder SRM #748",
+  "testClasses" : [ ],
+  "fqn" : "contest.UnreliableRover",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

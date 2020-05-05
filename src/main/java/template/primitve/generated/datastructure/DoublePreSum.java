@@ -8,17 +8,17 @@ public class DoublePreSum {
         pre = new double[n];
     }
 
-    public void populate(double[] a) {
-        n = a.length;
-        pre[0] = a[0];
+    public void populate(IntToDoubleFunction a, int n) {
+        this.n = n;
+        pre[0] = a.apply(0);
         for (int i = 1; i < n; i++) {
-            pre[i] = pre[i - 1] + a[i];
+            pre[i] = pre[i - 1] + a.apply(i);
         }
     }
 
-    public DoublePreSum(double[] a) {
-        this(a.length);
-        populate(a);
+    public DoublePreSum(IntToDoubleFunction a, int n) {
+        this(n);
+        populate(a, n);
     }
 
     /**

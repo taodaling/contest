@@ -1,6 +1,6 @@
 package template.problem;
 
-import template.binary.CachedLog2;
+import template.binary.Log2;
 import template.math.Modular;
 import template.polynomial.FastFourierTransform;
 import template.polynomial.NumberTheoryTransform;
@@ -63,7 +63,7 @@ public class WayToSplitNumber {
     public WayToSplitNumber(int n, Modular mod, NumberTheoryTransform ntt) {
         prepare(n, mod);
 
-        int m = CachedLog2.ceilLog(n * 2 + 1);
+        int m = Log2.ceilLog(n * 2 + 1);
         ways = new int[1 << m];
         f = Arrays.copyOf(f, 1 << m);
         g = Arrays.copyOf(g, 1 << m);

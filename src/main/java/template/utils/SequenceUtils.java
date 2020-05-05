@@ -512,6 +512,35 @@ public class SequenceUtils {
         }
     }
 
+    public static void reverse(boolean[] data, int l, int r) {
+        while (l < r) {
+            swap(data, l, r);
+            l++;
+            r--;
+        }
+    }
+
+    public static void reverse(int[] data) {
+        reverse(data, 0, data.length - 1);
+    }
+
+    public static void reverse(long[] data) {
+        reverse(data, 0, data.length - 1);
+    }
+
+    public static void reverse(double[] data) {
+        reverse(data, 0, data.length - 1);
+    }
+
+    public static void reverse(char[] data) {
+        reverse(data, 0, data.length - 1);
+    }
+
+    public static void reverse(boolean[] data) {
+        reverse(data, 0, data.length - 1);
+    }
+
+
     public static void reverse(long[] data, int l, int r) {
         while (l < r) {
             swap(data, l, r);

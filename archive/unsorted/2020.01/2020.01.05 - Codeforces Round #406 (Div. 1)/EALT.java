@@ -3,7 +3,7 @@ package contest;
 import template.graph.LcaOnTree;
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.math.CachedLog2;
+import template.math.Log2;
 import template.primitve.generated.IntegerList;
 import template.primitve.generated.IntegerMultiWayStack;
 
@@ -132,7 +132,7 @@ public class EALT {
             return;
         }
         int differ = a.depth - targetDepth;
-        int log = CachedLog2.floorLog(differ);
+        int log = Log2.floorLog(differ);
         subGraph.addDependency(idOfCitizen(citizen), a.dependencyIds[log]);
         findLCA(a.jump[log], targetDepth, citizen);
     }

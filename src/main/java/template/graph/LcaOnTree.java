@@ -1,6 +1,6 @@
 package template.graph;
 
-import template.binary.CachedLog2;
+import template.binary.Log2;
 
 import java.util.List;
 
@@ -51,12 +51,12 @@ public class LcaOnTree {
     private int enterIntoStrip(int x, int hz) {
         if (Integer.lowestOneBit(i[x]) == hz)
             return x;
-        int hw = 1 << CachedLog2.floorLog(a[x] & (hz - 1));
+        int hw = 1 << Log2.floorLog(a[x] & (hz - 1));
         return parent[head[i[x] & -hw | hw]];
     }
 
     public int lca(int x, int y) {
-        int hb = i[x] == i[y] ? Integer.lowestOneBit(i[x]) : (1 << CachedLog2.floorLog(i[x] ^ i[y]));
+        int hb = i[x] == i[y] ? Integer.lowestOneBit(i[x]) : (1 << Log2.floorLog(i[x] ^ i[y]));
         int hz = Integer.lowestOneBit(a[x] & a[y] & -hb);
         int ex = enterIntoStrip(x, hz);
         int ey = enterIntoStrip(y, hz);

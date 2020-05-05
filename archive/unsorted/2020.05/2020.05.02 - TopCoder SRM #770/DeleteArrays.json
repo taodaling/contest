@@ -1,0 +1,36 @@
+{
+  "name" : "DeleteArrays",
+  "signature" : {
+    "name" : "doDelete",
+    "result" : "long[]",
+    "arguments" : [ "int", "int", "int", "long", "long", "long" ],
+    "argumentNames" : [ "a", "b", "c", "x", "y", "z" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "2", "2", "2", "2", "3", "4" ],
+    "result" : "0 250",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "3", "2", "2", "3", "2", "1" ],
+    "result" : "2 688",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "4", "4", "4", "5", "6", "7" ],
+    "result" : "0 22620",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "100000", "5", "8", "424242", "474747", "123456789" ],
+    "result" : "50097960828195 13989929548",
+    "index" : 3,
+    "active" : true
+  } ],
+  "date" : "2020.05.02",
+  "contestName" : "TopCoder SRM #770",
+  "testClasses" : [ ],
+  "fqn" : "contest.DeleteArrays",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

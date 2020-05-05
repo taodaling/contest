@@ -1,0 +1,28 @@
+In file included from C:\Users\DALT\IdeaProjects\contest\cpp\database\Codeforces___Codeforces_Round__441__Div__1__by_Moscow_Team_Olympiad____C__National_Property\main.cpp:2:
+C:/Users/DALT/IdeaProjects/contest/cpp/libs/reader.h: In member function 'void reader::StringReader::skip()':
+C:/Users/DALT/IdeaProjects/contest/cpp/libs/reader.h:35:20: warning: comparison of integer expressions of different signedness: 'int' and 'std::__cxx11::basic_string<char>::size_type' {aka 'long long unsigned int'} [-Wsign-compare]
+     while (_offset < _s.size() && _s[_offset] <= 32) {
+            ~~~~~~~~^~~~~~~~~~~
+C:/Users/DALT/IdeaProjects/contest/cpp/libs/reader.h: In member function 'bool reader::StringReader::hasMore()':
+C:/Users/DALT/IdeaProjects/contest/cpp/libs/reader.h:41:20: warning: comparison of integer expressions of different signedness: 'int' and 'std::__cxx11::basic_string<char>::size_type' {aka 'long long unsigned int'} [-Wsign-compare]
+     return _offset < _s.size();
+            ~~~~~~~~^~~~~~~~~~~
+C:/Users/DALT/IdeaProjects/contest/cpp/libs/reader.h: In member function 'int reader::StringReader::readInt()':
+C:/Users/DALT/IdeaProjects/contest/cpp/libs/reader.h:50:20: warning: comparison of integer expressions of different signedness: 'int' and 'std::__cxx11::basic_string<char>::size_type' {aka 'long long unsigned int'} [-Wsign-compare]
+     while (_offset < _s.size() && '0' <= _s[_offset] && _s[_offset] <= '9') {
+            ~~~~~~~~^~~~~~~~~~~
+C:/Users/DALT/IdeaProjects/contest/cpp/libs/reader.h:46:10: warning: variable 'sign' set but not used [-Wunused-but-set-variable]
+     bool sign = true;
+          ^~~~
+In file included from C:\Users\DALT\IdeaProjects\contest\cpp\database\Codeforces___Codeforces_Round__441__Div__1__by_Moscow_Team_Olympiad____C__National_Property\main.cpp:3:
+C:/Users/DALT/IdeaProjects/contest/cpp/libs/two_sat.h: In member function 'bool two_sat::TwoSat::solve(bool)':
+C:/Users/DALT/IdeaProjects/contest/cpp/libs/two_sat.h:47:23: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<int>::size_type' {aka 'long long unsigned int'} [-Wsign-compare]
+     for (int i = 0; i < sets.size(); i++) {
+                     ~~^~~~~~~~~~~~~
+C:/Users/DALT/IdeaProjects/contest/cpp/libs/two_sat.h:61:23: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<int>::size_type' {aka 'long long unsigned int'} [-Wsign-compare]
+     for (int i = 0; i < sets.size(); i++) {
+                     ~~^~~~~~~~~~~~~
+C:\Users\DALT\IdeaProjects\contest\cpp\database\Codeforces___Codeforces_Round__441__Div__1__by_Moscow_Team_Olympiad____C__National_Property\main.cpp: In function 'void solve(int, std::istream&, std::ostream&)':
+C:\Users\DALT\IdeaProjects\contest\cpp\database\Codeforces___Codeforces_Round__441__Div__1__by_Moscow_Team_Olympiad____C__National_Property\main.cpp:75:21: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<int>::size_type' {aka 'long long unsigned int'} [-Wsign-compare]
+   for (int i = 0; i < capital.size(); i++) {
+                   ~~^~~~~~~~~~~~~~~~

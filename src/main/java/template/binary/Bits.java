@@ -92,11 +92,11 @@ public class Bits {
     }
 
     public static int longestCommonPrefix(int x, int y) {
-        return x >>> CachedLog2.floorLog(x ^ y);
+        return x >>> Log2.floorLog(x ^ y);
     }
 
     public static int theFirstDifferentIndex(int x, int y) {
-        return CachedLog2.floorLog(x ^ y);
+        return Log2.floorLog(x ^ y);
     }
 
     public static int lowestBit(int x) {
@@ -104,6 +104,6 @@ public class Bits {
     }
 
     public static int highestBit(int x) {
-        return 1 << CachedLog2.floorLog(x);
+        return 1 << Log2.floorLog(x);
     }
 }

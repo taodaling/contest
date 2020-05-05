@@ -1,0 +1,41 @@
+{
+  "name" : "MaxPoints",
+  "signature" : {
+    "name" : "findMaxPoints",
+    "result" : "int",
+    "arguments" : [ "int", "int[]", "int[]", "long", "int", "int" ],
+    "argumentNames" : [ "N", "XG", "YG", "K", "seedX", "seedY" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "3", "1 2 1000", "1 2 1000", "2", "1", "1" ],
+    "result" : "2",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "3", "1 1 1", "2 2 2", "0", "1", "1" ],
+    "result" : "3",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "3", "1 1 1", "2 2 2", "-1", "1", "1" ],
+    "result" : "-1",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "4", "", "", "-5397718", "1825126330", "704277911" ],
+    "result" : "0",
+    "index" : 3,
+    "active" : true
+  }, {
+    "arguments" : [ "100000", "", "", "-3829423936963408", "1225224201", "441244497" ],
+    "result" : "26190",
+    "index" : 4,
+    "active" : true
+  } ],
+  "date" : "2020.05.04",
+  "contestName" : "TopCoder SRM #772",
+  "testClasses" : [ ],
+  "fqn" : "contest.MaxPoints",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

@@ -1,6 +1,6 @@
 package template.string;
 
-import template.binary.CachedLog2;
+import template.binary.Log2;
 
 
 /**
@@ -33,7 +33,7 @@ public class StringTree {
 
         this.l = l;
         this.r = r;
-        log = CachedLog2.ceilLog(maxDepth + 1);
+        log = Log2.ceilLog(maxDepth + 1);
         root = newTrieNode();
         max = newTrieNode(root, 0);
         min = newTrieNode(root, 0);
@@ -117,7 +117,7 @@ public class StringTree {
             if (t.depth == d) {
                 return t;
             }
-            int log = CachedLog2.floorLog(t.depth - d);
+            int log = Log2.floorLog(t.depth - d);
             return gotoDepth(t.jump[log], d);
         }
 

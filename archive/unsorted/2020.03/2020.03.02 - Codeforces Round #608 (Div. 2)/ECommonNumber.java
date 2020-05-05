@@ -2,7 +2,7 @@ package contest;
 
 import template.algo.LongBinarySearch;
 import template.binary.Bits;
-import template.binary.CachedLog2;
+import template.binary.Log2;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.utils.SequenceUtils;
@@ -72,8 +72,8 @@ public class ECommonNumber {
         if (prefix > n) {
             return 0;
         }
-        int len = CachedLog2.floorLog(prefix);
-        int totalLen = CachedLog2.floorLog(n);
+        int len = Log2.floorLog(prefix);
+        int totalLen = Log2.floorLog(n);
         long ans = 0;
         for (int i = len; i < totalLen; i++) {
             ans += 1L << (i - len);

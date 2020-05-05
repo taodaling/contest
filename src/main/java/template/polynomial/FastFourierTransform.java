@@ -1,6 +1,8 @@
 package template.polynomial;
 
-import template.binary.CachedLog2;
+import template.binary.Log2;
+import template.math.Modular;
+import template.math.Power;
 import template.utils.SequenceUtils;
 
 public class FastFourierTransform {
@@ -98,11 +100,11 @@ public class FastFourierTransform {
     }
 
     /**
-     * return polynomial g while p * g = 1 (mod x^m).
+     * return polynomial g while p * g = 1 (mod x^{2^m}).
      * <br>
-     * You are supposed to guarantee the lengths of all arrays are greater than or equal to 2^{ceil(log2(m)) + 1}
+     * You are supposed to guarantee the lengths of all arrays are greater than or equal to 2^{m + 1)}
      */
-    private static void inverse(double[][] p, double[][] inv, double[][] buf, int m) {
+    public static void inverse(double[][] p, double[][] inv, double[][] buf, int m) {
         if (m == 0) {
             div(1, 0, p[0][0], inv, 0);
             return;
@@ -110,19 +112,19 @@ public class FastFourierTransform {
         inverse(p, inv, buf, m - 1);
         int n = 1 << (m + 1);
         for (int i = 0, until = 1 << m; i < until; i++) {
-            buf[i][0] = p[i][0];
-            buf[i][1] = p[i][1];
+            buf[0][i] = p[0][i];
+            buf[1][i] = p[1][i];
         }
         for (int i = 1 << m, until = 1 << (m + 1); i < until; i++) {
-            buf[i][0] = 0;
-            buf[i][1] = 0;
+            buf[0][i] = 0;
+            buf[1][i] = 0;
         }
         dft(buf, (m + 1));
         dft(inv, (m + 1));
         for (int i = 0; i < n; i++) {
             mul(buf[0][i], buf[1][i], inv[0][i], inv[1][i], buf, i);
             sub(2, 0, buf[0][i], buf[1][i], buf, i);
-            mul(inv[i][0], inv[1][i], buf[0][i], buf[1][i], inv, i);
+            mul(inv[0][i], inv[1][i], buf[0][i], buf[1][i], inv, i);
         }
         idft(inv, m + 1);
         for (int i = 1 << m; i < n; i++) {
@@ -130,13 +132,14 @@ public class FastFourierTransform {
         }
     }
 
+
     public static int[] multiplyMod(int[] a, int[] b, int m) {
         return multiplyMod(a, a.length, b, b.length, m);
     }
 
     public static int[] multiplyMod(int[] a, int aLen, int[] b, int bLen, int m) {
         int need = aLen + bLen - 1;
-        int n = 1 << CachedLog2.ceilLog(need);
+        int n = 1 << Log2.ceilLog(need);
 
         double[] aReal = new double[n];
         double[] aImag = new double[n];
@@ -145,7 +148,7 @@ public class FastFourierTransform {
             aReal[i] = x & ((1 << 15) - 1);
             aImag[i] = x >> 15;
         }
-        dft(new double[][]{aReal, aImag}, CachedLog2.floorLog(n));
+        dft(new double[][]{aReal, aImag}, Log2.floorLog(n));
 
         double[] bReal = new double[n];
         double[] bImag = new double[n];
@@ -154,7 +157,7 @@ public class FastFourierTransform {
             bReal[i] = x & ((1 << 15) - 1);
             bImag[i] = x >> 15;
         }
-        dft(new double[][]{bReal, bImag}, CachedLog2.floorLog(n));
+        dft(new double[][]{bReal, bImag}, Log2.floorLog(n));
 
         double[] faReal = new double[n];
         double[] faImag = new double[n];
@@ -181,8 +184,8 @@ public class FastFourierTransform {
             fbImag[i] = a1r * b2i + a1i * b2r + a2r * b1i + a2i * b1r;
         }
 
-        idft(new double[][]{faReal, faImag}, CachedLog2.floorLog(n));
-        idft(new double[][]{fbReal, fbImag}, CachedLog2.floorLog(n));
+        idft(new double[][]{faReal, faImag}, Log2.floorLog(n));
+        idft(new double[][]{fbReal, fbImag}, Log2.floorLog(n));
         int[] res = new int[need];
         for (int i = 0; i < need; i++) {
             long aa = (long) (faReal[i] + 0.5);

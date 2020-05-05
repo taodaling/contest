@@ -1,7 +1,7 @@
 package template.primitve.generated.datastructure;
 
 
-import template.binary.CachedLog2;
+import template.binary.Log2;
 
 /**
  * O(n) space and pre-compute, O(logn) for query min element in interval
@@ -25,7 +25,7 @@ public class DoubleRMQ {
     public DoubleRMQ(double[] vals, DoubleComparator comp) {
         this.comp = comp;
         n = vals.length;
-        n = 1 << CachedLog2.ceilLog(n);
+        n = 1 << Log2.ceilLog(n);
         this.vals = vals;
         data = new int[2 * n];
         build(vals, 0, n - 1, 1);

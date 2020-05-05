@@ -1,7 +1,7 @@
 package template.problem;
 
 import template.binary.Bits;
-import template.binary.CachedLog2;
+import template.binary.Log2;
 import template.rand.Randomized;
 import template.utils.Buffer;
 
@@ -29,7 +29,7 @@ public class KthXorTwoElement {
         List<Interval> lastLevel = new ArrayList<>(n);
         List<Interval> curLevel = new ArrayList<>(n);
         lastLevel.add(newInterval(buffer, 0, n - 1));
-        int level = CachedLog2.floorLog(data[n - 1]);
+        int level = Log2.floorLog(data[n - 1]);
         long mask = 0;
         for (; level >= 0; level--) {
             curLevel.clear();

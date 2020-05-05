@@ -1,0 +1,40 @@
+{
+  "name" : "TwoMonthScheduling",
+  "signature" : {
+    "name" : "minimumMonths",
+    "result" : "int",
+    "arguments" : [ "int", "int[]", "int[]", "int[]", "int[]" ],
+    "argumentNames" : [ "workers", "firstMonth0", "firstMonth1", "secondMonth0", "secondMonth1" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "1000", "900 150 300 200", "0", "400 300 600 150", "0" ],
+    "result" : "4",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "1000", "900 150 300 200", "0", "400 600 300 150", "0" ],
+    "result" : "5",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "1000", "350 172 24", "998 54", "513 119 0", "24 118" ],
+    "result" : "7",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "47", "0 0 0 0 0 0 1 0 0 0", "0 0 0 0 0 0 0 0 0 0", "0 0 0 0 0 0 0 0 0 0", "0 0 0 0 0 0 1 0 0 0" ],
+    "result" : "2",
+    "index" : 3,
+    "active" : true
+  }, {
+    "arguments" : [ "100", "1", "1", "1", "1" ],
+    "index" : 4,
+    "active" : true
+  } ],
+  "date" : "2020.05.03",
+  "contestName" : "TopCoder SRM #771",
+  "testClasses" : [ ],
+  "fqn" : "contest.TwoMonthScheduling",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

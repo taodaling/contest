@@ -38,5 +38,5 @@ public class RandomWrapper {
     }
 
 
-    public static final RandomWrapper INSTANCE = new RandomWrapper(new Random());
+    public static RandomWrapper INSTANCE = new RandomWrapper(new Random());
 }

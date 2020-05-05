@@ -57,7 +57,7 @@ public class IntervalPickProblem {
      * 时间复杂度为O(n\log_2n)
      */
     public static long solve(long[] data, Interval[] intervals) {
-        LongPreSum lps = new LongPreSum(data);
+        LongPreSum lps = new LongPreSum(i -> data[i], data.length);
         Arrays.sort(intervals, (a, b) -> a.l == b.l ? a.r - b.r : a.l - b.l);
         int n = intervals.length;
         long[] dp = new long[n];
@@ -134,7 +134,7 @@ public class IntervalPickProblem {
         public NormalWQSSolver(long[] data, Interval[] intervals) {
             this.data = data;
             this.intervals = intervals;
-            lps = new LongPreSum(data);
+            lps = new LongPreSum(i -> data[i], data.length);
             n = intervals.length;
             dp = new double[n];
             time = new int[n];
@@ -416,7 +416,7 @@ public class IntervalPickProblem {
             this.n = intervals.length;
             this.data = data;
             this.intervals = intervals;
-            lps = new LongPreSum(data);
+            lps = new LongPreSum(i -> data[i], data.length);
             dp = new double[n + 1];
             time = new int[n + 1];
             left = new IntegerMinQueue(n, (a, b) -> -Double.compare(dp[a], dp[b]));
