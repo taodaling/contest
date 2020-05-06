@@ -1,5 +1,7 @@
 package template.algo;
 
+import template.math.DigitUtils;
+
 public abstract class LongBinarySearch {
     public abstract boolean check(long mid);
 
@@ -8,7 +10,7 @@ public abstract class LongBinarySearch {
             throw new IllegalArgumentException();
         }
         while (l < r) {
-            long mid = (l + r) >>> 1;
+            long mid = DigitUtils.average(l, r);
             if (check(mid)) {
                 r = mid;
             } else {

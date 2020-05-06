@@ -1,0 +1,45 @@
+{
+  "name" : "C. Quantifier Question",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2 1\n1 2\n",
+    "output" : "1\nAE\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "4 3\n1 2\n2 3\n3 1\n",
+    "output" : "-1\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "3 2\n1 3\n2 3\n",
+    "output" : "2\nAAE\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_05.on2020_05_06_Codeforces___Codeforces_Round__639__Div__1_.C__Quantifier_Question0.CQuantifierQuestion",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.05.06",
+  "contestName" : "Codeforces - Codeforces Round #639 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

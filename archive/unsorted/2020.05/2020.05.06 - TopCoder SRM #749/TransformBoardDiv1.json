@@ -1,0 +1,31 @@
+{
+  "name" : "TransformBoardDiv1",
+  "signature" : {
+    "name" : "getOperations",
+    "result" : "int[]",
+    "arguments" : [ "String[]", "String[]" ],
+    "argumentNames" : [ "start", "target" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "#.ф..", "..ф.#" ],
+    "result" : "1 10101",
+    "index" : 0,
+    "active" : false
+  }, {
+    "arguments" : [ "..ф.#", "#.ф.." ],
+    "result" : "-1",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "#..#ф#...", "....ф...#" ],
+    "result" : "3 1000103",
+    "index" : 2,
+    "active" : true
+  } ],
+  "date" : "2020.05.06",
+  "contestName" : "TopCoder SRM #749",
+  "testClasses" : [ ],
+  "fqn" : "contest.TransformBoardDiv1",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

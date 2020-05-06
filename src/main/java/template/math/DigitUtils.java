@@ -132,10 +132,10 @@ public class DigitUtils {
         return c;
     }
 
-    private static long mask32 = (1L << 32) - 1;
+    private static long LONG_TO_INT_MASK = (1L << 32) - 1;
 
     public static long asLong(int high, int low) {
-        return (((long) high) << 32) | (((long) low) & mask32);
+        return (((long) high) << 32) | (((long) low) & LONG_TO_INT_MASK);
     }
 
     public static int highBit(long x) {
@@ -217,5 +217,27 @@ public class DigitUtils {
             ans = DigitUtils.mod((long) ans * x, m);
         }
         return ans;
+    }
+
+    public static int average(int a, int b) {
+        if (Integer.signum(a) != Integer.signum(b)) {
+            return a + b;
+        }
+        if (a >= 0) {
+            return (a + b) >>> 1;
+        } else {
+            return -(((-a) + (-b)) >>> 1);
+        }
+    }
+
+    public static long average(long a, long b) {
+        if (Long.signum(a) != Long.signum(b)) {
+            return a + b;
+        }
+        if (a >= 0) {
+            return (a + b) >>> 1;
+        } else {
+            return -(((-a) + (-b)) >>> 1);
+        }
     }
 }

@@ -1,0 +1,55 @@
+{
+  "name" : "B. Monopole Magnets",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 3\n.#.\n###\n##.\n",
+    "output" : "1\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "4 2\n##\n.#\n.#\n##\n",
+    "output" : "-1\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "4 5\n....#\n####.\n.###.\n.#...\n",
+    "output" : "2\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "2 1\n.\n#\n",
+    "output" : "-1\n",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "3 5\n.....\n.....\n.....\n",
+    "output" : "0\n",
+    "index" : 4,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.BMonopoleMagnets",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.05.06",
+  "contestName" : "Codeforces - Codeforces Round #639 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}
