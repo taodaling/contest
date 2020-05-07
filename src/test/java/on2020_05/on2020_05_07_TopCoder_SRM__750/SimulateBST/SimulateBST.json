@@ -1,0 +1,41 @@
+{
+  "name" : "SimulateBST",
+  "signature" : {
+    "name" : "checksum",
+    "result" : "int",
+    "arguments" : [ "int", "int[]", "int", "int" ],
+    "argumentNames" : [ "n", "Sprefix", "a", "m" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "3", "10 20 30", "0", "100" ],
+    "result" : "99860",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "3", "10 10 10", "0", "100" ],
+    "result" : "0",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "3", "20 10 30", "0", "100" ],
+    "result" : "99930",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "9", "40 20 60 70 80 30 10 30 90", "0", "100" ],
+    "result" : "461469106",
+    "index" : 3,
+    "active" : true
+  }, {
+    "arguments" : [ "15", "10 20 30", "100", "1000000007" ],
+    "result" : "149719615",
+    "index" : 4,
+    "active" : true
+  } ],
+  "date" : "2020.05.07",
+  "contestName" : "TopCoder SRM #750",
+  "testClasses" : [ ],
+  "fqn" : "on2020_05.on2020_05_07_TopCoder_SRM__750.SimulateBST.SimulateBST",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

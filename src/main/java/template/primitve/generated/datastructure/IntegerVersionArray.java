@@ -52,4 +52,19 @@ public class IntegerVersionArray {
         visit(i);
         return --data[i];
     }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < data.length; i++) {
+            if (version[i] < now) {
+                continue;
+            }
+            builder.append(i).append(':').append(data[i]).append(',');
+        }
+        if (builder.length() > 0) {
+            builder.setLength(builder.length() - 1);
+        }
+        return builder.toString();
+    }
 }
