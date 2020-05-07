@@ -2,8 +2,14 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.PriorityQueue;
+import java.util.AbstractQueue;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.io.UncheckedIOException;
+import java.util.List;
+import java.util.AbstractCollection;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
@@ -27,135 +33,115 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            DRsumReview solver = new DRsumReview();
+            ETrainTracks solver = new ETrainTracks();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class DRsumReview {
+    static class ETrainTracks {
+        {
+            LCTNode.dq.clear();
+            LCTNode.time = -1;
+        }
+
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            long k = in.readLong();
-            int[] a = new int[n];
-            for (int i = 0; i < n; i++) {
-                a[i] = in.readInt();
-            }
-            int[] top = new int[n];
+            int m = in.readInt();
 
-            long topSum = 0;
+            LCTNode[] nodes = new LCTNode[n];
             for (int i = 0; i < n; i++) {
-                double pos = Math.sqrt(a[i] / 3.0);
-                int up = (int) Math.ceil(pos);
-                int bot = (int) Math.floor(pos);
-                top[i] = up;
-                if (apply(a[i], top[i]) < apply(a[i], bot)) {
-                    top[i] = bot;
+                nodes[i] = new LCTNode();
+                nodes[i].id = i;
+            }
+            for (int i = 0; i < n - 1; i++) {
+                LCTNode a = nodes[in.readInt() - 1];
+                LCTNode b = nodes[in.readInt() - 1];
+                Edge edge = new Edge();
+                edge.a = a;
+                edge.b = b;
+                edge.d = in.readInt();
+                a.next.add(edge);
+                b.next.add(edge);
+            }
+
+            dfs(nodes[0], null, 0);
+            LCTNode.time = -1;
+            for (int i = 0; i < m; i++) {
+                LCTNode to = nodes[in.readInt() - 1];
+                long time = in.readLong();
+                LCTNode.time = time;
+                LCTNode.access(to);
+            }
+
+
+            PriorityQueue<LCTNode> wait = new PriorityQueue<>(n, (a, b) -> Long.compare(a.begin, b.begin));
+            PriorityQueue<LCTNode> pq = new PriorityQueue<>(n, (a, b) -> Long.compare(a.front, b.front));
+            for (LCTNode node : nodes) {
+                if (LCTNode.dq.isEmpty(node.id)) {
+                    continue;
                 }
 
-                topSum += top[i];
+                node.iterator = LCTNode.dq.iterator(node.id);
+                node.distIterator = LCTNode.distDq.iterator(node.id);
+                node.begin = 1;
+                node.front = node.iterator.next();
+                pq.add(node);
             }
 
-            int[] cur;
-
-            if (topSum >= k) {
-                LongBinarySearch lbs = new LongBinarySearch() {
-
-                    public boolean check(long mid) {
-                        int cnt = 0;
-                        for (int i = 0; i < n; i++) {
-                            int index = bs(a[i], mid, 0, top[i]);
-                            if (diff(a[i], index - 1) < mid) {
-                                index--;
-                            }
-                            cnt += index;
-                        }
-                        return cnt >= k;
-                    }
-                };
-
-                long mid = lbs.binarySearch((long) -4e18, (long) 4e18);
-                cur = new int[n];
-                for (int i = 0; i < n; i++) {
-                    int index = bs(a[i], mid, 0, top[i]);
-                    long d = diff(a[i], index - 1);
-                    if (diff(a[i], index - 1) < mid) {
-                        index--;
-                    }
-                    cur[i] = index;
+            long inf = (long) 1e18;
+            long time = inf;
+            for (long i = 1; pq.size() + wait.size() > 0; i++) {
+                if (pq.isEmpty()) {
+                    i = Math.max(i, wait.peek().begin);
                 }
 
-                fix(a, cur, k, mid);
-            } else {
-                LongBinarySearch lbs = new LongBinarySearch() {
-
-                    public boolean check(long mid) {
-                        mid = -mid;
-                        int cnt = 0;
-                        for (int i = 0; i < n; i++) {
-                            int index = bs(a[i], mid, top[i], a[i]);
-                            if (diff(a[i], index - 1) < mid) {
-                                index--;
-                            }
-                            cnt += index;
-                        }
-                        return cnt >= k;
-                    }
-                };
-
-                long mid = -lbs.binarySearch((long) -4e18, (long) 4e18);
-                cur = new int[n];
-                for (int i = 0; i < n; i++) {
-                    int index = bs(a[i], mid, top[i], a[i]);
-                    if (diff(a[i], index - 1) < mid) {
-                        index--;
-                    }
-                    cur[i] = index;
+                while (!wait.isEmpty() && wait.peek().begin <= i) {
+                    pq.add(wait.remove());
                 }
 
-                fix(a, cur, k, mid);
+                LCTNode head = pq.remove();
+                if (head.front < i) {
+                    time = head.front;
+                    break;
+                }
+
+                if (head.iterator.hasNext()) {
+                    head.begin = head.front + head.distIterator.next();
+                    head.front = head.iterator.next();
+                    wait.add(head);
+                }
             }
 
+
+            int req = 0;
+            out.append(time == inf ? -1 : time).append(' ');
             for (int i = 0; i < n; i++) {
-                out.append(cur[i]).append(' ');
+                for (LongIterator iterator = LCTNode.dq.iterator(i); iterator.hasNext(); ) {
+                    long next = iterator.next();
+                    if (next < time) {
+                        req++;
+                    }
+                }
             }
+
+            out.println(req);
         }
 
-        public void fix(int[] a, int[] cur, long k, long d) {
-            int n = cur.length;
-            long sum = 0;
-            for (int i = 0; i < n; i++) {
-                sum += cur[i];
-            }
-
-            for (int i = 0; i < n && sum > k; i++) {
-                while (sum > k && diff(a[i], cur[i] - 1) == d) {
-                    sum--;
-                    cur[i]--;
+        public void dfs(LCTNode root, LCTNode p, long depth) {
+            root.depth = depth;
+            for (Edge e : root.next) {
+                LCTNode node = e.other(root);
+                if (node == p) {
+                    continue;
                 }
+                dfs(node, root, depth + e.d);
+                root.pushDown();
+                root.right.father = LCTNode.NIL;
+                root.right.treeFather = root;
+                root.setRight(node);
+                root.pushUp();
             }
-        }
-
-        public long apply(long a, long b) {
-            return b * (a - b * b);
-        }
-
-        public long diff(long a, long b) {
-            //b * (a - (b+1)^2)
-            return a - 3 * b * b - 3 * b - 1;
-        }
-
-        public int bs(int a, long step, int l, int r) {
-            while (l < r) {
-                int m = (l + r + 1) >>> 1;
-                if (diff(a, m - 1) >= step) {
-                    l = m;
-                } else {
-                    r = m - 1;
-                }
-            }
-
-            return l;
         }
 
     }
@@ -244,22 +230,13 @@ public class Main {
 
     }
 
-    static abstract class LongBinarySearch {
-        public abstract boolean check(long mid);
+    static class Edge {
+        LCTNode a;
+        LCTNode b;
+        long d;
 
-        public long binarySearch(long l, long r) {
-            if (l > r) {
-                throw new IllegalArgumentException();
-            }
-            while (l < r) {
-                long mid = DigitUtils.average(l, r);
-                if (check(mid)) {
-                    r = mid;
-                } else {
-                    l = mid + 1;
-                }
-            }
-            return l;
+        LCTNode other(LCTNode x) {
+            return x == a ? b : a;
         }
 
     }
@@ -296,6 +273,20 @@ public class Main {
             return this;
         }
 
+        public FastOutput append(long c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput println(int c) {
+            return append(c).println();
+        }
+
+        public FastOutput println() {
+            cache.append(System.lineSeparator());
+            return this;
+        }
+
         public FastOutput flush() {
             try {
                 os.append(cache);
@@ -322,18 +313,262 @@ public class Main {
 
     }
 
-    static class DigitUtils {
-        private DigitUtils() {
+    static interface LongIterator {
+        boolean hasNext();
+
+        long next();
+
+    }
+
+    static class LongMultiWayDeque {
+        private long[] values;
+        private int[] next;
+        private int[] prev;
+        private int[] heads;
+        private int[] tails;
+        private int alloc;
+        private int queueNum;
+
+        public LongIterator iterator(final int queue) {
+            return new LongIterator() {
+                int ele = heads[queue];
+
+
+                public boolean hasNext() {
+                    return ele != 0;
+                }
+
+
+                public long next() {
+                    long ans = values[ele];
+                    ele = next[ele];
+                    return ans;
+                }
+            };
         }
 
-        public static long average(long a, long b) {
-            if (Long.signum(a) != Long.signum(b)) {
-                return a + b;
+        private void doubleCapacity() {
+            int newSize = Math.max(next.length + 10, next.length * 2);
+            next = Arrays.copyOf(next, newSize);
+            prev = Arrays.copyOf(prev, newSize);
+            values = Arrays.copyOf(values, newSize);
+        }
+
+        public void alloc() {
+            alloc++;
+            if (alloc >= next.length) {
+                doubleCapacity();
             }
-            if (a >= 0) {
-                return (a + b) >>> 1;
+            next[alloc] = 0;
+        }
+
+        public void clear() {
+            alloc = 0;
+            Arrays.fill(heads, 0, queueNum, 0);
+            Arrays.fill(tails, 0, queueNum, 0);
+        }
+
+        public boolean isEmpty(int qId) {
+            return heads[qId] == 0;
+        }
+
+        public LongMultiWayDeque(int qNum, int totalCapacity) {
+            values = new long[totalCapacity + 1];
+            next = new int[totalCapacity + 1];
+            prev = new int[totalCapacity + 1];
+            heads = new int[qNum];
+            tails = new int[qNum];
+            queueNum = qNum;
+        }
+
+        public void addLast(int qId, long x) {
+            alloc();
+            values[alloc] = x;
+
+            if (heads[qId] == 0) {
+                heads[qId] = tails[qId] = alloc;
+                return;
+            }
+            next[tails[qId]] = alloc;
+            prev[alloc] = tails[qId];
+            tails[qId] = alloc;
+        }
+
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < queueNum; i++) {
+                builder.append(i).append(": ");
+                for (LongIterator iterator = iterator(i); iterator.hasNext(); ) {
+                    builder.append(iterator.next()).append(",");
+                }
+                if (builder.charAt(builder.length() - 1) == ',') {
+                    builder.setLength(builder.length() - 1);
+                }
+                builder.append('\n');
+            }
+            return builder.toString();
+        }
+
+    }
+
+    static class LCTNode {
+        public static final LCTNode NIL = new LCTNode();
+        LCTNode left = NIL;
+        LCTNode right = NIL;
+        LCTNode father = NIL;
+        LCTNode treeFather = NIL;
+        boolean reverse;
+        int id;
+        long front;
+        long begin;
+        LongIterator iterator;
+        LongIterator distIterator;
+        List<Edge> next = new ArrayList<>();
+        long depth;
+        static LongMultiWayDeque dq = new LongMultiWayDeque(100000, 4000000);
+        static LongMultiWayDeque distDq = new LongMultiWayDeque(100000, 4000000);
+        static long time = -1;
+
+        static {
+            NIL.left = NIL;
+            NIL.right = NIL;
+            NIL.father = NIL;
+            NIL.treeFather = NIL;
+            NIL.id = -1;
+        }
+
+        public static void access(LCTNode x) {
+            LCTNode last = NIL;
+            while (x != NIL) {
+                splay(x);
+                x.right.father = NIL;
+                x.right.treeFather = x;
+                x.setRight(last);
+                x.pushUp();
+
+                last = x;
+                x = x.treeFather;
+                if (time != -1 && x != NIL) {
+                    dq.addLast(x.id, time + x.depth);
+                    distDq.addLast(x.id, last.depth - x.depth);
+                }
+            }
+        }
+
+        public static void splay(LCTNode x) {
+            if (x == NIL) {
+                return;
+            }
+            LCTNode y, z;
+            while ((y = x.father) != NIL) {
+                if ((z = y.father) == NIL) {
+                    y.pushDown();
+                    x.pushDown();
+                    if (x == y.left) {
+                        zig(x);
+                    } else {
+                        zag(x);
+                    }
+                } else {
+                    z.pushDown();
+                    y.pushDown();
+                    x.pushDown();
+                    if (x == y.left) {
+                        if (y == z.left) {
+                            zig(y);
+                            zig(x);
+                        } else {
+                            zig(x);
+                            zag(x);
+                        }
+                    } else {
+                        if (y == z.left) {
+                            zag(x);
+                            zig(x);
+                        } else {
+                            zag(y);
+                            zag(x);
+                        }
+                    }
+                }
+            }
+
+            x.pushDown();
+            x.pushUp();
+        }
+
+        public static void zig(LCTNode x) {
+            LCTNode y = x.father;
+            LCTNode z = y.father;
+            LCTNode b = x.right;
+
+            y.setLeft(b);
+            x.setRight(y);
+            z.changeChild(y, x);
+
+            y.pushUp();
+        }
+
+        public static void zag(LCTNode x) {
+            LCTNode y = x.father;
+            LCTNode z = y.father;
+            LCTNode b = x.left;
+
+            y.setRight(b);
+            x.setLeft(y);
+            z.changeChild(y, x);
+
+            y.pushUp();
+        }
+
+        public String toString() {
+            return "" + id;
+        }
+
+        public void pushDown() {
+            if (this == NIL) {
+                return;
+            }
+            if (reverse) {
+                reverse = false;
+
+                LCTNode tmpNode = left;
+                left = right;
+                right = tmpNode;
+
+                left.reverse();
+                right.reverse();
+            }
+
+            left.treeFather = treeFather;
+            right.treeFather = treeFather;
+        }
+
+        public void reverse() {
+            reverse = !reverse;
+        }
+
+        public void setLeft(LCTNode x) {
+            left = x;
+            x.father = this;
+        }
+
+        public void setRight(LCTNode x) {
+            right = x;
+            x.father = this;
+        }
+
+        public void changeChild(LCTNode y, LCTNode x) {
+            if (left == y) {
+                setLeft(x);
             } else {
-                return -(((-a) + (-b)) >>> 1);
+                setRight(x);
+            }
+        }
+
+        public void pushUp() {
+            if (this == NIL) {
+                return;
             }
         }
 

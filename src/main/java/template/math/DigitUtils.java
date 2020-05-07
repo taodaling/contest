@@ -220,24 +220,30 @@ public class DigitUtils {
     }
 
     public static int average(int a, int b) {
-        if (Integer.signum(a) != Integer.signum(b)) {
-            return a + b;
+        int ans = (a / 2) + (b / 2);
+        switch (a % 2 + b % 2) {
+            case 2:
+                ans++;
+                break;
+            case -1:
+            case -2:
+                ans--;
+                break;
         }
-        if (a >= 0) {
-            return (a + b) >>> 1;
-        } else {
-            return -(((-a) + (-b)) >>> 1);
-        }
+        return ans;
     }
 
     public static long average(long a, long b) {
-        if (Long.signum(a) != Long.signum(b)) {
-            return a + b;
+        long ans = (a / 2) + (b / 2);
+        switch ((int) (a % 2 + b % 2)) {
+            case 2:
+                ans++;
+                break;
+            case -1:
+            case -2:
+                ans--;
+                break;
         }
-        if (a >= 0) {
-            return (a + b) >>> 1;
-        } else {
-            return -(((-a) + (-b)) >>> 1);
-        }
+        return ans;
     }
 }

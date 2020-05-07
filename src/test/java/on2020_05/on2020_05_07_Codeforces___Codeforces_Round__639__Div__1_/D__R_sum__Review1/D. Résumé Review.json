@@ -13,12 +13,12 @@
     "input" : "10 32\n1 2 3 4 5 5 5 5 5 5\n",
     "output" : "1 2 3 3 3 4 4 4 4 4 \n",
     "index" : 0,
-    "active" : false
+    "active" : true
   }, {
     "input" : "5 8\n4 4 8 2 1\n",
     "output" : "2 2 2 1 1 \n",
     "index" : 1,
-    "active" : false
+    "active" : true
   }, {
     "input" : "2 3 \n10 10 ",
     "output" : "21",
@@ -28,10 +28,10 @@
   "location" : "src/main/java/contest",
   "vmArgs" : "-Xmx256M",
   "mainClass" : "Main",
-  "taskClass" : "contest.DRsumReview",
-  "checkerClass" : "contest.DTokenChecker",
+  "taskClass" : "on2020_05.on2020_05_07_Codeforces___Codeforces_Round__639__Div__1_.D__R_sum__Review1.DRsumReview",
+  "checkerClass" : "on2020_05.on2020_05_07_Codeforces___Codeforces_Round__639__Div__1_.D__R_sum__Review1.DTokenChecker",
   "checkerParameters" : "",
-  "testClasses" : [ "contest.DRsumReviewTestCase" ],
+  "testClasses" : [ "on2020_05.on2020_05_07_Codeforces___Codeforces_Round__639__Div__1_.D__R_sum__Review1.DRsumReviewTestCase" ],
   "date" : "2020.05.07",
   "contestName" : "Codeforces - Codeforces Round #639 (Div. 1)",
   "truncate" : true,
