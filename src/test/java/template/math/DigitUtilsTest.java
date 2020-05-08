@@ -23,4 +23,14 @@ public class DigitUtilsTest {
             }
         }
     }
+
+    @Test
+    public void test2() {
+        Assert.assertEquals(DigitUtils.average(Integer.MAX_VALUE, Integer.MAX_VALUE),
+                Integer.MAX_VALUE);
+        Assert.assertEquals(DigitUtils.average(Integer.MIN_VALUE, Integer.MIN_VALUE),
+                Integer.MIN_VALUE);
+        Assert.assertEquals(DigitUtils.average(Integer.MIN_VALUE, Integer.MIN_VALUE + 1),
+                Integer.MIN_VALUE);
+    }
 }
