@@ -1,0 +1,41 @@
+{
+  "name" : "SortArray",
+  "signature" : {
+    "name" : "verify",
+    "result" : "int[]",
+    "arguments" : [ "int", "int[]" ],
+    "argumentNames" : [ "N", "commands" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "7", "127" ],
+    "result" : "",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "8", "85 170" ],
+    "result" : "0 1 2 3 4 5 7 6",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "3", "3 5 6" ],
+    "result" : "",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "10", "255 1020" ],
+    "result" : "3 4 5 6 7 8 9 0 1 2",
+    "index" : 3,
+    "active" : true
+  }, {
+    "arguments" : [ "10", "255 1020 255 1020 255 1020 255 1020 255 1020" ],
+    "result" : "",
+    "index" : 4,
+    "active" : true
+  } ],
+  "date" : "2020.05.08",
+  "contestName" : "TopCoder SRM #761",
+  "testClasses" : [ ],
+  "fqn" : "on2020_05.on2020_05_08_TopCoder_SRM__761.SortArray.SortArray",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

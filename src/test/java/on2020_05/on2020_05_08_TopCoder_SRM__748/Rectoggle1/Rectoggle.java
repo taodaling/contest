@@ -1,4 +1,6 @@
-package contest;
+package on2020_05.on2020_05_08_TopCoder_SRM__748.Rectoggle1;
+
+
 
 import template.math.Nimber;
 import template.utils.Debug;

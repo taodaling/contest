@@ -1,2 +1,3 @@
-36 src/main/java/contest/Rectoggle.json
-0
+42 src/main/java/contest/E. Train Tracks.json
+1
+3

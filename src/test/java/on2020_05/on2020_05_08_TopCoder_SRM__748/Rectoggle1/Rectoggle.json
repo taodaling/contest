@@ -34,8 +34,8 @@
   } ],
   "date" : "2020.05.08",
   "contestName" : "TopCoder SRM #748",
-  "testClasses" : [ "contest.RectoggleTestCase" ],
-  "fqn" : "contest.Rectoggle",
+  "testClasses" : [ "on2020_05.on2020_05_08_TopCoder_SRM__748.Rectoggle1.RectoggleTestCase" ],
+  "fqn" : "on2020_05.on2020_05_08_TopCoder_SRM__748.Rectoggle1.Rectoggle",
   "failOnOverflow" : false,
   "memoryLimit" : "256M"
 }

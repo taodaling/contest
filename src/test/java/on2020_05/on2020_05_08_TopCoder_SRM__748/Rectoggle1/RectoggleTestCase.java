@@ -1,4 +1,6 @@
-package contest;
+package on2020_05.on2020_05_08_TopCoder_SRM__748.Rectoggle1;
+
+
 
 import net.egork.chelper.task.NewTopCoderTest;
 import net.egork.chelper.task.Test;
@@ -13,7 +15,7 @@ public class RectoggleTestCase {
     @TestCase
     public Collection<NewTopCoderTest> createTests() {
         List<NewTopCoderTest> tests = new ArrayList<>();
-        for (int i = 1; i <= 100; i++) {
+        for (int i = 1; i <= 1000; i++) {
             tests.add(create(i));
         }
         return tests;
@@ -29,12 +31,12 @@ public class RectoggleTestCase {
     RandomWrapper random = new RandomWrapper(new Random(0));
 
     public NewTopCoderTest create(int testNum) {
-        int n = random.nextInt(1, 200);
+        int n = random.nextInt(1, 20);
         int[] row = new int[n];
         int[] col = new int[n];
         for (int i = 0; i < n; i++) {
-            row[i] = random.nextInt(0, 20);
-            col[i] = random.nextInt(0, 20);
+            row[i] = random.nextInt(0, 30);
+            col[i] = random.nextInt(0, 30);
         }
         int maxRow = random.nextInt(1, 10);
         int maxCol = random.nextInt(1, 10);

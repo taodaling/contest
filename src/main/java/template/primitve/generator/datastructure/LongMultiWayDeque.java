@@ -214,6 +214,9 @@ public class LongMultiWayDeque {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < queueNum; i++) {
+            if (isEmpty(i)) {
+                continue;
+            }
             builder.append(i).append(": ");
             for (LongIterator iterator = iterator(i); iterator.hasNext(); ) {
                 builder.append(iterator.next()).append(",");
