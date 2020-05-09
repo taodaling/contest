@@ -1,6 +1,6 @@
 package template.primitve.generated.datastructure;
 
-public class LongSubArray {
+public class LongSubArray implements LongRandomAccess {
     private long[] data;
     private int l;
     private int r;

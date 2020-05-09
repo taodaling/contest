@@ -6,7 +6,7 @@ import template.utils.SequenceUtils;
 
 import java.util.Arrays;
 
-public class LongList implements Cloneable {
+public class LongList implements LongRandomAccess, Cloneable {
     private int size;
     private int cap;
     private long[] data;
@@ -99,6 +99,13 @@ public class LongList implements Cloneable {
     public void add(long x) {
         ensureSpace(size + 1);
         data[size++] = x;
+    }
+
+    public void addAll(IntToLongFunction func, int l, int r) {
+        ensureSpace(size + r - l + 1);
+        for (int i = l; i <= r; i++) {
+            add(func.apply(i));
+        }
     }
 
     public void addAll(long[] x) {

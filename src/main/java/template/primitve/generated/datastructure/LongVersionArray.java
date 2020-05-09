@@ -1,6 +1,6 @@
 package template.primitve.generated.datastructure;
 
-public class LongVersionArray {
+public class LongVersionArray implements LongRandomAccess{
     long[] data;
     int[] version;
     int now;

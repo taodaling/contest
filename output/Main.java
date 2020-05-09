@@ -1,17 +1,14 @@
 import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.TreeSet;
-import java.util.ArrayList;
-import java.io.OutputStreamWriter;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.Arrays;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.util.List;
 import java.io.Closeable;
 import java.io.Writer;
+import java.io.OutputStreamWriter;
 import java.io.InputStream;
 
 /**
@@ -32,260 +29,199 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            CGoodbyeSouvenir solver = new CGoodbyeSouvenir();
+            DShakeIt solver = new DShakeIt();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class CGoodbyeSouvenir {
-        Debug debug = new Debug(true);
-        LongBIT bit = new LongBIT(200000);
+    static class DShakeIt {
+        Modular mod = new Modular(1e9 + 7);
+        int[][][][] h;
+        int[][] g;
+        int n;
+        int flow;
+        InverseNumber inv = new InverseNumber(100, mod);
+        Debug debug = new Debug(false);
 
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            int n = in.readInt();
+            n = in.readInt();
             int m = in.readInt();
-            int[] a = new int[n];
-            Point[] lPoints = new Point[n];
-            Point[] rPoints = new Point[n];
-            for (int i = 0; i < n; i++) {
-                a[i] = in.readInt();
+            flow = Math.max(n + 1, m);
+
+            // f = new int[n + 1][flow + 1];
+            h = new int[n + 1][flow + 1][n + 1][flow + 1];
+            g = new int[n + 1][flow + 1];
+
+            //SequenceUtils.deepFill(f, -1);
+            SequenceUtils.deepFill(g, -1);
+            SequenceUtils.deepFill(h, -1);
+
+            //g(2, 0);
+
+            int ans = f(n, m - 1);
+            //ans = mod.mul(ans, fact.invFact(n));
+
+            //debug.debug("f", f);
+            debug.debug("g", g);
+            debug.debug("h", h);
+            out.println(ans);
+        }
+
+        public int h(int i, int j, int a, int b) {
+            if (i < 0 || j < 0) {
+                return 0;
             }
-
-            List<Point> left = new ArrayList<>(10 * (n + m));
-            List<Point> right = new ArrayList<>(10 * (n + m));
-            List<Query> queries = new ArrayList<>(m);
-
-            TreeSet<Integer>[] maps = new TreeSet[n + 1];
-            for (int i = 1; i <= n; i++) {
-                maps[i] = new TreeSet<>();
-            }
-            for (int i = 0; i < n; i++) {
-                maps[a[i]].add(i);
-            }
-
-            for (int i = 0; i < n; i++) {
-                Integer pre = maps[a[i]].floor(i - 1);
-                Integer post = maps[a[i]].ceiling(i + 1);
-
-                Point p1 = new Point();
-                p1.x = i;
-                p1.y = pre == null ? -1 : pre;
-                p1.z = 1;
-                p1.w = i;
-                lPoints[i] = p1;
-
-                Point p2 = new Point();
-                p2.x = i;
-                p2.y = post == null ? n : post;
-                p2.z = 1;
-                p2.w = i;
-                rPoints[i] = p2;
-
-                left.add(p1);
-                right.add(p2);
-            }
-
-            for (int i = 2; i < 2 + m; i++) {
-                int t = in.readInt();
-                if (t == 1) {
-                    int p = in.readInt() - 1;
-                    int x = in.readInt();
-
-                    {
-                        //remove
-                        maps[a[p]].remove(p);
-                        Integer pre = maps[a[p]].floor(p - 1);
-                        Integer post = maps[a[p]].ceiling(p + 1);
-
-                        left.add(lPoints[p].negate(i));
-                        right.add(rPoints[p].negate(i));
-                        if (pre != null) {
-                            right.add(rPoints[pre].negate(i));
-                            rPoints[pre] = rPoints[pre].clone(i);
-                            rPoints[pre].y = post == null ? n : post;
-                            right.add(rPoints[pre]);
-                        }
-                        if (post != null) {
-                            left.add(lPoints[post].negate(i));
-                            lPoints[post] = lPoints[post].clone(i);
-                            lPoints[post].y = pre == null ? -1 : pre;
-                            left.add(lPoints[post]);
-                        }
-                    }
-
-                    {
-                        //add
-                        a[p] = x;
-
-                        maps[a[p]].add(p);
-                        Integer pre = maps[a[p]].floor(p - 1);
-                        Integer post = maps[a[p]].ceiling(p + 1);
-
-                        lPoints[p] = lPoints[p].clone(i);
-                        lPoints[p].y = pre == null ? -1 : pre;
-                        rPoints[p] = rPoints[p].clone(i);
-                        rPoints[p].y = post == null ? n : post;
-                        left.add(lPoints[p]);
-                        right.add(rPoints[p]);
-
-
-                        if (pre != null) {
-                            right.add(rPoints[pre].negate(i));
-                            rPoints[pre] = rPoints[pre].clone(i);
-                            rPoints[pre].y = p;
-                            right.add(rPoints[pre]);
-                        }
-                        if (post != null) {
-                            left.add(lPoints[post].negate(i));
-                            lPoints[post] = lPoints[post].clone(i);
-                            lPoints[post].y = p;
-                            left.add(lPoints[post]);
-                        }
-                    }
+            if (h[i][j][a][b] == -1) {
+                h[i][j][a][b] = 0;
+                if (a == 0 || b == 0) {
+                    return h[i][j][a][b] = i == 0 && j == 0 ? 1 : 0;
+                }
+                int limit = Math.min(i / a, j / b);
+                int prod = 1;
+                int aa = a;
+                int bb = b;
+                if (bb > 1) {
+                    bb--;
                 } else {
-                    int l = in.readInt() - 1;
-                    int r = in.readInt() - 1;
-                    Query q = new Query();
-                    Point lQ = new Point();
-                    lQ.x = r;
-                    lQ.y = l - 1;
-                    lQ.z = i;
-                    lQ.t = 1;
-                    q.sub[0] = lQ;
-                    q.add[0] = lQ.clone(i);
-                    q.add[0].x = l - 1;
-
-
-                    Point rQ = new Point();
-                    rQ.x = l;
-                    rQ.y = r + 1;
-                    rQ.z = i;
-                    rQ.t = 1;
-                    q.add[1] = rQ;
-                    q.sub[1] = rQ.clone(i);
-                    q.sub[1].x = r + 1;
-
-                    left.add(q.add[0]);
-                    left.add(q.sub[0]);
-                    right.add(q.add[1]);
-                    right.add(q.sub[1]);
-
-                    queries.add(q);
+                    bb = flow;
+                    aa--;
                 }
+                h[i][j][a][b] = h(i, j, aa, bb);
+                for (int t = 1; t <= limit; t++) {
+                    prod = mod.mul(prod, g(a - 1, b - 1) + t - 1);
+                    prod = mod.mul(prod, inv.inverse(t));
+                    int local = mod.mul(h(i - a * t, j - b * t, aa, bb),
+                            prod);
+                    h[i][j][a][b] = mod.plus(h[i][j][a][b], local);
+                }
+
             }
 
-
-            for (Point r : right) {
-                r.z = 200000 - r.z;
-            }
-
-            debug.debug("left", left);
-            debug.debug("right", right);
-
-            left.sort((x, y) -> {
-                int cp = x.x - y.x;
-                if (cp == 0) {
-                    cp = x.y - y.y;
-                }
-                if (cp == 0) {
-                    cp = x.z - y.z;
-                }
-                if (cp == 0) {
-                    cp = x.t - y.t;
-                }
-                return cp;
-            });
-
-
-            right.sort((x, y) -> {
-                int cp = x.x - y.x;
-                if (cp == 0) {
-                    cp = x.y - y.y;
-                }
-                if (cp == 0) {
-                    cp = x.z - y.z;
-                }
-                if (cp == 0) {
-                    cp = -(x.t - y.t);
-                }
-                return cp;
-            });
-
-
-            dac1(left.toArray(new Point[0]), 0, left.size() - 1);
-            dac2(right.toArray(new Point[0]), 0, right.size() - 1);
-
-
-            for (int i = 0; i < queries.size(); i++) {
-                Query q = queries.get(i);
-                long ans = 0;
-                for (int j = 0; j < 2; j++) {
-                    ans += q.add[j].sum - q.sub[j].sum;
-                }
-                out.println(ans);
-            }
+            return h[i][j][a][b];
         }
 
-        public void dac1(Point[] pts, int l, int r) {
-            if (l == r) {
-                return;
-            }
-            int m = (l + r) / 2;
-            dac1(pts, l, m);
-            dac1(pts, m + 1, r);
-            Arrays.sort(pts, l, m + 1, (a, b) -> Integer.compare(a.y, b.y));
-            Arrays.sort(pts, m + 1, r + 1, (a, b) -> Integer.compare(a.y, b.y));
-
-            int i = l;
-            int j = m + 1;
-            while (j <= r) {
-                while (i <= m && pts[i].y <= pts[j].y) {
-                    bit.update(pts[i].z, pts[i].w);
-                    i++;
-                }
-                pts[j].sum += bit.query(pts[j].z);
-                j++;
-            }
-
-            while (i - 1 >= l) {
-                i--;
-                bit.update(pts[i].z, -pts[i].w);
-            }
+        public int f(int i, int j) {
+            return h(i, j, i, j);
         }
 
-        public void dac2(Point[] pts, int l, int r) {
-            if (l == r) {
-                return;
+        public int g(int i, int j) {
+            if (i < 0 || j < 0) {
+                return 0;
             }
-            int m = (l + r) / 2;
-            dac2(pts, l, m);
-            dac2(pts, m + 1, r);
-            Arrays.sort(pts, l, m + 1, (a, b) -> -Integer.compare(a.y, b.y));
-            Arrays.sort(pts, m + 1, r + 1, (a, b) -> -Integer.compare(a.y, b.y));
-
-            int i = l;
-            int j = m + 1;
-            while (i <= m) {
-                while (j <= r && pts[i].y <= pts[j].y) {
-                    bit.update(pts[j].z, pts[j].w);
-                    j++;
+            if (g[i][j] == -1) {
+                g[i][j] = 0;
+                if (i == 0) {
+                    return g[i][j] = j == 0 ? 1 : 0;
                 }
-                pts[i].sum += bit.query(200000) - bit.query(pts[i].z - 1);
-                i++;
+                for (int a = 0; a <= i; a++) {
+                    int c = i - a;
+                    for (int b = j; b <= a + 1; b++) {
+                        for (int d = j; d <= c + 1; d++) {
+                            if (Math.min(b, d) != j) {
+                                continue;
+                            }
+                            int way = mod.mul(f(a, b), f(c, d));
+
+                            g[i][j] = mod.plus(g[i][j], way);
+                        }
+                    }
+                }
             }
 
-            while (j - 1 > m) {
-                j--;
-                bit.update(pts[j].z, -pts[j].w);
-            }
+            return g[i][j];
         }
 
     }
 
-    static class Query {
-        Point[] add = new Point[2];
-        Point[] sub = new Point[2];
+    static class InverseNumber {
+        int[] inv;
+
+        public InverseNumber(int[] inv, int limit, Modular modular) {
+            this.inv = inv;
+            inv[1] = 1;
+            int p = modular.getMod();
+            for (int i = 2; i <= limit; i++) {
+                int k = p / i;
+                int r = p % i;
+                inv[i] = modular.mul(-k, inv[r]);
+            }
+        }
+
+        public InverseNumber(int limit, Modular modular) {
+            this(new int[limit + 1], limit, modular);
+        }
+
+        public int inverse(int x) {
+            return inv[x];
+        }
+
+    }
+
+    static class FastOutput implements AutoCloseable, Closeable, Appendable {
+        private StringBuilder cache = new StringBuilder(1 << 20);
+        private final Writer os;
+
+        public FastOutput append(CharSequence csq) {
+            cache.append(csq);
+            return this;
+        }
+
+        public FastOutput append(CharSequence csq, int start, int end) {
+            cache.append(csq, start, end);
+            return this;
+        }
+
+        public FastOutput(Writer os) {
+            this.os = os;
+        }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput append(char c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput append(int c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput println(int c) {
+            return append(c).println();
+        }
+
+        public FastOutput println() {
+            cache.append(System.lineSeparator());
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            return this;
+        }
+
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+
+        public String toString() {
+            return cache.toString();
+        }
 
     }
 
@@ -348,68 +284,57 @@ public class Main {
 
     }
 
-    static class LongBIT {
-        private long[] data;
-        private int n;
+    static class Modular {
+        int m;
 
-        public LongBIT(int n) {
-            this.n = n;
-            data = new long[n + 1];
+        public int getMod() {
+            return m;
         }
 
-        public long query(int i) {
-            long sum = 0;
-            for (; i > 0; i -= i & -i) {
-                sum += data[i];
-            }
-            return sum;
+        public Modular(int m) {
+            this.m = m;
         }
 
-        public void update(int i, long mod) {
-            if (i <= 0) {
-                return;
+        public Modular(long m) {
+            this.m = (int) m;
+            if (this.m != m) {
+                throw new IllegalArgumentException();
             }
-            for (; i <= n; i += i & -i) {
-                data[i] += mod;
+        }
+
+        public Modular(double m) {
+            this.m = (int) m;
+            if (this.m != m) {
+                throw new IllegalArgumentException();
             }
+        }
+
+        public int valueOf(int x) {
+            x %= m;
+            if (x < 0) {
+                x += m;
+            }
+            return x;
+        }
+
+        public int valueOf(long x) {
+            x %= m;
+            if (x < 0) {
+                x += m;
+            }
+            return (int) x;
+        }
+
+        public int mul(int x, int y) {
+            return valueOf((long) x * y);
+        }
+
+        public int plus(int x, int y) {
+            return valueOf(x + y);
         }
 
         public String toString() {
-            StringBuilder builder = new StringBuilder();
-            for (int i = 1; i <= n; i++) {
-                builder.append(query(i) - query(i - 1)).append(' ');
-            }
-            return builder.toString();
-        }
-
-    }
-
-    static class Point implements Cloneable {
-        int x;
-        int y;
-        int z;
-        int w;
-        int t;
-        long sum;
-
-        public Point negate(int z) {
-            Point ans = clone(z);
-            ans.w = -ans.w;
-            return ans;
-        }
-
-        public Point clone(int z) {
-            try {
-                Point pt = (Point) super.clone();
-                pt.z = z;
-                return pt;
-            } catch (CloneNotSupportedException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        public String toString() {
-            return String.format("(%d, %d, %d) = %d", x, y, z, w);
+            return "mod " + m;
         }
 
     }
@@ -500,69 +425,20 @@ public class Main {
 
     }
 
-    static class FastOutput implements AutoCloseable, Closeable, Appendable {
-        private StringBuilder cache = new StringBuilder(1 << 20);
-        private final Writer os;
-
-        public FastOutput append(CharSequence csq) {
-            cache.append(csq);
-            return this;
-        }
-
-        public FastOutput append(CharSequence csq, int start, int end) {
-            cache.append(csq, start, end);
-            return this;
-        }
-
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput append(char c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput append(long c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput println(long c) {
-            return append(c).println();
-        }
-
-        public FastOutput println() {
-            cache.append(System.lineSeparator());
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
+    static class SequenceUtils {
+        public static void deepFill(Object array, int val) {
+            if (!array.getClass().isArray()) {
+                throw new IllegalArgumentException();
             }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
+            if (array instanceof int[]) {
+                int[] intArray = (int[]) array;
+                Arrays.fill(intArray, val);
+            } else {
+                Object[] objArray = (Object[]) array;
+                for (Object obj : objArray) {
+                    deepFill(obj, val);
+                }
             }
-        }
-
-        public String toString() {
-            return cache.toString();
         }
 
     }

@@ -1,2 +1,2 @@
-46 src/main/java/contest/C. Goodbye Souvenir.json
+39 src/main/java/contest/D. Shake It!.json
 0

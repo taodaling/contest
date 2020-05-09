@@ -166,7 +166,7 @@ public class LongObjectHashMap<V> {
     }
 
     public LongObjectEntryIterator<V> iterator() {
-        return new LongObjectEntryIterator() {
+        return new LongObjectEntryIterator<V>() {
             int index = 1;
             int readIndex = -1;
 
@@ -184,8 +184,8 @@ public class LongObjectHashMap<V> {
             }
 
             @Override
-            public Object getEntryValue() {
-                return values[readIndex];
+            public V getEntryValue() {
+                return (V) values[readIndex];
             }
 
             @Override

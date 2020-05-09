@@ -28,7 +28,7 @@ public class LongMultiWayStack {
         };
     }
 
-    public LongStack getStack(int qId){
+    public LongStack getStack(int qId) {
         return new LongStack() {
             @Override
             public void addLast(long x) {
@@ -129,12 +129,15 @@ public class LongMultiWayStack {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        for(int i = 0; i < stackNum; i++){
+        for (int i = 0; i < stackNum; i++) {
+            if (isEmpty(i)) {
+                continue;
+            }
             builder.append(i).append(": ");
-            for(LongIterator iterator = iterator(i); iterator.hasNext(); ){
+            for (LongIterator iterator = iterator(i); iterator.hasNext(); ) {
                 builder.append(iterator.next()).append(",");
             }
-            if(builder.charAt(builder.length() - 1) == ','){
+            if (builder.charAt(builder.length() - 1) == ',') {
                 builder.setLength(builder.length() - 1);
             }
             builder.append('\n');
