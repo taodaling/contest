@@ -1,0 +1,36 @@
+{
+  "name" : "EllysTwoRatings",
+  "signature" : {
+    "name" : "getChance",
+    "result" : "double",
+    "arguments" : [ "int", "int", "int" ],
+    "argumentNames" : [ "N", "A", "B" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "13", "42", "666" ],
+    "result" : "0.001968164704",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "3", "1", "1000" ],
+    "result" : "0.0",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "20", "216", "219" ],
+    "result" : "0.083322288706",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "42", "973", "123" ],
+    "result" : "0.019345240789",
+    "index" : 3,
+    "active" : true
+  } ],
+  "date" : "2020.05.10",
+  "contestName" : "TopCoder SRM #785",
+  "testClasses" : [ ],
+  "fqn" : "on2020_05.on2020_05_10_TopCoder_SRM__785.EllysTwoRatings.EllysTwoRatings",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

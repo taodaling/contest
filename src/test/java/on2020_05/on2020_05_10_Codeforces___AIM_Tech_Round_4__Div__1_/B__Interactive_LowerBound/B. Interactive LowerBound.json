@@ -1,0 +1,35 @@
+{
+  "name" : "B. Interactive LowerBound",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5 3 80\n97 -1\n58 5\n16 2\n81 1\n79 4\n",
+    "output" : "? 1\n? 2\n? 3\n? 4\n? 5\n! 81\n",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_05.on2020_05_10_Codeforces___AIM_Tech_Round_4__Div__1_.B__Interactive_LowerBound.BInteractiveLowerBound",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.05.10",
+  "contestName" : "Codeforces - AIM Tech Round 4 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : true,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

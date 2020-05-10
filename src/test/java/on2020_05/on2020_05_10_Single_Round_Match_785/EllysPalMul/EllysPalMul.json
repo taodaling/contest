@@ -1,0 +1,51 @@
+{
+  "name" : "EllysPalMul",
+  "signature" : {
+    "name" : "getMin",
+    "result" : "int",
+    "arguments" : [ "int" ],
+    "argumentNames" : [ "X" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "42" ],
+    "result" : "6",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "121" ],
+    "result" : "1",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "1337" ],
+    "result" : "143",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "13" ],
+    "result" : "38",
+    "index" : 3,
+    "active" : true
+  }, {
+    "arguments" : [ "100" ],
+    "result" : "-1",
+    "index" : 4,
+    "active" : true
+  }, {
+    "arguments" : [ "21951" ],
+    "result" : "-1",
+    "index" : 5,
+    "active" : true
+  }, {
+    "arguments" : [ "98760" ],
+    "result" : "-1",
+    "index" : 6,
+    "active" : true
+  } ],
+  "date" : "2020.05.10",
+  "contestName" : "Single Round Match 785",
+  "testClasses" : [ ],
+  "fqn" : "on2020_05.on2020_05_10_Single_Round_Match_785.EllysPalMul.EllysPalMul",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}
