@@ -4,8 +4,6 @@ import org.junit.Test;
 
 import java.util.PriorityQueue;
 
-import static org.junit.Assert.*;
-
 public class LongPriorityQueueTest {
     int limit = 10000;
 

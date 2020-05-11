@@ -2,7 +2,10 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.io.IOException;
+import java.util.TreeSet;
 import java.util.ArrayList;
 import java.io.UncheckedIOException;
 import java.util.List;
@@ -29,110 +32,129 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            CUpgradingTree solver = new CUpgradingTree();
+            DDynamicShortestPath solver = new DDynamicShortestPath();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class CUpgradingTree {
-        List<int[]> seq = new ArrayList<>(200000);
-        List<Node> centers = new ArrayList<>();
-        Node top;
-        Node target;
-        Node last;
-
+    static class DDynamicShortestPath {
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
+            int m = in.readInt();
+            int q = in.readInt();
             Node[] nodes = new Node[n];
+
+            long inf = (long) 1e18;
             for (int i = 0; i < n; i++) {
                 nodes[i] = new Node();
                 nodes[i].id = i;
+                nodes[i].dist = inf;
             }
-            for (int i = 0; i < n - 1; i++) {
+            Edge[] edges = new Edge[m];
+            for (int i = 0; i < m; i++) {
                 Node a = nodes[in.readInt() - 1];
                 Node b = nodes[in.readInt() - 1];
-                a.adj.add(b);
-                b.adj.add(a);
+                int c = in.readInt();
+                edges[i] = new Edge(a, b, c);
+                a.next.add(edges[i]);
             }
 
-            dfsForSize(nodes[0], null);
-            dfsForCenter(nodes[0], null, nodes[0].size);
-            if (centers.size() == 2) {
-                Node a = centers.get(0);
-                Node b = centers.get(1);
-                a.adj.remove(b);
-                b.adj.remove(a);
-            }
-
-            for (Node center : centers) {
-                for (Node node : center.adj) {
-                    top = center;
-                    target = node;
-                    last = node;
-                    dfs(node, center);
-                    focus(target);
+            TreeSet<Node> pq = new TreeSet<>((a, b) -> a.dist == b.dist ? a.id - b.id : Long.compare(a.dist, b.dist));
+            Node root = nodes[0];
+            root.dist = 0;
+            pq.add(root);
+            while (!pq.isEmpty()) {
+                Node head = pq.pollFirst();
+                for (Edge e : head.next) {
+                    Node node = e.to;
+                    if (node.dist > head.dist + e.w) {
+                        pq.remove(node);
+                        node.dist = head.dist + e.w;
+                        pq.add(node);
+                    }
                 }
             }
 
-            out.println(seq.size());
-            for (int[] s : seq) {
-                for (int x : s) {
-                    out.append(x + 1).append(' ');
-                }
-                out.println();
+            for (int i = 0; i < n; i++) {
+                nodes[i].last = nodes[i].dist;
+                nodes[i].dist = inf;
             }
-        }
 
-        public void dfsForSize(Node root, Node p) {
-            root.size = 1;
-            for (Node node : root.adj) {
-                if (node == p) {
+            MultiWayStack<Node> stack = new MultiWayStack<>(1000001, 1000000);
+            while (q-- > 0) {
+                int op = 0;
+
+                int t = in.readInt();
+                if (t == 1) {
+                    Node v = nodes[in.readInt() - 1];
+                    out.println(v.last >= 1e12 ? -1 : v.last);
                     continue;
                 }
-                dfsForSize(node, root);
-                root.size += node.size;
-            }
-        }
 
-        public void dfsForCenter(Node root, Node p, int total) {
-            int max = total - root.size;
-            for (Node node : root.adj) {
-                if (node == p) {
-                    continue;
+                int c = in.readInt();
+                //stack.expandStackNum(c + 1);
+                stack.danger();
+                for (int j = 0; j < c; j++) {
+                    op++;
+                    int x = in.readInt();
+                    Edge e = edges[x - 1];
+                    e.reserve++;
                 }
-                max = Math.max(node.size, max);
-                dfsForCenter(node, root, total);
-            }
-            if (max * 2 <= total) {
-                centers.add(root);
-            }
-        }
-
-        public void add(Node x, Node y, Node yy) {
-            seq.add(new int[]{x.id, y.id, yy.id});
-        }
-
-        public void focus(Node next) {
-            if (next == last) {
-                return;
-            }
-            add(top, last, next);
-            last = next;
-        }
-
-        public void dfs(Node root, Node p) {
-            for (Node node : root.adj) {
-                if (node == p) {
-                    continue;
+                for (Edge e : edges) {
+                    op++;
+                    e.w = e.reserve + e.from.last - e.to.last;
                 }
-                dfs(node, root);
-            }
+                root.dist = 0;
+                stack.addLast(0, root);
+                for (int i = 0; i <= c; i++) {
+                    op++;
+                    while (!stack.isEmpty(i)) {
+                        op++;
+                        Node head = stack.removeLast(i);
+                        if (head.dist != i) {
+                            continue;
+                        }
+                        for (Edge e : head.next) {
+                            op++;
+                            Node node = e.to;
+                            if (node.dist > head.dist + e.w) {
+                                node.dist = head.dist + e.w;
+                                if (node.dist <= c) {
+                                    stack.addLast((int) node.dist, node);
+                                }
+                            }
+                        }
+                    }
+                }
 
-            if (root != target && p != target) {
-                focus(root);
-                add(root, p, target);
+                //restore
+                for (int i = 0; i < n; i++) {
+                    nodes[i].last = Math.min(nodes[i].dist + nodes[i].last, inf);
+                    nodes[i].dist = inf;
+                }
+
+                //debug.debug("q", q);
+                //debug.debug("op", op);
+                //debug.debug("nodes", nodes);
             }
+        }
+
+    }
+
+    static interface RevokeIterator<E> extends Iterator<E> {
+    }
+
+    static class Edge {
+        Node to;
+        long w;
+        long reserve;
+        Node from;
+
+        public Edge(Node from, Node to, long w) {
+            this.from = from;
+            this.to = to;
+            this.reserve = this.w = w;
         }
 
     }
@@ -223,12 +245,12 @@ public class Main {
             return this;
         }
 
-        public FastOutput append(int c) {
+        public FastOutput append(long c) {
             cache.append(c);
             return this;
         }
 
-        public FastOutput println(int c) {
+        public FastOutput println(long c) {
             return append(c).println();
         }
 
@@ -263,13 +285,106 @@ public class Main {
 
     }
 
-    static class Node {
-        List<Node> adj = new ArrayList<>();
-        int id;
-        int size;
+    static class MultiWayStack<T> {
+        private Object[] values;
+        private int[] next;
+        private int[] heads;
+        private int alloc;
+        private int stackNum;
+
+        public RevokeIterator<T> iterator(final int queue) {
+            return new RevokeIterator<T>() {
+                int ele = heads[queue];
+                int pre = 0;
+
+
+                public boolean hasNext() {
+                    return ele != 0;
+                }
+
+
+                public T next() {
+                    T ans = (T) values[ele];
+                    pre = ele;
+                    ele = next[ele];
+                    return ans;
+                }
+
+
+                public void revoke() {
+                    ele = pre;
+                    pre = 0;
+                }
+            };
+        }
+
+        private void doubleCapacity() {
+            int newSize = Math.max(next.length + 10, next.length * 2);
+            next = Arrays.copyOf(next, newSize);
+            values = Arrays.copyOf(values, newSize);
+        }
+
+        public void alloc() {
+            alloc++;
+            if (alloc >= next.length) {
+                doubleCapacity();
+            }
+            next[alloc] = 0;
+        }
+
+        public void danger() {
+            alloc = 0;
+        }
+
+        public boolean isEmpty(int qId) {
+            return heads[qId] == 0;
+        }
+
+        public MultiWayStack(int qNum, int totalCapacity) {
+            values = new Object[totalCapacity + 1];
+            next = new int[totalCapacity + 1];
+            heads = new int[qNum];
+            stackNum = qNum;
+        }
+
+        public void addLast(int qId, T x) {
+            alloc();
+            values[alloc] = x;
+            next[alloc] = heads[qId];
+            heads[qId] = alloc;
+        }
+
+        public T removeLast(int qId) {
+            T ans = (T) values[heads[qId]];
+            heads[qId] = next[heads[qId]];
+            return ans;
+        }
 
         public String toString() {
-            return "" + id;
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < stackNum; i++) {
+                builder.append(i).append(": ");
+                for (Iterator iterator = iterator(i); iterator.hasNext(); ) {
+                    builder.append(iterator.next()).append(",");
+                }
+                if (builder.charAt(builder.length() - 1) == ',') {
+                    builder.setLength(builder.length() - 1);
+                }
+                builder.append('\n');
+            }
+            return builder.toString();
+        }
+
+    }
+
+    static class Node {
+        long dist;
+        long last;
+        int id;
+        List<Edge> next = new ArrayList<>();
+
+        public String toString() {
+            return "" + id + ":" + dist;
         }
 
     }

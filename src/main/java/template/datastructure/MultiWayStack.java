@@ -85,6 +85,10 @@ public class MultiWayStack<T> {
         return stackNum;
     }
 
+    public void danger() {
+        alloc = 0;
+    }
+
     public void clear() {
         alloc = 0;
         Arrays.fill(heads, 0, stackNum, 0);
@@ -93,6 +97,8 @@ public class MultiWayStack<T> {
     public boolean isEmpty(int qId) {
         return heads[qId] == 0;
     }
+
+
 
     public void expandStackNum(int qNum) {
         if (qNum <= stackNum) {
