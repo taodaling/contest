@@ -1,0 +1,40 @@
+{
+  "name" : "F. DFS",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 2\n1 2\n1 3\n2 3\n3 2\n",
+    "output" : "2\n3\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "6 6\n1 2\n2 3\n1 4\n4 5\n1 6\n2 5\n3 4\n5 2\n6 4\n3 4\n6 5\n",
+    "output" : "3\n2\n3\n2\n3\n2\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx512M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_05.on2020_05_12_Codeforces___Lyft_Level_5_Challenge_2018___Final_Round__Open_Div__1_.F__DFS.FDFS",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.05.12",
+  "contestName" : "Codeforces - Lyft Level 5 Challenge 2018 - Final Round (Open Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

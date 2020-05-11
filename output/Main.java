@@ -1,17 +1,15 @@
 import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Arrays;
-import java.util.Iterator;
-import java.io.IOException;
-import java.util.TreeSet;
 import java.util.ArrayList;
+import java.io.OutputStreamWriter;
+import java.io.OutputStream;
+import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.List;
 import java.io.Closeable;
 import java.io.Writer;
-import java.io.OutputStreamWriter;
 import java.io.InputStream;
 
 /**
@@ -32,129 +30,320 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            DDynamicShortestPath solver = new DDynamicShortestPath();
+            FDFS solver = new FDFS();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class DDynamicShortestPath {
+    static class FDFS {
+        int order;
+
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            int m = in.readInt();
             int q = in.readInt();
-            Node[] nodes = new Node[n];
+            LongHashSet set = new LongHashSet(q, false);
 
-            long inf = (long) 1e18;
+            Node[] nodes = new Node[n];
             for (int i = 0; i < n; i++) {
                 nodes[i] = new Node();
                 nodes[i].id = i;
-                nodes[i].dist = inf;
             }
-            Edge[] edges = new Edge[m];
-            for (int i = 0; i < m; i++) {
+
+            for (int i = 0; i < n - 1; i++) {
                 Node a = nodes[in.readInt() - 1];
                 Node b = nodes[in.readInt() - 1];
-                int c = in.readInt();
-                edges[i] = new Edge(a, b, c);
-                a.next.add(edges[i]);
+                a.next.add(b);
+                b.next.add(a);
             }
 
-            TreeSet<Node> pq = new TreeSet<>((a, b) -> a.dist == b.dist ? a.id - b.id : Long.compare(a.dist, b.dist));
-            Node root = nodes[0];
-            root.dist = 0;
-            pq.add(root);
-            while (!pq.isEmpty()) {
-                Node head = pq.pollFirst();
-                for (Edge e : head.next) {
-                    Node node = e.to;
-                    if (node.dist > head.dist + e.w) {
-                        pq.remove(node);
-                        node.dist = head.dist + e.w;
-                        pq.add(node);
+            dfs(nodes[0], null);
+            Segment seg = new Segment(1, n);
+            for (int i = 0; i < q; i++) {
+                Node a = nodes[in.readInt() - 1];
+                Node b = nodes[in.readInt() - 1];
+                if (a.l > b.l) {
+                    Node tmp = a;
+                    a = b;
+                    b = tmp;
+                }
+
+                long key = DigitUtils.asLong(Math.min(a.id, b.id), Math.max(a.id, b.id));
+                if (set.contain(key)) {
+                    set.remove(key);
+                    seg.update(b.l, b.r, 1, n, -1);
+                    if (a.l <= b.l && a.r >= b.r) {
+                        //ancestor
+                        seg.update(1, n, 1, n, -1);
+                        seg.update(a.l + 1, a.r, 1, n, 1);
+                    } else {
+                        seg.update(a.l, a.r, 1, n, -1);
+                    }
+                } else {
+                    set.add(key);
+                    seg.update(b.l, b.r, 1, n, 1);
+                    if (a.l <= b.l && a.r >= b.r) {
+                        //ancestor
+                        seg.update(1, n, 1, n, 1);
+                        seg.update(a.l + 1, a.r, 1, n, -1);
+                    } else {
+                        seg.update(a.l, a.r, 1, n, 1);
                     }
                 }
+
+                int ans = seg.max == set.size() ? seg.cnt : 0;
+                out.println(ans);
             }
+        }
 
-            for (int i = 0; i < n; i++) {
-                nodes[i].last = nodes[i].dist;
-                nodes[i].dist = inf;
-            }
-
-            MultiWayStack<Node> stack = new MultiWayStack<>(1000001, 1000000);
-            while (q-- > 0) {
-                int op = 0;
-
-                int t = in.readInt();
-                if (t == 1) {
-                    Node v = nodes[in.readInt() - 1];
-                    out.println(v.last >= 1e12 ? -1 : v.last);
+        public void dfs(Node root, Node p) {
+            root.l = ++order;
+            for (Node node : root.next) {
+                if (node == p) {
                     continue;
                 }
-
-                int c = in.readInt();
-                //stack.expandStackNum(c + 1);
-                stack.danger();
-                for (int j = 0; j < c; j++) {
-                    op++;
-                    int x = in.readInt();
-                    Edge e = edges[x - 1];
-                    e.reserve++;
-                }
-                for (Edge e : edges) {
-                    op++;
-                    e.w = e.reserve + e.from.last - e.to.last;
-                }
-                root.dist = 0;
-                stack.addLast(0, root);
-                for (int i = 0; i <= c; i++) {
-                    op++;
-                    while (!stack.isEmpty(i)) {
-                        op++;
-                        Node head = stack.removeLast(i);
-                        if (head.dist != i) {
-                            continue;
-                        }
-                        for (Edge e : head.next) {
-                            op++;
-                            Node node = e.to;
-                            if (node.dist > head.dist + e.w) {
-                                node.dist = head.dist + e.w;
-                                if (node.dist <= c) {
-                                    stack.addLast((int) node.dist, node);
-                                }
-                            }
-                        }
-                    }
-                }
-
-                //restore
-                for (int i = 0; i < n; i++) {
-                    nodes[i].last = Math.min(nodes[i].dist + nodes[i].last, inf);
-                    nodes[i].dist = inf;
-                }
-
-                //debug.debug("q", q);
-                //debug.debug("op", op);
-                //debug.debug("nodes", nodes);
+                dfs(node, root);
             }
+            root.r = order;
         }
 
     }
 
-    static interface RevokeIterator<E> extends Iterator<E> {
+    static class FastOutput implements AutoCloseable, Closeable, Appendable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
+
+        public FastOutput append(CharSequence csq) {
+            cache.append(csq);
+            return this;
+        }
+
+        public FastOutput append(CharSequence csq, int start, int end) {
+            cache.append(csq, start, end);
+            return this;
+        }
+
+        public FastOutput(Writer os) {
+            this.os = os;
+        }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput append(char c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput append(int c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput println(int c) {
+            return append(c).println();
+        }
+
+        public FastOutput println() {
+            cache.append(System.lineSeparator());
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            return this;
+        }
+
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+
+        public String toString() {
+            return cache.toString();
+        }
+
     }
 
-    static class Edge {
-        Node to;
-        long w;
-        long reserve;
-        Node from;
+    static class LongHashSet {
+        private int[] slot;
+        private int[] next;
+        private long[] keys;
+        private int alloc;
+        private boolean[] removed;
+        private int mask;
+        private int size;
+        private boolean rehash;
+        private Hasher hasher = new Hasher();
 
-        public Edge(Node from, Node to, long w) {
-            this.from = from;
-            this.to = to;
-            this.reserve = this.w = w;
+        public LongHashSet(int cap, boolean rehash) {
+            this.mask = (1 << (32 - Integer.numberOfLeadingZeros(cap - 1))) - 1;
+            this.rehash = rehash;
+            slot = new int[mask + 1];
+            next = new int[cap + 1];
+            keys = new long[cap + 1];
+            removed = new boolean[cap + 1];
+        }
+
+        private void doubleCapacity() {
+            int newSize = Math.max(next.length + 10, next.length * 2);
+            next = Arrays.copyOf(next, newSize);
+            keys = Arrays.copyOf(keys, newSize);
+            removed = Arrays.copyOf(removed, newSize);
+        }
+
+        public void alloc() {
+            alloc++;
+            if (alloc >= next.length) {
+                doubleCapacity();
+            }
+            next[alloc] = 0;
+            removed[alloc] = false;
+            size++;
+        }
+
+        private int hash(long x) {
+            return hasher.hash(x);
+        }
+
+        public void add(long x) {
+            int h = hash(x);
+            int s = h & mask;
+            if (slot[s] == 0) {
+                alloc();
+                slot[s] = alloc;
+                keys[alloc] = x;
+                return;
+            } else {
+                int index = findIndexOrLastEntry(s, x);
+                if (keys[index] != x) {
+                    alloc();
+                    next[index] = alloc;
+                    keys[alloc] = x;
+                }
+            }
+            if (rehash && size >= slot.length) {
+                rehash();
+            }
+        }
+
+        private void rehash() {
+            int[] newSlots = new int[Math.max(16, slot.length * 2)];
+            int newMask = newSlots.length - 1;
+            for (int i = 0; i < slot.length; i++) {
+                if (slot[i] == 0) {
+                    continue;
+                }
+                int head = slot[i];
+                while (head != 0) {
+                    int n = next[head];
+                    int s = hash(keys[head]) & newMask;
+                    next[head] = newSlots[s];
+                    newSlots[s] = head;
+                    head = n;
+                }
+            }
+            this.slot = newSlots;
+            this.mask = newMask;
+        }
+
+        public boolean contain(long x) {
+            int h = hash(x);
+            int s = h & mask;
+            if (slot[s] == 0) {
+                return false;
+            }
+            return keys[findIndexOrLastEntry(s, x)] == x;
+        }
+
+        public void remove(long x) {
+            int h = hash(x);
+            int s = h & mask;
+            if (slot[s] == 0) {
+                return;
+            }
+            int pre = 0;
+            int index = slot[s];
+            while (keys[index] != x) {
+                pre = index;
+                if (next[index] != 0) {
+                    index = next[index];
+                } else {
+                    break;
+                }
+            }
+            if (keys[index] != x) {
+                return;
+            }
+            if (slot[s] == index) {
+                slot[s] = next[index];
+            } else {
+                next[pre] = next[index];
+            }
+            removed[index] = true;
+            size--;
+        }
+
+        private int findIndexOrLastEntry(int s, long x) {
+            int iter = slot[s];
+            while (keys[iter] != x) {
+                if (next[iter] != 0) {
+                    iter = next[iter];
+                } else {
+                    return iter;
+                }
+            }
+            return iter;
+        }
+
+        public LongIterator iterator() {
+            return new LongIterator() {
+                int index = 1;
+
+
+                public boolean hasNext() {
+                    while (index <= alloc && removed[index]) {
+                        index++;
+                    }
+                    return index <= alloc;
+                }
+
+
+                public long next() {
+                    if (!hasNext()) {
+                        throw new IllegalStateException();
+                    }
+                    return keys[index++];
+                }
+            };
+        }
+
+        public int size() {
+            return size;
+        }
+
+        public String toString() {
+            LongIterator iterator = iterator();
+            StringBuilder builder = new StringBuilder("{");
+            while (iterator.hasNext()) {
+                builder.append(iterator.next()).append(',');
+            }
+            if (builder.charAt(builder.length() - 1) == ',') {
+                builder.setLength(builder.length() - 1);
+            }
+            builder.append('}');
+            return builder.toString();
         }
 
     }
@@ -218,174 +407,152 @@ public class Main {
 
     }
 
-    static class FastOutput implements AutoCloseable, Closeable, Appendable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
+    static class Segment implements Cloneable {
+        private Segment left;
+        private Segment right;
+        int max;
+        int cnt;
+        private int dirty;
 
-        public FastOutput append(CharSequence csq) {
-            cache.append(csq);
-            return this;
+        private void modify(int x) {
+            dirty += x;
+            max += x;
         }
 
-        public FastOutput append(CharSequence csq, int start, int end) {
-            cache.append(csq, start, end);
-            return this;
+        public void pushUp() {
+            max = Math.max(left.max, right.max);
+            cnt = 0;
+            if (max == left.max) {
+                cnt += left.cnt;
+            }
+            if (max == right.max) {
+                cnt += right.cnt;
+            }
         }
 
-        public FastOutput(Writer os) {
-            this.os = os;
+        public void pushDown() {
+            if (dirty != 0) {
+                left.modify(dirty);
+                right.modify(dirty);
+                dirty = 0;
+            }
         }
 
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
+        public Segment(int l, int r) {
+            if (l < r) {
+                int m = (l + r) >> 1;
+                left = new Segment(l, m);
+                right = new Segment(m + 1, r);
+                pushUp();
+            } else {
+                cnt = 1;
+            }
         }
 
-        public FastOutput append(char c) {
-            cache.append(c);
-            return this;
+        private boolean covered(int ll, int rr, int l, int r) {
+            return ll <= l && rr >= r;
         }
 
-        public FastOutput append(long c) {
-            cache.append(c);
-            return this;
+        private boolean noIntersection(int ll, int rr, int l, int r) {
+            return ll > r || rr < l;
         }
 
-        public FastOutput println(long c) {
-            return append(c).println();
+        public void update(int ll, int rr, int l, int r, int x) {
+            if (noIntersection(ll, rr, l, r)) {
+                return;
+            }
+            if (covered(ll, rr, l, r)) {
+                modify(x);
+                return;
+            }
+            pushDown();
+            int m = (l + r) >> 1;
+            left.update(ll, rr, l, m, x);
+            right.update(ll, rr, m + 1, r, x);
+            pushUp();
         }
 
-        public FastOutput println() {
-            cache.append(System.lineSeparator());
-            return this;
+        private Segment deepClone() {
+            Segment seg = clone();
+            if (seg.left != null) {
+                seg.left = seg.left.deepClone();
+            }
+            if (seg.right != null) {
+                seg.right = seg.right.deepClone();
+            }
+            return seg;
         }
 
-        public FastOutput flush() {
+        protected Segment clone() {
             try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
+                return (Segment) super.clone();
+            } catch (CloneNotSupportedException e) {
+                throw new RuntimeException(e);
             }
         }
 
-        public String toString() {
-            return cache.toString();
-        }
-
-    }
-
-    static class MultiWayStack<T> {
-        private Object[] values;
-        private int[] next;
-        private int[] heads;
-        private int alloc;
-        private int stackNum;
-
-        public RevokeIterator<T> iterator(final int queue) {
-            return new RevokeIterator<T>() {
-                int ele = heads[queue];
-                int pre = 0;
-
-
-                public boolean hasNext() {
-                    return ele != 0;
-                }
-
-
-                public T next() {
-                    T ans = (T) values[ele];
-                    pre = ele;
-                    ele = next[ele];
-                    return ans;
-                }
-
-
-                public void revoke() {
-                    ele = pre;
-                    pre = 0;
-                }
-            };
-        }
-
-        private void doubleCapacity() {
-            int newSize = Math.max(next.length + 10, next.length * 2);
-            next = Arrays.copyOf(next, newSize);
-            values = Arrays.copyOf(values, newSize);
-        }
-
-        public void alloc() {
-            alloc++;
-            if (alloc >= next.length) {
-                doubleCapacity();
+        private void toString(StringBuilder builder) {
+            if (left == null && right == null) {
+                builder.append("val").append(",");
+                return;
             }
-            next[alloc] = 0;
-        }
-
-        public void danger() {
-            alloc = 0;
-        }
-
-        public boolean isEmpty(int qId) {
-            return heads[qId] == 0;
-        }
-
-        public MultiWayStack(int qNum, int totalCapacity) {
-            values = new Object[totalCapacity + 1];
-            next = new int[totalCapacity + 1];
-            heads = new int[qNum];
-            stackNum = qNum;
-        }
-
-        public void addLast(int qId, T x) {
-            alloc();
-            values[alloc] = x;
-            next[alloc] = heads[qId];
-            heads[qId] = alloc;
-        }
-
-        public T removeLast(int qId) {
-            T ans = (T) values[heads[qId]];
-            heads[qId] = next[heads[qId]];
-            return ans;
+            pushDown();
+            left.toString(builder);
+            right.toString(builder);
         }
 
         public String toString() {
             StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < stackNum; i++) {
-                builder.append(i).append(": ");
-                for (Iterator iterator = iterator(i); iterator.hasNext(); ) {
-                    builder.append(iterator.next()).append(",");
-                }
-                if (builder.charAt(builder.length() - 1) == ',') {
-                    builder.setLength(builder.length() - 1);
-                }
-                builder.append('\n');
+            deepClone().toString(builder);
+            if (builder.length() > 0) {
+                builder.setLength(builder.length() - 1);
             }
             return builder.toString();
         }
 
     }
 
-    static class Node {
-        long dist;
-        long last;
-        int id;
-        List<Edge> next = new ArrayList<>();
+    static class DigitUtils {
+        private static long LONG_TO_INT_MASK = (1L << 32) - 1;
 
-        public String toString() {
-            return "" + id + ":" + dist;
+        private DigitUtils() {
         }
+
+        public static long asLong(int high, int low) {
+            return (((long) high) << 32) | (((long) low) & LONG_TO_INT_MASK);
+        }
+
+    }
+
+    static class Hasher {
+        private long time = System.nanoTime() + System.currentTimeMillis();
+
+        private int shuffle(long x) {
+            x += time;
+            x += 0x9e3779b97f4a7c15L;
+            x = (x ^ (x >>> 30)) * 0xbf58476d1ce4e5b9L;
+            x = (x ^ (x >>> 27)) * 0x94d049bb133111ebL;
+            return (int) (x ^ (x >>> 31));
+        }
+
+        public int hash(long x) {
+            return shuffle(x);
+        }
+
+    }
+
+    static interface LongIterator {
+        boolean hasNext();
+
+        long next();
+
+    }
+
+    static class Node {
+        int id;
+        int l;
+        int r;
+        List<Node> next = new ArrayList<>();
 
     }
 }
