@@ -33,7 +33,7 @@
   "location" : "src/main/java/contest",
   "vmArgs" : "-Xmx512M",
   "mainClass" : "Main",
-  "taskClass" : "contest.FDFS",
+  "taskClass" : "on2020_05.on2020_05_12_Codeforces___Lyft_Level_5_Challenge_2018___Final_Round__Open_Div__1_.F__DFS1.FDFS",
   "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
   "checkerParameters" : "",
   "testClasses" : [ ],

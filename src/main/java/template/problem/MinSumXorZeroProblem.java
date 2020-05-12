@@ -20,6 +20,12 @@ public class MinSumXorZeroProblem {
         return ans;
     }
 
+    /**
+     * O(60^2n)
+     * @param data
+     * @param mask
+     * @return
+     */
     private static long solve(long[] data, long mask) {
         long sum = 0;
         long[] arr = data.clone();

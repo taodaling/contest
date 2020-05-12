@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.ArrayList;
 import java.io.OutputStreamWriter;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.List;
@@ -37,6 +38,7 @@ public class Main {
     }
 
     static class FDFS {
+        Debug debug = new Debug(true);
         int order;
 
         public void solve(int testNumber, FastInput in, FastOutput out) {
@@ -73,9 +75,11 @@ public class Main {
                     set.remove(key);
                     seg.update(b.l, b.r, 1, n, -1);
                     if (a.l <= b.l && a.r >= b.r) {
+                        Node ac = whichChild(a, b.l);
+
                         //ancestor
                         seg.update(1, n, 1, n, -1);
-                        seg.update(a.l + 1, a.r, 1, n, 1);
+                        seg.update(ac.l, ac.r, 1, n, 1);
                     } else {
                         seg.update(a.l, a.r, 1, n, -1);
                     }
@@ -83,9 +87,10 @@ public class Main {
                     set.add(key);
                     seg.update(b.l, b.r, 1, n, 1);
                     if (a.l <= b.l && a.r >= b.r) {
+                        Node ac = whichChild(a, b.l);
                         //ancestor
                         seg.update(1, n, 1, n, 1);
-                        seg.update(a.l + 1, a.r, 1, n, -1);
+                        seg.update(ac.l, ac.r, 1, n, -1);
                     } else {
                         seg.update(a.l, a.r, 1, n, 1);
                     }
@@ -93,18 +98,138 @@ public class Main {
 
                 int ans = seg.max == set.size() ? seg.cnt : 0;
                 out.println(ans);
+
+                debug.debug("seg", seg);
             }
         }
 
+        public Node whichChild(Node p, int id) {
+            int l = 0;
+            int r = p.next.size() - 1;
+            while (l < r) {
+                int m = (l + r + 1) >> 1;
+                Node node = p.next.get(m);
+                if (node.l <= id) {
+                    l = m;
+                } else {
+                    r = m - 1;
+                }
+            }
+            return p.next.get(l);
+        }
+
         public void dfs(Node root, Node p) {
+            root.next.remove(p);
             root.l = ++order;
             for (Node node : root.next) {
-                if (node == p) {
-                    continue;
-                }
                 dfs(node, root);
             }
             root.r = order;
+        }
+
+    }
+
+    static class Segment implements Cloneable {
+        private Segment left;
+        private Segment right;
+        int max;
+        int cnt;
+        int dirty;
+
+        private void modify(int x) {
+            dirty += x;
+            max += x;
+        }
+
+        public void pushUp() {
+            max = Math.max(left.max, right.max);
+            cnt = 0;
+            if (max == left.max) {
+                cnt += left.cnt;
+            }
+            if (max == right.max) {
+                cnt += right.cnt;
+            }
+        }
+
+        public void pushDown() {
+            if (dirty != 0) {
+                left.modify(dirty);
+                right.modify(dirty);
+                dirty = 0;
+            }
+        }
+
+        public Segment(int l, int r) {
+            if (l < r) {
+                int m = (l + r) >> 1;
+                left = new Segment(l, m);
+                right = new Segment(m + 1, r);
+                pushUp();
+            } else {
+                cnt = 1;
+            }
+        }
+
+        private boolean covered(int ll, int rr, int l, int r) {
+            return ll <= l && rr >= r;
+        }
+
+        private boolean noIntersection(int ll, int rr, int l, int r) {
+            return ll > r || rr < l;
+        }
+
+        public void update(int ll, int rr, int l, int r, int x) {
+            if (noIntersection(ll, rr, l, r)) {
+                return;
+            }
+            if (covered(ll, rr, l, r)) {
+                modify(x);
+                return;
+            }
+            pushDown();
+            int m = (l + r) >> 1;
+            left.update(ll, rr, l, m, x);
+            right.update(ll, rr, m + 1, r, x);
+            pushUp();
+        }
+
+        private Segment deepClone() {
+            Segment seg = clone();
+            if (seg.left != null) {
+                seg.left = seg.left.deepClone();
+            }
+            if (seg.right != null) {
+                seg.right = seg.right.deepClone();
+            }
+            return seg;
+        }
+
+        protected Segment clone() {
+            try {
+                return (Segment) super.clone();
+            } catch (CloneNotSupportedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        private void toString(StringBuilder builder) {
+            if (left == null && right == null) {
+                builder.append(max).append(",");
+                return;
+            }
+            pushDown();
+            left.toString(builder);
+            right.toString(builder);
+        }
+
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            deepClone().toString(builder);
+            if (builder.length() > 0) {
+                builder.setLength(builder.length() - 1);
+            }
+            return builder.toString();
         }
 
     }
@@ -172,6 +297,92 @@ public class Main {
 
         public String toString() {
             return cache.toString();
+        }
+
+    }
+
+    static class Debug {
+        private boolean offline;
+        private PrintStream out = System.err;
+        static int[] empty = new int[0];
+
+        public Debug(boolean enable) {
+            offline = enable && System.getSecurityManager() == null;
+        }
+
+        public Debug debug(String name, Object x) {
+            return debug(name, x, empty);
+        }
+
+        public Debug debug(String name, Object x, int... indexes) {
+            if (offline) {
+                if (x == null || !x.getClass().isArray()) {
+                    out.append(name);
+                    for (int i : indexes) {
+                        out.printf("[%d]", i);
+                    }
+                    out.append("=").append("" + x);
+                    out.println();
+                } else {
+                    indexes = Arrays.copyOf(indexes, indexes.length + 1);
+                    if (x instanceof byte[]) {
+                        byte[] arr = (byte[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof short[]) {
+                        short[] arr = (short[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof boolean[]) {
+                        boolean[] arr = (boolean[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof char[]) {
+                        char[] arr = (char[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof int[]) {
+                        int[] arr = (int[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof float[]) {
+                        float[] arr = (float[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof double[]) {
+                        double[] arr = (double[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof long[]) {
+                        long[] arr = (long[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else {
+                        Object[] arr = (Object[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    }
+                }
+            }
+            return this;
         }
 
     }
@@ -348,6 +559,42 @@ public class Main {
 
     }
 
+    static class Hasher {
+        private long time = System.nanoTime() + System.currentTimeMillis();
+
+        private int shuffle(long x) {
+            x += time;
+            x += 0x9e3779b97f4a7c15L;
+            x = (x ^ (x >>> 30)) * 0xbf58476d1ce4e5b9L;
+            x = (x ^ (x >>> 27)) * 0x94d049bb133111ebL;
+            return (int) (x ^ (x >>> 31));
+        }
+
+        public int hash(long x) {
+            return shuffle(x);
+        }
+
+    }
+
+    static interface LongIterator {
+        boolean hasNext();
+
+        long next();
+
+    }
+
+    static class Node {
+        int id;
+        int l;
+        int r;
+        List<Node> next = new ArrayList<>();
+
+        public String toString() {
+            return "" + id + ";" + l;
+        }
+
+    }
+
     static class FastInput {
         private final InputStream is;
         private byte[] buf = new byte[1 << 13];
@@ -407,111 +654,6 @@ public class Main {
 
     }
 
-    static class Segment implements Cloneable {
-        private Segment left;
-        private Segment right;
-        int max;
-        int cnt;
-        private int dirty;
-
-        private void modify(int x) {
-            dirty += x;
-            max += x;
-        }
-
-        public void pushUp() {
-            max = Math.max(left.max, right.max);
-            cnt = 0;
-            if (max == left.max) {
-                cnt += left.cnt;
-            }
-            if (max == right.max) {
-                cnt += right.cnt;
-            }
-        }
-
-        public void pushDown() {
-            if (dirty != 0) {
-                left.modify(dirty);
-                right.modify(dirty);
-                dirty = 0;
-            }
-        }
-
-        public Segment(int l, int r) {
-            if (l < r) {
-                int m = (l + r) >> 1;
-                left = new Segment(l, m);
-                right = new Segment(m + 1, r);
-                pushUp();
-            } else {
-                cnt = 1;
-            }
-        }
-
-        private boolean covered(int ll, int rr, int l, int r) {
-            return ll <= l && rr >= r;
-        }
-
-        private boolean noIntersection(int ll, int rr, int l, int r) {
-            return ll > r || rr < l;
-        }
-
-        public void update(int ll, int rr, int l, int r, int x) {
-            if (noIntersection(ll, rr, l, r)) {
-                return;
-            }
-            if (covered(ll, rr, l, r)) {
-                modify(x);
-                return;
-            }
-            pushDown();
-            int m = (l + r) >> 1;
-            left.update(ll, rr, l, m, x);
-            right.update(ll, rr, m + 1, r, x);
-            pushUp();
-        }
-
-        private Segment deepClone() {
-            Segment seg = clone();
-            if (seg.left != null) {
-                seg.left = seg.left.deepClone();
-            }
-            if (seg.right != null) {
-                seg.right = seg.right.deepClone();
-            }
-            return seg;
-        }
-
-        protected Segment clone() {
-            try {
-                return (Segment) super.clone();
-            } catch (CloneNotSupportedException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        private void toString(StringBuilder builder) {
-            if (left == null && right == null) {
-                builder.append("val").append(",");
-                return;
-            }
-            pushDown();
-            left.toString(builder);
-            right.toString(builder);
-        }
-
-        public String toString() {
-            StringBuilder builder = new StringBuilder();
-            deepClone().toString(builder);
-            if (builder.length() > 0) {
-                builder.setLength(builder.length() - 1);
-            }
-            return builder.toString();
-        }
-
-    }
-
     static class DigitUtils {
         private static long LONG_TO_INT_MASK = (1L << 32) - 1;
 
@@ -521,38 +663,6 @@ public class Main {
         public static long asLong(int high, int low) {
             return (((long) high) << 32) | (((long) low) & LONG_TO_INT_MASK);
         }
-
-    }
-
-    static class Hasher {
-        private long time = System.nanoTime() + System.currentTimeMillis();
-
-        private int shuffle(long x) {
-            x += time;
-            x += 0x9e3779b97f4a7c15L;
-            x = (x ^ (x >>> 30)) * 0xbf58476d1ce4e5b9L;
-            x = (x ^ (x >>> 27)) * 0x94d049bb133111ebL;
-            return (int) (x ^ (x >>> 31));
-        }
-
-        public int hash(long x) {
-            return shuffle(x);
-        }
-
-    }
-
-    static interface LongIterator {
-        boolean hasNext();
-
-        long next();
-
-    }
-
-    static class Node {
-        int id;
-        int l;
-        int r;
-        List<Node> next = new ArrayList<>();
 
     }
 }
