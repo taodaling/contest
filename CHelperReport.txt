@@ -1,2 +1,2 @@
-46 src/main/java/contest/B. Orac and Medians.json
+37 src/main/java/contest/D. Destiny.json
 0

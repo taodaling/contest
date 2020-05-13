@@ -28,148 +28,253 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            BOracAndMedians solver = new BOracAndMedians();
-            int testCount = Integer.parseInt(in.next());
-            for (int i = 1; i <= testCount; i++)
-                solver.solve(i, in, out);
+            DDestiny solver = new DDestiny();
+            solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class BOracAndMedians {
-        String yes = "yes";
-        String no = "no";
-
+    static class DDestiny {
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            int k = in.readInt();
+            int q = in.readInt();
             int[] a = new int[n];
-            IntegerList zero = new IntegerList(n);
-
             for (int i = 0; i < n; i++) {
-                a[i] = in.readInt();
-                if (a[i] == k) {
-                    zero.add(i);
-                }
-                a[i] = a[i] < k ? -1 : 1;
+                a[i] = in.readInt() - 1;
             }
 
-            if (zero.isEmpty()) {
-                out.println(no);
-                return;
-            }
-            if (zero.size() == n) {
-                out.println(yes);
-                return;
+            Query[] qs = new Query[q];
+            for (int i = 0; i < q; i++) {
+                qs[i] = new Query();
+                qs[i].l = in.readInt() - 1;
+                qs[i].r = in.readInt() - 1;
+                qs[i].atLeast = (int) DigitUtils.minimumIntegerGreaterThanDiv(qs[i].r - qs[i].l + 1, in.readInt());
             }
 
-            IntegerPreSum ips = new IntegerPreSum(i -> a[i], n);
-            int min = (int) 1e9;
+            int[] cnts = new int[n];
             for (int i = 0; i < n; i++) {
-                if (ips.prefix(i) - min > 0) {
-                    out.println(yes);
-                    return;
-                }
-                min = Math.min(min, ips.prefix(i - 1));
+                cnts[a[i]]++;
             }
+            Handler handler = new Handler(n, cnts);
+            MoOnArray.handle(a, qs.clone(), handler, 600);
 
-            out.println(no);
+            for (Query query : qs) {
+                if (query.ans == -1) {
+                    out.println(-1);
+                    continue;
+                }
+                out.println(query.ans + 1);
+            }
         }
 
     }
 
-    static class IntegerList implements Cloneable {
-        private int size;
-        private int cap;
-        private int[] data;
-        private static final int[] EMPTY = new int[0];
-
-        public IntegerList(int cap) {
-            this.cap = cap;
-            if (cap == 0) {
-                data = EMPTY;
-            } else {
-                data = new int[cap];
+    static class MoOnArray {
+        public static <Q extends MoOnArray.Query> void handle(int[] data, Q[] queries, MoOnArray.IntHandler<Q> handler, int blockSize) {
+            if (queries.length == 0 || data.length == 0) {
+                return;
             }
-        }
 
-        public IntegerList(IntegerList list) {
-            this.size = list.size;
-            this.cap = list.cap;
-            this.data = Arrays.copyOf(list.data, size);
-        }
-
-        public IntegerList() {
-            this(0);
-        }
-
-        public void ensureSpace(int req) {
-            if (req > cap) {
-                while (cap < req) {
-                    cap = Math.max(cap + 10, 2 * cap);
+            Arrays.sort(queries, (a, b) -> {
+                int ans = a.getL() / blockSize - b.getL() / blockSize;
+                if (ans == 0) {
+                    ans = a.getR() - b.getR();
                 }
-                data = Arrays.copyOf(data, cap);
+                return ans;
+            });
+
+            int ll = queries[0].getL();
+            int rr = ll - 1;
+            for (Q q : queries) {
+                int l = q.getL();
+                int r = q.getR();
+                while (l < ll) {
+                    ll--;
+                    handler.add(ll, data[ll]);
+                }
+                while (r > rr) {
+                    rr++;
+                    handler.add(rr, data[rr]);
+                }
+                while (l > ll) {
+                    handler.remove(ll, data[ll]);
+                    ll++;
+                }
+                while (r < rr) {
+                    handler.remove(rr, data[rr]);
+                    rr--;
+                }
+                handler.answer(q);
             }
         }
 
-        public void add(int x) {
-            ensureSpace(size + 1);
-            data[size++] = x;
+        public interface Query {
+            int getL();
+
+            int getR();
+
         }
 
-        public void addAll(int[] x, int offset, int len) {
-            ensureSpace(size + len);
-            System.arraycopy(x, offset, data, size, len);
-            size += len;
+        public interface IntHandler<Q> {
+            void add(int i, int x);
+
+            void remove(int i, int x);
+
+            void answer(Q q);
+
         }
 
-        public void addAll(IntegerList list) {
-            addAll(list.data, 0, list.size);
+    }
+
+    static class DigitUtils {
+        private DigitUtils() {
         }
 
-        public int size() {
-            return size;
+        public static long minimumIntegerGreaterThanDiv(long a, long b) {
+            return floorDiv(a, b) + 1;
         }
 
-        public int[] toArray() {
-            return Arrays.copyOf(data, size);
+        public static long floorDiv(long a, long b) {
+            return a < 0 ? -ceilDiv(-a, b) : a / b;
         }
 
-        public boolean isEmpty() {
-            return size == 0;
+        public static int floorDiv(int a, int b) {
+            return a < 0 ? -ceilDiv(-a, b) : a / b;
         }
 
-        public String toString() {
-            return Arrays.toString(toArray());
-        }
-
-        public boolean equals(Object obj) {
-            if (!(obj instanceof IntegerList)) {
-                return false;
+        public static long ceilDiv(long a, long b) {
+            if (a < 0) {
+                return -floorDiv(-a, b);
             }
-            IntegerList other = (IntegerList) obj;
-            return SequenceUtils.equal(data, 0, size - 1, other.data, 0, other.size - 1);
-        }
-
-        public int hashCode() {
-            int h = 1;
-            for (int i = 0; i < size; i++) {
-                h = h * 31 + Integer.hashCode(data[i]);
+            long c = a / b;
+            if (c * b < a) {
+                return c + 1;
             }
-            return h;
+            return c;
         }
 
-        public IntegerList clone() {
-            IntegerList ans = new IntegerList();
-            ans.addAll(this);
-            return ans;
+        public static int ceilDiv(int a, int b) {
+            if (a < 0) {
+                return -floorDiv(-a, b);
+            }
+            int c = a / b;
+            if (c * b < a) {
+                return c + 1;
+            }
+            return c;
+        }
+
+    }
+
+    static class Query implements MoOnArray.Query {
+        int l;
+        int r;
+        int atLeast;
+        int ans;
+
+        public int getL() {
+            return l;
+        }
+
+        public int getR() {
+            return r;
+        }
+
+    }
+
+    static class Handler implements MoOnArray.IntHandler<Query> {
+        Node[] nodes;
+        Node[][] level;
+        int[] max;
+        int k = 600;
+
+        public Handler(int n, int[] cnts) {
+            nodes = new Node[n];
+            max = new int[DigitUtils.ceilDiv(n, k)];
+            level = new Node[DigitUtils.ceilDiv(n, k)][];
+            for (int i = 0; i < n; i++) {
+                nodes[i] = new Node();
+            }
+
+            for (int i = 0; i < level.length; i++) {
+                int l = i * k;
+                int r = Math.min(l + k - 1, n - 1);
+                int max = 0;
+                for (int j = l; j <= r; j++) {
+                    max = Math.max(cnts[j], max);
+                }
+                level[i] = new Node[max + 1];
+
+                for (int j = l; j <= r; j++) {
+                    attach(i, nodes[j]);
+                }
+            }
+        }
+
+        public void attach(int i, Node node) {
+            node.next = level[i][node.cnt];
+            if (level[i][node.cnt] != null) {
+                level[i][node.cnt].prev = node;
+            }
+            level[i][node.cnt] = node;
+        }
+
+        public void detach(int i, Node node) {
+            if (node.prev == null) {
+                level[i][node.cnt] = node.next;
+            } else {
+                node.prev.next = node.next;
+            }
+            if (node.next != null) {
+                node.next.prev = node.prev;
+            }
+            node.prev = node.next = null;
+        }
+
+        public void add(int i, int x) {
+            int g = x / k;
+            detach(g, nodes[x]);
+            nodes[x].cnt++;
+            attach(g, nodes[x]);
+            max[g] = Math.max(max[g], nodes[x].cnt);
+        }
+
+        public void remove(int i, int x) {
+            int g = x / k;
+            detach(g, nodes[x]);
+            nodes[x].cnt--;
+            attach(g, nodes[x]);
+            if (max[g] == nodes[x].cnt + 1 && level[g][nodes[x].cnt + 1] == null) {
+                max[g] = nodes[x].cnt;
+            }
+        }
+
+        public void answer(Query query) {
+            int index = -1;
+            for (int i = 0; i < max.length; i++) {
+                if (max[i] >= query.atLeast) {
+                    index = i;
+                    break;
+                }
+            }
+
+            if (index == -1) {
+                query.ans = -1;
+                return;
+            }
+
+            for (int i = index * k; ; i++) {
+                if (nodes[i].cnt >= query.atLeast) {
+                    query.ans = i;
+                    return;
+                }
+            }
         }
 
     }
 
     static class FastInput {
         private final InputStream is;
-        private StringBuilder defaultStringBuf = new StringBuilder(1 << 13);
         private byte[] buf = new byte[1 << 13];
         private int bufLen;
         private int bufOffset;
@@ -200,10 +305,6 @@ public class Main {
             }
         }
 
-        public String next() {
-            return readString();
-        }
-
         public int readInt() {
             int sign = 1;
 
@@ -227,37 +328,6 @@ public class Main {
             }
 
             return val;
-        }
-
-        public String readString(StringBuilder builder) {
-            skipBlank();
-
-            while (next > 32) {
-                builder.append((char) next);
-                next = read();
-            }
-
-            return builder.toString();
-        }
-
-        public String readString() {
-            defaultStringBuf.setLength(0);
-            return readString(defaultStringBuf);
-        }
-
-    }
-
-    static class SequenceUtils {
-        public static boolean equal(int[] a, int al, int ar, int[] b, int bl, int br) {
-            if ((ar - al) != (br - bl)) {
-                return false;
-            }
-            for (int i = al, j = bl; i <= ar; i++, j++) {
-                if (a[i] != b[j]) {
-                    return false;
-                }
-            }
-            return true;
         }
 
     }
@@ -289,12 +359,12 @@ public class Main {
             return this;
         }
 
-        public FastOutput append(String c) {
+        public FastOutput append(int c) {
             cache.append(c);
             return this;
         }
 
-        public FastOutput println(String c) {
+        public FastOutput println(int c) {
             return append(c).println();
         }
 
@@ -329,38 +399,10 @@ public class Main {
 
     }
 
-    static class IntegerPreSum {
-        private int[] pre;
-        private int n;
-
-        public IntegerPreSum(int n) {
-            pre = new int[n];
-        }
-
-        public void populate(IntToIntegerFunction a, int n) {
-            this.n = n;
-            pre[0] = a.apply(0);
-            for (int i = 1; i < n; i++) {
-                pre[i] = pre[i - 1] + a.apply(i);
-            }
-        }
-
-        public IntegerPreSum(IntToIntegerFunction a, int n) {
-            this(n);
-            populate(a, n);
-        }
-
-        public int prefix(int i) {
-            if (i < 0) {
-                return 0;
-            }
-            return pre[Math.min(i, n - 1)];
-        }
-
-    }
-
-    static interface IntToIntegerFunction {
-        int apply(int x);
+    static class Node {
+        Node prev;
+        Node next;
+        int cnt;
 
     }
 }
