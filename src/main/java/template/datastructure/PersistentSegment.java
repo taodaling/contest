@@ -60,4 +60,26 @@ public class PersistentSegment implements Cloneable {
             throw new RuntimeException(e);
         }
     }
+
+
+
+    private void toString(StringBuilder builder) {
+        if (left == NIL && right == NIL) {
+            builder.append("val").append(",");
+            return;
+        }
+        pushDown();
+        left.toString(builder);
+        right.toString(builder);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        clone().toString(builder);
+        if (builder.length() > 0) {
+            builder.setLength(builder.length() - 1);
+        }
+        return builder.toString();
+    }
 }

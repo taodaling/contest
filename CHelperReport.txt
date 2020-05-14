@@ -1,2 +1,2 @@
-37 src/main/java/contest/D. Destiny.json
+39 src/main/java/contest/E. In a Trap.json
 0

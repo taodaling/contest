@@ -2,9 +2,10 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.io.UncheckedIOException;
+import java.util.List;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
@@ -28,306 +29,126 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            DDestiny solver = new DDestiny();
+            EInATrap solver = new EInATrap();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class DDestiny {
+    static class EInATrap {
+        int k = 8;
+        int height = 15;
+        BNode btree = BNode.build(height);
+
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
             int q = in.readInt();
-            int[] a = new int[n];
-            for (int i = 0; i < n; i++) {
-                a[i] = in.readInt() - 1;
-            }
 
-            Query[] qs = new Query[q];
-            for (int i = 0; i < q; i++) {
-                qs[i] = new Query();
-                qs[i].l = in.readInt() - 1;
-                qs[i].r = in.readInt() - 1;
-                qs[i].atLeast = (int) DigitUtils.minimumIntegerGreaterThanDiv(qs[i].r - qs[i].l + 1, in.readInt());
-            }
-
-            int[] cnts = new int[n];
-            for (int i = 0; i < n; i++) {
-                cnts[a[i]]++;
-            }
-            Handler handler = new Handler(n, cnts);
-            MoOnArray.handle(a, qs.clone(), handler, 600);
-
-            for (Query query : qs) {
-                if (query.ans == -1) {
-                    out.println(-1);
-                    continue;
-                }
-                out.println(query.ans + 1);
-            }
-        }
-
-    }
-
-    static class MoOnArray {
-        public static <Q extends MoOnArray.Query> void handle(int[] data, Q[] queries, MoOnArray.IntHandler<Q> handler, int blockSize) {
-            if (queries.length == 0 || data.length == 0) {
-                return;
-            }
-
-            Arrays.sort(queries, (a, b) -> {
-                int ans = a.getL() / blockSize - b.getL() / blockSize;
-                if (ans == 0) {
-                    ans = a.getR() - b.getR();
-                }
-                return ans;
-            });
-
-            int ll = queries[0].getL();
-            int rr = ll - 1;
-            for (Q q : queries) {
-                int l = q.getL();
-                int r = q.getR();
-                while (l < ll) {
-                    ll--;
-                    handler.add(ll, data[ll]);
-                }
-                while (r > rr) {
-                    rr++;
-                    handler.add(rr, data[rr]);
-                }
-                while (l > ll) {
-                    handler.remove(ll, data[ll]);
-                    ll++;
-                }
-                while (r < rr) {
-                    handler.remove(rr, data[rr]);
-                    rr--;
-                }
-                handler.answer(q);
-            }
-        }
-
-        public interface Query {
-            int getL();
-
-            int getR();
-
-        }
-
-        public interface IntHandler<Q> {
-            void add(int i, int x);
-
-            void remove(int i, int x);
-
-            void answer(Q q);
-
-        }
-
-    }
-
-    static class DigitUtils {
-        private DigitUtils() {
-        }
-
-        public static long minimumIntegerGreaterThanDiv(long a, long b) {
-            return floorDiv(a, b) + 1;
-        }
-
-        public static long floorDiv(long a, long b) {
-            return a < 0 ? -ceilDiv(-a, b) : a / b;
-        }
-
-        public static int floorDiv(int a, int b) {
-            return a < 0 ? -ceilDiv(-a, b) : a / b;
-        }
-
-        public static long ceilDiv(long a, long b) {
-            if (a < 0) {
-                return -floorDiv(-a, b);
-            }
-            long c = a / b;
-            if (c * b < a) {
-                return c + 1;
-            }
-            return c;
-        }
-
-        public static int ceilDiv(int a, int b) {
-            if (a < 0) {
-                return -floorDiv(-a, b);
-            }
-            int c = a / b;
-            if (c * b < a) {
-                return c + 1;
-            }
-            return c;
-        }
-
-    }
-
-    static class Query implements MoOnArray.Query {
-        int l;
-        int r;
-        int atLeast;
-        int ans;
-
-        public int getL() {
-            return l;
-        }
-
-        public int getR() {
-            return r;
-        }
-
-    }
-
-    static class Handler implements MoOnArray.IntHandler<Query> {
-        Node[] nodes;
-        Node[][] level;
-        int[] max;
-        int k = 600;
-
-        public Handler(int n, int[] cnts) {
-            nodes = new Node[n];
-            max = new int[DigitUtils.ceilDiv(n, k)];
-            level = new Node[DigitUtils.ceilDiv(n, k)][];
+            Node[] nodes = new Node[n];
             for (int i = 0; i < n; i++) {
                 nodes[i] = new Node();
+                nodes[i].id = i;
+                nodes[i].a = in.readInt();
             }
 
-            for (int i = 0; i < level.length; i++) {
-                int l = i * k;
-                int r = Math.min(l + k - 1, n - 1);
-                int max = 0;
-                for (int j = l; j <= r; j++) {
-                    max = Math.max(cnts[j], max);
-                }
-                level[i] = new Node[max + 1];
+            for (int i = 0; i < n - 1; i++) {
+                Node a = nodes[in.readInt() - 1];
+                Node b = nodes[in.readInt() - 1];
+                a.next.add(b);
+                b.next.add(a);
+            }
 
-                for (int j = l; j <= r; j++) {
-                    attach(i, nodes[j]);
-                }
+            dfs(nodes[0], null, 0);
+            for (int i = 0; i < n; i++) {
+                prepare(nodes[i]);
+            }
+
+            for (int i = 0; i < q; i++) {
+                Node u = nodes[in.readInt() - 1];
+                Node v = nodes[in.readInt() - 1];
+                int ans = solve(v, 0, 0, u.depth);
+                out.println(ans);
             }
         }
 
-        public void attach(int i, Node node) {
-            node.next = level[i][node.cnt];
-            if (level[i][node.cnt] != null) {
-                level[i][node.cnt].prev = node;
+        public int solve(Node root, int step, int dist, int targetHeight) {
+            if (root == null || root.depth < targetHeight) {
+                return 0;
             }
-            level[i][node.cnt] = node;
-        }
 
-        public void detach(int i, Node node) {
-            if (node.prev == null) {
-                level[i][node.cnt] = node.next;
+            int ans;
+            if (root.depth - (1 << k) + 1 >= targetHeight) {
+                ans = Math.max(root.dp[step], solve(root.prev, step + 1, dist + (1 << k), targetHeight));
             } else {
-                node.prev.next = node.next;
-            }
-            if (node.next != null) {
-                node.next.prev = node.prev;
-            }
-            node.prev = node.next = null;
-        }
-
-        public void add(int i, int x) {
-            int g = x / k;
-            detach(g, nodes[x]);
-            nodes[x].cnt++;
-            attach(g, nodes[x]);
-            max[g] = Math.max(max[g], nodes[x].cnt);
-        }
-
-        public void remove(int i, int x) {
-            int g = x / k;
-            detach(g, nodes[x]);
-            nodes[x].cnt--;
-            attach(g, nodes[x]);
-            if (max[g] == nodes[x].cnt + 1 && level[g][nodes[x].cnt + 1] == null) {
-                max[g] = nodes[x].cnt;
-            }
-        }
-
-        public void answer(Query query) {
-            int index = -1;
-            for (int i = 0; i < max.length; i++) {
-                if (max[i] >= query.atLeast) {
-                    index = i;
-                    break;
+                ans = 0;
+                while (root != null && root.depth >= targetHeight) {
+                    ans = Math.max(root.a ^ dist, ans);
+                    dist++;
+                    root = root.parent;
                 }
             }
 
-            if (index == -1) {
-                query.ans = -1;
+            return ans;
+        }
+
+        public void dfs(Node root, Node p, int depth) {
+            root.depth = depth;
+            root.parent = p;
+            for (Node node : root.next) {
+                if (node == p) {
+                    continue;
+                }
+                dfs(node, root, depth + 1);
+            }
+        }
+
+        public void up(Node root, int dist, int x) {
+            if (root == null || dist >= (1 << k)) {
                 return;
             }
+            btree.add(height, dist ^ root.a, x);
+            up(root.parent, dist + 1, x);
+        }
 
-            for (int i = index * k; ; i++) {
-                if (nodes[i].cnt >= query.atLeast) {
-                    query.ans = i;
-                    return;
-                }
+        public Node findPrev(Node root, int dist) {
+            if (root == null || dist >= (1 << k)) {
+                return root;
             }
+            return findPrev(root.parent, dist + 1);
+        }
+
+        public void prepare(Node root) {
+            root.prev = findPrev(root, 0);
+            up(root, 0, 1);
+            for (int i = 0; i < root.dp.length; i++) {
+                root.dp[i] = btree.find(height, i << k, 0);
+            }
+            up(root, 0, -1);
         }
 
     }
 
-    static class FastInput {
-        private final InputStream is;
-        private byte[] buf = new byte[1 << 13];
-        private int bufLen;
-        private int bufOffset;
-        private int next;
-
-        public FastInput(InputStream is) {
-            this.is = is;
+    static class Bits {
+        private Bits() {
         }
 
-        private int read() {
-            while (bufLen == bufOffset) {
-                bufOffset = 0;
-                try {
-                    bufLen = is.read(buf);
-                } catch (IOException e) {
-                    bufLen = -1;
-                }
-                if (bufLen == -1) {
-                    return -1;
-                }
-            }
-            return buf[bufOffset++];
+        public static int bitAt(int x, int i) {
+            return (x >>> i) & 1;
         }
 
-        public void skipBlank() {
-            while (next >= 0 && next <= 32) {
-                next = read();
-            }
-        }
+    }
 
-        public int readInt() {
-            int sign = 1;
+    static class Node {
+        int depth;
+        List<Node> next = new ArrayList<>();
+        int[] dp = new int[256];
+        int id;
+        int a;
+        Node parent;
+        Node prev;
 
-            skipBlank();
-            if (next == '+' || next == '-') {
-                sign = next == '+' ? 1 : -1;
-                next = read();
-            }
-
-            int val = 0;
-            if (sign == 1) {
-                while (next >= '0' && next <= '9') {
-                    val = val * 10 + next - '0';
-                    next = read();
-                }
-            } else {
-                while (next >= '0' && next <= '9') {
-                    val = val * 10 - next + '0';
-                    next = read();
-                }
-            }
-
-            return val;
+        public String toString() {
+            return "" + id;
         }
 
     }
@@ -399,10 +220,101 @@ public class Main {
 
     }
 
-    static class Node {
-        Node prev;
-        Node next;
+    static class BNode {
+        BNode[] next = new BNode[2];
         int cnt;
+
+        static BNode build(int bit) {
+            if (bit < 0) {
+                return new BNode();
+            }
+            BNode ans = new BNode();
+            ans.next[0] = build(bit - 1);
+            ans.next[1] = build(bit - 1);
+            return ans;
+        }
+
+        public void add(int bit, int val, int x) {
+            cnt += x;
+            if (bit < 0) {
+                return;
+            }
+            next[Bits.bitAt(val, bit)].add(bit - 1, val, x);
+        }
+
+        public int find(int bit, int xor, int built) {
+            if (cnt == 0) {
+                return -1;
+            }
+            if (bit < 0) {
+                return built;
+            }
+            int val = Bits.bitAt(xor, bit);
+            int ans = next[val ^ 1].find(bit - 1, xor, built | ((1 ^ val) << bit));
+            if (ans == -1) {
+                ans = next[val].find(bit - 1, xor, built | (val << bit));
+            }
+            return ans;
+        }
+
+    }
+
+    static class FastInput {
+        private final InputStream is;
+        private byte[] buf = new byte[1 << 13];
+        private int bufLen;
+        private int bufOffset;
+        private int next;
+
+        public FastInput(InputStream is) {
+            this.is = is;
+        }
+
+        private int read() {
+            while (bufLen == bufOffset) {
+                bufOffset = 0;
+                try {
+                    bufLen = is.read(buf);
+                } catch (IOException e) {
+                    bufLen = -1;
+                }
+                if (bufLen == -1) {
+                    return -1;
+                }
+            }
+            return buf[bufOffset++];
+        }
+
+        public void skipBlank() {
+            while (next >= 0 && next <= 32) {
+                next = read();
+            }
+        }
+
+        public int readInt() {
+            int sign = 1;
+
+            skipBlank();
+            if (next == '+' || next == '-') {
+                sign = next == '+' ? 1 : -1;
+                next = read();
+            }
+
+            int val = 0;
+            if (sign == 1) {
+                while (next >= '0' && next <= '9') {
+                    val = val * 10 + next - '0';
+                    next = read();
+                }
+            } else {
+                while (next >= '0' && next <= '9') {
+                    val = val * 10 - next + '0';
+                    next = read();
+                }
+            }
+
+            return val;
+        }
 
     }
 }
