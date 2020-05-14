@@ -1,2 +1,2 @@
-39 src/main/java/contest/E. In a Trap.json
+53 src/main/java/contest/C. Ever-Hungry Krakozyabra.json
 0

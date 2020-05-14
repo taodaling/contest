@@ -2,10 +2,10 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintStream;
+import java.util.Arrays;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.io.UncheckedIOException;
-import java.util.List;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
@@ -29,126 +29,286 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            EInATrap solver = new EInATrap();
+            CEverHungryKrakozyabra solver = new CEverHungryKrakozyabra();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class EInATrap {
-        int k = 8;
-        int height = 15;
-        BNode btree = BNode.build(height);
+    static class CEverHungryKrakozyabra {
+        Radix radix = new Radix(10);
+        Debug debug = new Debug(true);
+        int[] lBits;
+        int[] rBits;
+        LongList all = new LongList(5000000);
 
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            int n = in.readInt();
-            int q = in.readInt();
+            long l = in.readLong();
+            long r = in.readLong();
+            lBits = radix.decompose(l);
+            rBits = radix.decompose(r);
 
-            Node[] nodes = new Node[n];
-            for (int i = 0; i < n; i++) {
-                nodes[i] = new Node();
-                nodes[i].id = i;
-                nodes[i].a = in.readInt();
-            }
+            dfs(1, 0, 0);
 
-            for (int i = 0; i < n - 1; i++) {
-                Node a = nodes[in.readInt() - 1];
-                Node b = nodes[in.readInt() - 1];
-                a.next.add(b);
-                b.next.add(a);
-            }
+            int ans = 0;
+            int[] cnt = new int[10];
+            debug.debug("m", all.size());
+            //all.unique();
+            for (int i = all.size() - 1; i >= 0; i--) {
+                long val = all.get(i);
+                int sum = 0;
 
-            dfs(nodes[0], null, 0);
-            for (int i = 0; i < n; i++) {
-                prepare(nodes[i]);
-            }
+                if (val >= l && val <= r) {
+                    ans++;
+                    continue;
+                }
 
-            for (int i = 0; i < q; i++) {
-                Node u = nodes[in.readInt() - 1];
-                Node v = nodes[in.readInt() - 1];
-                int ans = solve(v, 0, 0, u.depth);
-                out.println(ans);
-            }
-        }
-
-        public int solve(Node root, int step, int dist, int targetHeight) {
-            if (root == null || root.depth < targetHeight) {
-                return 0;
-            }
-
-            int ans;
-            if (root.depth - (1 << k) + 1 >= targetHeight) {
-                ans = Math.max(root.dp[step], solve(root.prev, step + 1, dist + (1 << k), targetHeight));
-            } else {
-                ans = 0;
-                while (root != null && root.depth >= targetHeight) {
-                    ans = Math.max(root.a ^ dist, ans);
-                    dist++;
-                    root = root.parent;
+                while (val > 0) {
+                    cnt[(int) (val % 10)]++;
+                    val /= 10;
+                    sum++;
+                }
+                cnt[0] = (int) 1e9;
+                if (test(cnt, sum, 18, true, true)) {
+                    ans++;
+                    // debug.debug("val", all.get(i));
+                } else {
+                    Arrays.fill(cnt, 0);
                 }
             }
 
+            out.println(ans);
+        }
+
+        public boolean test(int[] cnts, int sum, int i, boolean ceil, boolean floor) {
+            if (sum > i + 1) {
+                return false;
+            }
+            if (i < 0 || !ceil && !floor) {
+                return true;
+            }
+
+            int l = lBits[i];
+            int r = rBits[i];
+            int start = floor ? l : 0;
+            int end = ceil ? r : 9;
+            for (int j = start; j <= end; j++) {
+                if (cnts[j] == 0) {
+                    continue;
+                }
+                cnts[j]--;
+                if (test(cnts, sum - (j > 0 ? 1 : 0), i - 1, ceil && j == r, floor && j == l)) {
+                    return true;
+                }
+                cnts[j]++;
+            }
+
+            return false;
+        }
+
+        public void dfs(int val, int cnt, long built) {
+            if (val == 10) {
+                all.add(built);
+                return;
+            }
+            for (; cnt <= 18; cnt++, built = built * 10 + val) {
+                dfs(val + 1, cnt, built);
+            }
+        }
+
+    }
+
+    static class LongList implements LongRandomAccess, Cloneable {
+        private int size;
+        private int cap;
+        private long[] data;
+        private static final long[] EMPTY = new long[0];
+
+        public LongList(int cap) {
+            this.cap = cap;
+            if (cap == 0) {
+                data = EMPTY;
+            } else {
+                data = new long[cap];
+            }
+        }
+
+        public LongList(LongList list) {
+            this.size = list.size;
+            this.cap = list.cap;
+            this.data = Arrays.copyOf(list.data, size);
+        }
+
+        public LongList() {
+            this(0);
+        }
+
+        public void ensureSpace(int req) {
+            if (req > cap) {
+                while (cap < req) {
+                    cap = Math.max(cap + 10, 2 * cap);
+                }
+                data = Arrays.copyOf(data, cap);
+            }
+        }
+
+        private void checkRange(int i) {
+            if (i < 0 || i >= size) {
+                throw new ArrayIndexOutOfBoundsException();
+            }
+        }
+
+        public long get(int i) {
+            checkRange(i);
+            return data[i];
+        }
+
+        public void add(long x) {
+            ensureSpace(size + 1);
+            data[size++] = x;
+        }
+
+        public void addAll(long[] x, int offset, int len) {
+            ensureSpace(size + len);
+            System.arraycopy(x, offset, data, size, len);
+            size += len;
+        }
+
+        public void addAll(LongList list) {
+            addAll(list.data, 0, list.size);
+        }
+
+        public long tail() {
+            checkRange(0);
+            return data[size - 1];
+        }
+
+        public int size() {
+            return size;
+        }
+
+        public long[] toArray() {
+            return Arrays.copyOf(data, size);
+        }
+
+        public String toString() {
+            return Arrays.toString(toArray());
+        }
+
+        public boolean equals(Object obj) {
+            if (!(obj instanceof LongList)) {
+                return false;
+            }
+            LongList other = (LongList) obj;
+            return SequenceUtils.equal(data, 0, size - 1, other.data, 0, other.size - 1);
+        }
+
+        public int hashCode() {
+            int h = 1;
+            for (int i = 0; i < size; i++) {
+                h = h * 31 + Long.hashCode(data[i]);
+            }
+            return h;
+        }
+
+        public LongList clone() {
+            LongList ans = new LongList();
+            ans.addAll(this);
             return ans;
         }
 
-        public void dfs(Node root, Node p, int depth) {
-            root.depth = depth;
-            root.parent = p;
-            for (Node node : root.next) {
-                if (node == p) {
-                    continue;
+    }
+
+    static class FastInput {
+        private final InputStream is;
+        private byte[] buf = new byte[1 << 13];
+        private int bufLen;
+        private int bufOffset;
+        private int next;
+
+        public FastInput(InputStream is) {
+            this.is = is;
+        }
+
+        private int read() {
+            while (bufLen == bufOffset) {
+                bufOffset = 0;
+                try {
+                    bufLen = is.read(buf);
+                } catch (IOException e) {
+                    bufLen = -1;
                 }
-                dfs(node, root, depth + 1);
+                if (bufLen == -1) {
+                    return -1;
+                }
+            }
+            return buf[bufOffset++];
+        }
+
+        public void skipBlank() {
+            while (next >= 0 && next <= 32) {
+                next = read();
             }
         }
 
-        public void up(Node root, int dist, int x) {
-            if (root == null || dist >= (1 << k)) {
-                return;
-            }
-            btree.add(height, dist ^ root.a, x);
-            up(root.parent, dist + 1, x);
-        }
+        public long readLong() {
+            int sign = 1;
 
-        public Node findPrev(Node root, int dist) {
-            if (root == null || dist >= (1 << k)) {
-                return root;
+            skipBlank();
+            if (next == '+' || next == '-') {
+                sign = next == '+' ? 1 : -1;
+                next = read();
             }
-            return findPrev(root.parent, dist + 1);
-        }
 
-        public void prepare(Node root) {
-            root.prev = findPrev(root, 0);
-            up(root, 0, 1);
-            for (int i = 0; i < root.dp.length; i++) {
-                root.dp[i] = btree.find(height, i << k, 0);
+            long val = 0;
+            if (sign == 1) {
+                while (next >= '0' && next <= '9') {
+                    val = val * 10 + next - '0';
+                    next = read();
+                }
+            } else {
+                while (next >= '0' && next <= '9') {
+                    val = val * 10 - next + '0';
+                    next = read();
+                }
             }
-            up(root, 0, -1);
+
+            return val;
         }
 
     }
 
-    static class Bits {
-        private Bits() {
+    static class Radix {
+        private long[] pow;
+        private long base;
+
+        public Radix(long base) {
+            if (base <= 1) {
+                throw new IllegalArgumentException();
+            }
+            this.base = base;
+            LongList ll = new LongList(64);
+            ll.add(1);
+            while (!DigitUtils.isMultiplicationOverflow(ll.tail(), base, Long.MAX_VALUE)) {
+                ll.add(ll.tail() * base);
+            }
+            pow = ll.toArray();
         }
 
-        public static int bitAt(int x, int i) {
-            return (x >>> i) & 1;
+        public int bitCount() {
+            return pow.length;
         }
 
-    }
+        public int[] decompose(long x) {
+            return decompose(x, new int[bitCount()]);
+        }
 
-    static class Node {
-        int depth;
-        List<Node> next = new ArrayList<>();
-        int[] dp = new int[256];
-        int id;
-        int a;
-        Node parent;
-        Node prev;
-
-        public String toString() {
-            return "" + id;
+        public int[] decompose(long x, int[] ans) {
+            for (int i = 0; i < ans.length; i++) {
+                ans[i] = (int) (x % base);
+                x /= base;
+            }
+            return ans;
         }
 
     }
@@ -220,100 +380,68 @@ public class Main {
 
     }
 
-    static class BNode {
-        BNode[] next = new BNode[2];
-        int cnt;
+    static interface LongRandomAccess {
+    }
 
-        static BNode build(int bit) {
-            if (bit < 0) {
-                return new BNode();
-            }
-            BNode ans = new BNode();
-            ans.next[0] = build(bit - 1);
-            ans.next[1] = build(bit - 1);
-            return ans;
+    static class DigitUtils {
+        private DigitUtils() {
         }
 
-        public void add(int bit, int val, int x) {
-            cnt += x;
-            if (bit < 0) {
-                return;
+        public static boolean isMultiplicationOverflow(long a, long b, long limit) {
+            if (limit < 0) {
+                limit = -limit;
             }
-            next[Bits.bitAt(val, bit)].add(bit - 1, val, x);
-        }
-
-        public int find(int bit, int xor, int built) {
-            if (cnt == 0) {
-                return -1;
+            if (a < 0) {
+                a = -a;
             }
-            if (bit < 0) {
-                return built;
+            if (b < 0) {
+                b = -b;
             }
-            int val = Bits.bitAt(xor, bit);
-            int ans = next[val ^ 1].find(bit - 1, xor, built | ((1 ^ val) << bit));
-            if (ans == -1) {
-                ans = next[val].find(bit - 1, xor, built | (val << bit));
+            if (a == 0 || b == 0) {
+                return false;
             }
-            return ans;
+            //a * b > limit => a > limit / b
+            return a > limit / b;
         }
 
     }
 
-    static class FastInput {
-        private final InputStream is;
-        private byte[] buf = new byte[1 << 13];
-        private int bufLen;
-        private int bufOffset;
-        private int next;
+    static class Debug {
+        private boolean offline;
+        private PrintStream out = System.err;
 
-        public FastInput(InputStream is) {
-            this.is = is;
+        public Debug(boolean enable) {
+            offline = enable && System.getSecurityManager() == null;
         }
 
-        private int read() {
-            while (bufLen == bufOffset) {
-                bufOffset = 0;
-                try {
-                    bufLen = is.read(buf);
-                } catch (IOException e) {
-                    bufLen = -1;
-                }
-                if (bufLen == -1) {
-                    return -1;
-                }
+        public Debug debug(String name, int x) {
+            if (offline) {
+                debug(name, "" + x);
             }
-            return buf[bufOffset++];
+            return this;
         }
 
-        public void skipBlank() {
-            while (next >= 0 && next <= 32) {
-                next = read();
+        public Debug debug(String name, String x) {
+            if (offline) {
+                out.printf("%s=%s", name, x);
+                out.println();
             }
+            return this;
         }
 
-        public int readInt() {
-            int sign = 1;
+    }
 
-            skipBlank();
-            if (next == '+' || next == '-') {
-                sign = next == '+' ? 1 : -1;
-                next = read();
+    static class SequenceUtils {
+        public static boolean equal(long[] a, int al, int ar, long[] b, int bl, int br) {
+            if ((ar - al) != (br - bl)) {
+                return false;
             }
-
-            int val = 0;
-            if (sign == 1) {
-                while (next >= '0' && next <= '9') {
-                    val = val * 10 + next - '0';
-                    next = read();
-                }
-            } else {
-                while (next >= '0' && next <= '9') {
-                    val = val * 10 - next + '0';
-                    next = read();
+            for (int i = al, j = bl; i <= ar; i++, j++) {
+                if (a[i] != b[j]) {
+                    return false;
                 }
             }
-
-            return val;
+            return true;
         }
 
     }
