@@ -5,7 +5,9 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.io.UncheckedIOException;
+import java.util.List;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
@@ -29,192 +31,157 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            CEverHungryKrakozyabra solver = new CEverHungryKrakozyabra();
+            DRedBlackCobweb solver = new DRedBlackCobweb();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class CEverHungryKrakozyabra {
-        Radix radix = new Radix(10);
+    static class DRedBlackCobweb {
+        Modular mod = new Modular(1e9 + 7);
+        Power power = new Power(mod);
+        int fix = 250000;
         Debug debug = new Debug(true);
-        int[] lBits;
-        int[] rBits;
-        LongList all = new LongList(5000000);
+        IntegerBIT add = new IntegerBIT(fix * 2);
+        IntegerBIT sub = new IntegerBIT(fix * 2);
+        int ans = 1;
 
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            long l = in.readLong();
-            long r = in.readLong();
-            lBits = radix.decompose(l);
-            rBits = radix.decompose(r);
+            int n = in.readInt();
+            Node[] nodes = new Node[n];
+            for (int i = 0; i < n; i++) {
+                nodes[i] = new Node();
+                nodes[i].id = i;
+            }
+            for (int i = 0; i < n - 1; i++) {
+                Node u = nodes[in.readInt() - 1];
+                Node v = nodes[in.readInt() - 1];
+                int x = in.readInt();
+                int c = in.readInt();
 
-            dfs(1, 0, 0);
-
-            int ans = 0;
-            int[] cnt = new int[10];
-            debug.debug("m", all.size());
-            //all.unique();
-            for (int i = all.size() - 1; i >= 0; i--) {
-                long val = all.get(i);
-                int sum = 0;
-
-                if (val >= l && val <= r) {
-                    ans++;
-                    continue;
-                }
-
-                while (val > 0) {
-                    cnt[(int) (val % 10)]++;
-                    val /= 10;
-                    sum++;
-                }
-                cnt[0] = (int) 1e9;
-                if (test(cnt, sum, 18, true, true)) {
-                    ans++;
-                    // debug.debug("val", all.get(i));
+                Edge edge = new Edge();
+                edge.a = u;
+                edge.b = v;
+                edge.w = x;
+                if (c == 0) {
+                    edge.c0 = 1;
                 } else {
-                    Arrays.fill(cnt, 0);
+                    edge.c1 = 1;
                 }
+
+                u.adj.add(edge);
+                v.adj.add(edge);
             }
 
+            dac(nodes[0]);
             out.println(ans);
         }
 
-        public boolean test(int[] cnts, int sum, int i, boolean ceil, boolean floor) {
-            if (sum > i + 1) {
-                return false;
-            }
-            if (i < 0 || !ceil && !floor) {
-                return true;
-            }
-
-            int l = lBits[i];
-            int r = rBits[i];
-            int start = floor ? l : 0;
-            int end = ceil ? r : 9;
-            for (int j = start; j <= end; j++) {
-                if (cnts[j] == 0) {
+        public void dfsForSize(Node root, Node p) {
+            root.size = 1;
+            for (Edge e : root.adj) {
+                Node node = e.other(root);
+                if (node == p) {
                     continue;
                 }
-                cnts[j]--;
-                if (test(cnts, sum - (j > 0 ? 1 : 0), i - 1, ceil && j == r, floor && j == l)) {
-                    return true;
-                }
-                cnts[j]++;
+                dfsForSize(node, root);
+                root.size += node.size;
             }
-
-            return false;
         }
 
-        public void dfs(int val, int cnt, long built) {
-            if (val == 10) {
-                all.add(built);
-                return;
+        public Node dfsForCentroid(Node root, Node p, int total) {
+            int max = total - root.size;
+            for (Edge e : root.adj) {
+                Node node = e.other(root);
+                if (node == p) {
+                    continue;
+                }
+                Node ans = dfsForCentroid(node, root, total);
+                if (ans != null) {
+                    return ans;
+                }
+                max = Math.max(max, node.size);
             }
-            for (; cnt <= 18; cnt++, built = built * 10 + val) {
-                dfs(val + 1, cnt, built);
+
+            if (max * 2 <= total) {
+                return root;
+            }
+            return null;
+        }
+
+        public void dfsForAns(Node root, Node p, int a, int b, int prod) {
+            int exp = mod.subtract(add.query(2 * a - b + fix), sub.query(a - 2 * b - 1 + fix));
+            ans = mod.mul(ans, power.pow(prod, exp));
+            for (Edge e : root.adj) {
+                Node node = e.other(root);
+                if (node == p) {
+                    continue;
+                }
+                dfsForAns(node, root, a + e.c0, b + e.c1, mod.mul(prod, e.w));
+            }
+        }
+
+        public void dfsForModify(Node root, Node p, int a, int b, int x) {
+            add.update(b - 2 * a + fix, x);
+            sub.update(b * 2 - a + fix, x);
+            for (Edge e : root.adj) {
+                Node node = e.other(root);
+                if (node == p) {
+                    continue;
+                }
+                dfsForModify(node, root, a + e.c0, b + e.c1, x);
+            }
+        }
+
+        public void dac(Node root) {
+            dfsForSize(root, null);
+            root = dfsForCentroid(root, null, root.size);
+            debug.debug("root", root);
+            add.update(0 + fix, 1);
+            sub.update(0 + fix, 1);
+
+            for (int i = 0; i < 2; i++) {
+                for (Edge e : root.adj) {
+                    Node node = e.other(root);
+                    dfsForAns(node, root, e.c0, e.c1, e.w);
+                    dfsForModify(node, root, e.c0, e.c1, 1);
+                }
+                for (Edge e : root.adj) {
+                    Node node = e.other(root);
+                    dfsForModify(node, root, e.c0, e.c1, -1);
+                }
+                if (i == 0) {
+                    SequenceUtils.reverse(root.adj);
+                    add.update(0 + fix, -1);
+                    sub.update(0 + fix, -1);
+                }
+            }
+            for (Edge e : root.adj) {
+                Node node = e.other(root);
+                node.adj.remove(e);
+                dac(node);
             }
         }
 
     }
 
-    static class LongList implements LongRandomAccess, Cloneable {
-        private int size;
-        private int cap;
-        private long[] data;
-        private static final long[] EMPTY = new long[0];
+    static class SequenceUtils {
+        public static <T> void swap(List<T> data, int i, int j) {
+            T tmp = data.get(i);
+            data.set(i, data.get(j));
+            data.set(j, tmp);
+        }
 
-        public LongList(int cap) {
-            this.cap = cap;
-            if (cap == 0) {
-                data = EMPTY;
-            } else {
-                data = new long[cap];
+        public static <T> void reverse(List<T> data, int l, int r) {
+            while (l < r) {
+                swap(data, l, r);
+                l++;
+                r--;
             }
         }
 
-        public LongList(LongList list) {
-            this.size = list.size;
-            this.cap = list.cap;
-            this.data = Arrays.copyOf(list.data, size);
-        }
-
-        public LongList() {
-            this(0);
-        }
-
-        public void ensureSpace(int req) {
-            if (req > cap) {
-                while (cap < req) {
-                    cap = Math.max(cap + 10, 2 * cap);
-                }
-                data = Arrays.copyOf(data, cap);
-            }
-        }
-
-        private void checkRange(int i) {
-            if (i < 0 || i >= size) {
-                throw new ArrayIndexOutOfBoundsException();
-            }
-        }
-
-        public long get(int i) {
-            checkRange(i);
-            return data[i];
-        }
-
-        public void add(long x) {
-            ensureSpace(size + 1);
-            data[size++] = x;
-        }
-
-        public void addAll(long[] x, int offset, int len) {
-            ensureSpace(size + len);
-            System.arraycopy(x, offset, data, size, len);
-            size += len;
-        }
-
-        public void addAll(LongList list) {
-            addAll(list.data, 0, list.size);
-        }
-
-        public long tail() {
-            checkRange(0);
-            return data[size - 1];
-        }
-
-        public int size() {
-            return size;
-        }
-
-        public long[] toArray() {
-            return Arrays.copyOf(data, size);
-        }
-
-        public String toString() {
-            return Arrays.toString(toArray());
-        }
-
-        public boolean equals(Object obj) {
-            if (!(obj instanceof LongList)) {
-                return false;
-            }
-            LongList other = (LongList) obj;
-            return SequenceUtils.equal(data, 0, size - 1, other.data, 0, other.size - 1);
-        }
-
-        public int hashCode() {
-            int h = 1;
-            for (int i = 0; i < size; i++) {
-                h = h * 31 + Long.hashCode(data[i]);
-            }
-            return h;
-        }
-
-        public LongList clone() {
-            LongList ans = new LongList();
-            ans.addAll(this);
-            return ans;
+        public static <T> void reverse(List<T> data) {
+            reverse(data, 0, data.size() - 1);
         }
 
     }
@@ -251,7 +218,7 @@ public class Main {
             }
         }
 
-        public long readLong() {
+        public int readInt() {
             int sign = 1;
 
             skipBlank();
@@ -260,7 +227,7 @@ public class Main {
                 next = read();
             }
 
-            long val = 0;
+            int val = 0;
             if (sign == 1) {
                 while (next >= '0' && next <= '9') {
                     val = val * 10 + next - '0';
@@ -278,37 +245,220 @@ public class Main {
 
     }
 
-    static class Radix {
-        private long[] pow;
-        private long base;
+    static class Modular {
+        int m;
 
-        public Radix(long base) {
-            if (base <= 1) {
+        public Modular(int m) {
+            this.m = m;
+        }
+
+        public Modular(long m) {
+            this.m = (int) m;
+            if (this.m != m) {
                 throw new IllegalArgumentException();
             }
-            this.base = base;
-            LongList ll = new LongList(64);
-            ll.add(1);
-            while (!DigitUtils.isMultiplicationOverflow(ll.tail(), base, Long.MAX_VALUE)) {
-                ll.add(ll.tail() * base);
+        }
+
+        public Modular(double m) {
+            this.m = (int) m;
+            if (this.m != m) {
+                throw new IllegalArgumentException();
             }
-            pow = ll.toArray();
         }
 
-        public int bitCount() {
-            return pow.length;
-        }
-
-        public int[] decompose(long x) {
-            return decompose(x, new int[bitCount()]);
-        }
-
-        public int[] decompose(long x, int[] ans) {
-            for (int i = 0; i < ans.length; i++) {
-                ans[i] = (int) (x % base);
-                x /= base;
+        public int valueOf(int x) {
+            x %= m;
+            if (x < 0) {
+                x += m;
             }
-            return ans;
+            return x;
+        }
+
+        public int valueOf(long x) {
+            x %= m;
+            if (x < 0) {
+                x += m;
+            }
+            return (int) x;
+        }
+
+        public int mul(int x, int y) {
+            return valueOf((long) x * y);
+        }
+
+        public int subtract(int x, int y) {
+            return valueOf(x - y);
+        }
+
+        public String toString() {
+            return "mod " + m;
+        }
+
+    }
+
+    static class IntegerBIT {
+        private int[] data;
+        private int n;
+
+        public IntegerBIT(int n) {
+            this.n = n;
+            data = new int[n + 1];
+        }
+
+        public int query(int i) {
+            int sum = 0;
+            for (; i > 0; i -= i & -i) {
+                sum += data[i];
+            }
+            return sum;
+        }
+
+        public void update(int i, int mod) {
+            if (i <= 0) {
+                return;
+            }
+            for (; i <= n; i += i & -i) {
+                data[i] += mod;
+            }
+        }
+
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            for (int i = 1; i <= n; i++) {
+                builder.append(query(i) - query(i - 1)).append(' ');
+            }
+            return builder.toString();
+        }
+
+    }
+
+    static class Power {
+        final Modular modular;
+
+        public Power(Modular modular) {
+            this.modular = modular;
+        }
+
+        public int pow(int x, int n) {
+            if (n == 0) {
+                return modular.valueOf(1);
+            }
+            long r = pow(x, n >> 1);
+            r = modular.valueOf(r * r);
+            if ((n & 1) == 1) {
+                r = modular.valueOf(r * x);
+            }
+            return (int) r;
+        }
+
+    }
+
+    static class Node {
+        List<Edge> adj = new ArrayList<>();
+        int id;
+        int size;
+
+        public String toString() {
+            return "" + id;
+        }
+
+    }
+
+    static class Edge {
+        Node a;
+        Node b;
+        int c0;
+        int c1;
+        int w;
+
+        Node other(Node x) {
+            return a == x ? b : a;
+        }
+
+    }
+
+    static class Debug {
+        private boolean offline;
+        private PrintStream out = System.err;
+        static int[] empty = new int[0];
+
+        public Debug(boolean enable) {
+            offline = enable && System.getSecurityManager() == null;
+        }
+
+        public Debug debug(String name, Object x) {
+            return debug(name, x, empty);
+        }
+
+        public Debug debug(String name, Object x, int... indexes) {
+            if (offline) {
+                if (x == null || !x.getClass().isArray()) {
+                    out.append(name);
+                    for (int i : indexes) {
+                        out.printf("[%d]", i);
+                    }
+                    out.append("=").append("" + x);
+                    out.println();
+                } else {
+                    indexes = Arrays.copyOf(indexes, indexes.length + 1);
+                    if (x instanceof byte[]) {
+                        byte[] arr = (byte[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof short[]) {
+                        short[] arr = (short[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof boolean[]) {
+                        boolean[] arr = (boolean[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof char[]) {
+                        char[] arr = (char[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof int[]) {
+                        int[] arr = (int[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof float[]) {
+                        float[] arr = (float[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof double[]) {
+                        double[] arr = (double[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof long[]) {
+                        long[] arr = (long[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else {
+                        Object[] arr = (Object[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    }
+                }
+            }
+            return this;
         }
 
     }
@@ -376,72 +526,6 @@ public class Main {
 
         public String toString() {
             return cache.toString();
-        }
-
-    }
-
-    static interface LongRandomAccess {
-    }
-
-    static class DigitUtils {
-        private DigitUtils() {
-        }
-
-        public static boolean isMultiplicationOverflow(long a, long b, long limit) {
-            if (limit < 0) {
-                limit = -limit;
-            }
-            if (a < 0) {
-                a = -a;
-            }
-            if (b < 0) {
-                b = -b;
-            }
-            if (a == 0 || b == 0) {
-                return false;
-            }
-            //a * b > limit => a > limit / b
-            return a > limit / b;
-        }
-
-    }
-
-    static class Debug {
-        private boolean offline;
-        private PrintStream out = System.err;
-
-        public Debug(boolean enable) {
-            offline = enable && System.getSecurityManager() == null;
-        }
-
-        public Debug debug(String name, int x) {
-            if (offline) {
-                debug(name, "" + x);
-            }
-            return this;
-        }
-
-        public Debug debug(String name, String x) {
-            if (offline) {
-                out.printf("%s=%s", name, x);
-                out.println();
-            }
-            return this;
-        }
-
-    }
-
-    static class SequenceUtils {
-        public static boolean equal(long[] a, int al, int ar, long[] b, int bl, int br) {
-            if ((ar - al) != (br - bl)) {
-                return false;
-            }
-            for (int i = al, j = bl; i <= ar; i++, j++) {
-                if (a[i] != b[j]) {
-                    return false;
-                }
-            }
-            return true;
         }
 
     }

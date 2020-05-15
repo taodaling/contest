@@ -28,7 +28,7 @@ public class DoubleMultiWayStack {
         };
     }
 
-    public DoubleStack getStack(int qId){
+    public DoubleStack getStack(int qId) {
         return new DoubleStack() {
             @Override
             public void addLast(double x) {
@@ -129,12 +129,15 @@ public class DoubleMultiWayStack {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        for(int i = 0; i < stackNum; i++){
+        for (int i = 0; i < stackNum; i++) {
+            if (isEmpty(i)) {
+                continue;
+            }
             builder.append(i).append(": ");
-            for(DoubleIterator iterator = iterator(i); iterator.hasNext(); ){
+            for (DoubleIterator iterator = iterator(i); iterator.hasNext(); ) {
                 builder.append(iterator.next()).append(",");
             }
-            if(builder.charAt(builder.length() - 1) == ','){
+            if (builder.charAt(builder.length() - 1) == ',') {
                 builder.setLength(builder.length() - 1);
             }
             builder.append('\n');

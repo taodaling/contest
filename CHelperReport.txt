@@ -1,2 +1,2 @@
-53 src/main/java/contest/C. Ever-Hungry Krakozyabra.json
+46 src/main/java/contest/D. Red-Black Cobweb.json
 0

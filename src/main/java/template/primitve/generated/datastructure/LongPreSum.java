@@ -44,16 +44,4 @@ public class LongPreSum {
     public long post(int i) {
         return pre[n - 1] - prefix(i - 1);
     }
-
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < n; i++) {
-            builder.append(intervalSum(i, i)).append(',');
-        }
-        if (builder.length() > 0) {
-            builder.setLength(builder.length() - 1);
-        }
-        return builder.toString();
-    }
 }
