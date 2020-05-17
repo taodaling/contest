@@ -1,2 +1,3 @@
-46 src/main/java/contest/D. Red-Black Cobweb.json
+42 src/main/java/contest/E. Rusty String.json
+1
 0

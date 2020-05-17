@@ -1,0 +1,35 @@
+{
+  "name" : "Incremental House of Pancakes",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3\n1 2\n2 2\n8 11\n",
+    "output" : "Case #1: 1 1 1\nCase #2: 2 1 0\nCase #3: 5 0 4\n",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Solution",
+  "taskClass" : "on2020_05.on2020_05_16_Google_Coding_Competitions___Round_2_2020___Code_Jam_2020.Incremental_House_of_Pancakes.IncrementalHouseOfPancakes",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.05.16",
+  "contestName" : "Google Coding Competitions - Round 2 2020 - Code Jam 2020",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

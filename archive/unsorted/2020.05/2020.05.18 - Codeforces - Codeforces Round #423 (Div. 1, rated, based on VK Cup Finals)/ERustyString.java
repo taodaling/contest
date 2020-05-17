@@ -1,6 +1,38 @@
-package template.string;
+package contest;
 
-public class KMPAutomaton {
+import template.io.FastInput;
+import template.io.FastOutput;
+import template.primitve.generated.datastructure.IntegerList;
+import template.utils.SequenceUtils;
+
+import java.util.concurrent.ThreadPoolExecutor;
+
+public class ERustyString {
+    public void solve(int testNumber, FastInput in, FastOutput out) {
+        int n = in.readInt();
+        KMPAutomaton kmp = new KMPAutomaton(n);
+        for (int i = 0; i < n; i++) {
+            char c = in.readChar();
+            kmp.build(c);
+        }
+        int last = n;
+        IntegerList possible = new IntegerList(n);
+        while (last > 0) {
+            possible.add(last == n ? n : n - last);
+            last = kmp.maxBorder(last - 1);
+        }
+
+        possible.sort();
+        out.println(possible.size());
+        for (int i = 0; i < possible.size(); i++) {
+            out.append(possible.get(i)).append(' ');
+        }
+        out.println();
+    }
+}
+
+
+class KMPAutomaton {
     char[] data;
     int[] fail;
     int buildLast;
@@ -45,8 +77,12 @@ public class KMPAutomaton {
         matchLast = visit(c, matchLast) + 1;
     }
 
+    public boolean match(char a, char b) {
+        return a == b || a == '?' || b == '?';
+    }
+
     public int visit(char c, int trace) {
-        while (trace >= 0 && data[trace + 1] != c) {
+        while (trace >= 0 && !match(data[trace + 1], c)) {
             trace = fail[trace];
         }
         return trace;

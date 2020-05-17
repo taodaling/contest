@@ -1,0 +1,56 @@
+{
+  "name" : "E. Perpetual Motion Machine",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4\n\n4 4\n1 2\n2 3\n3 4\n4 2\n\n3 2\n2 3\n3 1\n\n4 6\n1 2\n3 4\n4 2\n1 4\n1 3\n3 2\n\n10 9\n2 1\n3 2\n5 2\n6 2\n2 7\n2 8\n2 9\n2 10\n4 2\n",
+    "output" : "YES\n1 2 2 1\nNO\nYES\n1 1 1 1\nYES\n1 5 1 1 1 1 1 1 1 1\n",
+    "index" : 0,
+    "active" : false
+  }, {
+    "input" : "2\n\n6 5\n1 2\n3 2\n2 4\n4 5\n4 6\n\n6 4\n2 3\n4 3\n5 3\n6 3",
+    "output" : "YES\n1 2 1 2 1 1\nYES\n0 1 2 1 1 1",
+    "index" : 1,
+    "active" : false
+  }, {
+    "input" : "1\n\n7 6\n1 2\n2 3\n1 4\n4 5\n1 6\n6 7",
+    "index" : 2,
+    "active" : false
+  }, {
+    "input" : "1\n8 7\n1 2\n2 3\n2 4\n4 5\n5 6\n6 7\n6 8",
+    "index" : 3,
+    "active" : false
+  }, {
+    "input" : "1\n9 8\n1 2\n2 3\n3 4\n2 5\n5 6\n6 7\n7 8\n8 9",
+    "index" : 4,
+    "active" : false
+  }, {
+    "input" : "1\n9 8\n1 2\n2 3\n3 4\n4 5\n2 6\n6 7\n7 8\n8 9",
+    "index" : 5,
+    "active" : false
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx512M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.EPerpetualMotionMachine",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.05.16",
+  "contestName" : "Codeforces - Codeforces Round #424 (Div. 1, rated, based on VK Cup Finals)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

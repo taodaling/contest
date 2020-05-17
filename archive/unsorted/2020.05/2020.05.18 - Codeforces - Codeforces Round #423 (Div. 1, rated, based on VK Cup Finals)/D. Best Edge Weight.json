@@ -1,0 +1,40 @@
+{
+  "name" : "D. Best Edge Weight",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4 4\n1 2 2\n2 3 2\n3 4 2\n4 1 3\n",
+    "output" : "2 2 2 1 \n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "4 3\n1 2 2\n2 3 2\n3 4 2\n",
+    "output" : "-1 -1 -1 \n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.DBestEdgeWeight",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.05.18",
+  "contestName" : "Codeforces - Codeforces Round #423 (Div. 1, rated, based on VK Cup Finals)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}
