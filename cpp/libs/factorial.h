@@ -22,7 +22,7 @@ void GenerateInverse(vector<T> &vec) {
   }
   vec[n - 1] = 1 / vec[n - 1];
   for (int i = n - 2; i >= 0; i--) {
-    vec[i] = vec[i + 1] * (i + 1);
+    vec[i] = vec[i + 1] * T(i + 1);
   }
 }
 }  // namespace factorial

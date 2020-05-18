@@ -19,12 +19,12 @@ public class Factorial {
         fact[0] = inv[0] = 1;
         for (int i = 1; i <= limit; i++) {
             fact[i] = modular.mul(fact[i - 1], i);
-            inv[i] = modular.mul(inv[i - 1], in.inv[i]);
+            inv[i] = modular.mul(inv[i - 1], in.inverse(i));
         }
     }
 
     public Factorial(int limit, Modular modular) {
-        this(new int[limit + 1], new int[limit + 1], new InverseNumber(limit, modular), limit, modular);
+        this(new int[limit + 1], new int[limit + 1], new ModPrimeInverseNumber(limit, modular), limit, modular);
     }
 
     public int fact(int n) {

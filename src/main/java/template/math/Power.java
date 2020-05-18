@@ -5,7 +5,7 @@ import java.util.BitSet;
 /**
  * Power operations
  */
-public class Power {
+public class Power implements InverseNumber {
     public Modular getModular() {
         return modular;
     }
@@ -62,8 +62,13 @@ public class Power {
         return pow(x, modular.m - 2);
     }
 
+    @Override
+    public int inverse(int x) {
+        return inverseExtGCD(x);
+    }
+
     public int inverseExtGCD(int x) {
-        if(extGCD.extgcd(x, modular.getMod()) != 1){
+        if (extGCD.extgcd(x, modular.getMod()) != 1) {
             throw new IllegalArgumentException();
         }
         return modular.valueOf(extGCD.getX());

@@ -1,5 +1,6 @@
 package template.problem;
 
+import template.graph.DirectedEdge;
 import template.graph.UndirectedEdge;
 
 import java.util.Arrays;
@@ -9,10 +10,12 @@ import java.util.function.IntToLongFunction;
 /**
  * 给定一颗树，树根为1，树上有n个顶点，第i个顶点有一笔价值wi的财富。
  * 我们现在可以派出k个人，从k个顶点出发，向根出发，搜集路上所有的财富（同一个顶点的财富只会被搜集一次）。
- * 问我们最多可以得到多少总财富？其中−10^9≤wi≤10^9,1≤k≤n≤10^6
+ * 问我们最多可以得到多少总财富？其中−10^9≤wi≤10^9,1≤k≤n≤10^6.
+ * <br>
+ * O(n\log_2n)
  */
 public class TreePickSpecialPointProblem {
-    private List<UndirectedEdge>[] g;
+    private List<? extends DirectedEdge>[] g;
     private long[] w;
     private long[] sumOfWeight;
     private int[] parents;
@@ -31,7 +34,7 @@ public class TreePickSpecialPointProblem {
         inverse[intervalL[root]] = root;
         sumOfWeight[root] = w[root] + sum;
         parents[root] = p;
-        for (UndirectedEdge e : g[root]) {
+        for (DirectedEdge e : g[root]) {
             if (e.to == p) {
                 continue;
             }

@@ -1,6 +1,7 @@
 package template.polynomial;
 
 import template.binary.Log2;
+import template.math.InverseNumber;
 import template.math.Modular;
 import template.math.Power;
 import template.math.PrimitiveRoot;
@@ -198,6 +199,7 @@ public class NumberTheoryTransform {
         return;
     }
 
+
     private IntegerList clone(IntegerList list) {
         Polynomials.normalize(list);
         IntegerList ans = listBuffer.alloc();
@@ -221,6 +223,76 @@ public class NumberTheoryTransform {
         Polynomials.normalize(ans);
         listBuffer.release(a);
         listBuffer.release(b);
+    }
+
+    public void modmul(IntegerList a, IntegerList b, IntegerList ans, int n) {
+        mul(a, b, ans);
+        Polynomials.module(ans, n);
+    }
+
+    /**
+     * make ans = ln a mod x^n
+     */
+    public void ln(IntegerList a, IntegerList ans, int n, InverseNumber inverse) {
+        a = clone(a);
+        Polynomials.module(a, n);
+        IntegerList diff = listBuffer.alloc();
+        IntegerList inv = listBuffer.alloc();
+        int proper = Log2.ceilLog(n);
+        a.expandWith(0, 1 << (proper + 1));
+        inv.expandWith(0, 1 << (proper + 1));
+        inverse(a.getData(), inv.getData(), proper);
+        Polynomials.module(a, n);
+        Polynomials.module(inv, n);
+        Polynomials.differential(a, diff, modular);
+        Polynomials.module(diff, n);
+        modmul(diff, inv, a, n);
+        Polynomials.integral(a, ans, modular, inverse);
+        Polynomials.module(ans, n);
+
+        listBuffer.release(a);
+        listBuffer.release(diff);
+        listBuffer.release(inv);
+    }
+
+    /**
+     * ans = exp(a) mod x^n
+     */
+    public void exp(IntegerList a, IntegerList ans, int n, InverseNumber inverse) {
+        if (n == 0) {
+            ans.clear();
+            ans.push(0);
+            return;
+        }
+        a = clone(a);
+        a.expandWith(0, n);
+        Polynomials.module(a, n);
+        exp0(a, ans, n, inverse);
+        listBuffer.release(a);
+    }
+
+    private void exp0(IntegerList a, IntegerList ans, int n, InverseNumber inverse) {
+        if (n == 1) {
+            ans.clear();
+            ans.push(1);
+            return;
+        }
+        exp0(a, ans, (n + 1) / 2, inverse);
+        IntegerList f0 = clone(ans);
+        IntegerList lnf0 = listBuffer.alloc();
+        ln(f0, lnf0, n, inverse);
+        lnf0.expandWith(0, n);
+        {
+            int[] data = lnf0.getData();
+            int[] aData = a.getData();
+            for (int i = 0; i < n; i++) {
+                data[i] = modular.valueOf(aData[i] - data[i]);
+            }
+            data[0] = modular.plus(data[0], 1);
+        }
+        modmul(f0, lnf0, ans, n);
+        listBuffer.release(f0);
+        listBuffer.release(lnf0);
     }
 
     public void pow2(IntegerList a) {
@@ -446,6 +518,7 @@ public class NumberTheoryTransform {
         listBuffer.release(c);
     }
 
+
     private void module(BitSet k, int i, int[] a, int[] b, int[] c, int[] remainder, int m) {
         if (i < 0) {
             Arrays.fill(remainder, 0);
@@ -466,5 +539,26 @@ public class NumberTheoryTransform {
 
         System.arraycopy(remainder, 0, a, 0, 1 << m);
         divide(a, b, c, remainder, m);
+    }
+
+    /**
+     * ans = p ^ k mod x^n
+     */
+    public void powmod(IntegerList p, IntegerList ans, long k, int n) {
+        if (k == 0) {
+            ans.clear();
+            ans.push(1);
+            return;
+        }
+        powmod(p, ans, k / 2, n);
+        pow2(ans);
+        Polynomials.module(ans, n);
+        if (k % 2 == 1) {
+            IntegerList buf = listBuffer.alloc();
+            modmul(ans, p, buf, n);
+            ans.clear();
+            ans.addAll(buf);
+            listBuffer.release(buf);
+        }
     }
 }

@@ -1,8 +1,9 @@
 package template.polynomial;
 
 import template.math.ExtGCD;
-import template.math.Power;
+import template.math.InverseNumber;
 import template.math.Modular;
+import template.math.Power;
 import template.primitve.generated.datastructure.IntegerList;
 import template.utils.Buffer;
 
@@ -23,6 +24,14 @@ public class Polynomials {
 
     public static void normalize(IntegerList list) {
         list.retain(rankOf(list) + 1);
+    }
+
+    /**
+     * return list % x^n
+     */
+    public static void module(IntegerList list, int n) {
+        list.remove(n, list.size() - 1);
+        normalize(list);
     }
 
     public static void mul(IntegerList a, IntegerList b, IntegerList c, Modular mod) {
@@ -262,6 +271,53 @@ public class Polynomials {
         int[] acc = FastFourierTransform.multiplyMod(ac, n, inv, n, mod.getMod());
         for (int i = 0; i < n; i++) {
             inv[i] = mod.subtract(mod.mul(inv[i], 2), acc[i]);
+        }
+    }
+
+    public static void differentialInPlace(IntegerList p, Modular mod) {
+        normalize(p);
+        int n = p.size();
+        int[] a = p.getData();
+        for (int i = 1; i < n; i++) {
+            a[i - 1] = mod.mul(a[i], i);
+        }
+        a[n - 1] = 0;
+        normalize(p);
+    }
+
+    public static void integralInPlace(IntegerList p, Modular mod, InverseNumber inv) {
+        normalize(p);
+        int n = p.size();
+        p.push(0);
+        int[] a = p.getData();
+        for (int i = n; i >= 1; i--) {
+            a[i] = mod.mul(a[i - 1], inv.inverse(i));
+        }
+        a[0] = 0;
+        normalize(p);
+    }
+
+    public static void differential(IntegerList p, IntegerList output, Modular mod) {
+        normalize(p);
+        int n = p.size();
+        output.clear();
+        output.expandWith(0, Math.max(0, n - 1));
+        int[] a = p.getData();
+        int[] b = output.getData();
+        for (int i = 1; i < n; i++) {
+            b[i - 1] = mod.mul(a[i], i);
+        }
+    }
+
+    public static void integral(IntegerList p, IntegerList output, Modular mod, InverseNumber inv) {
+        normalize(p);
+        int n = p.size();
+        output.clear();
+        output.expandWith(0, n + 1);
+        int[] a = p.getData();
+        int[] b = output.getData();
+        for (int i = 0; i < n; i++) {
+            b[i + 1] = mod.mul(inv.inverse(i + 1), a[i]);
         }
     }
 }

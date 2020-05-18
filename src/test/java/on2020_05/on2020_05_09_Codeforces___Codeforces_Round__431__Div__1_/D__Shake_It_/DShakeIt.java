@@ -4,8 +4,7 @@ package on2020_05.on2020_05_09_Codeforces___Codeforces_Round__431__Div__1_.D__Sh
 
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.math.Factorial;
-import template.math.InverseNumber;
+import template.math.ModPrimeInverseNumber;
 import template.math.Modular;
 import template.utils.Debug;
 import template.utils.SequenceUtils;
@@ -19,7 +18,7 @@ public class DShakeIt {
     int n;
     int flow;
 
-    InverseNumber inv = new InverseNumber(100, mod);
+    ModPrimeInverseNumber inv = new ModPrimeInverseNumber(100, mod);
 
     Debug debug = new Debug(false);
 

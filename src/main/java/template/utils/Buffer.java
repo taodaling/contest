@@ -9,14 +9,19 @@ public class Buffer<T> {
     private Deque<T> deque;
     private Supplier<T> supplier;
     private Consumer<T> cleaner;
+    private int allocTime;
+    private int releaseTime;
 
 
     public Buffer(Supplier<T> supplier) {
-        this(supplier, (x) -> {});
+        this(supplier, (x) -> {
+        });
     }
-    public Buffer(Supplier<T> supplier, Consumer<T> cleaner){
+
+    public Buffer(Supplier<T> supplier, Consumer<T> cleaner) {
         this(supplier, cleaner, 0);
     }
+
     public Buffer(Supplier<T> supplier, Consumer<T> cleaner, int exp) {
         this.supplier = supplier;
         this.cleaner = cleaner;
@@ -24,10 +29,12 @@ public class Buffer<T> {
     }
 
     public T alloc() {
+        allocTime++;
         return deque.isEmpty() ? supplier.get() : deque.removeFirst();
     }
 
     public void release(T e) {
+        releaseTime++;
         cleaner.accept(e);
         deque.addLast(e);
     }
