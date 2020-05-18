@@ -8,7 +8,6 @@ import template.math.InverseNumber;
 import template.math.ModPrimeInverseNumber;
 import template.math.Modular;
 import template.polynomial.NumberTheoryTransform;
-import template.polynomial.Polynomials;
 import template.primitve.generated.datastructure.IntegerList;
 import template.utils.Debug;
 
@@ -36,7 +35,7 @@ public class P5245 {
 
         NumberTheoryTransform ntt = new NumberTheoryTransform(mod);
         IntegerList ans = new IntegerList(n);
-        ntt.powmod(a, ans, k, n);
+        ntt.modpow(a, ans, k, n);
         a = ans;
 
 //

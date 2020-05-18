@@ -320,4 +320,35 @@ public class Polynomials {
             b[i + 1] = mod.mul(inv.inverse(i + 1), a[i]);
         }
     }
+
+    public static void modmul(IntegerList a, IntegerList b, IntegerList ans, Modular mod, int n) {
+        mul(a, b, ans, mod);
+        module(ans, n);
+    }
+
+    public static void modpow(IntegerList x, IntegerList ans, long k, Modular mod, int n) {
+        IntegerList ret = modpow(x, k, mod, n);
+        ans.clear();
+        ans.addAll(ret);
+        listBuffer.release(ret);
+    }
+
+    private static IntegerList modpow(IntegerList x, long k, Modular mod, int n) {
+        if (k == 0) {
+            IntegerList ans = listBuffer.alloc();
+            ans.add(mod.valueOf(1));
+            return ans;
+        }
+        IntegerList ans = modpow(x, k / 2, mod, n);
+        IntegerList newAns = listBuffer.alloc();
+        modmul(ans, ans, newAns, mod, n);
+        if (k % 2 == 1) {
+            modmul(x, newAns, ans, mod, n);
+            IntegerList tmp = newAns;
+            newAns = ans;
+            ans = tmp;
+        }
+        listBuffer.release(ans);
+        return newAns;
+    }
 }

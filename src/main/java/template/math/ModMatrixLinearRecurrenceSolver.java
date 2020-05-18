@@ -62,7 +62,7 @@ public class ModMatrixLinearRecurrenceSolver {
     public ModMatrixLinearRecurrenceSolver(ModMatrix mat, IntegerList vec, Modular mod) {
         ModGravityLagrangeInterpolation.Polynomial p = mat.getCharacteristicPolynomial(new Power(mod));
         IntegerList coe = p.toIntegerList();
-        ModMatrix transpose = ModMatrix.transposition(mat);
+        ModMatrix transpose = ModMatrix.transpose(mat);
         int m = coe.size();
         IntegerList[] lists = new IntegerList[m];
         ModMatrix vector = new ModMatrix(1, vec.size());
