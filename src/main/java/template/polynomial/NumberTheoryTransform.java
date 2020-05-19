@@ -544,21 +544,29 @@ public class NumberTheoryTransform {
     /**
      * ans = p ^ k mod x^n
      */
-    public void powmod(IntegerList p, IntegerList ans, long k, int n) {
+    public void modpow(IntegerList x, IntegerList ans, long k, int n) {
+        IntegerList ret = modpow(x, k, n);
+        ans.clear();
+        ans.addAll(ret);
+        listBuffer.release(ret);
+    }
+
+    private IntegerList modpow(IntegerList x, long k, int n) {
         if (k == 0) {
-            ans.clear();
-            ans.push(1);
-            return;
+            IntegerList ans = listBuffer.alloc();
+            ans.add(modular.valueOf(1));
+            return ans;
         }
-        powmod(p, ans, k / 2, n);
-        pow2(ans);
-        Polynomials.module(ans, n);
+        IntegerList ans = modpow(x, k / 2, n);
+        IntegerList newAns = listBuffer.alloc();
+        modmul(ans, ans, newAns, n);
         if (k % 2 == 1) {
-            IntegerList buf = listBuffer.alloc();
-            modmul(ans, p, buf, n);
-            ans.clear();
-            ans.addAll(buf);
-            listBuffer.release(buf);
+            modmul(x, newAns, ans, n);
+            IntegerList tmp = newAns;
+            newAns = ans;
+            ans = tmp;
         }
+        listBuffer.release(ans);
+        return newAns;
     }
 }

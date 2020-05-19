@@ -286,7 +286,7 @@ public class ModMatrix {
         return ans;
     }
 
-    public static ModMatrix transposition(ModMatrix x) {
+    public static ModMatrix transpose(ModMatrix x) {
         int n = x.n;
         int m = x.m;
         ModMatrix t = new ModMatrix(m, n);
@@ -314,9 +314,7 @@ public class ModMatrix {
             throw new IllegalArgumentException();
         }
         for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                mat[i][j] = matrix.mat[i][j];
-            }
+            System.arraycopy(matrix.mat[i], 0, mat[i], 0, m);
         }
     }
 

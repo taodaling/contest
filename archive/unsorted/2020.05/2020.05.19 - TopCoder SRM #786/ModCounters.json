@@ -1,0 +1,46 @@
+{
+  "name" : "ModCounters",
+  "signature" : {
+    "name" : "findExpectedSum",
+    "result" : "int",
+    "arguments" : [ "int[]", "int", "int", "int", "int", "int" ],
+    "argumentNames" : [ "P", "A0", "X", "Y", "N", "K" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "0 511", "0", "0", "0", "2", "1" ],
+    "result" : "256",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "0", "1001", "1001", "1001", "2", "2" ],
+    "result" : "508",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "", "3583", "1000", "1812447358", "2", "2" ],
+    "result" : "152",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "100 101", "5000", "50000", "100000", "1000", "1000" ],
+    "result" : "856925612",
+    "index" : 3,
+    "active" : true
+  }, {
+    "arguments" : [ "", "100000000", "100000000", "100000000", "10", "1000" ],
+    "result" : "454731206",
+    "index" : 4,
+    "active" : true
+  }, {
+    "arguments" : [ "", "501296088", "234548363", "703491623", "2000000", "1894643" ],
+    "result" : "804222535",
+    "index" : 5,
+    "active" : true
+  } ],
+  "date" : "2020.05.19",
+  "contestName" : "TopCoder SRM #786",
+  "testClasses" : [ ],
+  "fqn" : "contest.ModCounters",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}
