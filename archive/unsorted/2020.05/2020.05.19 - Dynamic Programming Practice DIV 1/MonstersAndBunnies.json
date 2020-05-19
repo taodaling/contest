@@ -1,0 +1,41 @@
+{
+  "name" : "MonstersAndBunnies",
+  "signature" : {
+    "name" : "survivalProbability",
+    "result" : "double",
+    "arguments" : [ "int", "int" ],
+    "argumentNames" : [ "M", "B" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "0", "0" ],
+    "result" : "1.0",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "0", "47" ],
+    "result" : "1.0",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "1", "0" ],
+    "result" : "0.0",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "1", "47" ],
+    "result" : "0.0",
+    "index" : 3,
+    "active" : true
+  }, {
+    "arguments" : [ "2", "0" ],
+    "result" : "0.3333333333333333",
+    "index" : 4,
+    "active" : true
+  } ],
+  "date" : "2020.05.19",
+  "contestName" : "Dynamic Programming Practice DIV 1",
+  "testClasses" : [ ],
+  "fqn" : "contest.MonstersAndBunnies",
+  "failOnOverflow" : false,
+  "memoryLimit" : "64M"
+}

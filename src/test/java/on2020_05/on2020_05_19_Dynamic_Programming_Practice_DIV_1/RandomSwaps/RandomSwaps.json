@@ -1,0 +1,36 @@
+{
+  "name" : "RandomSwaps",
+  "signature" : {
+    "name" : "getProbability",
+    "result" : "double",
+    "arguments" : [ "int", "int", "int", "int" ],
+    "argumentNames" : [ "arrayLength", "swapCount", "a", "b" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "5", "1", "0", "0" ],
+    "result" : "0.6",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "5", "1", "0", "3" ],
+    "result" : "0.1",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "5", "2", "0", "0" ],
+    "result" : "0.4",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "100", "500", "3", "3" ],
+    "result" : "0.010036635745123007",
+    "index" : 3,
+    "active" : true
+  } ],
+  "date" : "2020.05.19",
+  "contestName" : "Dynamic Programming Practice DIV 1",
+  "testClasses" : [ ],
+  "fqn" : "on2020_05.on2020_05_19_Dynamic_Programming_Practice_DIV_1.RandomSwaps.RandomSwaps",
+  "failOnOverflow" : false,
+  "memoryLimit" : "64M"
+}

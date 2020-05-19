@@ -1,0 +1,41 @@
+{
+  "name" : "EmoticonsDiv2",
+  "signature" : {
+    "name" : "printSmiles",
+    "result" : "int",
+    "arguments" : [ "int" ],
+    "argumentNames" : [ "smiles" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "2" ],
+    "result" : "2",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "6" ],
+    "result" : "5",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "11" ],
+    "result" : "11",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "16" ],
+    "result" : "8",
+    "index" : 3,
+    "active" : true
+  }, {
+    "arguments" : [ "1000" ],
+    "result" : "21",
+    "index" : 4,
+    "active" : true
+  } ],
+  "date" : "2020.05.19",
+  "contestName" : "Dynamic Programming Practice DIV 1",
+  "testClasses" : [ ],
+  "fqn" : "contest.EmoticonsDiv2",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

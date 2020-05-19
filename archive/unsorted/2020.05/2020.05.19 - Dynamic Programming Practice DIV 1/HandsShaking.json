@@ -1,0 +1,31 @@
+{
+  "name" : "HandsShaking",
+  "signature" : {
+    "name" : "countPerfect",
+    "result" : "long",
+    "arguments" : [ "int" ],
+    "argumentNames" : [ "n" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "2" ],
+    "result" : "1",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "4" ],
+    "result" : "2",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "8" ],
+    "result" : "14",
+    "index" : 2,
+    "active" : true
+  } ],
+  "date" : "2020.05.19",
+  "contestName" : "Dynamic Programming Practice DIV 1",
+  "testClasses" : [ ],
+  "fqn" : "contest.HandsShaking",
+  "failOnOverflow" : false,
+  "memoryLimit" : "64M"
+}
