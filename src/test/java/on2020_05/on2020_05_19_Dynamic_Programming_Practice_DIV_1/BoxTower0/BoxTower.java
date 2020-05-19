@@ -1,4 +1,6 @@
-package contest;
+package on2020_05.on2020_05_19_Dynamic_Programming_Practice_DIV_1.BoxTower0;
+
+
 
 import template.binary.Bits;
 import template.primitve.generated.datastructure.IntegerDiscreteMap;

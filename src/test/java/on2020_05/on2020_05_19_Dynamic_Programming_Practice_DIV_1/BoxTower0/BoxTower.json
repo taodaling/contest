@@ -34,7 +34,7 @@
   "date" : "2020.05.19",
   "contestName" : "Dynamic Programming Practice DIV 1",
   "testClasses" : [ ],
-  "fqn" : "contest.BoxTower",
+  "fqn" : "on2020_05.on2020_05_19_Dynamic_Programming_Practice_DIV_1.BoxTower0.BoxTower",
   "failOnOverflow" : false,
   "memoryLimit" : "64M"
 }

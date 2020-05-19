@@ -1,0 +1,45 @@
+{
+  "name" : "D. Karen and Cards",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 4 4 5\n2 2 5\n1 3 4\n4 1 1\n",
+    "output" : "10\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "5 10 10 10\n1 1 1\n1 1 1\n1 1 1\n1 1 1\n1 1 1\n",
+    "output" : "972\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "21 39 42 69\n32 30 45\n8 18 36\n39 39 8\n8 32 66\n6 12 18\n37 27 2\n24 27 19\n31 1 38\n17 7 26\n2 36 53\n17 13 11\n11 37 17\n25 37 54\n30 12 47\n39 11 58\n18 25 6\n12 33 30\n13 6 13\n18 36 32\n36 37 19\n30 35 6",
+    "output" : "1095",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx512M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.DKarenAndCards",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.05.20",
+  "contestName" : "Codeforces - Codeforces Round #419 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}
