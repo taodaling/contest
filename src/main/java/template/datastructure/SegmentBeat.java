@@ -1,6 +1,6 @@
 package template.datastructure;
 
-import java.util.function.IntUnaryOperator;
+import template.primitve.generated.datastructure.IntToIntFunction;
 
 public class SegmentBeat {
     private SegmentBeat left;
@@ -21,11 +21,7 @@ public class SegmentBeat {
 
     public void pushUp() {
         first = Math.max(left.first, right.first);
-        if (left.first == right.first) {
-            second = Math.max(left.second, right.second);
-        } else {
-            second = Math.max(Math.max(left.second, right.second), Math.min(left.first, right.first));
-        }
+        second = Math.max(left.first == first ? left.second : left.first, right.first == first ? right.second : right.first);
         firstCnt = (left.first == first ? left.firstCnt : 0) + (right.first == first ? right.firstCnt : 0);
         sum = left.sum + right.sum;
     }
@@ -35,14 +31,14 @@ public class SegmentBeat {
         right.setMin(first);
     }
 
-    public SegmentBeat(int l, int r, IntUnaryOperator func) {
+    public SegmentBeat(int l, int r, IntToIntFunction func) {
         if (l < r) {
             int m = (l + r) >> 1;
             left = new SegmentBeat(l, m, func);
             right = new SegmentBeat(m + 1, r, func);
             pushUp();
         } else {
-            sum = first = func.applyAsInt(l);
+            sum = first = func.apply(l);
             second = -inf;
             firstCnt = 1;
         }

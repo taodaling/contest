@@ -1,3 +1,2 @@
-45 src/main/java/contest/D. Karen and Cards.json
-1
+40 src/main/java/contest/C. Find a car.json
 0
