@@ -31,6 +31,14 @@ public class ArrayIndex {
         return indexOf(a, b, c, d) * dimensions[4] + e;
     }
 
+    public int indexOf(int a, int b, int c, int d, int e, int f) {
+        return indexOf(a, b, c, d, e) * dimensions[5] + f;
+    }
+
+    public int indexOf(int a, int b, int c, int d, int e, int f, int g) {
+        return indexOf(a, b, c, d, e, f) * dimensions[6] + g;
+    }
+
     public boolean isValid(int a, int d) {
         return dimensions[d] > a && a >= 0;
     }

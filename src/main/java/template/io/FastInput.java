@@ -16,6 +16,30 @@ public class FastInput {
         this.is = is;
     }
 
+    public void populate(int[] data) {
+        for (int i = 0; i < data.length; i++) {
+            data[i] = readInt();
+        }
+    }
+
+    public void populate(long[] data) {
+        for (int i = 0; i < data.length; i++) {
+            data[i] = readLong();
+        }
+    }
+
+    public void populate(double[] data) {
+        for (int i = 0; i < data.length; i++) {
+            data[i] = readDouble();
+        }
+    }
+
+    public void populate(String[] data) {
+        for (int i = 0; i < data.length; i++) {
+            data[i] = readString();
+        }
+    }
+
     private int read() {
         while (bufLen == bufOffset) {
             bufOffset = 0;

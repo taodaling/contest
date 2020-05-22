@@ -2,7 +2,7 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintStream;
+import java.util.Arrays;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.io.Closeable;
@@ -28,113 +28,149 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            CFindACar solver = new CFindACar();
+            DKarenAndCards solver = new DKarenAndCards();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class CFindACar {
-        Modular mod = new Modular(1e9 + 7);
-        Debug debug = new Debug(true);
-        int c1 = 0;
-        int c2 = 0;
-        int[][] mem1 = new int[30][2];
-        int[][] mem2 = new int[30][2];
-
+    static class DKarenAndCards {
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            int q = in.readInt();
-
-            int highestBit = 29;
-            for (int i = 0; i < q; i++) {
-                int x1 = in.readInt();
-                int y1 = in.readInt();
-                int x2 = in.readInt();
-                int y2 = in.readInt();
-                int k = in.readInt() - 1;
-                int a11 = dfs(highestBit, x2, y2, k, 0)[0];
-                int a01 = dfs(highestBit, x2, y1 - 1, k, 0)[0];
-                int a10 = dfs(highestBit, x1 - 1, y2, k, 0)[0];
-                int a00 = dfs(highestBit, x1 - 1, y1 - 1, k, 0)[0];
-
-                int ans = mod.plus(a11, a00);
-                ans = mod.subtract(ans, a01);
-                ans = mod.subtract(ans, a10);
-                out.println(ans);
+            int n = in.readInt();
+            int[] limits = new int[3];
+            in.populate(limits);
+            int[][] cards = new int[n + 1][3];
+            for (int i = 0; i < n; i++) {
+                in.populate(cards[i]);
             }
-
-            debug.debug("c1", c1);
-            debug.debug("c2", c2);
-        }
-
-        public int sum(int n) {
-            //1 + ... + n
-            return mod.valueOf((long) (n + 1) * n / 2);
-        }
-
-        public int[] dfs(int bit, int n, int m, int k, int trace) {
-            if (n > m) {
-                int tmp = n;
-                n = m;
-                m = tmp;
-            }
-            if (n == 0 || m == 0 || trace > k) {
-                return new int[2];
-            }
-            //full
-            //
-            int size = 1 << (bit + 1);
-            if (n == size && m == size) {
-                int[] ans = new int[2];
-                int allow = Math.min((trace | (size - 1)), k) - trace;
-                int cnt = mod.mul(size, allow + 1);
-                ans[0] = cnt;
-                ans[1] = mod.mul(sum(allow), size);
-                ans[1] = mod.plus(ans[1], mod.mul(cnt, (trace + 1)));
-                return ans;
-            }
-
-            if (n == size || m == size) {
-                c1++;
-            } else {
-                c2++;
-            }
-
-            int[] nSub = mem1[bit];
-            nSub[0] = Math.min(n, size / 2);
-            nSub[1] = n - nSub[0];
-            int[] mSub = mem2[bit];
-            mSub[0] = Math.min(m, size / 2);
-            mSub[1] = m - mSub[0];
-
-            //00 or 11
-            int[] ans = new int[2];
-
-            if (m < size || (trace | (size - 1)) > k) {
-                for (int i = 0; i < 2; i++) {
-                    for (int j = 0; j < 2; j++) {
-                        int[] ret = dfs(bit - 1, nSub[i], mSub[j], k, Bits.setBit(trace, bit, (i ^ j) == 1));
-                        ans[0] = mod.plus(ans[0], ret[0]);
-                        ans[1] = mod.plus(ans[1], ret[1]);
+            cards[n][2] = limits[2];
+            n++;
+            Arrays.sort(cards, (a, b) -> Integer.compare(a[2], b[2]));
+            int[][] suffix = new int[n][2];
+            for (int i = n - 1; i >= 0; i--) {
+                for (int j = 0; j < 2; j++) {
+                    suffix[i][j] = cards[i][j];
+                    if (i + 1 < n) {
+                        suffix[i][j] = Math.max(suffix[i][j], suffix[i + 1][j]);
                     }
                 }
-            } else {
-                for (int i = 0; i < 1; i++) {
-                    for (int j = 0; j < 2; j++) {
-                        int[] ret = dfs(bit - 1, nSub[i], mSub[j], k, Bits.setBit(trace, bit, (i ^ j) == 1));
-                        ans[0] = mod.plus(ans[0], ret[0]);
-                        ans[1] = mod.plus(ans[1], ret[1]);
-                    }
-                }
-                int[] ret = dfs(bit - 1, nSub[1], mSub[0], k, Bits.setBit(trace, bit, true));
-                ans[0] = mod.plus(ans[0], ret[0]);
-                ans[0] = mod.plus(ans[0], ret[0]);
-                ans[1] = mod.plus(ans[1], ret[1]);
-                ans[1] = mod.plus(ans[1], ret[1]);
-                ans[1] = mod.plus(ans[1], mod.mul(ret[0], 1 << bit));
             }
 
-            return ans;
+            SegmentPQ pq = new SegmentPQ(1, limits[0], i -> 0);
+            Segment seg = new Segment(1, limits[0]);
+            PeekResult pr = new PeekResult();
+            QueryResult qr = new QueryResult();
+            int last = 0;
+            long ans = 0;
+            for (int i = 0; i < n; i++) {
+                int r = i;
+                while (r + 1 < n && cards[r + 1][2] == cards[r][2]) {
+                    r++;
+                }
+
+                //transfer
+                {
+                    int y = suffix[i][1] + 1;
+                    while (true) {
+                        pr.reset();
+                        pq.peek(1, limits[0], 1, limits[0], pr);
+                        if (pr.empty || pr.val < y) {
+                            break;
+                        }
+                        pq.pop(pr.index, pr.index, 1, limits[0]);
+                        seg.active(pr.index, pr.index, 1, limits[0], pr.val);
+                    }
+                }
+                {
+                    int x = suffix[i][0] + 1;
+                    int y = suffix[i][1] + 1;
+                    qr.reset();
+                    seg.query(x, limits[0], 1, limits[0], qr);
+                    long intersect = qr.sum - (long) (y - 1) * qr.size;
+                    long area = (long) (limits[0] - x + 1) * (limits[1] - y + 1);
+                    ans += (area - intersect) * (cards[i][2] - last);
+                    last = cards[i][2];
+                }
+                //update
+                {
+                    for (int j = i; j <= r; j++) {
+                        int x = cards[j][0];
+                        int y = cards[j][1];
+                        pq.update(1, x, 1, limits[0], y);
+                        seg.update(1, x, 1, limits[0], y);
+                    }
+                }
+                i = r;
+            }
+
+            out.println(ans);
+        }
+
+    }
+
+    static class FastOutput implements AutoCloseable, Closeable, Appendable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
+
+        public FastOutput append(CharSequence csq) {
+            cache.append(csq);
+            return this;
+        }
+
+        public FastOutput append(CharSequence csq, int start, int end) {
+            cache.append(csq, start, end);
+            return this;
+        }
+
+        public FastOutput(Writer os) {
+            this.os = os;
+        }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput append(char c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput append(long c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput println(long c) {
+            return append(c).println();
+        }
+
+        public FastOutput println() {
+            cache.append(System.lineSeparator());
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            return this;
+        }
+
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+
+        public String toString() {
+            return cache.toString();
         }
 
     }
@@ -148,6 +184,12 @@ public class Main {
 
         public FastInput(InputStream is) {
             this.is = is;
+        }
+
+        public void populate(int[] data) {
+            for (int i = 0; i < data.length; i++) {
+                data[i] = readInt();
+            }
         }
 
         private int read() {
@@ -198,165 +240,321 @@ public class Main {
 
     }
 
-    static class Debug {
-        private boolean offline;
-        private PrintStream out = System.err;
+    static class SegmentPQ implements Cloneable {
+        private SegmentPQ left;
+        private SegmentPQ right;
+        private int max;
+        private int dirty = Integer.MIN_VALUE;
+        private int size;
 
-        public Debug(boolean enable) {
-            offline = enable && System.getSecurityManager() == null;
-        }
-
-        public Debug debug(String name, int x) {
-            if (offline) {
-                debug(name, "" + x);
+        private void modify(int x) {
+            if (size == 0) {
+                return;
             }
-            return this;
+            max = Math.max(max, x);
+            dirty = Math.max(dirty, x);
         }
 
-        public Debug debug(String name, String x) {
-            if (offline) {
-                out.printf("%s=%s", name, x);
-                out.println();
-            }
-            return this;
+        public void pushUp() {
+            size = left.size + right.size;
+            max = Math.max(left.max, right.max);
         }
 
-    }
-
-    static class FastOutput implements AutoCloseable, Closeable, Appendable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
-
-        public FastOutput append(CharSequence csq) {
-            cache.append(csq);
-            return this;
+        public void pushDown() {
+            left.modify(dirty);
+            right.modify(dirty);
+            dirty = Integer.MIN_VALUE;
         }
 
-        public FastOutput append(CharSequence csq, int start, int end) {
-            cache.append(csq, start, end);
-            return this;
-        }
-
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput append(char c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput append(int c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput println(int c) {
-            return append(c).println();
-        }
-
-        public FastOutput println() {
-            cache.append(System.lineSeparator());
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        }
-
-        public String toString() {
-            return cache.toString();
-        }
-
-    }
-
-    static class Bits {
-        private Bits() {
-        }
-
-        public static int setBit(int x, int i, boolean v) {
-            if (v) {
-                x |= 1 << i;
+        public SegmentPQ(int l, int r, IntToIntegerFunction func) {
+            if (l < r) {
+                int m = (l + r) >> 1;
+                left = new SegmentPQ(l, m, func);
+                right = new SegmentPQ(m + 1, r, func);
+                pushUp();
             } else {
-                x &= ~(1 << i);
+                size = 1;
+                max = func.apply(l);
             }
-            return x;
+        }
+
+        private boolean covered(int ll, int rr, int l, int r) {
+            return ll <= l && rr >= r;
+        }
+
+        private boolean noIntersection(int ll, int rr, int l, int r) {
+            return ll > r || rr < l;
+        }
+
+        public void update(int ll, int rr, int l, int r, int x) {
+            if (noIntersection(ll, rr, l, r)) {
+                return;
+            }
+            if (covered(ll, rr, l, r)) {
+                modify(x);
+                return;
+            }
+            pushDown();
+            int m = (l + r) >> 1;
+            left.update(ll, rr, l, m, x);
+            right.update(ll, rr, m + 1, r, x);
+            pushUp();
+        }
+
+        public void pop(int ll, int rr, int l, int r) {
+            if (noIntersection(ll, rr, l, r)) {
+                return;
+            }
+            if (covered(ll, rr, l, r)) {
+                max = Integer.MIN_VALUE;
+                size = 0;
+                return;
+            }
+            pushDown();
+            int m = (l + r) >> 1;
+            left.pop(ll, rr, l, m);
+            right.pop(ll, rr, m + 1, r);
+            pushUp();
+        }
+
+        public void peek(int ll, int rr, int l, int r, PeekResult result) {
+            if (noIntersection(ll, rr, l, r) || size == 0) {
+                return;
+            }
+            if (l == r) {
+                result.update(l, max);
+                return;
+            }
+            pushDown();
+            int m = (l + r) >> 1;
+            if (left.max > right.max) {
+                left.peek(ll, rr, l, m, result);
+            } else {
+                right.peek(ll, rr, m + 1, r, result);
+            }
+            pushUp();
+        }
+
+        private SegmentPQ deepClone() {
+            SegmentPQ seg = clone();
+            if (seg.left != null) {
+                seg.left = seg.left.deepClone();
+            }
+            if (seg.right != null) {
+                seg.right = seg.right.deepClone();
+            }
+            return seg;
+        }
+
+        protected SegmentPQ clone() {
+            try {
+                return (SegmentPQ) super.clone();
+            } catch (CloneNotSupportedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        private void toString(StringBuilder builder) {
+            if (left == null && right == null) {
+                builder.append(max).append(",");
+                return;
+            }
+            pushDown();
+            left.toString(builder);
+            right.toString(builder);
+        }
+
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            deepClone().toString(builder);
+            if (builder.length() > 0) {
+                builder.setLength(builder.length() - 1);
+            }
+            return builder.toString();
         }
 
     }
 
-    static class Modular {
-        int m;
+    static class QueryResult {
+        long sum;
+        int size;
 
-        public Modular(int m) {
-            this.m = m;
+        public void reset() {
+            sum = 0;
+            size = 0;
         }
 
-        public Modular(long m) {
-            this.m = (int) m;
-            if (this.m != m) {
-                throw new IllegalArgumentException();
+        public void update(long sum, int size) {
+            this.sum += sum;
+            this.size += size;
+        }
+
+    }
+
+    static class PeekResult {
+        int index;
+        int val;
+        boolean empty;
+
+        public void reset() {
+            index = -1;
+            val = Integer.MIN_VALUE;
+            empty = true;
+        }
+
+        public void update(int index, int val) {
+            if (val > this.val) {
+                this.index = index;
+                this.val = val;
+                this.empty = false;
             }
         }
 
-        public Modular(double m) {
-            this.m = (int) m;
-            if (this.m != m) {
-                throw new IllegalArgumentException();
+    }
+
+    static class Segment implements Cloneable {
+        private Segment left;
+        private Segment right;
+        private static long inf = (long) 1e18;
+        private long sum;
+        private long min = inf;
+        private long secMin = inf;
+        private int minSize = 0;
+        private int size = 0;
+
+        private void active(long x) {
+            sum = min = x;
+            minSize = 1;
+            size = 1;
+        }
+
+        private void modify(long x) {
+            if (size == 0 || min >= x) {
+                return;
+            }
+            sum += (x - min) * minSize;
+            min = x;
+        }
+
+        public void pushUp() {
+            min = Math.min(left.min, right.min);
+            secMin = Math.max(min == left.min ? left.secMin : left.min,
+                    min == right.min ? right.secMin : right.min);
+            minSize = (min == left.min ? left.minSize : 0) + (min == right.min ? right.minSize : 0);
+            sum = left.sum + right.sum;
+            size = left.size + right.size;
+        }
+
+        public void pushDown() {
+            left.modify(min);
+            right.modify(min);
+        }
+
+        public Segment(int l, int r) {
+            if (l < r) {
+                int m = (l + r) >> 1;
+                left = new Segment(l, m);
+                right = new Segment(m + 1, r);
+                pushUp();
+            } else {
             }
         }
 
-        public int valueOf(int x) {
-            x %= m;
-            if (x < 0) {
-                x += m;
+        private boolean covered(int ll, int rr, int l, int r) {
+            return ll <= l && rr >= r;
+        }
+
+        private boolean noIntersection(int ll, int rr, int l, int r) {
+            return ll > r || rr < l;
+        }
+
+        public void update(int ll, int rr, int l, int r, long x) {
+            if (noIntersection(ll, rr, l, r) || min >= x) {
+                return;
             }
-            return x;
-        }
-
-        public int valueOf(long x) {
-            x %= m;
-            if (x < 0) {
-                x += m;
+            if (covered(ll, rr, l, r) && secMin > x) {
+                modify(x);
+                return;
             }
-            return (int) x;
+            pushDown();
+            int m = (l + r) >> 1;
+            left.update(ll, rr, l, m, x);
+            right.update(ll, rr, m + 1, r, x);
+            pushUp();
         }
 
-        public int mul(int x, int y) {
-            return valueOf((long) x * y);
+        public void active(int ll, int rr, int l, int r, long x) {
+            if (noIntersection(ll, rr, l, r)) {
+                return;
+            }
+            if (covered(ll, rr, l, r)) {
+                active(x);
+                return;
+            }
+            pushDown();
+            int m = (l + r) >> 1;
+            left.active(ll, rr, l, m, x);
+            right.active(ll, rr, m + 1, r, x);
+            pushUp();
         }
 
-        public int plus(int x, int y) {
-            return valueOf(x + y);
+        public void query(int ll, int rr, int l, int r, QueryResult result) {
+            if (noIntersection(ll, rr, l, r)) {
+                return;
+            }
+            if (covered(ll, rr, l, r)) {
+                result.update(sum, size);
+                return;
+            }
+            pushDown();
+            int m = (l + r) >> 1;
+            left.query(ll, rr, l, m, result);
+            right.query(ll, rr, m + 1, r, result);
         }
 
-        public int subtract(int x, int y) {
-            return valueOf(x - y);
+        private Segment deepClone() {
+            Segment seg = clone();
+            if (seg.left != null) {
+                seg.left = seg.left.deepClone();
+            }
+            if (seg.right != null) {
+                seg.right = seg.right.deepClone();
+            }
+            return seg;
+        }
+
+        protected Segment clone() {
+            try {
+                return (Segment) super.clone();
+            } catch (CloneNotSupportedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        private void toString(StringBuilder builder) {
+            if (left == null && right == null) {
+                builder.append(min).append(",");
+                return;
+            }
+            pushDown();
+            left.toString(builder);
+            right.toString(builder);
+            pushUp();
         }
 
         public String toString() {
-            return "mod " + m;
+            StringBuilder builder = new StringBuilder();
+            deepClone().toString(builder);
+            if (builder.length() > 0) {
+                builder.setLength(builder.length() - 1);
+            }
+            return builder.toString();
         }
+
+    }
+
+    static interface IntToIntegerFunction {
+        int apply(int x);
 
     }
 }
