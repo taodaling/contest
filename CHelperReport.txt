@@ -1,2 +1,3 @@
-40 src/main/java/contest/C. Find a car.json
-0
+37 src/main/java/contest/G. Gear Up.json
+1
+2

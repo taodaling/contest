@@ -1,6 +1,61 @@
-package template.datastructure;
+package contest;
 
-public class Splay implements Cloneable {
+import template.io.FastInput;
+import template.io.FastOutput;
+import template.primitve.generated.datastructure.IntToIntFunction;
+import template.primitve.generated.datastructure.IntegerDiscreteMap;
+import template.primitve.generated.datastructure.IntegerList;
+import template.utils.Debug;
+
+public class DHitchhikingInTheBalticStates {
+    Debug debug = new Debug(true);
+
+    public void solve(int testNumber, FastInput in, FastOutput out) {
+        int n = in.readInt();
+        int[][] intervals = new int[n][2];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < 2; j++) {
+                intervals[i][j] = in.readInt();
+            }
+        }
+
+
+        Splay root = Splay.NIL;
+
+        for (int i = 0; i < n; i++) {
+            int l = intervals[i][0];
+            int r = intervals[i][1];
+            Splay[] midAndRight = Splay.splitByKey(root, r - 1);
+            Splay[] leftAndMid = Splay.splitByKey(midAndRight[0], l - 1);
+            Splay left = leftAndMid[0];
+            Splay mid = leftAndMid[1];
+            Splay right = midAndRight[1];
+
+            mid.plus(1);
+            Splay newNode = new Splay();
+            newNode.key = l;
+            mid = Splay.merge(newNode, mid);
+
+            mid = Splay.selectMaxAsRoot(mid);
+            if (right != Splay.NIL) {
+                right = Splay.selectMinAsRoot(right);
+                right = Splay.splitRight(right);
+            }
+
+            root = left;
+            root = Splay.merge(root, mid);
+            root = Splay.merge(root, right);
+
+            debug.debug("root", root);
+        }
+
+        int ans = root.size;
+        out.println(ans);
+    }
+}
+
+
+class Splay implements Cloneable {
     public static final Splay NIL = new Splay();
 
     static {
@@ -15,6 +70,15 @@ public class Splay implements Cloneable {
     Splay father = NIL;
     int size = 1;
     int key;
+    int plus;
+
+    public void plus(int x) {
+        if (this == NIL) {
+            return;
+        }
+        key += x;
+        plus += x;
+    }
 
     public static void splay(Splay x) {
         if (x == NIL) {
@@ -110,6 +174,11 @@ public class Splay implements Cloneable {
     public void pushDown() {
         if (this == NIL) {
             return;
+        }
+        if (plus != 0) {
+            left.plus(plus);
+            right.plus(plus);
+            plus = 0;
         }
     }
 

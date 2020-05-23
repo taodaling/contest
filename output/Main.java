@@ -2,9 +2,10 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.io.UncheckedIOException;
+import java.util.List;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
@@ -28,113 +29,296 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            CFindACar solver = new CFindACar();
-            solver.solve(1, in, out);
-            out.close();
+            GGearUp solver = new GGearUp();
+            try {
+                int testNumber = 1;
+                while (true)
+                    solver.solve(testNumber++, in, out);
+            } catch (UnknownError e) {
+                out.close();
+            }
         }
     }
 
-    static class CFindACar {
-        Modular mod = new Modular(1e9 + 7);
-        Debug debug = new Debug(true);
-        int c1 = 0;
-        int c2 = 0;
-        int[][] mem1 = new int[30][2];
-        int[][] mem2 = new int[30][2];
+    static class GGearUp {
+        double ln2 = Math.log(2);
+        int order = 0;
+        Node[] seq = new Node[100000 + 1];
 
         public void solve(int testNumber, FastInput in, FastOutput out) {
+            if (!in.hasMore()) {
+                //debug.debug("2^30", 1 << 31);
+                throw new UnknownError();
+            }
+
+            order = 0;
+            out.printf("Case #%d:", testNumber).println();
+            int n = in.readInt();
+            int m = in.readInt();
             int q = in.readInt();
+            Node[] nodes = new Node[n];
+            for (int i = 0; i < n; i++) {
+                nodes[i] = new Node();
+                nodes[i].id = i;
+                nodes[i].r = Log2.floorLog(in.readInt());
+            }
+            for (int i = 0; i < m; i++) {
+                Edge e = new Edge();
+                e.linear = in.readInt();
+                e.a = nodes[in.readInt() - 1];
+                e.b = nodes[in.readInt() - 1];
+                e.a.adj.add(e);
+                e.b.adj.add(e);
+            }
 
-            int highestBit = 29;
+            for (Node node : nodes) {
+                if (node.visited) {
+                    continue;
+                }
+                dfs(node, null, node, true, 0);
+            }
+
+            Segment seg = new Segment(1, order, i -> seq[i].ps);
+
             for (int i = 0; i < q; i++) {
-                int x1 = in.readInt();
-                int y1 = in.readInt();
-                int x2 = in.readInt();
-                int y2 = in.readInt();
-                int k = in.readInt() - 1;
-                int a11 = dfs(highestBit, x2, y2, k, 0)[0];
-                int a01 = dfs(highestBit, x2, y1 - 1, k, 0)[0];
-                int a10 = dfs(highestBit, x1 - 1, y2, k, 0)[0];
-                int a00 = dfs(highestBit, x1 - 1, y1 - 1, k, 0)[0];
-
-                int ans = mod.plus(a11, a00);
-                ans = mod.subtract(ans, a01);
-                ans = mod.subtract(ans, a10);
-                out.println(ans);
+                int a = in.readInt();
+                Node x = nodes[in.readInt() - 1];
+                int y = Log2.floorLog(in.readInt());
+                int cur = seg.query(x.levelL, x.levelL, 1, order);
+                if (a == 1) {
+                    //replace
+                    if (x.special) {
+                        int delta = (-y) - (-cur);
+                        seg.update(x.levelL, x.levelR, 1, order, delta);
+                        seg.update(x.subL + 1, x.subR, 1, order, -delta);
+                    } else {
+                        int delta = y - cur;
+                        seg.update(x.subL + 1, x.subR, 1, order, delta);
+                    }
+                } else {
+                    //query
+                    Node root = x.top;
+                    int rootVelocity = y - cur;
+                    int max = seg.query(root.levelL, root.levelR, 1, order);
+                    max += rootVelocity;
+                    out.printf("%.3f", max * ln2).println();
+                }
             }
-
-            debug.debug("c1", c1);
-            debug.debug("c2", c2);
         }
 
-        public int sum(int n) {
-            //1 + ... + n
-            return mod.valueOf((long) (n + 1) * n / 2);
+        public void dfs(Node root, Node p, Node top, boolean type, int ps) {
+            root.visited = true;
+            root.special = type;
+            root.top = top;
+            root.adj.sort((a, b) -> a.linear - b.linear);
+            root.ps = ps;
+            root.levelR = root.subR = root.subL = root.levelL = ++order;
+            seq[root.subL] = root;
+            for (Edge e : root.adj) {
+                Node node = e.other(root);
+                if (node == p) {
+                    continue;
+                }
+                if (e.linear == 1) {
+                    dfs(node, root, top, true, ps + root.r - node.r);
+                    root.subR = root.levelR = order;
+                } else {
+                    dfs(node, root, top, false, ps);
+                    root.levelR = order;
+                }
+            }
         }
 
-        public int[] dfs(int bit, int n, int m, int k, int trace) {
-            if (n > m) {
-                int tmp = n;
-                n = m;
-                m = tmp;
-            }
-            if (n == 0 || m == 0 || trace > k) {
-                return new int[2];
-            }
-            //full
-            //
-            int size = 1 << (bit + 1);
-            if (n == size && m == size) {
-                int[] ans = new int[2];
-                int allow = Math.min((trace | (size - 1)), k) - trace;
-                int cnt = mod.mul(size, allow + 1);
-                ans[0] = cnt;
-                ans[1] = mod.mul(sum(allow), size);
-                ans[1] = mod.plus(ans[1], mod.mul(cnt, (trace + 1)));
-                return ans;
-            }
+    }
 
-            if (n == size || m == size) {
-                c1++;
+    static class Segment implements Cloneable {
+        private Segment left;
+        private Segment right;
+        int max;
+        int plusTag;
+
+        private void modify(int x) {
+            plusTag += x;
+            max += x;
+        }
+
+        public void pushUp() {
+            max = Math.max(left.max, right.max);
+        }
+
+        public void pushDown() {
+            if (plusTag != 0) {
+                left.modify(plusTag);
+                right.modify(plusTag);
+                plusTag = 0;
+            }
+        }
+
+        public Segment(int l, int r, IntToIntFunction func) {
+            if (l < r) {
+                int m = (l + r) >> 1;
+                left = new Segment(l, m, func);
+                right = new Segment(m + 1, r, func);
+                pushUp();
             } else {
-                c2++;
+                max = func.apply(l);
             }
+        }
 
-            int[] nSub = mem1[bit];
-            nSub[0] = Math.min(n, size / 2);
-            nSub[1] = n - nSub[0];
-            int[] mSub = mem2[bit];
-            mSub[0] = Math.min(m, size / 2);
-            mSub[1] = m - mSub[0];
+        private boolean covered(int ll, int rr, int l, int r) {
+            return ll <= l && rr >= r;
+        }
 
-            //00 or 11
-            int[] ans = new int[2];
+        private boolean noIntersection(int ll, int rr, int l, int r) {
+            return ll > r || rr < l;
+        }
 
-            if (m < size || (trace | (size - 1)) > k) {
-                for (int i = 0; i < 2; i++) {
-                    for (int j = 0; j < 2; j++) {
-                        int[] ret = dfs(bit - 1, nSub[i], mSub[j], k, Bits.setBit(trace, bit, (i ^ j) == 1));
-                        ans[0] = mod.plus(ans[0], ret[0]);
-                        ans[1] = mod.plus(ans[1], ret[1]);
-                    }
-                }
-            } else {
-                for (int i = 0; i < 1; i++) {
-                    for (int j = 0; j < 2; j++) {
-                        int[] ret = dfs(bit - 1, nSub[i], mSub[j], k, Bits.setBit(trace, bit, (i ^ j) == 1));
-                        ans[0] = mod.plus(ans[0], ret[0]);
-                        ans[1] = mod.plus(ans[1], ret[1]);
-                    }
-                }
-                int[] ret = dfs(bit - 1, nSub[1], mSub[0], k, Bits.setBit(trace, bit, true));
-                ans[0] = mod.plus(ans[0], ret[0]);
-                ans[0] = mod.plus(ans[0], ret[0]);
-                ans[1] = mod.plus(ans[1], ret[1]);
-                ans[1] = mod.plus(ans[1], ret[1]);
-                ans[1] = mod.plus(ans[1], mod.mul(ret[0], 1 << bit));
+        public void update(int ll, int rr, int l, int r, int x) {
+            if (noIntersection(ll, rr, l, r)) {
+                return;
             }
+            if (covered(ll, rr, l, r)) {
+                modify(x);
+                return;
+            }
+            pushDown();
+            int m = (l + r) >> 1;
+            left.update(ll, rr, l, m, x);
+            right.update(ll, rr, m + 1, r, x);
+            pushUp();
+        }
 
-            return ans;
+        public int query(int ll, int rr, int l, int r) {
+            if (noIntersection(ll, rr, l, r)) {
+                return (int) -1e8;
+            }
+            if (covered(ll, rr, l, r)) {
+                return max;
+            }
+            pushDown();
+            int m = (l + r) >> 1;
+            return Math.max(left.query(ll, rr, l, m),
+                    right.query(ll, rr, m + 1, r));
+        }
+
+        private Segment deepClone() {
+            Segment seg = clone();
+            if (seg.left != null) {
+                seg.left = seg.left.deepClone();
+            }
+            if (seg.right != null) {
+                seg.right = seg.right.deepClone();
+            }
+            return seg;
+        }
+
+        protected Segment clone() {
+            try {
+                return (Segment) super.clone();
+            } catch (CloneNotSupportedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        private void toString(StringBuilder builder) {
+            if (left == null && right == null) {
+                builder.append(max).append(",");
+                return;
+            }
+            pushDown();
+            left.toString(builder);
+            right.toString(builder);
+        }
+
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            deepClone().toString(builder);
+            if (builder.length() > 0) {
+                builder.setLength(builder.length() - 1);
+            }
+            return builder.toString();
+        }
+
+    }
+
+    static class FastOutput implements AutoCloseable, Closeable, Appendable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
+
+        public FastOutput append(CharSequence csq) {
+            cache.append(csq);
+            return this;
+        }
+
+        public FastOutput append(CharSequence csq, int start, int end) {
+            cache.append(csq, start, end);
+            return this;
+        }
+
+        public FastOutput(Writer os) {
+            this.os = os;
+        }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput append(char c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput printf(String format, Object... args) {
+            cache.append(String.format(format, args));
+            return this;
+        }
+
+        public FastOutput println() {
+            cache.append(System.lineSeparator());
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            return this;
+        }
+
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+
+        public String toString() {
+            return cache.toString();
+        }
+
+    }
+
+    static class Node {
+        List<Edge> adj = new ArrayList<>();
+        int r;
+        Node top;
+        boolean visited = false;
+        int subL;
+        int subR;
+        int levelL;
+        int levelR;
+        boolean special;
+        int ps;
+        int id;
+
+        public String toString() {
+            return "" + id;
         }
 
     }
@@ -196,167 +380,33 @@ public class Main {
             return val;
         }
 
-    }
-
-    static class Debug {
-        private boolean offline;
-        private PrintStream out = System.err;
-
-        public Debug(boolean enable) {
-            offline = enable && System.getSecurityManager() == null;
-        }
-
-        public Debug debug(String name, int x) {
-            if (offline) {
-                debug(name, "" + x);
-            }
-            return this;
-        }
-
-        public Debug debug(String name, String x) {
-            if (offline) {
-                out.printf("%s=%s", name, x);
-                out.println();
-            }
-            return this;
+        public boolean hasMore() {
+            skipBlank();
+            return next != -1;
         }
 
     }
 
-    static class FastOutput implements AutoCloseable, Closeable, Appendable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
+    static class Edge {
+        Node a;
+        Node b;
+        int linear;
 
-        public FastOutput append(CharSequence csq) {
-            cache.append(csq);
-            return this;
-        }
-
-        public FastOutput append(CharSequence csq, int start, int end) {
-            cache.append(csq, start, end);
-            return this;
-        }
-
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput append(char c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput append(int c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput println(int c) {
-            return append(c).println();
-        }
-
-        public FastOutput println() {
-            cache.append(System.lineSeparator());
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        }
-
-        public String toString() {
-            return cache.toString();
+        Node other(Node x) {
+            return a == x ? b : a;
         }
 
     }
 
-    static class Bits {
-        private Bits() {
-        }
-
-        public static int setBit(int x, int i, boolean v) {
-            if (v) {
-                x |= 1 << i;
-            } else {
-                x &= ~(1 << i);
-            }
-            return x;
+    static class Log2 {
+        public static int floorLog(int x) {
+            return 31 - Integer.numberOfLeadingZeros(x);
         }
 
     }
 
-    static class Modular {
-        int m;
-
-        public Modular(int m) {
-            this.m = m;
-        }
-
-        public Modular(long m) {
-            this.m = (int) m;
-            if (this.m != m) {
-                throw new IllegalArgumentException();
-            }
-        }
-
-        public Modular(double m) {
-            this.m = (int) m;
-            if (this.m != m) {
-                throw new IllegalArgumentException();
-            }
-        }
-
-        public int valueOf(int x) {
-            x %= m;
-            if (x < 0) {
-                x += m;
-            }
-            return x;
-        }
-
-        public int valueOf(long x) {
-            x %= m;
-            if (x < 0) {
-                x += m;
-            }
-            return (int) x;
-        }
-
-        public int mul(int x, int y) {
-            return valueOf((long) x * y);
-        }
-
-        public int plus(int x, int y) {
-            return valueOf(x + y);
-        }
-
-        public int subtract(int x, int y) {
-            return valueOf(x - y);
-        }
-
-        public String toString() {
-            return "mod " + m;
-        }
+    static interface IntToIntFunction {
+        int apply(int x);
 
     }
 }
