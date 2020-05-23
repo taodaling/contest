@@ -1,0 +1,40 @@
+{
+  "name" : "C. Find a car",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4\n1 1 1 1 1\n3 2 5 4 5\n1 1 5 5 10000\n1 4 2 5 2\n",
+    "output" : "1\n13\n93\n0\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "1\n1 1 4 4 4",
+    "output" : "40",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.CFindACar",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.05.22",
+  "contestName" : "Codeforces - Codeforces Round #415 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}
