@@ -1,3 +1,6 @@
-37 src/main/java/contest/G. Gear Up.json
+42 src/main/java/contest/E - Random Pawn.json
+4
+0
 1
 2
+3

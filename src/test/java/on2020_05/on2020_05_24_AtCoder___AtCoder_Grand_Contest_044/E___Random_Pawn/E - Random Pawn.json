@@ -1,0 +1,50 @@
+{
+  "name" : "E - Random Pawn",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5\n4 2 6 3 5\n1 1 1 1 1\n",
+    "output" : "4.700000000000\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "4\n100 0 100 0\n0 100 0 100\n",
+    "output" : "50.000000000000\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "14\n4839 5400 6231 5800 6001 5200 6350 7133 7986 8012 7537 7013 6477 5912\n34 54 61 32 52 61 21 43 65 12 45 21 1 4\n",
+    "output" : "7047.142857142857\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "10\n470606482521 533212137322 116718867454 746976621474 457112271419 815899162072 641324977314 88281100571 9231169966 455007126951\n26 83 30 59 100 88 84 91 54 61\n",
+    "output" : "815899161079.400024414062\n",
+    "index" : 3,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_05.on2020_05_24_AtCoder___AtCoder_Grand_Contest_044.E___Random_Pawn.ERandomPawn",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.05.24",
+  "contestName" : "AtCoder - AtCoder Grand Contest 044",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

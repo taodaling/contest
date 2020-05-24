@@ -11,7 +11,7 @@ import java.util.List;
 
 public class GGearUp {
     double ln2 = Math.log(2);
-   // Debug debug = new Debug(true);
+    // Debug debug = new Debug(true);
 
     public void solve(int testNumber, FastInput in, FastOutput out) {
         if (!in.hasMore()) {
@@ -56,13 +56,14 @@ public class GGearUp {
             if (a == 1) {
                 //replace
                 if (x.special) {
-                    int delta = (-y) - (-cur);
+                    int delta = (-y) - (-x.r);
                     seg.update(x.levelL, x.levelR, 1, order, delta);
                     seg.update(x.subL + 1, x.subR, 1, order, -delta);
                 } else {
-                    int delta = y - cur;
+                    int delta = y - x.r;
                     seg.update(x.subL + 1, x.subR, 1, order, delta);
                 }
+                x.r = y;
             } else {
                 //query
                 Node root = x.top;

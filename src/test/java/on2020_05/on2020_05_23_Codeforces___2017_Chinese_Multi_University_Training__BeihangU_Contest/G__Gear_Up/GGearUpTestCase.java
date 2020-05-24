@@ -1,4 +1,6 @@
-package contest;
+package on2020_05.on2020_05_23_Codeforces___2017_Chinese_Multi_University_Training__BeihangU_Contest.G__Gear_Up;
+
+
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,9 +34,9 @@ public class GGearUpTestCase {
     RandomWrapper random = new RandomWrapper(new Random(0));
 
     public Test create(int testNum) {
-        int n = random.nextInt(1, 6);
+        int n = random.nextInt(1, 5);
         int m = random.nextInt(0, n - 1);
-        int q = random.nextInt(1, 5);
+        int q = random.nextInt(1, 50);
         int[] init = new int[n];
         for (int i = 0; i < n; i++) {
             init[i] = 1 << random.nextInt(0, 30);
@@ -125,7 +127,7 @@ public class GGearUpTestCase {
             if (node == p) {
                 continue;
             }
-            int delta = e.type == 1 ? v + root.r - node.r : 0;
+            int delta = e.type == 1 ? root.r - node.r : 0;
             ans = Math.max(ans, dfs(node, root, v + delta));
         }
         return ans;
