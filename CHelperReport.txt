@@ -1,6 +1,2 @@
-42 src/main/java/contest/E - Random Pawn.json
-4
+54 src/main/java/contest/F. Leha and security system.json
 0
-1
-2
-3

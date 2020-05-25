@@ -6,7 +6,6 @@ import java.io.PrintStream;
 import java.util.Arrays;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.math.BigDecimal;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
@@ -30,106 +29,117 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            ERandomPawn solver = new ERandomPawn();
+            FLehaAndSecuritySystem solver = new FLehaAndSecuritySystem();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class ERandomPawn {
-        Debug debug = new Debug(false);
+    static class FLehaAndSecuritySystem {
+        Debug debug = new Debug(true);
 
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            long[] a = new long[n];
-            long[] b = new long[n];
+            int q = in.readInt();
+            int[] a = new int[n + 1];
+            for (int i = 1; i <= n; i++) {
+                a[i] = in.readInt();
+            }
 
-            in.populate(a);
-            in.populate(b);
-
-            int maxIndex = 0;
-            for (int i = 0; i < n; i++) {
-                if (a[i] > a[maxIndex]) {
-                    maxIndex = i;
+            Segment seg = new Segment(1, n, i -> a[i]);
+            int[] cast = new int[10];
+            debug.debug("seg", seg);
+            for (int i = 0; i < q; i++) {
+                int t = in.readInt();
+                if (t == 1) {
+                    int l = in.readInt();
+                    int r = in.readInt();
+                    int x = in.readInt();
+                    int y = in.readInt();
+                    Segment.asStandard(cast);
+                    cast[x] = y;
+                    seg.update(l, r, 1, n, cast);
+                    debug.debug("seg", seg);
+                } else {
+                    int l = in.readInt();
+                    int r = in.readInt();
+                    long sum = seg.query(l, r, 1, n);
+                    out.println(sum);
                 }
             }
-
-            SequenceUtils.rotate(a, 0, n - 1, n - maxIndex);
-            SequenceUtils.rotate(b, 0, n - 1, n - maxIndex);
-
-            a = Arrays.copyOf(a, n + 1);
-            b = Arrays.copyOf(b, n + 1);
-
-            a[n] = a[0];
-            b[n] = b[0];
-
-            long[] c = new long[n + 1];
-            c[0] = 0;
-            c[1] = 0;
-            for (int i = 2; i <= n; i++) {
-                c[i] = 2 * c[i - 1] - c[i - 2] + 2 * b[i - 1];
-            }
-
-            debug.debug("a", a);
-            debug.debug("b", b);
-            debug.debug("c", c);
-
-            double[] heights = new double[n + 1];
-            for (int i = 0; i <= n; i++) {
-                heights[i] = a[i] - c[i];
-            }
-
-            debug.debug("heights", heights);
-
-            double[] y = ConvexHullAssignProblem.solve(heights);
-
-
-            debug.debug("y", y);
-            double[] x = new double[n + 1];
-            for (int i = 0; i <= n; i++) {
-                x[i] = y[i] + c[i];
-            }
-
-//        for (int i = 0; i <= n; i++) {
-//            if (i == 0 || i == n) {
-//                if(!isZero(y[i] - heights[i])){
-//                    throw new RuntimeException();
-//                }
-//            }else{
-//                if(!isZero(y[i] - Math.max(heights[i], (y[i - 1] + y[i + 1]) / 2))){
-//                    throw new RuntimeException();
-//                }
-//            }
-//        }
-
-
-            debug.debug("x", x);
-//        for (int i = 0; i <= n; i++) {
-//            if (i == 0 || i == n) {
-//                if(!isZero(x[i] - a[i])){
-//                    throw new RuntimeException();
-//                }
-//            }else{
-//                if(!isZero(x[i] - Math.max(a[i], (x[i - 1] + x[i + 1]) / 2 - b[i]))){
-//                    throw new RuntimeException();
-//                }
-//            }
-//        }
-
-            double sum = 0;
-            for (int i = 0; i < n; i++) {
-                sum += x[i] / n;
-            }
-
-            out.println(sum);
         }
 
     }
 
-    static interface IntegerIterator {
-        boolean hasNext();
+    static interface IntToIntFunction {
+        int apply(int x);
 
-        int next();
+    }
+
+    static class FastOutput implements AutoCloseable, Closeable, Appendable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
+
+        public FastOutput append(CharSequence csq) {
+            cache.append(csq);
+            return this;
+        }
+
+        public FastOutput append(CharSequence csq, int start, int end) {
+            cache.append(csq, start, end);
+            return this;
+        }
+
+        public FastOutput(Writer os) {
+            this.os = os;
+        }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput append(char c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput append(long c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput println(long c) {
+            return append(c).println();
+        }
+
+        public FastOutput println() {
+            cache.append(System.lineSeparator());
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            return this;
+        }
+
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+
+        public String toString() {
+            return cache.toString();
+        }
 
     }
 
@@ -142,12 +152,6 @@ public class Main {
 
         public FastInput(InputStream is) {
             this.is = is;
-        }
-
-        public void populate(long[] data) {
-            for (int i = 0; i < data.length; i++) {
-                data[i] = readLong();
-            }
         }
 
         private int read() {
@@ -194,203 +198,6 @@ public class Main {
             }
 
             return val;
-        }
-
-        public long readLong() {
-            int sign = 1;
-
-            skipBlank();
-            if (next == '+' || next == '-') {
-                sign = next == '+' ? 1 : -1;
-                next = read();
-            }
-
-            long val = 0;
-            if (sign == 1) {
-                while (next >= '0' && next <= '9') {
-                    val = val * 10 + next - '0';
-                    next = read();
-                }
-            } else {
-                while (next >= '0' && next <= '9') {
-                    val = val * 10 - next + '0';
-                    next = read();
-                }
-            }
-
-            return val;
-        }
-
-    }
-
-    static interface IntegerStack {
-    }
-
-    static class IntegerDequeImpl implements IntegerDeque {
-        private int[] data;
-        private int bpos;
-        private int epos;
-        private static final int[] EMPTY = new int[0];
-        private int n;
-
-        public IntegerDequeImpl(int cap) {
-            if (cap == 0) {
-                data = EMPTY;
-            } else {
-                data = new int[cap];
-            }
-            bpos = 0;
-            epos = 0;
-            n = cap;
-        }
-
-        private void expandSpace(int len) {
-            while (n < len) {
-                n = Math.max(n + 10, n * 2);
-            }
-            int[] newData = new int[n];
-            if (bpos <= epos) {
-                if (bpos < epos) {
-                    System.arraycopy(data, bpos, newData, 0, epos - bpos);
-                }
-            } else {
-                System.arraycopy(data, bpos, newData, 0, data.length - bpos);
-                System.arraycopy(data, 0, newData, data.length - bpos, epos);
-            }
-            epos = size();
-            bpos = 0;
-            data = newData;
-        }
-
-        public IntegerIterator iterator() {
-            return new IntegerIterator() {
-                int index = bpos;
-
-
-                public boolean hasNext() {
-                    return index != epos;
-                }
-
-
-                public int next() {
-                    int ans = data[index];
-                    index = IntegerDequeImpl.this.next(index);
-                    return ans;
-                }
-            };
-        }
-
-        public int removeLast() {
-            int ans = data[last(epos)];
-            epos = last(epos);
-            return ans;
-        }
-
-        public void addLast(int x) {
-            ensureMore();
-            data[epos] = x;
-            epos = next(epos);
-        }
-
-        public int peekLast() {
-            return data[last(epos)];
-        }
-
-        private int last(int x) {
-            return (x == 0 ? n : x) - 1;
-        }
-
-        private int next(int x) {
-            return x + 1 >= n ? 0 : x + 1;
-        }
-
-        private void ensureMore() {
-            if (next(epos) == bpos) {
-                expandSpace(n + 1);
-            }
-        }
-
-        public int size() {
-            int ans = epos - bpos;
-            if (ans < 0) {
-                ans += data.length;
-            }
-            return ans;
-        }
-
-        public String toString() {
-            StringBuilder builder = new StringBuilder();
-            for (IntegerIterator iterator = iterator(); iterator.hasNext(); ) {
-                builder.append(iterator.next()).append(' ');
-            }
-            return builder.toString();
-        }
-
-    }
-
-    static class FastOutput implements AutoCloseable, Closeable, Appendable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
-
-        public FastOutput append(CharSequence csq) {
-            cache.append(csq);
-            return this;
-        }
-
-        public FastOutput append(CharSequence csq, int start, int end) {
-            cache.append(csq, start, end);
-            return this;
-        }
-
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput append(char c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput append(double c) {
-            cache.append(new BigDecimal(c).toPlainString());
-            return this;
-        }
-
-        public FastOutput println(double c) {
-            return append(c).println();
-        }
-
-        public FastOutput println() {
-            cache.append(System.lineSeparator());
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        }
-
-        public String toString() {
-            return cache.toString();
         }
 
     }
@@ -481,183 +288,145 @@ public class Main {
 
     }
 
-    static class IntegerList implements Cloneable {
-        private int size;
-        private int cap;
-        private int[] data;
-        private static final int[] EMPTY = new int[0];
+    static class Segment implements Cloneable {
+        private Segment left;
+        private Segment right;
+        static long[] buf = new long[10];
+        long[] sum = new long[10];
+        int[] dirty = new int[10];
+        boolean tag = false;
 
-        public IntegerList(int cap) {
-            this.cap = cap;
-            if (cap == 0) {
-                data = EMPTY;
+        public static void asStandard(int[] x) {
+            for (int i = 0; i < 10; i++) {
+                x[i] = i;
+            }
+        }
+
+        private void modify(int[] x) {
+            Arrays.fill(buf, 0);
+            for (int i = 0; i < 10; i++) {
+                dirty[i] = x[dirty[i]];
+                buf[x[i]] += sum[i];
+            }
+            for (int i = 0; i < 10; i++) {
+                sum[i] = buf[i];
+            }
+            tag = true;
+        }
+
+        public void pushUp() {
+            for (int i = 0; i < 10; i++) {
+                sum[i] = left.sum[i] + right.sum[i];
+            }
+        }
+
+        public void pushDown() {
+            if (tag) {
+                left.modify(dirty);
+                right.modify(dirty);
+                tag = false;
+                asStandard(dirty);
+            }
+        }
+
+        public Segment(int l, int r, IntToIntFunction func) {
+            asStandard(dirty);
+            if (l < r) {
+                int m = (l + r) >> 1;
+                left = new Segment(l, m, func);
+                right = new Segment(m + 1, r, func);
+                pushUp();
             } else {
-                data = new int[cap];
-            }
-        }
-
-        public void addAll(IntegerIterator iterator) {
-            while (iterator.hasNext()) {
-                add(iterator.next());
-            }
-        }
-
-        public IntegerList(IntegerList list) {
-            this.size = list.size;
-            this.cap = list.cap;
-            this.data = Arrays.copyOf(list.data, size);
-        }
-
-        public IntegerList() {
-            this(0);
-        }
-
-        public void ensureSpace(int req) {
-            if (req > cap) {
-                while (cap < req) {
-                    cap = Math.max(cap + 10, 2 * cap);
+                int val = func.apply(l);
+                int base = 1;
+                while (val != 0) {
+                    sum[val % 10] += base;
+                    base *= 10;
+                    val /= 10;
                 }
-                data = Arrays.copyOf(data, cap);
             }
         }
 
-        private void checkRange(int i) {
-            if (i < 0 || i >= size) {
-                throw new ArrayIndexOutOfBoundsException();
+        private boolean covered(int ll, int rr, int l, int r) {
+            return ll <= l && rr >= r;
+        }
+
+        private boolean noIntersection(int ll, int rr, int l, int r) {
+            return ll > r || rr < l;
+        }
+
+        public void update(int ll, int rr, int l, int r, int[] x) {
+            if (noIntersection(ll, rr, l, r)) {
+                return;
             }
-        }
-
-        public int get(int i) {
-            checkRange(i);
-            return data[i];
-        }
-
-        public void add(int x) {
-            ensureSpace(size + 1);
-            data[size++] = x;
-        }
-
-        public void addAll(int[] x, int offset, int len) {
-            ensureSpace(size + len);
-            System.arraycopy(x, offset, data, size, len);
-            size += len;
-        }
-
-        public void addAll(IntegerList list) {
-            addAll(list.data, 0, list.size);
-        }
-
-        public int size() {
-            return size;
-        }
-
-        public int[] toArray() {
-            return Arrays.copyOf(data, size);
-        }
-
-        public String toString() {
-            return Arrays.toString(toArray());
-        }
-
-        public boolean equals(Object obj) {
-            if (!(obj instanceof IntegerList)) {
-                return false;
+            if (covered(ll, rr, l, r)) {
+                modify(x);
+                return;
             }
-            IntegerList other = (IntegerList) obj;
-            return SequenceUtils.equal(data, 0, size - 1, other.data, 0, other.size - 1);
+            pushDown();
+            int m = (l + r) >> 1;
+            left.update(ll, rr, l, m, x);
+            right.update(ll, rr, m + 1, r, x);
+            pushUp();
         }
 
-        public int hashCode() {
-            int h = 1;
-            for (int i = 0; i < size; i++) {
-                h = h * 31 + Integer.hashCode(data[i]);
+        private static long parse(long[] sum) {
+            long ans = 0;
+            for (int i = 0; i < 10; i++) {
+                ans += sum[i] * i;
             }
-            return h;
-        }
-
-        public IntegerList clone() {
-            IntegerList ans = new IntegerList();
-            ans.addAll(this);
             return ans;
         }
 
-    }
-
-    static interface IntegerDeque extends IntegerStack {
-    }
-
-    static class ConvexHullAssignProblem {
-        public static double[] solve(double[] a) {
-            int n = a.length;
-            IntegerDequeImpl dq = new IntegerDequeImpl(n);
-            for (int i = 0; i < n; i++) {
-                while (dq.size() >= 2) {
-                    int tail = dq.removeLast();
-                    int tail2 = dq.peekLast();
-
-                    if ((a[i] - a[tail]) / (i - tail) < (a[tail] - a[tail2]) / (tail - tail2)) {
-                        dq.addLast(tail);
-                        break;
-                    }
-                }
-
-                dq.addLast(i);
+        public long query(int ll, int rr, int l, int r) {
+            if (noIntersection(ll, rr, l, r)) {
+                return 0;
             }
-
-            IntegerList convexHull = new IntegerList(dq.size());
-            convexHull.addAll(dq.iterator());
-
-            double[] y = new double[n + 1];
-            int left = 0;
-            for (int i = 0; i < n; i++) {
-                while (left + 1 < convexHull.size() && convexHull.get(left + 1) <= i) {
-                    left++;
-                }
-                int last = convexHull.get(left);
-                if (last == i) {
-                    y[i] = a[i];
-                } else {
-                    int next = convexHull.get(left + 1);
-                    y[i] = (double) (i - last) / (next - last) * (a[next] - a[last]) + a[last];
-                }
+            if (covered(ll, rr, l, r)) {
+                return parse(sum);
             }
-
-            return y;
+            pushDown();
+            int m = (l + r) >> 1;
+            return left.query(ll, rr, l, m) +
+                    right.query(ll, rr, m + 1, r);
         }
 
-    }
-
-    static class SequenceUtils {
-        public static void swap(long[] data, int i, int j) {
-            long tmp = data[i];
-            data[i] = data[j];
-            data[j] = tmp;
+        private Segment deepClone() {
+            Segment seg = clone();
+            if (seg.left != null) {
+                seg.left = seg.left.deepClone();
+            }
+            if (seg.right != null) {
+                seg.right = seg.right.deepClone();
+            }
+            return seg;
         }
 
-        public static void rotate(long[] list, int l, int r, int to) {
-            SequenceUtils.reverse(list, l, r);
-            SequenceUtils.reverse(list, l, to - 1);
-            SequenceUtils.reverse(list, to, r);
-        }
-
-        public static void reverse(long[] data, int l, int r) {
-            while (l < r) {
-                swap(data, l, r);
-                l++;
-                r--;
+        protected Segment clone() {
+            try {
+                return (Segment) super.clone();
+            } catch (CloneNotSupportedException e) {
+                throw new RuntimeException(e);
             }
         }
 
-        public static boolean equal(int[] a, int al, int ar, int[] b, int bl, int br) {
-            if ((ar - al) != (br - bl)) {
-                return false;
+        private void toString(StringBuilder builder) {
+            if (left == null && right == null) {
+                builder.append(parse(sum)).append(",");
+                return;
             }
-            for (int i = al, j = bl; i <= ar; i++, j++) {
-                if (a[i] != b[j]) {
-                    return false;
-                }
+            pushDown();
+            left.toString(builder);
+            right.toString(builder);
+        }
+
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            deepClone().toString(builder);
+            if (builder.length() > 0) {
+                builder.setLength(builder.length() - 1);
             }
-            return true;
+            return builder.toString();
         }
 
     }
