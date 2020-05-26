@@ -1,14 +1,20 @@
 import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Random;
+import java.util.ArrayList;
+import java.util.Map;
+import java.io.OutputStreamWriter;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.Arrays;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.util.List;
+import java.util.AbstractMap;
+import java.util.TreeMap;
 import java.io.Closeable;
 import java.io.Writer;
-import java.io.OutputStreamWriter;
 import java.io.InputStream;
 
 /**
@@ -29,116 +35,186 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            FLehaAndSecuritySystem solver = new FLehaAndSecuritySystem();
+            FChristmasTree solver = new FChristmasTree();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class FLehaAndSecuritySystem {
-        Debug debug = new Debug(true);
+    static class FChristmasTree {
+        Debug debug = new Debug(false);
+        boolean valid;
 
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            int q = in.readInt();
-            int[] a = new int[n + 1];
-            for (int i = 1; i <= n; i++) {
-                a[i] = in.readInt();
+            Node[] nodes = new Node[n];
+            for (int i = 0; i < n; i++) {
+                nodes[i] = new Node();
+                nodes[i].id = i;
             }
 
-            Segment seg = new Segment(1, n, i -> a[i]);
-            int[] cast = new int[10];
-            debug.debug("seg", seg);
-            for (int i = 0; i < q; i++) {
-                int t = in.readInt();
-                if (t == 1) {
-                    int l = in.readInt();
-                    int r = in.readInt();
-                    int x = in.readInt();
-                    int y = in.readInt();
-                    Segment.asStandard(cast);
-                    cast[x] = y;
-                    seg.update(l, r, 1, n, cast);
-                    debug.debug("seg", seg);
-                } else {
-                    int l = in.readInt();
-                    int r = in.readInt();
-                    long sum = seg.query(l, r, 1, n);
-                    out.println(sum);
+            for (int i = 0; i < n - 1; i++) {
+                Node a = nodes[in.readInt() - 1];
+                Node b = nodes[in.readInt() - 1];
+                a.adj.add(b);
+                b.adj.add(a);
+            }
+
+            for (int i = 0; i < n; i++) {
+                nodes[i].children = new IntegerList(nodes[i].adj.size());
+            }
+
+            int A = blockNeed(nodes[0], null);
+
+            IntBinarySearch ibs = new IntBinarySearch() {
+
+                public boolean check(int mid) {
+                    valid = true;
+                    dfs(nodes[0], null, mid);
+                    return valid;
+                }
+            };
+
+            int B = ibs.binarySearch(0, n);
+
+            out.append(A).append(' ').append(B);
+        }
+
+        public int blockNeed(Node root, Node p) {
+            int child = 0;
+            int ans = 0;
+            for (Node node : root.adj) {
+                if (node == p) {
+                    continue;
+                }
+                child++;
+                ans += blockNeed(node, root);
+            }
+            ans += child / 2;
+            if (child % 2 == 1 && p == null) {
+                ans++;
+            }
+            root.odd = p == null && child % 2 == 1 || p != null && child % 2 == 0;
+            return ans;
+        }
+
+        private void add(TreeMap<Integer, Integer> map, Integer key) {
+            map.put(key, map.getOrDefault(key, 0) + 1);
+        }
+
+        private void remove(TreeMap<Integer, Integer> map, Integer key) {
+            int cnt = map.get(key);
+            cnt--;
+            if (cnt > 0) {
+                map.put(key, cnt);
+            } else {
+                map.remove(key);
+            }
+        }
+
+        public int dfs(Node root, Node p, int limit) {
+            if (!valid) {
+                return 0;
+            }
+
+            root.children.clear();
+            for (Node node : root.adj) {
+                if (node == p) {
+                    continue;
+                }
+                root.children.add(dfs(node, root, limit) + 1);
+            }
+
+            if (!valid) {
+                return 0;
+            }
+            root.children.sort();
+            int[] data = root.children.getData();
+            int n = root.children.size();
+
+            debug.debug("root", root);
+            //special
+            if (root.odd && p != null) {
+                int l = 0;
+                int r = n - 1;
+                boolean skip = true;
+                while (l < r && skip) {
+                    if (data[l] + data[r] > limit) {
+                        skip = false;
+                    }
+                    l++;
+                    r--;
+                }
+
+                if (skip) {
+                    return 0;
                 }
             }
+
+            if (root.odd && n > 0) {
+                if (data[n - 1] > limit) {
+                    valid = false;
+                    return 0;
+                }
+                n--;
+            }
+
+            TreeMap<Integer, Integer> map = new TreeMap<>();
+            for (int i = 0; i < n; i++) {
+                add(map, data[i]);
+            }
+
+            Integer ret = null;
+            while (!map.isEmpty()) {
+                Integer max = map.lastKey();
+                remove(map, max);
+                Integer floor = map.floorKey(limit - max);
+                if (floor == null) {
+                    if (ret == null) {
+                        ret = max;
+                        continue;
+                    }
+                    valid = false;
+                    return 0;
+                }
+                remove(map, floor);
+            }
+            return ret == null ? 0 : ret;
         }
 
     }
 
-    static interface IntToIntFunction {
-        int apply(int x);
+    static class DigitUtils {
+        private DigitUtils() {
+        }
+
+        public static int average(int a, int b) {
+            int ans = (a / 2) + (b / 2);
+            switch (a % 2 + b % 2) {
+                case 2:
+                    ans++;
+                    break;
+                case -1:
+                case -2:
+                    ans--;
+                    break;
+            }
+            return ans;
+        }
 
     }
 
-    static class FastOutput implements AutoCloseable, Closeable, Appendable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
-
-        public FastOutput append(CharSequence csq) {
-            cache.append(csq);
-            return this;
-        }
-
-        public FastOutput append(CharSequence csq, int start, int end) {
-            cache.append(csq, start, end);
-            return this;
-        }
-
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput append(char c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput append(long c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput println(long c) {
-            return append(c).println();
-        }
-
-        public FastOutput println() {
-            cache.append(System.lineSeparator());
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
+    static class SequenceUtils {
+        public static boolean equal(int[] a, int al, int ar, int[] b, int bl, int br) {
+            if ((ar - al) != (br - bl)) {
+                return false;
             }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
+            for (int i = al, j = bl; i <= ar; i++, j++) {
+                if (a[i] != b[j]) {
+                    return false;
+                }
             }
-        }
-
-        public String toString() {
-            return cache.toString();
+            return true;
         }
 
     }
@@ -288,145 +364,228 @@ public class Main {
 
     }
 
-    static class Segment implements Cloneable {
-        private Segment left;
-        private Segment right;
-        static long[] buf = new long[10];
-        long[] sum = new long[10];
-        int[] dirty = new int[10];
-        boolean tag = false;
+    static class FastOutput implements AutoCloseable, Closeable, Appendable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
 
-        public static void asStandard(int[] x) {
-            for (int i = 0; i < 10; i++) {
-                x[i] = i;
-            }
+        public FastOutput append(CharSequence csq) {
+            cache.append(csq);
+            return this;
         }
 
-        private void modify(int[] x) {
-            Arrays.fill(buf, 0);
-            for (int i = 0; i < 10; i++) {
-                dirty[i] = x[dirty[i]];
-                buf[x[i]] += sum[i];
-            }
-            for (int i = 0; i < 10; i++) {
-                sum[i] = buf[i];
-            }
-            tag = true;
+        public FastOutput append(CharSequence csq, int start, int end) {
+            cache.append(csq, start, end);
+            return this;
         }
 
-        public void pushUp() {
-            for (int i = 0; i < 10; i++) {
-                sum[i] = left.sum[i] + right.sum[i];
-            }
+        public FastOutput(Writer os) {
+            this.os = os;
         }
 
-        public void pushDown() {
-            if (tag) {
-                left.modify(dirty);
-                right.modify(dirty);
-                tag = false;
-                asStandard(dirty);
-            }
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
         }
 
-        public Segment(int l, int r, IntToIntFunction func) {
-            asStandard(dirty);
-            if (l < r) {
-                int m = (l + r) >> 1;
-                left = new Segment(l, m, func);
-                right = new Segment(m + 1, r, func);
-                pushUp();
-            } else {
-                int val = func.apply(l);
-                int base = 1;
-                while (val != 0) {
-                    sum[val % 10] += base;
-                    base *= 10;
-                    val /= 10;
-                }
-            }
+        public FastOutput append(char c) {
+            cache.append(c);
+            return this;
         }
 
-        private boolean covered(int ll, int rr, int l, int r) {
-            return ll <= l && rr >= r;
+        public FastOutput append(int c) {
+            cache.append(c);
+            return this;
         }
 
-        private boolean noIntersection(int ll, int rr, int l, int r) {
-            return ll > r || rr < l;
-        }
-
-        public void update(int ll, int rr, int l, int r, int[] x) {
-            if (noIntersection(ll, rr, l, r)) {
-                return;
-            }
-            if (covered(ll, rr, l, r)) {
-                modify(x);
-                return;
-            }
-            pushDown();
-            int m = (l + r) >> 1;
-            left.update(ll, rr, l, m, x);
-            right.update(ll, rr, m + 1, r, x);
-            pushUp();
-        }
-
-        private static long parse(long[] sum) {
-            long ans = 0;
-            for (int i = 0; i < 10; i++) {
-                ans += sum[i] * i;
-            }
-            return ans;
-        }
-
-        public long query(int ll, int rr, int l, int r) {
-            if (noIntersection(ll, rr, l, r)) {
-                return 0;
-            }
-            if (covered(ll, rr, l, r)) {
-                return parse(sum);
-            }
-            pushDown();
-            int m = (l + r) >> 1;
-            return left.query(ll, rr, l, m) +
-                    right.query(ll, rr, m + 1, r);
-        }
-
-        private Segment deepClone() {
-            Segment seg = clone();
-            if (seg.left != null) {
-                seg.left = seg.left.deepClone();
-            }
-            if (seg.right != null) {
-                seg.right = seg.right.deepClone();
-            }
-            return seg;
-        }
-
-        protected Segment clone() {
+        public FastOutput flush() {
             try {
-                return (Segment) super.clone();
-            } catch (CloneNotSupportedException e) {
-                throw new RuntimeException(e);
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
             }
+            return this;
         }
 
-        private void toString(StringBuilder builder) {
-            if (left == null && right == null) {
-                builder.append(parse(sum)).append(",");
-                return;
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
             }
-            pushDown();
-            left.toString(builder);
-            right.toString(builder);
         }
 
         public String toString() {
-            StringBuilder builder = new StringBuilder();
-            deepClone().toString(builder);
-            if (builder.length() > 0) {
-                builder.setLength(builder.length() - 1);
+            return cache.toString();
+        }
+
+    }
+
+    static class RandomWrapper {
+        private Random random;
+        public static RandomWrapper INSTANCE = new RandomWrapper(new Random());
+
+        public RandomWrapper() {
+            this(new Random());
+        }
+
+        public RandomWrapper(Random random) {
+            this.random = random;
+        }
+
+        public int nextInt(int l, int r) {
+            return random.nextInt(r - l + 1) + l;
+        }
+
+    }
+
+    static class Randomized {
+        public static void shuffle(int[] data, int from, int to) {
+            to--;
+            for (int i = from; i <= to; i++) {
+                int s = nextInt(i, to);
+                int tmp = data[i];
+                data[i] = data[s];
+                data[s] = tmp;
             }
-            return builder.toString();
+        }
+
+        public static int nextInt(int l, int r) {
+            return RandomWrapper.INSTANCE.nextInt(l, r);
+        }
+
+    }
+
+    static class Node {
+        List<Node> adj = new ArrayList<>();
+        IntegerList children;
+        int id;
+        boolean odd;
+
+        public String toString() {
+            return "" + (id + 1);
+        }
+
+    }
+
+    static abstract class IntBinarySearch {
+        public abstract boolean check(int mid);
+
+        public int binarySearch(int l, int r) {
+            if (l > r) {
+                throw new IllegalArgumentException();
+            }
+            while (l < r) {
+                int mid = DigitUtils.average(l, r);
+                if (check(mid)) {
+                    r = mid;
+                } else {
+                    l = mid + 1;
+                }
+            }
+            return l;
+        }
+
+    }
+
+    static class IntegerList implements Cloneable {
+        private int size;
+        private int cap;
+        private int[] data;
+        private static final int[] EMPTY = new int[0];
+
+        public int[] getData() {
+            return data;
+        }
+
+        public IntegerList(int cap) {
+            this.cap = cap;
+            if (cap == 0) {
+                data = EMPTY;
+            } else {
+                data = new int[cap];
+            }
+        }
+
+        public IntegerList(IntegerList list) {
+            this.size = list.size;
+            this.cap = list.cap;
+            this.data = Arrays.copyOf(list.data, size);
+        }
+
+        public IntegerList() {
+            this(0);
+        }
+
+        public void ensureSpace(int req) {
+            if (req > cap) {
+                while (cap < req) {
+                    cap = Math.max(cap + 10, 2 * cap);
+                }
+                data = Arrays.copyOf(data, cap);
+            }
+        }
+
+        public void add(int x) {
+            ensureSpace(size + 1);
+            data[size++] = x;
+        }
+
+        public void addAll(int[] x, int offset, int len) {
+            ensureSpace(size + len);
+            System.arraycopy(x, offset, data, size, len);
+            size += len;
+        }
+
+        public void addAll(IntegerList list) {
+            addAll(list.data, 0, list.size);
+        }
+
+        public void sort() {
+            if (size <= 1) {
+                return;
+            }
+            Randomized.shuffle(data, 0, size);
+            Arrays.sort(data, 0, size);
+        }
+
+        public int size() {
+            return size;
+        }
+
+        public int[] toArray() {
+            return Arrays.copyOf(data, size);
+        }
+
+        public void clear() {
+            size = 0;
+        }
+
+        public String toString() {
+            return Arrays.toString(toArray());
+        }
+
+        public boolean equals(Object obj) {
+            if (!(obj instanceof IntegerList)) {
+                return false;
+            }
+            IntegerList other = (IntegerList) obj;
+            return SequenceUtils.equal(data, 0, size - 1, other.data, 0, other.size - 1);
+        }
+
+        public int hashCode() {
+            int h = 1;
+            for (int i = 0; i < size; i++) {
+                h = h * 31 + Integer.hashCode(data[i]);
+            }
+            return h;
+        }
+
+        public IntegerList clone() {
+            IntegerList ans = new IntegerList();
+            ans.addAll(this);
+            return ans;
         }
 
     }
