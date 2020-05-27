@@ -33,22 +33,26 @@ public class MultiSet<T> {
     }
 
     public T pollFirst() {
+        size--;
         Map.Entry<T, Integer> first = map.firstEntry();
         update(first.getKey(), first.getValue() - 1);
         return first.getKey();
     }
 
     public T pollLast() {
+        size--;
         Map.Entry<T, Integer> last = map.lastEntry();
         update(last.getKey(), last.getValue() - 1);
         return last.getKey();
     }
 
     public void add(T key) {
+        size++;
         update(key, map.getOrDefault(key, 0) + 1);
     }
 
     public void remove(T key) {
+        size--;
         update(key, map.getOrDefault(key, 0) - 1);
     }
 
@@ -65,6 +69,8 @@ public class MultiSet<T> {
             map.remove(key);
         } else if (cnt > 0) {
             map.put(key, cnt);
+        } else {
+            size++;
         }
     }
 }
