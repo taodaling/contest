@@ -4,15 +4,12 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.ArrayList;
-import java.util.Map;
 import java.io.OutputStreamWriter;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.List;
-import java.util.AbstractMap;
-import java.util.TreeMap;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.InputStream;
@@ -35,186 +32,224 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            FChristmasTree solver = new FChristmasTree();
+            DXORReplace solver = new DXORReplace();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class FChristmasTree {
+    static class DXORReplace {
         Debug debug = new Debug(false);
-        boolean valid;
 
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            Node[] nodes = new Node[n];
+            int[] a = new int[n + 1];
+            int[] b = new int[n + 1];
             for (int i = 0; i < n; i++) {
+                a[i] = in.readInt();
+            }
+            for (int i = 0; i < n; i++) {
+                b[i] = in.readInt();
+            }
+            a[n] = xor(a, 0, n - 1);
+            b[n] = xor(b, 0, n - 1);
+
+            IntegerList list = new IntegerList(n + n + 2);
+            list.addAll(a);
+            list.addAll(b);
+            IntegerDiscreteMap dm = new IntegerDiscreteMap(list.getData(), 0, list.size());
+            for (int i = 0; i <= n; i++) {
+                a[i] = dm.rankOf(a[i]);
+                b[i] = dm.rankOf(b[i]);
+            }
+
+            debug.debug("a", a);
+            debug.debug("b", b);
+            int m = dm.maxRank();
+            int[] cnts = new int[m + 1];
+            for (int i = 0; i <= n; i++) {
+                cnts[a[i]]++;
+                cnts[b[i]]--;
+            }
+            for (int i = 0; i <= m; i++) {
+                if (cnts[i] != 0) {
+                    out.println(-1);
+                    return;
+                }
+            }
+
+            Node[] nodes = new Node[m + 1];
+            for (int i = 0; i <= m; i++) {
                 nodes[i] = new Node();
                 nodes[i].id = i;
             }
 
-            for (int i = 0; i < n - 1; i++) {
-                Node a = nodes[in.readInt() - 1];
-                Node b = nodes[in.readInt() - 1];
-                a.adj.add(b);
-                b.adj.add(a);
-            }
-
+            int eCnt = 0;
             for (int i = 0; i < n; i++) {
-                nodes[i].children = new IntegerList(nodes[i].adj.size());
+                if (a[i] != b[i]) {
+                    nodes[b[i]].out.add(nodes[a[i]]);
+                    nodes[a[i]].in.add(nodes[b[i]]);
+                    //debug.debug("e", b[i] + "->" + a[i]);
+                    eCnt++;
+                }
             }
 
-            int A = blockNeed(nodes[0], null);
+            if (eCnt == 0) {
+                out.println(0);
+                return;
+            }
 
-            IntBinarySearch ibs = new IntBinarySearch() {
-
-                public boolean check(int mid) {
-                    valid = true;
-                    dfs(nodes[0], null, mid);
-                    return valid;
+            for (int i = 0; i <= m; i++) {
+                if (nodes[i].in.size() > nodes[i].out.size()) {
+                    nodes[i].indeg = nodes[i].in.size() - nodes[i].out.size();
                 }
-            };
+            }
 
-            int B = ibs.binarySearch(0, n);
+            for (Node node : nodes) {
+                for (Node next : node.out) {
+                    Node.merge(next, node);
+                }
+            }
 
-            out.append(A).append(' ').append(B);
-        }
+            int evenCnt = 0;
+            int odd = 0;
+            for (Node node : nodes) {
+                if (node != node.find()) {
+                    continue;
+                }
+                if (node.size == 1) {
+                    continue;
+                }
+                if (node.indeg == 0) {
+                    evenCnt++;
+                } else {
+                    odd += node.indeg;
+                }
+            }
 
-        public int blockNeed(Node root, Node p) {
-            int child = 0;
             int ans = 0;
-            for (Node node : root.adj) {
-                if (node == p) {
-                    continue;
-                }
-                child++;
-                ans += blockNeed(node, root);
+            if (odd > 0) {
+                ans += odd - 1;
+                ans += 1;
             }
-            ans += child / 2;
-            if (child % 2 == 1 && p == null) {
-                ans++;
+            ans += evenCnt;
+
+
+            Node first = nodes[a[n]];
+            if (first.find().size != 1) {
+                ans--;
             }
-            root.odd = p == null && child % 2 == 1 || p != null && child % 2 == 0;
-            return ans;
+
+            out.println(ans + eCnt);
         }
 
-        private void add(TreeMap<Integer, Integer> map, Integer key) {
-            map.put(key, map.getOrDefault(key, 0) + 1);
-        }
-
-        private void remove(TreeMap<Integer, Integer> map, Integer key) {
-            int cnt = map.get(key);
-            cnt--;
-            if (cnt > 0) {
-                map.put(key, cnt);
-            } else {
-                map.remove(key);
-            }
-        }
-
-        public int dfs(Node root, Node p, int limit) {
-            if (!valid) {
-                return 0;
-            }
-
-            root.children.clear();
-            for (Node node : root.adj) {
-                if (node == p) {
-                    continue;
-                }
-                root.children.add(dfs(node, root, limit) + 1);
-            }
-
-            if (!valid) {
-                return 0;
-            }
-            root.children.sort();
-            int[] data = root.children.getData();
-            int n = root.children.size();
-
-            debug.debug("root", root);
-            //special
-            if (root.odd && p != null) {
-                int l = 0;
-                int r = n - 1;
-                boolean skip = true;
-                while (l < r && skip) {
-                    if (data[l] + data[r] > limit) {
-                        skip = false;
-                    }
-                    l++;
-                    r--;
-                }
-
-                if (skip) {
-                    return 0;
-                }
-            }
-
-            if (root.odd && n > 0) {
-                if (data[n - 1] > limit) {
-                    valid = false;
-                    return 0;
-                }
-                n--;
-            }
-
-            TreeMap<Integer, Integer> map = new TreeMap<>();
-            for (int i = 0; i < n; i++) {
-                add(map, data[i]);
-            }
-
-            Integer ret = null;
-            while (!map.isEmpty()) {
-                Integer max = map.lastKey();
-                remove(map, max);
-                Integer floor = map.floorKey(limit - max);
-                if (floor == null) {
-                    if (ret == null) {
-                        ret = max;
-                        continue;
-                    }
-                    valid = false;
-                    return 0;
-                }
-                remove(map, floor);
-            }
-            return ret == null ? 0 : ret;
-        }
-
-    }
-
-    static class DigitUtils {
-        private DigitUtils() {
-        }
-
-        public static int average(int a, int b) {
-            int ans = (a / 2) + (b / 2);
-            switch (a % 2 + b % 2) {
-                case 2:
-                    ans++;
-                    break;
-                case -1:
-                case -2:
-                    ans--;
-                    break;
+        public int xor(int[] a, int l, int r) {
+            int ans = 0;
+            for (int i = l; i <= r; i++) {
+                ans ^= a[i];
             }
             return ans;
         }
 
     }
 
-    static class SequenceUtils {
-        public static boolean equal(int[] a, int al, int ar, int[] b, int bl, int br) {
-            if ((ar - al) != (br - bl)) {
-                return false;
-            }
-            for (int i = al, j = bl; i <= ar; i++, j++) {
-                if (a[i] != b[j]) {
-                    return false;
+    static class IntegerDiscreteMap {
+        int[] val;
+        int f;
+        int t;
+
+        public IntegerDiscreteMap(int[] val, int f, int t) {
+            Randomized.shuffle(val, f, t);
+            Arrays.sort(val, f, t);
+            int wpos = f + 1;
+            for (int i = f + 1; i < t; i++) {
+                if (val[i] == val[i - 1]) {
+                    continue;
                 }
+                val[wpos++] = val[i];
             }
-            return true;
+            this.val = val;
+            this.f = f;
+            this.t = wpos;
+        }
+
+        public int rankOf(int x) {
+            return Arrays.binarySearch(val, f, t, x) - f;
+        }
+
+        public int maxRank() {
+            return t - f - 1;
+        }
+
+        public String toString() {
+            return Arrays.toString(Arrays.copyOfRange(val, f, t));
+        }
+
+    }
+
+    static class FastOutput implements AutoCloseable, Closeable, Appendable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
+
+        public FastOutput append(CharSequence csq) {
+            cache.append(csq);
+            return this;
+        }
+
+        public FastOutput append(CharSequence csq, int start, int end) {
+            cache.append(csq, start, end);
+            return this;
+        }
+
+        public FastOutput(Writer os) {
+            this.os = os;
+        }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput append(char c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput append(int c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput println(int c) {
+            return append(c).println();
+        }
+
+        public FastOutput println() {
+            cache.append(System.lineSeparator());
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            return this;
+        }
+
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+
+        public String toString() {
+            return cache.toString();
         }
 
     }
@@ -274,6 +309,24 @@ public class Main {
             }
 
             return val;
+        }
+
+    }
+
+    static class RandomWrapper {
+        private Random random;
+        public static RandomWrapper INSTANCE = new RandomWrapper(new Random());
+
+        public RandomWrapper() {
+            this(new Random());
+        }
+
+        public RandomWrapper(Random random) {
+            this.random = random;
+        }
+
+        public int nextInt(int l, int r) {
+            return random.nextInt(r - l + 1) + l;
         }
 
     }
@@ -364,131 +417,6 @@ public class Main {
 
     }
 
-    static class FastOutput implements AutoCloseable, Closeable, Appendable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
-
-        public FastOutput append(CharSequence csq) {
-            cache.append(csq);
-            return this;
-        }
-
-        public FastOutput append(CharSequence csq, int start, int end) {
-            cache.append(csq, start, end);
-            return this;
-        }
-
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput append(char c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput append(int c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        }
-
-        public String toString() {
-            return cache.toString();
-        }
-
-    }
-
-    static class RandomWrapper {
-        private Random random;
-        public static RandomWrapper INSTANCE = new RandomWrapper(new Random());
-
-        public RandomWrapper() {
-            this(new Random());
-        }
-
-        public RandomWrapper(Random random) {
-            this.random = random;
-        }
-
-        public int nextInt(int l, int r) {
-            return random.nextInt(r - l + 1) + l;
-        }
-
-    }
-
-    static class Randomized {
-        public static void shuffle(int[] data, int from, int to) {
-            to--;
-            for (int i = from; i <= to; i++) {
-                int s = nextInt(i, to);
-                int tmp = data[i];
-                data[i] = data[s];
-                data[s] = tmp;
-            }
-        }
-
-        public static int nextInt(int l, int r) {
-            return RandomWrapper.INSTANCE.nextInt(l, r);
-        }
-
-    }
-
-    static class Node {
-        List<Node> adj = new ArrayList<>();
-        IntegerList children;
-        int id;
-        boolean odd;
-
-        public String toString() {
-            return "" + (id + 1);
-        }
-
-    }
-
-    static abstract class IntBinarySearch {
-        public abstract boolean check(int mid);
-
-        public int binarySearch(int l, int r) {
-            if (l > r) {
-                throw new IllegalArgumentException();
-            }
-            while (l < r) {
-                int mid = DigitUtils.average(l, r);
-                if (check(mid)) {
-                    r = mid;
-                } else {
-                    l = mid + 1;
-                }
-            }
-            return l;
-        }
-
-    }
-
     static class IntegerList implements Cloneable {
         private int size;
         private int cap;
@@ -527,9 +455,8 @@ public class Main {
             }
         }
 
-        public void add(int x) {
-            ensureSpace(size + 1);
-            data[size++] = x;
+        public void addAll(int[] x) {
+            addAll(x, 0, x.length);
         }
 
         public void addAll(int[] x, int offset, int len) {
@@ -542,24 +469,12 @@ public class Main {
             addAll(list.data, 0, list.size);
         }
 
-        public void sort() {
-            if (size <= 1) {
-                return;
-            }
-            Randomized.shuffle(data, 0, size);
-            Arrays.sort(data, 0, size);
-        }
-
         public int size() {
             return size;
         }
 
         public int[] toArray() {
             return Arrays.copyOf(data, size);
-        }
-
-        public void clear() {
-            size = 0;
         }
 
         public String toString() {
@@ -586,6 +501,76 @@ public class Main {
             IntegerList ans = new IntegerList();
             ans.addAll(this);
             return ans;
+        }
+
+    }
+
+    static class Randomized {
+        public static void shuffle(int[] data, int from, int to) {
+            to--;
+            for (int i = from; i <= to; i++) {
+                int s = nextInt(i, to);
+                int tmp = data[i];
+                data[i] = data[s];
+                data[s] = tmp;
+            }
+        }
+
+        public static int nextInt(int l, int r) {
+            return RandomWrapper.INSTANCE.nextInt(l, r);
+        }
+
+    }
+
+    static class Node {
+        int id;
+        List<Node> out = new ArrayList<>();
+        List<Node> in = new ArrayList<>();
+        int indeg;
+        int size = 1;
+        Node p = this;
+        int rank = 0;
+
+        public String toString() {
+            return "" + id;
+        }
+
+        Node find() {
+            return p.p == p ? p : (p = p.find());
+        }
+
+        public static void merge(Node a, Node b) {
+            a = a.find();
+            b = b.find();
+            if (a == b) {
+                return;
+            }
+            if (a.rank == b.rank) {
+                a.rank++;
+            }
+            if (a.rank < b.rank) {
+                Node tmp = a;
+                a = b;
+                b = tmp;
+            }
+            b.p = a;
+            a.indeg += b.indeg;
+            a.size += b.size;
+        }
+
+    }
+
+    static class SequenceUtils {
+        public static boolean equal(int[] a, int al, int ar, int[] b, int bl, int br) {
+            if ((ar - al) != (br - bl)) {
+                return false;
+            }
+            for (int i = al, j = bl; i <= ar; i++, j++) {
+                if (a[i] != b[j]) {
+                    return false;
+                }
+            }
+            return true;
         }
 
     }

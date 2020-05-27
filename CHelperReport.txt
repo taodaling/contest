@@ -1,2 +1,2 @@
-45 src/main/java/contest/F - Christmas Tree.json
+42 src/main/java/contest/D - XOR Replace.json
 0
