@@ -10,6 +10,9 @@ public class LongPreSum {
 
     public void populate(IntToLongFunction a, int n) {
         this.n = n;
+        if (n == 0) {
+            return;
+        }
         pre[0] = a.apply(0);
         for (int i = 1; i < n; i++) {
             pre[i] = pre[i - 1] + a.apply(i);

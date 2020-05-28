@@ -1,17 +1,17 @@
 import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.PriorityQueue;
+import java.util.AbstractQueue;
+import java.util.Random;
+import java.util.AbstractCollection;
+import java.io.OutputStreamWriter;
 import java.io.OutputStream;
-import java.util.Collection;
 import java.io.IOException;
-import java.util.Deque;
-import java.util.ArrayList;
 import java.io.UncheckedIOException;
-import java.util.List;
 import java.io.Closeable;
 import java.io.Writer;
-import java.io.OutputStreamWriter;
-import java.util.ArrayDeque;
 import java.io.InputStream;
 
 /**
@@ -20,7 +20,9 @@ import java.io.InputStream;
  */
 public class Main {
     public static void main(String[] args) throws Exception {
-        new TaskAdapter().run();
+        Thread thread = new Thread(null, new TaskAdapter(), "", 1 << 27);
+        thread.start();
+        thread.join();
     }
 
     static class TaskAdapter implements Runnable {
@@ -30,180 +32,379 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            P5357AC solver = new P5357AC();
+            EAquariumDecoration solver = new EAquariumDecoration();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class P5357AC {
+    static class EAquariumDecoration {
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            char[] patterns = new char[(int) 2e6];
-            ACAutomaton.Node[] nodes = new ACAutomaton.Node[n];
-            ACAutomaton ac = new ACAutomaton('a', 'z');
-            for (int i = 0; i < n; i++) {
-                int m = in.readString(patterns, 0);
-                ac.beginBuilding();
-                for (int j = 0; j < m; j++) {
-                    ac.build(patterns[j]);
+            int m = in.readInt();
+            int k = in.readInt();
+            int[] cost = new int[n];
+            int[] type = new int[n];
+            in.populate(cost);
+            for (int i = 0; i < 2; i++) {
+                int t = in.readInt();
+                while (t-- > 0) {
+                    int j = in.readInt() - 1;
+                    type[j] |= 1 << i;
                 }
-                nodes[i] = ac.getBuildLast();
             }
-            ac.endBuilding();
+            IntegerList[] classify = new IntegerList[4];
+            for (int i = 0; i < 4; i++) {
+                classify[i] = new IntegerList(n);
+            }
+            for (int i = 0; i < n; i++) {
+                classify[type[i]].add(cost[i]);
+            }
+            for (int i = 0; i < 4; i++) {
+                classify[i].sort();
+            }
 
-            int m = in.readString(patterns, 0);
-            ac.beginMatching();
-            for (int i = 0; i < m; i++) {
-                ac.match(patterns[i]);
-                ac.getMatchLast().increaseCnt();
+            LongPreSum[] lps = new LongPreSum[4];
+            for (int i = 0; i < 4; i++) {
+                int finalI = i;
+                lps[i] = new LongPreSum(j -> classify[finalI].get(j), classify[finalI].size());
             }
 
-            ac.pushUp();
-            for (ACAutomaton.Node node : nodes) {
-                out.println(node.cnt);
+            long limit = (long) 1e18;
+            long ans = limit;
+            Machine mac = new Machine(n);
+            for (int i = 0; i < classify[0].size(); i++) {
+                mac.addFree(classify[0].get(i));
             }
+            for (int i = 0; i <= classify[3].size() && i <= m; i++) {
+                int req = Math.max(0, k - i);
+                if (req > classify[1].size() || req > classify[2].size()) {
+                    continue;
+                }
+
+                while (classify[1].size() > req) {
+                    mac.addFree(classify[1].pop());
+                }
+                while (classify[2].size() > req) {
+                    mac.addFree(classify[2].pop());
+                }
+
+                if (m - i - req * 2 >= 0 && m - i - req * 2 <= mac.size()) {
+                    long local = lps[3].prefix(i - 1) +
+                            lps[1].prefix(req - 1) + lps[2].prefix(req - 1) + mac.presum(m - i - req * 2);
+                    ans = Math.min(ans, local);
+                }
+            }
+
+            out.println(ans == limit ? -1 : ans);
         }
 
     }
 
-    static class ACAutomaton {
-        private final int minCharacter;
-        private final int maxCharacter;
-        private final int range;
-        private ACAutomaton.Node root;
-        private ACAutomaton.Node buildLast;
-        private ACAutomaton.Node matchLast;
-        private List<ACAutomaton.Node> allNodes = new ArrayList();
-        private List<ACAutomaton.Node> treeOrder;
-
-        public ACAutomaton.Node getBuildLast() {
-            return buildLast;
+    static class Randomized {
+        public static void shuffle(int[] data, int from, int to) {
+            to--;
+            for (int i = from; i <= to; i++) {
+                int s = nextInt(i, to);
+                int tmp = data[i];
+                data[i] = data[s];
+                data[s] = tmp;
+            }
         }
 
-        public ACAutomaton.Node getMatchLast() {
-            return matchLast;
+        public static int nextInt(int l, int r) {
+            return RandomWrapper.INSTANCE.nextInt(l, r);
         }
 
-        private ACAutomaton.Node addNode() {
-            ACAutomaton.Node node = new ACAutomaton.Node(range);
-            node.id = allNodes.size();
-            allNodes.add(node);
-            return node;
-        }
+    }
 
-        public ACAutomaton(int minCharacter, int maxCharacter) {
-            this.minCharacter = minCharacter;
-            this.maxCharacter = maxCharacter;
-            range = maxCharacter - minCharacter + 1;
-            root = addNode();
-        }
-
-        public void beginBuilding() {
-            buildLast = root;
-        }
-
-        public void endBuilding() {
-            Deque<ACAutomaton.Node> deque = new ArrayDeque(allNodes.size());
-            treeOrder = new ArrayList<>(allNodes.size());
-            treeOrder.add(root);
-            for (int i = 0; i < range; i++) {
-                if (root.next[i] != null) {
-                    deque.addLast(root.next[i]);
+    static class SequenceUtils {
+        public static boolean equal(int[] a, int al, int ar, int[] b, int bl, int br) {
+            if ((ar - al) != (br - bl)) {
+                return false;
+            }
+            for (int i = al, j = bl; i <= ar; i++, j++) {
+                if (a[i] != b[j]) {
+                    return false;
                 }
             }
+            return true;
+        }
 
-            while (!deque.isEmpty()) {
-                ACAutomaton.Node head = deque.removeFirst();
-                treeOrder.add(head);
-                ACAutomaton.Node fail = visit(head.father.fail, head.index);
-                if (fail == null) {
-                    head.fail = root;
-                } else {
-                    head.fail = fail.next[head.index];
+    }
+
+    static interface IntToLongFunction {
+        long apply(int x);
+
+    }
+
+    static class LongPreSum {
+        private long[] pre;
+        private int n;
+
+        public LongPreSum(int n) {
+            pre = new long[n];
+        }
+
+        public void populate(IntToLongFunction a, int n) {
+            this.n = n;
+            if (n == 0) {
+                return;
+            }
+            pre[0] = a.apply(0);
+            for (int i = 1; i < n; i++) {
+                pre[i] = pre[i - 1] + a.apply(i);
+            }
+        }
+
+        public LongPreSum(IntToLongFunction a, int n) {
+            this(n);
+            populate(a, n);
+        }
+
+        public long prefix(int i) {
+            if (i < 0) {
+                return 0;
+            }
+            return pre[Math.min(i, n - 1)];
+        }
+
+    }
+
+    static class FastOutput implements AutoCloseable, Closeable, Appendable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
+
+        public FastOutput append(CharSequence csq) {
+            cache.append(csq);
+            return this;
+        }
+
+        public FastOutput append(CharSequence csq, int start, int end) {
+            cache.append(csq, start, end);
+            return this;
+        }
+
+        public FastOutput(Writer os) {
+            this.os = os;
+        }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput append(char c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput append(long c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput println(long c) {
+            return append(c).println();
+        }
+
+        public FastOutput println() {
+            cache.append(System.lineSeparator());
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            return this;
+        }
+
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+
+        public String toString() {
+            return cache.toString();
+        }
+
+    }
+
+    static class IntegerList implements Cloneable {
+        private int size;
+        private int cap;
+        private int[] data;
+        private static final int[] EMPTY = new int[0];
+
+        public IntegerList(int cap) {
+            this.cap = cap;
+            if (cap == 0) {
+                data = EMPTY;
+            } else {
+                data = new int[cap];
+            }
+        }
+
+        public IntegerList(IntegerList list) {
+            this.size = list.size;
+            this.cap = list.cap;
+            this.data = Arrays.copyOf(list.data, size);
+        }
+
+        public IntegerList() {
+            this(0);
+        }
+
+        public void ensureSpace(int req) {
+            if (req > cap) {
+                while (cap < req) {
+                    cap = Math.max(cap + 10, 2 * cap);
                 }
-                head.preSum = head.cnt + head.fail.preSum;
-                for (int i = 0; i < range; i++) {
-                    if (head.next[i] != null) {
-                        deque.addLast(head.next[i]);
-                    }
-                }
-            }
-
-            for (int i = 0; i < range; i++) {
-                if (root.next[i] != null) {
-                    deque.addLast(root.next[i]);
-                } else {
-                    root.next[i] = root;
-                }
-            }
-            while (!deque.isEmpty()) {
-                ACAutomaton.Node head = deque.removeFirst();
-                for (int i = 0; i < range; i++) {
-                    if (head.next[i] != null) {
-                        deque.addLast(head.next[i]);
-                    } else {
-                        head.next[i] = head.fail.next[i];
-                    }
-                }
+                data = Arrays.copyOf(data, cap);
             }
         }
 
-        public ACAutomaton.Node visit(ACAutomaton.Node trace, int index) {
-            while (trace != null && trace.next[index] == null) {
-                trace = trace.fail;
-            }
-            return trace;
-        }
-
-        public void build(char c) {
-            int index = c - minCharacter;
-            if (buildLast.next[index] == null) {
-                ACAutomaton.Node node = addNode();
-                node.father = buildLast;
-                node.index = index;
-                buildLast.next[index] = node;
-            }
-            buildLast = buildLast.next[index];
-        }
-
-        public void pushUp() {
-            for (int i = treeOrder.size() - 1; i >= 1; i--) {
-                ACAutomaton.Node node = treeOrder.get(i);
-                node.fail.cnt += node.cnt;
+        private void checkRange(int i) {
+            if (i < 0 || i >= size) {
+                throw new ArrayIndexOutOfBoundsException();
             }
         }
 
-        public void beginMatching() {
-            matchLast = root;
+        public int get(int i) {
+            checkRange(i);
+            return data[i];
         }
 
-        public void match(char c) {
-            int index = c - minCharacter;
-            matchLast = matchLast.next[index];
+        public void add(int x) {
+            ensureSpace(size + 1);
+            data[size++] = x;
         }
 
-        public static class Node {
-            public ACAutomaton.Node[] next;
-            ACAutomaton.Node fail;
-            ACAutomaton.Node father;
-            int index;
-            int id;
-            int cnt;
-            int preSum;
+        public void addAll(int[] x, int offset, int len) {
+            ensureSpace(size + len);
+            System.arraycopy(x, offset, data, size, len);
+            size += len;
+        }
 
-            public void increaseCnt() {
-                cnt++;
+        public void addAll(IntegerList list) {
+            addAll(list.data, 0, list.size);
+        }
+
+        public void sort() {
+            if (size <= 1) {
+                return;
             }
+            Randomized.shuffle(data, 0, size);
+            Arrays.sort(data, 0, size);
+        }
 
-            public Node(int range) {
-                next = new ACAutomaton.Node[range];
+        public int pop() {
+            return data[--size];
+        }
+
+        public int size() {
+            return size;
+        }
+
+        public int[] toArray() {
+            return Arrays.copyOf(data, size);
+        }
+
+        public String toString() {
+            return Arrays.toString(toArray());
+        }
+
+        public boolean equals(Object obj) {
+            if (!(obj instanceof IntegerList)) {
+                return false;
             }
+            IntegerList other = (IntegerList) obj;
+            return SequenceUtils.equal(data, 0, size - 1, other.data, 0, other.size - 1);
+        }
 
-            public String toString() {
-                return father == null ? "" : (father.toString() + (char) ('a' + index));
+        public int hashCode() {
+            int h = 1;
+            for (int i = 0; i < size; i++) {
+                h = h * 31 + Integer.hashCode(data[i]);
             }
+            return h;
+        }
 
+        public IntegerList clone() {
+            IntegerList ans = new IntegerList();
+            ans.addAll(this);
+            return ans;
+        }
+
+    }
+
+    static class RandomWrapper {
+        private Random random;
+        public static RandomWrapper INSTANCE = new RandomWrapper(new Random());
+
+        public RandomWrapper() {
+            this(new Random());
+        }
+
+        public RandomWrapper(Random random) {
+            this.random = random;
+        }
+
+        public int nextInt(int l, int r) {
+            return random.nextInt(r - l + 1) + l;
+        }
+
+    }
+
+    static class Machine {
+        PriorityQueue<Integer> cur;
+        PriorityQueue<Integer> cand;
+        long sum = 0;
+
+        public Machine(int n) {
+            cand = new PriorityQueue<>(n);
+            cur = new PriorityQueue<>(n, (a, b) -> -a.compareTo(b));
+        }
+
+        public void addFree(int x) {
+            cand.add(x);
+        }
+
+        private void add(int x) {
+            cur.add(x);
+            sum += x;
+        }
+
+        private int remove() {
+            int ans = cur.remove();
+            sum -= ans;
+            return ans;
+        }
+
+        public int size() {
+            return cur.size() + cand.size();
+        }
+
+        public long presum(int n) {
+            while (cur.size() < n) {
+                add(cand.remove());
+            }
+            while (cur.size() > n) {
+                remove();
+            }
+            while (!cur.isEmpty() && !cand.isEmpty() && cur.peek() > cand.peek()) {
+                cand.add(remove());
+                add(cand.remove());
+            }
+            return sum;
         }
 
     }
@@ -217,6 +418,12 @@ public class Main {
 
         public FastInput(InputStream is) {
             this.is = is;
+        }
+
+        public void populate(int[] data) {
+            for (int i = 0; i < data.length; i++) {
+                data[i] = readInt();
+            }
         }
 
         private int read() {
@@ -263,85 +470,6 @@ public class Main {
             }
 
             return val;
-        }
-
-        public int readString(char[] data, int offset) {
-            skipBlank();
-
-            int originalOffset = offset;
-            while (next > 32) {
-                data[offset++] = (char) next;
-                next = read();
-            }
-
-            return offset - originalOffset;
-        }
-
-    }
-
-    static class FastOutput implements AutoCloseable, Closeable, Appendable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
-
-        public FastOutput append(CharSequence csq) {
-            cache.append(csq);
-            return this;
-        }
-
-        public FastOutput append(CharSequence csq, int start, int end) {
-            cache.append(csq, start, end);
-            return this;
-        }
-
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput append(char c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput append(int c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput println(int c) {
-            return append(c).println();
-        }
-
-        public FastOutput println() {
-            cache.append(System.lineSeparator());
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        }
-
-        public String toString() {
-            return cache.toString();
         }
 
     }

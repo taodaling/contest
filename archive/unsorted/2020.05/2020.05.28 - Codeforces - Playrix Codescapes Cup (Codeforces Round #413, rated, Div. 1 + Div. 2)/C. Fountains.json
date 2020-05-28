@@ -1,0 +1,55 @@
+{
+  "name" : "C. Fountains",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 7 6\n10 8 C\n4 3 C\n5 6 D\n",
+    "output" : "9\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "2 4 5\n2 5 C\n2 1 D\n",
+    "output" : "0\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "3 10 10\n5 5 C\n5 5 C\n10 11 D\n",
+    "output" : "10\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "2 6 100\n1 5 C\n6 6 C",
+    "output" : "0",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "3 6 100\n6 6 C\n1 1 C\n2 1 C",
+    "output" : "3",
+    "index" : 4,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.CFountains",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "contest.CFountainsTestCase" ],
+  "date" : "2020.05.28",
+  "contestName" : "Codeforces - Playrix Codescapes Cup (Codeforces Round #413, rated, Div. 1 + Div. 2)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}
