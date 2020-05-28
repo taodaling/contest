@@ -1,4 +1,6 @@
-package contest;
+package on2020_05.on2020_05_28_AtCoder___AtCoder_Grand_Contest_016.D___XOR_Replace1;
+
+
 
 
 import template.datastructure.DiscreteMap;

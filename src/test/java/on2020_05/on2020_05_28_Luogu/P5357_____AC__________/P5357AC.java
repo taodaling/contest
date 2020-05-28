@@ -1,11 +1,46 @@
-package template.string;
+package on2020_05.on2020_05_28_Luogu.P5357_____AC__________;
+
+
+
+import template.io.FastInput;
+import template.io.FastOutput;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 
-public class ACAutomaton {
+public class P5357AC {
+    public void solve(int testNumber, FastInput in, FastOutput out) {
+        int n = in.readInt();
+        char[] patterns = new char[(int) 2e6];
+        ACAutomaton.Node[] nodes = new ACAutomaton.Node[n];
+        ACAutomaton ac = new ACAutomaton('a', 'z');
+        for (int i = 0; i < n; i++) {
+            int m = in.readString(patterns, 0);
+            ac.beginBuilding();
+            for (int j = 0; j < m; j++) {
+                ac.build(patterns[j]);
+            }
+            nodes[i] = ac.getBuildLast();
+        }
+        ac.endBuilding();
+
+        int m = in.readString(patterns, 0);
+        ac.beginMatching();
+        for (int i = 0; i < m; i++) {
+            ac.match(patterns[i]);
+            ac.getMatchLast().increaseCnt();
+        }
+
+        ac.pushUp();
+        for (ACAutomaton.Node node : nodes) {
+            out.println(node.cnt);
+        }
+    }
+}
+
+class ACAutomaton {
     private final int minCharacter;
     private final int maxCharacter;
     private final int range;
@@ -47,6 +82,8 @@ public class ACAutomaton {
 
     public void endBuilding() {
         Deque<Node> deque = new ArrayDeque(allNodes.size());
+        treeOrder = new ArrayList<>(allNodes.size());
+        treeOrder.add(root);
         for (int i = 0; i < range; i++) {
             if (root.next[i] != null) {
                 deque.addLast(root.next[i]);
@@ -55,6 +92,7 @@ public class ACAutomaton {
 
         while (!deque.isEmpty()) {
             Node head = deque.removeFirst();
+            treeOrder.add(head);
             Node fail = visit(head.father.fail, head.index);
             if (fail == null) {
                 head.fail = root;
@@ -106,6 +144,13 @@ public class ACAutomaton {
         buildLast = buildLast.next[index];
     }
 
+    public void pushUp() {
+        for (int i = treeOrder.size() - 1; i >= 1; i--) {
+            Node node = treeOrder.get(i);
+            node.fail.cnt += node.cnt;
+        }
+    }
+
     public void beginMatching() {
         matchLast = root;
     }
@@ -120,7 +165,7 @@ public class ACAutomaton {
         Node fail;
         Node father;
         int index;
-        public int id;
+        int id;
         int cnt;
         int preSum;
 

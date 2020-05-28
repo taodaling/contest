@@ -43,7 +43,7 @@
   "location" : "src/main/java/contest",
   "vmArgs" : "-Xmx256M",
   "mainClass" : "Main",
-  "taskClass" : "contest.DXORReplace",
+  "taskClass" : "on2020_05.on2020_05_28_AtCoder___AtCoder_Grand_Contest_016.D___XOR_Replace1.DXORReplace",
   "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
   "checkerParameters" : "",
   "testClasses" : [ ],

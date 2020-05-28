@@ -1,4 +1,6 @@
-package contest;
+package on2020_05.on2020_05_28_AtCoder___AtCoder_Grand_Contest_016.D___XOR_Replace0;
+
+
 
 
 import template.datastructure.DiscreteMap;
@@ -67,7 +69,7 @@ public class DXORReplace {
             }
         }
 
-
+        
         int cc = 0;
         for (Node node : nodes) {
             if (node != node.find()) {
