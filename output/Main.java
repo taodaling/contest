@@ -101,143 +101,6 @@ public class Main {
 
     }
 
-    static class Randomized {
-        public static void shuffle(int[] data, int from, int to) {
-            to--;
-            for (int i = from; i <= to; i++) {
-                int s = nextInt(i, to);
-                int tmp = data[i];
-                data[i] = data[s];
-                data[s] = tmp;
-            }
-        }
-
-        public static int nextInt(int l, int r) {
-            return RandomWrapper.INSTANCE.nextInt(l, r);
-        }
-
-    }
-
-    static class SequenceUtils {
-        public static boolean equal(int[] a, int al, int ar, int[] b, int bl, int br) {
-            if ((ar - al) != (br - bl)) {
-                return false;
-            }
-            for (int i = al, j = bl; i <= ar; i++, j++) {
-                if (a[i] != b[j]) {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-    }
-
-    static interface IntToLongFunction {
-        long apply(int x);
-
-    }
-
-    static class LongPreSum {
-        private long[] pre;
-        private int n;
-
-        public LongPreSum(int n) {
-            pre = new long[n];
-        }
-
-        public void populate(IntToLongFunction a, int n) {
-            this.n = n;
-            if (n == 0) {
-                return;
-            }
-            pre[0] = a.apply(0);
-            for (int i = 1; i < n; i++) {
-                pre[i] = pre[i - 1] + a.apply(i);
-            }
-        }
-
-        public LongPreSum(IntToLongFunction a, int n) {
-            this(n);
-            populate(a, n);
-        }
-
-        public long prefix(int i) {
-            if (i < 0) {
-                return 0;
-            }
-            return pre[Math.min(i, n - 1)];
-        }
-
-    }
-
-    static class FastOutput implements AutoCloseable, Closeable, Appendable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
-
-        public FastOutput append(CharSequence csq) {
-            cache.append(csq);
-            return this;
-        }
-
-        public FastOutput append(CharSequence csq, int start, int end) {
-            cache.append(csq, start, end);
-            return this;
-        }
-
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput append(char c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput append(long c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput println(long c) {
-            return append(c).println();
-        }
-
-        public FastOutput println() {
-            cache.append(System.lineSeparator());
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        }
-
-        public String toString() {
-            return cache.toString();
-        }
-
-    }
-
     static class IntegerList implements Cloneable {
         private int size;
         private int cap;
@@ -346,24 +209,6 @@ public class Main {
 
     }
 
-    static class RandomWrapper {
-        private Random random;
-        public static RandomWrapper INSTANCE = new RandomWrapper(new Random());
-
-        public RandomWrapper() {
-            this(new Random());
-        }
-
-        public RandomWrapper(Random random) {
-            this.random = random;
-        }
-
-        public int nextInt(int l, int r) {
-            return random.nextInt(r - l + 1) + l;
-        }
-
-    }
-
     static class Machine {
         PriorityQueue<Integer> cur;
         PriorityQueue<Integer> cand;
@@ -398,13 +243,84 @@ public class Main {
                 add(cand.remove());
             }
             while (cur.size() > n) {
-                remove();
+                cand.add(remove());
             }
             while (!cur.isEmpty() && !cand.isEmpty() && cur.peek() > cand.peek()) {
                 cand.add(remove());
                 add(cand.remove());
             }
             return sum;
+        }
+
+    }
+
+    static class SequenceUtils {
+        public static boolean equal(int[] a, int al, int ar, int[] b, int bl, int br) {
+            if ((ar - al) != (br - bl)) {
+                return false;
+            }
+            for (int i = al, j = bl; i <= ar; i++, j++) {
+                if (a[i] != b[j]) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+    }
+
+    static class LongPreSum {
+        private long[] pre;
+        private int n;
+
+        public LongPreSum(int n) {
+            pre = new long[n];
+        }
+
+        public void populate(IntToLongFunction a, int n) {
+            this.n = n;
+            if (n == 0) {
+                return;
+            }
+            pre[0] = a.apply(0);
+            for (int i = 1; i < n; i++) {
+                pre[i] = pre[i - 1] + a.apply(i);
+            }
+        }
+
+        public LongPreSum(IntToLongFunction a, int n) {
+            this(n);
+            populate(a, n);
+        }
+
+        public long prefix(int i) {
+            if (i < 0) {
+                return 0;
+            }
+            return pre[Math.min(i, n - 1)];
+        }
+
+    }
+
+    static interface IntToLongFunction {
+        long apply(int x);
+
+    }
+
+    static class RandomWrapper {
+        private Random random;
+        public static RandomWrapper INSTANCE = new RandomWrapper(new Random());
+
+        public RandomWrapper() {
+            this(new Random());
+        }
+
+        public RandomWrapper(Random random) {
+            this.random = random;
+        }
+
+        public int nextInt(int l, int r) {
+            return random.nextInt(r - l + 1) + l;
         }
 
     }
@@ -470,6 +386,90 @@ public class Main {
             }
 
             return val;
+        }
+
+    }
+
+    static class Randomized {
+        public static void shuffle(int[] data, int from, int to) {
+            to--;
+            for (int i = from; i <= to; i++) {
+                int s = nextInt(i, to);
+                int tmp = data[i];
+                data[i] = data[s];
+                data[s] = tmp;
+            }
+        }
+
+        public static int nextInt(int l, int r) {
+            return RandomWrapper.INSTANCE.nextInt(l, r);
+        }
+
+    }
+
+    static class FastOutput implements AutoCloseable, Closeable, Appendable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
+
+        public FastOutput append(CharSequence csq) {
+            cache.append(csq);
+            return this;
+        }
+
+        public FastOutput append(CharSequence csq, int start, int end) {
+            cache.append(csq, start, end);
+            return this;
+        }
+
+        public FastOutput(Writer os) {
+            this.os = os;
+        }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput append(char c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput append(long c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput println(long c) {
+            return append(c).println();
+        }
+
+        public FastOutput println() {
+            cache.append(System.lineSeparator());
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            return this;
+        }
+
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+
+        public String toString() {
+            return cache.toString();
         }
 
     }
