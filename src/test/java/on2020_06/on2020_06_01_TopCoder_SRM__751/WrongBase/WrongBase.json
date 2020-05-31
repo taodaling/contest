@@ -1,0 +1,26 @@
+{
+  "name" : "WrongBase",
+  "signature" : {
+    "name" : "getSum",
+    "result" : "int",
+    "arguments" : [ "int", "int", "int", "int", "int" ],
+    "argumentNames" : [ "g", "h", "a", "d", "n" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "3", "7", "3", "3", "5" ],
+    "result" : "754398841",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "3", "0", "1", "2", "10" ],
+    "result" : "0",
+    "index" : 1,
+    "active" : true
+  } ],
+  "date" : "2020.06.01",
+  "contestName" : "TopCoder SRM #751",
+  "testClasses" : [ ],
+  "fqn" : "on2020_06.on2020_06_01_TopCoder_SRM__751.WrongBase.WrongBase",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

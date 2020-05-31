@@ -1,0 +1,35 @@
+{
+  "name" : "AllInclusiveString",
+  "signature" : {
+    "name" : "shortest",
+    "result" : "int[]",
+    "arguments" : [ "String[]" ],
+    "argumentNames" : [ "a" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "aaфac" ],
+    "result" : "3 2",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "" ],
+    "result" : "0 1",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "aaфbbфcc" ],
+    "result" : "6 90",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "acфagфajфbbфbfфbgфbhфceфcgфdaфdeфdfфdgфdiфeaфebфefфeiфfbфfcфfgфgcфgfфgiфgjфhbфhhфhiфibфihфijфjj" ],
+    "result" : "15 11461680",
+    "index" : 3,
+    "active" : true
+  } ],
+  "date" : "2020.06.01",
+  "contestName" : "TopCoder SRM #751",
+  "testClasses" : [ ],
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

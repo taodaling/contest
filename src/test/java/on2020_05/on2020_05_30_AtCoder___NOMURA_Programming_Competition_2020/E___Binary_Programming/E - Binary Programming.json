@@ -1,0 +1,50 @@
+{
+  "name" : "E - Binary Programming",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "1101\n",
+    "output" : "5\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "0111101101\n",
+    "output" : "26\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "0000",
+    "output" : "0",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "1111",
+    "output" : "6",
+    "index" : 3,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_05.on2020_05_30_AtCoder___NOMURA_Programming_Competition_2020.E___Binary_Programming.EBinaryProgramming",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.05.30",
+  "contestName" : "AtCoder - NOMURA Programming Competition 2020",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

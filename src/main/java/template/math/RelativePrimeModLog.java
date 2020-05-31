@@ -2,7 +2,7 @@ package template.math;
 
 import template.primitve.generated.datastructure.IntegerHashMap;
 
-class RelativePrimeModLog {
+public class RelativePrimeModLog {
     Modular mod;
     Modular powMod;
     int x;

@@ -1,0 +1,35 @@
+{
+  "name" : "D - Min Max Repetition",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5\n\n6 4 1 10\n2 3 4 4\n6 4 3 7\n8 10 5 8\n2 3 1 5",
+    "output" : "\nAABAABAABB\nA\nBAABA\nABAB\nBABAB",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx512M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.DMinMaxRepetition",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "contest.DMinMaxRepetitionTestCase" ],
+  "date" : "2020.05.30",
+  "contestName" : "AtCoder - AtCoder Grand Contest 020",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

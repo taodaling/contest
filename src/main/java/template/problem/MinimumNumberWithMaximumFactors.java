@@ -1,6 +1,7 @@
 package template.problem;
 
 import template.math.DigitUtils;
+import template.math.EulerSieve;
 import template.math.LongPollardRho;
 import template.primitve.generated.datastructure.IntegerList;
 import template.primitve.generated.datastructure.LongList;
@@ -11,7 +12,8 @@ public class MinimumNumberWithMaximumFactors {
     public static void main(String[] args) {
         System.out.println(MinimumNumberWithMaximumFactors.find((long) 1e15));
         System.out.println(MinimumNumberWithMaximumFactors.divisionRelation(978217616376000L));
-        System.out.println(Arrays.toString(MinimumNumberWithMaximumFactors.maximumPrimeFactor((long) 2e5)));
+        System.out.println(Arrays.toString(MinimumNumberWithMaximumFactors.maximumPrimeFactor((long) 70)));
+        System.out.println(new EulerSieve(70).getPrimeCount());
         // System.out.println(new LongPollardRho().findAllFactors(978217616376000L));
     }
 

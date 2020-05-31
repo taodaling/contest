@@ -6,6 +6,10 @@ import template.primitve.generated.datastructure.LongList;
 import template.problem.MinimumNumberWithMaximumFactors;
 
 public class Factorization {
+    public static void main(String[] args){
+        System.out.println(factorizeNumberPrime(998244353 - 1));
+    }
+
     /**
      * factorize all number in [1, n], and only return their prime factors
      */

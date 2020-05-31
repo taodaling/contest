@@ -13,6 +13,7 @@ public class %TestCaseClass% {
     public Collection<Test> createTests() {
         List<Test> tests = new ArrayList<>();
         for(int i = 0; i < 100; i++){
+            System.out.println("build  testcase " + i);
             tests.add(create(i));
         }
         return tests;
