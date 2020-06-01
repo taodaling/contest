@@ -64,10 +64,11 @@ public class Line2 {
     }
 
     public static Point2 intersect(Line2 a, Line2 b) {
-        if (Point2.orient(a.vec, b.vec) == 0) {
+        double d = Point2.cross(a.vec, b.vec);
+        if (GeoConstant.sign(d) == 0) {
             return null;
         }
-        return Point2.div(Point2.minus(Point2.mul(a.vec, a.c), Point2.mul(b.vec, b.c)), Point2.mul(a.vec, b.vec));
+        return Point2.div(Point2.minus(Point2.mul(b.vec, a.c), Point2.mul(a.vec, b.c)), d);
     }
 
     public Point2 projection(Point2 pt) {

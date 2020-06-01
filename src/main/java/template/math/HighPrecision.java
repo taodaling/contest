@@ -2,6 +2,7 @@ package template.math;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 
 public class HighPrecision {
     public final MathContext MATH_CONTEXT;
@@ -12,6 +13,10 @@ public class HighPrecision {
         MATH_CONTEXT = math_context;
         BOT = bot;
         TOP = top;
+    }
+
+    public HighPrecision() {
+        this(new MathContext(30, RoundingMode.HALF_EVEN), new BigDecimal(-Double.MAX_VALUE), new BigDecimal(Double.MAX_VALUE));
     }
 
     public BigDecimal max(BigDecimal a, BigDecimal b) {
@@ -56,5 +61,13 @@ public class HighPrecision {
             val = mul(val, x);
         }
         return val;
+    }
+
+    public BigDecimal sqrt(BigDecimal x, int time) {
+        BigDecimal x0 = BigDecimal.ONE;
+        while (time-- > 0) {
+            x0 = subtract(x0, divide(subtract(mul(x0, x0), x), subtract(plus(x0, x0), x)));
+        }
+        return x0.abs();
     }
 }
