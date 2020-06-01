@@ -1,4 +1,6 @@
-package contest;
+package on2020_05.on2020_05_30_.BitSetTest0;
+
+
 
 
 import template.io.FastInput;

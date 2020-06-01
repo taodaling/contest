@@ -7,7 +7,7 @@ import java.util.Arrays;
 public final class BitSet implements Serializable, Cloneable {
     private long[] data;
     private long tailAvailable;
-    private int totalBit;
+    private int capacity;
     private int m;
 
     private static final int SHIFT = 6;
@@ -21,16 +21,16 @@ public final class BitSet implements Serializable, Cloneable {
     private static final BitSet EMPTY = new BitSet(0);
 
     public BitSet(int n) {
-        totalBit = n;
-        this.m = (totalBit + 64 - 1) / 64;
+        capacity = n;
+        this.m = (capacity + 64 - 1) / 64;
         data = new long[m];
-        tailAvailable = oneBetween(0, offset(totalBit - 1));
+        tailAvailable = oneBetween(0, offset(capacity - 1));
     }
 
     public BitSet(BitSet bs) {
         this.data = bs.data.clone();
         this.tailAvailable = bs.tailAvailable;
-        this.totalBit = bs.totalBit;
+        this.capacity = bs.capacity;
         this.m = bs.m;
     }
 
@@ -42,12 +42,12 @@ public final class BitSet implements Serializable, Cloneable {
     }
 
     private BitSet(BitSet bs, int l, int r) {
-        totalBit = r - l + 1;
-        tailAvailable = oneBetween(0, offset(totalBit - 1));
+        capacity = r - l + 1;
+        tailAvailable = oneBetween(0, offset(capacity - 1));
         data = Arrays.copyOfRange(bs.data, word(l), word(r) + 1);
         this.m = data.length;
         leftShift(offset(l));
-        this.m = (totalBit + 64 - 1) / 64;
+        this.m = (capacity + 64 - 1) / 64;
         data[m - 1] &= tailAvailable;
         for (int i = m; i < data.length; i++) {
             data[i] = 0;
@@ -100,7 +100,7 @@ public final class BitSet implements Serializable, Cloneable {
         if (lWord == rWord) {
             data[lWord] |= oneBetween(offset(l), offset(r));
         } else {
-            data[lWord] |= oneBetween(offset(l), 63);
+            data[lWord] |= oneBetween(offset(l), MAX_OFFSET);
             data[rWord] |= oneBetween(0, offset(r));
         }
     }
@@ -122,7 +122,7 @@ public final class BitSet implements Serializable, Cloneable {
         if (lWord == rWord) {
             data[lWord] &= ~oneBetween(offset(l), offset(r));
         } else {
-            data[lWord] &= ~oneBetween(offset(l), 63);
+            data[lWord] &= ~oneBetween(offset(l), MAX_OFFSET);
             data[rWord] &= ~oneBetween(0, offset(r));
         }
     }
@@ -144,19 +144,39 @@ public final class BitSet implements Serializable, Cloneable {
         if (lWord == rWord) {
             data[lWord] ^= oneBetween(offset(l), offset(r));
         } else {
-            data[lWord] ^= oneBetween(offset(l), 63);
+            data[lWord] ^= oneBetween(offset(l), MAX_OFFSET);
             data[rWord] ^= oneBetween(0, offset(r));
         }
     }
 
     public int capacity() {
-        return totalBit;
+        return capacity;
     }
 
     public int size() {
         int ans = 0;
         for (long x : data) {
             ans += Long.bitCount(x);
+        }
+        return ans;
+    }
+
+    public int size(int l, int r) {
+        if (r < l) {
+            return 0;
+        }
+        int ans = 0;
+        int lWord = l >>> SHIFT;
+        int rWord = r >>> SHIFT;
+        for (int i = lWord + 1; i < rWord; i++) {
+            ans += Long.bitCount(data[i]);
+        }
+        //lword
+        if (lWord == rWord) {
+            ans += Long.bitCount(data[lWord] & oneBetween(offset(l), offset(r)));
+        } else {
+            ans += Long.bitCount(data[lWord] & oneBetween(offset(l), MAX_OFFSET));
+            ans += Long.bitCount(data[rWord] & oneBetween(0, offset(r)));
         }
         return ans;
     }
@@ -298,11 +318,11 @@ public final class BitSet implements Serializable, Cloneable {
 
     @Override
     public int hashCode() {
-        long ans = 1;
+        int ans = 1;
         for (int i = 0; i < m; i++) {
-            ans = ans * 31 + data[i];
+            ans = ans * 31 + Long.hashCode(data[i]);
         }
-        return (int) ans;
+        return ans;
     }
 
     @Override
@@ -311,7 +331,7 @@ public final class BitSet implements Serializable, Cloneable {
             return false;
         }
         BitSet other = (BitSet) obj;
-        if (other.totalBit != totalBit) {
+        if (other.capacity != capacity) {
             return false;
         }
         for (int i = 0; i < m; i++) {
