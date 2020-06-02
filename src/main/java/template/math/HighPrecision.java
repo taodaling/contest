@@ -3,6 +3,7 @@ package template.math;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.util.function.Function;
 
 public class HighPrecision {
     public final MathContext MATH_CONTEXT;
@@ -63,11 +64,14 @@ public class HighPrecision {
         return val;
     }
 
-    public BigDecimal sqrt(BigDecimal x, int time) {
-        BigDecimal x0 = BigDecimal.ONE;
-        while (time-- > 0) {
-            x0 = subtract(x0, divide(subtract(mul(x0, x0), x), subtract(plus(x0, x0), x)));
+    public BigDecimal sqrt(BigDecimal y, BigDecimal prec) {
+        return newtonMethod(x -> subtract(mul(x, x), y), x -> plus(x, x), y, prec).abs();
+    }
+
+    public BigDecimal newtonMethod(Function<BigDecimal, BigDecimal> func, Function<BigDecimal, BigDecimal> derivative, BigDecimal x0, BigDecimal prec) {
+        while (func.apply(x0).abs().compareTo(prec) > 0) {
+            x0 = subtract(x0, divide(func.apply(x0), derivative.apply(x0)));
         }
-        return x0.abs();
+        return x0;
     }
 }

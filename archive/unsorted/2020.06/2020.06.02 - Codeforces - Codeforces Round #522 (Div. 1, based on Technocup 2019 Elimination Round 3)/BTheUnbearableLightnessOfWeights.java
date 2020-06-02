@@ -2,64 +2,63 @@ package contest;
 
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.primitve.generated.datastructure.BitSet;
 import template.utils.SequenceUtils;
+
+import java.util.Arrays;
 
 public class BTheUnbearableLightnessOfWeights {
     public void solve(int testNumber, FastInput in, FastOutput out) {
-        n = in.readInt();
-        int[] a = new int[n];
-        in.populate(a);
-        for (int x : a) {
-            limit += x;
-        }
-        dp = new BitSet[n + 1];
-        for (int i = 0; i <= n; i++) {
-            dp[i] = new BitSet(limit + 1);
-        }
-        int ans = 0;
+        int n = in.readInt();
         int[] cnts = new int[101];
-        for (int x : a) {
+        int sum = 0;
+        for (int i = 0; i < n; i++) {
+            int x = in.readInt();
             cnts[x]++;
+            sum += x;
         }
-        for (int i = 0; i <= 100; i++) {
-            if (cnts[i] == 0) {
+        int type = 0;
+        for(int i = 0; i <= 100; i++){
+            if(cnts[i] > 0){
+                type++;
+            }
+        }
+        int[][] last = new int[n + 1][sum + 1];
+        last[0][0] = 1;
+        int[][] cur = new int[n + 1][sum + 1];
+        for (int i = 1; i <= 100; i++) {
+            if(cnts[i] == 0){
                 continue;
             }
-            comp(a, i);
-            for (int j = 1; j <= cnts[i]; j++) {
-                if (dp[j].get(i * j)) {
-                    break;
+            SequenceUtils.deepFill(cur, 0);
+            for (int j = 0; j <= cnts[i]; j++) {
+                int val = i * j;
+                for (int level = j; level <= n; level++) {
+                    for (int t = val; t <= sum; t++) {
+                        cur[level][t] += last[level - j][t - val];
+                    }
                 }
-                ans = Math.max(ans, j);
+            }
+            for (int level = 0; level <= n; level++) {
+                for (int j = 0; j <= sum; j++) {
+                    cur[level][j] = Math.min(cur[level][j], 2);
+                }
+            }
+            int[][] tmp = last;
+            last = cur;
+            cur = tmp;
+        }
+        int ans = 1;
+        for (int i = 1; i <= 100; i++) {
+            for (int j = 1; j <= cnts[i]; j++) {
+                if (last[j][j * i] == 1 || last[n - j][sum - j * i] == 1) {
+                    if(j == cnts[i] && type == 2){
+                        ans = Math.max(ans, n);
+                    }
+                    ans = Math.max(ans, j);
+                }
+
             }
         }
-
         out.println(ans);
-    }
-
-    int n;
-    int limit;
-    BitSet[] dp;
-
-
-    public void comp(int[] val, int forbidden) {
-        for (int i = 0; i <= n; i++) {
-            dp[i].fill(false);
-        }
-        BitSet tmp = new BitSet(limit + 1);
-        dp[0].set(0);
-        int cnt = 0;
-        for (int x : val) {
-            if (x == forbidden) {
-                continue;
-            }
-            cnt++;
-            for (int i = cnt; i >= 1; i--) {
-                tmp.copy(dp[i - 1]);
-                tmp.rightShift(x);
-                dp[i].or(tmp);
-            }
-        }
     }
 }

@@ -2,6 +2,8 @@ package on2020_06.on2020_06_01_Codeforces___Codeforces_Round__522__Div__1__based
 
 
 
+
+import com.sun.org.apache.bcel.internal.generic.LDIV;
 import geometry.CircleOperations;
 import template.geometry.GeoConstant;
 import template.geometry.geo2.Line2;
@@ -30,16 +32,16 @@ public class ABarcelonianDistance {
         long y2 = in.readInt();
 
         double ans = Math.abs(x1 - x2) + Math.abs(y1 - y2);
-        for (double[] pt1 : possible(x1, y1, a, b, c)) {
-            for (double[] pt2 : possible(x2, y2, a, b, c)) {
-                double dx = pt1[0] - pt2[0];
-                double dy = pt1[1] - pt2[1];
-                BigDecimal bd = hp.plus(hp.pow(BigDecimal.valueOf(dx), 2),
-                        hp.pow(BigDecimal.valueOf(dy), 2));
-                bd = hp.sqrt(bd, 1000);
-                double val = bd.doubleValue() + Math.abs(pt1[0] - x1) +
-                        Math.abs(pt1[1] - y1) + Math.abs(pt2[0] - x2) +
-                        Math.abs(pt2[1] - y2);
+        for (BigDecimal[] pt1 : possible(x1, y1, a, b, c)) {
+            for (BigDecimal[] pt2 : possible(x2, y2, a, b, c)) {
+                BigDecimal dx = hp.subtract(pt1[0], pt2[0]);
+                BigDecimal dy = hp.subtract(pt1[1], pt2[1]);
+                BigDecimal bd = hp.plus(hp.pow(dx, 2),
+                        hp.pow(dy, 2));
+                bd = hp.sqrt(bd, BigDecimal.valueOf(1e-7));
+                double val = bd.doubleValue() + Math.abs(pt1[0].doubleValue() - x1) +
+                        Math.abs(pt1[1].doubleValue() - y1) + Math.abs(pt2[0].doubleValue() - x2) +
+                        Math.abs(pt2[1].doubleValue() - y2);
                 ans = Math.min(ans, val);
             }
         }
@@ -50,16 +52,17 @@ public class ABarcelonianDistance {
     HighPrecision hp = new HighPrecision();
 
     //ax + by + c = 0
-    public List<double[]> possible(long x, long y, long a, long b, long c) {
+    public List<BigDecimal[]> possible(long x, long y, long a, long b, long c) {
         if (a * x + b * y + c == 0) {
-            return Arrays.asList(new double[]{x, y});
+            BigDecimal[] ans = new BigDecimal[]{BigDecimal.valueOf(x), BigDecimal.valueOf(y)};
+            return Arrays.asList(new BigDecimal[][]{ans});
         }
-        List<double[]> ans = new ArrayList<>();
+        List<BigDecimal[]> ans = new ArrayList<>();
         if (b != 0) {
-            ans.add(new double[]{x, -(c + a * x) / (double) b});
+            ans.add(new BigDecimal[]{BigDecimal.valueOf(x), hp.divide(BigDecimal.valueOf(-(c + a * x)), BigDecimal.valueOf(b))});
         }
         if (a != 0) {
-            ans.add(new double[]{-(c + b * y) / (double) a, y});
+            ans.add(new BigDecimal[]{hp.divide(BigDecimal.valueOf(-(c + b * y)), BigDecimal.valueOf(a)), BigDecimal.valueOf(y)});
         }
         return ans;
     }

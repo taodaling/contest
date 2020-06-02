@@ -5,7 +5,6 @@ package on2020_05.on2020_05_30_AtCoder___AtCoder_Grand_Contest_020.E___Encoding_
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.math.Modular;
-import template.primitve.generated.datastructure.BitSet;
 
 import java.util.HashMap;
 import java.util.Map;

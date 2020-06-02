@@ -2,9 +2,9 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.util.Arrays;
 import java.io.IOException;
+import java.io.Serializable;
 import java.io.UncheckedIOException;
 import java.io.Closeable;
 import java.io.Writer;
@@ -29,298 +29,229 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            DChattering solver = new DChattering();
+            EOddSubrectangles solver = new EOddSubrectangles();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class DChattering {
-        Debug debug = new Debug(false);
-
+    static class EOddSubrectangles {
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            int[] w = new int[n];
-            in.populate(w);
-
-            int[] left = new int[3 * n];
-            int[] right = new int[3 * n];
-            for (int i = 0; i < n * 3; i++) {
-                left[i] = Math.max(i - w[i % n], 0);
-                right[i] = Math.min(i + w[i % n], 3 * n - 1);
-            }
-            IntegerSparseTable leftIST = new IntegerSparseTable(i -> i, n * 3, (a, b) -> left[a] < left[b] ? a : b);
-            IntegerSparseTable rightIST = new IntegerSparseTable(i -> i, n * 3, (a, b) -> right[a] > right[b] ? a : b);
-
-            debug.debug("left", left);
-            debug.debug("right", right);
-            ArrayIndex ai = new ArrayIndex(3 * n, 21, 2);
-            int[] jump = new int[ai.totalSize()];
-            for (int i = 0; i < n * 3; i++) {
-                jump[ai.indexOf(i, 0, 0)] = left[i];
-                jump[ai.indexOf(i, 0, 1)] = right[i];
-            }
-            for (int i = 0; i + 1 <= 20; i++) {
-                for (int j = 0; j < 3 * n; j++) {
-                    int l = jump[ai.indexOf(j, i, 0)];
-                    int r = jump[ai.indexOf(j, i, 1)];
-                    jump[ai.indexOf(j, i + 1, 0)] = jump[ai.indexOf(leftIST.query(l, r), i, 0)];
-                    jump[ai.indexOf(j, i + 1, 1)] = jump[ai.indexOf(rightIST.query(l, r), i, 1)];
-                }
-            }
-
-            for (int i = n; i < 2 * n; i++) {
-                int l = i;
-                int r = i;
-                int time = 0;
-                for (int j = 20; j >= 0; j--) {
-                    if (jump[ai.indexOf(r, j, 1)] - jump[ai.indexOf(l, j, 0)] + 1 < n) {
-                        int oldL = jump[ai.indexOf(l, j, 0)];
-                        int oldR = jump[ai.indexOf(r, j, 1)];
-                        r = rightIST.query(oldL, oldR);
-                        l = leftIST.query(oldL, oldR);
-                        time += 1 << j;
-                    }
-                }
-                if (r - l + 1 < n) {
-                    time++;
-                }
-                out.println(time);
-            }
-        }
-
-    }
-
-    static class Debug {
-        private boolean offline;
-        private PrintStream out = System.err;
-        static int[] empty = new int[0];
-
-        public Debug(boolean enable) {
-            offline = enable && System.getSecurityManager() == null;
-        }
-
-        public Debug debug(String name, Object x) {
-            return debug(name, x, empty);
-        }
-
-        public Debug debug(String name, Object x, int... indexes) {
-            if (offline) {
-                if (x == null || !x.getClass().isArray()) {
-                    out.append(name);
-                    for (int i : indexes) {
-                        out.printf("[%d]", i);
-                    }
-                    out.append("=").append("" + x);
-                    out.println();
-                } else {
-                    indexes = Arrays.copyOf(indexes, indexes.length + 1);
-                    if (x instanceof byte[]) {
-                        byte[] arr = (byte[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof short[]) {
-                        short[] arr = (short[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof boolean[]) {
-                        boolean[] arr = (boolean[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof char[]) {
-                        char[] arr = (char[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof int[]) {
-                        int[] arr = (int[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof float[]) {
-                        float[] arr = (float[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof double[]) {
-                        double[] arr = (double[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof long[]) {
-                        long[] arr = (long[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
+            int m = in.readInt();
+            BitSet[] mat = new BitSet[n];
+            for (int i = 0; i < n; i++) {
+                mat[i] = new BitSet(m);
+                for (int j = 0; j < m; j++) {
+                    if (in.readChar() == '1') {
+                        mat[i].set(j);
                     } else {
-                        Object[] arr = (Object[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
+                        mat[i].clear(j);
                     }
                 }
             }
-            return this;
+            GenericLinearBasis glb = new GenericLinearBasis(m);
+            for (int i = 0; i < n; i++) {
+                glb.add(mat[i]);
+            }
+
+            Modular mod = new Modular(998244353);
+            Power pow = new Power(mod);
+            int rowSet = mod.subtract(pow.pow(2, n), pow.pow(2, n - glb.size()));
+            int ans = mod.mul(rowSet, pow.pow(2, m - 1));
+
+            out.println(ans);
         }
 
     }
 
-    static class FastInput {
-        private final InputStream is;
-        private byte[] buf = new byte[1 << 13];
-        private int bufLen;
-        private int bufOffset;
-        private int next;
+    static final class BitSet implements Serializable, Cloneable {
+        private long[] data;
+        private long tailAvailable;
+        private int capacity;
+        private int m;
+        private static final int SHIFT = 6;
+        private static final int LOW = 63;
+        private static final int BITS_FOR_EACH = 64;
+        private static final long ALL_ONE = ~0L;
+        private static final long ALL_ZERO = 0L;
 
-        public FastInput(InputStream is) {
-            this.is = is;
+        public BitSet(int n) {
+            capacity = n;
+            this.m = (capacity + 64 - 1) / 64;
+            data = new long[m];
+            tailAvailable = oneBetween(0, offset(capacity - 1));
         }
 
-        public void populate(int[] data) {
-            for (int i = 0; i < data.length; i++) {
-                data[i] = readInt();
+        public BitSet(BitSet bs) {
+            this.data = bs.data.clone();
+            this.tailAvailable = bs.tailAvailable;
+            this.capacity = bs.capacity;
+            this.m = bs.m;
+        }
+
+        private BitSet(BitSet bs, int l, int r) {
+            capacity = r - l + 1;
+            tailAvailable = oneBetween(0, offset(capacity - 1));
+            data = Arrays.copyOfRange(bs.data, word(l), word(r) + 1);
+            this.m = data.length;
+            leftShift(offset(l));
+            this.m = (capacity + 64 - 1) / 64;
+            data[m - 1] &= tailAvailable;
+            for (int i = m; i < data.length; i++) {
+                data[i] = 0;
             }
         }
 
-        private int read() {
-            while (bufLen == bufOffset) {
-                bufOffset = 0;
-                try {
-                    bufLen = is.read(buf);
-                } catch (IOException e) {
-                    bufLen = -1;
+        public boolean get(int i) {
+            return (data[word(i)] & (1L << offset(i))) != 0;
+        }
+
+        public void set(int i) {
+            data[word(i)] |= (1L << offset(i));
+        }
+
+        private static int word(int i) {
+            return i >>> SHIFT;
+        }
+
+        private static int offset(int i) {
+            return i & LOW;
+        }
+
+        private long oneBetween(int l, int r) {
+            if (r < l) {
+                return 0;
+            }
+            long lBegin = 1L << offset(l);
+            long rEnd = 1L << offset(r);
+            return (ALL_ONE ^ (lBegin - 1)) & ((rEnd << 1) - 1);
+        }
+
+        public void clear(int i) {
+            data[word(i)] &= ~(1L << offset(i));
+        }
+
+        public int capacity() {
+            return capacity;
+        }
+
+        public void copy(BitSet bs) {
+            int n = Math.min(this.m, bs.m);
+            System.arraycopy(bs.data, 0, data, 0, n);
+            Arrays.fill(data, n, n, 0);
+        }
+
+        public void xor(BitSet bs) {
+            int n = Math.min(this.m, bs.m);
+            for (int i = 0; i < n; i++) {
+                data[i] ^= bs.data[i];
+            }
+        }
+
+        public int nextSetBit(int start) {
+            int offset = offset(start);
+            int w = word(start);
+            if (offset != 0) {
+                long mask = oneBetween(offset, 63);
+                if ((data[w] & mask) != 0) {
+                    return Long.numberOfTrailingZeros(data[w] & mask) + w * BITS_FOR_EACH;
                 }
-                if (bufLen == -1) {
-                    return -1;
-                }
+                w++;
             }
-            return buf[bufOffset++];
+
+            while (w < m && data[w] == ALL_ZERO) {
+                w++;
+            }
+            if (w >= m) {
+                return capacity();
+            }
+            return Long.numberOfTrailingZeros(data[w]) + w * BITS_FOR_EACH;
         }
 
-        public void skipBlank() {
-            while (next >= 0 && next <= 32) {
-                next = read();
-            }
-        }
+        public void leftShift(int n) {
+            int wordMove = word(n);
+            int offsetMove = offset(n);
+            int rshift = 63 - (offsetMove - 1);
 
-        public int readInt() {
-            int sign = 1;
-
-            skipBlank();
-            if (next == '+' || next == '-') {
-                sign = next == '+' ? 1 : -1;
-                next = read();
-            }
-
-            int val = 0;
-            if (sign == 1) {
-                while (next >= '0' && next <= '9') {
-                    val = val * 10 + next - '0';
-                    next = read();
-                }
-            } else {
-                while (next >= '0' && next <= '9') {
-                    val = val * 10 - next + '0';
-                    next = read();
-                }
-            }
-
-            return val;
-        }
-
-    }
-
-    static class IntegerSparseTable {
-        private int[][] st;
-        private IntegerBinaryFunction merger;
-
-        public IntegerSparseTable(IntToIntegerFunction function, int length, IntegerBinaryFunction merger) {
-            int m = Log2.floorLog(length);
-            st = new int[m + 1][length];
-            this.merger = merger;
-            for (int i = 0; i < length; i++) {
-                st[0][i] = function.apply(i);
-            }
-            for (int i = 0; i < m; i++) {
-                int interval = 1 << i;
-                for (int j = 0; j < length; j++) {
-                    if (j + interval < length) {
-                        st[i + 1][j] = merge(st[i][j], st[i][j + interval]);
-                    } else {
-                        st[i + 1][j] = st[i][j];
+            if (offsetMove != 0) {
+                //slightly
+                for (int i = 0; i < m; i++) {
+                    if (i > 0) {
+                        data[i - 1] |= data[i] << rshift;
                     }
+                    data[i] >>>= offsetMove;
+                }
+            }
+            if (wordMove > 0) {
+                for (int i = 0; i < m; i++) {
+                    if (i >= wordMove) {
+                        data[i - wordMove] = data[i];
+                    }
+                    data[i] = 0;
                 }
             }
         }
 
-        private int merge(int a, int b) {
-            return merger.apply(a, b);
-        }
-
-        public int query(int left, int right) {
-            int queryLen = right - left + 1;
-            int bit = Log2.floorLog(queryLen);
-            // x + 2^bit == right + 1
-            // So x should be right + 1 - 2^bit - left=queryLen - 2^bit
-            return merge(st[bit][left], st[bit][right + 1 - (1 << bit)]);
+        public BitSet clone() {
+            return new BitSet(this);
         }
 
         public String toString() {
-            return Arrays.toString(st[0]);
+            StringBuilder builder = new StringBuilder("{");
+            for (int i = nextSetBit(0); i < capacity(); i++) {
+                builder.append(i).append(',');
+            }
+            if (builder.length() > 1) {
+                builder.setLength(builder.length() - 1);
+            }
+            builder.append("}");
+            return builder.toString();
         }
 
-    }
-
-    static interface IntToIntegerFunction {
-        int apply(int x);
-
-    }
-
-    static class ArrayIndex {
-        int[] dimensions;
-
-        public ArrayIndex(int... dimensions) {
-            this.dimensions = dimensions;
-        }
-
-        public int totalSize() {
+        public int hashCode() {
             int ans = 1;
-            for (int x : dimensions) {
-                ans *= x;
+            for (int i = 0; i < m; i++) {
+                ans = ans * 31 + Long.hashCode(data[i]);
             }
             return ans;
         }
 
-        public int indexOf(int a, int b) {
-            return a * dimensions[1] + b;
-        }
-
-        public int indexOf(int a, int b, int c) {
-            return indexOf(a, b) * dimensions[2] + c;
+        public boolean equals(Object obj) {
+            if (!(obj instanceof BitSet)) {
+                return false;
+            }
+            BitSet other = (BitSet) obj;
+            if (other.capacity != capacity) {
+                return false;
+            }
+            for (int i = 0; i < m; i++) {
+                if (other.data[i] != data[i]) {
+                    return false;
+                }
+            }
+            return true;
         }
 
     }
 
-    static interface IntegerBinaryFunction {
-        int apply(int a, int b);
+    static class Power implements InverseNumber {
+        final Modular modular;
 
-    }
+        public Power(Modular modular) {
+            this.modular = modular;
+        }
 
-    static class Log2 {
-        public static int floorLog(int x) {
-            return 31 - Integer.numberOfLeadingZeros(x);
+        public int pow(int x, int n) {
+            if (n == 0) {
+                return modular.valueOf(1);
+            }
+            long r = pow(x, n >> 1);
+            r = modular.valueOf(r * r);
+            if ((n & 1) == 1) {
+                r = modular.valueOf(r * x);
+            }
+            return (int) r;
         }
 
     }
@@ -388,6 +319,173 @@ public class Main {
 
         public String toString() {
             return cache.toString();
+        }
+
+    }
+
+    static class FastInput {
+        private final InputStream is;
+        private byte[] buf = new byte[1 << 13];
+        private int bufLen;
+        private int bufOffset;
+        private int next;
+
+        public FastInput(InputStream is) {
+            this.is = is;
+        }
+
+        private int read() {
+            while (bufLen == bufOffset) {
+                bufOffset = 0;
+                try {
+                    bufLen = is.read(buf);
+                } catch (IOException e) {
+                    bufLen = -1;
+                }
+                if (bufLen == -1) {
+                    return -1;
+                }
+            }
+            return buf[bufOffset++];
+        }
+
+        public void skipBlank() {
+            while (next >= 0 && next <= 32) {
+                next = read();
+            }
+        }
+
+        public int readInt() {
+            int sign = 1;
+
+            skipBlank();
+            if (next == '+' || next == '-') {
+                sign = next == '+' ? 1 : -1;
+                next = read();
+            }
+
+            int val = 0;
+            if (sign == 1) {
+                while (next >= '0' && next <= '9') {
+                    val = val * 10 + next - '0';
+                    next = read();
+                }
+            } else {
+                while (next >= '0' && next <= '9') {
+                    val = val * 10 - next + '0';
+                    next = read();
+                }
+            }
+
+            return val;
+        }
+
+        public char readChar() {
+            skipBlank();
+            char c = (char) next;
+            next = read();
+            return c;
+        }
+
+    }
+
+    static class GenericLinearBasis {
+        private BitSet[] basis;
+        private int size;
+        private int dimension;
+        private BitSet or;
+        private BitSet buf;
+
+        public GenericLinearBasis(int dimension) {
+            this.dimension = dimension;
+            basis = new BitSet[dimension];
+            for (int i = 0; i < dimension; i++) {
+                basis[i] = new BitSet(dimension);
+            }
+            or = new BitSet(dimension);
+            buf = new BitSet(dimension);
+        }
+
+        public void add(BitSet bits) {
+            buf.copy(bits);
+            bits = buf;
+            for (int i = dimension - 1; i >= 0; i--) {
+                if (!bits.get(i)) {
+                    continue;
+                }
+                if (or.get(i)) {
+                    bits.xor(basis[i]);
+                    continue;
+                }
+                or.set(i);
+                size++;
+                basis[i].copy(bits);
+                for (int j = i + 1; j < dimension; j++) {
+                    if (!or.get(j) || !basis[j].get(i)) {
+                        continue;
+                    }
+                    basis[j].xor(basis[i]);
+                }
+                return;
+            }
+        }
+
+        public int size() {
+            return size;
+        }
+
+    }
+
+    static interface InverseNumber {
+    }
+
+    static class Modular {
+        int m;
+
+        public Modular(int m) {
+            this.m = m;
+        }
+
+        public Modular(long m) {
+            this.m = (int) m;
+            if (this.m != m) {
+                throw new IllegalArgumentException();
+            }
+        }
+
+        public Modular(double m) {
+            this.m = (int) m;
+            if (this.m != m) {
+                throw new IllegalArgumentException();
+            }
+        }
+
+        public int valueOf(int x) {
+            x %= m;
+            if (x < 0) {
+                x += m;
+            }
+            return x;
+        }
+
+        public int valueOf(long x) {
+            x %= m;
+            if (x < 0) {
+                x += m;
+            }
+            return (int) x;
+        }
+
+        public int mul(int x, int y) {
+            return valueOf((long) x * y);
+        }
+
+        public int subtract(int x, int y) {
+            return valueOf(x - y);
+        }
+
+        public String toString() {
+            return "mod " + m;
         }
 
     }

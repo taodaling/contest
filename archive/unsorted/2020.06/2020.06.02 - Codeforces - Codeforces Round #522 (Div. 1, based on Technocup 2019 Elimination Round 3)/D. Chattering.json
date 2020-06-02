@@ -24,6 +24,11 @@
     "output" : "0",
     "index" : 2,
     "active" : true
+  }, {
+    "input" : "7\n3 1 1 1 1 1 1 ",
+    "output" : "1 2 3 3 3 3 2",
+    "index" : 3,
+    "active" : true
   } ],
   "location" : "src/main/java/contest",
   "vmArgs" : "-Xmx256M",
@@ -31,7 +36,7 @@
   "taskClass" : "contest.DChattering",
   "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
   "checkerParameters" : "",
-  "testClasses" : [ ],
+  "testClasses" : [ "contest.DChatteringTestCase" ],
   "date" : "2020.06.02",
   "contestName" : "Codeforces - Codeforces Round #522 (Div. 1, based on Technocup 2019 Elimination Round 3)",
   "truncate" : true,

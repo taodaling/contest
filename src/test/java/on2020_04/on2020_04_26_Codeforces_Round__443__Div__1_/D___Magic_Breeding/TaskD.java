@@ -6,7 +6,7 @@ package on2020_04.on2020_04_26_Codeforces_Round__443__Div__1_.D___Magic_Breeding
 import template.binary.Bits;
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.primitve.generated.datastructure.BitSet;
+import template.datastructure.BitSet;
 
 import java.util.ArrayList;
 import java.util.List;

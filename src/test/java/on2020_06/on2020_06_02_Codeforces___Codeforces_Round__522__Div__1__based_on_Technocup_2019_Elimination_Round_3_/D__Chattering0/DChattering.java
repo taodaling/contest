@@ -1,4 +1,4 @@
-package on2020_06.on2020_06_02_Codeforces___Codeforces_Round__522__Div__1__based_on_Technocup_2019_Elimination_Round_3_.D__Chattering;
+package on2020_06.on2020_06_02_Codeforces___Codeforces_Round__522__Div__1__based_on_Technocup_2019_Elimination_Round_3_.D__Chattering0;
 
 
 

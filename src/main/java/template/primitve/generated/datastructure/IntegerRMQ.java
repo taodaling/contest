@@ -9,9 +9,10 @@ import template.binary.Log2;
 public class IntegerRMQ {
     public static final int NIL = Integer.MIN_VALUE;
     int[] data;
-    int[] vals;
+    IntegerFunction func;
     IntegerComparator comp;
     int n;
+    int expand;
 
 
     private int left(int i) {
@@ -22,30 +23,30 @@ public class IntegerRMQ {
         return (i << 1) | 1;
     }
 
-    public IntegerRMQ(int[] vals, IntegerComparator comp) {
+    public IntegerRMQ(IntegerFunction func, int n, IntegerComparator comp) {
         this.comp = comp;
-        n = vals.length;
-        n = 1 << Log2.ceilLog(n);
-        this.vals = vals;
-        data = new int[2 * n];
-        build(vals, 0, n - 1, 1);
+        this.func = func;
+        this.n = n;
+        expand = 1 << Log2.ceilLog(n);
+        data = new int[2 * expand];
+        build(0, expand - 1, 1);
     }
 
     private int merge(int a, int b) {
-        if(a == NIL || b == NIL){
+        if (a == NIL || b == NIL) {
             return a == NIL ? b : a;
         }
-        return comp.compare(vals[a], vals[b]) < 0 ? a : b;
+        return comp.compare(func.apply(a), func.apply(b)) < 0 ? a : b;
     }
 
-    private void build(int[] vals, int l, int r, int i) {
+    private void build(int l, int r, int i) {
         if (l < r) {
             int m = (l + r) >> 1;
-            build(vals, l, m, left(i));
-            build(vals, m + 1, r, right(i));
+            build(l, m, left(i));
+            build(m + 1, r, right(i));
             data[i] = merge(data[left(i)], data[right(i)]);
         } else {
-            data[i] = l >= vals.length ? NIL : l;
+            data[i] = l >= n ? NIL : l;
         }
     }
 
@@ -53,7 +54,7 @@ public class IntegerRMQ {
      * Query the index of minimum elements in interval [l,r]
      */
     public int query(int l, int r) {
-        return query(l, r, 0, n - 1, 1);
+        return query(l, r, 0, expand - 1, 1);
     }
 
     private int query(int ll, int rr, int l, int r, int i) {

@@ -5,7 +5,7 @@ package on2020_05.on2020_05_30_.BitSetTest0;
 
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.primitve.generated.datastructure.BitSet;
+import template.datastructure.BitSet;
 
 public class BitSetTest {
     public void solve(int testNumber, FastInput in, FastOutput out) {
