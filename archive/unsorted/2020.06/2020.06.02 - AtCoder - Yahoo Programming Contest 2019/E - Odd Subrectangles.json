@@ -1,5 +1,5 @@
 {
-  "name" : "D. Chattering",
+  "name" : "E - Odd Subrectangles",
   "testType" : "SINGLE",
   "input" : {
     "type" : "STANDARD",
@@ -10,35 +10,25 @@
     "fileName" : "output.txt"
   },
   "tests" : [ {
-    "input" : "4\n1 1 4 1\n",
-    "output" : "2 2 1 2 \n",
+    "input" : "2 2\n0 1\n1 0\n",
+    "output" : "6\n",
     "index" : 0,
     "active" : true
   }, {
-    "input" : "8\n1 2 2 1 5 1 3 1\n",
-    "output" : "3 3 2 2 1 2 2 3 \n",
+    "input" : "2 3\n0 0 0\n0 1 0\n",
+    "output" : "8\n",
     "index" : 1,
-    "active" : true
-  }, {
-    "input" : "1\n10",
-    "output" : "0",
-    "index" : 2,
-    "active" : true
-  }, {
-    "input" : "7\n3 1 1 1 1 1 1 ",
-    "output" : "1 2 3 3 3 3 2",
-    "index" : 3,
     "active" : true
   } ],
   "location" : "src/main/java/contest",
-  "vmArgs" : "-Xmx256M",
+  "vmArgs" : "-Xmx1024M",
   "mainClass" : "Main",
-  "taskClass" : "contest.DChattering",
+  "taskClass" : "contest.EOddSubrectangles",
   "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
   "checkerParameters" : "",
-  "testClasses" : [ "contest.DChatteringTestCase" ],
+  "testClasses" : [ ],
   "date" : "2020.06.02",
-  "contestName" : "Codeforces - Codeforces Round #522 (Div. 1, based on Technocup 2019 Elimination Round 3)",
+  "contestName" : "AtCoder - Yahoo Programming Contest 2019",
   "truncate" : true,
   "inputClass" : "template.io.FastInput",
   "outputClass" : "template.io.FastOutput",

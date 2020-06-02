@@ -1,4 +1,6 @@
-package contest;
+package on2020_06.on2020_06_02_Codeforces___Codeforces_Round__522__Div__1__based_on_Technocup_2019_Elimination_Round_3_.B__The_Unbearable_Lightness_of_Weights0;
+
+
 
 import template.io.FastInput;
 import template.io.FastOutput;

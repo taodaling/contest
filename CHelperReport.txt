@@ -1,2 +1,2 @@
-40 src/main/java/contest/D. Chattering.json
+48 src/main/java/contest/E - Odd Subrectangles.json
 0

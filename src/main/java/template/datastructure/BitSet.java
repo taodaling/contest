@@ -1,4 +1,4 @@
-package template.primitve.generated.datastructure;
+package template.datastructure;
 
 
 import java.io.Serializable;
