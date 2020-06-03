@@ -1,0 +1,31 @@
+{
+  "name" : "TokenDoublingGame",
+  "signature" : {
+    "name" : "expectation",
+    "result" : "int",
+    "arguments" : [ "int" ],
+    "argumentNames" : [ "N" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "1" ],
+    "result" : "1",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "2" ],
+    "result" : "333333339",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "13" ],
+    "result" : "444154848",
+    "index" : 2,
+    "active" : true
+  } ],
+  "date" : "2020.06.04",
+  "contestName" : "TopCoder SRM #752",
+  "testClasses" : [ ],
+  "fqn" : "contest.TokenDoublingGame",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

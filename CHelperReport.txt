@@ -1,2 +1,2 @@
-59 src/main/java/contest/D. Linear Congruential Generator.json
+37 src/main/java/contest/Literature.json
 0

@@ -41,6 +41,23 @@ public class ModGussianElimination {
         mat[row][col] = val;
     }
 
+    public int getLeft(int row, int col) {
+        return mat[row][col];
+    }
+
+    public int getRight(int row) {
+        return mat[row][m];
+    }
+
+    public void modifyLeft(int row, int col, int val) {
+        mat[row][col] = modular.plus(mat[row][col], val);
+    }
+
+
+    public void modifyRight(int row, int val) {
+        mat[row][m] = modular.plus(mat[row][m], val);
+    }
+
     public int[] getSolutions() {
         return solutions;
     }
