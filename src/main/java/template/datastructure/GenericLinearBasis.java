@@ -1,7 +1,5 @@
 package template.datastructure;
 
-import java.util.Arrays;
-
 public class GenericLinearBasis {
     private BitSet[] basis;
     private int size;

@@ -212,7 +212,7 @@ public final class BitSet implements Serializable, Cloneable {
         int offset = offset(start);
         int w = word(start);
         if (offset != 0) {
-            long mask = oneBetween(offset, 63);
+            long mask = oneBetween(offset, MAX_OFFSET);
             if ((data[w] & mask) != 0) {
                 return Long.numberOfTrailingZeros(data[w] & mask) + w * BITS_FOR_EACH;
             }
@@ -232,7 +232,7 @@ public final class BitSet implements Serializable, Cloneable {
         int offset = offset(start);
         int w = word(start);
         if (offset != 0) {
-            long mask = oneBetween(offset, 63);
+            long mask = oneBetween(offset, MAX_OFFSET);
             if ((~data[w] & mask) != mask) {
                 return Long.numberOfTrailingZeros(~data[w] & mask) + w * BITS_FOR_EACH;
             }
@@ -251,7 +251,7 @@ public final class BitSet implements Serializable, Cloneable {
     public void leftShift(int n) {
         int wordMove = word(n);
         int offsetMove = offset(n);
-        int rshift = 63 - (offsetMove - 1);
+        int rshift = MAX_OFFSET - (offsetMove - 1);
 
         if (offsetMove != 0) {
             //slightly

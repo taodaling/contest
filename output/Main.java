@@ -4,7 +4,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.io.IOException;
-import java.io.Serializable;
+import java.util.Random;
 import java.io.UncheckedIOException;
 import java.io.Closeable;
 import java.io.Writer;
@@ -29,229 +29,315 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            EOddSubrectangles solver = new EOddSubrectangles();
+            DLinearCongruentialGenerator solver = new DLinearCongruentialGenerator();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class EOddSubrectangles {
-        public void solve(int testNumber, FastInput in, FastOutput out) {
-            int n = in.readInt();
-            int m = in.readInt();
-            BitSet[] mat = new BitSet[n];
-            for (int i = 0; i < n; i++) {
-                mat[i] = new BitSet(m);
-                for (int j = 0; j < m; j++) {
-                    if (in.readChar() == '1') {
-                        mat[i].set(j);
-                    } else {
-                        mat[i].clear(j);
-                    }
-                }
-            }
-            GenericLinearBasis glb = new GenericLinearBasis(m);
-            for (int i = 0; i < n; i++) {
-                glb.add(mat[i]);
-            }
-
-            Modular mod = new Modular(998244353);
-            Power pow = new Power(mod);
-            int rowSet = mod.subtract(pow.pow(2, n), pow.pow(2, n - glb.size()));
-            int ans = mod.mul(rowSet, pow.pow(2, m - 1));
-
-            out.println(ans);
-        }
-
-    }
-
-    static final class BitSet implements Serializable, Cloneable {
-        private long[] data;
-        private long tailAvailable;
-        private int capacity;
-        private int m;
-        private static final int SHIFT = 6;
-        private static final int LOW = 63;
-        private static final int BITS_FOR_EACH = 64;
-        private static final long ALL_ONE = ~0L;
-        private static final long ALL_ZERO = 0L;
-
-        public BitSet(int n) {
-            capacity = n;
-            this.m = (capacity + 64 - 1) / 64;
-            data = new long[m];
-            tailAvailable = oneBetween(0, offset(capacity - 1));
-        }
-
-        public BitSet(BitSet bs) {
-            this.data = bs.data.clone();
-            this.tailAvailable = bs.tailAvailable;
-            this.capacity = bs.capacity;
-            this.m = bs.m;
-        }
-
-        private BitSet(BitSet bs, int l, int r) {
-            capacity = r - l + 1;
-            tailAvailable = oneBetween(0, offset(capacity - 1));
-            data = Arrays.copyOfRange(bs.data, word(l), word(r) + 1);
-            this.m = data.length;
-            leftShift(offset(l));
-            this.m = (capacity + 64 - 1) / 64;
-            data[m - 1] &= tailAvailable;
-            for (int i = m; i < data.length; i++) {
-                data[i] = 0;
-            }
-        }
-
-        public boolean get(int i) {
-            return (data[word(i)] & (1L << offset(i))) != 0;
-        }
-
-        public void set(int i) {
-            data[word(i)] |= (1L << offset(i));
-        }
-
-        private static int word(int i) {
-            return i >>> SHIFT;
-        }
-
-        private static int offset(int i) {
-            return i & LOW;
-        }
-
-        private long oneBetween(int l, int r) {
-            if (r < l) {
-                return 0;
-            }
-            long lBegin = 1L << offset(l);
-            long rEnd = 1L << offset(r);
-            return (ALL_ONE ^ (lBegin - 1)) & ((rEnd << 1) - 1);
-        }
-
-        public void clear(int i) {
-            data[word(i)] &= ~(1L << offset(i));
-        }
-
-        public int capacity() {
-            return capacity;
-        }
-
-        public void copy(BitSet bs) {
-            int n = Math.min(this.m, bs.m);
-            System.arraycopy(bs.data, 0, data, 0, n);
-            Arrays.fill(data, n, n, 0);
-        }
-
-        public void xor(BitSet bs) {
-            int n = Math.min(this.m, bs.m);
-            for (int i = 0; i < n; i++) {
-                data[i] ^= bs.data[i];
-            }
-        }
-
-        public int nextSetBit(int start) {
-            int offset = offset(start);
-            int w = word(start);
-            if (offset != 0) {
-                long mask = oneBetween(offset, 63);
-                if ((data[w] & mask) != 0) {
-                    return Long.numberOfTrailingZeros(data[w] & mask) + w * BITS_FOR_EACH;
-                }
-                w++;
-            }
-
-            while (w < m && data[w] == ALL_ZERO) {
-                w++;
-            }
-            if (w >= m) {
-                return capacity();
-            }
-            return Long.numberOfTrailingZeros(data[w]) + w * BITS_FOR_EACH;
-        }
-
-        public void leftShift(int n) {
-            int wordMove = word(n);
-            int offsetMove = offset(n);
-            int rshift = 63 - (offsetMove - 1);
-
-            if (offsetMove != 0) {
-                //slightly
-                for (int i = 0; i < m; i++) {
-                    if (i > 0) {
-                        data[i - 1] |= data[i] << rshift;
-                    }
-                    data[i] >>>= offsetMove;
-                }
-            }
-            if (wordMove > 0) {
-                for (int i = 0; i < m; i++) {
-                    if (i >= wordMove) {
-                        data[i - wordMove] = data[i];
-                    }
-                    data[i] = 0;
-                }
-            }
-        }
-
-        public BitSet clone() {
-            return new BitSet(this);
-        }
-
-        public String toString() {
-            StringBuilder builder = new StringBuilder("{");
-            for (int i = nextSetBit(0); i < capacity(); i++) {
-                builder.append(i).append(',');
-            }
-            if (builder.length() > 1) {
-                builder.setLength(builder.length() - 1);
-            }
-            builder.append("}");
-            return builder.toString();
-        }
-
-        public int hashCode() {
-            int ans = 1;
-            for (int i = 0; i < m; i++) {
-                ans = ans * 31 + Long.hashCode(data[i]);
+    static class DLinearCongruentialGenerator {
+        public int log(int x, int y) {
+            int ans = 0;
+            while (y != 0 && y % x == 0) {
+                ans++;
+                y /= x;
             }
             return ans;
         }
 
-        public boolean equals(Object obj) {
-            if (!(obj instanceof BitSet)) {
-                return false;
-            }
-            BitSet other = (BitSet) obj;
-            if (other.capacity != capacity) {
-                return false;
-            }
-            for (int i = 0; i < m; i++) {
-                if (other.data[i] != data[i]) {
-                    return false;
+        public void solve(int testNumber, FastInput in, FastOutput out) {
+            int n = in.readInt();
+            int limit = (int) 2e6;
+            IntegerMultiWayStack primeFactors = Factorization.factorizeRangePrime(limit);
+            int[] cnts = new int[limit + 1];
+            int[] times = new int[limit + 1];
+            int[] xs = new int[n];
+
+            in.populate(xs);
+            Randomized.shuffle(xs);
+            Arrays.sort(xs);
+            SequenceUtils.reverse(xs);
+            boolean[] retain = new boolean[n];
+            for (int i = 0; i < n; i++) {
+                int x = xs[i];
+                if (cnts[x] == 0) {
+                    retain[i] = true;
+                    cnts[x] = 1;
+                    times[x] = 1;
+                    continue;
+                }
+
+                for (IntegerIterator iterator = primeFactors.iterator(x - 1); iterator.hasNext(); ) {
+                    int p = iterator.next();
+                    int log = log(p, x - 1);
+                    if (cnts[p] < log) {
+                        cnts[p] = log;
+                        times[p] = 0;
+                    }
+                    if (cnts[p] == log) {
+                        times[p]++;
+                    }
                 }
             }
-            return true;
+
+            Modular mod = new Modular(1e9 + 7);
+            int prod = 1;
+            for (int i = 1; i <= limit; i++) {
+                for (int j = 0; j < cnts[i]; j++) {
+                    prod = mod.mul(prod, i);
+                }
+            }
+
+            for (int i = 0; i < n; i++) {
+                int x = xs[i];
+                boolean unique = false;
+                if (retain[i]) {
+                    if (cnts[x] == 1 && times[x] == 1) {
+                        unique = true;
+                    }
+                } else {
+                    for (IntegerIterator iterator = primeFactors.iterator(x - 1); iterator.hasNext(); ) {
+                        int p = iterator.next();
+                        int log = log(p, x - 1);
+                        if (cnts[p] == log && times[p] == 1) {
+                            unique = true;
+                        }
+                    }
+                }
+                if (!unique) {
+                    prod = mod.plus(prod, 1);
+                    break;
+                }
+            }
+
+            out.println(prod);
         }
 
     }
 
-    static class Power implements InverseNumber {
-        final Modular modular;
+    static class Modular {
+        int m;
 
-        public Power(Modular modular) {
-            this.modular = modular;
+        public Modular(int m) {
+            this.m = m;
         }
 
-        public int pow(int x, int n) {
-            if (n == 0) {
-                return modular.valueOf(1);
+        public Modular(long m) {
+            this.m = (int) m;
+            if (this.m != m) {
+                throw new IllegalArgumentException();
             }
-            long r = pow(x, n >> 1);
-            r = modular.valueOf(r * r);
-            if ((n & 1) == 1) {
-                r = modular.valueOf(r * x);
+        }
+
+        public Modular(double m) {
+            this.m = (int) m;
+            if (this.m != m) {
+                throw new IllegalArgumentException();
             }
-            return (int) r;
+        }
+
+        public int valueOf(int x) {
+            x %= m;
+            if (x < 0) {
+                x += m;
+            }
+            return x;
+        }
+
+        public int valueOf(long x) {
+            x %= m;
+            if (x < 0) {
+                x += m;
+            }
+            return (int) x;
+        }
+
+        public int mul(int x, int y) {
+            return valueOf((long) x * y);
+        }
+
+        public int plus(int x, int y) {
+            return valueOf(x + y);
+        }
+
+        public String toString() {
+            return "mod " + m;
+        }
+
+    }
+
+    static class DigitUtils {
+        private DigitUtils() {
+        }
+
+        public static boolean isMultiplicationOverflow(long a, long b, long limit) {
+            if (limit < 0) {
+                limit = -limit;
+            }
+            if (a < 0) {
+                a = -a;
+            }
+            if (b < 0) {
+                b = -b;
+            }
+            if (a == 0 || b == 0) {
+                return false;
+            }
+            //a * b > limit => a > limit / b
+            return a > limit / b;
+        }
+
+    }
+
+    static class RandomWrapper {
+        private Random random;
+        public static RandomWrapper INSTANCE = new RandomWrapper(new Random());
+
+        public RandomWrapper() {
+            this(new Random());
+        }
+
+        public RandomWrapper(Random random) {
+            this.random = random;
+        }
+
+        public int nextInt(int l, int r) {
+            return random.nextInt(r - l + 1) + l;
+        }
+
+    }
+
+    static class Randomized {
+        public static void shuffle(int[] data) {
+            shuffle(data, 0, data.length - 1);
+        }
+
+        public static void shuffle(int[] data, int from, int to) {
+            to--;
+            for (int i = from; i <= to; i++) {
+                int s = nextInt(i, to);
+                int tmp = data[i];
+                data[i] = data[s];
+                data[s] = tmp;
+            }
+        }
+
+        public static int nextInt(int l, int r) {
+            return RandomWrapper.INSTANCE.nextInt(l, r);
+        }
+
+    }
+
+    static class MinimumNumberWithMaximumFactors {
+        private static int[] primes = new int[]{2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53};
+
+        public static long[] maximumPrimeFactor(long n) {
+            long[] ans = new long[2];
+            ans[0] = 1;
+            for (int i = 0; i < primes.length; i++) {
+                if (DigitUtils.isMultiplicationOverflow(ans[0], primes[i], n)) {
+                    break;
+                }
+                ans[0] *= primes[i];
+                ans[1]++;
+            }
+            return ans;
+        }
+
+    }
+
+    static class IntegerMultiWayStack {
+        private int[] values;
+        private int[] next;
+        private int[] heads;
+        private int alloc;
+        private int stackNum;
+
+        public IntegerIterator iterator(final int queue) {
+            return new IntegerIterator() {
+                int ele = heads[queue];
+
+
+                public boolean hasNext() {
+                    return ele != 0;
+                }
+
+
+                public int next() {
+                    int ans = values[ele];
+                    ele = next[ele];
+                    return ans;
+                }
+            };
+        }
+
+        private void doubleCapacity() {
+            int newSize = Math.max(next.length + 10, next.length * 2);
+            next = Arrays.copyOf(next, newSize);
+            values = Arrays.copyOf(values, newSize);
+        }
+
+        public void alloc() {
+            alloc++;
+            if (alloc >= next.length) {
+                doubleCapacity();
+            }
+            next[alloc] = 0;
+        }
+
+        public boolean isEmpty(int qId) {
+            return heads[qId] == 0;
+        }
+
+        public IntegerMultiWayStack(int qNum, int totalCapacity) {
+            values = new int[totalCapacity + 1];
+            next = new int[totalCapacity + 1];
+            heads = new int[qNum];
+            stackNum = qNum;
+        }
+
+        public void addLast(int qId, int x) {
+            alloc();
+            values[alloc] = x;
+            next[alloc] = heads[qId];
+            heads[qId] = alloc;
+        }
+
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < stackNum; i++) {
+                if (isEmpty(i)) {
+                    continue;
+                }
+                builder.append(i).append(": ");
+                for (IntegerIterator iterator = iterator(i); iterator.hasNext(); ) {
+                    builder.append(iterator.next()).append(",");
+                }
+                if (builder.charAt(builder.length() - 1) == ',') {
+                    builder.setLength(builder.length() - 1);
+                }
+                builder.append('\n');
+            }
+            return builder.toString();
+        }
+
+    }
+
+    static class Factorization {
+        public static IntegerMultiWayStack factorizeRangePrime(int n) {
+            int maxFactorCnt = (int) MinimumNumberWithMaximumFactors.maximumPrimeFactor(n)[1];
+            IntegerMultiWayStack stack = new IntegerMultiWayStack(n + 1, n * maxFactorCnt);
+            boolean[] isComp = new boolean[n + 1];
+            for (int i = 2; i <= n; i++) {
+                if (isComp[i]) {
+                    continue;
+                }
+                for (int j = i; j <= n; j += i) {
+                    isComp[j] = true;
+                    stack.addLast(j, i);
+                }
+            }
+            return stack;
         }
 
     }
@@ -323,6 +409,27 @@ public class Main {
 
     }
 
+    static class SequenceUtils {
+        public static void swap(int[] data, int i, int j) {
+            int tmp = data[i];
+            data[i] = data[j];
+            data[j] = tmp;
+        }
+
+        public static void reverse(int[] data, int l, int r) {
+            while (l < r) {
+                swap(data, l, r);
+                l++;
+                r--;
+            }
+        }
+
+        public static void reverse(int[] data) {
+            reverse(data, 0, data.length - 1);
+        }
+
+    }
+
     static class FastInput {
         private final InputStream is;
         private byte[] buf = new byte[1 << 13];
@@ -332,6 +439,12 @@ public class Main {
 
         public FastInput(InputStream is) {
             this.is = is;
+        }
+
+        public void populate(int[] data) {
+            for (int i = 0; i < data.length; i++) {
+                data[i] = readInt();
+            }
         }
 
         private int read() {
@@ -380,113 +493,12 @@ public class Main {
             return val;
         }
 
-        public char readChar() {
-            skipBlank();
-            char c = (char) next;
-            next = read();
-            return c;
-        }
-
     }
 
-    static class GenericLinearBasis {
-        private BitSet[] basis;
-        private int size;
-        private int dimension;
-        private BitSet or;
-        private BitSet buf;
+    static interface IntegerIterator {
+        boolean hasNext();
 
-        public GenericLinearBasis(int dimension) {
-            this.dimension = dimension;
-            basis = new BitSet[dimension];
-            for (int i = 0; i < dimension; i++) {
-                basis[i] = new BitSet(dimension);
-            }
-            or = new BitSet(dimension);
-            buf = new BitSet(dimension);
-        }
-
-        public void add(BitSet bits) {
-            buf.copy(bits);
-            bits = buf;
-            for (int i = dimension - 1; i >= 0; i--) {
-                if (!bits.get(i)) {
-                    continue;
-                }
-                if (or.get(i)) {
-                    bits.xor(basis[i]);
-                    continue;
-                }
-                or.set(i);
-                size++;
-                basis[i].copy(bits);
-                for (int j = i + 1; j < dimension; j++) {
-                    if (!or.get(j) || !basis[j].get(i)) {
-                        continue;
-                    }
-                    basis[j].xor(basis[i]);
-                }
-                return;
-            }
-        }
-
-        public int size() {
-            return size;
-        }
-
-    }
-
-    static interface InverseNumber {
-    }
-
-    static class Modular {
-        int m;
-
-        public Modular(int m) {
-            this.m = m;
-        }
-
-        public Modular(long m) {
-            this.m = (int) m;
-            if (this.m != m) {
-                throw new IllegalArgumentException();
-            }
-        }
-
-        public Modular(double m) {
-            this.m = (int) m;
-            if (this.m != m) {
-                throw new IllegalArgumentException();
-            }
-        }
-
-        public int valueOf(int x) {
-            x %= m;
-            if (x < 0) {
-                x += m;
-            }
-            return x;
-        }
-
-        public int valueOf(long x) {
-            x %= m;
-            if (x < 0) {
-                x += m;
-            }
-            return (int) x;
-        }
-
-        public int mul(int x, int y) {
-            return valueOf((long) x * y);
-        }
-
-        public int subtract(int x, int y) {
-            return valueOf(x - y);
-        }
-
-        public String toString() {
-            return "mod " + m;
-        }
+        int next();
 
     }
 }

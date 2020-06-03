@@ -1,2 +1,2 @@
-48 src/main/java/contest/E - Odd Subrectangles.json
+59 src/main/java/contest/D. Linear Congruential Generator.json
 0
