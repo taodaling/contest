@@ -1,5 +1,5 @@
 {
-  "name" : "D. Chattering",
+  "name" : "B. Vasya and Good Sequences",
   "testType" : "SINGLE",
   "input" : {
     "type" : "STANDARD",
@@ -10,35 +10,30 @@
     "fileName" : "output.txt"
   },
   "tests" : [ {
-    "input" : "4\n1 1 4 1\n",
-    "output" : "2 2 1 2 \n",
+    "input" : "3\n6 7 14\n",
+    "output" : "2\n",
     "index" : 0,
     "active" : true
   }, {
-    "input" : "8\n1 2 2 1 5 1 3 1\n",
-    "output" : "3 3 2 2 1 2 2 3 \n",
+    "input" : "4\n1 2 1 16\n",
+    "output" : "4\n",
     "index" : 1,
     "active" : true
   }, {
-    "input" : "1\n10",
-    "output" : "0",
+    "input" : "",
+    "output" : "",
     "index" : 2,
-    "active" : true
-  }, {
-    "input" : "7\n3 1 1 1 1 1 1 ",
-    "output" : "1 2 3 3 3 3 2",
-    "index" : 3,
     "active" : true
   } ],
   "location" : "src/main/java/contest",
   "vmArgs" : "-Xmx256M",
   "mainClass" : "Main",
-  "taskClass" : "on2020_06.on2020_06_02_Codeforces___Codeforces_Round__522__Div__1__based_on_Technocup_2019_Elimination_Round_3_.D__Chattering.DChattering",
+  "taskClass" : "on2020_06.on2020_06_02_Codeforces___Codeforces_Round__512__Div__1__based_on_Technocup_2019_Elimination_Round_1_.B__Vasya_and_Good_Sequences.BVasyaAndGoodSequences",
   "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
   "checkerParameters" : "",
-  "testClasses" : [ "on2020_06.on2020_06_02_Codeforces___Codeforces_Round__522__Div__1__based_on_Technocup_2019_Elimination_Round_3_.D__Chattering.DChatteringTestCase" ],
+  "testClasses" : [ ],
   "date" : "2020.06.02",
-  "contestName" : "Codeforces - Codeforces Round #522 (Div. 1, based on Technocup 2019 Elimination Round 3)",
+  "contestName" : "Codeforces - Codeforces Round #512 (Div. 1, based on Technocup 2019 Elimination Round 1)",
   "truncate" : true,
   "inputClass" : "template.io.FastInput",
   "outputClass" : "template.io.FastOutput",
