@@ -1,4 +1,6 @@
-package contest;
+package on2020_06.on2020_06_04_TopCoder_SRM__752.TokenDoublingGame0;
+
+
 
 import template.math.CachedPow;
 import template.math.LinearFunction;

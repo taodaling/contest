@@ -8,6 +8,9 @@ public class LinearFunction {
     public final int b;
 
     public static final LinearFunction IDENTITY = new LinearFunction(1, 0);
+    public static final LinearFunction ONE = new LinearFunction(0, 1);
+    public static final LinearFunction ZERO = new LinearFunction(0, 0);
+
 
     public LinearFunction(int a, int b) {
         this.a = a;
@@ -18,9 +21,29 @@ public class LinearFunction {
         return mod.valueOf((long) a * x + b);
     }
 
-    //a.a(b.a x + b.b) + a.b
+    //a(b) = a.a(b.a x + b.b) + a.b
     public static LinearFunction merge(LinearFunction a, LinearFunction b, Modular mod) {
         return new LinearFunction(mod.valueOf((long) a.a * b.a), mod.valueOf((long) a.a * b.b + a.b));
+    }
+
+    public static LinearFunction plus(LinearFunction a, LinearFunction b, Modular mod) {
+        return new LinearFunction(mod.plus(a.a, b.a), mod.plus(a.b, b.b));
+    }
+
+    public static LinearFunction plus(LinearFunction a, int ba, int bb, Modular mod) {
+        return new LinearFunction(mod.plus(a.a, ba), mod.plus(a.b, bb));
+    }
+
+    public static LinearFunction subtract(LinearFunction a, LinearFunction b, Modular mod) {
+        return new LinearFunction(mod.subtract(a.a, b.a), mod.subtract(a.b, b.b));
+    }
+
+    public static LinearFunction subtract(LinearFunction a, int ba, int bb, Modular mod) {
+        return new LinearFunction(mod.subtract(a.a, ba), mod.subtract(a.b, bb));
+    }
+
+    public static LinearFunction mul(LinearFunction a, int b, Modular mod) {
+        return new LinearFunction(mod.mul(a.a, b), mod.mul(a.b, b));
     }
 
     //ax+b=y => x=(y-b)/a
@@ -37,6 +60,7 @@ public class LinearFunction {
         LinearFunction function = (LinearFunction) obj;
         return function.a == a && function.b == b;
     }
+
 
     @Override
     public int hashCode() {

@@ -1,2 +1,2 @@
-37 src/main/java/contest/Literature.json
+44 src/main/java/contest/TokenDoublingGame.json
 0
