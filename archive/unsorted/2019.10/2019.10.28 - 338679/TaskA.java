@@ -43,7 +43,7 @@ public class TaskA {
         long l = DigitUtils.setDigitOn(0, digit - 1, 1);
         long r = DigitUtils.setDigitOn(0, digit, 1) - 1;
         while (l < r) {
-            long m = (l + r) >> 1;
+            long m = DigitUtils.floorAverage(l, r);
             if (ask(in, out, m * 10)) {
                 r = m;
             } else {

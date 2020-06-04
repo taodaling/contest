@@ -35,7 +35,7 @@ public class TaskC {
         long l = 0;
         long r = x * n;
         while(l < r){
-            long m = (l + r) >> 1;
+            long m = DigitUtils.floorAverage(l, r);
             if(check(m)){
                 r = m;
             }else{

@@ -100,7 +100,7 @@ public class FDishShopping {
             pts[l].ans += pts[l].val;
             return;
         }
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         dac(pts, l, m);
         dac(pts, m + 1, r);
 

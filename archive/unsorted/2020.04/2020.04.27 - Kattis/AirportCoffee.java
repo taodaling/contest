@@ -110,7 +110,7 @@ class DoubleLiChaoSegment {
 
     public DoubleLiChaoSegment(int l, int r) {
         if (l < r) {
-            int m = (l + r) >> 1;
+            int m = DigitUtils.floorAverage(l, r);
             left = new DoubleLiChaoSegment(l, m);
             right = new DoubleLiChaoSegment(m + 1, r);
             pushUp();
@@ -131,7 +131,7 @@ class DoubleLiChaoSegment {
             return;
         }
 
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         if (covered(ll, rr, l, r)) {
             pushDown();
             Line line1 = this.line;
@@ -179,7 +179,7 @@ class DoubleLiChaoSegment {
         if (covered(ll, rr, l, r)) {
             return line;
         }
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         Line ans = max(left.query(ll, rr, l, m, x),
                 right.query(ll, rr, m + 1, r, x), x);
         ans = max(ans, line, x);

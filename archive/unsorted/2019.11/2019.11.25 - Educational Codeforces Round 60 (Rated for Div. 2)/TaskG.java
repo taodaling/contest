@@ -132,7 +132,7 @@ class Segment implements Cloneable {
 
     public Segment(int l, int r) {
         if (l < r) {
-            int m = (l + r) >> 1;
+            int m = DigitUtils.floorAverage(l, r);
             left = new Segment(l, m);
             right = new Segment(m + 1, r);
             pushUp();
@@ -158,7 +158,7 @@ class Segment implements Cloneable {
             return;
         }
         pushDown();
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         left.update(ll, rr, l, m, x, incTime);
         right.update(ll, rr, m + 1, r, x, incTime);
         pushUp();
@@ -172,7 +172,7 @@ class Segment implements Cloneable {
             return val + indexTime * index;
         }
         pushDown();
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         return left.queryMax(ll, rr, l, m) +
                 right.queryMax(ll, rr, m + 1, r);
     }

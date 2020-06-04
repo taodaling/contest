@@ -2,6 +2,7 @@ package template.problem;
 
 import template.graph.DirectedEdge;
 import template.graph.UndirectedEdge;
+import template.math.DigitUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -146,7 +147,7 @@ public class TreePickSpecialPointProblem {
 
         public LongPriorityQueueBasedOnSegment(int l, int r) {
             if (l < r) {
-                int m = (l + r) >> 1;
+                int m = DigitUtils.floorAverage(l, r);
                 left = new LongPriorityQueueBasedOnSegment(l, m);
                 right = new LongPriorityQueueBasedOnSegment(m + 1, r);
                 pushUp();
@@ -158,7 +159,7 @@ public class TreePickSpecialPointProblem {
         public void reset(int l, int r, IntToLongFunction function) {
             dirty = 0;
             if (l < r) {
-                int m = (l + r) >> 1;
+                int m = DigitUtils.floorAverage(l, r);
                 left.reset(l, m, function);
                 right.reset(m + 1, r, function);
                 pushUp();
@@ -183,7 +184,7 @@ public class TreePickSpecialPointProblem {
                 modify(val);
                 return;
             }
-            int m = (l + r) >> 1;
+            int m = DigitUtils.floorAverage(l, r);
             pushDown();
             left.update(ll, rr, l, m, val);
             right.update(ll, rr, m + 1, r, val);
@@ -195,7 +196,7 @@ public class TreePickSpecialPointProblem {
                 minimum = INF;
                 return l;
             }
-            int m = (l + r) >> 1;
+            int m = DigitUtils.floorAverage(l, r);
             int ans;
             pushDown();
             if (left.minimum == minimum) {

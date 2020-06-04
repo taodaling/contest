@@ -1,5 +1,7 @@
 package template.datastructure;
 
+import template.math.DigitUtils;
+
 public class NoTagPersistentSegment  implements Cloneable{
     public static final NoTagPersistentSegment NIL = new NoTagPersistentSegment();
 
@@ -29,7 +31,7 @@ public class NoTagPersistentSegment  implements Cloneable{
         if (covered(ll, rr, l, r)) {
             return;
         }
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         if (!noIntersection(ll, rr, l, m)) {
             left = left.clone();
             left.update(ll, rr, l, m);
@@ -48,7 +50,7 @@ public class NoTagPersistentSegment  implements Cloneable{
         if (covered(ll, rr, l, r)) {
             return;
         }
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         left.query(ll, rr, l, m);
         right.query(ll, rr, m + 1, r);
     }

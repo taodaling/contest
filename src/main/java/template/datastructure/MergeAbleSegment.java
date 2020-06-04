@@ -1,5 +1,7 @@
 package template.datastructure;
 
+import template.math.DigitUtils;
+
 import java.util.ArrayDeque;
 import java.util.Deque;
 
@@ -49,7 +51,7 @@ public class MergeAbleSegment implements Cloneable {
             return;
         }
         pushDown();
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         if (x <= m) {
             if (left == NIL) {
                 left = alloc();
@@ -68,7 +70,7 @@ public class MergeAbleSegment implements Cloneable {
         if (l == r) {
             return l;
         }
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         if (left.cnt >= k) {
             return left.kth(l, m, k);
         } else {
@@ -83,7 +85,7 @@ public class MergeAbleSegment implements Cloneable {
         if (covered(ll, rr, l, r)) {
             return cnt;
         }
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         return left.query(ll, rr, l, m) +
                 right.query(ll, rr, m + 1, r);
     }
@@ -99,7 +101,7 @@ public class MergeAbleSegment implements Cloneable {
             cnt -= k;
             return ret;
         }
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         if (k >= left.cnt) {
             k -= left.cnt;
             ret.left = left;
@@ -133,7 +135,7 @@ public class MergeAbleSegment implements Cloneable {
             destroy(segment);
             return this;
         }
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         left = left.merge(l, m, segment.left);
         right = right.merge(m + 1, r, segment.right);
         destroy(segment);

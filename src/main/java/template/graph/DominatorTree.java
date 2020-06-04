@@ -1,5 +1,6 @@
 package template.graph;
 
+import template.math.DigitUtils;
 import template.primitve.generated.datastructure.IntegerIterator;
 import template.primitve.generated.datastructure.IntegerMultiWayStack;
 import template.utils.Debug;
@@ -180,7 +181,7 @@ public class DominatorTree {
 
         public Segment(int l, int r) {
             if (l < r) {
-                int m = (l + r) >> 1;
+                int m = DigitUtils.floorAverage(l, r);
                 left = new Segment(l, m);
                 right = new Segment(m + 1, r);
                 pushUp();
@@ -206,7 +207,7 @@ public class DominatorTree {
                 return;
             }
             pushDown();
-            int m = (l + r) >> 1;
+            int m = DigitUtils.floorAverage(l, r);
             left.update(ll, rr, l, m, x);
             right.update(ll, rr, m + 1, r, x);
             pushUp();
@@ -221,7 +222,7 @@ public class DominatorTree {
                 return;
             }
             pushDown();
-            int m = (l + r) >> 1;
+            int m = DigitUtils.floorAverage(l, r);
             left.updateMin(ll, rr, l, m, x);
             right.updateMin(ll, rr, m + 1, r, x);
             pushUp();
@@ -236,7 +237,7 @@ public class DominatorTree {
                 return;
             }
             pushDown();
-            int m = (l + r) >> 1;
+            int m = DigitUtils.floorAverage(l, r);
             if (left.s < right.s) {
                 left.query(ll, rr, l, m, q);
                 right.query(ll, rr, m + 1, r, q);
@@ -254,7 +255,7 @@ public class DominatorTree {
                 return s;
             }
             pushDown();
-            int m = (l + r) >> 1;
+            int m = DigitUtils.floorAverage(l, r);
             return Math.min(left.query(ll, rr, l, m),
                     right.query(ll, rr, m + 1, r));
         }

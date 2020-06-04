@@ -1,5 +1,7 @@
 package template.datastructure;
 
+import template.math.DigitUtils;
+
 public class SparseSegment {
     private SparseSegment left;
     private SparseSegment right;
@@ -46,7 +48,7 @@ public class SparseSegment {
             return;
         }
         pushDown();
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         getLeft().update(ll, rr, l, m);
         getRight().update(ll, rr, m + 1, r);
         pushUp();
@@ -60,7 +62,7 @@ public class SparseSegment {
             return;
         }
         pushDown();
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         getLeft().query(ll, rr, l, m);
         getRight().query(ll, rr, m + 1, r);
     }

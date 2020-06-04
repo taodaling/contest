@@ -1,5 +1,6 @@
 package template.datastructure;
 
+import template.math.DigitUtils;
 import template.primitve.generated.datastructure.IntToDoubleFunction;
 
 public class DoubleLiChaoSegment {
@@ -44,7 +45,7 @@ public class DoubleLiChaoSegment {
 
     public DoubleLiChaoSegment(int l, int r) {
         if (l < r) {
-            int m = (l + r) >> 1;
+            int m = DigitUtils.floorAverage(l, r);
             left = new DoubleLiChaoSegment(l, m);
             right = new DoubleLiChaoSegment(m + 1, r);
             pushUp();
@@ -65,7 +66,7 @@ public class DoubleLiChaoSegment {
             return;
         }
 
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         if (covered(ll, rr, l, r)) {
             pushDown();
             Line line1 = this.line;
@@ -109,7 +110,7 @@ public class DoubleLiChaoSegment {
         if (covered(ll, rr, l, r)) {
             return line.apply(x);
         }
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         double ans = Math.max(left.query(ll, rr, l, m, x),
                 right.query(ll, rr, m + 1, r, x));
         ans = Math.max(ans, line.apply(x));

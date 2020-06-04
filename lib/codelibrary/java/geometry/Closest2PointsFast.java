@@ -1,5 +1,7 @@
 package geometry;
 
+import template.math.DigitUtils;
+
 import java.util.*;
 
 public class Closest2PointsFast {
@@ -28,7 +30,7 @@ public class Closest2PointsFast {
     static long rec(Point[] sortedX, Point[] sortedY, int l, int r, Point[] result, long mindist2) {
         if (l == r)
             return Long.MAX_VALUE;
-        int mid = (l + r) >> 1;
+        int mid = DigitUtils.floorAverage(l, r);
         int midx = sortedX[mid].x;
         for (int i = l; i <= r; i++) {
             sortedX[i].mark = i <= mid;

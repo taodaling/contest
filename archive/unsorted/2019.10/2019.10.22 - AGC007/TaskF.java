@@ -57,7 +57,7 @@ public class TaskF {
             int l = ans + 1;
             int r = m - j;
             while (l < r) {
-                int mid = (l + r) >> 1;
+                int mid = DigitUtils.floorAverage(l, r);
                 if (j + mid >= m || intervals[j].r <= intervals[j + mid].l - mid) {
                     r = mid;
                 } else {

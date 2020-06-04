@@ -246,4 +246,20 @@ public class DigitUtils {
         }
         return ans;
     }
+
+    public static int floorAverage(int x, int y) {
+        return (x & y) + ((x ^ y) >> 1);
+    }
+
+    public static int ceilAverage(int x, int y) {
+        return (x | y) - ((x ^ y) >> 1);
+    }
+
+    public static long floorAverage(long x, long y) {
+        return (x & y) + ((x ^ y) >> 1);
+    }
+
+    public static long ceilAverage(long x, long y) {
+        return (x | y) - ((x ^ y) >> 1);
+    }
 }

@@ -1,5 +1,7 @@
 package template.primitve.generated.graph;
 
+import template.math.DigitUtils;
+
 public class DoublePriorityQueueBasedOnSegment implements Cloneable {
     private static final double INF = Double.MAX_VALUE;
     private DoublePriorityQueueBasedOnSegment left;
@@ -12,7 +14,7 @@ public class DoublePriorityQueueBasedOnSegment implements Cloneable {
 
     public DoublePriorityQueueBasedOnSegment(int l, int r) {
         if (l < r) {
-            int m = (l + r) >> 1;
+            int m = DigitUtils.floorAverage(l, r);
             left = new DoublePriorityQueueBasedOnSegment(l, m);
             right = new DoublePriorityQueueBasedOnSegment(m + 1, r);
             pushUp();
@@ -23,7 +25,7 @@ public class DoublePriorityQueueBasedOnSegment implements Cloneable {
 
     public void reset(int l, int r) {
         if (l < r) {
-            int m = (l + r) >> 1;
+            int m = DigitUtils.floorAverage(l, r);
             left.reset(l, m);
             right.reset(m + 1, r);
             pushUp();
@@ -40,7 +42,7 @@ public class DoublePriorityQueueBasedOnSegment implements Cloneable {
             minimum = val;
             return;
         }
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         left.update(x, l, m, val);
         right.update(x, m + 1, r, val);
         pushUp();
@@ -51,7 +53,7 @@ public class DoublePriorityQueueBasedOnSegment implements Cloneable {
             minimum = INF;
             return l;
         }
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         int ans;
         if (left.minimum == minimum) {
             ans = left.pop(l, m);

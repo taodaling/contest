@@ -108,7 +108,7 @@ class NoTagPersistentSegment implements Cloneable {
             this.l = xl;
             return;
         }
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         if (!noIntersection(ll, rr, l, m)) {
             left = left.clone();
             left.update(ll, rr, l, m, xl, xr);
@@ -127,7 +127,7 @@ class NoTagPersistentSegment implements Cloneable {
         if (this == NIL || covered(ll, rr, l, r)) {
             return this.l;
         }
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         return Math.min(left.queryL(ll, rr, l, m),
                 right.queryL(ll, rr, m + 1, r));
     }
@@ -139,7 +139,7 @@ class NoTagPersistentSegment implements Cloneable {
         if (this == NIL || covered(ll, rr, l, r)) {
             return this.r;
         }
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         return Math.max(left.queryR(ll, rr, l, m),
                 right.queryR(ll, rr, m + 1, r));
     }

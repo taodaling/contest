@@ -1,5 +1,6 @@
 package template.polynomial;
 
+import template.math.DigitUtils;
 import template.math.ExtGCD;
 import template.math.InverseNumber;
 import template.math.Modular;
@@ -62,7 +63,7 @@ public class Polynomials {
             alloc.addAll(ps[l]);
             return alloc;
         }
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         IntegerList a = dacMul(ps, l, m, mod);
         IntegerList b = dacMul(ps, m + 1, r, mod);
         IntegerList alloc = listBuffer.alloc();

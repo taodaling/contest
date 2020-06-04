@@ -83,7 +83,7 @@ class PQSegment implements Cloneable {
 
     public PQSegment(int l, int r, IntToIntFunction function) {
         if (l < r) {
-            int m = (l + r) >> 1;
+            int m = DigitUtils.floorAverage(l, r);
             left = new PQSegment(l, m, function);
             right = new PQSegment(m + 1, r, function);
             pushUp();
@@ -109,7 +109,7 @@ class PQSegment implements Cloneable {
             return;
         }
         pushDown();
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         left.update(ll, rr, l, m);
         right.update(ll, rr, m + 1, r);
         pushUp();
@@ -125,7 +125,7 @@ class PQSegment implements Cloneable {
             return;
         }
         pushDown();
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
 
         if (left.max >= right.max) {
             left.queryMax(ll, rr, l, m, q);
@@ -146,7 +146,7 @@ class PQSegment implements Cloneable {
             return;
         }
         pushDown();
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
 
         if (left.max <= right.max) {
             left.queryMin(ll, rr, l, m, q);
@@ -227,7 +227,7 @@ class HallSegment implements Cloneable {
 
     public HallSegment(int l, int r) {
         if (l < r) {
-            int m = (l + r) >> 1;
+            int m = DigitUtils.floorAverage(l, r);
             left = new HallSegment(l, m);
             right = new HallSegment(m + 1, r);
             pushUp();
@@ -253,7 +253,7 @@ class HallSegment implements Cloneable {
             return;
         }
         pushDown();
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         left.update(ll, rr, l, m, x);
         right.update(ll, rr, m + 1, r, x);
         pushUp();
@@ -268,7 +268,7 @@ class HallSegment implements Cloneable {
             return;
         }
         pushDown();
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         left.query(ll, rr, l, m, q);
         right.query(ll, rr, m + 1, r, q);
     }

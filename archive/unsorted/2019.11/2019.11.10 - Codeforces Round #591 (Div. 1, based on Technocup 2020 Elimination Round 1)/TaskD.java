@@ -84,7 +84,7 @@ class PersistentSegment implements Cloneable {
             index = val;
             return;
         }
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         if (!noIntersection(ll, rr, l, m)) {
             left = left.clone();
             left.update(ll, rr, l, m, val);
@@ -103,7 +103,7 @@ class PersistentSegment implements Cloneable {
             return index;
         }
         //pushDown();
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         return Math.max(left.query(ll, rr, l, m),
                 right.query(ll, rr, m + 1, r));
     }

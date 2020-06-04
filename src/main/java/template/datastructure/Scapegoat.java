@@ -1,5 +1,7 @@
 package template.datastructure;
 
+import template.math.DigitUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -146,7 +148,7 @@ public class Scapegoat implements Cloneable {
             if (l > r) {
                 return NIL;
             }
-            int m = (l + r) >> 1;
+            int m = DigitUtils.floorAverage(l, r);
             Scapegoat root = RECORDER.get(m);
             root.init();
             root.left = rebuild(l, m - 1);

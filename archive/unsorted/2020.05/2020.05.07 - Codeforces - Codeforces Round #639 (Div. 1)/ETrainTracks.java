@@ -167,7 +167,7 @@ class HeavyLightDecompose {
 
         public Segment(int l, int r, IntFunction<HLDNode> function) {
             if (l < r) {
-                int m = (l + r) >> 1;
+                int m = DigitUtils.floorAverage(l, r);
                 left = new Segment(l, m, function);
                 right = new Segment(m + 1, r, function);
                 pushUp();
@@ -193,7 +193,7 @@ class HeavyLightDecompose {
                 return;
             }
             pushDown();
-            int m = (l + r) >> 1;
+            int m = DigitUtils.floorAverage(l, r);
             left.update(ll, rr, l, m, x);
             right.update(ll, rr, m + 1, r, x);
             pushUp();
@@ -207,7 +207,7 @@ class HeavyLightDecompose {
                 return val;
             }
             pushDown();
-            int m = (l + r) >> 1;
+            int m = DigitUtils.floorAverage(l, r);
             return op.applyAsLong(left.query(ll, rr, l, m, op),
                     right.query(ll, rr, m + 1, r, op));
         }

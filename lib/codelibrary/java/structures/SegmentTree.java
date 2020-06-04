@@ -1,5 +1,7 @@
 package structures;
 
+import template.math.DigitUtils;
+
 import java.util.function.Predicate;
 
 public class SegmentTree {
@@ -27,7 +29,7 @@ public class SegmentTree {
     }
 
     void push(int x, int l, int r) {
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         int y = x + ((m - l + 1) << 1);
         if (tree[x].add != 0) {
             tree[x + 1].apply(l, m, tree[x].add);
@@ -58,7 +60,7 @@ public class SegmentTree {
         if (l == r) {
             return;
         }
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         int y = x + ((m - l + 1) << 1);
         build(x + 1, l, m);
         build(y, m + 1, r);
@@ -70,7 +72,7 @@ public class SegmentTree {
             tree[x].apply(l, r, v[l]);
             return;
         }
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         int y = x + ((m - l + 1) << 1);
         build(x + 1, l, m, v);
         build(y, m + 1, r, v);
@@ -85,7 +87,7 @@ public class SegmentTree {
         if (ll <= l && r <= rr) {
             return tree[x];
         }
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         int y = x + ((m - l + 1) << 1);
         push(x, l, r);
         Node res;
@@ -111,7 +113,7 @@ public class SegmentTree {
             tree[x].apply(l, r, v);
             return;
         }
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         int y = x + ((m - l + 1) << 1);
         push(x, l, r);
         if (ll <= m) {
@@ -136,7 +138,7 @@ public class SegmentTree {
             return l;
         }
         push(x, l, r);
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         int y = x + ((m - l + 1) << 1);
         int res = -1;
         if (ll <= m) {

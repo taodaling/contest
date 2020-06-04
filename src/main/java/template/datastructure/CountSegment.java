@@ -1,5 +1,7 @@
 package template.datastructure;
 
+import template.math.DigitUtils;
+
 public class CountSegment implements Cloneable {
     private static final CountSegment NIL = new CountSegment();
     private CountSegment left;
@@ -36,7 +38,7 @@ public class CountSegment implements Cloneable {
             return;
         }
         pushDown();
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         left.update(x, l, m, mod);
         right.update(x, m + 1, r, mod);
         pushUp();
@@ -46,7 +48,7 @@ public class CountSegment implements Cloneable {
         if (l == r) {
             return l;
         }
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         if (left.cnt >= k) {
             return left.kth(l, m, k);
         } else {
@@ -61,7 +63,7 @@ public class CountSegment implements Cloneable {
         if (covered(ll, rr, l, r)) {
             return cnt;
         }
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         return left.query(ll, rr, l, m) +
                 right.query(ll, rr, m + 1, r);
     }
@@ -75,7 +77,7 @@ public class CountSegment implements Cloneable {
         if (l == r) {
             cnt += segment.cnt;
         }
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         left = merge(l, m, segment.left);
         right = merge(m + 1, r, segment.right);
         pushUp();

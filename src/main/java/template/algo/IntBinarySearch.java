@@ -11,7 +11,7 @@ public abstract class IntBinarySearch {
             throw new IllegalArgumentException();
         }
         while (l < r) {
-            int mid = DigitUtils.average(l, r);
+            int mid = DigitUtils.floorAverage(l, r);
             if (check(mid)) {
                 r = mid;
             } else {

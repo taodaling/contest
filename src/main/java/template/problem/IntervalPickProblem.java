@@ -270,7 +270,7 @@ public class IntervalPickProblem {
 
         public LongSegment(int l, int r) {
             if (l < r) {
-                int m = (l + r) >> 1;
+                int m = DigitUtils.floorAverage(l, r);
                 left = new LongSegment(l, m);
                 right = new LongSegment(m + 1, r);
                 pushUp();
@@ -298,7 +298,7 @@ public class IntervalPickProblem {
                 return;
             }
             pushDown();
-            int m = (l + r) >> 1;
+            int m = DigitUtils.floorAverage(l, r);
             left.update(ll, rr, l, m, x, index);
             right.update(ll, rr, m + 1, r, x, index);
             pushUp();
@@ -313,7 +313,7 @@ public class IntervalPickProblem {
                 return;
             }
             pushDown();
-            int m = (l + r) >> 1;
+            int m = DigitUtils.floorAverage(l, r);
             left.query(ll, rr, l, m, query);
             right.query(ll, rr, m + 1, r, query);
         }
@@ -341,7 +341,7 @@ public class IntervalPickProblem {
 
         public DoubleSegment(int l, int r) {
             if (l < r) {
-                int m = (l + r) >> 1;
+                int m = DigitUtils.floorAverage(l, r);
                 left = new DoubleSegment(l, m);
                 right = new DoubleSegment(m + 1, r);
                 pushUp();
@@ -351,7 +351,7 @@ public class IntervalPickProblem {
 
         public void reset(int l, int r) {
             if (l < r) {
-                int m = (l + r) >> 1;
+                int m = DigitUtils.floorAverage(l, r);
                 left.reset(l, m);
                 right.reset(m + 1, r);
                 pushUp();
@@ -381,7 +381,7 @@ public class IntervalPickProblem {
                 return;
             }
             pushDown();
-            int m = (l + r) >> 1;
+            int m = DigitUtils.floorAverage(l, r);
             left.update(ll, rr, l, m, x, index);
             right.update(ll, rr, m + 1, r, x, index);
             pushUp();
@@ -396,7 +396,7 @@ public class IntervalPickProblem {
                 return;
             }
             pushDown();
-            int m = (l + r) >> 1;
+            int m = DigitUtils.floorAverage(l, r);
             left.query(ll, rr, l, m, query);
             right.query(ll, rr, m + 1, r, query);
         }

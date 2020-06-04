@@ -1,5 +1,7 @@
 package template.datastructure;
 
+import template.math.DigitUtils;
+
 public class PersistentSegment implements Cloneable {
     private static final PersistentSegment NIL = new PersistentSegment();
     private PersistentSegment left;
@@ -33,7 +35,7 @@ public class PersistentSegment implements Cloneable {
             return;
         }
         pushDown();
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         left.update(ll, rr, l, m);
         right.update(ll, rr, m + 1, r);
         pushUp();
@@ -47,7 +49,7 @@ public class PersistentSegment implements Cloneable {
             return;
         }
         pushDown();
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         left.query(ll, rr, l, m);
         right.query(ll, rr, m + 1, r);
     }

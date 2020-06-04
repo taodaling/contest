@@ -1,5 +1,7 @@
 package template.datastructure;
 
+import template.math.DigitUtils;
+
 public class SparseQuadTree implements Cloneable {
     SparseQuadTree tl, tr, bl, br;
     long area;
@@ -19,8 +21,8 @@ public class SparseQuadTree implements Cloneable {
             return segment;
         }
 
-        int lrm = (l + r) >> 1;
-        int tbm = (t + b) >> 1;
+        int lrm = DigitUtils.floorAverage(l, r);
+        int tbm = DigitUtils.floorAverage(t, b);
 
         segment.pushDown(l, r, b, t);
         segment.bl = update(ll, rr, bb, tt, l, lrm, b, tbm, segment.bl);
@@ -40,8 +42,8 @@ public class SparseQuadTree implements Cloneable {
             return segment.area;
         }
 
-        int lrm = (l + r) >> 1;
-        int tbm = (t + b) >> 1;
+        int lrm = DigitUtils.floorAverage(l, r);
+        int tbm = DigitUtils.floorAverage(t, b);
 
         segment.pushDown(l, r, b, t);
         return query(ll, rr, bb, tt, l, lrm, b, tbm, segment.bl) +

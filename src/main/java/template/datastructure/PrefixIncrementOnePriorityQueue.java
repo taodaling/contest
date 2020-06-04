@@ -1,5 +1,6 @@
 package template.datastructure;
 
+import template.math.DigitUtils;
 import template.rand.Randomized;
 
 import java.util.Arrays;
@@ -90,7 +91,7 @@ public class PrefixIncrementOnePriorityQueue {
 
         public Segment(int l, int r, int[] vals) {
             if (l < r) {
-                int m = (l + r) >> 1;
+                int m = DigitUtils.floorAverage(l, r);
                 left = new Segment(l, m, vals);
                 right = new Segment(m + 1, r, vals);
                 pushUp();
@@ -117,7 +118,7 @@ public class PrefixIncrementOnePriorityQueue {
                 return;
             }
             pushDown();
-            int m = (l + r) >> 1;
+            int m = DigitUtils.floorAverage(l, r);
             left.update(ll, rr, l, m, x);
             right.update(ll, rr, m + 1, r, x);
             pushUp();
@@ -132,7 +133,7 @@ public class PrefixIncrementOnePriorityQueue {
                 return;
             }
             pushDown();
-            int m = (l + r) >> 1;
+            int m = DigitUtils.floorAverage(l, r);
             left.delete(ll, rr, l, m);
             right.delete(ll, rr, m + 1, r);
             pushUp();
@@ -196,7 +197,7 @@ public class PrefixIncrementOnePriorityQueue {
                 return;
             }
             pushDown();
-            int m = (l + r) >> 1;
+            int m = DigitUtils.floorAverage(l, r);
             left.query(ll, rr, l, m);
             right.query(ll, rr, m + 1, r);
         }

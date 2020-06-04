@@ -44,7 +44,7 @@ public class DDestiny {
         if (l == r) {
             return l;
         }
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         int ans = query(l, m, sub.left, add.left, atLeast);
         if (ans == -1) {
             ans = query(m + 1, r, sub.right, add.right, atLeast);
@@ -86,7 +86,7 @@ class NoTagPersistentSegment implements Cloneable {
             cnt += x;
             return;
         }
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         if (!noIntersection(ll, rr, l, m)) {
             left = left.clone();
             left.update(ll, rr, l, m, x);
@@ -105,7 +105,7 @@ class NoTagPersistentSegment implements Cloneable {
         if (covered(ll, rr, l, r)) {
             return cnt;
         }
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         return left.query(ll, rr, l, m) +
                 right.query(ll, rr, m + 1, r);
     }

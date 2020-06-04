@@ -155,7 +155,7 @@ public class GArrayGame {
                 for (int i = 0; i < 2; i++) {
                     status[i] = new Status();
                 }
-                int m = (l + r) >> 1;
+                int m = DigitUtils.floorAverage(l, r);
                 left = new Segment(l, m, val, evenOrOdd);
                 right = new Segment(m + 1, r, val, evenOrOdd);
                 pushUp();
@@ -182,7 +182,7 @@ public class GArrayGame {
                 return;
             }
             pushDown();
-            int m = (l + r) >> 1;
+            int m = DigitUtils.floorAverage(l, r);
             left.update(ll, rr, l, m);
             right.update(ll, rr, m + 1, r);
             pushUp();
@@ -197,7 +197,7 @@ public class GArrayGame {
                 return;
             }
             pushDown();
-            int m = (l + r) >> 1;
+            int m = DigitUtils.floorAverage(l, r);
             left.query(ll, rr, l, m, x);
             right.query(ll, rr, m + 1, r, x);
         }

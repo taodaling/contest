@@ -10,7 +10,7 @@ public abstract class LongBinarySearch {
             throw new IllegalArgumentException();
         }
         while (l < r) {
-            long mid = DigitUtils.average(l, r);
+            long mid = DigitUtils.floorAverage(l, r);
             if (check(mid)) {
                 r = mid;
             } else {

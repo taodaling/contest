@@ -1,6 +1,7 @@
 package template.polynomial;
 
 import template.binary.Log2;
+import template.math.DigitUtils;
 import template.math.InverseNumber;
 import template.math.Modular;
 import template.math.Power;
@@ -356,7 +357,7 @@ public class NumberTheoryTransform {
         divide(p, tree.p, c, remainder);
 
         listBuffer.release(c);
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         multiApply(remainder, x, y, l, m, tree.left);
         multiApply(remainder, x, y, m + 1, r, tree.right);
         listBuffer.release(remainder);
@@ -369,7 +370,7 @@ public class NumberTheoryTransform {
             tree.p.add(modular.valueOf(-x.get(l)));
             tree.p.add(modular.valueOf(1));
         } else {
-            int m = (l + r) >> 1;
+            int m = DigitUtils.floorAverage(l, r);
             tree.left = build(x, l, m);
             tree.right = build(x, m + 1, r);
             tree.p = new IntegerList();
@@ -405,7 +406,7 @@ public class NumberTheoryTransform {
             Polynomials.normalize(alloc);
             return alloc;
         }
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         IntegerList a = dacMul(lists, l, m);
         IntegerList b = dacMul(lists, m + 1, r);
 

@@ -4,6 +4,7 @@ package on2020_06.on2020_06_02_Codeforces___Codeforces_Round__512__Div__1__based
 
 import template.io.FastInput;
 import template.io.FastOutput;
+import template.math.DigitUtils;
 import template.math.Modular;
 import template.primitve.generated.datastructure.IntToIntFunction;
 import template.utils.Debug;
@@ -138,7 +139,7 @@ class Segment implements Cloneable {
 
     public Segment(int l, int r, IntToIntFunction func, IntToIntFunction index) {
         if (l < r) {
-            int m = (l + r) >> 1;
+            int m = DigitUtils.floorAverage(l, r);
             left = new Segment(l, m, func, index);
             right = new Segment(m + 1, r, func, index);
             pushUp();
@@ -166,7 +167,7 @@ class Segment implements Cloneable {
             return;
         }
         pushDown();
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         left.update(ll, rr, l, m, x);
         right.update(ll, rr, m + 1, r, x);
         pushUp();
@@ -181,7 +182,7 @@ class Segment implements Cloneable {
             return;
         }
         pushDown();
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         left.query(ll, rr, l, m, ans);
         right.query(ll, rr, m + 1, r, ans);
     }
@@ -200,7 +201,7 @@ class Segment implements Cloneable {
             return;
         }
         pushDown();
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         left.binarySearch(ll, rr, l, m, q);
         right.binarySearch(ll, rr, m + 1, r, q);
     }

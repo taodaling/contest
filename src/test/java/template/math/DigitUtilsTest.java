@@ -33,4 +33,24 @@ public class DigitUtilsTest {
         Assert.assertEquals(DigitUtils.average(Integer.MIN_VALUE, Integer.MIN_VALUE + 1),
                 Integer.MIN_VALUE);
     }
+
+    @Test
+    public void test3() {
+        Assert.assertEquals(DigitUtils.floorAverage(Integer.MAX_VALUE, Integer.MAX_VALUE),
+                Integer.MAX_VALUE);
+        Assert.assertEquals(DigitUtils.floorAverage(Integer.MIN_VALUE, Integer.MIN_VALUE),
+                Integer.MIN_VALUE);
+        Assert.assertEquals(DigitUtils.floorAverage(Integer.MIN_VALUE, Integer.MIN_VALUE + 1),
+                Integer.MIN_VALUE);
+    }
+
+    @Test
+    public void test4() {
+        Assert.assertEquals(DigitUtils.ceilAverage(Integer.MAX_VALUE, Integer.MAX_VALUE),
+                Integer.MAX_VALUE);
+        Assert.assertEquals(DigitUtils.ceilAverage(Integer.MIN_VALUE, Integer.MIN_VALUE),
+                Integer.MIN_VALUE);
+        Assert.assertEquals(DigitUtils.ceilAverage(Integer.MIN_VALUE, Integer.MIN_VALUE + 1),
+                Integer.MIN_VALUE + 1);
+    }
 }

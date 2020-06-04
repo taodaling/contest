@@ -46,7 +46,7 @@ public class TaskF {
             return ans * 2;
         }
 
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         int ans = 0;
         ans = Math.max(ans, dac(pts, l, m, ll, rr, bb, pts[m].y));
         ans = Math.max(ans, dac(pts, l, m, ll, rr, pts[m].y, tt));

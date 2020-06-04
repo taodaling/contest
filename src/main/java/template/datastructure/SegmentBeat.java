@@ -1,5 +1,6 @@
 package template.datastructure;
 
+import template.math.DigitUtils;
 import template.primitve.generated.datastructure.IntToIntFunction;
 
 public class SegmentBeat {
@@ -33,7 +34,7 @@ public class SegmentBeat {
 
     public SegmentBeat(int l, int r, IntToIntFunction func) {
         if (l < r) {
-            int m = (l + r) >> 1;
+            int m = DigitUtils.floorAverage(l, r);
             left = new SegmentBeat(l, m, func);
             right = new SegmentBeat(m + 1, r, func);
             pushUp();
@@ -66,7 +67,7 @@ public class SegmentBeat {
             }
         }
         pushDown();
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         left.updateMin(ll, rr, l, m, x);
         right.updateMin(ll, rr, m + 1, r, x);
         pushUp();
@@ -80,7 +81,7 @@ public class SegmentBeat {
             return sum;
         }
         pushDown();
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         return left.querySum(ll, rr, l, m) +
                 right.querySum(ll, rr, m + 1, r);
     }
@@ -93,7 +94,7 @@ public class SegmentBeat {
             return first;
         }
         pushDown();
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         return Math.max(left.queryMax(ll, rr, l, m),
                 right.queryMax(ll, rr, m + 1, r));
     }

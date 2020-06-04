@@ -1,6 +1,7 @@
 package template.datastructure;
 
 import template.binary.Log2;
+import template.math.DigitUtils;
 
 import java.util.Comparator;
 
@@ -41,7 +42,7 @@ public class RMQ<T> {
 
     private void build(T[] vals, int l, int r, int i) {
         if (l < r) {
-            int m = (l + r) >> 1;
+            int m = DigitUtils.floorAverage(l, r);
             build(vals, l, m, left(i));
             build(vals, m + 1, r, right(i));
             data[i] = merge(data[left(i)], data[right(i)]);
@@ -64,7 +65,7 @@ public class RMQ<T> {
         if (ll <= l && r <= rr) {
             return data[i];
         }
-        int m = (l + r) >> 1;
+        int m = DigitUtils.floorAverage(l, r);
         return merge(query(ll, rr, l, m, left(i)),
                 query(ll, rr, m + 1, r, right(i)));
     }

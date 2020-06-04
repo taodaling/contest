@@ -1,5 +1,7 @@
 package geometry;
 
+import template.math.DigitUtils;
+
 import java.util.*;
 
 public class Closest2Points {
@@ -24,7 +26,7 @@ public class Closest2Points {
     static long rec(Point[] points, int l, int r, Point[] result, long mindist2) {
         if (l == r)
             return Long.MAX_VALUE;
-        int mid = (l + r) >> 1;
+        int mid = DigitUtils.floorAverage(l, r);
         int midx = points[mid].x;
         long d1 = rec(points, l, mid, result, mindist2);
         mindist2 = Math.min(mindist2, d1);
