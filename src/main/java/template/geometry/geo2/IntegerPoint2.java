@@ -14,6 +14,14 @@ public class IntegerPoint2 {
         }
         return orient(b, a);
     };
+    public static final Comparator<IntegerPoint2> SORT_BY_XY = (a, b) ->
+    {
+        int ans = Long.compare(a.x, b.x);
+        if (ans == 0) {
+            ans = Long.compare(a.y, b.y);
+        }
+        return ans;
+    };
     public static final IntegerPoint2 ORIGIN = new IntegerPoint2(0, 0);
 
     public final long x, y;
@@ -266,4 +274,5 @@ public class IntegerPoint2 {
     public String toString() {
         return String.format("(%d, %d)", x, y);
     }
+
 }
