@@ -1,2 +1,6 @@
-52 src/main/java/contest/B. Johnny and Grandmaster.json
+46 src/main/java/contest/D. Johnny and James.json
+4
 0
+1
+2
+3

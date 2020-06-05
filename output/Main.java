@@ -1,14 +1,23 @@
 import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Arrays;
+import java.util.PriorityQueue;
+import java.util.AbstractQueue;
+import java.util.ArrayList;
+import java.math.BigDecimal;
+import java.util.AbstractCollection;
+import java.util.Map;
+import java.io.OutputStreamWriter;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.io.IOException;
-import java.util.Random;
 import java.io.UncheckedIOException;
+import java.util.List;
+import java.util.TreeMap;
 import java.io.Closeable;
 import java.io.Writer;
-import java.io.OutputStreamWriter;
+import java.util.Comparator;
 import java.io.InputStream;
 
 /**
@@ -29,217 +38,112 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            BJohnnyAndGrandmaster solver = new BJohnnyAndGrandmaster();
-            int testCount = Integer.parseInt(in.next());
-            for (int i = 1; i <= testCount; i++)
-                solver.solve(i, in, out);
+            DJohnnyAndJames solver = new DJohnnyAndJames();
+            solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class BJohnnyAndGrandmaster {
-        Modular mod = new Modular(1e9 + 7);
-        Power pow = new Power(mod);
+    static class DJohnnyAndJames {
+        Debug debug = new Debug(true);
 
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            int p = in.readInt();
-            int[] k = new int[n];
-            boolean[] assignLeft = new boolean[n];
-            in.populate(k);
-            long sum = 0;
+            int k = in.readInt();
 
-            Randomized.shuffle(k);
-            Arrays.sort(k);
-            SequenceUtils.reverse(k);
-            int level = k[0];
+
+            TreeMap<IntegerPoint2, List<Node>> map = new TreeMap<>(IntegerPoint2.SORT_BY_POLAR_ANGLE);
+
+            Node center = null;
             for (int i = 0; i < n; i++) {
-                int x = k[i];
-                while (sum >= -n && sum <= n && level > x && p != 1 && sum != 0) {
-                    level--;
-                    sum = Math.max(-n * 10, Math.min(n * 10, sum * p));
-                }
-                level = x;
-                if (sum <= 0) {
-                    sum++;
-                    assignLeft[i] = true;
+                Node node = new Node();
+                node.pt = new IntegerPoint2(in.readInt(), in.readInt());
+                node.d = node.pt.abs();
+                if (node.pt.x == 0 && node.pt.y == 0) {
+                    center = node;
                 } else {
-                    sum--;
-                    assignLeft[i] = false;
+                    map.computeIfAbsent(node.pt, x -> new ArrayList<>()).add(node);
                 }
             }
 
-            int ans = 0;
-            for (int i = 0; i < n; i++) {
-                int val = pow.pow(p, k[i]);
-                if (assignLeft[i]) {
-                    ans = mod.plus(ans, val);
-                } else {
-                    ans = mod.subtract(ans, val);
+            debug.debug("map", map);
+
+            PriorityQueue<Node> pq = new PriorityQueue<>(map.size(), (a, b) -> -Double.compare(a.weight, b.weight));
+            for (List<Node> list : map.values()) {
+                list.sort((a, b) -> Double.compare(a.d, b.d));
+                Node last = null;
+                for (int i = 0; i < list.size(); i++) {
+                    Node node = list.get(i);
+                    node.after = list.size() - i - 1;
+                    node.weight = node.d * (k - 2 * node.after - 1);
+                    node.p = last;
+                    last = node;
+                }
+                pq.add(list.get(list.size() - 1));
+            }
+
+            int threshold = k / 2;
+            double ans1 = 0;
+            int got = 0;
+            while (got < k - 1 && !pq.isEmpty()) {
+                got++;
+                Node head = pq.remove();
+                ans1 += head.weight;
+                if (head.p != null && head.p.after < threshold) {
+                    pq.add(head.p);
                 }
             }
-            if (sum < 0) {
-                ans = mod.valueOf(-ans);
+
+            if (!pq.isEmpty() && pq.peek().weight > 0) {
+                ans1 += pq.peek().weight;
             }
+
+            if (got < k - 1) {
+                ans1 = -1;
+            }
+
+            boolean valid = false;
+            double ans2 = 0;
+            for (List<Node> list : map.values()) {
+                double local = 0;
+                if (k - (n - list.size() + threshold) > 0) {
+                    //pick all
+                    int prev = k - (n - list.size() + threshold);
+                    valid = true;
+                    Node last = center;
+                    int l = prev;
+                    int r = list.size() - threshold - 1;
+                    for (int i = 0; i < list.size(); i++) {
+                        if (i >= l && i <= r) {
+                            continue;
+                        }
+                        Node node = list.get(i);
+                        int t = (n - list.size()) + (i < l ? i : i - (r - l + 1));
+                        local += (node.d - last.d) * t * (k - t);
+                        last = node;
+                    }
+                } else {
+                    //fill
+                    Node last = center;
+                    for (int i = 0; i < list.size(); i++) {
+                        Node node = list.get(i);
+                        int t = list.size() - i;
+                        local += (node.d - last.d) * t * (k - t);
+                        last = node;
+                    }
+                }
+
+                ans2 += local;
+            }
+
+            double ans = ans1;
+            debug.debug("ans1", ans1);
+            debug.debug("ans2", ans2);
+            if (valid) {
+                ans = Math.max(ans, ans2);
+            }
+
             out.println(ans);
-        }
-
-    }
-
-    static class Randomized {
-        public static void shuffle(int[] data) {
-            shuffle(data, 0, data.length - 1);
-        }
-
-        public static void shuffle(int[] data, int from, int to) {
-            to--;
-            for (int i = from; i <= to; i++) {
-                int s = nextInt(i, to);
-                int tmp = data[i];
-                data[i] = data[s];
-                data[s] = tmp;
-            }
-        }
-
-        public static int nextInt(int l, int r) {
-            return RandomWrapper.INSTANCE.nextInt(l, r);
-        }
-
-    }
-
-    static class FastInput {
-        private final InputStream is;
-        private StringBuilder defaultStringBuf = new StringBuilder(1 << 13);
-        private byte[] buf = new byte[1 << 13];
-        private int bufLen;
-        private int bufOffset;
-        private int next;
-
-        public FastInput(InputStream is) {
-            this.is = is;
-        }
-
-        public void populate(int[] data) {
-            for (int i = 0; i < data.length; i++) {
-                data[i] = readInt();
-            }
-        }
-
-        private int read() {
-            while (bufLen == bufOffset) {
-                bufOffset = 0;
-                try {
-                    bufLen = is.read(buf);
-                } catch (IOException e) {
-                    bufLen = -1;
-                }
-                if (bufLen == -1) {
-                    return -1;
-                }
-            }
-            return buf[bufOffset++];
-        }
-
-        public void skipBlank() {
-            while (next >= 0 && next <= 32) {
-                next = read();
-            }
-        }
-
-        public String next() {
-            return readString();
-        }
-
-        public int readInt() {
-            int sign = 1;
-
-            skipBlank();
-            if (next == '+' || next == '-') {
-                sign = next == '+' ? 1 : -1;
-                next = read();
-            }
-
-            int val = 0;
-            if (sign == 1) {
-                while (next >= '0' && next <= '9') {
-                    val = val * 10 + next - '0';
-                    next = read();
-                }
-            } else {
-                while (next >= '0' && next <= '9') {
-                    val = val * 10 - next + '0';
-                    next = read();
-                }
-            }
-
-            return val;
-        }
-
-        public String readString(StringBuilder builder) {
-            skipBlank();
-
-            while (next > 32) {
-                builder.append((char) next);
-                next = read();
-            }
-
-            return builder.toString();
-        }
-
-        public String readString() {
-            defaultStringBuf.setLength(0);
-            return readString(defaultStringBuf);
-        }
-
-    }
-
-    static class Modular {
-        int m;
-
-        public Modular(int m) {
-            this.m = m;
-        }
-
-        public Modular(long m) {
-            this.m = (int) m;
-            if (this.m != m) {
-                throw new IllegalArgumentException();
-            }
-        }
-
-        public Modular(double m) {
-            this.m = (int) m;
-            if (this.m != m) {
-                throw new IllegalArgumentException();
-            }
-        }
-
-        public int valueOf(int x) {
-            x %= m;
-            if (x < 0) {
-                x += m;
-            }
-            return x;
-        }
-
-        public int valueOf(long x) {
-            x %= m;
-            if (x < 0) {
-                x += m;
-            }
-            return (int) x;
-        }
-
-        public int plus(int x, int y) {
-            return valueOf(x + y);
-        }
-
-        public int subtract(int x, int y) {
-            return valueOf(x - y);
-        }
-
-        public String toString() {
-            return "mod " + m;
         }
 
     }
@@ -271,12 +175,12 @@ public class Main {
             return this;
         }
 
-        public FastOutput append(int c) {
-            cache.append(c);
+        public FastOutput append(double c) {
+            cache.append(new BigDecimal(c).toPlainString());
             return this;
         }
 
-        public FastOutput println(int c) {
+        public FastOutput println(double c) {
             return append(c).println();
         }
 
@@ -311,67 +215,240 @@ public class Main {
 
     }
 
-    static class Power implements InverseNumber {
-        final Modular modular;
+    static class Debug {
+        private boolean offline;
+        private PrintStream out = System.err;
+        static int[] empty = new int[0];
 
-        public Power(Modular modular) {
-            this.modular = modular;
+        public Debug(boolean enable) {
+            offline = enable && System.getSecurityManager() == null;
         }
 
-        public int pow(int x, int n) {
-            if (n == 0) {
-                return modular.valueOf(1);
+        public Debug debug(String name, double x) {
+            if (offline) {
+                debug(name, "" + x);
             }
-            long r = pow(x, n >> 1);
-            r = modular.valueOf(r * r);
-            if ((n & 1) == 1) {
-                r = modular.valueOf(r * x);
+            return this;
+        }
+
+        public Debug debug(String name, String x) {
+            if (offline) {
+                out.printf("%s=%s", name, x);
+                out.println();
             }
-            return (int) r;
+            return this;
+        }
+
+        public Debug debug(String name, Object x) {
+            return debug(name, x, empty);
+        }
+
+        public Debug debug(String name, Object x, int... indexes) {
+            if (offline) {
+                if (x == null || !x.getClass().isArray()) {
+                    out.append(name);
+                    for (int i : indexes) {
+                        out.printf("[%d]", i);
+                    }
+                    out.append("=").append("" + x);
+                    out.println();
+                } else {
+                    indexes = Arrays.copyOf(indexes, indexes.length + 1);
+                    if (x instanceof byte[]) {
+                        byte[] arr = (byte[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof short[]) {
+                        short[] arr = (short[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof boolean[]) {
+                        boolean[] arr = (boolean[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof char[]) {
+                        char[] arr = (char[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof int[]) {
+                        int[] arr = (int[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof float[]) {
+                        float[] arr = (float[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof double[]) {
+                        double[] arr = (double[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof long[]) {
+                        long[] arr = (long[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else {
+                        Object[] arr = (Object[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    }
+                }
+            }
+            return this;
         }
 
     }
 
-    static class SequenceUtils {
-        public static void swap(int[] data, int i, int j) {
-            int tmp = data[i];
-            data[i] = data[j];
-            data[j] = tmp;
+    static class Node {
+        double d;
+        IntegerPoint2 pt;
+        Node p;
+        int after;
+        double weight;
+
+        public String toString() {
+            return pt.toString();
         }
 
-        public static void reverse(int[] data, int l, int r) {
-            while (l < r) {
-                swap(data, l, r);
-                l++;
-                r--;
+    }
+
+    static class IntegerPoint2 {
+        public static final Comparator<IntegerPoint2> SORT_BY_POLAR_ANGLE = (a, b) ->
+        {
+            if (a.half() != b.half()) {
+                return a.half() - b.half();
+            }
+            return orient(b, a);
+        };
+        public final long x;
+        public final long y;
+
+        public IntegerPoint2(long x, long y) {
+            this.x = x;
+            this.y = y;
+        }
+
+        public int half() {
+            return y > 0 || y == 0 && x < 0 ? 1 : 0;
+        }
+
+        public long square() {
+            return x * x + y * y;
+        }
+
+        public double abs() {
+            return Math.sqrt(square());
+        }
+
+        public static long cross(IntegerPoint2 a, IntegerPoint2 b) {
+            return a.x * b.y - a.y * b.x;
+        }
+
+        public static int orient(IntegerPoint2 b, IntegerPoint2 c) {
+            return GeoConstant.sign(cross(b, c));
+        }
+
+        public IntegerPoint2 clone() {
+            try {
+                return (IntegerPoint2) super.clone();
+            } catch (CloneNotSupportedException e) {
+                throw new RuntimeException(e);
             }
         }
 
-        public static void reverse(int[] data) {
-            reverse(data, 0, data.length - 1);
+        public String toString() {
+            return String.format("(%d, %d)", x, y);
         }
 
     }
 
-    static class RandomWrapper {
-        private Random random;
-        public static RandomWrapper INSTANCE = new RandomWrapper(new Random());
+    static class FastInput {
+        private final InputStream is;
+        private byte[] buf = new byte[1 << 13];
+        private int bufLen;
+        private int bufOffset;
+        private int next;
 
-        public RandomWrapper() {
-            this(new Random());
+        public FastInput(InputStream is) {
+            this.is = is;
         }
 
-        public RandomWrapper(Random random) {
-            this.random = random;
+        private int read() {
+            while (bufLen == bufOffset) {
+                bufOffset = 0;
+                try {
+                    bufLen = is.read(buf);
+                } catch (IOException e) {
+                    bufLen = -1;
+                }
+                if (bufLen == -1) {
+                    return -1;
+                }
+            }
+            return buf[bufOffset++];
         }
 
-        public int nextInt(int l, int r) {
-            return random.nextInt(r - l + 1) + l;
+        public void skipBlank() {
+            while (next >= 0 && next <= 32) {
+                next = read();
+            }
+        }
+
+        public int readInt() {
+            int sign = 1;
+
+            skipBlank();
+            if (next == '+' || next == '-') {
+                sign = next == '+' ? 1 : -1;
+                next = read();
+            }
+
+            int val = 0;
+            if (sign == 1) {
+                while (next >= '0' && next <= '9') {
+                    val = val * 10 + next - '0';
+                    next = read();
+                }
+            } else {
+                while (next >= '0' && next <= '9') {
+                    val = val * 10 - next + '0';
+                    next = read();
+                }
+            }
+
+            return val;
         }
 
     }
 
-    static interface InverseNumber {
+    static class GeoConstant {
+        public static final double PREC = 1e-10;
+
+        public static boolean isZero(double x) {
+            return -PREC <= x && x <= PREC;
+        }
+
+        public static int sign(double x) {
+            return isZero(x) ? 0 : x < 0 ? -1 : 1;
+        }
+
     }
 }
 
