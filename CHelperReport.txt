@@ -1,2 +1,2 @@
-44 src/main/java/contest/TokenDoublingGame.json
+52 src/main/java/contest/B. Johnny and Grandmaster.json
 0

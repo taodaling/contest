@@ -1,0 +1,49 @@
+{
+  "name" : "C. Johnny and Megan's Necklace",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5\n13 11\n11 1\n3 5\n17 1\n9 27\n",
+    "output" : "3\n8 7 9 10 5 6 1 2 3 4 \n",
+    "index" : 0,
+    "active" : false
+  }, {
+    "input" : "5\n13 11\n11 1\n3 5\n17 1\n7 29\n",
+    "output" : "2\n8 7 10 9 5 6 4 3 2 1 \n",
+    "index" : 1,
+    "active" : false
+  }, {
+    "input" : "1\n1 1\n",
+    "output" : "20\n2 1 \n",
+    "index" : 2,
+    "active" : false
+  }, {
+    "input" : "1\n1 2",
+    "index" : 3,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx512M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.CJohnnyAndMegansNecklace",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.06.04",
+  "contestName" : "Codeforces - Codeforces Round #647 (Div. 1) - Thanks, Algo Muse!",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}
