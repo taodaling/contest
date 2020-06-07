@@ -57,14 +57,14 @@ public class LinearBasis implements Cloneable {
     /**
      * Check whether val can be get by xor the numbers in basis
      */
-    public boolean test(long val) {
+    public boolean contain(long val) {
         for (int i = 63; i >= 0 && val != 0; i--) {
             if (bitAt(val, i) == 0) {
                 continue;
             }
             val ^= map[i];
         }
-        return val != 0;
+        return val == 0;
     }
 
     private long bitAt(long val, int i) {

@@ -1,0 +1,30 @@
+{
+  "name" : "Thermometers",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Solution",
+  "taskClass" : "on2020_06.on2020_06_06_Google_Coding_Competitions___Round_3_2020___Code_Jam_2020.Thermometers.Thermometers",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "on2020_06.on2020_06_06_Google_Coding_Competitions___Round_3_2020___Code_Jam_2020.Thermometers.ThermometersTestCase" ],
+  "date" : "2020.06.06",
+  "contestName" : "Google Coding Competitions - Round 3 2020 - Code Jam 2020",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

@@ -1,6 +1,2 @@
-46 src/main/java/contest/D. Johnny and James.json
-4
+40 src/main/java/contest/C - Range Set.json
 0
-1
-2
-3

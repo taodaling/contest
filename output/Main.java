@@ -1,23 +1,14 @@
 import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.PriorityQueue;
-import java.util.AbstractQueue;
-import java.util.ArrayList;
-import java.math.BigDecimal;
-import java.util.AbstractCollection;
-import java.util.Map;
-import java.io.OutputStreamWriter;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.Arrays;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.util.List;
-import java.util.TreeMap;
 import java.io.Closeable;
 import java.io.Writer;
-import java.util.Comparator;
+import java.io.OutputStreamWriter;
 import java.io.InputStream;
 
 /**
@@ -38,112 +29,171 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            DJohnnyAndJames solver = new DJohnnyAndJames();
+            CRangeSet solver = new CRangeSet();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class DJohnnyAndJames {
-        Debug debug = new Debug(true);
+    static class CRangeSet {
+        Debug debug = new Debug(false);
+        Modular mod = new Modular(1e9 + 7);
+        Power pow = new Power(mod);
+        int a;
+        int b;
+        int[] f;
 
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            int k = in.readInt();
+            a = in.readInt();
+            b = in.readInt();
+            if (a < b) {
+                int tmp = a;
+                a = b;
+                b = tmp;
+            }
 
+            f = new int[a];
+            SequenceUtils.deepFill(f, -1);
 
-            TreeMap<IntegerPoint2, List<Node>> map = new TreeMap<>(IntegerPoint2.SORT_BY_POLAR_ANGLE);
+//        for (int i = 0; i < a; i++) {
+//            debug.debug("f(" + i + ")", f(i));
+//        }
 
-            Node center = null;
-            for (int i = 0; i < n; i++) {
-                Node node = new Node();
-                node.pt = new IntegerPoint2(in.readInt(), in.readInt());
-                node.d = node.pt.abs();
-                if (node.pt.x == 0 && node.pt.y == 0) {
-                    center = node;
-                } else {
-                    map.computeIfAbsent(node.pt, x -> new ArrayList<>()).add(node);
+            ArrayIndex ai = new ArrayIndex(n + 1, a, 2);
+            int[] dp = new int[ai.totalSize()];
+            dp[ai.indexOf(0, 0, 0)] = 1;
+            dp[ai.indexOf(0, 0, 1)] = 1;
+            int[] sum = new int[2];
+            for (int i = 1; i <= n; i++) {
+                Arrays.fill(sum, 0);
+                for (int j = 0; j < a; j++) {
+                    int lend = j == i - 1 ? 1 : 0;
+                    sum[0] = mod.plus(sum[0], mod.mul(dp[ai.indexOf(i - 1, j, 0)], f(j - 2 + lend)));
                 }
-            }
-
-            debug.debug("map", map);
-
-            PriorityQueue<Node> pq = new PriorityQueue<>(map.size(), (a, b) -> -Double.compare(a.weight, b.weight));
-            for (List<Node> list : map.values()) {
-                list.sort((a, b) -> Double.compare(a.d, b.d));
-                Node last = null;
-                for (int i = 0; i < list.size(); i++) {
-                    Node node = list.get(i);
-                    node.after = list.size() - i - 1;
-                    node.weight = node.d * (k - 2 * node.after - 1);
-                    node.p = last;
-                    last = node;
+                for (int j = 0; j < b; j++) {
+                    sum[1] = mod.plus(sum[1], dp[ai.indexOf(i - 1, j, 1)]);
                 }
-                pq.add(list.get(list.size() - 1));
-            }
-
-            int threshold = k / 2;
-            double ans1 = 0;
-            int got = 0;
-            while (got < k - 1 && !pq.isEmpty()) {
-                got++;
-                Node head = pq.remove();
-                ans1 += head.weight;
-                if (head.p != null && head.p.after < threshold) {
-                    pq.add(head.p);
-                }
-            }
-
-            if (!pq.isEmpty() && pq.peek().weight > 0) {
-                ans1 += pq.peek().weight;
-            }
-
-            if (got < k - 1) {
-                ans1 = -1;
-            }
-
-            boolean valid = false;
-            double ans2 = 0;
-            for (List<Node> list : map.values()) {
-                double local = 0;
-                if (k - (n - list.size() + threshold) > 0) {
-                    //pick all
-                    int prev = k - (n - list.size() + threshold);
-                    valid = true;
-                    Node last = center;
-                    int l = prev;
-                    int r = list.size() - threshold - 1;
-                    for (int i = 0; i < list.size(); i++) {
-                        if (i >= l && i <= r) {
-                            continue;
-                        }
-                        Node node = list.get(i);
-                        int t = (n - list.size()) + (i < l ? i : i - (r - l + 1));
-                        local += (node.d - last.d) * t * (k - t);
-                        last = node;
-                    }
-                } else {
-                    //fill
-                    Node last = center;
-                    for (int i = 0; i < list.size(); i++) {
-                        Node node = list.get(i);
-                        int t = list.size() - i;
-                        local += (node.d - last.d) * t * (k - t);
-                        last = node;
+                debug.debug("i", i - 1);
+                debug.debug("sum", sum);
+                for (int k = 1; k < a; k++) {
+                    if (k == 1) {
+                        dp[ai.indexOf(i, k, 0)] = sum[1];
+                    } else {
+                        dp[ai.indexOf(i, k, 0)] = dp[ai.indexOf(i - 1, k - 1, 0)];
                     }
                 }
-
-                ans2 += local;
+                for (int k = 1; k < b; k++) {
+                    if (k == 1) {
+                        dp[ai.indexOf(i, k, 1)] = sum[0];
+                    } else {
+                        dp[ai.indexOf(i, k, 1)] = dp[ai.indexOf(i - 1, k - 1, 1)];
+                    }
+                }
             }
 
-            double ans = ans1;
-            debug.debug("ans1", ans1);
-            debug.debug("ans2", ans2);
-            if (valid) {
-                ans = Math.max(ans, ans2);
+            Arrays.fill(sum, 0);
+            for (int j = 0; j < a; j++) {
+                sum[0] = mod.plus(sum[0], mod.mul(dp[ai.indexOf(n, j, 0)], f(j - 1)));
             }
+            for (int j = 0; j < b; j++) {
+                sum[1] = mod.plus(sum[1], dp[ai.indexOf(n, j, 1)]);
+            }
+            debug.debug("sum", sum);
 
-            out.println(ans);
+            int invalid = mod.plus(sum[0], sum[1]);
+            int total = pow.pow(2, n);
+            int valid = mod.subtract(total, invalid);
+            out.println(valid);
+        }
+
+        public int f(int i) {
+            if (i <= 0) {
+                return 1;
+            }
+            if (f[i] == -1) {
+                f[i] = f(i - 1);
+                for (int t = b; i - t >= 0; t++) {
+                    f[i] = mod.plus(f[i], f(i - t - 1));
+                }
+            }
+            return f[i];
+        }
+
+    }
+
+    static class Power implements InverseNumber {
+        final Modular modular;
+
+        public Power(Modular modular) {
+            this.modular = modular;
+        }
+
+        public int pow(int x, int n) {
+            if (n == 0) {
+                return modular.valueOf(1);
+            }
+            long r = pow(x, n >> 1);
+            r = modular.valueOf(r * r);
+            if ((n & 1) == 1) {
+                r = modular.valueOf(r * x);
+            }
+            return (int) r;
+        }
+
+    }
+
+    static class Modular {
+        int m;
+
+        public Modular(int m) {
+            this.m = m;
+        }
+
+        public Modular(long m) {
+            this.m = (int) m;
+            if (this.m != m) {
+                throw new IllegalArgumentException();
+            }
+        }
+
+        public Modular(double m) {
+            this.m = (int) m;
+            if (this.m != m) {
+                throw new IllegalArgumentException();
+            }
+        }
+
+        public int valueOf(int x) {
+            x %= m;
+            if (x < 0) {
+                x += m;
+            }
+            return x;
+        }
+
+        public int valueOf(long x) {
+            x %= m;
+            if (x < 0) {
+                x += m;
+            }
+            return (int) x;
+        }
+
+        public int mul(int x, int y) {
+            return valueOf((long) x * y);
+        }
+
+        public int plus(int x, int y) {
+            return valueOf(x + y);
+        }
+
+        public int subtract(int x, int y) {
+            return valueOf(x - y);
+        }
+
+        public String toString() {
+            return "mod " + m;
         }
 
     }
@@ -175,12 +225,12 @@ public class Main {
             return this;
         }
 
-        public FastOutput append(double c) {
-            cache.append(new BigDecimal(c).toPlainString());
+        public FastOutput append(int c) {
+            cache.append(c);
             return this;
         }
 
-        public FastOutput println(double c) {
+        public FastOutput println(int c) {
             return append(c).println();
         }
 
@@ -224,7 +274,7 @@ public class Main {
             offline = enable && System.getSecurityManager() == null;
         }
 
-        public Debug debug(String name, double x) {
+        public Debug debug(String name, int x) {
             if (offline) {
                 debug(name, "" + x);
             }
@@ -316,69 +366,6 @@ public class Main {
 
     }
 
-    static class Node {
-        double d;
-        IntegerPoint2 pt;
-        Node p;
-        int after;
-        double weight;
-
-        public String toString() {
-            return pt.toString();
-        }
-
-    }
-
-    static class IntegerPoint2 {
-        public static final Comparator<IntegerPoint2> SORT_BY_POLAR_ANGLE = (a, b) ->
-        {
-            if (a.half() != b.half()) {
-                return a.half() - b.half();
-            }
-            return orient(b, a);
-        };
-        public final long x;
-        public final long y;
-
-        public IntegerPoint2(long x, long y) {
-            this.x = x;
-            this.y = y;
-        }
-
-        public int half() {
-            return y > 0 || y == 0 && x < 0 ? 1 : 0;
-        }
-
-        public long square() {
-            return x * x + y * y;
-        }
-
-        public double abs() {
-            return Math.sqrt(square());
-        }
-
-        public static long cross(IntegerPoint2 a, IntegerPoint2 b) {
-            return a.x * b.y - a.y * b.x;
-        }
-
-        public static int orient(IntegerPoint2 b, IntegerPoint2 c) {
-            return GeoConstant.sign(cross(b, c));
-        }
-
-        public IntegerPoint2 clone() {
-            try {
-                return (IntegerPoint2) super.clone();
-            } catch (CloneNotSupportedException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        public String toString() {
-            return String.format("(%d, %d)", x, y);
-        }
-
-    }
-
     static class FastInput {
         private final InputStream is;
         private byte[] buf = new byte[1 << 13];
@@ -438,15 +425,48 @@ public class Main {
 
     }
 
-    static class GeoConstant {
-        public static final double PREC = 1e-10;
-
-        public static boolean isZero(double x) {
-            return -PREC <= x && x <= PREC;
+    static class SequenceUtils {
+        public static void deepFill(Object array, int val) {
+            if (!array.getClass().isArray()) {
+                throw new IllegalArgumentException();
+            }
+            if (array instanceof int[]) {
+                int[] intArray = (int[]) array;
+                Arrays.fill(intArray, val);
+            } else {
+                Object[] objArray = (Object[]) array;
+                for (Object obj : objArray) {
+                    deepFill(obj, val);
+                }
+            }
         }
 
-        public static int sign(double x) {
-            return isZero(x) ? 0 : x < 0 ? -1 : 1;
+    }
+
+    static interface InverseNumber {
+    }
+
+    static class ArrayIndex {
+        int[] dimensions;
+
+        public ArrayIndex(int... dimensions) {
+            this.dimensions = dimensions;
+        }
+
+        public int totalSize() {
+            int ans = 1;
+            for (int x : dimensions) {
+                ans *= x;
+            }
+            return ans;
+        }
+
+        public int indexOf(int a, int b) {
+            return a * dimensions[1] + b;
+        }
+
+        public int indexOf(int a, int b, int c) {
+            return indexOf(a, b) * dimensions[2] + c;
         }
 
     }

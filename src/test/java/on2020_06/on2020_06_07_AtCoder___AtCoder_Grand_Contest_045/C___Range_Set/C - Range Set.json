@@ -1,0 +1,60 @@
+{
+  "name" : "C - Range Set",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4 2 3\n",
+    "output" : "11\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "10 7 2\n",
+    "output" : "533\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "1000 100 10\n",
+    "output" : "828178524\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "10 10 10",
+    "output" : "2",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "2 1 1",
+    "output" : "4",
+    "index" : 4,
+    "active" : true
+  }, {
+    "input" : "3 1 1 ",
+    "output" : "8",
+    "index" : 5,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_06.on2020_06_07_AtCoder___AtCoder_Grand_Contest_045.C___Range_Set.CRangeSet",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.06.07",
+  "contestName" : "AtCoder - AtCoder Grand Contest 045",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

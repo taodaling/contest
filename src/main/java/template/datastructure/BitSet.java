@@ -62,6 +62,14 @@ public final class BitSet implements Serializable, Cloneable {
         data[word(i)] |= (1L << offset(i));
     }
 
+    public void set(int i, boolean val) {
+        if (val) {
+            set(i);
+        } else {
+            clear(i);
+        }
+    }
+
     private static int word(int i) {
         return i >>> SHIFT;
     }
@@ -306,7 +314,7 @@ public final class BitSet implements Serializable, Cloneable {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder("{");
-        for (int i = nextSetBit(0); i < capacity(); i++) {
+        for (int i = nextSetBit(0); i < capacity(); i = nextSetBit(i + 1)) {
             builder.append(i).append(',');
         }
         if (builder.length() > 1) {
