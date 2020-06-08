@@ -17,6 +17,20 @@ public class DigitUtils {
         return Math.max(Math.min(x, high), low);
     }
 
+    /**
+     * return minimum value y >= x that mod | y
+     */
+    public static long topmod(long x, long mod) {
+        return x + (mod - x % mod) % mod;
+    }
+
+    /**
+     * return minimum value y >= x that mod | y
+     */
+    public static long botmod(long x, long mod) {
+        return x - DigitUtils.mod(x, mod);
+    }
+
     public static double normalizeTo(double x, double y, double prec) {
         if (Math.abs(x - y) < prec) {
             return y;

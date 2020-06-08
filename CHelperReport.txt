@@ -1,2 +1,4 @@
-49 src/main/java/contest/E. James and the Chase.json
-0
+47 src/main/java/contest/C. Prairie Partition.json
+2
+3
+7
