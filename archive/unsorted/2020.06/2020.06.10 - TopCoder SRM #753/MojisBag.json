@@ -1,0 +1,31 @@
+{
+  "name" : "MojisBag",
+  "signature" : {
+    "name" : "maximumXor",
+    "result" : "int",
+    "arguments" : [ "int", "int", "int", "int" ],
+    "argumentNames" : [ "Q", "base", "add", "rate" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "10", "4747", "7", "3" ],
+    "result" : "871911884",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "5", "47", "7", "3" ],
+    "result" : "34911440",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "3", "429", "3558", "2" ],
+    "result" : "0",
+    "index" : 2,
+    "active" : true
+  } ],
+  "date" : "2020.06.10",
+  "contestName" : "TopCoder SRM #753",
+  "testClasses" : [ ],
+  "fqn" : "contest.MojisBag",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

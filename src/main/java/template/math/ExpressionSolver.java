@@ -35,7 +35,7 @@ public class ExpressionSolver {
      * y is an integer
      * </pre>
      * <p>
-     * The time complexity of this method is O(log2(max(a,b)))
+     * The time complexity of this method is O(log2(max(a,b)))</p>
      */
     public static long findWaysToAssignXYSatisfyEquation(long a, long b, long c, long xl, long xr, long yl, long yr) {
         if(a == 0 && b == 0){

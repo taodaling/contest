@@ -1,4 +1,2 @@
-47 src/main/java/contest/C. Prairie Partition.json
-2
-3
-7
+37 src/main/java/contest/MaxCutFree.json
+0
