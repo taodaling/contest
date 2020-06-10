@@ -1,0 +1,45 @@
+{
+  "name" : "D. Expected diameter of a tree",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 1 2\n1 3\n3 1\n2 3\n",
+    "output" : "-1\n2.0000000000\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "5 2 3\n2 4\n4 3\n4 2\n4 1\n2 5\n",
+    "output" : "-1\n2.6666666667\n2.6666666667\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "5 0 3\n1 2\n1 3\n2 5",
+    "output" : "1\n1\n1",
+    "index" : 2,
+    "active" : false
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.DExpectedDiameterOfATree",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.06.11",
+  "contestName" : "Codeforces - Codeforces Round #411 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

@@ -1,2 +1,4 @@
-43 src/main/java/contest/F. Rainbow Balls.json
+57 src/main/java/contest/D. Expected diameter of a tree.json
+2
 0
+1
