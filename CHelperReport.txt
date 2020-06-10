@@ -1,2 +1,2 @@
-37 src/main/java/contest/MaxCutFree.json
+43 src/main/java/contest/F. Rainbow Balls.json
 0

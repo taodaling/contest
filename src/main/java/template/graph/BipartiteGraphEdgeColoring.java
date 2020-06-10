@@ -37,7 +37,7 @@ public class BipartiteGraphEdgeColoring {
      * @param c1
      * @param c2
      */
-    public void dfs(int b, int c1, int c2) {
+    private void dfs(int b, int c1, int c2) {
         if (right[b][c2] == -1) {
             return;
         }
