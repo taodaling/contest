@@ -1,4 +1,2 @@
-57 src/main/java/contest/D. Expected diameter of a tree.json
-2
+38 src/main/java/contest/MoreSquares.json
 0
-1
