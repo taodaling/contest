@@ -1,2 +1,2 @@
-43 src/main/java/contest/D. Division Game.json
+38 src/main/java/contest/MoreSquares.json
 0
