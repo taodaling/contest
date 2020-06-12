@@ -1,4 +1,2 @@
-57 src/main/java/contest/D. Expected diameter of a tree.json
-2
+43 src/main/java/contest/D. Division Game.json
 0
-1

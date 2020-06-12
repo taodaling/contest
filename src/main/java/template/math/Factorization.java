@@ -7,7 +7,7 @@ import template.problem.MinimumNumberWithMaximumFactors;
 
 public class Factorization {
     public static void main(String[] args){
-        System.out.println(factorizeNumberPrime(998244353 - 1));
+        System.out.println(new PollardRho().findAllFactors(985661440));
     }
 
     /**
