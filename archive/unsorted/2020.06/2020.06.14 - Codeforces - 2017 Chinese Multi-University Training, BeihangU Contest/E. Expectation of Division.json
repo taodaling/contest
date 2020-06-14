@@ -1,0 +1,40 @@
+{
+  "name" : "E. Expectation of Division",
+  "testType" : "MULTI_EOF",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2 1\n2\n4 1\n2\n6 2\n2 3\n8 1\n2\n10 2\n2 5\n12 2\n2 3\n",
+    "output" : "Case #1: 2\nCase #2: 500000006\nCase #3: 666666674\nCase #4: 833333342\nCase #5: 666666674\nCase #6: 233333338\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "8 1\n2",
+    "output" : "Case #1: 833333342",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx128M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.EExpectationOfDivision",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.06.14",
+  "contestName" : "Codeforces - 2017 Chinese Multi-University Training, BeihangU Contest",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

@@ -42,7 +42,7 @@ public class TaskD {
         }
         for (int i = 0; i < k; i++) {
             for (int j = 0; j < mask; j++) {
-                if (Bits.bitAt(j, i) == 1) {
+                if (Bits.get(j, i) == 1) {
                     traces[i].set(j);
                 } else {
                     traces[i].clear(j);
@@ -74,7 +74,7 @@ public class TaskD {
             for (int i = 0; i < k; i++) {
                 int bits = 0;
                 for (int j = 0; j < k; j++) {
-                    bits = Bits.setBit(bits, j, creature[j][query.y] >= creature[i][query.y]);
+                    bits = Bits.set(bits, j, creature[j][query.y] >= creature[i][query.y]);
                 }
                 if (traces[query.x].get(bits)) {
                     query.ans = Math.max(query.ans, creature[i][query.y]);

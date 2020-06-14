@@ -35,10 +35,10 @@ public class EllysNim {
             }
             int bit = 0;
             for (long a : arr) {
-                bit ^= Bits.bitAt(a, i);
+                bit ^= Bits.get(a, i);
             }
             for (int j = 0; j < arr.length; j++) {
-                if (Bits.bitAt(arr[j], i) != 0) {
+                if (Bits.get(arr[j], i) != 0) {
                     continue;
                 }
                 pq.add(j);
@@ -46,7 +46,7 @@ public class EllysNim {
                     pq.pop();
                 }
             }
-            if (Bits.bitAt(mask, i) == 0) {
+            if (Bits.get(mask, i) == 0) {
                 if (bit == 0) {
                     continue;
                 }

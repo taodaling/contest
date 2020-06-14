@@ -3,7 +3,6 @@ package on2020_05.on2020_05_08_TopCoder_SRM__761.SortArray;
 
 
 import template.binary.Bits;
-import template.utils.Debug;
 
 public class SortArray {
     //Debug debug = new Debug(true);
@@ -16,7 +15,7 @@ public class SortArray {
         int[] vals = new int[N];
         for (int i = 0; i < (1 << N); i++) {
             for (int j = 0; j < N; j++) {
-                vals[j] = Bits.bitAt(i, j);
+                vals[j] = Bits.get(i, j);
             }
             sort(N, commands, vals);
             boolean order = true;
@@ -29,7 +28,7 @@ public class SortArray {
                 offsets[0] = 0;
                 offsets[1] = N - Integer.bitCount(i);
                 for (int j = 0; j < N; j++) {
-                    vals[j] = offsets[Bits.bitAt(i, j)]++;
+                    vals[j] = offsets[Bits.get(i, j)]++;
                 }
                 return vals;
             }
@@ -41,13 +40,13 @@ public class SortArray {
         for (int cmd : commands) {
             int cnt = 0;
             for (int j = 0; j < N; j++) {
-                if (Bits.bitAt(cmd, j) == 0) {
+                if (Bits.get(cmd, j) == 0) {
                     continue;
                 }
                 cnt += vals[j];
             }
             for (int j = N - 1; j >= 0; j--) {
-                if (Bits.bitAt(cmd, j) == 0) {
+                if (Bits.get(cmd, j) == 0) {
                     continue;
                 }
                 if (cnt > 0) {

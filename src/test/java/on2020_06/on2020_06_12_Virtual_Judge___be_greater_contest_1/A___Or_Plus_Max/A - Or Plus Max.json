@@ -1,0 +1,45 @@
+{
+  "name" : "A - Or Plus Max",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2\n1 2 3 1\n",
+    "output" : "3\n4\n5\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "3\n10 71 84 33 6 47 23 25\n",
+    "output" : "81\n94\n155\n155\n155\n155\n155\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "4\n75 26 45 72 81 47 97 97 2 2 25 82 84 17 56 32\n",
+    "output" : "101\n120\n147\n156\n156\n178\n194\n194\n194\n194\n194\n194\n194\n194\n194\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1048M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_06.on2020_06_12_Virtual_Judge___be_greater_contest_1.A___Or_Plus_Max.AOrPlusMax",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.06.12",
+  "contestName" : "Virtual Judge - be greater contest 1",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

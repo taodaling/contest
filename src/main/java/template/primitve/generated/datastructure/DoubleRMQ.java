@@ -2,7 +2,6 @@ package template.primitve.generated.datastructure;
 
 
 import template.binary.Log2;
-import template.math.DigitUtils;
 
 /**
  * O(n) space and pre-compute, O(logn) for query min element in interval
@@ -42,7 +41,7 @@ public class DoubleRMQ {
 
     private void build(int l, int r, int i) {
         if (l < r) {
-            int m = DigitUtils.floorAverage(l, r);
+            int m = (l + r) >> 1;
             build(l, m, left(i));
             build(m + 1, r, right(i));
             data[i] = merge(data[left(i)], data[right(i)]);
@@ -65,7 +64,7 @@ public class DoubleRMQ {
         if (ll <= l && r <= rr) {
             return data[i];
         }
-        int m = DigitUtils.floorAverage(l, r);
+        int m = (l + r) >> 1;
         return merge(query(ll, rr, l, m, left(i)),
                 query(ll, rr, m + 1, r, right(i)));
     }

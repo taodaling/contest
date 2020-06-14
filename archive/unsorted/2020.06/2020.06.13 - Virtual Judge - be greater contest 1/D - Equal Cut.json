@@ -1,0 +1,45 @@
+{
+  "name" : "D - Equal Cut",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5\n3 2 4 1 2",
+    "output" : "2\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "10\n10 71 84 33 6 47 23 25 52 64",
+    "output" : "36",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "7\n1 2 3 1000000000 4 5 6",
+    "output" : "999999994",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1048M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.DEqualCut",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.06.13",
+  "contestName" : "Virtual Judge - be greater contest 1",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

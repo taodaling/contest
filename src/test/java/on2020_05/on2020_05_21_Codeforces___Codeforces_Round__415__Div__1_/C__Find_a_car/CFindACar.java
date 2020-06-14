@@ -89,7 +89,7 @@ public class CFindACar {
         if (m < size || (trace | (size - 1)) > k) {
             for (int i = 0; i < 2; i++) {
                 for (int j = 0; j < 2; j++) {
-                    int[] ret = dfs(bit - 1, nSub[i], mSub[j], k, Bits.setBit(trace, bit, (i ^ j) == 1));
+                    int[] ret = dfs(bit - 1, nSub[i], mSub[j], k, Bits.set(trace, bit, (i ^ j) == 1));
                     ans[0] = mod.plus(ans[0], ret[0]);
                     ans[1] = mod.plus(ans[1], ret[1]);
                 }
@@ -97,12 +97,12 @@ public class CFindACar {
         }else{
             for (int i = 0; i < 1; i++) {
                 for (int j = 0; j < 2; j++) {
-                    int[] ret = dfs(bit - 1, nSub[i], mSub[j], k, Bits.setBit(trace, bit, (i ^ j) == 1));
+                    int[] ret = dfs(bit - 1, nSub[i], mSub[j], k, Bits.set(trace, bit, (i ^ j) == 1));
                     ans[0] = mod.plus(ans[0], ret[0]);
                     ans[1] = mod.plus(ans[1], ret[1]);
                 }
             }
-            int[] ret = dfs(bit - 1, nSub[1], mSub[0], k, Bits.setBit(trace, bit, true));
+            int[] ret = dfs(bit - 1, nSub[1], mSub[0], k, Bits.set(trace, bit, true));
             ans[0] = mod.plus(ans[0], ret[0]);
             ans[0] = mod.plus(ans[0], ret[0]);
             ans[1] = mod.plus(ans[1], ret[1]);

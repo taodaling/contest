@@ -7,30 +7,44 @@ public class Bits {
     private Bits() {
     }
 
-    public static int bitAt(int x, int i) {
+    public static int get(int x, int i) {
         return (x >>> i) & 1;
     }
 
-    public static int bitAt(long x, int i) {
+    public static int get(long x, int i) {
         return (int) ((x >>> i) & 1);
     }
 
-    public static int setBit(int x, int i, boolean v) {
-        if (v) {
-            x |= 1 << i;
-        } else {
-            x &= ~(1 << i);
-        }
-        return x;
+    public static int set(int x, int i) {
+        return x | (1 << i);
     }
 
-    public static long setBit(long x, int i, boolean v) {
+    public static int clear(int x, int i) {
+        return x & (~(1 << i));
+    }
+
+    public static long set(long x, int i) {
+        return x | (1L << i);
+    }
+
+    public static long clear(long x, int i) {
+        return x & (~(1L << i));
+    }
+
+    public static int set(int x, int i, boolean v) {
         if (v) {
-            x |= 1L << i;
+            return set(x, i);
         } else {
-            x &= ~(1L << i);
+            return clear(x, i);
         }
-        return x;
+    }
+
+    public static long set(long x, int i, boolean v) {
+        if (v) {
+            return set(x, i);
+        } else {
+            return clear(x, i);
+        }
     }
 
     public static long flip(long x, int i) {
@@ -41,19 +55,19 @@ public class Bits {
         return x ^ (1 << i);
     }
 
-    public static long swapBit(long x, int i, int j) {
-        int bi = bitAt(x, i);
-        int bj = bitAt(x, j);
-        x = setBit(x, i, bj == 1);
-        x = setBit(x, j, bi == 1);
+    public static long swap(long x, int i, int j) {
+        int bi = get(x, i);
+        int bj = get(x, j);
+        x = set(x, i, bj == 1);
+        x = set(x, j, bi == 1);
         return x;
     }
 
-    public static int swapBit(int x, int i, int j) {
-        int bi = bitAt(x, i);
-        int bj = bitAt(x, j);
-        x = setBit(x, i, bj == 1);
-        x = setBit(x, j, bi == 1);
+    public static int swap(int x, int i, int j) {
+        int bi = get(x, i);
+        int bj = get(x, j);
+        x = set(x, i, bj == 1);
+        x = set(x, j, bi == 1);
         return x;
     }
 

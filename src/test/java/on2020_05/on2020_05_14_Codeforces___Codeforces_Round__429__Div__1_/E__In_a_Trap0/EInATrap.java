@@ -127,7 +127,7 @@ class BNode {
         if (bit < 0) {
             return;
         }
-        next[Bits.bitAt(val, bit)].add(bit - 1, val, low);
+        next[Bits.get(val, bit)].add(bit - 1, val, low);
     }
 
     public int find(int bit, int xor, int built) {
@@ -137,7 +137,7 @@ class BNode {
         if (bit < 0) {
             return (built << 8) | max;
         }
-        int val = Bits.bitAt(xor, bit);
+        int val = Bits.get(xor, bit);
         int ans = next[val ^ 1].find(bit - 1, xor, built | 1 << bit);
         if (ans == -1) {
             ans = next[val].find(bit - 1, xor, built);

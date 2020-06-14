@@ -87,7 +87,7 @@ public class EAquariumDecorationTestCase {
             long sum = 0;
             int bCnt = 0;
             for (int j = 0; j < n; j++) {
-                if (Bits.bitAt(i, j) == 0) {
+                if (Bits.get(i, j) == 0) {
                     continue;
                 }
                 aCnt += ta[j];

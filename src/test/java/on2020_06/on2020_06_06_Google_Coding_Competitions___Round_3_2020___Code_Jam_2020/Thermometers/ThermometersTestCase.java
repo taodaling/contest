@@ -97,7 +97,7 @@ public class ThermometersTestCase {
                 double cwD = -1;
                 for (int k = 0; k < d; k++) {
                     int pos = (int)Math.ceil(j + k) % d;
-                    if (Bits.bitAt(i, pos) == 1) {
+                    if (Bits.get(i, pos) == 1) {
                         cwD = Math.ceil(j + k) - j ;
                         cw = pos;
                         break;
@@ -109,7 +109,7 @@ public class ThermometersTestCase {
                 double ccwD = -1;
                 for (int k = d; k >= 1; k--) {
                     int pos = DigitUtils.mod((int)Math.floor(j + k - d), d);
-                    if (Bits.bitAt(i, pos) == 1) {
+                    if (Bits.get(i, pos) == 1) {
                         ccwD = j - Math.floor(j + k - d);
                         ccw = pos;
                         break;

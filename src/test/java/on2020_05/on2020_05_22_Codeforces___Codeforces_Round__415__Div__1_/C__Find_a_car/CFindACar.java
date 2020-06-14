@@ -9,8 +9,6 @@ import template.math.Modular;
 import template.utils.ArrayIndex;
 import template.utils.SequenceUtils;
 
-import java.util.Arrays;
-
 public class CFindACar {
     public void solve(int testNumber, FastInput in, FastOutput out) {
         int q = in.readInt();
@@ -44,11 +42,11 @@ public class CFindACar {
         int index = ai.indexOf(i, xFloor, xCeil, yFloor, yCeil, kCeil);
 
         if (dp[index][0] == -1) {
-            int xL = Bits.bitAt(x1, i);
-            int xR = Bits.bitAt(x2, i);
-            int yL = Bits.bitAt(y1, i);
-            int yR = Bits.bitAt(y2, i);
-            int ki = Bits.bitAt(k, i);
+            int xL = Bits.get(x1, i);
+            int xR = Bits.get(x2, i);
+            int yL = Bits.get(y1, i);
+            int yR = Bits.get(y2, i);
+            int ki = Bits.get(k, i);
 
             dp[index][0] = dp[index][1] = 0;
             for (int a = 0; a < 2; a++) {

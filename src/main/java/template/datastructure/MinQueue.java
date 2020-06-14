@@ -26,7 +26,7 @@ public class MinQueue<T> {
         this.comparator = comparator;
     }
 
-    public void enqueue(T x) {
+    public void add(T x) {
         while (!increasing.isEmpty() && comparator.compare(x, increasing.peekLast()) < 0) {
             increasing.removeLast();
         }
@@ -34,7 +34,7 @@ public class MinQueue<T> {
         data.addLast(x);
     }
 
-    public T deque() {
+    public T remove() {
         T head = data.removeFirst();
         if (increasing.peekFirst() == head) {
             increasing.removeFirst();

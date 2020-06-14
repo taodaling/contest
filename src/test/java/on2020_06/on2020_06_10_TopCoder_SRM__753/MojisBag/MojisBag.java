@@ -93,7 +93,7 @@ class BNode {
             return;
         }
         for (int i = 0; i < 2; i++) {
-            get(i).collect(list, Bits.setBit(val, depth, i == 1), depth - 1);
+            get(i).collect(list, Bits.set(val, depth, i == 1), depth - 1);
         }
     }
 
@@ -102,24 +102,24 @@ class BNode {
         if (depth < 0) {
             return;
         }
-        get(Bits.bitAt(val, depth)).modify(val, depth - 1, x);
+        get(Bits.get(val, depth)).modify(val, depth - 1, x);
     }
 
     public boolean exist(int val, int depth) {
         if (depth < 0) {
             return size > 0;
         }
-        return get(Bits.bitAt(val, depth)).exist(val, depth - 1);
+        return get(Bits.get(val, depth)).exist(val, depth - 1);
     }
 
     public int xor(int val, int xor, int depth) {
         if (depth < 0) {
             return xor;
         }
-        int bit = Bits.bitAt(val, depth);
+        int bit = Bits.get(val, depth);
         for (int i = 1; i >= 0; i--) {
             if (get(bit ^ i).size > 0) {
-                return get(bit ^ i).xor(val, Bits.setBit(xor, depth, i == 1), depth - 1);
+                return get(bit ^ i).xor(val, Bits.set(xor, depth, i == 1), depth - 1);
             }
         }
         return 0;

@@ -3,7 +3,6 @@ package on2020_05.on2020_05_19_Dynamic_Programming_Practice_DIV_1.BoxTower0;
 
 
 import template.binary.Bits;
-import template.primitve.generated.datastructure.IntegerDiscreteMap;
 import template.primitve.generated.datastructure.IntegerList;
 import template.utils.ArrayIndex;
 
@@ -45,7 +44,7 @@ public class BoxTower {
                         continue;
                     }
                     for (int tj = 0; tj < n; tj++) {
-                        if (Bits.bitAt(i, tj) == 1) {
+                        if (Bits.get(i, tj) == 1) {
                             continue;
                         }
                         for (int tk = 0; tk < 3; tk++) {

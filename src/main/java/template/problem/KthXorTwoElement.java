@@ -37,7 +37,7 @@ public class KthXorTwoElement {
                 int l = interval.l;
                 int r = interval.r;
                 int m = r;
-                while (m >= l && Bits.bitAt(data[m], level) == 1) {
+                while (m >= l && Bits.get(data[m], level) == 1) {
                     m--;
                 }
                 interval.m = m;
@@ -49,7 +49,7 @@ public class KthXorTwoElement {
             }
             if (total < k) {
                 k -= total;
-                mask = Bits.setBit(mask, level, true);
+                mask = Bits.set(mask, level, true);
                 for (Interval interval : lastLevel) {
                     if (interval.relative == interval) {
                         if (interval.l <= interval.m && interval.m < interval.r) {

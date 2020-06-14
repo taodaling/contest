@@ -75,7 +75,7 @@ public class BinomialCombination {
         loop.get().add(1);
         for (int i = Log2.floorLog(exp); i >= 0; i--) {
             mul(loop.get(), loop.get(), loop.turn());
-            if (1 == Bits.bitAt(exp, i)) {
+            if (1 == Bits.get(exp, i)) {
                 mul(loop.get(), loop.turn());
             }
         }

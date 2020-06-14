@@ -6,14 +6,23 @@ import template.math.LongPollardRho;
 import template.primitve.generated.datastructure.IntegerList;
 import template.primitve.generated.datastructure.LongList;
 
+import java.math.BigInteger;
 import java.util.Arrays;
 
 public class MinimumNumberWithMaximumFactors {
     public static void main(String[] args) {
-        System.out.println(MinimumNumberWithMaximumFactors.find((long) 1e18));
+        System.out.println(MinimumNumberWithMaximumFactors.find((long) 1e15));
         //System.out.println(MinimumNumberWithMaximumFactors.divisionRelation(978217616376000L));
-        System.out.println(Arrays.toString(MinimumNumberWithMaximumFactors.maximumPrimeFactor((long) 70)));
-        //System.out.println(new EulerSieve(70).getPrimeCount());
+        System.out.println(Arrays.toString(MinimumNumberWithMaximumFactors.maximumPrimeFactor((long) 1e15)));
+        EulerSieve es = new EulerSieve(1000);
+        BigInteger prod = BigInteger.valueOf(1);
+        BigInteger limit = BigInteger.valueOf(10).pow(24);
+        int cnt = 0;
+        for (; prod.compareTo(limit) <= 0; ) {
+            prod = prod.multiply(BigInteger.valueOf(es.get(cnt)));
+            cnt++;
+        }
+        System.out.println("cnt=" + cnt);
         // System.out.println(new LongPollardRho().findAllFactors(978217616376000L));
     }
 
