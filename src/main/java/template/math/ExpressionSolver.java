@@ -3,25 +3,8 @@ package template.math;
 import java.util.function.LongUnaryOperator;
 
 public class ExpressionSolver {
-    private static ExtGCD extGCD = new ExtGCD();
+    private static LongExtGCDObject extGCD = new LongExtGCDObject();
     private static LinearFunctionCut range = new LinearFunctionCut();
-
-    /**
-     * Find ka=b(mod c) where k is the minimum possible non negative integer. <br>
-     * If it's impossible, -1 will be returned.
-     * <br>
-     * The time complexity of this method is O(log2(max(a,b)))
-     */
-    public static long findMinimumKForModEquation(long a, long b, long c) {
-        a = DigitUtils.mod(a, c);
-        b = DigitUtils.mod(b, c);
-        int g = (int) extGCD.extgcd((int) a, c);
-        if (b % g != 0) {
-            return -1;
-        }
-        long m = c / g;
-        return DigitUtils.mod(b / g * extGCD.getX(), m);
-    }
 
 
     /**

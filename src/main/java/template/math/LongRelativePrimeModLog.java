@@ -10,7 +10,7 @@ public class LongRelativePrimeModLog {
     LongHashMap map;
     int m;
     LongCachedPow pow;
-    private static ExtGCD extGCD = new ExtGCD();
+    private static LongExtGCDObject extGCD = new LongExtGCDObject();
 
     public LongCachedPow getPowX() {
         return pow;

@@ -10,7 +10,7 @@ public class Power implements InverseNumber {
         return modular;
     }
 
-    static ExtGCD extGCD = new ExtGCD();
+    static IntExtGCDObject extGCD = new IntExtGCDObject();
 
     final Modular modular;
 

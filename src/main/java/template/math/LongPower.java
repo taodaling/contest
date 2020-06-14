@@ -6,7 +6,7 @@ public class LongPower {
     }
 
     final ILongModular modular;
-    static ExtGCD extGCD = new ExtGCD();
+    static LongExtGCDObject extGCD = new LongExtGCDObject();
 
 
     public LongPower(ILongModular modular) {
@@ -37,6 +37,6 @@ public class LongPower {
     }
 
     public long inverse(long x) {
-        return pow(x, modular.getMod() - 2);
+        return inverseExtGCD(x);
     }
 }

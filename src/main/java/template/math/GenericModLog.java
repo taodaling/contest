@@ -11,7 +11,7 @@ public class GenericModLog {
     private int a;
     private Modular original;
     private Modular modular;
-    private static ExtGCD extGCD = new ExtGCD();
+    private static IntExtGCDObject extGCD = new IntExtGCDObject();
 
     public GenericModLog(int a, int p) {
         a = DigitUtils.mod(a, p);

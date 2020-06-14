@@ -68,7 +68,7 @@ public class ExtLucas implements LongCombination, Iterable<Map.Entry<Integer, Lo
         int pc;
         Modular modular;
         Power power;
-        ExtGCD extGCD = new ExtGCD();
+        IntExtGCDObject extGCD = new IntExtGCDObject();
         int[] g;
 
         /**

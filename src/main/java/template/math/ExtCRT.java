@@ -1,7 +1,5 @@
 package template.math;
 
-import java.math.BigInteger;
-
 /**
  * Extend chinese remainder theory
  */
@@ -15,7 +13,7 @@ public class ExtCRT {
      */
     long m;
     boolean valid = true;
-    static final ExtGCD gcd = new ExtGCD();
+    static final LongExtGCDObject gcd = new LongExtGCDObject();
 
 
     public ExtCRT() {

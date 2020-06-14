@@ -3,7 +3,6 @@ package template.problem;
 import template.math.DigitUtils;
 import template.math.EulerSieve;
 import template.math.LongPollardRho;
-import template.primitve.generated.datastructure.IntegerList;
 import template.primitve.generated.datastructure.LongList;
 
 import java.math.BigInteger;
@@ -14,6 +13,8 @@ public class MinimumNumberWithMaximumFactors {
         System.out.println(MinimumNumberWithMaximumFactors.find((long) 1e15));
         //System.out.println(MinimumNumberWithMaximumFactors.divisionRelation(978217616376000L));
         System.out.println(Arrays.toString(MinimumNumberWithMaximumFactors.maximumPrimeFactor((long) 1e15)));
+        System.out.println(MinimumNumberWithMaximumFactors.incSequence(80, 19, 80));
+        System.out.println(MinimumNumberWithMaximumFactors.incDivisor((long) 1e18, 0, 80));
         EulerSieve es = new EulerSieve(1000);
         BigInteger prod = BigInteger.valueOf(1);
         BigInteger limit = BigInteger.valueOf(10).pow(24);
@@ -29,7 +30,7 @@ public class MinimumNumberWithMaximumFactors {
     private static int[] primes = new int[]{2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53};
 
     /**
-     * Find the minimum x, while x <= r and x has many factors as possible
+     * Find the minimum x, while x <= r and x has as many factors as possible
      */
     public static Answer find(long r) {
         Answer answer = new Answer();
@@ -74,6 +75,34 @@ public class MinimumNumberWithMaximumFactors {
         }
 
         return cnt;
+    }
+
+    /**
+     * 有多少个递增序列，满足$a_1+...+a_k<=n$且$a_1<=a_2<=...<=a_n$
+     */
+    public static int incSequence(int n, int k, int last) {
+        if (n == 0 || k <= 0) {
+            return 1;
+        }
+        int ans = 0;
+        for (int j = 0; j <= last && j <= n; j++) {
+            ans += incSequence(n - j, k - 1, j);
+        }
+        return ans;
+    }
+
+    /**
+     * 有多少个递增序列，满足$p_1^{a_1}...p_k^{a_k}<=n$且$a_1<=a_2<=...<=a_n$
+     */
+    public static int incDivisor(long n, int k, int last) {
+        if (k == primes.length || n < primes[k]) {
+            return 1;
+        }
+        int ans = 0;
+        for (int j = 0; j <= last && n >= 1; j++, n /= primes[k]) {
+            ans += incDivisor(n, k + 1, j);
+        }
+        return ans;
     }
 
     public static void collectAllFactors(long[] primes, long n, long val, int i, LongList list) {

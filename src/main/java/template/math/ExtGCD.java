@@ -1,48 +1,57 @@
 package template.math;
 
-/**
- * Extend gcd
- */
-public class ExtGCD {
-    private long x;
-    private long y;
-    private long g;
+import template.utils.SequenceUtils;
 
-    public long getX() {
-        return x;
+public class ExtGCD {
+    /**
+     * ax+by=gcd(a,b), while (x=1 or |x|<b) and (y=1 or |y|<a)
+     */
+    public static int extGCD(int a, int b, int[] xy) {
+        if (a >= b) {
+            return extGCD0(a, b, xy);
+        }
+        int ans = extGCD0(b, a, xy);
+        SequenceUtils.swap(xy, 0, 1);
+        return ans;
     }
 
-    public long getY() {
-        return y;
+    private static int extGCD0(int a, int b, int[] xy) {
+        if (b == 0) {
+            xy[0] = 1;
+            xy[1] = 0;
+            return a;
+        }
+        int ans = extGCD0(b, a % b, xy);
+        int x = xy[0];
+        int y = xy[1];
+        xy[0] = y;
+        xy[1] = x - a / b * y;
+        return ans;
     }
 
     /**
-     * Get g = Gcd(a, b) and find a way to set x and y to check ax+by=g
+     * ax+by=gcd(a,b), while (x=1 or |x|<b) and (y=1 or |y|<a)
      */
-    public long extgcd(long a, long b) {
+    public static long extGCD(long a, long b, long[] xy) {
         if (a >= b) {
-            g = extgcd0(a, b);
-        } else {
-            g = extgcd0(b, a);
-            long tmp = x;
-            x = y;
-            y = tmp;
+            return extGCD0(a, b, xy);
         }
-        return g;
+        long ans = extGCD0(b, a, xy);
+        SequenceUtils.swap(xy, 0, 1);
+        return ans;
     }
 
-
-    private long extgcd0(long a, long b) {
+    private static long extGCD0(long a, long b, long[] xy) {
         if (b == 0) {
-            x = 1;
-            y = 0;
+            xy[0] = 1;
+            xy[1] = 0;
             return a;
         }
-        long g = extgcd0(b, a % b);
-        long n = x;
-        long m = y;
-        x = m;
-        y = n - m * (a / b);
-        return g;
+        long ans = extGCD0(b, a % b, xy);
+        long x = xy[0];
+        long y = xy[1];
+        xy[0] = y;
+        xy[1] = x - a / b * y;
+        return ans;
     }
 }

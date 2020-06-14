@@ -1,10 +1,6 @@
 package template.polynomial;
 
-import template.math.DigitUtils;
-import template.math.ExtGCD;
-import template.math.InverseNumber;
-import template.math.Modular;
-import template.math.Power;
+import template.math.*;
 import template.primitve.generated.datastructure.IntegerList;
 import template.utils.Buffer;
 
@@ -12,7 +8,8 @@ import java.util.BitSet;
 
 public class Polynomials {
     public static Buffer<IntegerList> listBuffer = new Buffer<>(IntegerList::new, list -> list.clear());
-    private static ExtGCD extGCD = new ExtGCD();
+    private static IntExtGCDObject extGCD = new IntExtGCDObject();
+
 
     public static int rankOf(IntegerList p) {
         int[] data = p.getData();

@@ -10,7 +10,7 @@ public class IntExtCRT {
      */
     int m;
     boolean valid = true;
-    static final ExtGCD gcd = new ExtGCD();
+    static final IntExtGCDObject gcd = new IntExtGCDObject();
 
     public IntExtCRT() {
         r = 0;
@@ -37,8 +37,8 @@ public class IntExtCRT {
         int x1 = this.r;
         int m2 = m;
         int x2 = DigitUtils.mod(r, m);
-        int g = (int) gcd.extgcd(m1, m2);
-        int a = (int) (gcd.getX() % m2);
+        int g = gcd.extgcd(m1, m2);
+        int a = (gcd.getX() % m2);
         if ((x2 - x1) % g != 0) {
             return valid = false;
         }

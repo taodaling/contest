@@ -7,7 +7,7 @@ public class ModPrimeRoot {
     private RelativePrimeModLog log;
     private Modular mod;
     private Modular powMod;
-    private static ExtGCD extGCD = new ExtGCD();
+    private static IntExtGCDObject extGCD = new IntExtGCDObject();
     private Power power;
     private int primitiveRoot;
 
@@ -41,7 +41,7 @@ public class ModPrimeRoot {
         }
 
         int logx = log.log(x);
-        int gcd = (int) extGCD.extgcd(k, powMod.getMod());
+        int gcd = extGCD.extgcd(k, powMod.getMod());
         if (logx % gcd != 0) {
             return;
         }

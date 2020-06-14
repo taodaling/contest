@@ -10,7 +10,7 @@ public class RelativePrimeModLog {
     IntegerHashMap map;
     int m;
     int invM;
-    private static ExtGCD extGCD = new ExtGCD();
+    private static IntExtGCDObject extGCD = new IntExtGCDObject();
 
     public RelativePrimeModLog(int x, Modular mod) {
         this.x = x;
