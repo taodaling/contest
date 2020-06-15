@@ -1,13 +1,13 @@
 import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.stream.IntStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.stream.LongStream;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.math.BigDecimal;
-import java.util.stream.Stream;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
@@ -41,41 +41,39 @@ public class Main {
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
             int p = in.readInt();
-            Point[] pts = new Point[n];
+            int[] a = new int[n];
+            int[] b = new int[n];
             for (int i = 0; i < n; i++) {
-                pts[i] = new Point();
-                pts[i].a = in.readInt();
-                pts[i].b = in.readInt();
-                pts[i].threshold = pts[i].b / (double) pts[i].a;
+                a[i] = in.readInt();
+                b[i] = in.readInt();
             }
 
-            long sum = Arrays.stream(pts).mapToLong(x -> x.a).sum();
+            long sum = Arrays.stream(a).mapToLong(Long::valueOf).sum();
             if (sum <= p) {
                 out.println(-1);
                 return;
             }
-            Arrays.sort(pts, (a, b) -> Double.compare(a.threshold, b.threshold));
-            long sumA = 0;
-            long sumB = 0;
-            double ans = pts[0].threshold;
-            for (int i = 0; i < n; i++) {
-                sumA += pts[i].a;
-                sumB += pts[i].b;
-                if (sumA <= p) {
-                    ans = Math.max(ans, pts[i + 1].threshold);
-                } else {
-                    double local = (double) sumB / (sumA - p);
-                    if (i + 1 < n) {
-                        local = Math.min(local, pts[i + 1].threshold);
-                    }
-                    if (local >= pts[i].threshold) {
-                        ans = Math.max(ans, local);
-                    }
-                }
-            }
 
+            double[] cost = new double[n];
+            DoubleBinarySearch dbs = new DoubleBinarySearch(1e-12, 1e-12) {
+
+                public boolean check(double mid) {
+                    for (int i = 0; i < n; i++) {
+                        cost[i] = Math.max(0, a[i] - b[i] / mid);
+                    }
+                    double req = DigitUtils.sum(i -> cost[i], 0, n - 1);
+                    return req >= p;
+                }
+            };
+
+            double ans = dbs.binarySearch(0, 1e20);
             out.println(ans);
         }
+
+    }
+
+    static interface IntToDoubleFunction {
+        double apply(int x);
 
     }
 
@@ -155,10 +153,53 @@ public class Main {
 
     }
 
-    static class Point {
-        int a;
-        int b;
-        double threshold;
+    static class DigitUtils {
+        private DigitUtils() {
+        }
+
+        public static double sum(IntToDoubleFunction func, int l, int r) {
+            double sum = 0;
+            double err = 0;
+            for (int i = l; i <= r; i++) {
+                double x = func.apply(i) - err;
+                double t = sum + x;
+                err = (t - sum) - x;
+                sum = t;
+            }
+            return sum;
+        }
+
+    }
+
+    static abstract class DoubleBinarySearch {
+        private final double relativeErrorTolerance;
+        private final double absoluteErrorTolerance;
+
+        public DoubleBinarySearch(double relativeErrorTolerance, double absoluteErrorTolerance) {
+            this.relativeErrorTolerance = relativeErrorTolerance;
+            this.absoluteErrorTolerance = absoluteErrorTolerance;
+        }
+
+        public abstract boolean check(double mid);
+
+        public double binarySearch(double l, double r) {
+            if (l > r) {
+                throw new IllegalArgumentException();
+            }
+            while (r - l > absoluteErrorTolerance) {
+                if ((r < 0 && (r - l) < -r * relativeErrorTolerance) || (l > 0 && (r - l) < l * relativeErrorTolerance)) {
+                    break;
+                }
+
+                double mid = (l + r) / 2;
+                if (check(mid)) {
+                    r = mid;
+                } else {
+                    l = mid;
+                }
+            }
+            return (l + r) / 2;
+        }
 
     }
 
