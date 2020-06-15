@@ -11,7 +11,7 @@ public class DigitUtilsTest {
         long mod = ((long) 1e18);
 
         LongModular modular = new LongModular(mod);
-        Assert.assertEquals(modular.mul(a, b), DigitUtils.mulMod(a, b, mod));
+        Assert.assertEquals(modular.mul(a, b), DigitUtils.modmul(a, b, mod));
     }
 
     @Test

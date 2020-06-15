@@ -2,13 +2,12 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.util.Arrays;
-import java.util.PriorityQueue;
-import java.util.AbstractQueue;
+import java.util.stream.LongStream;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.util.AbstractCollection;
+import java.math.BigDecimal;
+import java.util.stream.Stream;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
@@ -32,50 +31,134 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            FFarmOfMonsters solver = new FFarmOfMonsters();
+            AVoltageKeepsake solver = new AVoltageKeepsake();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class FFarmOfMonsters {
-        Debug debug = new Debug(true);
-
+    static class AVoltageKeepsake {
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            int a = in.readInt();
-            int b = in.readInt();
-            int[] h = new int[n];
-            in.populate(h);
-
-            long pt = 1;
-            PriorityQueue<Integer> pq = new PriorityQueue<>(n, (x, y) -> y.compareTo(x));
-            for (int health : h) {
-                debug.debug("pq", pq);
-                debug.debug("pt", pt);
-                int time = DigitUtils.ceilDiv(health, b);
-                pt += time - 1;
-                int cost = DigitUtils.ceilDiv(health - (time - 1) * b, a);
-                if (pt >= cost) {
-                    pt -= cost;
-                    pq.add(cost);
-                    continue;
-                }
-                if (!pq.isEmpty() && pq.peek() > cost) {
-                    pt += pq.remove() + 1;
-                    pt -= cost;
-                    pq.add(cost);
-                    continue;
-                }
-                pt++;
+            int p = in.readInt();
+            Point[] pts = new Point[n];
+            for (int i = 0; i < n; i++) {
+                pts[i] = new Point();
+                pts[i].a = in.readInt();
+                pts[i].b = in.readInt();
+                pts[i].threshold = pts[i].b / (double) pts[i].a;
             }
 
-            debug.debug("pq", pq);
-            debug.debug("pt", pt);
+            long sum = Arrays.stream(pts).mapToLong(x -> x.a).sum();
+            if (sum <= p) {
+                out.println(-1);
+                return;
+            }
+            Arrays.sort(pts, (a, b) -> Double.compare(a.threshold, b.threshold));
+            long sumA = 0;
+            long sumB = 0;
+            double ans = pts[0].threshold;
+            for (int i = 0; i < n; i++) {
+                sumA += pts[i].a;
+                sumB += pts[i].b;
+                if (sumA <= p) {
+                    ans = Math.max(ans, pts[i + 1].threshold);
+                } else {
+                    double local = (double) sumB / (sumA - p);
+                    if (i + 1 < n) {
+                        local = Math.min(local, pts[i + 1].threshold);
+                    }
+                    if (local >= pts[i].threshold) {
+                        ans = Math.max(ans, local);
+                    }
+                }
+            }
 
-
-            out.println(pq.size());
+            out.println(ans);
         }
+
+    }
+
+    static class FastOutput implements AutoCloseable, Closeable, Appendable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
+
+        public FastOutput append(CharSequence csq) {
+            cache.append(csq);
+            return this;
+        }
+
+        public FastOutput append(CharSequence csq, int start, int end) {
+            cache.append(csq, start, end);
+            return this;
+        }
+
+        public FastOutput(Writer os) {
+            this.os = os;
+        }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput append(char c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput append(int c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput append(double c) {
+            cache.append(new BigDecimal(c).toPlainString());
+            return this;
+        }
+
+        public FastOutput println(int c) {
+            return append(c).println();
+        }
+
+        public FastOutput println(double c) {
+            return append(c).println();
+        }
+
+        public FastOutput println() {
+            cache.append(System.lineSeparator());
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            return this;
+        }
+
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+
+        public String toString() {
+            return cache.toString();
+        }
+
+    }
+
+    static class Point {
+        int a;
+        int b;
+        double threshold;
 
     }
 
@@ -88,12 +171,6 @@ public class Main {
 
         public FastInput(InputStream is) {
             this.is = is;
-        }
-
-        public void populate(int[] data) {
-            for (int i = 0; i < data.length; i++) {
-                data[i] = readInt();
-            }
         }
 
         private int read() {
@@ -140,195 +217,6 @@ public class Main {
             }
 
             return val;
-        }
-
-    }
-
-    static class Debug {
-        private boolean offline;
-        private PrintStream out = System.err;
-        static int[] empty = new int[0];
-
-        public Debug(boolean enable) {
-            offline = enable && System.getSecurityManager() == null;
-        }
-
-        public Debug debug(String name, long x) {
-            if (offline) {
-                debug(name, "" + x);
-            }
-            return this;
-        }
-
-        public Debug debug(String name, String x) {
-            if (offline) {
-                out.printf("%s=%s", name, x);
-                out.println();
-            }
-            return this;
-        }
-
-        public Debug debug(String name, Object x) {
-            return debug(name, x, empty);
-        }
-
-        public Debug debug(String name, Object x, int... indexes) {
-            if (offline) {
-                if (x == null || !x.getClass().isArray()) {
-                    out.append(name);
-                    for (int i : indexes) {
-                        out.printf("[%d]", i);
-                    }
-                    out.append("=").append("" + x);
-                    out.println();
-                } else {
-                    indexes = Arrays.copyOf(indexes, indexes.length + 1);
-                    if (x instanceof byte[]) {
-                        byte[] arr = (byte[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof short[]) {
-                        short[] arr = (short[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof boolean[]) {
-                        boolean[] arr = (boolean[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof char[]) {
-                        char[] arr = (char[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof int[]) {
-                        int[] arr = (int[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof float[]) {
-                        float[] arr = (float[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof double[]) {
-                        double[] arr = (double[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof long[]) {
-                        long[] arr = (long[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else {
-                        Object[] arr = (Object[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    }
-                }
-            }
-            return this;
-        }
-
-    }
-
-    static class DigitUtils {
-        private DigitUtils() {
-        }
-
-        public static int floorDiv(int a, int b) {
-            return a < 0 ? -ceilDiv(-a, b) : a / b;
-        }
-
-        public static int ceilDiv(int a, int b) {
-            if (a < 0) {
-                return -floorDiv(-a, b);
-            }
-            int c = a / b;
-            if (c * b < a) {
-                return c + 1;
-            }
-            return c;
-        }
-
-    }
-
-    static class FastOutput implements AutoCloseable, Closeable, Appendable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
-
-        public FastOutput append(CharSequence csq) {
-            cache.append(csq);
-            return this;
-        }
-
-        public FastOutput append(CharSequence csq, int start, int end) {
-            cache.append(csq, start, end);
-            return this;
-        }
-
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput append(char c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput append(int c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput println(int c) {
-            return append(c).println();
-        }
-
-        public FastOutput println() {
-            cache.append(System.lineSeparator());
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        }
-
-        public String toString() {
-            return cache.toString();
         }
 
     }

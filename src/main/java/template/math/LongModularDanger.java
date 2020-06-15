@@ -13,7 +13,7 @@ public class LongModularDanger implements ILongModular {
     }
 
     public long mul(long a, long b) {
-        return DigitUtils.mulMod(a, b, m);
+        return DigitUtils.modmul(a, b, m);
     }
 
     public long plus(long a, long b) {

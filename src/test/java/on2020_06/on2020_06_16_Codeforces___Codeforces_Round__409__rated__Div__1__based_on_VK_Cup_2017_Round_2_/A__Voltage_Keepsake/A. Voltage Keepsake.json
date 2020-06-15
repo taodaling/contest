@@ -1,0 +1,45 @@
+{
+  "name" : "A. Voltage Keepsake",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2 1\n2 2\n2 1000\n",
+    "output" : "2.0000000000\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "1 100\n1 1\n",
+    "output" : "-1\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "3 5\n4 3\n5 2\n6 1\n",
+    "output" : "0.5000000000\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_06.on2020_06_16_Codeforces___Codeforces_Round__409__rated__Div__1__based_on_VK_Cup_2017_Round_2_.A__Voltage_Keepsake.AVoltageKeepsake",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.06.16",
+  "contestName" : "Codeforces - Codeforces Round #409 (rated, Div. 1, based on VK Cup 2017 Round 2)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

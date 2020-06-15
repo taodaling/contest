@@ -1,0 +1,40 @@
+{
+  "name" : "C. Vulnerable Kerbals",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "0 5\n",
+    "output" : "5\n1 2 4 3 0\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "3 10\n2 9 1\n",
+    "output" : "6\n3 9 2 9 8 0\n",
+    "index" : 1,
+    "active" : false
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.CVulnerableKerbals",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.06.15",
+  "contestName" : "Codeforces - Codeforces Round #409 (rated, Div. 1, based on VK Cup 2017 Round 2)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}
