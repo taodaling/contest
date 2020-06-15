@@ -2,13 +2,11 @@ package template.math;
 
 import template.binary.Bits;
 
-import java.util.Map;
 import java.util.Random;
 
 public class QuadraticResidue {
     final Modular modular;
     Power power;
-    final PollardRho rho = new PollardRho();
     Random random = new Random();
 
 
@@ -25,7 +23,11 @@ public class QuadraticResidue {
         if (n == 0) {
             return 0;
         }
-        int p = modular.m;
+        int p = modular.getMod();
+        if (p == 2) {
+            return n;
+        }
+
         if (power.pow(n, (p - 1) / 2) != 1) {
             return -1;
         }
@@ -55,26 +57,6 @@ public class QuadraticResidue {
             }
 
             return real;
-        }
-    }
-
-    public int minPrimitiveRoot() {
-        if (modular.m == 2) {
-            return 1;
-        }
-        Map<Integer, Integer> factorMap = rho.findAllFactors(modular.m - 1);
-        int[] factors = factorMap.keySet().stream().mapToInt(Integer::intValue).toArray();
-        for (int i = 2;; i++) {
-            boolean valid = true;
-            for (int factor : factors) {
-                if (power.pow(i, (modular.m - 1) / factor) == 1) {
-                    valid = false;
-                    break;
-                }
-            }
-            if (valid) {
-                return i;
-            }
         }
     }
 }
