@@ -4,15 +4,14 @@ package on2020_05.on2020_05_15_Codeforces___Codeforces_Round__426__Div__1_.C__Ev
 
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.math.Radix;
-import template.primitve.generated.datastructure.IntegerList;
+import template.math.LongRadix;
 import template.primitve.generated.datastructure.LongList;
 import template.utils.Debug;
 
 import java.util.Arrays;
 
 public class CEverHungryKrakozyabra {
-    Radix radix = new Radix(10);
+    LongRadix radix = new LongRadix(10);
     Debug debug = new Debug(true);
 
     public void solve(int testNumber, FastInput in, FastOutput out) {

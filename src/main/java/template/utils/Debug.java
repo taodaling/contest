@@ -6,9 +6,15 @@ import java.util.Arrays;
 public class Debug {
     private boolean offline;
     private PrintStream out = System.err;
+    private long time = System.currentTimeMillis();
 
     public Debug(boolean enable) {
         offline = enable && System.getSecurityManager() == null;
+    }
+
+    public void elapse(String name) {
+        debug(name, System.currentTimeMillis() - time);
+        time = System.currentTimeMillis();
     }
 
     public Debug debug(String name, int x) {

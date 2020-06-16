@@ -1,26 +1,10 @@
 package template.math;
 
-import template.primitve.generated.datastructure.IntToDoubleFunction;
-
 public class DigitUtils {
 
     private DigitUtils() {
     }
 
-    /**
-     * Kahan summation with O(1) error
-     */
-    public static double sum(IntToDoubleFunction func, int l, int r) {
-        double sum = 0;
-        double err = 0;
-        for (int i = l; i <= r; i++) {
-            double x = func.apply(i) - err;
-            double t = sum + x;
-            err = (t - sum) - x;
-            sum = t;
-        }
-        return sum;
-    }
 
     public static double clamp(double x, double low, double high) {
         return Math.max(Math.min(x, high), low);

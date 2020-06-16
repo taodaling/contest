@@ -4,11 +4,11 @@ import template.primitve.generated.datastructure.LongList;
 
 import java.util.Arrays;
 
-public class Radix {
+public class LongRadix {
     private long[] pow;
     private long base;
 
-    public Radix(long base) {
+    public LongRadix(long base) {
         if (base <= 1) {
             throw new IllegalArgumentException();
         }
@@ -46,7 +46,7 @@ public class Radix {
         return (int) (x / pow[i] % base);
     }
 
-    public long setBit(long x, int i, long val) {
+    public long set(long x, int i, long val) {
         return x + (val - get(x, i)) * pow[i];
     }
 

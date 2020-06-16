@@ -2,11 +2,9 @@ package on2020_05.on2020_05_08_TopCoder_SRM__750.PurpleSubsequences;
 
 
 
-import template.math.Radix;
-import template.primitve.generated.datastructure.IntegerList;
+import template.math.LongRadix;
 import template.primitve.generated.datastructure.LongHashMap;
 import template.primitve.generated.datastructure.LongList;
-import template.utils.Debug;
 
 import java.util.*;
 
@@ -22,7 +20,7 @@ public class PurpleSubsequences {
         }
         long end = 0;
         for (int i = 0; i < L; i++) {
-            end = radix.setBit(end, i, 1);
+            end = radix.set(end, i, 1);
         }
         collect.add(end);
        // debug.debug("collect", collect);
@@ -43,7 +41,7 @@ public class PurpleSubsequences {
                 }
                 long next = v;
                 if (bit > j || bit == 0) {
-                    next = radix.setBit(v, lastBit, j);
+                    next = radix.set(v, lastBit, j);
                 }
                 transfer[i][j] = (int) map.getOrDefault(next, state.length - 1);
             }
@@ -100,7 +98,7 @@ public class PurpleSubsequences {
         return ans;
     }
 
-    Radix radix = new Radix(100);
+    LongRadix radix = new LongRadix(100);
     LongList collect = new LongList(30000);
 
     public void gen(int l, int r, int L, int i, long val) {
@@ -109,7 +107,7 @@ public class PurpleSubsequences {
             return;
         }
         for (int j = l; j <= r; j++) {
-            gen(j + 1, r, L, i + 1, radix.setBit(val, i, j));
+            gen(j + 1, r, L, i + 1, radix.set(val, i, j));
         }
     }
 

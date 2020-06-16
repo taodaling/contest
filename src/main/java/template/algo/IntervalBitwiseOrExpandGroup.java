@@ -1,6 +1,6 @@
 package template.algo;
 
-import template.math.Radix;
+import template.math.LongRadix;
 
 public class IntervalBitwiseOrExpandGroup {
 
@@ -12,7 +12,7 @@ public class IntervalBitwiseOrExpandGroup {
             return 1;
         }
 
-        Radix base = new Radix(2);
+        LongRadix base = new LongRadix(2);
         int[] bitsOfA = base.decompose(l);
         int[] bitsOfB = base.decompose(r);
 

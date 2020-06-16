@@ -4,7 +4,7 @@ package on2020_05.on2020_05_23_AtCoder___AtCoder_Grand_Contest_044.C___Strange_D
 
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.math.Radix;
+import template.math.LongRadix;
 import template.primitve.generated.datastructure.IntegerList;
 import template.utils.ArrayIndex;
 
@@ -19,7 +19,7 @@ public class CStrangeDance {
         for (int i = 0; i < len; i++) {
             basic.set(i, t[i] == 'S');
         }
-        int limit = (int) radix.setBit(0, n, 1);
+        int limit = (int) radix.set(0, n, 1);
         for (int i = 0; i < limit; i++) {
             dp(n - 1, i);
             int index = ai.indexOf(n - 1, i);
@@ -29,8 +29,8 @@ public class CStrangeDance {
     }
 
 
-    Radix radix = new Radix(3);
-    ArrayIndex ai = new ArrayIndex(12, (int) radix.setBit(0, 12, 1));
+    LongRadix radix = new LongRadix(3);
+    ArrayIndex ai = new ArrayIndex(12, (int) radix.set(0, 12, 1));
     BitSet[] dp = new BitSet[ai.totalSize()];
     int[] cast = new int[ai.totalSize()];
     int[] sizes = new int[ai.totalSize()];
@@ -54,7 +54,7 @@ public class CStrangeDance {
             int m = len;
             if (i > 0) {
                 //use basic
-                int next = (int) radix.setBit(j, i, 0);
+                int next = (int) radix.set(j, i, 0);
                 dp(i - 1, next);
                 bit = dp[ai.indexOf(i - 1, next)];
                 prefix = cast[ai.indexOf(i - 1, next)];
@@ -89,7 +89,7 @@ public class CStrangeDance {
             for (int t = op.size() - 1; t >= 0; t--) {
                 dp[index].set(t, data[t] == 1);
             }
-            cast[index] = (int) radix.setBit(prefix, i, val);
+            cast[index] = (int) radix.set(prefix, i, val);
         }
     }
 }
