@@ -1,2 +1,2 @@
-46 src/main/java/contest/D. Varying Kibibits.json
+48 src/main/java/contest/1872. Spacious Office.json
 0
