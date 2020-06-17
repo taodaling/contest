@@ -2,304 +2,303 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.PriorityQueue;
-import java.util.AbstractQueue;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.util.AbstractCollection;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
 import java.io.InputStream;
-import java.util.function.IntFunction;
 
 /**
  * Built using CHelper plug-in
  * Actual solution is at the top
-*/public class Main {
-	public static void main(String[] args) throws Exception {
-		Thread thread = new Thread(null, new TaskAdapter(), "", 1 << 27);
-		thread.start();
-		thread.join();
-	}
+ */
+public class Main {
+    public static void main(String[] args) throws Exception {
+        Thread thread = new Thread(null, new TaskAdapter(), "", 1 << 27);
+        thread.start();
+        thread.join();
+    }
 
-	static class TaskAdapter implements Runnable {
-		@Override
-		public void run() {			InputStream inputStream = System.in;
-			OutputStream outputStream = System.out;
-			FastInput in = new FastInput(inputStream);
-			FastOutput out = new FastOutput(outputStream);
-			SpaciousOffice solver = new SpaciousOffice();
-			solver.solve(1, in, out);
-			out.close();
-		}
-	}
-static class SpaciousOffice   {
-boolean[][] edges;
-boolean[] visited;
-boolean[] instk;
-
-public void solve(int testNumber, FastInput in, FastOutput out) {
-        int n = in.readInt();
-        Room[] rooms = new Room[n];
-        for (int i = 0; i < n; i++) {
-            rooms[i] = new Room();
-            rooms[i].id = i;
-            rooms[i].area = in.readInt();
+    static class TaskAdapter implements Runnable {
+        @Override
+        public void run() {
+            InputStream inputStream = System.in;
+            OutputStream outputStream = System.out;
+            FastInput in = new FastInput(inputStream);
+            FastOutput out = new FastOutput(outputStream);
+            GOVInternship3 solver = new GOVInternship3();
+            solver.solve(1, in, out);
+            out.close();
         }
-        Arrays.sort(rooms, (a, b) -> Integer.compare(a.area, b.area));
-        Req[] reqs = new Req[n];
-        for (int i = 0; i < n; i++) {
-            reqs[i] = new Req();
-            reqs[i].l = in.readInt();
-            reqs[i].r = in.readInt();
-        }
-        Req[] originalReqs = reqs.clone();
-        Arrays.sort(reqs, (x, y) -> Integer.compare(x.l, y.l));
-        Range2DequeAdapter<Req> dq = new Range2DequeAdapter<>(i -> reqs[i], 0, n - 1);
-        PriorityQueue<Req> pq = new PriorityQueue<>(n, (x, y) -> Integer.compare(x.r, y.r));
-        for (int i = 0; i < n; i++) {
-            while (!dq.isEmpty() && dq.peekFirst().l <= rooms[i].area) {
-                pq.add(dq.removeFirst());
-            }
-            if (pq.isEmpty() || pq.peek().r < rooms[i].area) {
-                out.println("Let's search for another office.");
-                return;
-            }
-            pq.remove().room = rooms[i];
-        }
+    }
 
-        edges = new boolean[n][n];
-        visited = new boolean[n];
-        instk = new boolean[n];
+    static class GOVInternship3 {
+        public void solve(int testNumber, FastInput in, FastOutput out) {
+            int n = in.readInt();
+            int[] a = new int[n];
+            in.populate(a);
+            int m = in.readInt();
+            int[] b = new int[m];
+            in.populate(b);
 
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                if (i == j) {
+            Handler text = new Handler(a);
+            Handler pattern = new Handler(b);
+
+            //replace text
+            for (int i = 0; i < n; i++) {
+                if (a[i] != 0) {
                     continue;
                 }
-                if (reqs[j].room.area >= reqs[i].l && reqs[j].room.area <= reqs[i].r) {
-                    edges[i][j] = true;
+
+                //n - 1 <=> m - 1
+                int l = Math.max(0, (m - 1) - (n - 1 - i));
+                //0 <=> 0
+                int r = Math.min(i, m - 1);
+                pattern.move(l, r);
+                a[i] = pattern.findMax();
+            }
+
+            //replace pattern
+            for (int i = 0; i < m; i++) {
+                if (b[i] != 0) {
+                    continue;
+                }
+                int l = i;
+                //n - 1 <=> m - 1
+                //n - 1 - t <=> m - 1 - i
+                int r = Math.min(n - 1, (n - 1) - (m - 1 - i));
+                text.move(l, r);
+                b[i] = text.findMax();
+            }
+
+            for (int x : a) {
+                out.append(x).append(' ');
+            }
+            out.println();
+            for (int x : b) {
+                out.append(x).append(' ');
+            }
+        }
+
+    }
+
+    static class FastInput {
+        private final InputStream is;
+        private byte[] buf = new byte[1 << 13];
+        private int bufLen;
+        private int bufOffset;
+        private int next;
+
+        public FastInput(InputStream is) {
+            this.is = is;
+        }
+
+        public void populate(int[] data) {
+            for (int i = 0; i < data.length; i++) {
+                data[i] = readInt();
+            }
+        }
+
+        private int read() {
+            while (bufLen == bufOffset) {
+                bufOffset = 0;
+                try {
+                    bufLen = is.read(buf);
+                } catch (IOException e) {
+                    bufLen = -1;
+                }
+                if (bufLen == -1) {
+                    return -1;
                 }
             }
+            return buf[bufOffset++];
         }
 
-        for (int i = 0; i < n; i++) {
-            if (dfs(i)) {
-                out.println("Ask Shiftman for help.");
-                return;
+        public void skipBlank() {
+            while (next >= 0 && next <= 32) {
+                next = read();
             }
         }
 
-        out.println("Perfect!");
-        for(int i = 0; i < n; i++){
-            out.append(originalReqs[i].room.id + 1).append(' ');
-        }
-    }
+        public int readInt() {
+            int sign = 1;
 
-public boolean dfs(int root) {
-        if (visited[root]) {
-            return instk[root];
-        }
-        visited[root] = instk[root] = true;
-        for (int i = 0; i < edges.length; i++) {
-            if (!edges[root][i]) {
-                continue;
-            }
-            if (dfs(i)) {
-                return true;
-            }
-        }
-        instk[root] = false;
-        return false;
-    }
-
-}
-static interface SimplifiedDeque<T> extends SimplifiedStack<T>  {
-}
-static class FastOutput  implements AutoCloseable, Closeable, Appendable {
-private StringBuilder cache = new StringBuilder(1 << 20);
-private   final Writer os;
-
-public FastOutput append(CharSequence csq) {
-        cache.append(csq);
-        return this;
-    }
-
-public FastOutput append(CharSequence csq, int start, int end) {
-        cache.append(csq, start, end);
-        return this;
-    }
-
-public FastOutput(Writer os) {
-        this.os = os;
-    }
-
-public FastOutput(OutputStream os) {
-        this(new OutputStreamWriter(os));
-    }
-
-public FastOutput append(char c) {
-        cache.append(c);
-        return this;
-    }
-
-public FastOutput append(int c) {
-        cache.append(c);
-        return this;
-    }
-
-public FastOutput append(String c) {
-        cache.append(c);
-        return this;
-    }
-
-public FastOutput println(String c) {
-        return append(c).println();
-    }
-
-public FastOutput println() {
-        cache.append(System.lineSeparator());
-        return this;
-    }
-
-public FastOutput flush() {
-        try {
-            os.append(cache);
-            os.flush();
-            cache.setLength(0);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-        return this;
-    }
-
-public void close() {
-        flush();
-        try {
-            os.close();
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
-
-public String toString() {
-        return cache.toString();
-    }
-
-}
-static interface SimplifiedStack<T> extends Iterable<T>  {
-}
-static class Range2DequeAdapter<T>  implements SimplifiedDeque<T> {
-IntFunction<T> data;
-int l;
-int r;
-
-public Range2DequeAdapter(IntFunction<T> data, int l, int r) {
-        this.data = data;
-        this.l = l;
-        this.r = r;
-    }
-
-public boolean isEmpty() {
-        return l > r;
-    }
-
-public T peekFirst() {
-        return data.apply(l);
-    }
-
-public T removeFirst() {
-        return data.apply(l++);
-    }
-
-public Iterator<T> iterator() {
-        return new Iterator<T>() {
-            int iter = l;
-
-
-            public boolean hasNext() {
-                return iter <= r;
+            skipBlank();
+            if (next == '+' || next == '-') {
+                sign = next == '+' ? 1 : -1;
+                next = read();
             }
 
-
-            public T next() {
-                return data.apply(iter++);
+            int val = 0;
+            if (sign == 1) {
+                while (next >= '0' && next <= '9') {
+                    val = val * 10 + next - '0';
+                    next = read();
+                }
+            } else {
+                while (next >= '0' && next <= '9') {
+                    val = val * 10 - next + '0';
+                    next = read();
+                }
             }
-        };
+
+            return val;
+        }
+
     }
 
-}
-static class Room   {
-int area;
-int id;
+    static class Node {
+        Node next;
+        Node prev;
+        int cnt;
+        int id;
 
-}
-static class FastInput   {
-private   final InputStream is;
-private byte[] buf = new byte[1 << 13];
-private int bufLen;
-private int bufOffset;
-private int next;
-
-public FastInput(InputStream is) {
-        this.is = is;
     }
 
-private int read() {
-        while (bufLen == bufOffset) {
-            bufOffset = 0;
+    static class FastOutput implements AutoCloseable, Closeable, Appendable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
+
+        public FastOutput append(CharSequence csq) {
+            cache.append(csq);
+            return this;
+        }
+
+        public FastOutput append(CharSequence csq, int start, int end) {
+            cache.append(csq, start, end);
+            return this;
+        }
+
+        public FastOutput(Writer os) {
+            this.os = os;
+        }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput append(char c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput append(int c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput println() {
+            cache.append(System.lineSeparator());
+            return this;
+        }
+
+        public FastOutput flush() {
             try {
-                bufLen = is.read(buf);
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
             } catch (IOException e) {
-                bufLen = -1;
+                throw new UncheckedIOException(e);
             }
-            if (bufLen == -1) {
-                return -1;
+            return this;
+        }
+
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
             }
         }
-        return buf[bufOffset++];
+
+        public String toString() {
+            return cache.toString();
+        }
+
     }
 
-public void skipBlank() {
-        while (next >= 0 && next <= 32) {
-            next = read();
-        }
-    }
+    static class Handler {
+        int[] data;
+        int l;
+        int r;
+        Node[] nodes;
+        Node[] levels;
+        static int limit = (int) 1e5;
+        int top;
 
-public int readInt() {
-        int sign = 1;
-
-        skipBlank();
-        if (next == '+' || next == '-') {
-            sign = next == '+' ? 1 : -1;
-            next = read();
-        }
-
-        int val = 0;
-        if (sign == 1) {
-            while (next >= '0' && next <= '9') {
-                val = val * 10 + next - '0';
-                next = read();
+        private void detach(Node node) {
+            if (node.prev != null) {
+                node.prev.next = node.next;
+            } else {
+                levels[node.cnt] = node.next;
             }
-        } else {
-            while (next >= '0' && next <= '9') {
-                val = val * 10 - next + '0';
-                next = read();
+            if (node.next != null) {
+                node.next.prev = node.prev;
+            }
+            node.prev = node.next = null;
+        }
+
+        private void attach(Node node) {
+            if (levels[node.cnt] != null) {
+                levels[node.cnt].prev = node;
+                node.next = levels[node.cnt];
+            }
+            levels[node.cnt] = node;
+            top = Math.max(top, node.cnt);
+        }
+
+        private void modify(int i, int x) {
+            detach(nodes[i]);
+            nodes[i].cnt += x;
+            attach(nodes[i]);
+        }
+
+        public int findMax() {
+            while (levels[top] == null) {
+                top--;
+            }
+            return levels[top].id;
+        }
+
+        public void move(int l, int r) {
+            while (this.l > l) {
+                this.l--;
+                modify(data[this.l], 1);
+            }
+            while (this.r < r) {
+                this.r++;
+                modify(data[this.r], 1);
+            }
+            while (this.l < l) {
+                modify(data[this.l], -1);
+                this.l++;
+            }
+            while (this.r > r) {
+                modify(data[this.r], -1);
+                this.r--;
             }
         }
 
-        return val;
+        public Handler(int[] data) {
+            this.data = data;
+            l = 0;
+            r = -1;
+            nodes = new Node[limit + 1];
+            levels = new Node[limit + 1];
+            for (int i = 1; i <= limit; i++) {
+                nodes[i] = new Node();
+                nodes[i].id = i;
+                if (i > 1) {
+                    nodes[i - 1].next = nodes[i];
+                    nodes[i].prev = nodes[i - 1];
+                }
+            }
+            top = 0;
+            levels[0] = nodes[1];
+        }
+
     }
-
-}
-static class Req   {
-int l;
-int r;
-Room room;
-
-}
 }
 
