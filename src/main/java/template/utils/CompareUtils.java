@@ -182,6 +182,35 @@ public class CompareUtils {
         }
     }
 
+    public static int theKthSmallestElement(int[] data, IntegerComparator cmp, int f, int t, int k) {
+        if (t - f <= THRESHOLD) {
+            insertSort(data, cmp, f, t - 1);
+            return data[f + k - 1];
+        }
+        SequenceUtils.swap(data, f, Randomized.nextInt(f, t - 1));
+        int l = f;
+        int r = t;
+        int m = l + 1;
+        while (m < r) {
+            int c = cmp.compare(data[m], data[l]);
+            if (c == 0) {
+                m++;
+            } else if (c < 0) {
+                SequenceUtils.swap(data, l, m);
+                l++;
+                m++;
+            } else {
+                SequenceUtils.swap(data, m, --r);
+            }
+        }
+        if (l - f >= k) {
+            return theKthSmallestElement(data, cmp, f, l, k);
+        } else if (m - f >= k) {
+            return data[l];
+        }
+        return theKthSmallestElement(data, cmp, m, t, k - (m - f));
+    }
+
     public static <T> T theKthSmallestElement(T[] data, Comparator<T> cmp, int f, int t, int k) {
         if (t - f <= THRESHOLD) {
             insertSort(data, cmp, f, t - 1);

@@ -1,0 +1,40 @@
+{
+  "name" : "2092. Bolero",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "6 2\n500 0\n700 0\n300 0\n400 0\n500 50\n800 0\n5 10\n6 15\n",
+    "output" : "2680.00\n",
+    "index" : 0,
+    "active" : false
+  }, {
+    "input" : "5 1\n100 20\n200 20\n300 20\n400 0\n500 0\n\n4 10",
+    "output" : "1320",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx64M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.Bolero",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.06.18",
+  "contestName" : "Timus - Open Ural FU Personal Contest 2014",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

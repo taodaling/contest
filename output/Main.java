@@ -2,11 +2,15 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.io.IOException;
+import java.util.Random;
 import java.io.UncheckedIOException;
+import java.math.BigDecimal;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
+import java.util.Comparator;
 import java.io.InputStream;
 
 /**
@@ -27,58 +31,80 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            GOVInternship3 solver = new GOVInternship3();
+            Bolero solver = new Bolero();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class GOVInternship3 {
+    static class Bolero {
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            int[] a = new int[n];
-            in.populate(a);
             int m = in.readInt();
-            int[] b = new int[m];
-            in.populate(b);
-
-            Handler text = new Handler(a);
-            Handler pattern = new Handler(b);
-
-            //replace text
+            Good[] goods = new Good[n];
             for (int i = 0; i < n; i++) {
-                if (a[i] != 0) {
-                    continue;
-                }
-
-                //n - 1 <=> m - 1
-                int l = Math.max(0, (m - 1) - (n - 1 - i));
-                //0 <=> 0
-                int r = Math.min(i, m - 1);
-                pattern.move(l, r);
-                a[i] = pattern.findMax();
+                goods[i] = new Good();
+                goods[i].p = in.readInt();
+                goods[i].d = 100 - in.readInt();
             }
 
-            //replace pattern
+            int[] discounts = new int[100 + 1];
+            Arrays.fill(discounts, n + 1);
+            discounts[100] = 0;
             for (int i = 0; i < m; i++) {
-                if (b[i] != 0) {
-                    continue;
-                }
-                int l = i;
-                //n - 1 <=> m - 1
-                //n - 1 - t <=> m - 1 - i
-                int r = Math.min(n - 1, (n - 1) - (m - 1 - i));
-                text.move(l, r);
-                b[i] = text.findMax();
+                int k = in.readInt();
+                int p = 100 - in.readInt();
+                discounts[p] = Math.min(discounts[p], k);
             }
 
-            for (int x : a) {
-                out.append(x).append(' ');
+            long min = (long) 1e18;
+            for (int i = 0; i <= 100; i++) {
+                if (discounts[i] > n) {
+                    continue;
+                }
+                for (Good good : goods) {
+                    good.profit = (good.d - i) * good.p;
+                }
+                int l = 0;
+                int r = n - 1;
+                while (l <= r) {
+                    if (goods[r].profit < 0) {
+                        r--;
+                    } else {
+                        SequenceUtils.swap(goods, l, r);
+                        l++;
+                    }
+                }
+
+                if (l < discounts[i]) {
+                    //need more
+                    int k = discounts[i] - l;
+                    CompareUtils.theKthSmallestElement(goods, (a, b) -> -Integer.compare(a.profit, b.profit), l, n, k);
+                    l += k;
+                }
+
+                long sum = 0;
+                for (int j = 0; j < n; j++) {
+                    if (j < l) {
+                        sum += goods[j].p * i;
+                    } else {
+                        sum += goods[j].p * goods[j].d;
+                    }
+                }
+
+                min = Math.min(sum, min);
             }
-            out.println();
-            for (int x : b) {
-                out.append(x).append(' ');
-            }
+
+            out.println(min / 100D);
+        }
+
+    }
+
+    static class SequenceUtils {
+        public static <T> void swap(T[] data, int i, int j) {
+            T tmp = data[i];
+            data[i] = data[j];
+            data[j] = tmp;
         }
 
     }
@@ -92,12 +118,6 @@ public class Main {
 
         public FastInput(InputStream is) {
             this.is = is;
-        }
-
-        public void populate(int[] data) {
-            for (int i = 0; i < data.length; i++) {
-                data[i] = readInt();
-            }
         }
 
         private int read() {
@@ -148,11 +168,59 @@ public class Main {
 
     }
 
-    static class Node {
-        Node next;
-        Node prev;
-        int cnt;
-        int id;
+    static class CompareUtils {
+        private static final int THRESHOLD = 4;
+
+        private CompareUtils() {
+        }
+
+        public static <T> void insertSort(T[] data, Comparator<T> cmp, int l, int r) {
+            for (int i = l + 1; i <= r; i++) {
+                int j = i;
+                T val = data[i];
+                while (j > l && cmp.compare(data[j - 1], val) > 0) {
+                    data[j] = data[j - 1];
+                    j--;
+                }
+                data[j] = val;
+            }
+        }
+
+        public static <T> T theKthSmallestElement(T[] data, Comparator<T> cmp, int f, int t, int k) {
+            if (t - f <= THRESHOLD) {
+                insertSort(data, cmp, f, t - 1);
+                return data[f + k - 1];
+            }
+            SequenceUtils.swap(data, f, Randomized.nextInt(f, t - 1));
+            int l = f;
+            int r = t;
+            int m = l + 1;
+            while (m < r) {
+                int c = cmp.compare(data[m], data[l]);
+                if (c == 0) {
+                    m++;
+                } else if (c < 0) {
+                    SequenceUtils.swap(data, l, m);
+                    l++;
+                    m++;
+                } else {
+                    SequenceUtils.swap(data, m, --r);
+                }
+            }
+            if (l - f >= k) {
+                return theKthSmallestElement(data, cmp, f, l, k);
+            } else if (m - f >= k) {
+                return data[l];
+            }
+            return theKthSmallestElement(data, cmp, m, t, k - (m - f));
+        }
+
+    }
+
+    static class Good {
+        int p;
+        int d;
+        int profit;
 
     }
 
@@ -183,9 +251,13 @@ public class Main {
             return this;
         }
 
-        public FastOutput append(int c) {
-            cache.append(c);
+        public FastOutput append(double c) {
+            cache.append(new BigDecimal(c).toPlainString());
             return this;
+        }
+
+        public FastOutput println(double c) {
+            return append(c).println();
         }
 
         public FastOutput println() {
@@ -219,84 +291,27 @@ public class Main {
 
     }
 
-    static class Handler {
-        int[] data;
-        int l;
-        int r;
-        Node[] nodes;
-        Node[] levels;
-        static int limit = (int) 1e5;
-        int top;
-
-        private void detach(Node node) {
-            if (node.prev != null) {
-                node.prev.next = node.next;
-            } else {
-                levels[node.cnt] = node.next;
-            }
-            if (node.next != null) {
-                node.next.prev = node.prev;
-            }
-            node.prev = node.next = null;
+    static class Randomized {
+        public static int nextInt(int l, int r) {
+            return RandomWrapper.INSTANCE.nextInt(l, r);
         }
 
-        private void attach(Node node) {
-            if (levels[node.cnt] != null) {
-                levels[node.cnt].prev = node;
-                node.next = levels[node.cnt];
-            }
-            levels[node.cnt] = node;
-            top = Math.max(top, node.cnt);
+    }
+
+    static class RandomWrapper {
+        private Random random;
+        public static RandomWrapper INSTANCE = new RandomWrapper(new Random());
+
+        public RandomWrapper() {
+            this(new Random());
         }
 
-        private void modify(int i, int x) {
-            detach(nodes[i]);
-            nodes[i].cnt += x;
-            attach(nodes[i]);
+        public RandomWrapper(Random random) {
+            this.random = random;
         }
 
-        public int findMax() {
-            while (levels[top] == null) {
-                top--;
-            }
-            return levels[top].id;
-        }
-
-        public void move(int l, int r) {
-            while (this.l > l) {
-                this.l--;
-                modify(data[this.l], 1);
-            }
-            while (this.r < r) {
-                this.r++;
-                modify(data[this.r], 1);
-            }
-            while (this.l < l) {
-                modify(data[this.l], -1);
-                this.l++;
-            }
-            while (this.r > r) {
-                modify(data[this.r], -1);
-                this.r--;
-            }
-        }
-
-        public Handler(int[] data) {
-            this.data = data;
-            l = 0;
-            r = -1;
-            nodes = new Node[limit + 1];
-            levels = new Node[limit + 1];
-            for (int i = 1; i <= limit; i++) {
-                nodes[i] = new Node();
-                nodes[i].id = i;
-                if (i > 1) {
-                    nodes[i - 1].next = nodes[i];
-                    nodes[i].prev = nodes[i - 1];
-                }
-            }
-            top = 0;
-            levels[0] = nodes[1];
+        public int nextInt(int l, int r) {
+            return random.nextInt(r - l + 1) + l;
         }
 
     }
