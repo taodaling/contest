@@ -19,9 +19,9 @@ public class Generator {
         String packageTo = "package " + fi.readString() + ";";
 
         List<Function<FileItem, FileItem>> functions = new ArrayList<>();
-        functions.add(new Transformer("Long", "long", packageTo));
-        functions.add(new Transformer("Integer", "int", packageTo));
-        functions.add(new Transformer("Double", "double", packageTo));
+        functions.add(new Transformer("Long", "long", "%d", packageTo));
+        functions.add(new Transformer("Integer", "int", "%d", packageTo));
+        functions.add(new Transformer("Double", "double", "%f", packageTo));
 
         new Generator().handleFile(src, dst, functions);
         System.out.print("Done!");
@@ -33,11 +33,13 @@ public class Generator {
     private static class Transformer implements Function<FileItem, FileItem> {
         final String big;
         final String small;
+        final String format;
         final String packageTo;
 
-        private Transformer(String big, String small, String packageTo) {
+        private Transformer(String big, String small, String format, String packageTo) {
             this.big = big;
             this.small = small;
+            this.format = format;
             this.packageTo = packageTo;
         }
 

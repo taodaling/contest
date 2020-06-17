@@ -1,2 +1,3 @@
-48 src/main/java/contest/1872. Spacious Office.json
-0
+45 src/main/java/contest/1824. Ifrit Bomber.json
+1
+1

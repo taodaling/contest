@@ -1,5 +1,5 @@
 {
-  "name" : "1091. Tmutarakan Exams",
+  "name" : "1824. Ifrit Bomber",
   "testType" : "SINGLE",
   "input" : {
     "type" : "STANDARD",
@@ -10,20 +10,25 @@
     "fileName" : "output.txt"
   },
   "tests" : [ {
-    "input" : "3 10\n",
-    "output" : "11\n",
+    "input" : "4 50\n10 10\n500 500\n501 501\n999 999\n",
+    "output" : "3\n1 3 4\n",
     "index" : 0,
+    "active" : true
+  }, {
+    "input" : "30 10000\n10000 10000",
+    "output" : "2",
+    "index" : 1,
     "active" : true
   } ],
   "location" : "src/main/java/contest",
   "vmArgs" : "-Xmx64M",
   "mainClass" : "Main",
-  "taskClass" : "contest.TmutarakanExams",
+  "taskClass" : "contest.IfritBomber",
   "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
   "checkerParameters" : "",
   "testClasses" : [ ],
   "date" : "2020.06.17",
-  "contestName" : "Timus - USU Open Collegiate Programming Contest March'2001 Senior Session",
+  "contestName" : "Timus - XII USU Open Personal Contest (March 19, 2011)",
   "truncate" : true,
   "inputClass" : "template.io.FastInput",
   "outputClass" : "template.io.FastOutput",
