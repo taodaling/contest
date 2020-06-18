@@ -1,18 +1,15 @@
 import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.Deque;
-import java.util.ArrayList;
-import java.io.OutputStreamWriter;
 import java.io.OutputStream;
-import java.util.Collection;
+import java.io.PrintStream;
+import java.util.Arrays;
 import java.io.IOException;
+import java.io.Serializable;
 import java.io.UncheckedIOException;
-import java.util.List;
 import java.io.Closeable;
 import java.io.Writer;
-import java.util.ArrayDeque;
+import java.io.OutputStreamWriter;
 import java.io.InputStream;
 
 /**
@@ -33,187 +30,349 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            GraveyardInDeyja solver = new GraveyardInDeyja();
+            FLampsOnACircle solver = new FLampsOnACircle();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class GraveyardInDeyja {
-        String charset;
-
-        {
-            StringBuilder builder = new StringBuilder();
-            for (char i = 'a'; i <= 'z'; i++) {
-                builder.append(i);
-            }
-            for (char i = 'A'; i <= 'Z'; i++) {
-                builder.append(i);
-            }
-            charset = builder.toString();
-        }
+    static class FLampsOnACircle {
+        Debug debug = new Debug(true);
 
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            char[] s = in.readString().toCharArray();
-            char[] t = in.readString().toCharArray();
-            int m = charset.length();
-            ACAutomaton ac = new ACAutomaton(0, m - 1);
-            ac.beginBuilding();
-            for (char c : t) {
-                ac.build((char) charset.indexOf(c));
-            }
-            ac.getBuildLast().increaseCnt();
-            ac.endBuilding();
-            ACAutomaton.Node[] nodes = ac.getAllNodes().toArray(new ACAutomaton.Node[0]);
-            int[][] dp = new int[s.length + 1][nodes.length];
-            int inf = (int) 1e8;
-            SequenceUtils.deepFill(dp, -inf);
-            dp[0][0] = 0;
-            for (int i = 0; i < s.length; i++) {
-                int l = charset.indexOf(s[i]);
-                int r = l;
-                if (l == -1) {
-                    l = 0;
-                    r = charset.length() - 1;
+            int n = in.readInt();
+            int k = 0;
+            int r = 0;
+            for (int i = 1; i <= n; i++) {
+                int block = DigitUtils.ceilDiv(n - 1, i + 1);
+                int cnt = n - 1 - (block - 1) - i;
+                if (block * (i + 1) == n - 1) {
+                    cnt--;
                 }
-                for (int k = l; k <= r; k++) {
-                    for (int j = 0; j < nodes.length; j++) {
-                        ACAutomaton.Node next = nodes[j].next[k];
-                        dp[i + 1][next.id] = Math.max(dp[i + 1][next.id], dp[i][j] + next.getCnt());
+                if (cnt > r) {
+                    r = cnt;
+                    k = i;
+                }
+            }
+
+            debug.debug("r", r);
+            debug.debug("k", k);
+
+            if (r == 0) {
+                out.println(0).flush();
+                return;
+            }
+
+            BitSet end = new BitSet(n);
+            for (int i = 0; i < n - 1; i++) {
+                if (i % (k + 1) != k) {
+                    end.set(i);
+                }
+            }
+            BitSet cur = new BitSet(n);
+            for (; cur.size() < end.size() - k; ) {
+                cur.xor(end);
+                int len = cur.size();
+                out.append(len).append(' ');
+                for (int i = 0; i < n - 1; i++) {
+                    if (cur.get(i)) {
+                        out.append(i + 1).append(' ');
                     }
                 }
+                out.println().flush();
+
+                int x = in.readInt() - 1;
+                cur.copy(end);
+                for (int i = 0; i < len; i++) {
+                    cur.clear((i + x) % n);
+                }
             }
 
-            int ans = 0;
-            for (int i = 0; i < nodes.length; i++) {
-                ans = Math.max(ans, dp[s.length][i]);
-            }
-
-            out.println(ans);
+            out.println(0).flush();
         }
 
     }
 
-    static class ACAutomaton {
-        private final int minCharacter;
-        private final int maxCharacter;
-        private final int range;
-        private ACAutomaton.Node root;
-        private ACAutomaton.Node buildLast;
-        private List<ACAutomaton.Node> allNodes = new ArrayList();
+    static final class BitSet implements Serializable, Cloneable {
+        private long[] data;
+        private long tailAvailable;
+        private int capacity;
+        private int m;
+        private static final int SHIFT = 6;
+        private static final int LOW = 63;
+        private static final int BITS_FOR_EACH = 64;
+        private static final long ALL_ONE = ~0L;
+        private static final long ALL_ZERO = 0L;
+        private static final int MAX_OFFSET = 63;
 
-        public ACAutomaton.Node getBuildLast() {
-            return buildLast;
+        public BitSet(int n) {
+            capacity = n;
+            this.m = (capacity + 64 - 1) / 64;
+            data = new long[m];
+            tailAvailable = oneBetween(0, offset(capacity - 1));
         }
 
-        public List<ACAutomaton.Node> getAllNodes() {
-            return allNodes;
+        public BitSet(BitSet bs) {
+            this.data = bs.data.clone();
+            this.tailAvailable = bs.tailAvailable;
+            this.capacity = bs.capacity;
+            this.m = bs.m;
         }
 
-        private ACAutomaton.Node addNode() {
-            ACAutomaton.Node node = new ACAutomaton.Node(range);
-            node.id = allNodes.size();
-            allNodes.add(node);
-            return node;
+        private BitSet(BitSet bs, int l, int r) {
+            capacity = r - l + 1;
+            tailAvailable = oneBetween(0, offset(capacity - 1));
+            data = Arrays.copyOfRange(bs.data, word(l), word(r) + 1);
+            this.m = data.length;
+            leftShift(offset(l));
+            this.m = (capacity + 64 - 1) / 64;
+            data[m - 1] &= tailAvailable;
+            for (int i = m; i < data.length; i++) {
+                data[i] = 0;
+            }
         }
 
-        public ACAutomaton(int minCharacter, int maxCharacter) {
-            this.minCharacter = minCharacter;
-            this.maxCharacter = maxCharacter;
-            range = maxCharacter - minCharacter + 1;
-            root = addNode();
+        public boolean get(int i) {
+            return (data[word(i)] & (1L << offset(i))) != 0;
         }
 
-        public void beginBuilding() {
-            buildLast = root;
+        public void set(int i) {
+            data[word(i)] |= (1L << offset(i));
         }
 
-        public void endBuilding() {
-            Deque<ACAutomaton.Node> deque = new ArrayDeque(allNodes.size());
-            for (int i = 0; i < range; i++) {
-                if (root.next[i] != null) {
-                    deque.addLast(root.next[i]);
+        private static int word(int i) {
+            return i >>> SHIFT;
+        }
+
+        private static int offset(int i) {
+            return i & LOW;
+        }
+
+        private long oneBetween(int l, int r) {
+            if (r < l) {
+                return 0;
+            }
+            long lBegin = 1L << offset(l);
+            long rEnd = 1L << offset(r);
+            return (ALL_ONE ^ (lBegin - 1)) & ((rEnd << 1) - 1);
+        }
+
+        public void clear(int i) {
+            data[word(i)] &= ~(1L << offset(i));
+        }
+
+        public int capacity() {
+            return capacity;
+        }
+
+        public int size() {
+            int ans = 0;
+            for (long x : data) {
+                ans += Long.bitCount(x);
+            }
+            return ans;
+        }
+
+        public void copy(BitSet bs) {
+            int n = Math.min(this.m, bs.m);
+            System.arraycopy(bs.data, 0, data, 0, n);
+            Arrays.fill(data, n, n, 0);
+        }
+
+        public void xor(BitSet bs) {
+            int n = Math.min(this.m, bs.m);
+            for (int i = 0; i < n; i++) {
+                data[i] ^= bs.data[i];
+            }
+        }
+
+        public int nextSetBit(int start) {
+            int offset = offset(start);
+            int w = word(start);
+            if (offset != 0) {
+                long mask = oneBetween(offset, MAX_OFFSET);
+                if ((data[w] & mask) != 0) {
+                    return Long.numberOfTrailingZeros(data[w] & mask) + w * BITS_FOR_EACH;
                 }
+                w++;
             }
 
-            while (!deque.isEmpty()) {
-                ACAutomaton.Node head = deque.removeFirst();
-                ACAutomaton.Node fail = visit(head.father.fail, head.index);
-                if (fail == null) {
-                    head.fail = root;
-                } else {
-                    head.fail = fail.next[head.index];
-                }
-                head.preSum = head.cnt + head.fail.preSum;
-                for (int i = 0; i < range; i++) {
-                    if (head.next[i] != null) {
-                        deque.addLast(head.next[i]);
+            while (w < m && data[w] == ALL_ZERO) {
+                w++;
+            }
+            if (w >= m) {
+                return capacity();
+            }
+            return Long.numberOfTrailingZeros(data[w]) + w * BITS_FOR_EACH;
+        }
+
+        public void leftShift(int n) {
+            int wordMove = word(n);
+            int offsetMove = offset(n);
+            int rshift = MAX_OFFSET - (offsetMove - 1);
+
+            if (offsetMove != 0) {
+                //slightly
+                for (int i = 0; i < m; i++) {
+                    if (i > 0) {
+                        data[i - 1] |= data[i] << rshift;
                     }
+                    data[i] >>>= offsetMove;
                 }
             }
-
-            for (int i = 0; i < range; i++) {
-                if (root.next[i] != null) {
-                    deque.addLast(root.next[i]);
-                } else {
-                    root.next[i] = root;
-                }
-            }
-            while (!deque.isEmpty()) {
-                ACAutomaton.Node head = deque.removeFirst();
-                for (int i = 0; i < range; i++) {
-                    if (head.next[i] != null) {
-                        deque.addLast(head.next[i]);
-                    } else {
-                        head.next[i] = head.fail.next[i];
+            if (wordMove > 0) {
+                for (int i = 0; i < m; i++) {
+                    if (i >= wordMove) {
+                        data[i - wordMove] = data[i];
                     }
+                    data[i] = 0;
                 }
             }
         }
 
-        public ACAutomaton.Node visit(ACAutomaton.Node trace, int index) {
-            while (trace != null && trace.next[index] == null) {
-                trace = trace.fail;
-            }
-            return trace;
+        public BitSet clone() {
+            return new BitSet(this);
         }
 
-        public void build(char c) {
-            int index = c - minCharacter;
-            if (buildLast.next[index] == null) {
-                ACAutomaton.Node node = addNode();
-                node.father = buildLast;
-                node.index = index;
-                buildLast.next[index] = node;
+        public String toString() {
+            StringBuilder builder = new StringBuilder("{");
+            for (int i = nextSetBit(0); i < capacity(); i = nextSetBit(i + 1)) {
+                builder.append(i).append(',');
             }
-            buildLast = buildLast.next[index];
+            if (builder.length() > 1) {
+                builder.setLength(builder.length() - 1);
+            }
+            builder.append("}");
+            return builder.toString();
         }
 
-        public static class Node {
-            public ACAutomaton.Node[] next;
-            ACAutomaton.Node fail;
-            ACAutomaton.Node father;
-            int index;
-            public int id;
-            int cnt;
-            int preSum;
+        public int hashCode() {
+            int ans = 1;
+            for (int i = 0; i < m; i++) {
+                ans = ans * 31 + Long.hashCode(data[i]);
+            }
+            return ans;
+        }
 
-            public int getCnt() {
-                return cnt;
+        public boolean equals(Object obj) {
+            if (!(obj instanceof BitSet)) {
+                return false;
+            }
+            BitSet other = (BitSet) obj;
+            if (other.capacity != capacity) {
+                return false;
+            }
+            for (int i = 0; i < m; i++) {
+                if (other.data[i] != data[i]) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+    }
+
+    static class FastInput {
+        private final InputStream is;
+        private byte[] buf = new byte[1 << 13];
+        private int bufLen;
+        private int bufOffset;
+        private int next;
+
+        public FastInput(InputStream is) {
+            this.is = is;
+        }
+
+        private int read() {
+            while (bufLen == bufOffset) {
+                bufOffset = 0;
+                try {
+                    bufLen = is.read(buf);
+                } catch (IOException e) {
+                    bufLen = -1;
+                }
+                if (bufLen == -1) {
+                    return -1;
+                }
+            }
+            return buf[bufOffset++];
+        }
+
+        public void skipBlank() {
+            while (next >= 0 && next <= 32) {
+                next = read();
+            }
+        }
+
+        public int readInt() {
+            int sign = 1;
+
+            skipBlank();
+            if (next == '+' || next == '-') {
+                sign = next == '+' ? 1 : -1;
+                next = read();
             }
 
-            public void increaseCnt() {
-                cnt++;
+            int val = 0;
+            if (sign == 1) {
+                while (next >= '0' && next <= '9') {
+                    val = val * 10 + next - '0';
+                    next = read();
+                }
+            } else {
+                while (next >= '0' && next <= '9') {
+                    val = val * 10 - next + '0';
+                    next = read();
+                }
             }
 
-            public Node(int range) {
-                next = new ACAutomaton.Node[range];
-            }
+            return val;
+        }
 
-            public String toString() {
-                return father == null ? "" : (father.toString() + (char) ('a' + index));
-            }
+    }
 
+    static class Debug {
+        private boolean offline;
+        private PrintStream out = System.err;
+
+        public Debug(boolean enable) {
+            offline = enable && System.getSecurityManager() == null;
+        }
+
+        public Debug debug(String name, int x) {
+            if (offline) {
+                debug(name, "" + x);
+            }
+            return this;
+        }
+
+        public Debug debug(String name, String x) {
+            if (offline) {
+                out.printf("%s=%s", name, x);
+                out.println();
+            }
+            return this;
+        }
+
+    }
+
+    static class DigitUtils {
+        private DigitUtils() {
+        }
+
+        public static int floorDiv(int a, int b) {
+            return a < 0 ? -ceilDiv(-a, b) : a / b;
+        }
+
+        public static int ceilDiv(int a, int b) {
+            if (a < 0) {
+                return -floorDiv(-a, b);
+            }
+            int c = a / b;
+            if (c * b < a) {
+                return c + 1;
+            }
+            return c;
         }
 
     }
@@ -281,75 +440,6 @@ public class Main {
 
         public String toString() {
             return cache.toString();
-        }
-
-    }
-
-    static class SequenceUtils {
-        public static void deepFill(Object array, int val) {
-            if (!array.getClass().isArray()) {
-                throw new IllegalArgumentException();
-            }
-            if (array instanceof int[]) {
-                int[] intArray = (int[]) array;
-                Arrays.fill(intArray, val);
-            } else {
-                Object[] objArray = (Object[]) array;
-                for (Object obj : objArray) {
-                    deepFill(obj, val);
-                }
-            }
-        }
-
-    }
-
-    static class FastInput {
-        private final InputStream is;
-        private StringBuilder defaultStringBuf = new StringBuilder(1 << 13);
-        private byte[] buf = new byte[1 << 13];
-        private int bufLen;
-        private int bufOffset;
-        private int next;
-
-        public FastInput(InputStream is) {
-            this.is = is;
-        }
-
-        private int read() {
-            while (bufLen == bufOffset) {
-                bufOffset = 0;
-                try {
-                    bufLen = is.read(buf);
-                } catch (IOException e) {
-                    bufLen = -1;
-                }
-                if (bufLen == -1) {
-                    return -1;
-                }
-            }
-            return buf[bufOffset++];
-        }
-
-        public void skipBlank() {
-            while (next >= 0 && next <= 32) {
-                next = read();
-            }
-        }
-
-        public String readString(StringBuilder builder) {
-            skipBlank();
-
-            while (next > 32) {
-                builder.append((char) next);
-                next = read();
-            }
-
-            return builder.toString();
-        }
-
-        public String readString() {
-            defaultStringBuf.setLength(0);
-            return readString(defaultStringBuf);
         }
 
     }

@@ -1,2 +1,2 @@
-51 src/main/java/contest/1861. Graveyard in Deyja.json
+47 src/main/java/contest/F. Lamps on a Circle.json
 0
