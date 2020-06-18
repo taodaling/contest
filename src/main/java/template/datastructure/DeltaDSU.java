@@ -21,7 +21,7 @@ public class DeltaDSU {
     }
 
     public int find(int a) {
-        if(p[a] == p[p[a]]){
+        if (p[a] == p[p[a]]) {
             return p[a];
         }
         find(p[a]);
@@ -32,10 +32,11 @@ public class DeltaDSU {
     /**
      * return a - b, you should ensure a and b belong to same set
      */
-    public int delta(int a, int b){
-       find(a);
-       find(b);
-       return delta[a] - delta[b];
+    public int delta(int a, int b) {
+        if(find(a) != find(b)){
+            throw new IllegalArgumentException();
+        }
+        return delta[a] - delta[b];
     }
 
     /**
@@ -53,12 +54,13 @@ public class DeltaDSU {
         if (rank[a] == rank[b]) {
             rank[a]++;
         }
-        if (rank[a] > rank[b]) {
-            p[b] = a;
-            delta[b] = -d;
-        } else {
-            p[a] = b;
-            delta[a] = d;
+        if (rank[a] < rank[b]) {
+            int tmp = a;
+            a = b;
+            b = tmp;
+            d = -d;
         }
+        p[b] = a;
+        delta[b] = -d;
     }
 }

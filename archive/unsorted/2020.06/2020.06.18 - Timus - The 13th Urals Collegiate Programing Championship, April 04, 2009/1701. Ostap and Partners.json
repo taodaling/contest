@@ -1,0 +1,75 @@
+{
+  "name" : "1701. Ostap and Partners",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5 6\n3 4 1200\n4 1 -5500\n2 3 4300\n3 0 8200\n0 4 -7000\n2 1 0\n",
+    "output" : "Possible\n0\n12500\n12500\n8200\n7000\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "3 5\n1 2 5\n0 2 0\n1 0 -5\n1 2 5\n2 2 0\n",
+    "output" : "Impossible after 3 statements\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "3 2\n1 0 871\n1 2 903\n",
+    "output" : "Impossible after 2 statements\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "3 2\n0 1 -1\n2 1 -2",
+    "output" : "Impossible after 2 statements",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "4 0",
+    "output" : "Possible\n0\n0\n0\n0",
+    "index" : 4,
+    "active" : true
+  }, {
+    "input" : "4 3\n1 0 1\n2 3 -1\n0 1 -1",
+    "output" : "Possible\n0\n1\n0\n1",
+    "index" : 5,
+    "active" : true
+  }, {
+    "input" : "5 3\n1 2 -2\n4 3 2\n4 2 -1",
+    "output" : "Possible\n0\n1\n3\n0\n2",
+    "index" : 6,
+    "active" : true
+  }, {
+    "input" : "5 1\n1 2 1",
+    "output" : "Possible\n0\n1\n0\n0\n0",
+    "index" : 7,
+    "active" : true
+  }, {
+    "input" : "4 3\n1 2 100\n3 0 100\n1 3 -100",
+    "output" : "Impossible after 3 statements\n",
+    "index" : 8,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx64M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.OstapAndPartners",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.06.18",
+  "contestName" : "Timus - The 13th Urals Collegiate Programing Championship, April 04, 2009",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

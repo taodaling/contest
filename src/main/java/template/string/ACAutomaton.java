@@ -46,6 +46,8 @@ public class ACAutomaton {
     }
 
     public void endBuilding() {
+        //treeOrder = new ArrayList<>(allNodes.size());
+        //treeOrder.add(root);
         Deque<Node> deque = new ArrayDeque(allNodes.size());
         for (int i = 0; i < range; i++) {
             if (root.next[i] != null) {
@@ -55,6 +57,7 @@ public class ACAutomaton {
 
         while (!deque.isEmpty()) {
             Node head = deque.removeFirst();
+            //treeOrder.add(head);
             Node fail = visit(head.father.fail, head.index);
             if (fail == null) {
                 head.fail = root;

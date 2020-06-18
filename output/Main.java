@@ -1,16 +1,18 @@
 import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Arrays;
+import java.util.Deque;
+import java.util.ArrayList;
+import java.io.OutputStreamWriter;
+import java.io.OutputStream;
+import java.util.Collection;
 import java.io.IOException;
-import java.util.Random;
 import java.io.UncheckedIOException;
-import java.math.BigDecimal;
+import java.util.List;
 import java.io.Closeable;
 import java.io.Writer;
-import java.io.OutputStreamWriter;
-import java.util.Comparator;
+import java.util.ArrayDeque;
 import java.io.InputStream;
 
 /**
@@ -31,196 +33,188 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            Bolero solver = new Bolero();
+            GraveyardInDeyja solver = new GraveyardInDeyja();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class Bolero {
+    static class GraveyardInDeyja {
+        String charset;
+
+        {
+            StringBuilder builder = new StringBuilder();
+            for (char i = 'a'; i <= 'z'; i++) {
+                builder.append(i);
+            }
+            for (char i = 'A'; i <= 'Z'; i++) {
+                builder.append(i);
+            }
+            charset = builder.toString();
+        }
+
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            int n = in.readInt();
-            int m = in.readInt();
-            Good[] goods = new Good[n];
-            for (int i = 0; i < n; i++) {
-                goods[i] = new Good();
-                goods[i].p = in.readInt();
-                goods[i].d = 100 - in.readInt();
+            char[] s = in.readString().toCharArray();
+            char[] t = in.readString().toCharArray();
+            int m = charset.length();
+            ACAutomaton ac = new ACAutomaton(0, m - 1);
+            ac.beginBuilding();
+            for (char c : t) {
+                ac.build((char) charset.indexOf(c));
             }
-
-            int[] discounts = new int[100 + 1];
-            Arrays.fill(discounts, n + 1);
-            discounts[100] = 0;
-            for (int i = 0; i < m; i++) {
-                int k = in.readInt();
-                int p = 100 - in.readInt();
-                discounts[p] = Math.min(discounts[p], k);
-            }
-
-            long min = (long) 1e18;
-            for (int i = 0; i <= 100; i++) {
-                if (discounts[i] > n) {
-                    continue;
+            ac.getBuildLast().increaseCnt();
+            ac.endBuilding();
+            ACAutomaton.Node[] nodes = ac.getAllNodes().toArray(new ACAutomaton.Node[0]);
+            int[][] dp = new int[s.length + 1][nodes.length];
+            int inf = (int) 1e8;
+            SequenceUtils.deepFill(dp, -inf);
+            dp[0][0] = 0;
+            for (int i = 0; i < s.length; i++) {
+                int l = charset.indexOf(s[i]);
+                int r = l;
+                if (l == -1) {
+                    l = 0;
+                    r = charset.length() - 1;
                 }
-                for (Good good : goods) {
-                    good.profit = (good.d - i) * good.p;
-                }
-                int l = 0;
-                int r = n - 1;
-                while (l <= r) {
-                    if (goods[r].profit < 0) {
-                        r--;
-                    } else {
-                        SequenceUtils.swap(goods, l, r);
-                        l++;
+                for (int k = l; k <= r; k++) {
+                    for (int j = 0; j < nodes.length; j++) {
+                        ACAutomaton.Node next = nodes[j].next[k];
+                        dp[i + 1][next.id] = Math.max(dp[i + 1][next.id], dp[i][j] + next.getCnt());
                     }
                 }
-
-                if (l < discounts[i]) {
-                    //need more
-                    int k = discounts[i] - l;
-                    CompareUtils.theKthSmallestElement(goods, (a, b) -> -Integer.compare(a.profit, b.profit), l, n, k);
-                    l += k;
-                }
-
-                long sum = 0;
-                for (int j = 0; j < n; j++) {
-                    if (j < l) {
-                        sum += goods[j].p * i;
-                    } else {
-                        sum += goods[j].p * goods[j].d;
-                    }
-                }
-
-                min = Math.min(sum, min);
             }
 
-            out.println(min / 100D);
+            int ans = 0;
+            for (int i = 0; i < nodes.length; i++) {
+                ans = Math.max(ans, dp[s.length][i]);
+            }
+
+            out.println(ans);
         }
 
     }
 
-    static class SequenceUtils {
-        public static <T> void swap(T[] data, int i, int j) {
-            T tmp = data[i];
-            data[i] = data[j];
-            data[j] = tmp;
+    static class ACAutomaton {
+        private final int minCharacter;
+        private final int maxCharacter;
+        private final int range;
+        private ACAutomaton.Node root;
+        private ACAutomaton.Node buildLast;
+        private List<ACAutomaton.Node> allNodes = new ArrayList();
+
+        public ACAutomaton.Node getBuildLast() {
+            return buildLast;
         }
 
-    }
-
-    static class FastInput {
-        private final InputStream is;
-        private byte[] buf = new byte[1 << 13];
-        private int bufLen;
-        private int bufOffset;
-        private int next;
-
-        public FastInput(InputStream is) {
-            this.is = is;
+        public List<ACAutomaton.Node> getAllNodes() {
+            return allNodes;
         }
 
-        private int read() {
-            while (bufLen == bufOffset) {
-                bufOffset = 0;
-                try {
-                    bufLen = is.read(buf);
-                } catch (IOException e) {
-                    bufLen = -1;
-                }
-                if (bufLen == -1) {
-                    return -1;
-                }
-            }
-            return buf[bufOffset++];
+        private ACAutomaton.Node addNode() {
+            ACAutomaton.Node node = new ACAutomaton.Node(range);
+            node.id = allNodes.size();
+            allNodes.add(node);
+            return node;
         }
 
-        public void skipBlank() {
-            while (next >= 0 && next <= 32) {
-                next = read();
-            }
+        public ACAutomaton(int minCharacter, int maxCharacter) {
+            this.minCharacter = minCharacter;
+            this.maxCharacter = maxCharacter;
+            range = maxCharacter - minCharacter + 1;
+            root = addNode();
         }
 
-        public int readInt() {
-            int sign = 1;
+        public void beginBuilding() {
+            buildLast = root;
+        }
 
-            skipBlank();
-            if (next == '+' || next == '-') {
-                sign = next == '+' ? 1 : -1;
-                next = read();
-            }
-
-            int val = 0;
-            if (sign == 1) {
-                while (next >= '0' && next <= '9') {
-                    val = val * 10 + next - '0';
-                    next = read();
-                }
-            } else {
-                while (next >= '0' && next <= '9') {
-                    val = val * 10 - next + '0';
-                    next = read();
+        public void endBuilding() {
+            Deque<ACAutomaton.Node> deque = new ArrayDeque(allNodes.size());
+            for (int i = 0; i < range; i++) {
+                if (root.next[i] != null) {
+                    deque.addLast(root.next[i]);
                 }
             }
 
-            return val;
-        }
-
-    }
-
-    static class CompareUtils {
-        private static final int THRESHOLD = 4;
-
-        private CompareUtils() {
-        }
-
-        public static <T> void insertSort(T[] data, Comparator<T> cmp, int l, int r) {
-            for (int i = l + 1; i <= r; i++) {
-                int j = i;
-                T val = data[i];
-                while (j > l && cmp.compare(data[j - 1], val) > 0) {
-                    data[j] = data[j - 1];
-                    j--;
-                }
-                data[j] = val;
-            }
-        }
-
-        public static <T> T theKthSmallestElement(T[] data, Comparator<T> cmp, int f, int t, int k) {
-            if (t - f <= THRESHOLD) {
-                insertSort(data, cmp, f, t - 1);
-                return data[f + k - 1];
-            }
-            SequenceUtils.swap(data, f, Randomized.nextInt(f, t - 1));
-            int l = f;
-            int r = t;
-            int m = l + 1;
-            while (m < r) {
-                int c = cmp.compare(data[m], data[l]);
-                if (c == 0) {
-                    m++;
-                } else if (c < 0) {
-                    SequenceUtils.swap(data, l, m);
-                    l++;
-                    m++;
+            while (!deque.isEmpty()) {
+                ACAutomaton.Node head = deque.removeFirst();
+                ACAutomaton.Node fail = visit(head.father.fail, head.index);
+                if (fail == null) {
+                    head.fail = root;
                 } else {
-                    SequenceUtils.swap(data, m, --r);
+                    head.fail = fail.next[head.index];
+                }
+                head.preSum = head.cnt + head.fail.preSum;
+                for (int i = 0; i < range; i++) {
+                    if (head.next[i] != null) {
+                        deque.addLast(head.next[i]);
+                    }
                 }
             }
-            if (l - f >= k) {
-                return theKthSmallestElement(data, cmp, f, l, k);
-            } else if (m - f >= k) {
-                return data[l];
+
+            for (int i = 0; i < range; i++) {
+                if (root.next[i] != null) {
+                    deque.addLast(root.next[i]);
+                } else {
+                    root.next[i] = root;
+                }
             }
-            return theKthSmallestElement(data, cmp, m, t, k - (m - f));
+            while (!deque.isEmpty()) {
+                ACAutomaton.Node head = deque.removeFirst();
+                for (int i = 0; i < range; i++) {
+                    if (head.next[i] != null) {
+                        deque.addLast(head.next[i]);
+                    } else {
+                        head.next[i] = head.fail.next[i];
+                    }
+                }
+            }
         }
 
-    }
+        public ACAutomaton.Node visit(ACAutomaton.Node trace, int index) {
+            while (trace != null && trace.next[index] == null) {
+                trace = trace.fail;
+            }
+            return trace;
+        }
 
-    static class Good {
-        int p;
-        int d;
-        int profit;
+        public void build(char c) {
+            int index = c - minCharacter;
+            if (buildLast.next[index] == null) {
+                ACAutomaton.Node node = addNode();
+                node.father = buildLast;
+                node.index = index;
+                buildLast.next[index] = node;
+            }
+            buildLast = buildLast.next[index];
+        }
+
+        public static class Node {
+            public ACAutomaton.Node[] next;
+            ACAutomaton.Node fail;
+            ACAutomaton.Node father;
+            int index;
+            public int id;
+            int cnt;
+            int preSum;
+
+            public int getCnt() {
+                return cnt;
+            }
+
+            public void increaseCnt() {
+                cnt++;
+            }
+
+            public Node(int range) {
+                next = new ACAutomaton.Node[range];
+            }
+
+            public String toString() {
+                return father == null ? "" : (father.toString() + (char) ('a' + index));
+            }
+
+        }
 
     }
 
@@ -251,12 +245,12 @@ public class Main {
             return this;
         }
 
-        public FastOutput append(double c) {
-            cache.append(new BigDecimal(c).toPlainString());
+        public FastOutput append(int c) {
+            cache.append(c);
             return this;
         }
 
-        public FastOutput println(double c) {
+        public FastOutput println(int c) {
             return append(c).println();
         }
 
@@ -291,27 +285,71 @@ public class Main {
 
     }
 
-    static class Randomized {
-        public static int nextInt(int l, int r) {
-            return RandomWrapper.INSTANCE.nextInt(l, r);
+    static class SequenceUtils {
+        public static void deepFill(Object array, int val) {
+            if (!array.getClass().isArray()) {
+                throw new IllegalArgumentException();
+            }
+            if (array instanceof int[]) {
+                int[] intArray = (int[]) array;
+                Arrays.fill(intArray, val);
+            } else {
+                Object[] objArray = (Object[]) array;
+                for (Object obj : objArray) {
+                    deepFill(obj, val);
+                }
+            }
         }
 
     }
 
-    static class RandomWrapper {
-        private Random random;
-        public static RandomWrapper INSTANCE = new RandomWrapper(new Random());
+    static class FastInput {
+        private final InputStream is;
+        private StringBuilder defaultStringBuf = new StringBuilder(1 << 13);
+        private byte[] buf = new byte[1 << 13];
+        private int bufLen;
+        private int bufOffset;
+        private int next;
 
-        public RandomWrapper() {
-            this(new Random());
+        public FastInput(InputStream is) {
+            this.is = is;
         }
 
-        public RandomWrapper(Random random) {
-            this.random = random;
+        private int read() {
+            while (bufLen == bufOffset) {
+                bufOffset = 0;
+                try {
+                    bufLen = is.read(buf);
+                } catch (IOException e) {
+                    bufLen = -1;
+                }
+                if (bufLen == -1) {
+                    return -1;
+                }
+            }
+            return buf[bufOffset++];
         }
 
-        public int nextInt(int l, int r) {
-            return random.nextInt(r - l + 1) + l;
+        public void skipBlank() {
+            while (next >= 0 && next <= 32) {
+                next = read();
+            }
+        }
+
+        public String readString(StringBuilder builder) {
+            skipBlank();
+
+            while (next > 32) {
+                builder.append((char) next);
+                next = read();
+            }
+
+            return builder.toString();
+        }
+
+        public String readString() {
+            defaultStringBuf.setLength(0);
+            return readString(defaultStringBuf);
         }
 
     }
