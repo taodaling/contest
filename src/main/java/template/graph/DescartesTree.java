@@ -1,9 +1,8 @@
 package template.graph;
 
-import template.utils.IntComparator;
+import template.primitve.generated.datastructure.IntegerComparator;
 
 import java.util.ArrayDeque;
-import java.util.Comparator;
 import java.util.Deque;
 
 /**
@@ -13,7 +12,7 @@ public class DescartesTree {
     private Node root;
     private Node[] nodes;
 
-    public <T> DescartesTree(T[] data, int l, int r, Comparator<T> comp) {
+    public DescartesTree(int l, int r, IntegerComparator comp) {
         int len = r - l + 1;
         nodes = new Node[len];
         for (int i = 0; i < len; i++) {
@@ -22,30 +21,7 @@ public class DescartesTree {
         }
         Deque<Node> deque = new ArrayDeque<>(len);
         for (int i = 0; i < len; i++) {
-            while (!deque.isEmpty() && comp.compare(data[deque.peekLast().index], data[nodes[i].index]) > 0) {
-                Node tail = deque.removeLast();
-                tail.right = nodes[i].left;
-                nodes[i].left = tail;
-            }
-            deque.addLast(nodes[i]);
-        }
-        while (deque.size() > 1) {
-            Node tail = deque.removeLast();
-            deque.peekLast().right = tail;
-        }
-        root = deque.removeLast();
-    }
-
-    public DescartesTree(int[] data, int l, int r, IntComparator comparator) {
-        int len = r - l + 1;
-        nodes = new Node[len];
-        for (int i = 0; i < len; i++) {
-            nodes[i] = new Node();
-            nodes[i].index = i + l;
-        }
-        Deque<Node> deque = new ArrayDeque<>(len);
-        for (int i = 0; i < len; i++) {
-            while (!deque.isEmpty() && comparator.compare(data[deque.peekLast().index], data[nodes[i].index]) > 0) {
+            while (!deque.isEmpty() && comp.compare(deque.peekLast().index, nodes[i].index) > 0) {
                 Node tail = deque.removeLast();
                 tail.right = nodes[i].left;
                 nodes[i].left = tail;

@@ -1,12 +1,10 @@
 package contest;
 
-import template.algo.MoOnArray;
 import template.datastructure.CircularLinkedNode;
 import template.datastructure.SparseTable;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.math.DigitUtils;
-import template.primitve.generated.datastructure.IntegerRMQ;
 import template.primitve.generated.datastructure.IntegerSparseTable;
 
 public class DDestiny {

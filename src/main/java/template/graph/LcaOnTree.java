@@ -2,6 +2,7 @@ package template.graph;
 
 import template.binary.Log2;
 
+import java.util.Arrays;
 import java.util.List;
 
 // Answering LCA queries in O(1) with O(n) preprocessing
@@ -36,16 +37,23 @@ public class LcaOnTree {
         }
     }
 
-    public LcaOnTree(List<? extends DirectedEdge>[] tree, int root) {
-        int n = tree.length;
+    public void reset(List<? extends DirectedEdge>[] tree, int root) {
+        time = 0;
+        dfs1(tree, root, -1);
+        dfs2(tree, root, -1, 0);
+    }
+
+    public LcaOnTree(int n) {
         preOrder = new int[n];
         i = new int[n];
         head = new int[n];
         a = new int[n];
         parent = new int[n];
+    }
 
-        dfs1(tree, root, -1);
-        dfs2(tree, root, -1, 0);
+    public LcaOnTree(List<? extends DirectedEdge>[] tree, int root) {
+        this(tree.length);
+        reset(tree, root);
     }
 
     private int enterIntoStrip(int x, int hz) {

@@ -3,246 +3,148 @@ package template.algo;
 import java.util.Arrays;
 
 public class MoOnArray {
-
-    public static <T, Q extends Query> void handle(T[] data, Q[] queries, Handler<T, Q> handler) {
-        int n = data.length;
-        int blockSize = Math.max(1, (int) Math.ceil(Math.sqrt(queries.length)));
-        handle(data, queries, handler, blockSize);
-    }
-
-    public static <T, Q extends Query> void handle(T[] data, Q[] queries, Handler<T, Q> handler, int blockSize) {
-        if (queries.length == 0 || data.length == 0) {
+    public static <Q extends Query> void solve(int rangeL, int rangeR, State<Q> state, Q[] qs) {
+        if (qs.length == 0) {
             return;
         }
+        int n = Math.max(rangeR - rangeL + 1, qs.length);
+        int k = (int) Math.ceil(Math.sqrt(n));
+        solve(rangeL, rangeR, state, qs, k);
+    }
 
-        Arrays.sort(queries, (a, b) -> {
-            int ans = a.getL() / blockSize - b.getL() / blockSize;
+    public static <Q extends Query> void solve(int rangeL, int rangeR, State<Q> state, Q[] qs, int k) {
+        Arrays.sort(qs, (a, b) -> {
+            int ans = a.left() / k - b.left() / k;
             if (ans == 0) {
-                ans = a.getR() - b.getR();
+                ans = a.right() - b.right();
             }
             return ans;
         });
 
-        int ll = queries[0].getL();
-        int rr = ll - 1;
-        for (Q q : queries) {
-            int l = q.getL();
-            int r = q.getR();
-            while (l < ll) {
-                ll--;
-                handler.add(ll, data[ll]);
-            }
-            while (r > rr) {
-                rr++;
-                handler.add(rr, data[rr]);
-            }
-            while (l > ll) {
-                handler.remove(ll, data[ll]);
-                ll++;
-            }
-            while (r < rr) {
-                handler.remove(rr, data[rr]);
-                rr--;
-            }
-            handler.answer(q);
-        }
-    }
-
-    public static <Q extends Query> void handle(int[] data, Q[] queries, IntHandler<Q> handler) {
-        int n = data.length;
-        int blockSize = Math.max(1, (int) Math.ceil(Math.sqrt(queries.length)));
-        handle(data, queries, handler, blockSize);
-    }
-
-    public static <Q extends Query> void handle(int[] data, Q[] queries, IntHandler<Q> handler, int blockSize) {
-        if (queries.length == 0 || data.length == 0) {
-            return;
-        }
-
-        Arrays.sort(queries, (a, b) -> {
-            int ans = a.getL() / blockSize - b.getL() / blockSize;
-            if (ans == 0) {
-                ans = a.getR() - b.getR();
-            }
-            return ans;
-        });
-
-        int ll = queries[0].getL();
-        int rr = ll - 1;
-        for (Q q : queries) {
-            int l = q.getL();
-            int r = q.getR();
-            while (l < ll) {
-                ll--;
-                handler.add(ll, data[ll]);
-            }
-            while (r > rr) {
-                rr++;
-                handler.add(rr, data[rr]);
-            }
-            while (l > ll) {
-                handler.remove(ll, data[ll]);
-                ll++;
-            }
-            while (r < rr) {
-                handler.remove(rr, data[rr]);
-                rr--;
-            }
-            handler.answer(q);
-        }
-    }
-
-    public static <T, Q extends VersionQuery> void handle(T[] data, Modify<T>[] modifies, Q[] queries, Handler<T, Q> handler) {
-        int n = data.length;
-        int blockSize = (int) Math.ceil(Math.pow(n, 2.0 / 3));
-        handle(data, modifies, queries, handler, blockSize);
-    }
-
-    public static <T, Q extends VersionQuery> void handle(T[] data, Modify<T>[] modifies, Q[] queries, Handler<T, Q> handler, int blockSize) {
-        if (queries.length == 0 || data.length == 0) {
-            return;
-        }
-
-        Arrays.sort(queries, (a, b) -> {
-            int ans = a.getL() / blockSize - b.getL() / blockSize;
-            if (ans == 0) {
-                ans = a.getVersion() / blockSize - b.getVersion() / blockSize;
-            }
-            if (ans == 0) {
-                ans = a.getR() / blockSize - b.getR() / blockSize;
-            }
-            return ans;
-        });
-
-        int v = 0;
-        int l = queries[0].getL();
-        int r = l - 1;
-        for (Q q : queries) {
-            int ll = q.getL();
-            int rr = q.getR();
-            int vv = q.getVersion();
-
-            while (v < vv) {
-                modifies[v].apply(data, handler, l, r);
-                v++;
-            }
-            while (v > vv) {
-                v--;
-                modifies[v].revoke(data, handler, l, r);
-            }
-            while (l > ll) {
+        int l = rangeL;
+        int r = rangeL - 1;
+        for (Q q : qs) {
+            int tl = q.left();
+            int tr = q.right();
+            while (l > tl) {
                 l--;
-                handler.add(l, data[l]);
+                state.add(l);
             }
-            while (r < rr) {
+            while (r < tr) {
                 r++;
-                handler.add(r, data[r]);
+                state.add(r);
             }
-            while (l < ll) {
-                handler.remove(l, data[l]);
+            while (l < tl) {
+                state.remove(l);
                 l++;
             }
-            while (r > rr) {
-                handler.remove(r, data[r]);
+            while (r > tr) {
+                state.remove(r);
                 r--;
             }
-            handler.answer(q);
+            state.answer(q);
         }
     }
 
-    public static <Q extends VersionQuery> void handle(int[] data, IntModify[] modifies, Q[] queries, IntHandler<Q> handler) {
-        int n = data.length;
-        int blockSize = (int) Math.ceil(Math.pow(n, 2.0 / 3));
-        handle(data, modifies, queries, handler, blockSize);
-    }
-
-    public static <Q extends VersionQuery> void handle(int[] data, IntModify[] modifies, Q[] queries, IntHandler<Q> handler, int blockSize) {
-        if (queries.length == 0 || data.length == 0) {
+    public static <Q extends VersionQuery, M extends Modify> void solve(int rangeL, int rangeR, int now, ModifiableState<Q, M> state, Q[] qs, M[] ms) {
+        if (qs.length == 0) {
             return;
         }
+        int n = Math.max(Math.max(rangeR - rangeL + 1, qs.length), ms.length);
+        int k = (int) Math.ceil(Math.pow(n, 2.0 / 3));
+        solve(rangeL, rangeR, now, state, qs, ms, k);
+    }
 
-        Arrays.sort(queries, (a, b) -> {
-            int ans = a.getL() / blockSize - b.getL() / blockSize;
+    public static <Q extends VersionQuery, M extends Modify> void solve(int rangeL, int rangeR, int now, ModifiableState<Q, M> state, Q[] qs, M[] ms, int k) {
+        Arrays.sort(qs, (a, b) -> {
+            int ans = a.left() / k - b.left() / k;
             if (ans == 0) {
-                ans = a.getVersion() / blockSize - b.getVersion() / blockSize;
+                ans = (a.version() + 1) / k - (b.version() + 1) / k;
             }
             if (ans == 0) {
-                ans = a.getR() / blockSize - b.getR() / blockSize;
+                ans = a.right() - b.right();
             }
             return ans;
         });
 
-        int v = 0;
-        int l = queries[0].getL();
-        int r = l - 1;
-        for (Q q : queries) {
-            int ll = q.getL();
-            int rr = q.getR();
-            int vv = q.getVersion();
-
-            while (v < vv) {
-                modifies[v].apply(data, handler, l, r);
-                v++;
-            }
-            while (v > vv) {
-                v--;
-                modifies[v].revoke(data, handler, l, r);
-            }
-            while (l > ll) {
+        int l = rangeL;
+        int r = rangeL - 1;
+        int v = now;
+        for (Q q : qs) {
+            int tl = q.left();
+            int tr = q.right();
+            int tv = q.version();
+            while (l > tl) {
                 l--;
-                handler.add(l, data[l]);
+                state.add(l);
             }
-            while (r < rr) {
+            while (r < tr) {
                 r++;
-                handler.add(r, data[r]);
+                state.add(r);
             }
-            while (l < ll) {
-                handler.remove(l, data[l]);
+            while (l < tl) {
+                state.remove(l);
                 l++;
             }
-            while (r > rr) {
-                handler.remove(r, data[r]);
+            while (r > tr) {
+                state.remove(r);
                 r--;
             }
-            handler.answer(q);
+            while (v < tv) {
+                v++;
+                int index = ms[v].index();
+                if (include(l, r, index)) {
+                    state.remove(index);
+                    state.apply(ms[v]);
+                    state.add(index);
+                } else {
+                    state.apply(ms[v]);
+                }
+            }
+            while (v > tv) {
+                int index = ms[v].index();
+                if (include(l, r, index)) {
+                    state.remove(index);
+                    state.revoke(ms[v]);
+                    state.add(index);
+                } else {
+                    state.revoke(ms[v]);
+                }
+                v--;
+            }
+            state.answer(q);
         }
     }
 
-    public interface Query {
-        int getL();
-
-        int getR();
+    private static boolean include(int l, int r, int index) {
+        return l <= index && index <= r;
     }
 
-    public interface Handler<T, Q> {
-        void add(int i, T x);
-
-        void remove(int i, T x);
-
-        void answer(Q q);
+    public static interface Modify {
+        int index();
     }
 
-    public interface IntHandler<Q> {
-        void add(int i, int x);
+    public static interface Query {
+        public int left();
 
-        void remove(int i, int x);
-
-        void answer(Q q);
+        public int right();
     }
 
-    public interface VersionQuery extends Query {
-        int getVersion();
+    public static interface VersionQuery extends Query {
+        public int version();
     }
 
-    public interface Modify<T> {
-        <Q extends VersionQuery> void apply(T[] data, Handler<T, Q> handler, int l, int r);
+    public static interface State<Q extends Query> {
+        public void answer(Q q);
 
-        <Q extends VersionQuery> void revoke(T[] data, Handler<T, Q> handler, int l, int r);
+        public void add(int i);
+
+        public void remove(int i);
     }
 
-    public interface IntModify {
-        <Q extends VersionQuery> void apply(int[] data, IntHandler<Q> handler, int l, int r);
+    public static interface ModifiableState<Q extends VersionQuery, M extends Modify> extends State<Q> {
+        public void apply(M m);
 
-        <Q extends VersionQuery> void revoke(int[] data, IntHandler<Q> handler, int l, int r);
+        public void revoke(M m);
     }
 }

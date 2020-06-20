@@ -2,7 +2,6 @@ package contest;
 
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.primitve.generated.datastructure.IntegerRMQ;
 import template.primitve.generated.datastructure.LongHashMap;
 import template.primitve.generated.datastructure.LongPreSum;
 import template.utils.Debug;

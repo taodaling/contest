@@ -3,7 +3,6 @@ package contest;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.primitve.generated.datastructure.IntegerComparator;
-import template.primitve.generated.datastructure.IntegerRMQ;
 import template.string.SAIS;
 import template.utils.Debug;
 

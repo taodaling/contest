@@ -4,7 +4,7 @@ package contest;
 import template.datastructure.RMQ;
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.utils.IntComparator;
+import template.utils.IntegerComparator;
 
 import java.util.ArrayDeque;
 import java.util.Comparator;
@@ -136,7 +136,7 @@ class DescartesTree {
         root = deque.removeLast();
     }
 
-    public DescartesTree(int[] data, int l, int r, IntComparator comparator) {
+    public DescartesTree(int[] data, int l, int r, IntegerComparator comparator) {
         int len = r - l + 1;
         nodes = new Node[len];
         for (int i = 0; i < len; i++) {

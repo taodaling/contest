@@ -1,6 +1,5 @@
 package contest;
 
-import template.primitve.generated.datastructure.IntegerRMQ;
 import template.utils.Debug;
 
 import java.util.Map;

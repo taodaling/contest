@@ -5,7 +5,6 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.io.IOException;
-import java.io.Serializable;
 import java.io.UncheckedIOException;
 import java.io.Closeable;
 import java.io.Writer;
@@ -18,7 +17,7 @@ import java.io.InputStream;
  */
 public class Main {
     public static void main(String[] args) throws Exception {
-        Thread thread = new Thread(null, new TaskAdapter(), "", 1 << 27);
+        Thread thread = new Thread(null, new TaskAdapter(), "", 1 << 29);
         thread.start();
         thread.join();
     }
@@ -30,349 +29,51 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            FLampsOnACircle solver = new FLampsOnACircle();
+            BExtension solver = new BExtension();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class FLampsOnACircle {
+    static class BExtension {
         Debug debug = new Debug(true);
 
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            int n = in.readInt();
-            int k = 0;
-            int r = 0;
-            for (int i = 1; i <= n; i++) {
-                int block = DigitUtils.ceilDiv(n - 1, i + 1);
-                int cnt = n - 1 - (block - 1) - i;
-                if (block * (i + 1) == n - 1) {
-                    cnt--;
-                }
-                if (cnt > r) {
-                    r = cnt;
-                    k = i;
-                }
-            }
-
-            debug.debug("r", r);
-            debug.debug("k", k);
-
-            if (r == 0) {
-                out.println(0).flush();
-                return;
-            }
-
-            BitSet end = new BitSet(n);
-            for (int i = 0; i < n - 1; i++) {
-                if (i % (k + 1) != k) {
-                    end.set(i);
-                }
-            }
-            BitSet cur = new BitSet(n);
-            for (; cur.size() < end.size() - k; ) {
-                cur.xor(end);
-                int len = cur.size();
-                out.append(len).append(' ');
-                for (int i = 0; i < n - 1; i++) {
-                    if (cur.get(i)) {
-                        out.append(i + 1).append(' ');
+            int a = in.readInt();
+            int b = in.readInt();
+            int c = in.readInt();
+            int d = in.readInt();
+            ArrayIndex ai = new ArrayIndex(c + 1, d + 1, 2);
+            int[] dp = new int[ai.totalSize()];
+            dp[ai.indexOf(a, b, 0)] = 1;
+            Modular mod = new Modular(998244353);
+            for (int i = a; i <= c; i++) {
+                for (int j = b; j <= d; j++) {
+                    for (int k = 0; k < 2; k++) {
+                        if (dp[ai.indexOf(i, j, k)] == 0) {
+                            continue;
+                        }
+                        if (k == 0 && j + 1 <= d) {
+                            dp[ai.indexOf(i, j + 1, 0)] = mod.plus(dp[ai.indexOf(i, j + 1, 0)], mod.mul(dp[ai.indexOf(i, j, k)], i));
+                        }
+                        if (k == 0 && i + 1 <= c) {
+                            dp[ai.indexOf(i + 1, j, 1)] = mod.plus(dp[ai.indexOf(i + 1, j, 1)], mod.mul(dp[ai.indexOf(i, j, k)], j));
+                        }
+                        if (k == 1 && j + 1 <= d) {
+                            dp[ai.indexOf(i, j + 1, 0)] = mod.plus(dp[ai.indexOf(i, j + 1, 0)], mod.mul(dp[ai.indexOf(i, j, k)], 1));
+                        }
+                        if (k == 1 && i + 1 <= c) {
+                            dp[ai.indexOf(i + 1, j, 1)] = mod.plus(dp[ai.indexOf(i + 1, j, 1)], mod.mul(dp[ai.indexOf(i, j, k)], j));
+                        }
                     }
                 }
-                out.println().flush();
-
-                int x = in.readInt() - 1;
-                cur.copy(end);
-                for (int i = 0; i < len; i++) {
-                    cur.clear((i + x) % n);
-                }
             }
 
-            out.println(0).flush();
-        }
+            // debug.debug("dp", dp);
+            debug.debug("dp", dp, ai);
 
-    }
-
-    static final class BitSet implements Serializable, Cloneable {
-        private long[] data;
-        private long tailAvailable;
-        private int capacity;
-        private int m;
-        private static final int SHIFT = 6;
-        private static final int LOW = 63;
-        private static final int BITS_FOR_EACH = 64;
-        private static final long ALL_ONE = ~0L;
-        private static final long ALL_ZERO = 0L;
-        private static final int MAX_OFFSET = 63;
-
-        public BitSet(int n) {
-            capacity = n;
-            this.m = (capacity + 64 - 1) / 64;
-            data = new long[m];
-            tailAvailable = oneBetween(0, offset(capacity - 1));
-        }
-
-        public BitSet(BitSet bs) {
-            this.data = bs.data.clone();
-            this.tailAvailable = bs.tailAvailable;
-            this.capacity = bs.capacity;
-            this.m = bs.m;
-        }
-
-        private BitSet(BitSet bs, int l, int r) {
-            capacity = r - l + 1;
-            tailAvailable = oneBetween(0, offset(capacity - 1));
-            data = Arrays.copyOfRange(bs.data, word(l), word(r) + 1);
-            this.m = data.length;
-            leftShift(offset(l));
-            this.m = (capacity + 64 - 1) / 64;
-            data[m - 1] &= tailAvailable;
-            for (int i = m; i < data.length; i++) {
-                data[i] = 0;
-            }
-        }
-
-        public boolean get(int i) {
-            return (data[word(i)] & (1L << offset(i))) != 0;
-        }
-
-        public void set(int i) {
-            data[word(i)] |= (1L << offset(i));
-        }
-
-        private static int word(int i) {
-            return i >>> SHIFT;
-        }
-
-        private static int offset(int i) {
-            return i & LOW;
-        }
-
-        private long oneBetween(int l, int r) {
-            if (r < l) {
-                return 0;
-            }
-            long lBegin = 1L << offset(l);
-            long rEnd = 1L << offset(r);
-            return (ALL_ONE ^ (lBegin - 1)) & ((rEnd << 1) - 1);
-        }
-
-        public void clear(int i) {
-            data[word(i)] &= ~(1L << offset(i));
-        }
-
-        public int capacity() {
-            return capacity;
-        }
-
-        public int size() {
-            int ans = 0;
-            for (long x : data) {
-                ans += Long.bitCount(x);
-            }
-            return ans;
-        }
-
-        public void copy(BitSet bs) {
-            int n = Math.min(this.m, bs.m);
-            System.arraycopy(bs.data, 0, data, 0, n);
-            Arrays.fill(data, n, n, 0);
-        }
-
-        public void xor(BitSet bs) {
-            int n = Math.min(this.m, bs.m);
-            for (int i = 0; i < n; i++) {
-                data[i] ^= bs.data[i];
-            }
-        }
-
-        public int nextSetBit(int start) {
-            int offset = offset(start);
-            int w = word(start);
-            if (offset != 0) {
-                long mask = oneBetween(offset, MAX_OFFSET);
-                if ((data[w] & mask) != 0) {
-                    return Long.numberOfTrailingZeros(data[w] & mask) + w * BITS_FOR_EACH;
-                }
-                w++;
-            }
-
-            while (w < m && data[w] == ALL_ZERO) {
-                w++;
-            }
-            if (w >= m) {
-                return capacity();
-            }
-            return Long.numberOfTrailingZeros(data[w]) + w * BITS_FOR_EACH;
-        }
-
-        public void leftShift(int n) {
-            int wordMove = word(n);
-            int offsetMove = offset(n);
-            int rshift = MAX_OFFSET - (offsetMove - 1);
-
-            if (offsetMove != 0) {
-                //slightly
-                for (int i = 0; i < m; i++) {
-                    if (i > 0) {
-                        data[i - 1] |= data[i] << rshift;
-                    }
-                    data[i] >>>= offsetMove;
-                }
-            }
-            if (wordMove > 0) {
-                for (int i = 0; i < m; i++) {
-                    if (i >= wordMove) {
-                        data[i - wordMove] = data[i];
-                    }
-                    data[i] = 0;
-                }
-            }
-        }
-
-        public BitSet clone() {
-            return new BitSet(this);
-        }
-
-        public String toString() {
-            StringBuilder builder = new StringBuilder("{");
-            for (int i = nextSetBit(0); i < capacity(); i = nextSetBit(i + 1)) {
-                builder.append(i).append(',');
-            }
-            if (builder.length() > 1) {
-                builder.setLength(builder.length() - 1);
-            }
-            builder.append("}");
-            return builder.toString();
-        }
-
-        public int hashCode() {
-            int ans = 1;
-            for (int i = 0; i < m; i++) {
-                ans = ans * 31 + Long.hashCode(data[i]);
-            }
-            return ans;
-        }
-
-        public boolean equals(Object obj) {
-            if (!(obj instanceof BitSet)) {
-                return false;
-            }
-            BitSet other = (BitSet) obj;
-            if (other.capacity != capacity) {
-                return false;
-            }
-            for (int i = 0; i < m; i++) {
-                if (other.data[i] != data[i]) {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-    }
-
-    static class FastInput {
-        private final InputStream is;
-        private byte[] buf = new byte[1 << 13];
-        private int bufLen;
-        private int bufOffset;
-        private int next;
-
-        public FastInput(InputStream is) {
-            this.is = is;
-        }
-
-        private int read() {
-            while (bufLen == bufOffset) {
-                bufOffset = 0;
-                try {
-                    bufLen = is.read(buf);
-                } catch (IOException e) {
-                    bufLen = -1;
-                }
-                if (bufLen == -1) {
-                    return -1;
-                }
-            }
-            return buf[bufOffset++];
-        }
-
-        public void skipBlank() {
-            while (next >= 0 && next <= 32) {
-                next = read();
-            }
-        }
-
-        public int readInt() {
-            int sign = 1;
-
-            skipBlank();
-            if (next == '+' || next == '-') {
-                sign = next == '+' ? 1 : -1;
-                next = read();
-            }
-
-            int val = 0;
-            if (sign == 1) {
-                while (next >= '0' && next <= '9') {
-                    val = val * 10 + next - '0';
-                    next = read();
-                }
-            } else {
-                while (next >= '0' && next <= '9') {
-                    val = val * 10 - next + '0';
-                    next = read();
-                }
-            }
-
-            return val;
-        }
-
-    }
-
-    static class Debug {
-        private boolean offline;
-        private PrintStream out = System.err;
-
-        public Debug(boolean enable) {
-            offline = enable && System.getSecurityManager() == null;
-        }
-
-        public Debug debug(String name, int x) {
-            if (offline) {
-                debug(name, "" + x);
-            }
-            return this;
-        }
-
-        public Debug debug(String name, String x) {
-            if (offline) {
-                out.printf("%s=%s", name, x);
-                out.println();
-            }
-            return this;
-        }
-
-    }
-
-    static class DigitUtils {
-        private DigitUtils() {
-        }
-
-        public static int floorDiv(int a, int b) {
-            return a < 0 ? -ceilDiv(-a, b) : a / b;
-        }
-
-        public static int ceilDiv(int a, int b) {
-            if (a < 0) {
-                return -floorDiv(-a, b);
-            }
-            int c = a / b;
-            if (c * b < a) {
-                return c + 1;
-            }
-            return c;
+            int ans = mod.plus(dp[ai.indexOf(c, d, 0)], dp[ai.indexOf(c, d, 1)]);
+            out.println(ans);
         }
 
     }
@@ -440,6 +141,304 @@ public class Main {
 
         public String toString() {
             return cache.toString();
+        }
+
+    }
+
+    static class FastInput {
+        private final InputStream is;
+        private byte[] buf = new byte[1 << 13];
+        private int bufLen;
+        private int bufOffset;
+        private int next;
+
+        public FastInput(InputStream is) {
+            this.is = is;
+        }
+
+        private int read() {
+            while (bufLen == bufOffset) {
+                bufOffset = 0;
+                try {
+                    bufLen = is.read(buf);
+                } catch (IOException e) {
+                    bufLen = -1;
+                }
+                if (bufLen == -1) {
+                    return -1;
+                }
+            }
+            return buf[bufOffset++];
+        }
+
+        public void skipBlank() {
+            while (next >= 0 && next <= 32) {
+                next = read();
+            }
+        }
+
+        public int readInt() {
+            int sign = 1;
+
+            skipBlank();
+            if (next == '+' || next == '-') {
+                sign = next == '+' ? 1 : -1;
+                next = read();
+            }
+
+            int val = 0;
+            if (sign == 1) {
+                while (next >= '0' && next <= '9') {
+                    val = val * 10 + next - '0';
+                    next = read();
+                }
+            } else {
+                while (next >= '0' && next <= '9') {
+                    val = val * 10 - next + '0';
+                    next = read();
+                }
+            }
+
+            return val;
+        }
+
+    }
+
+    static class ArrayIndex {
+        int[] dimensions;
+
+        public ArrayIndex(int... dimensions) {
+            this.dimensions = dimensions;
+        }
+
+        public int totalSize() {
+            int ans = 1;
+            for (int x : dimensions) {
+                ans *= x;
+            }
+            return ans;
+        }
+
+        public int indexOf(int a, int b) {
+            return a * dimensions[1] + b;
+        }
+
+        public int indexOf(int a, int b, int c) {
+            return indexOf(a, b) * dimensions[2] + c;
+        }
+
+        public int[] inverse(int i) {
+            int[] ans = new int[dimensions.length];
+            for (int j = dimensions.length - 1; j >= 0; j--) {
+                ans[j] = i % dimensions[j];
+                i /= dimensions[j];
+            }
+            return ans;
+        }
+
+    }
+
+    static class Debug {
+        private boolean offline;
+        private PrintStream out = System.err;
+        static int[] empty = new int[0];
+
+        public Debug(boolean enable) {
+            offline = enable && System.getSecurityManager() == null;
+        }
+
+        public Debug debug(String name, Object x) {
+            return debug(name, x, empty);
+        }
+
+        public Debug debug(String name, Object x, ArrayIndex ai) {
+            if (offline) {
+                if (x == null) {
+                    debug(name, x);
+                    return this;
+                }
+                if (!x.getClass().isArray()) {
+                    throw new IllegalArgumentException();
+                }
+                if (x instanceof byte[]) {
+                    byte[] arr = (byte[]) x;
+                    for (int i = 0; i < arr.length; i++) {
+                        int[] indexes = ai.inverse(i);
+                        debug(name, arr[i], indexes);
+                    }
+                } else if (x instanceof short[]) {
+                    short[] arr = (short[]) x;
+                    for (int i = 0; i < arr.length; i++) {
+                        int[] indexes = ai.inverse(i);
+                        debug(name, arr[i], indexes);
+                    }
+                } else if (x instanceof boolean[]) {
+                    boolean[] arr = (boolean[]) x;
+                    for (int i = 0; i < arr.length; i++) {
+                        int[] indexes = ai.inverse(i);
+                        debug(name, arr[i], indexes);
+                    }
+                } else if (x instanceof char[]) {
+                    char[] arr = (char[]) x;
+                    for (int i = 0; i < arr.length; i++) {
+                        int[] indexes = ai.inverse(i);
+                        debug(name, arr[i], indexes);
+                    }
+                } else if (x instanceof int[]) {
+                    int[] arr = (int[]) x;
+                    for (int i = 0; i < arr.length; i++) {
+                        int[] indexes = ai.inverse(i);
+                        debug(name, arr[i], indexes);
+                    }
+                } else if (x instanceof float[]) {
+                    float[] arr = (float[]) x;
+                    for (int i = 0; i < arr.length; i++) {
+                        int[] indexes = ai.inverse(i);
+                        debug(name, arr[i], indexes);
+                    }
+                } else if (x instanceof double[]) {
+                    double[] arr = (double[]) x;
+                    for (int i = 0; i < arr.length; i++) {
+                        int[] indexes = ai.inverse(i);
+                        debug(name, arr[i], indexes);
+                    }
+                } else if (x instanceof long[]) {
+                    long[] arr = (long[]) x;
+                    for (int i = 0; i < arr.length; i++) {
+                        int[] indexes = ai.inverse(i);
+                        debug(name, arr[i], indexes);
+                    }
+                } else {
+                    Object[] arr = (Object[]) x;
+                    for (int i = 0; i < arr.length; i++) {
+                        int[] indexes = ai.inverse(i);
+                        debug(name, arr[i], indexes);
+                    }
+                }
+            }
+            return this;
+        }
+
+        public Debug debug(String name, Object x, int... indexes) {
+            if (offline) {
+                if (x == null || !x.getClass().isArray()) {
+                    out.append(name);
+                    for (int i : indexes) {
+                        out.printf("[%d]", i);
+                    }
+                    out.append("=").append("" + x);
+                    out.println();
+                } else {
+                    indexes = Arrays.copyOf(indexes, indexes.length + 1);
+                    if (x instanceof byte[]) {
+                        byte[] arr = (byte[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof short[]) {
+                        short[] arr = (short[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof boolean[]) {
+                        boolean[] arr = (boolean[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof char[]) {
+                        char[] arr = (char[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof int[]) {
+                        int[] arr = (int[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof float[]) {
+                        float[] arr = (float[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof double[]) {
+                        double[] arr = (double[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else if (x instanceof long[]) {
+                        long[] arr = (long[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    } else {
+                        Object[] arr = (Object[]) x;
+                        for (int i = 0; i < arr.length; i++) {
+                            indexes[indexes.length - 1] = i;
+                            debug(name, arr[i], indexes);
+                        }
+                    }
+                }
+            }
+            return this;
+        }
+
+    }
+
+    static class Modular {
+        int m;
+
+        public Modular(int m) {
+            this.m = m;
+        }
+
+        public Modular(long m) {
+            this.m = (int) m;
+            if (this.m != m) {
+                throw new IllegalArgumentException();
+            }
+        }
+
+        public Modular(double m) {
+            this.m = (int) m;
+            if (this.m != m) {
+                throw new IllegalArgumentException();
+            }
+        }
+
+        public int valueOf(int x) {
+            x %= m;
+            if (x < 0) {
+                x += m;
+            }
+            return x;
+        }
+
+        public int valueOf(long x) {
+            x %= m;
+            if (x < 0) {
+                x += m;
+            }
+            return (int) x;
+        }
+
+        public int mul(int x, int y) {
+            return valueOf((long) x * y);
+        }
+
+        public int plus(int x, int y) {
+            return valueOf(x + y);
+        }
+
+        public String toString() {
+            return "mod " + m;
         }
 
     }

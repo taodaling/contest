@@ -462,7 +462,7 @@ public class CompareUtils {
         }
     }
 
-    public static void mergeAscending(int[] a, int al, int ar, int[] b, int bl, int br, int[] c, int cl, IntComparator comparator) {
+    public static void mergeAscending(int[] a, int al, int ar, int[] b, int bl, int br, int[] c, int cl, IntegerComparator comparator) {
         while (al <= ar || bl <= br) {
             if (bl > br || (al <= ar && comparator.compare(a[al], b[bl]) <= 0)) {
                 c[cl++] = a[al++];

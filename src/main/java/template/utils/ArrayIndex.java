@@ -63,6 +63,15 @@ public class ArrayIndex {
         return indexOfSpecifiedDimension0(index, d, dimensions.length - 1);
     }
 
+    public int[] inverse(int i) {
+        int[] ans = new int[dimensions.length];
+        for (int j = dimensions.length - 1; j >= 0; j--) {
+            ans[j] = i % dimensions[j];
+            i /= dimensions[j];
+        }
+        return ans;
+    }
+
     private int indexOfSpecifiedDimension0(int index, int t, int now) {
         return now == t ? index % dimensions[now] : indexOfSpecifiedDimension0(index / dimensions[now], t, now - 1);
     }

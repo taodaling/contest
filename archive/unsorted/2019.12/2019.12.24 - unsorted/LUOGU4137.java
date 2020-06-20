@@ -1,6 +1,5 @@
 package contest;
 
-import template.algo.MoOnArray;
 import template.io.FastInput;
 import template.io.FastOutput;
 

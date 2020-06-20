@@ -117,6 +117,10 @@ public final class BitSet implements Serializable, Cloneable {
         data[word(i)] &= ~(1L << offset(i));
     }
 
+    public void inverse(int i) {
+        data[word(i)] ^= (1L << offset(i));
+    }
+
     public void clear(int l, int r) {
         if (r < l) {
             return;

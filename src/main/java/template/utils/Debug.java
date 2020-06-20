@@ -69,6 +69,75 @@ public class Debug {
         return debug(name, x, empty);
     }
 
+    public Debug debug(String name, Object x, ArrayIndex ai) {
+        if (offline) {
+            if (x == null) {
+                debug(name, x);
+                return this;
+            }
+            if (!x.getClass().isArray()) {
+                throw new IllegalArgumentException();
+            }
+            if (x instanceof byte[]) {
+                byte[] arr = (byte[]) x;
+                for (int i = 0; i < arr.length; i++) {
+                    int[] indexes = ai.inverse(i);
+                    debug(name, arr[i], indexes);
+                }
+            } else if (x instanceof short[]) {
+                short[] arr = (short[]) x;
+                for (int i = 0; i < arr.length; i++) {
+                    int[] indexes = ai.inverse(i);
+                    debug(name, arr[i], indexes);
+                }
+            } else if (x instanceof boolean[]) {
+                boolean[] arr = (boolean[]) x;
+                for (int i = 0; i < arr.length; i++) {
+                    int[] indexes = ai.inverse(i);
+                    debug(name, arr[i], indexes);
+                }
+            } else if (x instanceof char[]) {
+                char[] arr = (char[]) x;
+                for (int i = 0; i < arr.length; i++) {
+                    int[] indexes = ai.inverse(i);
+                    debug(name, arr[i], indexes);
+                }
+            } else if (x instanceof int[]) {
+                int[] arr = (int[]) x;
+                for (int i = 0; i < arr.length; i++) {
+                    int[] indexes = ai.inverse(i);
+                    debug(name, arr[i], indexes);
+                }
+            } else if (x instanceof float[]) {
+                float[] arr = (float[]) x;
+                for (int i = 0; i < arr.length; i++) {
+                    int[] indexes = ai.inverse(i);
+                    debug(name, arr[i], indexes);
+                }
+            } else if (x instanceof double[]) {
+                double[] arr = (double[]) x;
+                for (int i = 0; i < arr.length; i++) {
+                    int[] indexes = ai.inverse(i);
+                    debug(name, arr[i], indexes);
+                }
+            } else if (x instanceof long[]) {
+                long[] arr = (long[]) x;
+                for (int i = 0; i < arr.length; i++) {
+                    int[] indexes = ai.inverse(i);
+                    debug(name, arr[i], indexes);
+                }
+            } else {
+                Object[] arr = (Object[]) x;
+                for (int i = 0; i < arr.length; i++) {
+                    int[] indexes = ai.inverse(i);
+                    debug(name, arr[i], indexes);
+                }
+            }
+        }
+        return this;
+    }
+
+
     public Debug debug(String name, Object x, int... indexes) {
         if (offline) {
             if (x == null || !x.getClass().isArray()) {
