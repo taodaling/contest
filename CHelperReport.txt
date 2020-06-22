@@ -1,2 +1,2 @@
-47 src/main/java/contest/F. Lamps on a Circle.json
+40 src/main/java/contest/AqaAsadiSaves.json
 0

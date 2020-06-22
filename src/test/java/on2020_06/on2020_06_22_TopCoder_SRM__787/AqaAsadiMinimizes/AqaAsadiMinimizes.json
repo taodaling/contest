@@ -1,0 +1,31 @@
+{
+  "name" : "AqaAsadiMinimizes",
+  "signature" : {
+    "name" : "getMin",
+    "result" : "double",
+    "arguments" : [ "int[]", "int", "int", "int", "int" ],
+    "argumentNames" : [ "P", "B0", "X", "Y", "N" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "11 0 30 20 1000", "0", "0", "0", "5" ],
+    "result" : "3.0",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "47 1 10 3 2", "0", "0", "0", "5" ],
+    "result" : "0.3333333333333333",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "123456", "234567890", "345678", "456789", "10" ],
+    "result" : "8333191.571428572",
+    "index" : 2,
+    "active" : true
+  } ],
+  "date" : "2020.06.22",
+  "contestName" : "TopCoder SRM #787",
+  "testClasses" : [ ],
+  "fqn" : "on2020_06.on2020_06_22_TopCoder_SRM__787.AqaAsadiMinimizes.AqaAsadiMinimizes",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}
