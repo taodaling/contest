@@ -19,6 +19,7 @@ public final class BitSet implements Serializable, Cloneable {
     private static final int MIN_OFFSET = 0;
 
     private static final BitSet EMPTY = new BitSet(0);
+    private static long[] EMPTY_ARRAY = new long[0];
 
     public BitSet(int n) {
         capacity = n;
@@ -42,14 +43,24 @@ public final class BitSet implements Serializable, Cloneable {
     }
 
     private BitSet(BitSet bs, int l, int r) {
+        this.data = EMPTY_ARRAY;
+        copyInterval(bs, l, r);
+    }
+
+    public void copyInterval(BitSet bs, int l, int r) {
         capacity = r - l + 1;
         tailAvailable = oneBetween(0, offset(capacity - 1));
-        data = Arrays.copyOfRange(bs.data, word(l), word(r) + 1);
-        this.m = data.length;
+        int reqLength = word(r) - word(l) + 1;
+        if (data.length >= word(r) - word(l) + 1) {
+            System.arraycopy(bs.data, word(l), data, 0, reqLength);
+        } else {
+            data = Arrays.copyOfRange(bs.data, word(l), word(r) + 1);
+        }
+        this.m = reqLength;
         leftShift(offset(l));
         this.m = (capacity + 64 - 1) / 64;
         data[m - 1] &= tailAvailable;
-        for (int i = m; i < data.length; i++) {
+        for (int i = m; i < reqLength; i++) {
             data[i] = 0;
         }
     }

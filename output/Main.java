@@ -1,13 +1,22 @@
 import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.stream.IntStream;
+import java.util.PriorityQueue;
+import java.util.AbstractQueue;
+import java.util.Random;
+import java.util.TreeSet;
+import java.util.ArrayList;
+import java.io.OutputStreamWriter;
 import java.io.OutputStream;
-import java.util.Arrays;
+import java.util.Collection;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.util.List;
+import java.util.stream.Stream;
 import java.io.Closeable;
 import java.io.Writer;
-import java.io.OutputStreamWriter;
+import java.util.Comparator;
 import java.io.InputStream;
 
 /**
@@ -16,7 +25,7 @@ import java.io.InputStream;
  */
 public class Main {
     public static void main(String[] args) throws Exception {
-        Thread thread = new Thread(null, new TaskAdapter(), "", 1 << 27);
+        Thread thread = new Thread(null, new TaskAdapter(), "", 1 << 29);
         thread.start();
         thread.join();
     }
@@ -28,36 +37,187 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            P1177 solver = new P1177();
+            DFindingLines solver = new DFindingLines();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class P1177 {
+    static class DFindingLines {
+        int interval = 19000;
+        int inf = (int) 1e8;
+        Comparator<Interval> comp = (a, b) -> a.len == b.len ? Integer.compare(a.l, b.l) : -Integer.compare(a.len, b.len);
+        PriorityQueue<Interval> ySet = new PriorityQueue<>((int) 1e4, comp);
+        List<Integer> yLines = new ArrayList<>();
+        TreeSet<Interval> xSet = new TreeSet<>(comp);
+        List<Integer> xLines = new ArrayList<>();
+        FastInput in;
+        FastOutput out;
+        RandomWrapper rw = new RandomWrapper(new Random());
+        int limit = (int) 3e5;
+
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            int n = in.readInt();
-            int[] a = new int[n];
-            in.populate(a);
-            CompareUtils.radixSort(a, 0, a.length - 1);
-            for (int x : a) {
+            this.in = in;
+            this.out = out;
+            clear();
+            for (int i = -inf; i <= inf; i += interval) {
+                int l = i;
+                int r = Math.min(inf, i + interval - 1);
+                check(new Interval(l, r), false, 0);
+            }
+            xLines.sort(Comparator.naturalOrder());
+            int[] xArrays = xLines.stream().filter(x -> exist(x, false, 2))
+                    .mapToInt(Integer::intValue).toArray();
+
+            clear();
+            ySet.clear();
+            int left = -inf;
+            for (int x : xArrays) {
+                Interval interval = new Interval(left, x - 1);
+                if (!interval.isEmpty()) {
+                    ySet.add(interval);
+                }
+                left = x + 1;
+            }
+            {
+                Interval interval = new Interval(left, inf);
+                if (!interval.isEmpty()) {
+                    ySet.add(interval);
+                }
+            }
+
+            for (int i = -inf; i <= inf; i += interval) {
+                int l = i;
+                int r = Math.min(inf, i + interval - 1);
+                check(new Interval(l, r), true, 0);
+            }
+            xLines.sort(Comparator.naturalOrder());
+            int[] yArrays = xLines.stream().filter(x -> exist(x, true, 2))
+                    .mapToInt(Integer::intValue).toArray();
+
+            out.printf("1 %d %d", xArrays.length, yArrays.length).println();
+            for (int x : xArrays) {
                 out.append(x).append(' ');
             }
+            out.println();
+            for (int y : yArrays) {
+                out.append(y).append(' ');
+            }
+            out.println().flush();
         }
 
-    }
+        public void clear() {
+            ySet.clear();
+            xSet.clear();
+            yLines.clear();
+            xLines.clear();
+            ySet.add(new Interval(-inf, inf));
+            xSet.add(new Interval(-inf, inf));
+        }
 
-    static class SequenceUtils {
-        public static boolean equal(int[] a, int al, int ar, int[] b, int bl, int br) {
-            if ((ar - al) != (br - bl)) {
-                return false;
+        public void check(Interval x, boolean inv, int depth) {
+            if (x.isEmpty()) {
+                return;
             }
-            for (int i = al, j = bl; i <= ar; i++, j++) {
-                if (a[i] != b[j]) {
+
+            Interval y = ySet.peek();
+            int cx = x.middle();
+            int cy = y.middle();
+            int dist = ask(cx, cy, inv);
+
+            if (!(cx - dist >= x.l || cx + dist <= x.r)) {
+                return;
+            }
+
+            if (cx - dist >= x.l && exist(cx - dist, inv, 2)) {
+                xLines.add(cx - dist);
+                for (Interval interval : x.split(cx - dist)) {
+                    check(interval, inv, depth + 1);
+                }
+                return;
+            }
+
+            if (cx + dist <= x.r && exist(cx + dist, inv, 2)) {
+                xLines.add(cx + dist);
+                for (Interval interval : x.split(cx + dist)) {
+                    check(interval, inv, depth + 1);
+                }
+                return;
+            }
+
+            if (cy - dist >= y.l && exist(cy - dist, !inv, 2)) {
+                ySet.remove();
+                for (Interval interval : y.split(cy - dist)) {
+                    if (!interval.isEmpty()) {
+                        ySet.add(interval);
+                    }
+                }
+            }
+
+            if (cy + dist <= y.r && exist(cy + dist, !inv, 2)) {
+                ySet.remove();
+                for (Interval interval : y.split(cy + dist)) {
+                    if (!interval.isEmpty()) {
+                        ySet.add(interval);
+                    }
+                }
+            }
+
+            //check(x, inv, depth + 1);
+        }
+
+        public boolean exist(int x, boolean inv, int time) {
+            for (int i = 0; i < time; i++) {
+                int y1 = rw.nextInt(-inf, inf);
+                if (ask(x, y1, inv) != 0) {
                     return false;
                 }
             }
             return true;
+        }
+
+        public int ask(int x, int y, boolean inv) {
+            if (inv) {
+                int tmp = x;
+                x = y;
+                y = tmp;
+            }
+
+            if (limit-- == 0) {
+                throw new RuntimeException();
+            }
+
+            out.append("0 ").append(x).append(' ').append(y).println().flush();
+            return in.readInt();
+        }
+
+    }
+
+    static class Interval {
+        int l;
+        int r;
+        int len;
+
+        public int middle() {
+            return (r + l) / 2;
+        }
+
+        public Interval(int l, int r) {
+            this.l = l;
+            this.r = r;
+            this.len = r - l + 1;
+        }
+
+        public boolean isEmpty() {
+            return r < l;
+        }
+
+        public Interval[] split(int x) {
+            return new Interval[]{new Interval(l, x - 1), new Interval(x + 1, r)};
+        }
+
+        public String toString() {
+            return String.format("[%d, %d]", l, r);
         }
 
     }
@@ -91,6 +251,21 @@ public class Main {
 
         public FastOutput append(int c) {
             cache.append(c);
+            return this;
+        }
+
+        public FastOutput append(String c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput printf(String format, Object... args) {
+            cache.append(String.format(format, args));
+            return this;
+        }
+
+        public FastOutput println() {
+            cache.append(System.lineSeparator());
             return this;
         }
 
@@ -129,12 +304,6 @@ public class Main {
 
         public FastInput(InputStream is) {
             this.is = is;
-        }
-
-        public void populate(int[] data) {
-            for (int i = 0; i < data.length; i++) {
-                data[i] = readInt();
-            }
         }
 
         private int read() {
@@ -185,120 +354,19 @@ public class Main {
 
     }
 
-    static class CompareUtils {
-        private static final int[] BUF8 = new int[1 << 8];
-        private static final IntegerList INT_LIST_A = new IntegerList();
+    static class RandomWrapper {
+        private Random random;
 
-        private CompareUtils() {
+        public RandomWrapper() {
+            this(new Random());
         }
 
-        public static void radixSort(int[] data, int l, int r) {
-            INT_LIST_A.clear();
-            INT_LIST_A.ensureSpace(r - l + 1);
-
-            int n = r - l + 1;
-            for (int i = 0; i < 8; i += 2) {
-                radixSort0(data, l, r, INT_LIST_A.getData(), 0, BUF8, i * 8);
-                radixSort0(INT_LIST_A.getData(), 0, n - 1, data, l, BUF8, (i + 1) * 8);
-            }
+        public RandomWrapper(Random random) {
+            this.random = random;
         }
 
-        private static void radixSort0(int[] data, int dl, int dr, int[] output, int ol, int[] buf, int rightShift) {
-            Arrays.fill(buf, 0);
-            int mask = buf.length - 1;
-            for (int i = dl; i <= dr; i++) {
-                buf[(int) ((data[i] >>> rightShift) & mask)]++;
-            }
-            for (int i = 1; i < buf.length; i++) {
-                buf[i] += buf[i - 1];
-            }
-            for (int i = dr; i >= dl; i--) {
-                output[ol + (--buf[(int) ((data[i] >>> rightShift) & mask)])] = data[i];
-            }
-        }
-
-    }
-
-    static class IntegerList implements Cloneable {
-        private int size;
-        private int cap;
-        private int[] data;
-        private static final int[] EMPTY = new int[0];
-
-        public int[] getData() {
-            return data;
-        }
-
-        public IntegerList(int cap) {
-            this.cap = cap;
-            if (cap == 0) {
-                data = EMPTY;
-            } else {
-                data = new int[cap];
-            }
-        }
-
-        public IntegerList(IntegerList list) {
-            this.size = list.size;
-            this.cap = list.cap;
-            this.data = Arrays.copyOf(list.data, size);
-        }
-
-        public IntegerList() {
-            this(0);
-        }
-
-        public void ensureSpace(int req) {
-            if (req > cap) {
-                while (cap < req) {
-                    cap = Math.max(cap + 10, 2 * cap);
-                }
-                data = Arrays.copyOf(data, cap);
-            }
-        }
-
-        public void addAll(int[] x, int offset, int len) {
-            ensureSpace(size + len);
-            System.arraycopy(x, offset, data, size, len);
-            size += len;
-        }
-
-        public void addAll(IntegerList list) {
-            addAll(list.data, 0, list.size);
-        }
-
-        public int[] toArray() {
-            return Arrays.copyOf(data, size);
-        }
-
-        public void clear() {
-            size = 0;
-        }
-
-        public String toString() {
-            return Arrays.toString(toArray());
-        }
-
-        public boolean equals(Object obj) {
-            if (!(obj instanceof IntegerList)) {
-                return false;
-            }
-            IntegerList other = (IntegerList) obj;
-            return SequenceUtils.equal(data, 0, size - 1, other.data, 0, other.size - 1);
-        }
-
-        public int hashCode() {
-            int h = 1;
-            for (int i = 0; i < size; i++) {
-                h = h * 31 + Integer.hashCode(data[i]);
-            }
-            return h;
-        }
-
-        public IntegerList clone() {
-            IntegerList ans = new IntegerList();
-            ans.addAll(this);
-            return ans;
+        public int nextInt(int l, int r) {
+            return random.nextInt(r - l + 1) + l;
         }
 
     }

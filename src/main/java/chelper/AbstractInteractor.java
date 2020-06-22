@@ -10,8 +10,13 @@ import java.io.OutputStream;
 
 public abstract class AbstractInteractor {
     public final Verdict interact(InputStream input, InputStream solutionOutput, OutputStream solutionInput, State<Boolean> state) throws Throwable {
-        return interact(new FastInput(input), new FastInput(solutionOutput),
-                new FastOutput(solutionInput));
+        try {
+            return interact(new FastInput(input), new FastInput(solutionOutput),
+                    new FastOutput(solutionInput));
+        } catch (Throwable t) {
+            t.printStackTrace();
+            return Verdict.UNDECIDED;
+        }
     }
 
     public abstract Verdict interact(FastInput input, FastInput solutionOutput, FastOutput solutionInput) throws Throwable;
