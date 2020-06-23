@@ -12,9 +12,12 @@ public class Debug {
         offline = enable && System.getSecurityManager() == null;
     }
 
-    public void elapse(String name) {
-        debug(name, System.currentTimeMillis() - time);
-        time = System.currentTimeMillis();
+    public Debug elapse(String name) {
+        if (offline) {
+            debug(name, System.currentTimeMillis() - time);
+            time = System.currentTimeMillis();
+        }
+        return this;
     }
 
     public Debug debug(String name, int x) {

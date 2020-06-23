@@ -11,6 +11,9 @@ import template.rand.Randomized;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.function.IntPredicate;
+import java.util.function.LongPredicate;
+import java.util.function.Predicate;
 
 /**
  * Be careful. the radix sort will regard the number in sequence as unsigned integer, it means -1 > -2 > 2 > 1.
@@ -133,6 +136,45 @@ public class CompareUtils {
     }
 
     private static final int THRESHOLD = 4;
+
+    public static void partition(int[] data, IntPredicate predicate) {
+        int l = 0;
+        int r = data.length - 1;
+        while (l < r) {
+            if (predicate.test(data[l])) {
+                SequenceUtils.swap(data, l, r);
+                r--;
+            } else {
+                l++;
+            }
+        }
+    }
+
+    public static void partition(long[] data, LongPredicate predicate) {
+        int l = 0;
+        int r = data.length - 1;
+        while (l < r) {
+            if (predicate.test(data[l])) {
+                SequenceUtils.swap(data, l, r);
+                r--;
+            } else {
+                l++;
+            }
+        }
+    }
+
+    public static <T> void partition(T[] data, Predicate<T> predicate) {
+        int l = 0;
+        int r = data.length - 1;
+        while (l < r) {
+            if (predicate.test(data[l])) {
+                SequenceUtils.swap(data, l, r);
+                r--;
+            } else {
+                l++;
+            }
+        }
+    }
 
     public static <T> void insertSort(T[] data, Comparator<T> cmp, int l, int r) {
         for (int i = l + 1; i <= r; i++) {
