@@ -2,7 +2,6 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.util.Arrays;
 import java.io.IOException;
 import java.util.Random;
@@ -30,189 +29,282 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            ENewTask solver = new ENewTask();
+            DeterminantOfSparseMatrix solver = new DeterminantOfSparseMatrix();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class ENewTask {
-        Modular mod = new Modular(1000000007);
-        Debug debug = new Debug(false);
-
+    static class DeterminantOfSparseMatrix {
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            debug.elapse("init");
             int n = in.readInt();
-            int[] a = new int[n];
-            in.populate(a);
-            IntegerDiscreteMap idm = new IntegerDiscreteMap(a.clone(), 0, a.length);
-            for (int i = 0; i < n; i++) {
-                a[i] = idm.rankOf(a[i]);
-            }
-            IntegerMultiWayStack valueStack = new IntegerMultiWayStack(idm.maxRank() + 1, n);
-            for (int i = 0; i < n; i++) {
-                valueStack.addLast(a[i], i);
-            }
-            int m = in.readInt();
-            int[] tags = new int[m];
-            int[][] events = new int[m][2];
-            for (int i = 0; i < m; i++) {
-                events[i][0] = in.readInt();
-                events[i][1] = in.readInt() - 1;
-            }
-            IntegerMultiWayDeque eventStack = new IntegerMultiWayDeque(idm.maxRank() + 1, m);
-            for (int i = 0; i < m; i++) {
-                eventStack.addLast(a[events[i][1]], i);
-            }
-            debug.elapse("read data");
-
-            Segment seg = new Segment(0, n);
-
-            for (int i = 0; i <= idm.maxRank(); i++) {
-                for (IntegerIterator iterator = valueStack.iterator(i); iterator.hasNext(); ) {
-                    int next = iterator.next();
-                    seg.update(next, next, 0, n, 1);
-                }
-                debug.elapse("add 1");
-                int cur = seg.state.cnt[State.ai.indexOf(0, 4)];
-                //debug.debug("seg.state.cnt", seg.state.cnt, State.ai);
-                tags[0] = mod.plus(tags[0], cur);
-
-                for (IntegerIterator iterator = eventStack.iterator(i); iterator.hasNext(); ) {
-                    int index = iterator.next();
-                    int how = events[index][0];
-                    int which = events[index][1];
-                    if (how == 1) {
-                        //can't be used again
-                        seg.update(which, which, 0, n, 0);
-                    } else {
-                        seg.update(which, which, 0, n, 1);
-                    }
-
-                    int now = seg.state.cnt[State.ai.indexOf(0, 4)];
-                    int delta = now - cur;
-                    tags[index] = mod.plus(tags[index], delta);
-                    cur = now;
-                }
-                debug.elapse("handle event");
-
-                for (IntegerIterator iterator = valueStack.iterator(i); iterator.hasNext(); ) {
-                    int next = iterator.next();
-                    seg.update(next, next, 0, n, 0);
-                }
-                debug.elapse("add 0");
+            int k = in.readInt();
+            Modular mod = new Modular(998244353);
+            ModSparseMatrix mat = new ModSparseMatrix(n, k);
+            for (int i = 0; i < k; i++) {
+                int a = in.readInt();
+                int b = in.readInt();
+                int v = in.readInt();
+                mat.set(i, a, b, v);
             }
 
-            for (int i = 1; i < m; i++) {
-                tags[i] = mod.plus(tags[i - 1], tags[i]);
-            }
-
-            for (int i = 0; i < m; i++) {
-                out.println(tags[i]);
-            }
-
-            debug.elapse("output");
+            int ans = mat.determinant(mod);
+            out.println(ans);
         }
 
     }
 
-    static class State {
-        static long mod = 1000000007;
-        static ArrayIndex ai = new ArrayIndex(5, 5);
-        int[] cnt = new int[ai.totalSize()];
+    static class ModSparseMatrix {
+        private int[] x;
+        private int[] y;
+        private int[] elements;
+        private int n;
 
-        public void init(int x) {
-            if (x == 0) {
-                for (int i = 0; i < 5; i++) {
-                    cnt[ai.indexOf(i, i)] = 0;
+        public ModSparseMatrix(ModMatrix mat) {
+            this.n = mat.n;
+            int m = 0;
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    if (mat.mat[i][j] > 0) {
+                        m++;
+                    }
                 }
-                cnt[ai.indexOf(0, 0)] = cnt[ai.indexOf(4, 4)] = 1;
-            } else if (x == 1) {
-                for (int i = 0; i < 5; i++) {
-                    cnt[ai.indexOf(i, i)] = 1;
+            }
+            x = new int[m];
+            y = new int[m];
+            elements = new int[m];
+            int cur = 0;
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    if (mat.mat[i][j] > 0) {
+                        x[cur] = i;
+                        y[cur] = j;
+                        elements[cur] = mat.mat[i][j];
+                        cur++;
+                    }
                 }
             }
         }
 
-        public void mergeInto(State a, State b) {
-            for (int i = 0; i < 5; i++) {
-                for (int j = i; j < 5; j++) {
-                    long ans = a.cnt[ai.indexOf(i, j)] + b.cnt[ai.indexOf(i, j)];
-                    for (int k = i; k < j; k++) {
-                        ans += (long) a.cnt[ai.indexOf(i, k)] * b.cnt[ai.indexOf(k + 1, j)] % mod;
-                    }
-                    cnt[ai.indexOf(i, j)] = (int) (ans % mod);
-                }
+        public ModSparseMatrix(int n, int m) {
+            this.n = n;
+            x = new int[m];
+            y = new int[m];
+            elements = new int[m];
+        }
+
+        public void set(int i, int x, int y, int element) {
+            this.x[i] = x;
+            this.y[i] = y;
+            this.elements[i] = element;
+        }
+
+        public void rightMul(int[] v, int[] output, Modular mod) {
+            Arrays.fill(output, 0);
+            for (int j = 0; j < elements.length; j++) {
+                output[x[j]] = mod.plus(output[x[j]], mod.mul(elements[j], v[y[j]]));
             }
+        }
+
+        public IntegerList getMinimalPolynomialByRandom(Modular mod) {
+            int modVal = mod.getMod();
+            int m = x.length;
+            int[] u = new int[n];
+            int[] v = new int[n];
+            int[] next = new int[n];
+            for (int i = 0; i < n; i++) {
+                u[i] = RandomWrapper.INSTANCE.nextInt(1, modVal - 1);
+                v[i] = RandomWrapper.INSTANCE.nextInt(1, modVal - 1);
+            }
+
+            ModLinearFeedbackShiftRegister lfsr = new ModLinearFeedbackShiftRegister(mod, 2 * n);
+            for (int i = 0; i < 2 * n; i++) {
+                long ai = 0;
+                for (int j = 0; j < n; j++) {
+                    ai += (long) u[j] * v[j] % modVal;
+                }
+                ai %= modVal;
+                lfsr.add((int) ai);
+                rightMul(v, next, mod);
+                int[] tmp = next;
+                next = v;
+                v = tmp;
+            }
+
+            IntegerList polynomials = new IntegerList(lfsr.length() + 1);
+            for (int i = lfsr.length(); i >= 1; i--) {
+                polynomials.add(mod.valueOf(-lfsr.codeAt(i)));
+            }
+            polynomials.add(1);
+            return polynomials;
+        }
+
+        public int determinant(Modular mod) {
+            IntegerList minPoly = getMinimalPolynomialByRandom(mod);
+            int ans = minPoly.get(0);
+            if (n % 2 == 1) {
+                ans = mod.valueOf(-ans);
+            }
+            return ans;
+        }
+
+    }
+
+    static class ModLinearFeedbackShiftRegister {
+        private IntegerList cm;
+        int m = -1;
+        int dm;
+        private IntegerList cn;
+        private IntegerList buf;
+        private IntegerList seq;
+        private Modular mod;
+        private Power pow;
+
+        public ModLinearFeedbackShiftRegister(Modular mod, int cap) {
+            cm = new IntegerList(cap + 1);
+            cn = new IntegerList(cap + 1);
+            seq = new IntegerList(cap + 1);
+            buf = new IntegerList(cap + 1);
+            cn.add(1);
+
+            this.mod = mod;
+            this.pow = new Power(mod);
+        }
+
+        public ModLinearFeedbackShiftRegister(Modular mod) {
+            this(mod, 0);
+        }
+
+        private int estimateDelta() {
+            int n = seq.size() - 1;
+            int ans = 0;
+            int[] cnData = cn.getData();
+            int[] seqData = seq.getData();
+            for (int i = 0, until = cn.size(); i < until; i++) {
+                ans = mod.plus(ans, mod.mul(cnData[i], seqData[n - i]));
+            }
+            return ans;
+        }
+
+        public void add(int x) {
+            x = mod.valueOf(x);
+            int n = seq.size();
+
+            seq.add(x);
+            int dn = estimateDelta();
+            if (dn == 0) {
+                return;
+            }
+
+            if (m < 0) {
+                cm.clear();
+                cm.addAll(cn);
+                dm = dn;
+                m = n;
+
+                cn.expandWith(0, n + 2);
+                return;
+            }
+
+            int ln = cn.size() - 1;
+            int len = Math.max(ln, n + 1 - ln);
+            buf.clear();
+            buf.addAll(cn);
+            buf.expandWith(0, len + 1);
+
+            int factor = mod.mul(dn, pow.inverseByFermat(dm));
+
+            int[] bufData = buf.getData();
+            int[] cmData = cm.getData();
+            for (int i = n - m, until = n - m + cm.size(); i < until; i++) {
+                bufData[i] = mod.subtract(bufData[i], mod.mul(factor, cmData[i - (n - m)]));
+            }
+
+            if (cn.size() < buf.size()) {
+                IntegerList tmp = cm;
+                cm = cn;
+                cn = tmp;
+                m = n;
+                dm = dn;
+            }
+            {
+                IntegerList tmp = cn;
+                cn = buf;
+                buf = tmp;
+            }
+
+
+        }
+
+        public int length() {
+            return cn.size() - 1;
         }
 
         public String toString() {
-            return Arrays.toString(cnt);
+            return cn.toString();
+        }
+
+        public int codeAt(int i) {
+            return mod.valueOf(-cn.get(i));
         }
 
     }
 
-    static class FastInput {
-        private final InputStream is;
-        private byte[] buf = new byte[1 << 13];
-        private int bufLen;
-        private int bufOffset;
-        private int next;
-
-        public FastInput(InputStream is) {
-            this.is = is;
-        }
-
-        public void populate(int[] data) {
-            for (int i = 0; i < data.length; i++) {
-                data[i] = readInt();
+    static class SequenceUtils {
+        public static boolean equal(int[] a, int al, int ar, int[] b, int bl, int br) {
+            if ((ar - al) != (br - bl)) {
+                return false;
             }
-        }
-
-        private int read() {
-            while (bufLen == bufOffset) {
-                bufOffset = 0;
-                try {
-                    bufLen = is.read(buf);
-                } catch (IOException e) {
-                    bufLen = -1;
-                }
-                if (bufLen == -1) {
-                    return -1;
+            for (int i = al, j = bl; i <= ar; i++, j++) {
+                if (a[i] != b[j]) {
+                    return false;
                 }
             }
-            return buf[bufOffset++];
+            return true;
         }
 
-        public void skipBlank() {
-            while (next >= 0 && next <= 32) {
-                next = read();
+    }
+
+    static class ModMatrix {
+        int[][] mat;
+        int n;
+        int m;
+
+        public ModMatrix(ModMatrix model) {
+            n = model.n;
+            m = model.m;
+            mat = new int[n][m];
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < m; j++) {
+                    mat[i][j] = model.mat[i][j];
+                }
             }
         }
 
-        public int readInt() {
-            int sign = 1;
+        public ModMatrix(int n, int m) {
+            this.n = n;
+            this.m = m;
+            mat = new int[n][m];
+        }
 
-            skipBlank();
-            if (next == '+' || next == '-') {
-                sign = next == '+' ? 1 : -1;
-                next = read();
+        public ModMatrix(int[][] mat) {
+            if (mat.length == 0 || mat[0].length == 0) {
+                throw new IllegalArgumentException();
             }
+            this.n = mat.length;
+            this.m = mat[0].length;
+            this.mat = mat;
+        }
 
-            int val = 0;
-            if (sign == 1) {
-                while (next >= '0' && next <= '9') {
-                    val = val * 10 + next - '0';
-                    next = read();
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < m; j++) {
+                    builder.append(mat[i][j]).append(' ');
                 }
-            } else {
-                while (next >= '0' && next <= '9') {
-                    val = val * 10 - next + '0';
-                    next = read();
-                }
+                builder.append('\n');
             }
-
-            return val;
+            return builder.toString();
         }
 
     }
@@ -286,7 +378,7 @@ public class Main {
 
     static class RandomWrapper {
         private Random random;
-        public static RandomWrapper INSTANCE = new RandomWrapper(new Random());
+        public static final RandomWrapper INSTANCE = new RandomWrapper(new Random());
 
         public RandomWrapper() {
             this(new Random());
@@ -302,352 +394,151 @@ public class Main {
 
     }
 
-    static class Debug {
-        private boolean offline;
-        private PrintStream out = System.err;
-        private long time = System.currentTimeMillis();
+    static class Power implements InverseNumber {
+        final Modular modular;
 
-        public Debug(boolean enable) {
-            offline = enable && System.getSecurityManager() == null;
+        public Power(Modular modular) {
+            this.modular = modular;
         }
 
-        public Debug elapse(String name) {
-            if (offline) {
-                debug(name, System.currentTimeMillis() - time);
-                time = System.currentTimeMillis();
+        public int pow(int x, int n) {
+            if (n == 0) {
+                return modular.valueOf(1);
             }
-            return this;
+            long r = pow(x, n >> 1);
+            r = modular.valueOf(r * r);
+            if ((n & 1) == 1) {
+                r = modular.valueOf(r * x);
+            }
+            return (int) r;
         }
 
-        public Debug debug(String name, long x) {
-            if (offline) {
-                debug(name, "" + x);
-            }
-            return this;
-        }
-
-        public Debug debug(String name, String x) {
-            if (offline) {
-                out.printf("%s=%s", name, x);
-                out.println();
-            }
-            return this;
+        public int inverseByFermat(int x) {
+            return pow(x, modular.m - 2);
         }
 
     }
 
-    static class ArrayIndex {
-        int[] dimensions;
-
-        public ArrayIndex(int... dimensions) {
-            this.dimensions = dimensions;
-        }
-
-        public int totalSize() {
-            int ans = 1;
-            for (int x : dimensions) {
-                ans *= x;
-            }
-            return ans;
-        }
-
-        public int indexOf(int a, int b) {
-            return a * dimensions[1] + b;
-        }
-
+    static interface InverseNumber {
     }
 
-    static class DigitUtils {
-        private DigitUtils() {
+    static class IntegerList implements Cloneable {
+        private int size;
+        private int cap;
+        private int[] data;
+        private static final int[] EMPTY = new int[0];
+
+        public int[] getData() {
+            return data;
         }
 
-        public static int floorAverage(int x, int y) {
-            return (x & y) + ((x ^ y) >> 1);
-        }
-
-    }
-
-    static interface IntegerIterator {
-        boolean hasNext();
-
-        int next();
-
-    }
-
-    static class IntegerMultiWayDeque {
-        private int[] values;
-        private int[] next;
-        private int[] prev;
-        private int[] heads;
-        private int[] tails;
-        private int alloc;
-        private int queueNum;
-
-        public IntegerIterator iterator(final int queue) {
-            return new IntegerIterator() {
-                int ele = heads[queue];
-
-
-                public boolean hasNext() {
-                    return ele != 0;
-                }
-
-
-                public int next() {
-                    int ans = values[ele];
-                    ele = next[ele];
-                    return ans;
-                }
-            };
-        }
-
-        private void doubleCapacity() {
-            int newSize = Math.max(next.length + 10, next.length * 2);
-            next = Arrays.copyOf(next, newSize);
-            prev = Arrays.copyOf(prev, newSize);
-            values = Arrays.copyOf(values, newSize);
-        }
-
-        public void alloc() {
-            alloc++;
-            if (alloc >= next.length) {
-                doubleCapacity();
-            }
-            next[alloc] = 0;
-        }
-
-        public boolean isEmpty(int qId) {
-            return heads[qId] == 0;
-        }
-
-        public IntegerMultiWayDeque(int qNum, int totalCapacity) {
-            values = new int[totalCapacity + 1];
-            next = new int[totalCapacity + 1];
-            prev = new int[totalCapacity + 1];
-            heads = new int[qNum];
-            tails = new int[qNum];
-            queueNum = qNum;
-        }
-
-        public void addLast(int qId, int x) {
-            alloc();
-            values[alloc] = x;
-
-            if (heads[qId] == 0) {
-                heads[qId] = tails[qId] = alloc;
-                return;
-            }
-            next[tails[qId]] = alloc;
-            prev[alloc] = tails[qId];
-            tails[qId] = alloc;
-        }
-
-        public String toString() {
-            StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < queueNum; i++) {
-                if (isEmpty(i)) {
-                    continue;
-                }
-                builder.append(i).append(": ");
-                for (IntegerIterator iterator = iterator(i); iterator.hasNext(); ) {
-                    builder.append(iterator.next()).append(",");
-                }
-                if (builder.charAt(builder.length() - 1) == ',') {
-                    builder.setLength(builder.length() - 1);
-                }
-                builder.append('\n');
-            }
-            return builder.toString();
-        }
-
-    }
-
-    static class Segment implements Cloneable {
-        private Segment left;
-        private Segment right;
-        State state = new State();
-
-        private void modify(int x) {
-            state.init(x);
-        }
-
-        public void pushUp() {
-            state.mergeInto(left.state, right.state);
-        }
-
-        public void pushDown() {
-        }
-
-        public Segment(int l, int r) {
-            if (l < r) {
-                int m = DigitUtils.floorAverage(l, r);
-                left = new Segment(l, m);
-                right = new Segment(m + 1, r);
-                pushUp();
+        public IntegerList(int cap) {
+            this.cap = cap;
+            if (cap == 0) {
+                data = EMPTY;
             } else {
-                modify(2);
+                data = new int[cap];
             }
         }
 
-        private boolean covered(int ll, int rr, int l, int r) {
-            return ll <= l && rr >= r;
+        public IntegerList(IntegerList list) {
+            this.size = list.size;
+            this.cap = list.cap;
+            this.data = Arrays.copyOf(list.data, size);
         }
 
-        private boolean noIntersection(int ll, int rr, int l, int r) {
-            return ll > r || rr < l;
+        public IntegerList() {
+            this(0);
         }
 
-        public void update(int ll, int rr, int l, int r, int x) {
-            if (noIntersection(ll, rr, l, r)) {
-                return;
-            }
-            if (covered(ll, rr, l, r)) {
-                modify(x);
-                return;
-            }
-            pushDown();
-            int m = DigitUtils.floorAverage(l, r);
-            left.update(ll, rr, l, m, x);
-            right.update(ll, rr, m + 1, r, x);
-            pushUp();
-        }
-
-        private Segment deepClone() {
-            Segment seg = clone();
-            if (seg.left != null) {
-                seg.left = seg.left.deepClone();
-            }
-            if (seg.right != null) {
-                seg.right = seg.right.deepClone();
-            }
-            return seg;
-        }
-
-        protected Segment clone() {
-            try {
-                return (Segment) super.clone();
-            } catch (CloneNotSupportedException e) {
-                throw new RuntimeException(e);
+        public void ensureSpace(int req) {
+            if (req > cap) {
+                while (cap < req) {
+                    cap = Math.max(cap + 10, 2 * cap);
+                }
+                data = Arrays.copyOf(data, cap);
             }
         }
 
-        private void toString(StringBuilder builder) {
-            if (left == null && right == null) {
-                builder.append("val").append(",");
-                return;
+        private void checkRange(int i) {
+            if (i < 0 || i >= size) {
+                throw new ArrayIndexOutOfBoundsException();
             }
-            pushDown();
-            left.toString(builder);
-            right.toString(builder);
+        }
+
+        public int get(int i) {
+            checkRange(i);
+            return data[i];
+        }
+
+        public void add(int x) {
+            ensureSpace(size + 1);
+            data[size++] = x;
+        }
+
+        public void addAll(int[] x, int offset, int len) {
+            ensureSpace(size + len);
+            System.arraycopy(x, offset, data, size, len);
+            size += len;
+        }
+
+        public void addAll(IntegerList list) {
+            addAll(list.data, 0, list.size);
+        }
+
+        public void expandWith(int x, int len) {
+            ensureSpace(len);
+            while (size < len) {
+                data[size++] = x;
+            }
+        }
+
+        public int size() {
+            return size;
+        }
+
+        public int[] toArray() {
+            return Arrays.copyOf(data, size);
+        }
+
+        public void clear() {
+            size = 0;
         }
 
         public String toString() {
-            StringBuilder builder = new StringBuilder();
-            deepClone().toString(builder);
-            if (builder.length() > 0) {
-                builder.setLength(builder.length() - 1);
+            return Arrays.toString(toArray());
+        }
+
+        public boolean equals(Object obj) {
+            if (!(obj instanceof IntegerList)) {
+                return false;
             }
-            return builder.toString();
+            IntegerList other = (IntegerList) obj;
+            return SequenceUtils.equal(data, 0, size - 1, other.data, 0, other.size - 1);
         }
 
-    }
-
-    static class IntegerMultiWayStack {
-        private int[] values;
-        private int[] next;
-        private int[] heads;
-        private int alloc;
-        private int stackNum;
-
-        public IntegerIterator iterator(final int queue) {
-            return new IntegerIterator() {
-                int ele = heads[queue];
-
-
-                public boolean hasNext() {
-                    return ele != 0;
-                }
-
-
-                public int next() {
-                    int ans = values[ele];
-                    ele = next[ele];
-                    return ans;
-                }
-            };
-        }
-
-        private void doubleCapacity() {
-            int newSize = Math.max(next.length + 10, next.length * 2);
-            next = Arrays.copyOf(next, newSize);
-            values = Arrays.copyOf(values, newSize);
-        }
-
-        public void alloc() {
-            alloc++;
-            if (alloc >= next.length) {
-                doubleCapacity();
+        public int hashCode() {
+            int h = 1;
+            for (int i = 0; i < size; i++) {
+                h = h * 31 + Integer.hashCode(data[i]);
             }
-            next[alloc] = 0;
+            return h;
         }
 
-        public boolean isEmpty(int qId) {
-            return heads[qId] == 0;
-        }
-
-        public IntegerMultiWayStack(int qNum, int totalCapacity) {
-            values = new int[totalCapacity + 1];
-            next = new int[totalCapacity + 1];
-            heads = new int[qNum];
-            stackNum = qNum;
-        }
-
-        public void addLast(int qId, int x) {
-            alloc();
-            values[alloc] = x;
-            next[alloc] = heads[qId];
-            heads[qId] = alloc;
-        }
-
-        public String toString() {
-            StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < stackNum; i++) {
-                if (isEmpty(i)) {
-                    continue;
-                }
-                builder.append(i).append(": ");
-                for (IntegerIterator iterator = iterator(i); iterator.hasNext(); ) {
-                    builder.append(iterator.next()).append(",");
-                }
-                if (builder.charAt(builder.length() - 1) == ',') {
-                    builder.setLength(builder.length() - 1);
-                }
-                builder.append('\n');
-            }
-            return builder.toString();
-        }
-
-    }
-
-    static class Randomized {
-        public static void shuffle(int[] data, int from, int to) {
-            to--;
-            for (int i = from; i <= to; i++) {
-                int s = nextInt(i, to);
-                int tmp = data[i];
-                data[i] = data[s];
-                data[s] = tmp;
-            }
-        }
-
-        public static int nextInt(int l, int r) {
-            return RandomWrapper.INSTANCE.nextInt(l, r);
+        public IntegerList clone() {
+            IntegerList ans = new IntegerList();
+            ans.addAll(this);
+            return ans;
         }
 
     }
 
     static class Modular {
         int m;
+
+        public int getMod() {
+            return m;
+        }
 
         public Modular(int m) {
             this.m = m;
@@ -675,8 +566,24 @@ public class Main {
             return x;
         }
 
+        public int valueOf(long x) {
+            x %= m;
+            if (x < 0) {
+                x += m;
+            }
+            return (int) x;
+        }
+
+        public int mul(int x, int y) {
+            return valueOf((long) x * y);
+        }
+
         public int plus(int x, int y) {
             return valueOf(x + y);
+        }
+
+        public int subtract(int x, int y) {
+            return valueOf(x - y);
         }
 
         public String toString() {
@@ -685,36 +592,61 @@ public class Main {
 
     }
 
-    static class IntegerDiscreteMap {
-        int[] val;
-        int f;
-        int t;
+    static class FastInput {
+        private final InputStream is;
+        private byte[] buf = new byte[1 << 13];
+        private int bufLen;
+        private int bufOffset;
+        private int next;
 
-        public IntegerDiscreteMap(int[] val, int f, int t) {
-            Randomized.shuffle(val, f, t);
-            Arrays.sort(val, f, t);
-            int wpos = f + 1;
-            for (int i = f + 1; i < t; i++) {
-                if (val[i] == val[i - 1]) {
-                    continue;
+        public FastInput(InputStream is) {
+            this.is = is;
+        }
+
+        private int read() {
+            while (bufLen == bufOffset) {
+                bufOffset = 0;
+                try {
+                    bufLen = is.read(buf);
+                } catch (IOException e) {
+                    bufLen = -1;
                 }
-                val[wpos++] = val[i];
+                if (bufLen == -1) {
+                    return -1;
+                }
             }
-            this.val = val;
-            this.f = f;
-            this.t = wpos;
+            return buf[bufOffset++];
         }
 
-        public int rankOf(int x) {
-            return Arrays.binarySearch(val, f, t, x) - f;
+        public void skipBlank() {
+            while (next >= 0 && next <= 32) {
+                next = read();
+            }
         }
 
-        public int maxRank() {
-            return t - f - 1;
-        }
+        public int readInt() {
+            int sign = 1;
 
-        public String toString() {
-            return Arrays.toString(Arrays.copyOfRange(val, f, t));
+            skipBlank();
+            if (next == '+' || next == '-') {
+                sign = next == '+' ? 1 : -1;
+                next = read();
+            }
+
+            int val = 0;
+            if (sign == 1) {
+                while (next >= '0' && next <= '9') {
+                    val = val * 10 + next - '0';
+                    next = read();
+                }
+            } else {
+                while (next >= '0' && next <= '9') {
+                    val = val * 10 - next + '0';
+                    next = read();
+                }
+            }
+
+            return val;
         }
 
     }

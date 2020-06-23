@@ -1,13 +1,7 @@
 package template.utils;
 
-import template.primitve.generated.datastructure.DoubleComparator;
-import template.primitve.generated.datastructure.IntToIntFunction;
-import template.primitve.generated.datastructure.IntToLongFunction;
-import template.primitve.generated.datastructure.IntegerComparator;
-import template.primitve.generated.datastructure.IntegerList;
-import template.primitve.generated.datastructure.LongComparator;
-import template.primitve.generated.datastructure.LongList;
-import template.rand.Randomized;
+import template.primitve.generated.datastructure.*;
+import template.rand.RandomWrapper;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -229,7 +223,7 @@ public class CompareUtils {
             insertSort(data, cmp, f, t - 1);
             return data[f + k - 1];
         }
-        SequenceUtils.swap(data, f, Randomized.nextInt(f, t - 1));
+        SequenceUtils.swap(data, f, RandomWrapper.INSTANCE.nextInt(f, t - 1));
         int l = f;
         int r = t;
         int m = l + 1;
@@ -258,7 +252,7 @@ public class CompareUtils {
             insertSort(data, cmp, f, t - 1);
             return data[f + k - 1];
         }
-        SequenceUtils.swap(data, f, Randomized.nextInt(f, t - 1));
+        SequenceUtils.swap(data, f, RandomWrapper.INSTANCE.nextInt(f, t - 1));
         int l = f;
         int r = t;
         int m = l + 1;
@@ -287,7 +281,7 @@ public class CompareUtils {
             insertSort(data, cmp, f, t - 1);
             return;
         }
-        SequenceUtils.swap(data, f, Randomized.nextInt(f, t - 1));
+        SequenceUtils.swap(data, f, RandomWrapper.INSTANCE.nextInt(f, t - 1));
         int l = f;
         int r = t;
         int m = l + 1;
@@ -312,7 +306,7 @@ public class CompareUtils {
             insertSort(data, cmp, f, t - 1);
             return;
         }
-        SequenceUtils.swap(data, f, Randomized.nextInt(f, t - 1));
+        SequenceUtils.swap(data, f, RandomWrapper.INSTANCE.nextInt(f, t - 1));
         int l = f;
         int r = t;
         int m = l + 1;
@@ -337,7 +331,7 @@ public class CompareUtils {
             insertSort(data, cmp, f, t - 1);
             return;
         }
-        SequenceUtils.swap(data, f, Randomized.nextInt(f, t - 1));
+        SequenceUtils.swap(data, f, RandomWrapper.INSTANCE.nextInt(f, t - 1));
         int l = f;
         int r = t;
         int m = l + 1;
@@ -362,7 +356,7 @@ public class CompareUtils {
             insertSort(data, cmp, f, t - 1);
             return;
         }
-        SequenceUtils.swap(data, f, Randomized.nextInt(f, t - 1));
+        SequenceUtils.swap(data, f, RandomWrapper.INSTANCE.nextInt(f, t - 1));
         int l = f;
         int r = t;
         int m = l + 1;

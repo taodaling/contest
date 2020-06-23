@@ -1,6 +1,7 @@
 package template.math;
 
 import template.polynomial.ModGravityLagrangeInterpolation;
+import template.primitve.generated.datastructure.IntegerList;
 
 public class ModMatrix {
     int[][] mat;
@@ -375,6 +376,9 @@ public class ModMatrix {
         return ans;
     }
 
+    /**
+     * <p>Get the minimal-polynomial of this, O(n^3)</p>
+     */
     public ModGravityLagrangeInterpolation.Polynomial getCharacteristicPolynomial(Power pow) {
         Modular mod = pow.getModular();
         if (n != m) {
@@ -397,7 +401,6 @@ public class ModMatrix {
             }
             gli.addPoint(i, y);
         }
-
         return gli.preparePolynomial();
     }
 }
