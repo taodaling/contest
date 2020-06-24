@@ -2,9 +2,9 @@ package template;
 
 import org.junit.Assert;
 import org.junit.Test;
-import template.math.DoubleLinearFeedbackShiftRegister;
+import template.math.LinearFeedbackShiftRegister;
 
-public class DoubleLinearFeedbackShiftRegisterTest {
+public class LinearFeedbackShiftRegisterTest {
 
     private void assertNear(double a, double b){
         Assert.assertTrue(Math.abs(a - b) < 1e-8);
@@ -12,8 +12,8 @@ public class DoubleLinearFeedbackShiftRegisterTest {
 
     @Test
     public void test1() {
-        DoubleLinearFeedbackShiftRegister lfsr = new DoubleLinearFeedbackShiftRegister();
-        DoubleLinearFeedbackShiftRegister.Estimator estimator = lfsr.newEstimator();
+        LinearFeedbackShiftRegister lfsr = new LinearFeedbackShiftRegister();
+        LinearFeedbackShiftRegister.Estimator estimator = lfsr.newEstimator();
         assertNear(estimator.next(), 0);
         assertNear(estimator.next(), 0);
         assertNear(estimator.next(), 0);
@@ -23,12 +23,12 @@ public class DoubleLinearFeedbackShiftRegisterTest {
 
     @Test
     public void test2() {
-        DoubleLinearFeedbackShiftRegister lfsr = new DoubleLinearFeedbackShiftRegister();
+        LinearFeedbackShiftRegister lfsr = new LinearFeedbackShiftRegister();
         lfsr.add(1);
         lfsr.add(2);
         lfsr.add(4);
         Assert.assertEquals(1, lfsr.length());
-        DoubleLinearFeedbackShiftRegister.Estimator estimator = lfsr.newEstimator(1);
+        LinearFeedbackShiftRegister.Estimator estimator = lfsr.newEstimator(1);
         assertNear(estimator.next(), 2);
         assertNear(estimator.next(), 4);
         assertNear(estimator.next(), 8);
@@ -37,7 +37,7 @@ public class DoubleLinearFeedbackShiftRegisterTest {
 
     @Test
     public void test3() {
-        DoubleLinearFeedbackShiftRegister lfsr = new DoubleLinearFeedbackShiftRegister();
+        LinearFeedbackShiftRegister lfsr = new LinearFeedbackShiftRegister();
         lfsr.add(0);
         lfsr.add(1);
         lfsr.add(1);
@@ -45,7 +45,7 @@ public class DoubleLinearFeedbackShiftRegisterTest {
         lfsr.add(3);
         lfsr.add(5);
         Assert.assertEquals(2, lfsr.length());
-        DoubleLinearFeedbackShiftRegister.Estimator estimator = lfsr.newEstimator(2, 2);
+        LinearFeedbackShiftRegister.Estimator estimator = lfsr.newEstimator(2, 2);
         assertNear(estimator.next(), 4);
         assertNear(estimator.next(), 6);
         assertNear(estimator.next(), 10);
@@ -54,7 +54,7 @@ public class DoubleLinearFeedbackShiftRegisterTest {
 
     @Test
     public void test4() {
-        DoubleLinearFeedbackShiftRegister lfsr = new DoubleLinearFeedbackShiftRegister();
+        LinearFeedbackShiftRegister lfsr = new LinearFeedbackShiftRegister();
         lfsr.add(1);
         lfsr.add(2);
         lfsr.add(5);
@@ -62,7 +62,7 @@ public class DoubleLinearFeedbackShiftRegisterTest {
         lfsr.add(26);
         lfsr.add(59);
         Assert.assertEquals(2, lfsr.length());
-        DoubleLinearFeedbackShiftRegister.Estimator estimator = lfsr.newEstimator(1, 1);
+        LinearFeedbackShiftRegister.Estimator estimator = lfsr.newEstimator(1, 1);
         assertNear(estimator.next(), 4);
         assertNear(estimator.next(), 7);
         assertNear(estimator.next(), 19);
@@ -71,7 +71,7 @@ public class DoubleLinearFeedbackShiftRegisterTest {
 
     @Test
     public void test5() {
-        DoubleLinearFeedbackShiftRegister lfsr = new DoubleLinearFeedbackShiftRegister();
+        LinearFeedbackShiftRegister lfsr = new LinearFeedbackShiftRegister();
         lfsr.add(0);
         lfsr.add(0);
         lfsr.add(1);
@@ -79,7 +79,7 @@ public class DoubleLinearFeedbackShiftRegisterTest {
         lfsr.add(1);
         lfsr.add(1);
         Assert.assertEquals(3, lfsr.length());
-        DoubleLinearFeedbackShiftRegister.Estimator estimator = lfsr.newEstimator(1, 1, 0);
+        LinearFeedbackShiftRegister.Estimator estimator = lfsr.newEstimator(1, 1, 0);
         assertNear(estimator.next(), 0);
         assertNear(estimator.next(), 0);
         assertNear(estimator.next(), 0);

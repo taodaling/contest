@@ -53,16 +53,34 @@ public class Matrix implements Cloneable {
     }
 
     public static Matrix mul(Matrix a, Matrix b, Matrix c) {
-        c.fill(0);
+        //KahanSummation sum = new KahanSummation();
         for (int i = 0; i < c.n; i++) {
             for (int j = 0; j < c.m; j++) {
+                // sum.reset();
+                double sum = 0;
                 for (int k = 0; k < a.m; k++) {
-                    c.mat[i][j] = c.mat[i][j] + a.mat[i][k] * b.mat[k][j];
+                    sum += (a.mat[i][k] * b.mat[k][j]);
                 }
+                c.mat[i][j] = sum;
             }
         }
         return c;
     }
+
+    public static Matrix mulPrecisely(Matrix a, Matrix b, Matrix c) {
+        KahanSummation sum = new KahanSummation();
+        for (int i = 0; i < c.n; i++) {
+            for (int j = 0; j < c.m; j++) {
+                sum.reset();
+                for (int k = 0; k < a.m; k++) {
+                    sum.add(a.mat[i][k] * b.mat[k][j]);
+                }
+                c.mat[i][j] = sum.sum();
+            }
+        }
+        return c;
+    }
+
 
     public static Matrix mul(Matrix a, Matrix b) {
         Matrix c = new Matrix(a.n, b.m);
@@ -296,8 +314,8 @@ public class Matrix implements Cloneable {
         }
     }
 
-    public void subtractCol(int i, int j, double f){
-        for(int k = 0; k < n; k++){
+    public void subtractCol(int i, int j, double f) {
+        for (int k = 0; k < n; k++) {
             mat[k][i] -= mat[k][j] * f;
         }
     }

@@ -2,15 +2,18 @@ package template.math;
 
 import template.primitve.generated.datastructure.DoubleList;
 
-public class DoubleLinearFeedbackShiftRegister {
+public class LinearFeedbackShiftRegister {
     private DoubleList cm;
-    int m = -1;
-    double dm;
+    private int m = -1;
+    private double dm;
     private DoubleList cn;
     private DoubleList buf;
     private DoubleList seq;
+    private double prec;
+    private KahanSummation summation = new KahanSummation();
 
-    public DoubleLinearFeedbackShiftRegister(int cap) {
+    public LinearFeedbackShiftRegister(int cap, double prec) {
+        this.prec = prec;
         cm = new DoubleList(cap + 1);
         cn = new DoubleList(cap + 1);
         seq = new DoubleList(cap + 1);
@@ -19,21 +22,25 @@ public class DoubleLinearFeedbackShiftRegister {
         cn.add(1);
     }
 
-    public DoubleLinearFeedbackShiftRegister() {
+    public LinearFeedbackShiftRegister(int cap) {
+        this(cap, 1e-10);
+    }
+
+    public LinearFeedbackShiftRegister() {
         this(0);
     }
 
-    public double codeAt(int i){
-        return cn.get(i);
+    public double codeAt(int i) {
+        return -cn.get(i);
     }
 
     private double estimateDelta() {
+        summation.reset();
         int n = seq.size() - 1;
-        double ans = 0;
         for (int i = 0, until = cn.size(); i < until; i++) {
-            ans += cn.get(i) * seq.get(n - i);
+            summation.add(cn.get(i) * seq.get(n - i));
         }
-        return ans;
+        return summation.sum();
     }
 
     public void add(double x) {
@@ -41,7 +48,7 @@ public class DoubleLinearFeedbackShiftRegister {
 
         seq.add(x);
         double dn = estimateDelta();
-        if (dn == 0) {
+        if (Math.abs(dn) < prec) {
             return;
         }
 

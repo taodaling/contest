@@ -41,6 +41,10 @@ public class GuassianElimination {
         mat[row][mat[row].length - 1] = val;
     }
 
+    public void setLeft(int row, int col, double val){
+        mat[row][col] = val;
+    }
+
     public boolean solve() {
         int n = mat.length - 1;
         int m = mat[0].length - 1;

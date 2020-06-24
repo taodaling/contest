@@ -17,7 +17,7 @@ public class KahanSummation {
         sum = 0;
     }
 
-    public double getSum() {
+    public double sum() {
         return sum;
     }
 
