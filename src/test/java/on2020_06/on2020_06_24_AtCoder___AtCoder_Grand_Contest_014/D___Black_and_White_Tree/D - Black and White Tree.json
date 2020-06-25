@@ -1,0 +1,45 @@
+{
+  "name" : "D - Black and White Tree",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3\n1 2\n2 3\n",
+    "output" : "First\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "4\n1 2\n2 3\n2 4\n",
+    "output" : "First\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "6\n1 2\n2 3\n3 4\n2 5\n5 6\n",
+    "output" : "Second\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_06.on2020_06_24_AtCoder___AtCoder_Grand_Contest_014.D___Black_and_White_Tree.DBlackAndWhiteTree",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.06.24",
+  "contestName" : "AtCoder - AtCoder Grand Contest 014",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

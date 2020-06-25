@@ -1,0 +1,50 @@
+{
+  "name" : "D - Game on Tree",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5\n1 2\n2 3\n2 4\n4 5\n",
+    "output" : "Alice\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "5\n1 2\n2 3\n1 4\n4 5\n",
+    "output" : "Bob\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "6\n1 2\n2 4\n5 1\n6 3\n3 2\n",
+    "output" : "Alice\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "7\n1 2\n3 7\n4 6\n2 3\n2 4\n1 5\n",
+    "output" : "Bob\n",
+    "index" : 3,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.DGameOnTree",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.06.24",
+  "contestName" : "AtCoder - AtCoder Grand Contest 017",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

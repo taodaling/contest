@@ -1,0 +1,45 @@
+{
+  "name" : "CrazyCrazy",
+  "signature" : {
+    "name" : "possible",
+    "result" : "String",
+    "arguments" : [ "String" ],
+    "argumentNames" : [ "song" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "aabb" ],
+    "result" : "",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "abba" ],
+    "result" : "impossible",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "verylazyverylazy" ],
+    "result" : "possible",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "arqmpfvvbtltlhufznkldkurrazmgebfxeamrewn" ],
+    "result" : "impossible",
+    "index" : 3,
+    "active" : true
+  }, {
+    "arguments" : [ "aacfcfqqsmksimkoioeertbrtbhphnpnggddjjll" ],
+    "result" : "possible",
+    "index" : 4,
+    "active" : true
+  }, {
+    "arguments" : [ "znkldkrrazmgebfxeamrewnarqmpfvvbtltlhufz" ],
+    "index" : 5,
+    "active" : true
+  } ],
+  "date" : "2020.06.25",
+  "contestName" : "TopCoder SRM #756",
+  "testClasses" : [ ],
+  "fqn" : "on2020_06.on2020_06_25_TopCoder_SRM__756.CrazyCrazy.CrazyCrazy",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}
