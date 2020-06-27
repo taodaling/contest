@@ -1,6 +1,7 @@
 package template.polynomial;
 
 import template.binary.Log2;
+import template.math.DigitUtils;
 import template.math.Modular;
 import template.math.Power;
 import template.utils.SequenceUtils;
@@ -144,7 +145,7 @@ public class FastFourierTransform {
         double[] aReal = new double[n];
         double[] aImag = new double[n];
         for (int i = 0; i < aLen; i++) {
-            int x = (a[i] % m + m) % m;
+            int x = DigitUtils.mod(a[i], m);
             aReal[i] = x & ((1 << 15) - 1);
             aImag[i] = x >> 15;
         }
@@ -153,7 +154,7 @@ public class FastFourierTransform {
         double[] bReal = new double[n];
         double[] bImag = new double[n];
         for (int i = 0; i < bLen; i++) {
-            int x = (b[i] % m + m) % m;
+            int x = DigitUtils.mod(b[i], m);
             bReal[i] = x & ((1 << 15) - 1);
             bImag[i] = x >> 15;
         }
@@ -191,7 +192,13 @@ public class FastFourierTransform {
             long aa = (long) (faReal[i] + 0.5);
             long bb = (long) (fbReal[i] + 0.5);
             long cc = (long) (faImag[i] + 0.5);
+//            aa = (aa % m + m) % m;
+//            bb = (bb % m + m) % m;
+//            cc = (cc % m + m) % m;
             res[i] = (int) ((aa % m + (bb % m << 15) + (cc % m << 30)) % m);
+//            if(res[i] < 0){
+//                res[i] += m;
+//            }
         }
         return res;
     }

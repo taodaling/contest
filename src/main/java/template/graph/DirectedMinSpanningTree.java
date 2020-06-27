@@ -1,8 +1,9 @@
 package template.graph;
 
+import template.primitve.generated.datastructure.IntegerList;
+
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
 
@@ -11,11 +12,12 @@ public class DirectedMinSpanningTree {
     int now;
     Node top;
 
-    public static class Edge {
+    private static class Edge {
         Node src;
         Node dst;
         long weight;
         long fixedWeight;
+        int id;
 
         @Override
         public String toString() {
@@ -23,7 +25,7 @@ public class DirectedMinSpanningTree {
         }
     }
 
-    public static class Node {
+    private static class Node {
         int id = -1;
         List<Edge> inEdges = new ArrayList<>();
         LeftSideTree queue = LeftSideTree.NIL;
@@ -64,18 +66,22 @@ public class DirectedMinSpanningTree {
         }
     }
 
-    public List<Edge> dismantle(int rootId) {
+    /**
+     * <p>Find directed minimum spanning tree whose root is rootId. If it doesn't exist, there will be -1 in result, check it please.</p>
+     *
+     * @param rootId
+     * @param result
+     */
+    public void dismantle(int rootId, IntegerList result) {
         if (nodes.length == 1) {
-            return Collections.emptyList();
+            return;
         }
         now++;
         Node root = nodes[rootId];
-        List<Edge> result = new ArrayList<>();
         dismantle0(root, result);
-        return result;
     }
 
-    private void dismantle0(Node root, List<Edge> result) {
+    private void dismantle0(Node root, IntegerList result) {
         if (root == top || root.visited == now) {
             return;
         }
@@ -87,7 +93,7 @@ public class DirectedMinSpanningTree {
             if (front == root) {
                 break;
             }
-            result.add(trace.outEdge);
+            result.add(trace.outEdge.id);
             front.visited = now;
             dismantle0(frontRoot, result);
             trace = front;
@@ -158,8 +164,9 @@ public class DirectedMinSpanningTree {
 
     private Node[] nodes;
 
-    public void addEdge(int s, int t, long weight) {
+    public void addEdge(int id, int s, int t, long weight) {
         Edge edge = new Edge();
+        edge.id = id;
         edge.src = nodes[s];
         edge.dst = nodes[t];
         edge.weight = weight;
@@ -173,7 +180,7 @@ public class DirectedMinSpanningTree {
             nodes[i].id = i;
         }
         for (int i = 0; i < n; i++) {
-            addEdge(i, (i + 1) % n, inf);
+            addEdge(-1, i, (i + 1) % n, inf);
         }
     }
 

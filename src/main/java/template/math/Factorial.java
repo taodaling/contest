@@ -6,25 +6,29 @@ package template.math;
 public class Factorial {
     int[] fact;
     int[] inv;
-    Modular modular;
+    Modular mod;
 
-    public Modular getModular() {
-        return modular;
+    public Modular getMod() {
+        return mod;
     }
 
-    public Factorial(int[] fact, int[] inv, InverseNumber in, int limit, Modular modular) {
-        this.modular = modular;
+    public Factorial(int[] fact, int[] inv, Power pow) {
+        this.mod = pow.getModular();
         this.fact = fact;
         this.inv = inv;
         fact[0] = inv[0] = 1;
-        for (int i = 1; i <= limit; i++) {
-            fact[i] = modular.mul(fact[i - 1], i);
-            inv[i] = modular.mul(inv[i - 1], in.inverse(i));
+        for (int i = 1; i < fact.length; i++) {
+            fact[i] = i;
+            fact[i] = mod.mul(fact[i], fact[i - 1]);
+        }
+        inv[inv.length - 1] = pow.inverse(fact[inv.length - 1]);
+        for (int i = inv.length - 2; i >= 1; i--) {
+            inv[i] = mod.mul(inv[i + 1], i + 1);
         }
     }
 
-    public Factorial(int limit, Modular modular) {
-        this(new int[limit + 1], new int[limit + 1], new ModPrimeInverseNumber(limit, modular), limit, modular);
+    public Factorial(int limit, Power pow) {
+        this(new int[limit + 1], new int[limit + 1], pow);
     }
 
     public int fact(int n) {

@@ -64,7 +64,11 @@ public class Power implements InverseNumber {
 
     @Override
     public int inverse(int x) {
-        return inverseExtGCD(x);
+        int ans =  inverseExtGCD(x);
+//        if(modular.mul(ans, x) != 1){
+//            throw new IllegalStateException();
+//        }
+        return ans;
     }
 
     public int inverseExtGCD(int x) {

@@ -60,7 +60,7 @@ public class MinimumNumberWithMaximumFactors {
      * For all factors of n, find how many pair of factors (x,y) satisfy x | y
      */
     public static long divisionRelation(long n) {
-        long[] primes = new LongPollardRho().findAllFactors(n).keySet().stream().mapToLong(Long::longValue).toArray();
+        long[] primes = LongPollardRho.findAllFactors(n).stream().mapToLong(Long::longValue).toArray();
         LongList list = new LongList();
         collectAllFactors(primes, n, 1, 0, list);
         long[] factors = list.toArray();

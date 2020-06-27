@@ -1,0 +1,50 @@
+{
+  "name" : "Find Linear Recurrence",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "6\n3 4 6 10 18 34\n",
+    "output" : "2\n3 998244351\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "6\n3 4 6 10 18 36\n",
+    "output" : "4\n3 998244351 3 998244349\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "0\n\n",
+    "output" : "0\n\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "5\n0 0 0 0 1\n",
+    "output" : "5\n0 0 0 0 0\n",
+    "index" : 3,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_06.on2020_06_26_Library_Checker.Find_Linear_Recurrence.FindLinearRecurrence",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.06.26",
+  "contestName" : "Library Checker",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

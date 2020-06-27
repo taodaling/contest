@@ -11,7 +11,7 @@ public class MillerRabin {
     Random random = new Random();
 
     /**
-     * Check whether n is a prime s times
+     * Check whether n is a prime s times, O(slog n)
      */
     public boolean mr(int n, int s) {
         if (n <= 1) {

@@ -12,6 +12,12 @@ public class Nimber {
         SequenceUtils.deepFill(nimProductPowerCache, -1);
     }
 
+    /**
+     * O(\log a \log b)
+     * @param a
+     * @param b
+     * @return
+     */
     public static long product(long a, long b) {
         if (a < b) {
             return product(b, a);

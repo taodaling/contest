@@ -1,25 +1,15 @@
 package template.math;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 public class LongPollardRho {
-    public static void main(String[] args) {
-        System.out.println(new LongPollardRho().findAllFactors(100000000000123503L));
-    }
+    static Random random = new Random();
+    static long[] smallPrimes = new long[]{2, 3, 5, 7, 11, 13, 17, 19};
 
-    LongMillerRabin mr = new LongMillerRabin();
-    Random random = new Random();
-
-    /**
-     * Find a factor of n, if n is returned, it means n is 1 or a prime
-     */
-    public long findFactor(long n) {
-        if (mr.mr(n, 5)) {
+    public static long findFactor(long n) {
+        if (LongMillerRabin.mr(n, 10)) {
             return n;
         }
-
         while (true) {
             long f = rho(n);
             if (f != n) {
@@ -28,39 +18,45 @@ public class LongPollardRho {
         }
     }
 
-    public long findPrimeFactor(long n) {
-        long ans = findFactor(n);
-        return ans == n ? ans : findPrimeFactor(ans);
+    public static Set<Long> findAllFactors(long n) {
+        if (n == 0) {
+            throw new IllegalArgumentException();
+        }
+
+        Set<Long> set = new HashSet<>();
+        for (long p : smallPrimes) {
+            if (n % p != 0) {
+                continue;
+            }
+            set.add(p);
+            while (n % p == 0) {
+                n /= p;
+            }
+        }
+        findAllFactors(set, n);
+        return set;
     }
 
-    /**
-     * Find the representation of n=p1^c1 * p2^c2 * ... * pm ^ cm. <br>
-     * The returned map contained such entries: pi -> pi^ci
-     */
-    public Map<Long, Long> findAllFactors(long n) {
-        Map<Long, Long> map = new HashMap();
-        findAllFactors(map, n);
-        return map;
-    }
-
-    private void findAllFactors(Map<Long, Long> map, long n) {
+    private static void findAllFactors(Set<Long> set, long n) {
         if (n == 1) {
             return;
         }
         long f = findFactor(n);
         if (f == n) {
-            Long value = map.get(f);
-            if (value == null) {
-                value = 1L;
-            }
-            map.put(f, value * f);
+            set.add(f);
             return;
         }
-        findAllFactors(map, f);
-        findAllFactors(map, n / f);
+        long otherPart = n / f;
+//        long g = GCDs.gcd(f, otherPart);
+//        while (g != 1) {
+//            otherPart /= g;
+//            g = GCDs.gcd(f, otherPart);
+//        }
+        findAllFactors(set, f);
+        findAllFactors(set, otherPart);
     }
 
-    private long rho(long n) {
+    private static long rho(long n) {
         if (n % 2 == 0) {
             return 2;
         }

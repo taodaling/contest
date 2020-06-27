@@ -2,7 +2,16 @@ package template.datastructure;
 
 import template.math.DigitUtils;
 import template.primitve.generated.datastructure.IntToIntFunction;
+import template.primitve.generated.datastructure.IntToLongFunction;
 
+/**
+ * <p>Given a1, a2, ..., an, support two type operations</p>
+ * <ul>
+ *     <li>given interval l,r, for i in [l,r], update a[i]=min(a[i],x)</li>
+ *     <li>given interval l,r, find a[l]+a[l+1]+...+a[r]</li>
+ * </ul>
+ * <p>each operation finished with O(log n) time complexity</p>
+ */
 public class SegmentBeat {
     private SegmentBeat left;
     private SegmentBeat right;
@@ -32,7 +41,7 @@ public class SegmentBeat {
         right.setMin(first);
     }
 
-    public SegmentBeat(int l, int r, IntToIntFunction func) {
+    public SegmentBeat(int l, int r, IntToLongFunction func) {
         if (l < r) {
             int m = DigitUtils.floorAverage(l, r);
             left = new SegmentBeat(l, m, func);
@@ -97,5 +106,45 @@ public class SegmentBeat {
         int m = DigitUtils.floorAverage(l, r);
         return Math.max(left.queryMax(ll, rr, l, m),
                 right.queryMax(ll, rr, m + 1, r));
+    }
+
+    private SegmentBeat deepClone() {
+        SegmentBeat seg = clone();
+        if (seg.left != null) {
+            seg.left = seg.left.deepClone();
+        }
+        if (seg.right != null) {
+            seg.right = seg.right.deepClone();
+        }
+        return seg;
+    }
+
+    @Override
+    protected SegmentBeat clone() {
+        try {
+            return (SegmentBeat) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void toString(StringBuilder builder) {
+        if (left == null && right == null) {
+            builder.append(sum).append(",");
+            return;
+        }
+        pushDown();
+        left.toString(builder);
+        right.toString(builder);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        deepClone().toString(builder);
+        if (builder.length() > 0) {
+            builder.setLength(builder.length() - 1);
+        }
+        return builder.toString();
     }
 }

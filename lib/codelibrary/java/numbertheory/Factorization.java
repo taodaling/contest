@@ -38,7 +38,7 @@ public class Factorization {
     // returns divisor of n or -1 if failed: https://en.wikipedia.org/wiki/Pollard%27s_rho_algorithm#Algorithm
     // O(n^(1/4)) complexity
     public static long pollard(long n) {
-        Random rnd = new Random(1);
+        Random rnd = new Random();
         long x = Math.abs(rnd.nextLong()) % n;
         long y = x;
         while (true) {

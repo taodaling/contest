@@ -15,8 +15,12 @@ public interface ILongModular {
         return ILongModular.getInstance(getMod() - 1);
     }
 
+
     static ILongModular getInstance(long mod) {
-        //return new LongModularDanger(mod);
-        return mod <= (1L << 54) ? new LongModularDanger(mod) : new LongModular(mod);
+        //return new HandyLongModular(mod);
+        if (mod <= (1L << 54)) {
+            return new LongModularDanger(mod);
+        }
+        return new HandyLongModular(mod);//new BigLongModular(mod);//new LongModular(mod);
     }
 }

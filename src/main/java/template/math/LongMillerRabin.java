@@ -6,14 +6,14 @@ import java.util.Random;
  * Test whether a number is primes
  */
 public class LongMillerRabin {
-    ILongModular modular;
-    LongPower power;
-    Random random = new Random();
+    static ILongModular modular;
+    static LongPower power;
+    static Random random = new Random();
 
     /**
      * Check whether n is a prime s times
      */
-    public boolean mr(long n, int s) {
+    public static boolean mr(long n, int s) {
         if (n <= 1) {
             return false;
         }
@@ -24,7 +24,7 @@ public class LongMillerRabin {
             return false;
         }
         long m = n - 1;
-        while(m % 2 == 0){
+        while (m % 2 == 0) {
             m /= 2;
         }
         modular = ILongModular.getInstance(n);
@@ -39,11 +39,11 @@ public class LongMillerRabin {
     }
 
 
-    private boolean mr0(long x, long n, long m) {
+    private static boolean mr0(long x, long n, long m) {
         return test(power.pow(x, m), m, n);
     }
 
-    private boolean test(long y, long exp, long n) {
+    private static boolean test(long y, long exp, long n) {
         long y2 = modular.mul(y, y);
         if (!(exp == n - 1 || test(y2, exp * 2, n))) {
             return false;
