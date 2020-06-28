@@ -1,0 +1,45 @@
+{
+  "name" : "B. Bear and Tree Jumps",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "6 2\n1 2\n1 3\n2 4\n2 5\n4 6\n",
+    "output" : "20\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "13 3\n1 2\n3 2\n4 2\n5 2\n3 6\n10 6\n6 7\n6 13\n5 8\n5 9\n9 11\n11 12\n",
+    "output" : "114\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "3 5\n2 1\n3 1\n",
+    "output" : "3\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_06.on2020_06_27_Codeforces___Codeforces_Round__405__rated__Div__1__based_on_VK_Cup_2017_Round_1_.B__Bear_and_Tree_Jumps.BBearAndTreeJumps",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.06.27",
+  "contestName" : "Codeforces - Codeforces Round #405 (rated, Div. 1, based on VK Cup 2017 Round 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

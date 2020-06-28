@@ -1,10 +1,12 @@
 import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.stream.IntStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.util.stream.Stream;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
@@ -38,109 +40,269 @@ public class Main {
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
             char[] s = in.readString().toCharArray();
-            int V = 0;
-            int K = 0;
+            int[] cnts = new int[3];
+            IntegerList[] indices = IntStream.range(0, 3).mapToObj(i -> new IntegerList()).toArray(i -> new IntegerList[i]);
             for (int i = 0; i < n; i++) {
-                if (s[i] == 'V') {
-                    V++;
-                }
-                if (s[i] == 'K') {
-                    K++;
-                }
+                s[i] = (char) (s[i] == 'V' ? 0 : s[i] == 'K' ? 1 : 2);
+                cnts[s[i]]++;
+                indices[s[i]].add(i);
             }
 
-            int[][][][] prev = new int[V + 1][K + 1][K + 1][V + 1];
-            int[][][][] next = new int[V + 1][K + 1][K + 1][V + 1];
-
-            int[] lastNoWord = new int[n];
-            int[] nextNoWord = new int[n];
-            for (int i = 0; i < n; i++) {
-                lastNoWord[i] = -1;
-                if (s[i] != 'V' && s[i] != 'K') {
-                    lastNoWord[i] = i;
-                } else if (i > 0) {
-                    lastNoWord[i] = lastNoWord[i - 1];
+            int[][] prevCnt = new int[n][3];
+            for (int i = 1; i < n; i++) {
+                for (int j = 0; j < 3; j++) {
+                    prevCnt[i][j] = prevCnt[i - 1][j];
                 }
-            }
-            for (int i = n - 1; i >= 0; i--) {
-                nextNoWord[i] = -1;
-                if (s[i] != 'V' && s[i] != 'K') {
-                    nextNoWord[i] = i;
-                } else if (i + 1 < n) {
-                    nextNoWord[i] = nextNoWord[i + 1];
-                }
+                prevCnt[i][s[i - 1]]++;
             }
 
+            ArrayIndex ai = new ArrayIndex(cnts[0] + 1, cnts[1] + 1, cnts[2] + 1, 2);
+            int[] dp = new int[ai.totalSize()];
+            int[] next = new int[ai.totalSize()];
             int inf = (int) 1e9;
-            SequenceUtils.deepFill(prev, inf);
-            prev[0][0][0][0] = 0;
+            Arrays.fill(dp, inf);
+            dp[ai.indexOf(0, 0, 0, 0)] = 0;
             for (int i = 0; i < n; i++) {
-                SequenceUtils.deepFill(next, inf);
-                for (int j = 0; j <= V; j++) {
-                    for (int k = 0; k <= K; k++) {
-                        for (int t = 0; t <= K; t++) {
-                            for (int a = 0; a <= V; a++) {
-                                if (s[i] == 'V') {
-                                    //do nothing
-                                    if (j + 1 <= V) {
-                                        next[j + 1][k][t][a] = Math.min(next[j + 1][k][t][a], prev[j][k][t][a] + t + a);
-                                    }
-                                    //move first
-                                    if (lastNoWord[i] != -1) {
-                                        next[j][k][t][a] = Math.min(next[j][k][t][a], prev[j][k][t][a] + j + k + t + a + 1);
-                                    }
-                                    //add to
-                                    if (a + 1 <= V) {
-                                        next[j][k][t][a + 1] = Math.min(next[j][k][t][a + 1], prev[j][k][t][a]);
-                                    }
-                                } else if (s[i] == 'K') {
-                                    //move before all V
-                                    if (k + 1 <= K) {
-                                        next[j][k + 1][t][a] = Math.min(next[j][k + 1][t][a], prev[j][k][t][a] + j + a + t);
-                                    }
-                                    //move after
-                                    if (t + 1 <= K) {
-                                        next[j][k][t + 1][a] = Math.min(next[j][k][t + 1][a], prev[j][k][t][a] + a);
-                                    }
-                                } else {
-                                    next[a][t][0][0] = Math.min(next[a][t][0][0], prev[j][k][t][a] + t + a);
+                Arrays.fill(next, inf);
+                for (int a = 0; a <= cnts[0]; a++) {
+                    for (int b = 0; b <= cnts[1]; b++) {
+                        for (int c = 0; c <= cnts[2]; c++) {
+                            for (int t = 0; t < 2; t++) {
+                                int val = dp[ai.indexOf(a, b, c, t)];
+                                //put 0
+                                if (a + 1 <= cnts[0]) {
+                                    int[] prev = prevCnt[indices[0].get(a)];
+                                    next[ai.indexOf(a + 1, b, c, 1)] = Math.min(next[ai.indexOf(a + 1, b, c, 1)], val + remain(prev[0], prev[1], prev[2], a, b, c));
+                                }
+                                //put 1
+                                if (b + 1 <= cnts[1] && t == 0) {
+                                    int[] prev = prevCnt[indices[1].get(b)];
+                                    next[ai.indexOf(a, b + 1, c, 0)] = Math.min(next[ai.indexOf(a, b + 1, c, 0)], val + remain(prev[0], prev[1], prev[2], a, b, c));
+                                }
+                                //put 2
+                                if (c + 1 <= cnts[2]) {
+                                    int[] prev = prevCnt[indices[2].get(c)];
+                                    next[ai.indexOf(a, b, c + 1, 0)] = Math.min(next[ai.indexOf(a, b, c + 1, 0)], val + remain(prev[0], prev[1], prev[2], a, b, c));
                                 }
                             }
                         }
                     }
                 }
 
-                int[][][][] tmp = next;
-                next = prev;
-                prev = tmp;
+                int[] tmp = next;
+                next = dp;
+                dp = tmp;
             }
 
-            int ans = inf;
-            for (int i = 0; i <= V; i++) {
-                for (int j = 0; j <= K; j++) {
-                    ans = Math.min(ans, prev[i][j][0][0]);
-                }
-            }
-
+            int ans = Math.min(dp[ai.indexOf(cnts[0], cnts[1], cnts[2], 0)], dp[ai.indexOf(cnts[0], cnts[1], cnts[2], 1)]);
             out.println(ans);
+        }
+
+        public int remain(int a, int b, int c, int usedA, int usedB, int usedC) {
+            return Math.max(a - usedA, 0) + Math.max(b - usedB, 0) + Math.max(c - usedC, 0);
+        }
+
+    }
+
+    static class ArrayIndex {
+        int[] dimensions;
+
+        public ArrayIndex(int... dimensions) {
+            this.dimensions = dimensions;
+        }
+
+        public int totalSize() {
+            int ans = 1;
+            for (int x : dimensions) {
+                ans *= x;
+            }
+            return ans;
+        }
+
+        public int indexOf(int a, int b) {
+            return a * dimensions[1] + b;
+        }
+
+        public int indexOf(int a, int b, int c) {
+            return indexOf(a, b) * dimensions[2] + c;
+        }
+
+        public int indexOf(int a, int b, int c, int d) {
+            return indexOf(a, b, c) * dimensions[3] + d;
         }
 
     }
 
     static class SequenceUtils {
-        public static void deepFill(Object array, int val) {
-            if (!array.getClass().isArray()) {
-                throw new IllegalArgumentException();
+        public static boolean equal(int[] a, int al, int ar, int[] b, int bl, int br) {
+            if ((ar - al) != (br - bl)) {
+                return false;
             }
-            if (array instanceof int[]) {
-                int[] intArray = (int[]) array;
-                Arrays.fill(intArray, val);
-            } else {
-                Object[] objArray = (Object[]) array;
-                for (Object obj : objArray) {
-                    deepFill(obj, val);
+            for (int i = al, j = bl; i <= ar; i++, j++) {
+                if (a[i] != b[j]) {
+                    return false;
                 }
             }
+            return true;
+        }
+
+    }
+
+    static class IntegerList implements Cloneable {
+        private int size;
+        private int cap;
+        private int[] data;
+        private static final int[] EMPTY = new int[0];
+
+        public IntegerList(int cap) {
+            this.cap = cap;
+            if (cap == 0) {
+                data = EMPTY;
+            } else {
+                data = new int[cap];
+            }
+        }
+
+        public IntegerList(IntegerList list) {
+            this.size = list.size;
+            this.cap = list.cap;
+            this.data = Arrays.copyOf(list.data, size);
+        }
+
+        public IntegerList() {
+            this(0);
+        }
+
+        public void ensureSpace(int req) {
+            if (req > cap) {
+                while (cap < req) {
+                    cap = Math.max(cap + 10, 2 * cap);
+                }
+                data = Arrays.copyOf(data, cap);
+            }
+        }
+
+        private void checkRange(int i) {
+            if (i < 0 || i >= size) {
+                throw new ArrayIndexOutOfBoundsException();
+            }
+        }
+
+        public int get(int i) {
+            checkRange(i);
+            return data[i];
+        }
+
+        public void add(int x) {
+            ensureSpace(size + 1);
+            data[size++] = x;
+        }
+
+        public void addAll(int[] x, int offset, int len) {
+            ensureSpace(size + len);
+            System.arraycopy(x, offset, data, size, len);
+            size += len;
+        }
+
+        public void addAll(IntegerList list) {
+            addAll(list.data, 0, list.size);
+        }
+
+        public int[] toArray() {
+            return Arrays.copyOf(data, size);
+        }
+
+        public String toString() {
+            return Arrays.toString(toArray());
+        }
+
+        public boolean equals(Object obj) {
+            if (!(obj instanceof IntegerList)) {
+                return false;
+            }
+            IntegerList other = (IntegerList) obj;
+            return SequenceUtils.equal(data, 0, size - 1, other.data, 0, other.size - 1);
+        }
+
+        public int hashCode() {
+            int h = 1;
+            for (int i = 0; i < size; i++) {
+                h = h * 31 + Integer.hashCode(data[i]);
+            }
+            return h;
+        }
+
+        public IntegerList clone() {
+            IntegerList ans = new IntegerList();
+            ans.addAll(this);
+            return ans;
+        }
+
+    }
+
+    static class FastOutput implements AutoCloseable, Closeable, Appendable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
+
+        public FastOutput append(CharSequence csq) {
+            cache.append(csq);
+            return this;
+        }
+
+        public FastOutput append(CharSequence csq, int start, int end) {
+            cache.append(csq, start, end);
+            return this;
+        }
+
+        public FastOutput(Writer os) {
+            this.os = os;
+        }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput append(char c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput append(int c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput println(int c) {
+            return append(c).println();
+        }
+
+        public FastOutput println() {
+            cache.append(System.lineSeparator());
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            return this;
+        }
+
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+
+        public String toString() {
+            return cache.toString();
         }
 
     }
@@ -217,73 +379,6 @@ public class Main {
         public String readString() {
             defaultStringBuf.setLength(0);
             return readString(defaultStringBuf);
-        }
-
-    }
-
-    static class FastOutput implements AutoCloseable, Closeable, Appendable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
-
-        public FastOutput append(CharSequence csq) {
-            cache.append(csq);
-            return this;
-        }
-
-        public FastOutput append(CharSequence csq, int start, int end) {
-            cache.append(csq, start, end);
-            return this;
-        }
-
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput append(char c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput append(int c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput println(int c) {
-            return append(c).println();
-        }
-
-        public FastOutput println() {
-            cache.append(System.lineSeparator());
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        }
-
-        public String toString() {
-            return cache.toString();
         }
 
     }
