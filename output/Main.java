@@ -1,11 +1,10 @@
 import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.util.concurrent.TimeUnit;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
@@ -29,30 +28,44 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            Task solver = new Task();
+            DReversedLCS solver = new DReversedLCS();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class Task {
-        public void solve(int testNumber, FastInput in, FastOutput out) throws InterruptedException {
-            for (int i = 0; ; i++) {
-                Thread t = new Thread(null, () -> {
-                    dfs(0);
-                }, "", Long.MAX_VALUE);
-                t.start();
+    static class DReversedLCS {
+        char[] s;
+        int[][][] dp;
 
-                System.err.println(i);
+        public int dp(int l, int r, int k) {
+            if (l > r) {
+                return 0;
             }
+            if (l == r) {
+                return 1;
+            }
+            if (dp[l][r][k] == -1) {
+                dp[l][r][k] = 0;
+                //change nothing
+                dp[l][r][k] = Math.max(dp(l + 1, r, k), dp(l, r - 1, k));
+                if (s[l] == s[r]) {
+                    dp[l][r][k] = dp(l + 1, r - 1, k) + 2;
+                }
+                if (k > 0) {
+                    dp[l][r][k] = Math.max(dp[l][r][k], dp(l + 1, r - 1, k - 1) + 2);
+                }
+            }
+            return dp[l][r][k];
         }
 
-        public void dfs(int depth) {
-            try {
-                TimeUnit.DAYS.sleep(1);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        public void solve(int testNumber, FastInput in, FastOutput out) {
+            s = in.readString().toCharArray();
+            int k = in.readInt();
+            dp = new int[s.length][s.length][k + 1];
+            SequenceUtils.deepFill(dp, -1);
+            int ans = dp(0, s.length - 1, k);
+            out.println(ans);
         }
 
     }
@@ -84,6 +97,20 @@ public class Main {
             return this;
         }
 
+        public FastOutput append(int c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput println(int c) {
+            return append(c).println();
+        }
+
+        public FastOutput println() {
+            cache.append(System.lineSeparator());
+            return this;
+        }
+
         public FastOutput flush() {
             try {
                 os.append(cache);
@@ -110,11 +137,96 @@ public class Main {
 
     }
 
+    static class SequenceUtils {
+        public static void deepFill(Object array, int val) {
+            if (!array.getClass().isArray()) {
+                throw new IllegalArgumentException();
+            }
+            if (array instanceof int[]) {
+                int[] intArray = (int[]) array;
+                Arrays.fill(intArray, val);
+            } else {
+                Object[] objArray = (Object[]) array;
+                for (Object obj : objArray) {
+                    deepFill(obj, val);
+                }
+            }
+        }
+
+    }
+
     static class FastInput {
         private final InputStream is;
+        private StringBuilder defaultStringBuf = new StringBuilder(1 << 13);
+        private byte[] buf = new byte[1 << 13];
+        private int bufLen;
+        private int bufOffset;
+        private int next;
 
         public FastInput(InputStream is) {
             this.is = is;
+        }
+
+        private int read() {
+            while (bufLen == bufOffset) {
+                bufOffset = 0;
+                try {
+                    bufLen = is.read(buf);
+                } catch (IOException e) {
+                    bufLen = -1;
+                }
+                if (bufLen == -1) {
+                    return -1;
+                }
+            }
+            return buf[bufOffset++];
+        }
+
+        public void skipBlank() {
+            while (next >= 0 && next <= 32) {
+                next = read();
+            }
+        }
+
+        public int readInt() {
+            int sign = 1;
+
+            skipBlank();
+            if (next == '+' || next == '-') {
+                sign = next == '+' ? 1 : -1;
+                next = read();
+            }
+
+            int val = 0;
+            if (sign == 1) {
+                while (next >= '0' && next <= '9') {
+                    val = val * 10 + next - '0';
+                    next = read();
+                }
+            } else {
+                while (next >= '0' && next <= '9') {
+                    val = val * 10 - next + '0';
+                    next = read();
+                }
+            }
+
+            return val;
+        }
+
+        public String readString(StringBuilder builder) {
+            skipBlank();
+
+            while (next > 32) {
+                builder.append((char) next);
+                next = read();
+            }
+
+            return builder.toString();
+        }
+
+        public String readString() {
+            defaultStringBuf.setLength(0);
+            return readString(defaultStringBuf);
         }
 
     }

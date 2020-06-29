@@ -1,0 +1,40 @@
+{
+  "name" : "C - Holes",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2\n0 0\n1 1",
+    "output" : "0.5\n0.5",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "5\n0 0\n2 8\n4 5\n2 6\n3 10",
+    "output" : "0.43160120892732328768\n0.03480224363653196956\n0.13880483535586193855\n0.00000000000000000000\n0.39479171208028279727",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx262M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.CHoles",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.06.29",
+  "contestName" : "Virtual Judge - 2020-06-29练习",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

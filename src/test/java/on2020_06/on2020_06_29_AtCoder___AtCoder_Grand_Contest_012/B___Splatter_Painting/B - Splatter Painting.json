@@ -1,0 +1,40 @@
+{
+  "name" : "B - Splatter Painting",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "7 7\n1 2\n1 3\n1 4\n4 5\n5 6\n5 7\n2 3\n2\n6 1 1\n1 2 2\n",
+    "output" : "2\n2\n2\n2\n2\n1\n0\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "14 10\n1 4\n5 7\n7 11\n4 10\n14 7\n14 3\n6 14\n8 11\n5 13\n8 3\n8\n8 6 2\n9 7 85\n6 9 3\n6 7 5\n10 3 1\n12 9 4\n9 6 6\n8 2 3\n",
+    "output" : "1\n0\n3\n1\n5\n5\n3\n3\n6\n1\n3\n4\n5\n3\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_06.on2020_06_29_AtCoder___AtCoder_Grand_Contest_012.B___Splatter_Painting.BSplatterPainting",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.06.29",
+  "contestName" : "AtCoder - AtCoder Grand Contest 012",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}
