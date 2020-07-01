@@ -172,11 +172,24 @@ public class FastInput {
 
     public int readLine(char[] data, int offset) {
         int originalOffset = offset;
-        while (next != -1 && next != '\n') {
+        while (next != -1 && next != '\n' && next != '\r') {
             data[offset++] = (char) next;
             next = read();
         }
         return offset - originalOffset;
+    }
+
+    public void readLine(StringBuilder builder) {
+        while (next != -1 && next != '\n' && next != '\r') {
+            builder.append((char) next);
+            next = read();
+        }
+    }
+
+    public String readLine() {
+        defaultStringBuf.setLength(0);
+        readLine(defaultStringBuf);
+        return defaultStringBuf.toString();
     }
 
     public int readString(char[] data, int offset) {
