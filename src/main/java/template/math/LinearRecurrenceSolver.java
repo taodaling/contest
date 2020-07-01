@@ -1,25 +1,25 @@
 package template.math;
 
 import template.polynomial.Polynomials;
-import template.primitve.generated.datastructure.IntegerList;
+import template.primitve.generated.datastructure.IntegerArrayList;
 
 import java.util.BitSet;
 
 public class LinearRecurrenceSolver {
     Modular mod;
-    IntegerList coe;
-    IntegerList p;
-    IntegerList remainder;
+    IntegerArrayList coe;
+    IntegerArrayList p;
+    IntegerArrayList remainder;
     Power pow;
     int n;
 
-    private LinearRecurrenceSolver(IntegerList coe, Modular mod) {
+    private LinearRecurrenceSolver(IntegerArrayList coe, Modular mod) {
         this.coe = coe;
         this.mod = mod;
         n = coe.size();
         pow = new Power(mod);
-        remainder = new IntegerList(coe.size());
-        p = new IntegerList(coe.size() + 1);
+        remainder = new IntegerArrayList(coe.size());
+        p = new IntegerArrayList(coe.size() + 1);
         for (int i = n - 1; i >= 0; i--) {
             p.add(mod.valueOf(-coe.get(i)));
         }
@@ -29,26 +29,26 @@ public class LinearRecurrenceSolver {
     /**
      * a_i = coe(0) * (a_{i-1}) + ...
      */
-    public static LinearRecurrenceSolver newSolverFromLinearRecurrence(IntegerList coe, Modular mod) {
+    public static LinearRecurrenceSolver newSolverFromLinearRecurrence(IntegerArrayList coe, Modular mod) {
         return new LinearRecurrenceSolver(coe, mod);
     }
 
     /**
      * Auto detect linear recurrence from given sequence
      */
-    public static LinearRecurrenceSolver newSolverFromSequence(IntegerList seq, Modular mod) {
+    public static LinearRecurrenceSolver newSolverFromSequence(IntegerArrayList seq, Modular mod) {
         ModLinearFeedbackShiftRegister lfsr = new ModLinearFeedbackShiftRegister(mod, seq.size());
         for (int i = 0; i < seq.size(); i++) {
             lfsr.add(seq.get(i));
         }
-        IntegerList coes = new IntegerList(lfsr.length());
+        IntegerArrayList coes = new IntegerArrayList(lfsr.length());
         for (int i = 1; i <= lfsr.length(); i++) {
             coes.add(lfsr.codeAt(i));
         }
         return newSolverFromLinearRecurrence(coes, mod);
     }
 
-    private int solve(IntegerList a) {
+    private int solve(IntegerArrayList a) {
         int ans = 0;
         remainder.expandWith(0, n);
         for (int i = 0; i < n; i++) {
@@ -62,7 +62,7 @@ public class LinearRecurrenceSolver {
      * <br>
      * Get a_k
      */
-    public int solve(long k, IntegerList a) {
+    public int solve(long k, IntegerArrayList a) {
         if (k < a.size()) {
             return a.get((int) k);
         }
@@ -70,7 +70,7 @@ public class LinearRecurrenceSolver {
         return solve(a);
     }
 
-    public IntegerList getRemainder(long k, IntegerList remainder) {
+    public IntegerArrayList getRemainder(long k, IntegerArrayList remainder) {
         Polynomials.module(k, p, remainder, pow);
         remainder.expandWith(0, n);
         return remainder;
@@ -79,7 +79,7 @@ public class LinearRecurrenceSolver {
     /**
      * Get a_k
      */
-    public int solve(BitSet k, IntegerList a) {
+    public int solve(BitSet k, IntegerArrayList a) {
         Polynomials.module(k, p, remainder, pow);
         return solve(a);
     }

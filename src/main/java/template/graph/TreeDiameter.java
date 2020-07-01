@@ -1,9 +1,7 @@
 package template.graph;
 
 import template.math.DigitUtils;
-import template.primitve.generated.datastructure.IntegerIterator;
-import template.primitve.generated.datastructure.IntegerList;
-import template.primitve.generated.datastructure.IntegerMultiWayStack;
+import template.primitve.generated.datastructure.IntegerArrayList;
 
 import java.util.List;
 
@@ -12,14 +10,14 @@ public class TreeDiameter {
     private int[] depth;
     private int[] parents;
     private int diameter;
-    private IntegerList centers;
-    private IntegerList ends;
+    private IntegerArrayList centers;
+    private IntegerArrayList ends;
 
-    public IntegerList getCenters() {
+    public IntegerArrayList getCenters() {
         return centers;
     }
 
-    public IntegerList getEnds() {
+    public IntegerArrayList getEnds() {
         return ends;
     }
 
@@ -30,8 +28,8 @@ public class TreeDiameter {
     public TreeDiameter(List<UndirectedEdge>[] edges, int n) {
         this.edges = edges;
         depth = new int[n];
-        centers = new IntegerList(2);
-        ends = new IntegerList(2);
+        centers = new IntegerArrayList(2);
+        ends = new IntegerArrayList(2);
         parents = new int[n];
 
         dfsForDepth(0, -1);

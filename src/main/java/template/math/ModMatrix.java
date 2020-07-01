@@ -1,7 +1,6 @@
 package template.math;
 
 import template.polynomial.ModGravityLagrangeInterpolation;
-import template.primitve.generated.datastructure.IntegerList;
 
 public class ModMatrix {
     int[][] mat;

@@ -6,7 +6,7 @@ import template.math.InverseNumber;
 import template.math.Modular;
 import template.math.Power;
 import template.math.PrimitiveRoot;
-import template.primitve.generated.datastructure.IntegerList;
+import template.primitve.generated.datastructure.IntegerArrayList;
 import template.utils.Buffer;
 import template.utils.SequenceUtils;
 
@@ -22,7 +22,7 @@ public class NumberTheoryTransform {
     private int g;
     private int[] wCache = new int[30];
     private int[] invCache = new int[30];
-    public static Buffer<IntegerList> listBuffer = Polynomials.listBuffer;
+    public static Buffer<IntegerArrayList> listBuffer = Polynomials.listBuffer;
 
     public NumberTheoryTransform(Modular mod) {
         this(mod, mod.getMod() == 998244353 ? 3 : new PrimitiveRoot(mod.getMod()).findMinPrimitiveRoot());
@@ -117,9 +117,9 @@ public class NumberTheoryTransform {
             return;
         }
 
-        IntegerList aSnapshot = listBuffer.alloc();
-        IntegerList bSnapshot = listBuffer.alloc();
-        IntegerList cSnapshot = listBuffer.alloc();
+        IntegerArrayList aSnapshot = listBuffer.alloc();
+        IntegerArrayList bSnapshot = listBuffer.alloc();
+        IntegerArrayList cSnapshot = listBuffer.alloc();
         aSnapshot.addAll(a, 0, n);
         bSnapshot.addAll(b, 0, n);
 
@@ -163,8 +163,8 @@ public class NumberTheoryTransform {
      * The total time complexity is O(mlogn) while m = lists.length and
      * n = lists[0].length + lists[1].length + ... + lists[m - 1].length.
      */
-    public void dacMul(IntegerList[] lists, IntegerList ans) {
-        IntegerList prod = dacMul(lists, 0, lists.length - 1);
+    public void dacMul(IntegerArrayList[] lists, IntegerArrayList ans) {
+        IntegerArrayList prod = dacMul(lists, 0, lists.length - 1);
         ans.clear();
         ans.addAll(prod);
         listBuffer.release(prod);
@@ -178,22 +178,22 @@ public class NumberTheoryTransform {
      * The total time complexity is O(nlog nlog m) while m = lists.length and
      * n = lists[0].length + lists[1].length + ... + lists[m - 1].length.
      */
-    public void mulByPQ(IntegerList[] lists, IntegerList ans) {
-        PriorityQueue<IntegerList> pqs = new PriorityQueue<>(lists.length, (a, b) -> a.size() - b.size());
-        for (IntegerList list : lists) {
-            IntegerList clone = listBuffer.alloc();
+    public void mulByPQ(IntegerArrayList[] lists, IntegerArrayList ans) {
+        PriorityQueue<IntegerArrayList> pqs = new PriorityQueue<>(lists.length, (a, b) -> a.size() - b.size());
+        for (IntegerArrayList list : lists) {
+            IntegerArrayList clone = listBuffer.alloc();
             clone.addAll(list);
             pqs.add(clone);
         }
         while (pqs.size() > 1) {
-            IntegerList a = pqs.remove();
-            IntegerList b = pqs.remove();
+            IntegerArrayList a = pqs.remove();
+            IntegerArrayList b = pqs.remove();
             multiplyAndStoreAnswerIntoA(a, b);
             listBuffer.release(b);
             pqs.add(a);
         }
 
-        IntegerList last = pqs.remove();
+        IntegerArrayList last = pqs.remove();
         ans.clear();
         ans.addAll(last);
         listBuffer.release(last);
@@ -201,14 +201,14 @@ public class NumberTheoryTransform {
     }
 
 
-    private IntegerList clone(IntegerList list) {
+    private IntegerArrayList clone(IntegerArrayList list) {
         Polynomials.normalize(list);
-        IntegerList ans = listBuffer.alloc();
+        IntegerArrayList ans = listBuffer.alloc();
         ans.addAll(list);
         return ans;
     }
 
-    public void mul(IntegerList a, IntegerList b, IntegerList ans) {
+    public void mul(IntegerArrayList a, IntegerArrayList b, IntegerArrayList ans) {
         a = clone(a);
         b = clone(b);
         int rank = a.size() + b.size() - 1;
@@ -226,7 +226,7 @@ public class NumberTheoryTransform {
         listBuffer.release(b);
     }
 
-    public void modmul(IntegerList a, IntegerList b, IntegerList ans, int n) {
+    public void modmul(IntegerArrayList a, IntegerArrayList b, IntegerArrayList ans, int n) {
         mul(a, b, ans);
         Polynomials.module(ans, n);
     }
@@ -234,11 +234,11 @@ public class NumberTheoryTransform {
     /**
      * make ans = ln a mod x^n
      */
-    public void ln(IntegerList a, IntegerList ans, int n, InverseNumber inverse) {
+    public void ln(IntegerArrayList a, IntegerArrayList ans, int n, InverseNumber inverse) {
         a = clone(a);
         Polynomials.module(a, n);
-        IntegerList diff = listBuffer.alloc();
-        IntegerList inv = listBuffer.alloc();
+        IntegerArrayList diff = listBuffer.alloc();
+        IntegerArrayList inv = listBuffer.alloc();
         int proper = Log2.ceilLog(n);
         a.expandWith(0, 1 << (proper + 1));
         inv.expandWith(0, 1 << (proper + 1));
@@ -259,7 +259,7 @@ public class NumberTheoryTransform {
     /**
      * ans = exp(a) mod x^n
      */
-    public void exp(IntegerList a, IntegerList ans, int n, InverseNumber inverse) {
+    public void exp(IntegerArrayList a, IntegerArrayList ans, int n, InverseNumber inverse) {
         if (n == 0) {
             ans.clear();
             ans.push(0);
@@ -272,15 +272,15 @@ public class NumberTheoryTransform {
         listBuffer.release(a);
     }
 
-    private void exp0(IntegerList a, IntegerList ans, int n, InverseNumber inverse) {
+    private void exp0(IntegerArrayList a, IntegerArrayList ans, int n, InverseNumber inverse) {
         if (n == 1) {
             ans.clear();
             ans.push(1);
             return;
         }
         exp0(a, ans, (n + 1) / 2, inverse);
-        IntegerList f0 = clone(ans);
-        IntegerList lnf0 = listBuffer.alloc();
+        IntegerArrayList f0 = clone(ans);
+        IntegerArrayList lnf0 = listBuffer.alloc();
         ln(f0, lnf0, n, inverse);
         lnf0.expandWith(0, n);
         {
@@ -296,7 +296,7 @@ public class NumberTheoryTransform {
         listBuffer.release(lnf0);
     }
 
-    public void pow2(IntegerList a) {
+    public void pow2(IntegerArrayList a) {
         int rankAns = (a.size() - 1) * 2;
         int proper = Log2.ceilLog(rankAns + 1);
         a.expandWith(0, (1 << proper));
@@ -309,14 +309,14 @@ public class NumberTheoryTransform {
     /**
      * 多项式多点插值
      */
-    public void multiApply(IntegerList p, IntegerList x, IntegerList y) {
+    public void multiApply(IntegerArrayList p, IntegerArrayList x, IntegerArrayList y) {
         int l = 0;
         int r = x.size() - 1;
         y.expandWith(0, x.size());
         multiApply(p, x, y, l, r, build(x, l, r));
     }
 
-    private int apply(IntegerList p, int x) {
+    private int apply(IntegerArrayList p, int x) {
         Polynomials.normalize(p);
         int y = 0;
         int[] data = p.getData();
@@ -330,7 +330,7 @@ public class NumberTheoryTransform {
     /**
      * a = b * c + r
      */
-    private void divide(IntegerList a, IntegerList b, IntegerList c, IntegerList r) {
+    private void divide(IntegerArrayList a, IntegerArrayList b, IntegerArrayList c, IntegerArrayList r) {
         Polynomials.normalize(a);
         Polynomials.normalize(b);
         int proper = 1 + Log2.ceilLog(Math.max(a.size(), b.size()));
@@ -345,15 +345,15 @@ public class NumberTheoryTransform {
         Polynomials.normalize(r);
     }
 
-    private void multiApply(IntegerList p, IntegerList x, IntegerList y, int l, int r, PolynomialBTree tree) {
+    private void multiApply(IntegerArrayList p, IntegerArrayList x, IntegerArrayList y, int l, int r, PolynomialBTree tree) {
         if (r - l + 1 <= 4) {
             for (int i = l; i <= r; i++) {
                 y.set(i, apply(p, x.get(i)));
             }
             return;
         }
-        IntegerList c = listBuffer.alloc();
-        IntegerList remainder = listBuffer.alloc();
+        IntegerArrayList c = listBuffer.alloc();
+        IntegerArrayList remainder = listBuffer.alloc();
         divide(p, tree.p, c, remainder);
 
         listBuffer.release(c);
@@ -363,29 +363,29 @@ public class NumberTheoryTransform {
         listBuffer.release(remainder);
     }
 
-    private PolynomialBTree build(IntegerList x, int l, int r) {
+    private PolynomialBTree build(IntegerArrayList x, int l, int r) {
         PolynomialBTree tree = new PolynomialBTree();
         if (l == r) {
-            tree.p = new IntegerList(2);
+            tree.p = new IntegerArrayList(2);
             tree.p.add(modular.valueOf(-x.get(l)));
             tree.p.add(modular.valueOf(1));
         } else {
             int m = DigitUtils.floorAverage(l, r);
             tree.left = build(x, l, m);
             tree.right = build(x, m + 1, r);
-            tree.p = new IntegerList();
+            tree.p = new IntegerArrayList();
             mul(tree.left.p, tree.right.p, tree.p);
         }
         return tree;
     }
 
     private static class PolynomialBTree {
-        public IntegerList p;
+        public IntegerArrayList p;
         public PolynomialBTree left;
         public PolynomialBTree right;
     }
 
-    private void multiplyAndStoreAnswerIntoA(IntegerList a, IntegerList b) {
+    private void multiplyAndStoreAnswerIntoA(IntegerArrayList a, IntegerArrayList b) {
         int rankAns = a.size() - 1 + b.size() - 1;
         int proper = Log2.ceilLog(rankAns + 1);
         a.expandWith(0, (1 << proper));
@@ -399,19 +399,19 @@ public class NumberTheoryTransform {
 
     private static final int NTT_THRESHOLD = 128;
 
-    private IntegerList dacMul(IntegerList[] lists, int l, int r) {
+    private IntegerArrayList dacMul(IntegerArrayList[] lists, int l, int r) {
         if (l == r) {
-            IntegerList alloc = listBuffer.alloc();
+            IntegerArrayList alloc = listBuffer.alloc();
             alloc.addAll(lists[l]);
             Polynomials.normalize(alloc);
             return alloc;
         }
         int m = DigitUtils.floorAverage(l, r);
-        IntegerList a = dacMul(lists, l, m);
-        IntegerList b = dacMul(lists, m + 1, r);
+        IntegerArrayList a = dacMul(lists, l, m);
+        IntegerArrayList b = dacMul(lists, m + 1, r);
 
         if (a.size() < NTT_THRESHOLD || b.size() < NTT_THRESHOLD) {
-            IntegerList ans = listBuffer.alloc();
+            IntegerArrayList ans = listBuffer.alloc();
             Polynomials.mul(a, b, ans, modular);
             listBuffer.release(a);
             listBuffer.release(b);
@@ -434,7 +434,7 @@ public class NumberTheoryTransform {
             return;
         }
         inverse(p, inv, m - 1);
-        IntegerList buf = listBuffer.alloc();
+        IntegerArrayList buf = listBuffer.alloc();
         int n = 1 << (m + 1);
         buf.addAll(p, 0, 1 << m);
         buf.expandWith(0, n);
@@ -460,8 +460,8 @@ public class NumberTheoryTransform {
             Arrays.fill(remainder, 0);
             return;
         }
-        IntegerList a = listBuffer.alloc();
-        IntegerList c = listBuffer.alloc();
+        IntegerArrayList a = listBuffer.alloc();
+        IntegerArrayList c = listBuffer.alloc();
 
         a.expandWith(0, 1 << m);
         c.expandWith(0, 1 << m);
@@ -504,9 +504,9 @@ public class NumberTheoryTransform {
             Arrays.fill(remainder, 0);
             return;
         }
-        IntegerList r = listBuffer.alloc();
-        IntegerList a = listBuffer.alloc();
-        IntegerList c = listBuffer.alloc();
+        IntegerArrayList r = listBuffer.alloc();
+        IntegerArrayList a = listBuffer.alloc();
+        IntegerArrayList c = listBuffer.alloc();
 
         r.expandWith(0, 1 << m);
         a.expandWith(0, 1 << m);
@@ -545,25 +545,25 @@ public class NumberTheoryTransform {
     /**
      * ans = p ^ k mod x^n
      */
-    public void modpow(IntegerList x, IntegerList ans, long k, int n) {
-        IntegerList ret = modpow(x, k, n);
+    public void modpow(IntegerArrayList x, IntegerArrayList ans, long k, int n) {
+        IntegerArrayList ret = modpow(x, k, n);
         ans.clear();
         ans.addAll(ret);
         listBuffer.release(ret);
     }
 
-    private IntegerList modpow(IntegerList x, long k, int n) {
+    private IntegerArrayList modpow(IntegerArrayList x, long k, int n) {
         if (k == 0) {
-            IntegerList ans = listBuffer.alloc();
+            IntegerArrayList ans = listBuffer.alloc();
             ans.add(modular.valueOf(1));
             return ans;
         }
-        IntegerList ans = modpow(x, k / 2, n);
-        IntegerList newAns = listBuffer.alloc();
+        IntegerArrayList ans = modpow(x, k / 2, n);
+        IntegerArrayList newAns = listBuffer.alloc();
         modmul(ans, ans, newAns, n);
         if (k % 2 == 1) {
             modmul(x, newAns, ans, n);
-            IntegerList tmp = newAns;
+            IntegerArrayList tmp = newAns;
             newAns = ans;
             ans = tmp;
         }

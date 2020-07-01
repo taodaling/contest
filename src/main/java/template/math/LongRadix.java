@@ -1,6 +1,6 @@
 package template.math;
 
-import template.primitve.generated.datastructure.LongList;
+import template.primitve.generated.datastructure.LongArrayList;
 
 import java.util.Arrays;
 
@@ -13,7 +13,7 @@ public class LongRadix {
             throw new IllegalArgumentException();
         }
         this.base = base;
-        LongList ll = new LongList(64);
+        LongArrayList ll = new LongArrayList(64);
         ll.add(1);
         while (!DigitUtils.isMultiplicationOverflow(ll.tail(), base, Long.MAX_VALUE)) {
             ll.add(ll.tail() * base);

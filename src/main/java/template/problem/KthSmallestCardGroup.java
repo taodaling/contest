@@ -1,6 +1,6 @@
 package template.problem;
 
-import template.primitve.generated.datastructure.LongList;
+import template.primitve.generated.datastructure.LongArrayList;
 import template.rand.Randomized;
 
 import java.util.Arrays;
@@ -37,8 +37,8 @@ public class KthSmallestCardGroup {
     /**
      * result[i] store the i+1-th smallest sum of valid set
      */
-    public LongList theFirstKSmallestSet(int k) {
-        LongList ans = new LongList(k);
+    public LongArrayList theFirstKSmallestSet(int k) {
+        LongArrayList ans = new LongArrayList(k);
         if (start == groups.length) {
             ans.add(sum);
             return ans;

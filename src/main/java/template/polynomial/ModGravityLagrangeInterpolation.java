@@ -2,7 +2,7 @@ package template.polynomial;
 
 import template.math.Modular;
 import template.math.Power;
-import template.primitve.generated.datastructure.IntegerList;
+import template.primitve.generated.datastructure.IntegerArrayList;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -122,8 +122,8 @@ public class ModGravityLagrangeInterpolation {
             return Arrays.copyOf(coes, n);
         }
 
-        public IntegerList toIntegerList() {
-            IntegerList list = new IntegerList();
+        public IntegerArrayList toIntegerList() {
+            IntegerArrayList list = new IntegerArrayList();
             list.addAll(coes, 0, n);
             return list;
         }

@@ -1,7 +1,7 @@
 package template.graph;
 
 import template.primitve.generated.datastructure.IntegerIterator;
-import template.primitve.generated.datastructure.IntegerList;
+import template.primitve.generated.datastructure.IntegerArrayList;
 import template.primitve.generated.datastructure.IntegerMultiWayStack;
 
 public class CircularPath {
@@ -9,14 +9,14 @@ public class CircularPath {
     boolean[] instk;
     boolean[] visited;
     int n;
-    IntegerList circular;
+    IntegerArrayList circular;
 
     public CircularPath(IntegerMultiWayStack edges) {
         this.edges = edges;
         n = edges.stackNumber();
         instk = new boolean[n];
         visited = new boolean[n];
-        circular = new IntegerList(n);
+        circular = new IntegerArrayList(n);
         for (int i = 0; i < n; i++) {
             if (dfs(i)) {
                 return;
@@ -29,7 +29,7 @@ public class CircularPath {
         return circular != null;
     }
 
-    public IntegerList getCircular() {
+    public IntegerArrayList getCircular() {
         return circular;
     }
 

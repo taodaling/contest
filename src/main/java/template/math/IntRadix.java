@@ -1,6 +1,6 @@
 package template.math;
 
-import template.primitve.generated.datastructure.IntegerList;
+import template.primitve.generated.datastructure.IntegerArrayList;
 
 import java.util.Arrays;
 
@@ -13,7 +13,7 @@ public class IntRadix {
             throw new IllegalArgumentException();
         }
         this.base = base;
-        IntegerList ll = new IntegerList(32);
+        IntegerArrayList ll = new IntegerArrayList(32);
         ll.add(1);
         while (!DigitUtils.isMultiplicationOverflow(ll.tail(), base, Integer.MAX_VALUE)) {
             ll.add(ll.tail() * base);

@@ -1,8 +1,6 @@
 package template.math;
 
-import template.primitve.generated.datastructure.IntegerList;
-
-import java.util.Arrays;
+import template.primitve.generated.datastructure.IntegerArrayList;
 
 /**
  * 五边形数
@@ -26,7 +24,7 @@ public class PentagonalNumber {
     /**
      * \prod_{i=1}^\infin (1-x^i) \mod x^n
      */
-    public static void getPolynomial(IntegerList list, int n) {
+    public static void getPolynomial(IntegerArrayList list, int n) {
         list.clear();
         list.expandWith(0, n);
         getPolynomial(list.getData(), n);
@@ -52,7 +50,7 @@ public class PentagonalNumber {
     /**
      * \prod_{i=1}^\infin (1-x^i) \mod x^n
      */
-    public static void getPolynomial(IntegerList list, int n, Modular mod) {
+    public static void getPolynomial(IntegerArrayList list, int n, Modular mod) {
         list.clear();
         list.expandWith(0, n);
         getPolynomial(list.getData(), n, mod);

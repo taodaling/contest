@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import template.math.Modular;
 import template.polynomial.NumberTheoryTransform;
-import template.primitve.generated.datastructure.IntegerList;
+import template.primitve.generated.datastructure.IntegerArrayList;
 import template.utils.SequenceUtils;
 
 public class NumberTheoryTransformTest {
@@ -107,17 +107,17 @@ public class NumberTheoryTransformTest {
         Modular mod = new Modular(998244353);
         NumberTheoryTransform ntt = new NumberTheoryTransform(mod);
 
-        IntegerList[] lists = new IntegerList[3];
-        lists[0] = new IntegerList();
+        IntegerArrayList[] lists = new IntegerArrayList[3];
+        lists[0] = new IntegerArrayList();
         lists[0].addAll(SequenceUtils.wrapArray(1, 0, 1));
-        lists[1] = new IntegerList();
+        lists[1] = new IntegerArrayList();
         lists[1].addAll(SequenceUtils.wrapArray(0, 1, 0));
-        lists[2] = new IntegerList();
+        lists[2] = new IntegerArrayList();
         lists[2].addAll(SequenceUtils.wrapArray(2));
 
 
-        IntegerList ans = new IntegerList();
-        IntegerList exp = new IntegerList();
+        IntegerArrayList ans = new IntegerArrayList();
+        IntegerArrayList exp = new IntegerArrayList();
         exp.addAll(SequenceUtils.wrapArray(0, 2, 0, 2));
         ntt.dacMul(lists, ans);
         Assert.assertEquals(exp, ans);

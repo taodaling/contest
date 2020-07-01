@@ -1,8 +1,8 @@
 package template.graph;
 
 import template.math.DigitUtils;
+import template.primitve.generated.datastructure.IntegerArrayList;
 import template.primitve.generated.datastructure.IntegerIterator;
-import template.primitve.generated.datastructure.IntegerList;
 import template.primitve.generated.datastructure.IntegerMultiWayStack;
 
 import java.util.Arrays;
@@ -12,16 +12,16 @@ public class ForestDiameter {
     private int[] depth;
     private int[] parents;
     private int[] diameters;
-    private IntegerList[] centers;
-    private IntegerList[] ends;
+    private IntegerArrayList[] centers;
+    private IntegerArrayList[] ends;
     private int[] treeIds;
-    private IntegerList collector;
+    private IntegerArrayList collector;
 
-    public IntegerList getCenters(int i) {
+    public IntegerArrayList getCenters(int i) {
         return centers[i];
     }
 
-    public IntegerList getEnds(int i) {
+    public IntegerArrayList getEnds(int i) {
         return ends[i];
     }
 
@@ -37,11 +37,11 @@ public class ForestDiameter {
         this.edges = edges;
         depth = new int[n];
         parents = new int[n];
-        centers = new IntegerList[n];
-        ends = new IntegerList[n];
+        centers = new IntegerArrayList[n];
+        ends = new IntegerArrayList[n];
         treeIds = new int[n];
         diameters = new int[n];
-        collector = new IntegerList(n);
+        collector = new IntegerArrayList(n);
         int idAllocator = 0;
         Arrays.fill(treeIds, -1);
 
@@ -49,8 +49,8 @@ public class ForestDiameter {
             if (treeIds[j] != -1) {
                 continue;
             }
-            IntegerList endList = new IntegerList(2);
-            IntegerList centerList = new IntegerList(2);
+            IntegerArrayList endList = new IntegerArrayList(2);
+            IntegerArrayList centerList = new IntegerArrayList(2);
             collector.clear();
             dfsForCollect(j, -1);
             dfsForDepth(j, -1);

@@ -377,8 +377,8 @@ public class CompareUtils {
     }
 
     private static final int[] BUF8 = new int[1 << 8];
-    private static final IntegerList INT_LIST_A = new IntegerList();
-    private static final LongList LONG_LIST_A = new LongList();
+    private static final IntegerArrayList INT_LIST_A = new IntegerArrayList();
+    private static final LongArrayList LONG_LIST_A = new LongArrayList();
 
     public static void ensureIntSpace(int n) {
         INT_LIST_A.ensureSpace(n);

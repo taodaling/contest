@@ -21,7 +21,7 @@ public class CrazyCrazy {
         char[] rightHalf = Arrays.copyOfRange(s, n / 2, n);
         SequenceUtils.reverse(rightHalf);
         IntegerDeque dq = new IntegerDequeImpl(20);
-        IntegerList list = new IntegerList(20);
+        IntegerArrayList list = new IntegerArrayList(20);
 
 
         int x1 = RandomWrapper.INSTANCE.nextInt(1, mod.getMod() - 1);
@@ -63,7 +63,7 @@ public class CrazyCrazy {
 
     Modular mod = new Modular(1e9 + 7);
 
-    public int hash(IntegerList val, int x) {
+    public int hash(IntegerArrayList val, int x) {
         int ans = 1;
         for (int i = 0; i < val.size(); i++) {
             ans = mod.mul(ans, x);

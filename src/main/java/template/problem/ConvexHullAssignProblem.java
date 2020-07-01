@@ -1,7 +1,7 @@
 package template.problem;
 
+import template.primitve.generated.datastructure.IntegerArrayList;
 import template.primitve.generated.datastructure.IntegerDequeImpl;
-import template.primitve.generated.datastructure.IntegerList;
 
 /**
  * Given n number a_1, ..., a_n and b_1, ... , b_n, now you have know the value of b_1 and b_n,
@@ -26,7 +26,7 @@ public class ConvexHullAssignProblem {
             dq.addLast(i);
         }
 
-        IntegerList convexHull = new IntegerList(dq.size());
+        IntegerArrayList convexHull = new IntegerArrayList(dq.size());
         convexHull.addAll(dq.iterator());
 
         double[] y = new double[n + 1];

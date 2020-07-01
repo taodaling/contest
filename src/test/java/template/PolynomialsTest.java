@@ -6,7 +6,7 @@ import org.junit.Test;
 import template.math.Modular;
 import template.math.Power;
 import template.polynomial.Polynomials;
-import template.primitve.generated.datastructure.IntegerList;
+import template.primitve.generated.datastructure.IntegerArrayList;
 import template.utils.SequenceUtils;
 
 /**
@@ -20,7 +20,7 @@ public class PolynomialsTest {
     Modular mod = new Modular(1e9 + 7);
     Power pow = new Power(mod);
 
-    public boolean equal(IntegerList a, IntegerList b){
+    public boolean equal(IntegerArrayList a, IntegerArrayList b){
         int ra = Polynomials.rankOf(a);
         int rb = Polynomials.rankOf(b);
         if(ra != rb){
@@ -36,10 +36,10 @@ public class PolynomialsTest {
 
     @Test
     public void test(){
-        IntegerList p = new IntegerList();
+        IntegerArrayList p = new IntegerArrayList();
         p.addAll(SequenceUtils.wrapArray(0, 1));
-        IntegerList remainder = new IntegerList();
-        IntegerList expect = new IntegerList();
+        IntegerArrayList remainder = new IntegerArrayList();
+        IntegerArrayList expect = new IntegerArrayList();
         expect.addAll(SequenceUtils.wrapArray(0));
 
         Polynomials.module(1, p, remainder, pow);
@@ -48,10 +48,10 @@ public class PolynomialsTest {
 
     @Test
     public void test1(){
-        IntegerList p = new IntegerList();
+        IntegerArrayList p = new IntegerArrayList();
         p.addAll(SequenceUtils.wrapArray(1, 1));
-        IntegerList remainder = new IntegerList();
-        IntegerList expect = new IntegerList();
+        IntegerArrayList remainder = new IntegerArrayList();
+        IntegerArrayList expect = new IntegerArrayList();
         expect.addAll(SequenceUtils.wrapArray(mod.valueOf(-1)));
 
         Polynomials.module(1, p, remainder, pow);
@@ -60,10 +60,10 @@ public class PolynomialsTest {
 
     @Test
     public void test2(){
-        IntegerList p = new IntegerList();
+        IntegerArrayList p = new IntegerArrayList();
         p.addAll(SequenceUtils.wrapArray(1, 1));
-        IntegerList remainder = new IntegerList();
-        IntegerList expect = new IntegerList();
+        IntegerArrayList remainder = new IntegerArrayList();
+        IntegerArrayList expect = new IntegerArrayList();
         expect.addAll(SequenceUtils.wrapArray(mod.valueOf(1)));
 
         Polynomials.module(0, p, remainder, pow);
@@ -72,10 +72,10 @@ public class PolynomialsTest {
 
     @Test
     public void test3(){
-        IntegerList p = new IntegerList();
+        IntegerArrayList p = new IntegerArrayList();
         p.addAll(SequenceUtils.wrapArray(1, 1));
-        IntegerList remainder = new IntegerList();
-        IntegerList expect = new IntegerList();
+        IntegerArrayList remainder = new IntegerArrayList();
+        IntegerArrayList expect = new IntegerArrayList();
         expect.addAll(SequenceUtils.wrapArray(mod.valueOf(1)));
 
         Polynomials.module(2, p, remainder, pow);

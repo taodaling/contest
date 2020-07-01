@@ -1,8 +1,8 @@
 package template.primitve.generated.graph;
 
+import template.primitve.generated.datastructure.IntegerArrayList;
 import template.primitve.generated.datastructure.IntegerDeque;
 import template.primitve.generated.datastructure.IntegerDequeImpl;
-import template.primitve.generated.datastructure.IntegerList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +37,7 @@ public class LongWeightGraph {
         return ans;
     }
 
-    public static <T extends LongWeightDirectedEdge> void dijkstraElogV(List<T>[] g, IntegerList s, long[] dists, long inf) {
+    public static <T extends LongWeightDirectedEdge> void dijkstraElogV(List<T>[] g, IntegerArrayList s, long[] dists, long inf) {
         int n = g.length;
         LongPriorityQueueBasedOnSegment pq = new LongPriorityQueueBasedOnSegment(0, n);
         for (int i = 0; i < n; i++) {
@@ -62,7 +62,7 @@ public class LongWeightGraph {
         }
     }
 
-    public static <T extends LongWeightDirectedEdge> void dijkstraV2(List<T>[] g, IntegerList s, long[] dists, long inf) {
+    public static <T extends LongWeightDirectedEdge> void dijkstraV2(List<T>[] g, IntegerArrayList s, long[] dists, long inf) {
         int n = g.length;
         for (int i = 0; i < g.length; i++) {
             dists[i] = inf;
@@ -86,7 +86,7 @@ public class LongWeightGraph {
         }
     }
 
-    public static <T extends LongWeightDirectedEdge> void spfa(List<T>[] g, IntegerList s, long[] dists, long inf) {
+    public static <T extends LongWeightDirectedEdge> void spfa(List<T>[] g, IntegerArrayList s, long[] dists, long inf) {
         int n = g.length;
         for (int i = 0; i < g.length; i++) {
             dists[i] = inf;
@@ -116,7 +116,7 @@ public class LongWeightGraph {
     /**
      * @return whether exists a negative circle
      */
-    public static <T extends LongWeightDirectedEdge> boolean spfaWithPossibleNegativeCircle(List<T>[] g, IntegerList s, long[] dists, long inf) {
+    public static <T extends LongWeightDirectedEdge> boolean spfaWithPossibleNegativeCircle(List<T>[] g, IntegerArrayList s, long[] dists, long inf) {
         int n = g.length;
         for (int i = 0; i < g.length; i++) {
             dists[i] = inf;

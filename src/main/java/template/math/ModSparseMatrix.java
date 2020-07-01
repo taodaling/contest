@@ -1,6 +1,6 @@
 package template.math;
 
-import template.primitve.generated.datastructure.IntegerList;
+import template.primitve.generated.datastructure.IntegerArrayList;
 import template.rand.RandomWrapper;
 
 import java.util.Arrays;
@@ -93,7 +93,7 @@ public class ModSparseMatrix {
     /**
      * <p>Randomly get the minimal-polynomial of n * n matrix A with m non-zero entry. O(n(m+n))</p>
      */
-    public IntegerList getMinimalPolynomialByRandom(Modular mod) {
+    public IntegerArrayList getMinimalPolynomialByRandom(Modular mod) {
         int modVal = mod.getMod();
         int[] u = new int[n];
         int[] v = new int[n];
@@ -117,7 +117,7 @@ public class ModSparseMatrix {
             v = tmp;
         }
 
-        IntegerList polynomials = new IntegerList(lfsr.length() + 1);
+        IntegerArrayList polynomials = new IntegerArrayList(lfsr.length() + 1);
         for (int i = lfsr.length(); i >= 1; i--) {
             polynomials.add(mod.valueOf(-lfsr.codeAt(i)));
         }
@@ -138,7 +138,7 @@ public class ModSparseMatrix {
         for (int i = 0; i < elements.length; i++) {
             elements[i] = mod.mul(elements[i], rand[x[i]]);
         }
-        IntegerList minPoly = getMinimalPolynomialByRandom(mod);
+        IntegerArrayList minPoly = getMinimalPolynomialByRandom(mod);
         int ans = minPoly.get(0);
         if (n % 2 == 1) {
             ans = mod.valueOf(-ans);
@@ -160,7 +160,7 @@ public class ModSparseMatrix {
      */
     public int[] solveLinearEquation(int[] b, Power pow) {
         Modular mod = pow.getModular();
-        IntegerList minPoly = getMinimalPolynomialByRandom(mod);
+        IntegerArrayList minPoly = getMinimalPolynomialByRandom(mod);
         int c0 = minPoly.get(0);
         if (c0 == 0) {
             throw new IllegalStateException("Can't invert singular matrix");

@@ -1,6 +1,6 @@
 package template.math;
 
-import template.primitve.generated.datastructure.IntegerList;
+import template.primitve.generated.datastructure.IntegerArrayList;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -163,18 +163,18 @@ public class PermutationUtils {
         int[] r;
         int n;
 
-        public List<IntegerList> extractCircles() {
+        public List<IntegerArrayList> extractCircles() {
             return extractCircles(1);
         }
 
-        public List<IntegerList> extractCircles(int threshold) {
-            List<IntegerList> ans = new ArrayList<>(n);
+        public List<IntegerArrayList> extractCircles(int threshold) {
+            List<IntegerArrayList> ans = new ArrayList<>(n);
             for (int i = 0; i < n; i = r[i] + 1) {
                 int size = r[i] - l[i] + 1;
                 if (size < threshold) {
                     continue;
                 }
-                IntegerList list = new IntegerList(r[i] - l[i] + 1);
+                IntegerArrayList list = new IntegerArrayList(r[i] - l[i] + 1);
                 for (int j = l[i]; j <= r[i]; j++) {
                     list.add(g[j]);
                 }

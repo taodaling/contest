@@ -3,9 +3,9 @@ package template.problem;
 import template.math.Factorization;
 import template.math.GCDs;
 import template.math.LCMs;
+import template.primitve.generated.datastructure.IntegerArrayList;
 import template.primitve.generated.datastructure.IntegerDequeImpl;
 import template.primitve.generated.datastructure.IntegerIterator;
-import template.primitve.generated.datastructure.IntegerList;
 import template.primitve.generated.datastructure.IntegerMultiWayDeque;
 import template.primitve.generated.datastructure.IntegerMultiWayStack;
 import template.primitve.generated.datastructure.IntegerVersionArray;
@@ -15,7 +15,7 @@ import java.util.Arrays;
 public class GcdLcmProblem {
     private IntegerMultiWayStack primeFactors;
     private IntegerMultiWayStack factors;
-    private IntegerList allFactors = new IntegerList(20);
+    private IntegerArrayList allFactors = new IntegerArrayList(20);
     private int[] cntOfMultiple;
     private int m;
     private int[] seq;
@@ -129,7 +129,7 @@ public class GcdLcmProblem {
             }
         }
 
-        IntegerList ans = new IntegerList(2);
+        IntegerArrayList ans = new IntegerArrayList(2);
         for (int i = 0; i < seq.length && ans.size() < 2; i++) {
             if (seq[i] % g == 0) {
                 ans.add(i);
@@ -153,7 +153,7 @@ public class GcdLcmProblem {
             }
         }
 
-        IntegerList list = new IntegerList(seq.length);
+        IntegerArrayList list = new IntegerArrayList(seq.length);
         for (int i = 0; i < seq.length; i++) {
             if (seq[i] % g == 0) {
                 list.add(seq[i]);

@@ -5,7 +5,7 @@ package on2020_06.on2020_06_27_Library_Checker.Factorize;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.math.LongPollardRho;
-import template.primitve.generated.datastructure.LongList;
+import template.primitve.generated.datastructure.LongArrayList;
 
 import java.util.Set;
 
@@ -16,7 +16,7 @@ public class Factorize {
 
         long x = in.readLong();
         Set<Long> bigPrimes = LongPollardRho.findAllFactors(x);
-        LongList ans = new LongList(60);
+        LongArrayList ans = new LongArrayList(60);
         for (long factor : bigPrimes) {
             while (x % factor == 0) {
                 x /= factor;

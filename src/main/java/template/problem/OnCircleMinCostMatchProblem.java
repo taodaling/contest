@@ -1,7 +1,7 @@
 package template.problem;
 
 import template.math.DigitUtils;
-import template.primitve.generated.datastructure.IntegerList;
+import template.primitve.generated.datastructure.IntegerArrayList;
 import template.primitve.generated.datastructure.LongObjectHashMap;
 
 /**
@@ -16,8 +16,8 @@ import template.primitve.generated.datastructure.LongObjectHashMap;
 public class OnCircleMinCostMatchProblem {
     int[] matching;
     long minimumCost;
-    LongObjectHashMap<IntegerList> peopleMap;
-    LongObjectHashMap<IntegerList> houseMap;
+    LongObjectHashMap<IntegerArrayList> peopleMap;
+    LongObjectHashMap<IntegerArrayList> houseMap;
     CandyAssignProblem problem;
 
     public long getMinimumCost(){
@@ -28,10 +28,10 @@ public class OnCircleMinCostMatchProblem {
         return matching[i];
     }
 
-    private IntegerList getIntegerList(LongObjectHashMap<IntegerList> map, long key) {
-        IntegerList list = map.get(key);
+    private IntegerArrayList getIntegerList(LongObjectHashMap<IntegerArrayList> map, long key) {
+        IntegerArrayList list = map.get(key);
         if (list == null) {
-            list = new IntegerList(1);
+            list = new IntegerArrayList(1);
             map.put(key, list);
         }
         return list;
@@ -47,7 +47,7 @@ public class OnCircleMinCostMatchProblem {
         peopleMap = new LongObjectHashMap<>(n, false);
         houseMap = new LongObjectHashMap<>(n, false);
         matching = new int[n];
-        pending = new IntegerList(n);
+        pending = new IntegerArrayList(n);
 
         for (int i = 0; i < n; i++) {
             getIntegerList(peopleMap, people[i]).add(i);
@@ -73,11 +73,11 @@ public class OnCircleMinCostMatchProblem {
         }
     }
 
-    IntegerList pending;
+    IntegerArrayList pending;
 
     private void buildMatching(int i) {
-        IntegerList people = peopleMap.get(problem.candies[i].location);
-        IntegerList houses = houseMap.get(problem.candies[i].location);
+        IntegerArrayList people = peopleMap.get(problem.candies[i].location);
+        IntegerArrayList houses = houseMap.get(problem.candies[i].location);
 
         if (people != null && houses != null) {
             while (!people.isEmpty() && !houses.isEmpty()) {

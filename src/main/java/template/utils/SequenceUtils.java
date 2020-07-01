@@ -1,7 +1,7 @@
 package template.utils;
 
 import template.primitve.generated.datastructure.IntToIntegerFunction;
-import template.primitve.generated.datastructure.IntegerList;
+import template.primitve.generated.datastructure.IntegerArrayList;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -254,7 +254,7 @@ public class SequenceUtils {
         data[j] = tmp;
     }
 
-    public static void swap(IntegerList data, int i, int j) {
+    public static void swap(IntegerArrayList data, int i, int j) {
         int tmp = data.get(i);
         data.set(i, data.get(j));
         data.set(j, tmp);

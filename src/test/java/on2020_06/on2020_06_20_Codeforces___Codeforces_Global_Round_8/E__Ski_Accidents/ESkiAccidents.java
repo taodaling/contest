@@ -5,7 +5,6 @@ package on2020_06.on2020_06_20_Codeforces___Codeforces_Global_Round_8.E__Ski_Acc
 import template.binary.Bits;
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.primitve.generated.datastructure.IntegerList;
 
 import java.util.ArrayList;
 import java.util.List;

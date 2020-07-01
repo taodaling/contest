@@ -2,16 +2,11 @@ package on2020_06.on2020_06_20_TopCoder_SRM__755.DejaVu;
 
 
 
-import template.datastructure.DiscreteMap;
 import template.math.DigitUtils;
 import template.primitve.generated.datastructure.IntToIntFunction;
 import template.primitve.generated.datastructure.IntegerDiscreteMap;
-import template.primitve.generated.datastructure.IntegerList;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.IntFunction;
 
 public class DejaVu {
     public int mostDejaVus(int N, int seed, int R) {

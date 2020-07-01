@@ -6,13 +6,13 @@ import template.utils.SequenceUtils;
 
 import java.util.Arrays;
 
-public class LongList implements Cloneable {
+public class IntegerArrayList implements Cloneable {
     private int size;
     private int cap;
-    private long[] data;
-    private static final long[] EMPTY = new long[0];
+    private int[] data;
+    private static final int[] EMPTY = new int[0];
 
-    public long[] getData() {
+    public int[] getData() {
         return data;
     }
 
@@ -31,22 +31,22 @@ public class LongList implements Cloneable {
         }
     }
 
-    public LongList(int cap) {
+    public IntegerArrayList(int cap) {
         this.cap = cap;
         if (cap == 0) {
             data = EMPTY;
         } else {
-            data = new long[cap];
+            data = new int[cap];
         }
     }
 
-    public void addAll(LongIterator iterator) {
+    public void addAll(IntegerIterator iterator) {
         while (iterator.hasNext()) {
             add(iterator.next());
         }
     }
 
-    public LongList(LongList list) {
+    public IntegerArrayList(IntegerArrayList list) {
         this.size = list.size;
         this.cap = list.cap;
         this.data = Arrays.copyOf(list.data, size);
@@ -64,7 +64,7 @@ public class LongList implements Cloneable {
         size++;
     }
 
-    public LongList() {
+    public IntegerArrayList() {
         this(0);
     }
 
@@ -91,31 +91,31 @@ public class LongList implements Cloneable {
         }
     }
 
-    public long get(int i) {
+    public int get(int i) {
         checkRange(i);
         return data[i];
     }
 
-    public void add(long x) {
+    public void add(int x) {
         ensureSpace(size + 1);
         data[size++] = x;
     }
 
-    public void addAll(long[] x) {
+    public void addAll(int[] x) {
         addAll(x, 0, x.length);
     }
 
-    public void addAll(long[] x, int offset, int len) {
+    public void addAll(int[] x, int offset, int len) {
         ensureSpace(size + len);
         System.arraycopy(x, offset, data, size, len);
         size += len;
     }
 
-    public void addAll(LongList list) {
+    public void addAll(IntegerArrayList list) {
         addAll(list.data, 0, list.size);
     }
 
-    public int indexOf(long x) {
+    public int indexOf(int x) {
         for (int i = 0; i < size; i++) {
             if (x == data[i]) {
                 return i;
@@ -124,7 +124,7 @@ public class LongList implements Cloneable {
         return -1;
     }
 
-    public int lastIndexOf(long x) {
+    public int lastIndexOf(int x) {
         for (int i = size - 1; i >= 0; i--) {
             if (x == data[i]) {
                 return i;
@@ -133,7 +133,7 @@ public class LongList implements Cloneable {
         return -1;
     }
 
-    public void expandWith(long x, int len) {
+    public void expandWith(int x, int len) {
         ensureSpace(len);
         while (size < len) {
             data[size++] = x;
@@ -148,11 +148,11 @@ public class LongList implements Cloneable {
         Arrays.sort(data, 0, size);
     }
 
-    public void sort(LongComparator comparator) {
+    public void sort(IntegerComparator comparator) {
         CompareUtils.quickSort(data, comparator, 0, size);
     }
 
-    public long first() {
+    public int first() {
         checkRange(0);
         return data[0];
     }
@@ -170,7 +170,7 @@ public class LongList implements Cloneable {
         size = n;
     }
 
-    public long tail() {
+    public int tail() {
         checkRange(0);
         return data[size - 1];
     }
@@ -190,20 +190,20 @@ public class LongList implements Cloneable {
         size = wpos;
     }
 
-    public void set(int i, long x) {
+    public void set(int i, int x) {
         checkRange(i);
         data[i] = x;
     }
 
-    public int binarySearch(long x) {
+    public int binarySearch(int x) {
         return Arrays.binarySearch(data, 0, size, x);
     }
 
-    public int leftBound(long x) {
+    public int leftBound(int x) {
         return SequenceUtils.upperBound(data, x, 0, size - 1);
     }
 
-    public int rightBound(long x) {
+    public int rightBound(int x) {
         return SequenceUtils.lowerBound(data, x, 0, size - 1);
     }
 
@@ -211,7 +211,7 @@ public class LongList implements Cloneable {
         add(x);
     }
 
-    public long pop() {
+    public int pop() {
         return data[--size];
     }
 
@@ -229,13 +229,13 @@ public class LongList implements Cloneable {
         size--;
     }
 
-    public long[] toArray() {
+    public int[] toArray() {
         return Arrays.copyOf(data, size);
     }
 
-    public long[] toArray(long[] arr) {
+    public int[] toArray(int[] arr) {
         if (arr.length < size) {
-            arr = new long[size];
+            arr = new int[size];
         }
         System.arraycopy(data, 0, arr, 0, size);
         return arr;
@@ -253,8 +253,8 @@ public class LongList implements Cloneable {
         return Arrays.toString(toArray());
     }
 
-    public LongIterator iterator() {
-        return new LongIterator() {
+    public IntegerIterator iterator() {
+        return new IntegerIterator() {
             int i = 0;
 
             @Override
@@ -263,7 +263,7 @@ public class LongList implements Cloneable {
             }
 
             @Override
-            public long next() {
+            public int next() {
                 return data[i++];
             }
         };
@@ -271,10 +271,10 @@ public class LongList implements Cloneable {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof LongList)) {
+        if (!(obj instanceof IntegerArrayList)) {
             return false;
         }
-        LongList other = (LongList) obj;
+        IntegerArrayList other = (IntegerArrayList) obj;
         return SequenceUtils.equal(data, 0, size - 1, other.data, 0, other.size - 1);
     }
 
@@ -282,14 +282,14 @@ public class LongList implements Cloneable {
     public int hashCode() {
         int h = 1;
         for (int i = 0; i < size; i++) {
-            h = h * 31 + Long.hashCode(data[i]);
+            h = h * 31 + Integer.hashCode(data[i]);
         }
         return h;
     }
 
     @Override
-    public LongList clone() {
-        LongList ans = new LongList();
+    public IntegerArrayList clone() {
+        IntegerArrayList ans = new IntegerArrayList();
         ans.addAll(this);
         return ans;
     }

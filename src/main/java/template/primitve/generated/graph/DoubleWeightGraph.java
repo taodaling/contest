@@ -2,7 +2,7 @@ package template.primitve.generated.graph;
 
 import template.primitve.generated.datastructure.IntegerDeque;
 import template.primitve.generated.datastructure.IntegerDequeImpl;
-import template.primitve.generated.datastructure.IntegerList;
+import template.primitve.generated.datastructure.IntegerArrayList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +37,7 @@ public class DoubleWeightGraph {
         return ans;
     }
 
-    public static <T extends DoubleWeightDirectedEdge> void dijkstraElogV(List<T>[] g, IntegerList s, double[] dists, double inf) {
+    public static <T extends DoubleWeightDirectedEdge> void dijkstraElogV(List<T>[] g, IntegerArrayList s, double[] dists, double inf) {
         int n = g.length;
         DoublePriorityQueueBasedOnSegment pq = new DoublePriorityQueueBasedOnSegment(0, n);
         for (int i = 0; i < n; i++) {
@@ -62,7 +62,7 @@ public class DoubleWeightGraph {
         }
     }
 
-    public static <T extends DoubleWeightDirectedEdge> void dijkstraV2(List<T>[] g, IntegerList s, double[] dists, double inf) {
+    public static <T extends DoubleWeightDirectedEdge> void dijkstraV2(List<T>[] g, IntegerArrayList s, double[] dists, double inf) {
         int n = g.length;
         for (int i = 0; i < g.length; i++) {
             dists[i] = inf;
@@ -86,7 +86,7 @@ public class DoubleWeightGraph {
         }
     }
 
-    public static <T extends DoubleWeightDirectedEdge> void spfa(List<T>[] g, IntegerList s, double[] dists, double inf) {
+    public static <T extends DoubleWeightDirectedEdge> void spfa(List<T>[] g, IntegerArrayList s, double[] dists, double inf) {
         int n = g.length;
         for (int i = 0; i < g.length; i++) {
             dists[i] = inf;
@@ -116,7 +116,7 @@ public class DoubleWeightGraph {
     /**
      * @return whether exists a negative circle
      */
-    public static <T extends DoubleWeightDirectedEdge> boolean spfaWithPossibleNegativeCircle(List<T>[] g, IntegerList s, double[] dists, double inf) {
+    public static <T extends DoubleWeightDirectedEdge> boolean spfaWithPossibleNegativeCircle(List<T>[] g, IntegerArrayList s, double[] dists, double inf) {
         int n = g.length;
         for (int i = 0; i < g.length; i++) {
             dists[i] = inf;

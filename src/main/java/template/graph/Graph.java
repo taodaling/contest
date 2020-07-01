@@ -1,7 +1,7 @@
 package template.graph;
 
 import template.primitve.generated.datastructure.IntegerDeque;
-import template.primitve.generated.datastructure.IntegerList;
+import template.primitve.generated.datastructure.IntegerArrayList;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,7 +24,7 @@ public class Graph {
         }
     }
 
-    public static <T extends DirectedEdge> void multiSourceBfs(List<T>[] g, IntegerList sources, int[] dist, int inf, IntegerDeque deque) {
+    public static <T extends DirectedEdge> void multiSourceBfs(List<T>[] g, IntegerArrayList sources, int[] dist, int inf, IntegerDeque deque) {
         Arrays.fill(dist, inf);
         deque.clear();
         for (int i = 0; i < sources.size(); i++) {

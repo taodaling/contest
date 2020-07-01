@@ -5,7 +5,7 @@ package on2020_06.on2020_06_15_Codeforces___Codeforces_Round__409__rated__Div__1
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.math.*;
-import template.primitve.generated.datastructure.IntegerList;
+import template.primitve.generated.datastructure.IntegerArrayList;
 import template.primitve.generated.datastructure.IntegerMultiWayStack;
 
 public class CVulnerableKerbals {
@@ -42,7 +42,7 @@ public class CVulnerableKerbals {
 
         int ans = dp[1];
         out.println(ans);
-        IntegerList list = new IntegerList(ans);
+        IntegerArrayList list = new IntegerArrayList(ans);
         for (int i = 1; i != -1; i = next[i]) {
             list.addAll(ims.iterator(i));
         }

@@ -1,8 +1,8 @@
 package template.math;
 
-import template.primitve.generated.datastructure.IntegerList;
+import template.primitve.generated.datastructure.IntegerArrayList;
 import template.primitve.generated.datastructure.IntegerMultiWayStack;
-import template.primitve.generated.datastructure.LongList;
+import template.primitve.generated.datastructure.LongArrayList;
 import template.problem.MinimumNumberWithMaximumFactors;
 
 public class Factorization {
@@ -49,13 +49,13 @@ public class Factorization {
     /**
      * Find all factors of x, and return them unordered.
      */
-    public static LongList factorizeNumber(long x) {
-        LongList ans = new LongList();
+    public static LongArrayList factorizeNumber(long x) {
+        LongArrayList ans = new LongArrayList();
         factorizeNumber(x, ans);
         return ans;
     }
 
-    public static void factorizeNumber(long x, LongList ans) {
+    public static void factorizeNumber(long x, LongArrayList ans) {
         for (long i = 1; i * i <= x; i++) {
             if (x % i != 0) {
                 continue;
@@ -70,8 +70,8 @@ public class Factorization {
     /**
      * Find all prime factors of x, and return them ordered.
      */
-    public static LongList factorizeNumberPrime(long x) {
-        LongList ans = new LongList();
+    public static LongArrayList factorizeNumberPrime(long x) {
+        LongArrayList ans = new LongArrayList();
         factorizeNumberPrime(x, ans);
         return ans;
     }
@@ -80,7 +80,7 @@ public class Factorization {
     /**
      * Find all prime factors of x, and return them ordered.
      */
-    public static LongList factorizeNumberPrime(long x, LongList ans) {
+    public static LongArrayList factorizeNumberPrime(long x, LongArrayList ans) {
         for (long i = 2; i * i <= x; i++) {
             if (x % i != 0) {
                 continue;
@@ -99,13 +99,13 @@ public class Factorization {
     /**
      * Find all factors of x, and return them unordered.
      */
-    public static IntegerList factorizeNumber(int x) {
-        IntegerList ans = new IntegerList();
+    public static IntegerArrayList factorizeNumber(int x) {
+        IntegerArrayList ans = new IntegerArrayList();
         factorizeNumber(x, ans);
         return ans;
     }
 
-    public static void factorizeNumber(int x, IntegerList ans) {
+    public static void factorizeNumber(int x, IntegerArrayList ans) {
         for (int i = 1; i * i <= x; i++) {
             if (x % i != 0) {
                 continue;
@@ -120,8 +120,8 @@ public class Factorization {
     /**
      * Find all prime factors of x, and return them ordered.
      */
-    public static IntegerList factorizeNumberPrime(int x) {
-        IntegerList ans = new IntegerList();
+    public static IntegerArrayList factorizeNumberPrime(int x) {
+        IntegerArrayList ans = new IntegerArrayList();
         for (int i = 2; i * i <= x; i++) {
             if (x % i != 0) {
                 continue;

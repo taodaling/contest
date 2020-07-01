@@ -1,23 +1,23 @@
 package template.math;
 
-import template.primitve.generated.datastructure.DoubleList;
+import template.primitve.generated.datastructure.DoubleArrayList;
 
 public class LinearFeedbackShiftRegister {
-    private DoubleList cm;
+    private DoubleArrayList cm;
     private int m = -1;
     private double dm;
-    private DoubleList cn;
-    private DoubleList buf;
-    private DoubleList seq;
+    private DoubleArrayList cn;
+    private DoubleArrayList buf;
+    private DoubleArrayList seq;
     private double prec;
     private KahanSummation summation = new KahanSummation();
 
     public LinearFeedbackShiftRegister(int cap, double prec) {
         this.prec = prec;
-        cm = new DoubleList(cap + 1);
-        cn = new DoubleList(cap + 1);
-        seq = new DoubleList(cap + 1);
-        buf = new DoubleList(cap + 1);
+        cm = new DoubleArrayList(cap + 1);
+        cn = new DoubleArrayList(cap + 1);
+        seq = new DoubleArrayList(cap + 1);
+        buf = new DoubleArrayList(cap + 1);
 
         cn.add(1);
     }
@@ -76,14 +76,14 @@ public class LinearFeedbackShiftRegister {
         }
 
         if (cn.size() < buf.size()) {
-            DoubleList tmp = cm;
+            DoubleArrayList tmp = cm;
             cm = cn;
             cn = tmp;
             m = n;
             dm = dn;
         }
         {
-            DoubleList tmp = cn;
+            DoubleArrayList tmp = cn;
             cn = buf;
             buf = tmp;
         }

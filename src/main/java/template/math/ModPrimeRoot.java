@@ -1,7 +1,7 @@
 package template.math;
 
+import template.primitve.generated.datastructure.IntegerArrayList;
 import template.primitve.generated.datastructure.IntegerHashSet;
-import template.primitve.generated.datastructure.IntegerList;
 
 public class ModPrimeRoot {
     private RelativePrimeModLog log;
@@ -23,7 +23,7 @@ public class ModPrimeRoot {
         primitiveRoot = g;
     }
 
-    public void allRoot(int x, int k, IntegerList list) {
+    public void allRoot(int x, int k, IntegerArrayList list) {
         x = mod.valueOf(x);
         k = powMod.valueOf(k);
         if (x == 0) {

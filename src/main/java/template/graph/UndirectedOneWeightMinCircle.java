@@ -1,8 +1,8 @@
 package template.graph;
 
+import template.primitve.generated.datastructure.IntegerArrayList;
 import template.primitve.generated.datastructure.IntegerDeque;
 import template.primitve.generated.datastructure.IntegerDequeImpl;
-import template.primitve.generated.datastructure.IntegerList;
 import template.utils.SequenceUtils;
 
 import java.util.Arrays;
@@ -24,7 +24,7 @@ public class UndirectedOneWeightMinCircle {
         dq = new IntegerDequeImpl(n);
     }
 
-    private void collect(int root, IntegerList circle) {
+    private void collect(int root, IntegerArrayList circle) {
         while (root != -1) {
             circle.add(root);
             root = prev[root];
@@ -37,7 +37,7 @@ public class UndirectedOneWeightMinCircle {
      * <br>
      * 返回结果表示是否找到这样的环。
      */
-    public boolean optimize(int root, IntegerList circle) {
+    public boolean optimize(int root, IntegerArrayList circle) {
         Arrays.fill(dist, -1);
         Arrays.fill(prev, -1);
         Arrays.fill(tag, null);

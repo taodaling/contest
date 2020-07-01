@@ -7,7 +7,7 @@ import template.graph.DirectedMinSpanningTree;
 import template.graph.Graph;
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.primitve.generated.datastructure.IntegerList;
+import template.primitve.generated.datastructure.IntegerArrayList;
 
 import java.util.List;
 
@@ -28,7 +28,7 @@ public class DirectedMST {
         }
 
         dmst.contract();
-        IntegerList selected = new IntegerList(m);
+        IntegerArrayList selected = new IntegerArrayList(m);
         dmst.dismantle(s, selected);
 
         long sum = 0;

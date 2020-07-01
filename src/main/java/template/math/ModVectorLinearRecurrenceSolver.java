@@ -1,26 +1,26 @@
 package template.math;
 
 import template.polynomial.Polynomials;
-import template.primitve.generated.datastructure.IntegerList;
+import template.primitve.generated.datastructure.IntegerArrayList;
 
 import java.util.BitSet;
 
 public class ModVectorLinearRecurrenceSolver {
     Modular mod;
     int[][] a;
-    IntegerList p;
-    IntegerList remainder;
+    IntegerArrayList p;
+    IntegerArrayList remainder;
     Power pow;
     int n;
     int m;
 
-    private void init(int[][] a, IntegerList coe, Modular mod) {
+    private void init(int[][] a, IntegerArrayList coe, Modular mod) {
         this.a = a;
         this.mod = mod;
         n = a[0].length;
         m = coe.size();
         pow = new Power(mod);
-        remainder = new IntegerList(coe.size());
+        remainder = new IntegerArrayList(coe.size());
         p = coe;
     }
 
@@ -85,7 +85,7 @@ public class ModVectorLinearRecurrenceSolver {
      * O(n(m+n))
      */
     public ModVectorLinearRecurrenceSolver(ModSparseMatrix mat, int[] vec, Modular mod) {
-        IntegerList coe = mat.getMinimalPolynomialByRandom(mod);
+        IntegerArrayList coe = mat.getMinimalPolynomialByRandom(mod);
         int m = coe.size();
         int n = vec.length;
         int[][] lists = new int[m][];

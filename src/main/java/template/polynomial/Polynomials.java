@@ -1,17 +1,17 @@
 package template.polynomial;
 
 import template.math.*;
-import template.primitve.generated.datastructure.IntegerList;
+import template.primitve.generated.datastructure.IntegerArrayList;
 import template.utils.Buffer;
 
 import java.util.BitSet;
 
 public class Polynomials {
-    public static Buffer<IntegerList> listBuffer = new Buffer<>(IntegerList::new, list -> list.clear());
+    public static Buffer<IntegerArrayList> listBuffer = new Buffer<>(IntegerArrayList::new, list -> list.clear());
     private static IntExtGCDObject extGCD = new IntExtGCDObject();
 
 
-    public static int rankOf(IntegerList p) {
+    public static int rankOf(IntegerArrayList p) {
         int[] data = p.getData();
         int r = p.size() - 1;
         while (r >= 0 && data[r] == 0) {
@@ -20,19 +20,19 @@ public class Polynomials {
         return Math.max(0, r);
     }
 
-    public static void normalize(IntegerList list) {
+    public static void normalize(IntegerArrayList list) {
         list.retain(rankOf(list) + 1);
     }
 
     /**
      * return list % x^n
      */
-    public static void module(IntegerList list, int n) {
+    public static void module(IntegerArrayList list, int n) {
         list.remove(n, list.size() - 1);
         normalize(list);
     }
 
-    public static void mul(IntegerList a, IntegerList b, IntegerList c, Modular mod) {
+    public static void mul(IntegerArrayList a, IntegerArrayList b, IntegerArrayList c, Modular mod) {
         int rA = rankOf(a);
         int rB = rankOf(b);
         c.clear();
@@ -47,30 +47,30 @@ public class Polynomials {
         }
     }
 
-    public static void dacMul(IntegerList[] ps, IntegerList output, Modular mod) {
-        IntegerList ans = dacMul(ps, 0, ps.length - 1, mod);
+    public static void dacMul(IntegerArrayList[] ps, IntegerArrayList output, Modular mod) {
+        IntegerArrayList ans = dacMul(ps, 0, ps.length - 1, mod);
         output.clear();
         output.addAll(ans);
         listBuffer.release(ans);
     }
 
-    private static IntegerList dacMul(IntegerList[] ps, int l, int r, Modular mod) {
+    private static IntegerArrayList dacMul(IntegerArrayList[] ps, int l, int r, Modular mod) {
         if (l == r) {
-            IntegerList alloc = listBuffer.alloc();
+            IntegerArrayList alloc = listBuffer.alloc();
             alloc.addAll(ps[l]);
             return alloc;
         }
         int m = DigitUtils.floorAverage(l, r);
-        IntegerList a = dacMul(ps, l, m, mod);
-        IntegerList b = dacMul(ps, m + 1, r, mod);
-        IntegerList alloc = listBuffer.alloc();
+        IntegerArrayList a = dacMul(ps, l, m, mod);
+        IntegerArrayList b = dacMul(ps, m + 1, r, mod);
+        IntegerArrayList alloc = listBuffer.alloc();
         mul(a, b, alloc, mod);
         listBuffer.release(a);
         listBuffer.release(b);
         return alloc;
     }
 
-    public static void plus(IntegerList a, IntegerList b, IntegerList c, Modular mod) {
+    public static void plus(IntegerArrayList a, IntegerArrayList b, IntegerArrayList c, Modular mod) {
         int rA = rankOf(a);
         int rB = rankOf(b);
         c.clear();
@@ -86,7 +86,7 @@ public class Polynomials {
         }
     }
 
-    public static void subtract(IntegerList a, IntegerList b, IntegerList c, Modular mod) {
+    public static void subtract(IntegerArrayList a, IntegerArrayList b, IntegerArrayList c, Modular mod) {
         int rA = rankOf(a);
         int rB = rankOf(b);
         c.clear();
@@ -102,14 +102,14 @@ public class Polynomials {
         }
     }
 
-    public static void mul(IntegerList a, int k, Modular mod) {
+    public static void mul(IntegerArrayList a, int k, Modular mod) {
         int[] aData = a.getData();
         for (int i = a.size() - 1; i >= 0; i--) {
             aData[i] = mod.mul(aData[i], k);
         }
     }
 
-    public static void dotMul(IntegerList a, IntegerList b, IntegerList c, Modular mod) {
+    public static void dotMul(IntegerArrayList a, IntegerArrayList b, IntegerArrayList c, Modular mod) {
         int rA = rankOf(a);
         int rB = rankOf(b);
         int rC = Math.min(rA, rB);
@@ -126,7 +126,7 @@ public class Polynomials {
     /**
      * a = b * c + remainder, the first number of b should be relative prime with mod
      */
-    public static void divide(IntegerList a, IntegerList b, IntegerList c, IntegerList remainder, Power pow) {
+    public static void divide(IntegerArrayList a, IntegerArrayList b, IntegerArrayList c, IntegerArrayList remainder, Power pow) {
         Modular mod = pow.getModular();
         int rA = rankOf(a);
         int rB = rankOf(b);
@@ -172,7 +172,7 @@ public class Polynomials {
      * <br>
      * This brute force run in O(n^2log_2k) while n is the length of p.
      */
-    public static void module(long k, IntegerList p, IntegerList remainder, Power pow) {
+    public static void module(long k, IntegerArrayList p, IntegerArrayList remainder, Power pow) {
         int rP = rankOf(p);
         if (rP == 0) {
             remainder.clear();
@@ -180,8 +180,8 @@ public class Polynomials {
             return;
         }
 
-        IntegerList a = listBuffer.alloc();
-        IntegerList c = listBuffer.alloc();
+        IntegerArrayList a = listBuffer.alloc();
+        IntegerArrayList c = listBuffer.alloc();
 
         module(k, a, p, c, remainder, rP, pow);
 
@@ -189,7 +189,7 @@ public class Polynomials {
         listBuffer.release(c);
     }
 
-    private static void module(long k, IntegerList a, IntegerList b, IntegerList c, IntegerList remainder, int rb, Power pow) {
+    private static void module(long k, IntegerArrayList a, IntegerArrayList b, IntegerArrayList c, IntegerArrayList remainder, int rb, Power pow) {
         Modular mod = pow.getModular();
         if (k < rb) {
             remainder.clear();
@@ -214,7 +214,7 @@ public class Polynomials {
     /**
      * Try find x^k % p = remainder, the first number of b should be relative prime with mod
      */
-    public static void module(BitSet k, IntegerList p, IntegerList remainder, Power pow) {
+    public static void module(BitSet k, IntegerArrayList p, IntegerArrayList remainder, Power pow) {
         int rP = rankOf(p);
         if (rP == 0) {
             remainder.clear();
@@ -222,8 +222,8 @@ public class Polynomials {
             return;
         }
 
-        IntegerList a = listBuffer.alloc();
-        IntegerList c = listBuffer.alloc();
+        IntegerArrayList a = listBuffer.alloc();
+        IntegerArrayList c = listBuffer.alloc();
 
         module(k, a, p, c, remainder, pow);
 
@@ -231,7 +231,7 @@ public class Polynomials {
         listBuffer.release(c);
     }
 
-    private static void module(BitSet k, IntegerList a, IntegerList b, IntegerList c, IntegerList remainder, Power pow) {
+    private static void module(BitSet k, IntegerArrayList a, IntegerArrayList b, IntegerArrayList c, IntegerArrayList remainder, Power pow) {
         Modular mod = pow.getModular();
         remainder.clear();
         remainder.expandWith(1, 1);
@@ -272,7 +272,7 @@ public class Polynomials {
         }
     }
 
-    public static void differentialInPlace(IntegerList p, Modular mod) {
+    public static void differentialInPlace(IntegerArrayList p, Modular mod) {
         normalize(p);
         int n = p.size();
         int[] a = p.getData();
@@ -283,7 +283,7 @@ public class Polynomials {
         normalize(p);
     }
 
-    public static void integralInPlace(IntegerList p, Modular mod, InverseNumber inv) {
+    public static void integralInPlace(IntegerArrayList p, Modular mod, InverseNumber inv) {
         normalize(p);
         int n = p.size();
         p.push(0);
@@ -295,7 +295,7 @@ public class Polynomials {
         normalize(p);
     }
 
-    public static void differential(IntegerList p, IntegerList output, Modular mod) {
+    public static void differential(IntegerArrayList p, IntegerArrayList output, Modular mod) {
         normalize(p);
         int n = p.size();
         output.clear();
@@ -307,7 +307,7 @@ public class Polynomials {
         }
     }
 
-    public static void integral(IntegerList p, IntegerList output, Modular mod, InverseNumber inv) {
+    public static void integral(IntegerArrayList p, IntegerArrayList output, Modular mod, InverseNumber inv) {
         normalize(p);
         int n = p.size();
         output.clear();
@@ -319,30 +319,30 @@ public class Polynomials {
         }
     }
 
-    public static void modmul(IntegerList a, IntegerList b, IntegerList ans, Modular mod, int n) {
+    public static void modmul(IntegerArrayList a, IntegerArrayList b, IntegerArrayList ans, Modular mod, int n) {
         mul(a, b, ans, mod);
         module(ans, n);
     }
 
-    public static void modpow(IntegerList x, IntegerList ans, long k, Modular mod, int n) {
-        IntegerList ret = modpow(x, k, mod, n);
+    public static void modpow(IntegerArrayList x, IntegerArrayList ans, long k, Modular mod, int n) {
+        IntegerArrayList ret = modpow(x, k, mod, n);
         ans.clear();
         ans.addAll(ret);
         listBuffer.release(ret);
     }
 
-    private static IntegerList modpow(IntegerList x, long k, Modular mod, int n) {
+    private static IntegerArrayList modpow(IntegerArrayList x, long k, Modular mod, int n) {
         if (k == 0) {
-            IntegerList ans = listBuffer.alloc();
+            IntegerArrayList ans = listBuffer.alloc();
             ans.add(mod.valueOf(1));
             return ans;
         }
-        IntegerList ans = modpow(x, k / 2, mod, n);
-        IntegerList newAns = listBuffer.alloc();
+        IntegerArrayList ans = modpow(x, k / 2, mod, n);
+        IntegerArrayList newAns = listBuffer.alloc();
         modmul(ans, ans, newAns, mod, n);
         if (k % 2 == 1) {
             modmul(x, newAns, ans, mod, n);
-            IntegerList tmp = newAns;
+            IntegerArrayList tmp = newAns;
             newAns = ans;
             ans = tmp;
         }

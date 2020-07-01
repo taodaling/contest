@@ -4,7 +4,6 @@ package on2020_06.on2020_06_22_Codeforces___Codeforces_Round__407__Div__1_.D__Fi
 
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.primitve.generated.datastructure.IntegerList;
 import template.rand.RandomWrapper;
 
 import java.util.*;

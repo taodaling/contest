@@ -5,7 +5,7 @@ import template.binary.Log2;
 import template.datastructure.Loop;
 import template.polynomial.FastFourierTransform;
 import template.polynomial.Polynomials;
-import template.primitve.generated.datastructure.IntegerList;
+import template.primitve.generated.datastructure.IntegerArrayList;
 
 /**
  * 计算C(n,0),C(n,1),...,C(n,m)在模p的情况下的值，其中p不一定是素数。
@@ -14,7 +14,7 @@ import template.primitve.generated.datastructure.IntegerList;
 public class BinomialCombination {
     private int m;
     private Modular mod;
-    private IntegerList composites;
+    private IntegerArrayList composites;
     private boolean fft;
 
     public BinomialCombination(long n, int m, Modular mod, boolean fft) {
@@ -35,7 +35,7 @@ public class BinomialCombination {
     /**
      * return a * b
      */
-    private void mul(IntegerList a, IntegerList b, IntegerList c) {
+    private void mul(IntegerArrayList a, IntegerArrayList b, IntegerArrayList c) {
         if (!fft) {
             Polynomials.mul(a, b, c, mod);
         } else {
@@ -46,7 +46,7 @@ public class BinomialCombination {
         trim(c);
     }
 
-    private void trim(IntegerList x) {
+    private void trim(IntegerArrayList x) {
         if (x.size() > m + 1) {
             x.remove(m + 1, x.size() - 1);
         }
@@ -55,7 +55,7 @@ public class BinomialCombination {
     /**
      * return p * (x + 1)
      */
-    private void mul(IntegerList p, IntegerList ans) {
+    private void mul(IntegerArrayList p, IntegerArrayList ans) {
         ans.clear();
         ans.expandWith(0, p.size() + 1);
 
@@ -69,9 +69,9 @@ public class BinomialCombination {
         trim(ans);
     }
 
-    private IntegerList pow(long exp) {
+    private IntegerArrayList pow(long exp) {
         int ceil = Log2.ceilLog(m + 1 + m);
-        Loop<IntegerList> loop = new Loop<>(new IntegerList(1 << ceil), new IntegerList(1 << ceil));
+        Loop<IntegerArrayList> loop = new Loop<>(new IntegerArrayList(1 << ceil), new IntegerArrayList(1 << ceil));
         loop.get().add(1);
         for (int i = Log2.floorLog(exp); i >= 0; i--) {
             mul(loop.get(), loop.get(), loop.turn());

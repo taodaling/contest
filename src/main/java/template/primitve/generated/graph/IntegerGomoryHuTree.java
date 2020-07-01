@@ -1,6 +1,6 @@
 package template.primitve.generated.graph;
 
-import template.primitve.generated.datastructure.IntegerList;
+import template.primitve.generated.datastructure.IntegerArrayList;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ public class IntegerGomoryHuTree {
         int n = g.length;
         ug = IntegerWeightGraph.createUndirectedGraph(n);
         minCuts = new int[n][n];
-        IntegerList list = new IntegerList(n);
+        IntegerArrayList list = new IntegerArrayList(n);
         for (int i = 0; i < n; i++) {
             list.add(i);
         }
@@ -43,7 +43,7 @@ public class IntegerGomoryHuTree {
     }
 
 
-    public void dac(IntegerList set, List<IntegerFlowEdge>[] g, IntegerMaximumFlow mf, boolean[] visited) {
+    public void dac(IntegerArrayList set, List<IntegerFlowEdge>[] g, IntegerMaximumFlow mf, boolean[] visited) {
         if (set.size() <= 1) {
             return;
         }
@@ -54,8 +54,8 @@ public class IntegerGomoryHuTree {
         int f = mf.apply(g, s, t, INF);
         addEdge(s, t, f);
         IntegerFlow.findSetST(g, s, visited);
-        IntegerList l1 = new IntegerList(set.size());
-        IntegerList l2 = new IntegerList(set.size());
+        IntegerArrayList l1 = new IntegerArrayList(set.size());
+        IntegerArrayList l2 = new IntegerArrayList(set.size());
         for (int i = set.size() - 1; i >= 0; i--) {
             int v = set.get(i);
             if (visited[v]) {

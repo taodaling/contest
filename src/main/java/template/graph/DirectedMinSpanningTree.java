@@ -1,6 +1,6 @@
 package template.graph;
 
-import template.primitve.generated.datastructure.IntegerList;
+import template.primitve.generated.datastructure.IntegerArrayList;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -72,7 +72,7 @@ public class DirectedMinSpanningTree {
      * @param rootId
      * @param result
      */
-    public void dismantle(int rootId, IntegerList result) {
+    public void dismantle(int rootId, IntegerArrayList result) {
         if (nodes.length == 1) {
             return;
         }
@@ -81,7 +81,7 @@ public class DirectedMinSpanningTree {
         dismantle0(root, result);
     }
 
-    private void dismantle0(Node root, IntegerList result) {
+    private void dismantle0(Node root, IntegerArrayList result) {
         if (root == top || root.visited == now) {
             return;
         }

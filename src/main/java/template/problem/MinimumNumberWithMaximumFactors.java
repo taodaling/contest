@@ -3,7 +3,7 @@ package template.problem;
 import template.math.DigitUtils;
 import template.math.EulerSieve;
 import template.math.LongPollardRho;
-import template.primitve.generated.datastructure.LongList;
+import template.primitve.generated.datastructure.LongArrayList;
 
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -61,7 +61,7 @@ public class MinimumNumberWithMaximumFactors {
      */
     public static long divisionRelation(long n) {
         long[] primes = LongPollardRho.findAllFactors(n).stream().mapToLong(Long::longValue).toArray();
-        LongList list = new LongList();
+        LongArrayList list = new LongArrayList();
         collectAllFactors(primes, n, 1, 0, list);
         long[] factors = list.toArray();
 
@@ -105,7 +105,7 @@ public class MinimumNumberWithMaximumFactors {
         return ans;
     }
 
-    public static void collectAllFactors(long[] primes, long n, long val, int i, LongList list) {
+    public static void collectAllFactors(long[] primes, long n, long val, int i, LongArrayList list) {
         if (i == primes.length) {
             list.add(val);
             return;

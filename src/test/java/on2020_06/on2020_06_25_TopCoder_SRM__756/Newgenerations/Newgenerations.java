@@ -5,7 +5,7 @@ package on2020_06.on2020_06_25_TopCoder_SRM__756.Newgenerations;
 
 import template.math.CachedPow;
 import template.math.Modular;
-import template.primitve.generated.datastructure.IntegerList;
+import template.primitve.generated.datastructure.IntegerArrayList;
 
 public class Newgenerations {
     char[][] mat;
@@ -103,8 +103,8 @@ public class Newgenerations {
         occur = new int[n][m];
 
 
-        IntegerList x = new IntegerList();
-        IntegerList y = new IntegerList();
+        IntegerArrayList x = new IntegerArrayList();
+        IntegerArrayList y = new IntegerArrayList();
         for (int i = 0; i < n; i++) {
             mat[i] = field[i].toCharArray();
             for (int j = 0; j < m; j++) {

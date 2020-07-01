@@ -1,6 +1,6 @@
 package template.math;
 
-import template.primitve.generated.datastructure.DoubleList;
+import template.primitve.generated.datastructure.DoubleArrayList;
 import template.rand.RandomWrapper;
 
 import java.util.Arrays;
@@ -97,7 +97,7 @@ public class SparseMatrix {
     /**
      * <p>Randomly get the minimal-polynomial of n * n matrix A with m non-zero entry. O(n(m+n))</p>
      */
-    public DoubleList getMinimalPolynomialByRandom() {
+    public DoubleArrayList getMinimalPolynomialByRandom() {
         double[] u = new double[n];
         double[] v = new double[n];
         double[] next = new double[n];
@@ -120,7 +120,7 @@ public class SparseMatrix {
             v = tmp;
         }
 
-        DoubleList polynomials = new DoubleList(lfsr.length() + 1);
+        DoubleArrayList polynomials = new DoubleArrayList(lfsr.length() + 1);
         for (int i = lfsr.length(); i >= 1; i--) {
             polynomials.add(-lfsr.codeAt(i));
         }
@@ -139,7 +139,7 @@ public class SparseMatrix {
         for (int i = 0; i < elements.length; i++) {
             elements[i] *= rand[x[i]];
         }
-        DoubleList minPoly = getMinimalPolynomialByRandom();
+        DoubleArrayList minPoly = getMinimalPolynomialByRandom();
         double ans = minPoly.get(0);
         if (n % 2 == 1) {
             ans = -ans;
@@ -160,7 +160,7 @@ public class SparseMatrix {
      * return A^{-1}b in O(n(m+n)) time complexity
      */
     public double[] solveLinearEquation(double[] b) {
-        DoubleList minPoly = getMinimalPolynomialByRandom();
+        DoubleArrayList minPoly = getMinimalPolynomialByRandom();
         double c0 = minPoly.get(0);
         if (c0 == 0) {
             throw new IllegalStateException("Can't invert singular matrix");

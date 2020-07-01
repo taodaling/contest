@@ -12,7 +12,7 @@ import java.util.Random;
 import net.egork.chelper.task.Test;
 import net.egork.chelper.tester.TestCase;
 import template.math.DigitUtils;
-import template.primitve.generated.datastructure.IntegerList;
+import template.primitve.generated.datastructure.IntegerArrayList;
 import template.rand.RandomWrapper;
 
 public class P4168VioletTestCase {
@@ -68,7 +68,7 @@ public class P4168VioletTestCase {
 
     public int[] solve(int[] data, int[][] qs) {
         int x = 0;
-        IntegerList ans = new IntegerList();
+        IntegerArrayList ans = new IntegerArrayList();
         for (int[] q : qs) {
             int l = DigitUtils.mod(q[0] + x - 1, data.length);
             int r = DigitUtils.mod(q[1] + x - 1, data.length);
