@@ -2,12 +2,9 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.io.PrintStream;
 import java.io.IOException;
-import java.io.Serializable;
 import java.io.UncheckedIOException;
-import java.util.Map;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
@@ -31,301 +28,88 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            BBitwiseFormula solver = new BBitwiseFormula();
+            AbstractThinking solver = new AbstractThinking();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class BBitwiseFormula {
+    static class AbstractThinking {
+        Debug debug = new Debug(true);
+
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            int m = in.readInt();
+            long sub = choose(n + 1, 3);
+            for (int i = 2; i < n; i++) {
+                int pt = n - (i - 1);
+                int way = i - 1;
+                sub += way * choose(pt, 2);
+            }
 
-            Constant unknown = new Constant(0);
-            Operand[] ops = new Operand[n];
-            Map<String, Operand> map = new HashMap<>(n + 1);
-            map.put("?", unknown);
-
-            for (int i = 0; i < n; i++) {
-                in.skipBlank();
-                String line = in.readLine();
-                String[] parts = line.split(" ");
-                String name = parts[0];
-                Operand op = null;
-                if (parts.length == 3) {
-                    //constant
-                    op = new BitOneArray(parts[2]);
-                } else {
-                    Operand left = map.get(parts[2]);
-                    Operand right = map.get(parts[4]);
-                    switch (parts[3]) {
-                        case "AND":
-                            op = new AndOp(left, right);
-                            break;
-                        case "OR":
-                            op = new OrOp(left, right);
-                            break;
-                        case "XOR":
-                            op = new XorOp(left, right);
-                            break;
-                    }
+            for (int i = 1; i < n; i++) {
+                int left = i;
+                int right = n - i;
+                if (left > right) {
+                    continue;
                 }
-
-                ops[i] = op;
-                map.put(name, op);
-            }
-
-            BitSet min = new BitSet(m);
-            BitSet max = new BitSet(m);
-            for (int i = 0; i < m; i++) {
-                unknown.modify(0);
-                int v0 = collect(ops, i);
-                unknown.modify(1);
-                int v1 = collect(ops, i);
-
-                if (v0 <= v1) {
-                    min.set(i, false);
+                long contrib = (comb(left + 1, 2) - 1) * (comb(right + 1, 2) - 1);
+                if (left < right) {
+                    contrib *= n;
                 } else {
-                    min.set(i, true);
+                    contrib *= n / 2;
                 }
-
-                if (v0 >= v1) {
-                    max.set(i, false);
-                } else {
-                    max.set(i, true);
-                }
+                sub += contrib;
             }
 
-            for (int i = 0; i < m; i++) {
-                out.append(min.get(i) ? 1 : 0);
-            }
-            out.println();
-            for (int i = 0; i < m; i++) {
-                out.append(max.get(i) ? 1 : 0);
-            }
+            long total = comb(comb(n, 2), 3);
+
+            long ans = total - sub;
+
+            debug.debug("sub", sub);
+            debug.debug("total", total);
+            debug.debug("ans", ans);
+            out.println(ans);
         }
 
-        public int collect(Operand[] ops, int v) {
-            int ans = 0;
-            for (Operand op : ops) {
-                op.reset();
-                ans += op.value(v);
-            }
-            return ans;
+        public long choose(int n, int k) {
+            //x1 + y1 + ... + xk + yk <= n - 1
+            //(2k + n - 1 - k \choose n - 1 - k)
+            //x1,...,xk>=1
+            long up = 2 * k + n - 1 - k;
+            long bot = n - 1 - k;
+            return comb(up, bot);
         }
 
-    }
-
-    static class OrOp extends AbstractCachedOp {
-        private Operand left;
-        private Operand right;
-
-        public OrOp(Operand left, Operand right) {
-            this.left = left;
-            this.right = right;
-        }
-
-        public int compute(int v) {
-            return left.value(v) | right.value(v);
-        }
-
-    }
-
-    static final class BitSet implements Serializable, Cloneable {
-        private long[] data;
-        private long tailAvailable;
-        private int capacity;
-        private int m;
-        private static final int SHIFT = 6;
-        private static final int LOW = 63;
-        private static final int BITS_FOR_EACH = 64;
-        private static final long ALL_ONE = ~0L;
-        private static final long ALL_ZERO = 0L;
-        private static final int MAX_OFFSET = 63;
-        private static long[] EMPTY_ARRAY = new long[0];
-
-        public BitSet(int n) {
-            capacity = n;
-            this.m = (capacity + 64 - 1) / 64;
-            data = new long[m];
-            tailAvailable = oneBetween(0, offset(capacity - 1));
-        }
-
-        public BitSet(BitSet bs) {
-            this.data = bs.data.clone();
-            this.tailAvailable = bs.tailAvailable;
-            this.capacity = bs.capacity;
-            this.m = bs.m;
-        }
-
-        private BitSet(BitSet bs, int l, int r) {
-            this.data = EMPTY_ARRAY;
-            copyInterval(bs, l, r);
-        }
-
-        public void copyInterval(BitSet bs, int l, int r) {
-            capacity = r - l + 1;
-            tailAvailable = oneBetween(0, offset(capacity - 1));
-            int reqLength = word(r) - word(l) + 1;
-            if (data.length >= word(r) - word(l) + 1) {
-                System.arraycopy(bs.data, word(l), data, 0, reqLength);
-            } else {
-                data = Arrays.copyOfRange(bs.data, word(l), word(r) + 1);
-            }
-            this.m = reqLength;
-            leftShift(offset(l));
-            this.m = (capacity + 64 - 1) / 64;
-            data[m - 1] &= tailAvailable;
-            for (int i = m; i < reqLength; i++) {
-                data[i] = 0;
-            }
-        }
-
-        public boolean get(int i) {
-            return (data[word(i)] & (1L << offset(i))) != 0;
-        }
-
-        public void set(int i) {
-            data[word(i)] |= (1L << offset(i));
-        }
-
-        public void set(int i, boolean val) {
-            if (val) {
-                set(i);
-            } else {
-                clear(i);
-            }
-        }
-
-        private static int word(int i) {
-            return i >>> SHIFT;
-        }
-
-        private static int offset(int i) {
-            return i & LOW;
-        }
-
-        private long oneBetween(int l, int r) {
-            if (r < l) {
+        private long comb(long n, long m) {
+            if (m > n || m < 0) {
                 return 0;
             }
-            long lBegin = 1L << offset(l);
-            long rEnd = 1L << offset(r);
-            return (ALL_ONE ^ (lBegin - 1)) & ((rEnd << 1) - 1);
-        }
-
-        public void clear(int i) {
-            data[word(i)] &= ~(1L << offset(i));
-        }
-
-        public int capacity() {
-            return capacity;
-        }
-
-        public int nextSetBit(int start) {
-            int offset = offset(start);
-            int w = word(start);
-            if (offset != 0) {
-                long mask = oneBetween(offset, MAX_OFFSET);
-                if ((data[w] & mask) != 0) {
-                    return Long.numberOfTrailingZeros(data[w] & mask) + w * BITS_FOR_EACH;
-                }
-                w++;
-            }
-
-            while (w < m && data[w] == ALL_ZERO) {
-                w++;
-            }
-            if (w >= m) {
-                return capacity();
-            }
-            return Long.numberOfTrailingZeros(data[w]) + w * BITS_FOR_EACH;
-        }
-
-        public void leftShift(int n) {
-            int wordMove = word(n);
-            int offsetMove = offset(n);
-            int rshift = MAX_OFFSET - (offsetMove - 1);
-
-            if (offsetMove != 0) {
-                //slightly
-                for (int i = 0; i < m; i++) {
-                    if (i > 0) {
-                        data[i - 1] |= data[i] << rshift;
-                    }
-                    data[i] >>>= offsetMove;
-                }
-            }
-            if (wordMove > 0) {
-                for (int i = 0; i < m; i++) {
-                    if (i >= wordMove) {
-                        data[i - wordMove] = data[i];
-                    }
-                    data[i] = 0;
-                }
-            }
-        }
-
-        public BitSet clone() {
-            return new BitSet(this);
-        }
-
-        public String toString() {
-            StringBuilder builder = new StringBuilder("{");
-            for (int i = nextSetBit(0); i < capacity(); i = nextSetBit(i + 1)) {
-                builder.append(i).append(',');
-            }
-            if (builder.length() > 1) {
-                builder.setLength(builder.length() - 1);
-            }
-            builder.append("}");
-            return builder.toString();
-        }
-
-        public int hashCode() {
-            int ans = 1;
-            for (int i = 0; i < m; i++) {
-                ans = ans * 31 + Long.hashCode(data[i]);
-            }
-            return ans;
-        }
-
-        public boolean equals(Object obj) {
-            if (!(obj instanceof BitSet)) {
-                return false;
-            }
-            BitSet other = (BitSet) obj;
-            if (other.capacity != capacity) {
-                return false;
-            }
-            for (int i = 0; i < m; i++) {
-                if (other.data[i] != data[i]) {
-                    return false;
-                }
-            }
-            return true;
+            return m == 0 ? 1 : (comb(n - 1, m - 1) * n / m);
         }
 
     }
 
-    static class Constant implements Operand {
-        int x;
+    static class Debug {
+        private boolean offline;
+        private PrintStream out = System.err;
 
-        public void modify(int x) {
-            this.x = x;
+        public Debug(boolean enable) {
+            offline = enable && System.getSecurityManager() == null;
         }
 
-        public Constant(int x) {
-            this.x = x;
+        public Debug debug(String name, long x) {
+            if (offline) {
+                debug(name, "" + x);
+            }
+            return this;
         }
 
-        public int value(int v) {
-            return x;
-        }
-
-        public void reset() {
-
+        public Debug debug(String name, String x) {
+            if (offline) {
+                out.printf("%s=%s", name, x);
+                out.println();
+            }
+            return this;
         }
 
     }
@@ -357,9 +141,13 @@ public class Main {
             return this;
         }
 
-        public FastOutput append(int c) {
+        public FastOutput append(long c) {
             cache.append(c);
             return this;
+        }
+
+        public FastOutput println(long c) {
+            return append(c).println();
         }
 
         public FastOutput println() {
@@ -393,51 +181,8 @@ public class Main {
 
     }
 
-    static class AndOp extends AbstractCachedOp {
-        private Operand left;
-        private Operand right;
-
-        public AndOp(Operand left, Operand right) {
-            this.left = left;
-            this.right = right;
-        }
-
-        public int compute(int v) {
-            return left.value(v) & right.value(v);
-        }
-
-    }
-
-    static abstract class AbstractCachedOp implements Operand {
-        private int val;
-        private boolean visited;
-
-        public int value(int v) {
-            if (!visited) {
-                visited = true;
-                val = compute(v);
-            }
-            return val;
-        }
-
-        public void reset() {
-            visited = false;
-        }
-
-        public abstract int compute(int v);
-
-    }
-
-    static interface Operand {
-        int value(int v);
-
-        void reset();
-
-    }
-
     static class FastInput {
         private final InputStream is;
-        private StringBuilder defaultStringBuf = new StringBuilder(1 << 13);
         private byte[] buf = new byte[1 << 13];
         private int bufLen;
         private int bufOffset;
@@ -491,51 +236,6 @@ public class Main {
             }
 
             return val;
-        }
-
-        public void readLine(StringBuilder builder) {
-            while (next != -1 && next != '\n' && next != '\r') {
-                builder.append((char) next);
-                next = read();
-            }
-        }
-
-        public String readLine() {
-            defaultStringBuf.setLength(0);
-            readLine(defaultStringBuf);
-            return defaultStringBuf.toString();
-        }
-
-    }
-
-    static class XorOp extends AbstractCachedOp {
-        private Operand left;
-        private Operand right;
-
-        public XorOp(Operand left, Operand right) {
-            this.left = left;
-            this.right = right;
-        }
-
-        public int compute(int v) {
-            return left.value(v) ^ right.value(v);
-        }
-
-    }
-
-    static class BitOneArray implements Operand {
-        String s;
-
-        public BitOneArray(String s) {
-            this.s = s;
-        }
-
-        public int value(int v) {
-            return s.charAt(v) - '0';
-        }
-
-        public void reset() {
-
         }
 
     }

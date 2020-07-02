@@ -1,0 +1,40 @@
+{
+  "name" : "C. Peterson Polyglot",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5\n1 2 c\n2 3 a\n3 4 t\n2 5 t\n",
+    "output" : "3\n2\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "16\n1 2 o\n2 3 f\n1 4 p\n4 5 i\n5 6 e\n6 7 c\n7 8 e\n4 9 r\n9 10 e\n10 11 t\n11 12 t\n12 13 y\n10 14 f\n14 15 i\n15 16 x\n",
+    "output" : "12\n2\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx512M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.CPetersonPolyglot",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.07.02",
+  "contestName" : "Codeforces - Codeforces Round #402 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}
