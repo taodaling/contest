@@ -2,7 +2,6 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.io.Closeable;
@@ -28,155 +27,56 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            AbstractThinking solver = new AbstractThinking();
+            EDontBeASubsequence solver = new EDontBeASubsequence();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class AbstractThinking {
-        Debug debug = new Debug(true);
+    static class EDontBeASubsequence {
+        int charset = 'z' - 'a' + 1;
 
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            int n = in.readInt();
-            long sub = choose(n + 1, 3);
-            for (int i = 2; i < n; i++) {
-                int pt = n - (i - 1);
-                int way = i - 1;
-                sub += way * choose(pt, 2);
+            int[] s = new int[(int) 2e5];
+            int n = in.readString(s, 0);
+            int[][] next = new int[charset][n + 2];
+            for (int i = 0; i < n; i++) {
+                s[i] -= 'a';
             }
 
-            for (int i = 1; i < n; i++) {
-                int left = i;
-                int right = n - i;
-                if (left > right) {
-                    continue;
+            for (int j = 0; j < charset; j++) {
+                next[j][n] = n + 1;
+                next[j][n + 1] = n + 1;
+            }
+            for (int i = n - 1; i >= 0; i--) {
+                for (int j = 0; j < charset; j++) {
+                    next[j][i] = next[j][i + 1];
                 }
-                long contrib = (comb(left + 1, 2) - 1) * (comb(right + 1, 2) - 1);
-                if (left < right) {
-                    contrib *= n;
-                } else {
-                    contrib *= n / 2;
+                next[s[i]][i] = i + 1;
+            }
+
+            int[] dp = new int[n + 2];
+            dp[n + 1] = 0;
+            for (int i = n; i >= 0; i--) {
+                dp[i] = n;
+                for (int j = 0; j < charset; j++) {
+                    int go = next[j][i];
+                    dp[i] = Math.min(dp[i], 1 + dp[go]);
                 }
-                sub += contrib;
             }
 
-            long total = comb(comb(n, 2), 3);
-
-            long ans = total - sub;
-
-            debug.debug("sub", sub);
-            debug.debug("total", total);
-            debug.debug("ans", ans);
-            out.println(ans);
-        }
-
-        public long choose(int n, int k) {
-            //x1 + y1 + ... + xk + yk <= n - 1
-            //(2k + n - 1 - k \choose n - 1 - k)
-            //x1,...,xk>=1
-            long up = 2 * k + n - 1 - k;
-            long bot = n - 1 - k;
-            return comb(up, bot);
-        }
-
-        private long comb(long n, long m) {
-            if (m > n || m < 0) {
-                return 0;
+            int index = 0;
+            while (index <= n) {
+                int step = 0;
+                for (int j = 0; j < charset; j++) {
+                    int go = next[j][index];
+                    if (dp[go] < dp[next[step][index]]) {
+                        step = j;
+                    }
+                }
+                out.append((char) (step + 'a'));
+                index = next[step][index];
             }
-            return m == 0 ? 1 : (comb(n - 1, m - 1) * n / m);
-        }
-
-    }
-
-    static class Debug {
-        private boolean offline;
-        private PrintStream out = System.err;
-
-        public Debug(boolean enable) {
-            offline = enable && System.getSecurityManager() == null;
-        }
-
-        public Debug debug(String name, long x) {
-            if (offline) {
-                debug(name, "" + x);
-            }
-            return this;
-        }
-
-        public Debug debug(String name, String x) {
-            if (offline) {
-                out.printf("%s=%s", name, x);
-                out.println();
-            }
-            return this;
-        }
-
-    }
-
-    static class FastOutput implements AutoCloseable, Closeable, Appendable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
-
-        public FastOutput append(CharSequence csq) {
-            cache.append(csq);
-            return this;
-        }
-
-        public FastOutput append(CharSequence csq, int start, int end) {
-            cache.append(csq, start, end);
-            return this;
-        }
-
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput append(char c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput append(long c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput println(long c) {
-            return append(c).println();
-        }
-
-        public FastOutput println() {
-            cache.append(System.lineSeparator());
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        }
-
-        public String toString() {
-            return cache.toString();
         }
 
     }
@@ -213,29 +113,69 @@ public class Main {
             }
         }
 
-        public int readInt() {
-            int sign = 1;
-
+        public int readString(int[] data, int offset) {
             skipBlank();
-            if (next == '+' || next == '-') {
-                sign = next == '+' ? 1 : -1;
+
+            int originalOffset = offset;
+            while (next > 32) {
+                data[offset++] = (char) next;
                 next = read();
             }
 
-            int val = 0;
-            if (sign == 1) {
-                while (next >= '0' && next <= '9') {
-                    val = val * 10 + next - '0';
-                    next = read();
-                }
-            } else {
-                while (next >= '0' && next <= '9') {
-                    val = val * 10 - next + '0';
-                    next = read();
-                }
-            }
+            return offset - originalOffset;
+        }
 
-            return val;
+    }
+
+    static class FastOutput implements AutoCloseable, Closeable, Appendable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
+
+        public FastOutput append(CharSequence csq) {
+            cache.append(csq);
+            return this;
+        }
+
+        public FastOutput append(CharSequence csq, int start, int end) {
+            cache.append(csq, start, end);
+            return this;
+        }
+
+        public FastOutput(Writer os) {
+            this.os = os;
+        }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput append(char c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            return this;
+        }
+
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+
+        public String toString() {
+            return cache.toString();
         }
 
     }
