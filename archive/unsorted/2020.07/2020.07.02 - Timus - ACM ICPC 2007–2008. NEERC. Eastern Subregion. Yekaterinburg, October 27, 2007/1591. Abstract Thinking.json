@@ -1,0 +1,54 @@
+{
+  "name" : "1591. Abstract Thinking",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4\n",
+    "output" : "4\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "5\n",
+    "output" : "25\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "3",
+    "output" : "0",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "6",
+    "output" : "91",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "2000",
+    "index" : 4,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx64M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.AbstractThinking",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.07.02",
+  "contestName" : "Timus - ACM ICPC 2007–2008. NEERC. Eastern Subregion. Yekaterinburg, October 27, 2007",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

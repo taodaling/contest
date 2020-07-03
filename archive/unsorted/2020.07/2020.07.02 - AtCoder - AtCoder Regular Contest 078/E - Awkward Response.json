@@ -1,5 +1,5 @@
 {
-  "name" : "1591. Abstract Thinking",
+  "name" : "E - Awkward Response",
   "testType" : "SINGLE",
   "input" : {
     "type" : "STANDARD",
@@ -10,36 +10,35 @@
     "fileName" : "output.txt"
   },
   "tests" : [ {
-    "input" : "4\n",
-    "output" : "4\n",
+    "input" : "15",
+    "output" : "",
     "index" : 0,
     "active" : false
   }, {
-    "input" : "5\n",
-    "output" : "25\n",
+    "input" : "1000000000",
+    "output" : "",
     "index" : 1,
     "active" : true
   }, {
     "input" : "3",
-    "output" : "0",
     "index" : 2,
-    "active" : false
+    "active" : true
   } ],
   "location" : "src/main/java/contest",
-  "vmArgs" : "-Xmx64M",
+  "vmArgs" : "-Xmx256M",
   "mainClass" : "Main",
-  "taskClass" : "contest.AbstractThinking",
+  "taskClass" : "contest.EAwkwardResponse",
   "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
   "checkerParameters" : "",
   "testClasses" : [ ],
   "date" : "2020.07.02",
-  "contestName" : "Timus - ACM ICPC 2007–2008. NEERC. Eastern Subregion. Yekaterinburg, October 27, 2007",
+  "contestName" : "AtCoder - AtCoder Regular Contest 078",
   "truncate" : true,
   "inputClass" : "template.io.FastInput",
   "outputClass" : "template.io.FastOutput",
   "includeLocale" : false,
   "failOnOverflow" : false,
-  "interactive" : false,
+  "interactive" : true,
   "interactor" : "net.egork.chelper.tester.Interactor",
   "newThread" : true
 }
