@@ -238,34 +238,6 @@ public class DigitUtils {
         return ans;
     }
 
-    public static int average(int a, int b) {
-        int ans = (a / 2) + (b / 2);
-        switch (a % 2 + b % 2) {
-            case 2:
-                ans++;
-                break;
-            case -1:
-            case -2:
-                ans--;
-                break;
-        }
-        return ans;
-    }
-
-    public static long average(long a, long b) {
-        long ans = (a / 2) + (b / 2);
-        switch ((int) (a % 2 + b % 2)) {
-            case 2:
-                ans++;
-                break;
-            case -1:
-            case -2:
-                ans--;
-                break;
-        }
-        return ans;
-    }
-
     public static int floorAverage(int x, int y) {
         return (x & y) + ((x ^ y) >> 1);
     }

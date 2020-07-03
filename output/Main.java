@@ -2,6 +2,7 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.io.Closeable;
@@ -27,102 +28,94 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            EDontBeASubsequence solver = new EDontBeASubsequence();
+            Task solver = new Task();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class EDontBeASubsequence {
-        int charset = 'z' - 'a' + 1;
+    static class Task {
+        Debug debug = new Debug(true);
 
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            int[] s = new int[(int) 2e5];
-            int n = in.readString(s, 0);
-            int[][] next = new int[charset][n + 2];
-            for (int i = 0; i < n; i++) {
-                s[i] -= 'a';
+            long[][][] dp = new long[41][10][1 << 10];
+            for (int i = 1; i < 10; i++) {
+                dp[1][i][1 << i] = 1;
             }
 
-            for (int j = 0; j < charset; j++) {
-                next[j][n] = n + 1;
-                next[j][n + 1] = n + 1;
-            }
-            for (int i = n - 1; i >= 0; i--) {
-                for (int j = 0; j < charset; j++) {
-                    next[j][i] = next[j][i + 1];
-                }
-                next[s[i]][i] = i + 1;
-            }
-
-            int[] dp = new int[n + 2];
-            dp[n + 1] = 0;
-            for (int i = n; i >= 0; i--) {
-                dp[i] = n;
-                for (int j = 0; j < charset; j++) {
-                    int go = next[j][i];
-                    dp[i] = Math.min(dp[i], 1 + dp[go]);
-                }
-            }
-
-            int index = 0;
-            while (index <= n) {
-                int step = 0;
-                for (int j = 0; j < charset; j++) {
-                    int go = next[j][index];
-                    if (dp[go] < dp[next[step][index]]) {
-                        step = j;
+            for (int i = 1; i < 40; i++) {
+                for (int j = 0; j < 10; j++) {
+                    for (int k = 0; k < 1 << 10; k++) {
+                        long way = dp[i][j][k];
+                        if (way == 0) {
+                            continue;
+                        }
+                        if (j + 1 < 10) {
+                            dp[i + 1][j + 1][k | (1 << (j + 1))] += way;
+                        }
+                        if (j - 1 >= 0) {
+                            dp[i + 1][j - 1][k | (1 << (j - 1))] += way;
+                        }
                     }
                 }
-                out.append((char) (step + 'a'));
-                index = next[step][index];
             }
+
+            long ans = 0;
+            for (int i = 1; i <= 40; i++) {
+                for (int j = 0; j < 10; j++) {
+                    long way = dp[i][j][(1 << 10) - 1];
+                    ans += way;
+
+                    if (way > 0) {
+                        debug.debug("i", i);
+                        debug.debug("j", j);
+                        debug.debug("way", way);
+                    }
+                }
+            }
+
+            out.println(ans);
+        }
+
+    }
+
+    static class Debug {
+        private boolean offline;
+        private PrintStream out = System.err;
+
+        public Debug(boolean enable) {
+            offline = enable && System.getSecurityManager() == null;
+        }
+
+        public Debug debug(String name, int x) {
+            if (offline) {
+                debug(name, "" + x);
+            }
+            return this;
+        }
+
+        public Debug debug(String name, long x) {
+            if (offline) {
+                debug(name, "" + x);
+            }
+            return this;
+        }
+
+        public Debug debug(String name, String x) {
+            if (offline) {
+                out.printf("%s=%s", name, x);
+                out.println();
+            }
+            return this;
         }
 
     }
 
     static class FastInput {
         private final InputStream is;
-        private byte[] buf = new byte[1 << 13];
-        private int bufLen;
-        private int bufOffset;
-        private int next;
 
         public FastInput(InputStream is) {
             this.is = is;
-        }
-
-        private int read() {
-            while (bufLen == bufOffset) {
-                bufOffset = 0;
-                try {
-                    bufLen = is.read(buf);
-                } catch (IOException e) {
-                    bufLen = -1;
-                }
-                if (bufLen == -1) {
-                    return -1;
-                }
-            }
-            return buf[bufOffset++];
-        }
-
-        public void skipBlank() {
-            while (next >= 0 && next <= 32) {
-                next = read();
-            }
-        }
-
-        public int readString(int[] data, int offset) {
-            skipBlank();
-
-            int originalOffset = offset;
-            while (next > 32) {
-                data[offset++] = (char) next;
-                next = read();
-            }
-
-            return offset - originalOffset;
         }
 
     }
@@ -151,6 +144,20 @@ public class Main {
 
         public FastOutput append(char c) {
             cache.append(c);
+            return this;
+        }
+
+        public FastOutput append(long c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput println(long c) {
+            return append(c).println();
+        }
+
+        public FastOutput println() {
+            cache.append(System.lineSeparator());
             return this;
         }
 

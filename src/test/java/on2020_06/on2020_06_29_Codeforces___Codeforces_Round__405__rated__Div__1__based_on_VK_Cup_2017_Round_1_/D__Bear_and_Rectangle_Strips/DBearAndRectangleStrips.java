@@ -63,7 +63,7 @@ public class DBearAndRectangleStrips {
             return;
         }
 
-        int m = DigitUtils.average(ql, qr);
+        int m = DigitUtils.floorAverage(ql, qr);
         dp[m] = 0;
         int choice = sl;
         for (int i = sl; i <= sr && i <= m + 1; i++) {

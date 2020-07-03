@@ -63,7 +63,7 @@ public class PermutationUtils {
     }
 
     /**
-     * Find the kth smallest permutation in all permutations formed by n elements,
+     * Find the kth(start from 1) smallest permutation in all permutations formed by n elements(0, 1, ... , n-1)
      */
     public static TailPermutation theKthSmallest(long n, long k) {
         int digitsNeed = Arrays.binarySearch(PERMUTATION_CNT, k);
@@ -125,7 +125,7 @@ public class PermutationUtils {
         }
     }
 
-    private static class TailPermutation {
+    public static class TailPermutation {
         private long[] p;
         private long offset;
 
