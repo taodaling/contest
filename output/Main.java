@@ -2,8 +2,9 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintStream;
+import java.util.Arrays;
 import java.io.IOException;
+import java.io.Serializable;
 import java.io.UncheckedIOException;
 import java.io.Closeable;
 import java.io.Writer;
@@ -28,88 +29,61 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            AbstractThinking solver = new AbstractThinking();
+            DHalfReflector solver = new DHalfReflector();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class AbstractThinking {
-        Debug debug = new Debug(true);
+    static class DHalfReflector {
+        int shift = 0;
+        BitSet tmp;
 
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            long sub = choose(n + 1, 3);
-            for (int i = 2; i < n; i++) {
-                int pt = n - (i - 1);
-                int way = i - 1;
-                sub += way * choose(pt, 2);
+            int k = in.readInt();
+            BitSet bs = new BitSet(n);
+            for (int i = 0; i < n; i++) {
+                bs.set(i, 'B' - in.readChar() == 1);
             }
 
-            for (int i = 1; i < n; i++) {
-                int left = i;
-                int right = n - i;
-                if (left > right) {
-                    continue;
-                }
-                long contrib = (comb(left + 1, 2) - 1) * (comb(right + 1, 2) - 1);
-                if (left < right) {
-                    contrib *= n;
-                } else {
-                    contrib *= n / 2;
-                }
-                sub += contrib;
+            tmp = new BitSet(n);
+            int now = 0;
+            while (now < k && shift <= n) {
+                now++;
+                next(bs);
             }
 
-            long total = comb(comb(n, 2), 3);
-
-            long ans = total - sub;
-
-            debug.debug("sub", sub);
-            debug.debug("total", total);
-            debug.debug("ans", ans);
-            out.println(ans);
-        }
-
-        public long choose(int n, int k) {
-            //x1 + y1 + ... + xk + yk <= n - 1
-            //(2k + n - 1 - k \choose n - 1 - k)
-            //x1,...,xk>=1
-            long up = 2 * k + n - 1 - k;
-            long bot = n - 1 - k;
-            return comb(up, bot);
-        }
-
-        private long comb(long n, long m) {
-            if (m > n || m < 0) {
-                return 0;
+            if (now == k) {
+                output(bs, out);
+                return;
             }
-            return m == 0 ? 1 : (comb(n - 1, m - 1) * n / m);
-        }
 
-    }
-
-    static class Debug {
-        private boolean offline;
-        private PrintStream out = System.err;
-
-        public Debug(boolean enable) {
-            offline = enable && System.getSecurityManager() == null;
-        }
-
-        public Debug debug(String name, long x) {
-            if (offline) {
-                debug(name, "" + x);
+            k -= now;
+            if (k % 2 == 1) {
+                next(bs);
             }
-            return this;
+
+            output(bs, out);
         }
 
-        public Debug debug(String name, String x) {
-            if (offline) {
-                out.printf("%s=%s", name, x);
-                out.println();
+        public void output(BitSet bs, FastOutput out) {
+            for (int i = 0; i < bs.capacity(); i++) {
+                out.append(bs.get(i) ? 'A' : 'B');
             }
-            return this;
+        }
+
+        public void next(BitSet bs) {
+            if (bs.get(0)) {
+                bs.clear(0);
+                return;
+            }
+            shift++;
+            tmp.copy(bs);
+            tmp.leftShift(1);
+            bs.fill(true);
+            bs.xor(tmp);
+            bs.set(bs.capacity() - 1);
         }
 
     }
@@ -141,20 +115,6 @@ public class Main {
             return this;
         }
 
-        public FastOutput append(long c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput println(long c) {
-            return append(c).println();
-        }
-
-        public FastOutput println() {
-            cache.append(System.lineSeparator());
-            return this;
-        }
-
         public FastOutput flush() {
             try {
                 os.append(cache);
@@ -177,6 +137,240 @@ public class Main {
 
         public String toString() {
             return cache.toString();
+        }
+
+    }
+
+    static final class BitSet implements Serializable, Cloneable {
+        private long[] data;
+        private long tailAvailable;
+        private int capacity;
+        private int m;
+        private static final int SHIFT = 6;
+        private static final int LOW = 63;
+        private static final int BITS_FOR_EACH = 64;
+        private static final long ALL_ONE = ~0L;
+        private static final long ALL_ZERO = 0L;
+        private static final int MAX_OFFSET = 63;
+        private static long[] EMPTY_ARRAY = new long[0];
+
+        public BitSet(int n) {
+            capacity = n;
+            this.m = (capacity + 64 - 1) / 64;
+            data = new long[m];
+            tailAvailable = oneBetween(0, offset(capacity - 1));
+        }
+
+        public BitSet(BitSet bs) {
+            this.data = bs.data.clone();
+            this.tailAvailable = bs.tailAvailable;
+            this.capacity = bs.capacity;
+            this.m = bs.m;
+        }
+
+        private BitSet(BitSet bs, int l, int r) {
+            this.data = EMPTY_ARRAY;
+            copyInterval(bs, l, r);
+        }
+
+        public void copyInterval(BitSet bs, int l, int r) {
+            capacity = r - l + 1;
+            tailAvailable = oneBetween(0, offset(capacity - 1));
+            int reqLength = word(r) - word(l) + 1;
+            if (data.length >= word(r) - word(l) + 1) {
+                System.arraycopy(bs.data, word(l), data, 0, reqLength);
+            } else {
+                data = Arrays.copyOfRange(bs.data, word(l), word(r) + 1);
+            }
+            this.m = reqLength;
+            leftShift(offset(l));
+            this.m = (capacity + 64 - 1) / 64;
+            data[m - 1] &= tailAvailable;
+            for (int i = m; i < reqLength; i++) {
+                data[i] = 0;
+            }
+        }
+
+        public boolean get(int i) {
+            return (data[word(i)] & (1L << offset(i))) != 0;
+        }
+
+        public void set(int i) {
+            data[word(i)] |= (1L << offset(i));
+        }
+
+        public void set(int i, boolean val) {
+            if (val) {
+                set(i);
+            } else {
+                clear(i);
+            }
+        }
+
+        private static int word(int i) {
+            return i >>> SHIFT;
+        }
+
+        private static int offset(int i) {
+            return i & LOW;
+        }
+
+        private long oneBetween(int l, int r) {
+            if (r < l) {
+                return 0;
+            }
+            long lBegin = 1L << offset(l);
+            long rEnd = 1L << offset(r);
+            return (ALL_ONE ^ (lBegin - 1)) & ((rEnd << 1) - 1);
+        }
+
+        public void fill(boolean val) {
+            if (val) {
+                set(0, capacity() - 1);
+            } else {
+                clear(0, capacity() - 1);
+            }
+        }
+
+        public void set(int l, int r) {
+            if (r < l) {
+                return;
+            }
+            int lWord = l >>> SHIFT;
+            int rWord = r >>> SHIFT;
+            for (int i = lWord + 1; i < rWord; i++) {
+                data[i] = ALL_ONE;
+            }
+            //lword
+            if (lWord == rWord) {
+                data[lWord] |= oneBetween(offset(l), offset(r));
+            } else {
+                data[lWord] |= oneBetween(offset(l), MAX_OFFSET);
+                data[rWord] |= oneBetween(0, offset(r));
+            }
+        }
+
+        public void clear(int i) {
+            data[word(i)] &= ~(1L << offset(i));
+        }
+
+        public void clear(int l, int r) {
+            if (r < l) {
+                return;
+            }
+            int lWord = l >>> SHIFT;
+            int rWord = r >>> SHIFT;
+            for (int i = lWord + 1; i < rWord; i++) {
+                data[i] = ALL_ZERO;
+            }
+            //lword
+            if (lWord == rWord) {
+                data[lWord] &= ~oneBetween(offset(l), offset(r));
+            } else {
+                data[lWord] &= ~oneBetween(offset(l), MAX_OFFSET);
+                data[rWord] &= ~oneBetween(0, offset(r));
+            }
+        }
+
+        public int capacity() {
+            return capacity;
+        }
+
+        public void copy(BitSet bs) {
+            int n = Math.min(this.m, bs.m);
+            System.arraycopy(bs.data, 0, data, 0, n);
+            Arrays.fill(data, n, n, 0);
+        }
+
+        public void xor(BitSet bs) {
+            int n = Math.min(this.m, bs.m);
+            for (int i = 0; i < n; i++) {
+                data[i] ^= bs.data[i];
+            }
+        }
+
+        public int nextSetBit(int start) {
+            int offset = offset(start);
+            int w = word(start);
+            if (offset != 0) {
+                long mask = oneBetween(offset, MAX_OFFSET);
+                if ((data[w] & mask) != 0) {
+                    return Long.numberOfTrailingZeros(data[w] & mask) + w * BITS_FOR_EACH;
+                }
+                w++;
+            }
+
+            while (w < m && data[w] == ALL_ZERO) {
+                w++;
+            }
+            if (w >= m) {
+                return capacity();
+            }
+            return Long.numberOfTrailingZeros(data[w]) + w * BITS_FOR_EACH;
+        }
+
+        public void leftShift(int n) {
+            int wordMove = word(n);
+            int offsetMove = offset(n);
+            int rshift = MAX_OFFSET - (offsetMove - 1);
+
+            if (offsetMove != 0) {
+                //slightly
+                for (int i = 0; i < m; i++) {
+                    if (i > 0) {
+                        data[i - 1] |= data[i] << rshift;
+                    }
+                    data[i] >>>= offsetMove;
+                }
+            }
+            if (wordMove > 0) {
+                for (int i = 0; i < m; i++) {
+                    if (i >= wordMove) {
+                        data[i - wordMove] = data[i];
+                    }
+                    data[i] = 0;
+                }
+            }
+        }
+
+        public BitSet clone() {
+            return new BitSet(this);
+        }
+
+        public String toString() {
+            StringBuilder builder = new StringBuilder("{");
+            for (int i = nextSetBit(0); i < capacity(); i = nextSetBit(i + 1)) {
+                builder.append(i).append(',');
+            }
+            if (builder.length() > 1) {
+                builder.setLength(builder.length() - 1);
+            }
+            builder.append("}");
+            return builder.toString();
+        }
+
+        public int hashCode() {
+            int ans = 1;
+            for (int i = 0; i < m; i++) {
+                ans = ans * 31 + Long.hashCode(data[i]);
+            }
+            return ans;
+        }
+
+        public boolean equals(Object obj) {
+            if (!(obj instanceof BitSet)) {
+                return false;
+            }
+            BitSet other = (BitSet) obj;
+            if (other.capacity != capacity) {
+                return false;
+            }
+            for (int i = 0; i < m; i++) {
+                if (other.data[i] != data[i]) {
+                    return false;
+                }
+            }
+            return true;
         }
 
     }
@@ -236,6 +430,13 @@ public class Main {
             }
 
             return val;
+        }
+
+        public char readChar() {
+            skipBlank();
+            char c = (char) next;
+            next = read();
+            return c;
         }
 
     }
