@@ -1,0 +1,36 @@
+{
+  "name" : "EllysHash",
+  "signature" : {
+    "name" : "getHash",
+    "result" : "long",
+    "arguments" : [ "int", "String", "String", "String" ],
+    "argumentNames" : [ "N", "A", "B", "C" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "4", "ELLY", "KRIS", "STAN" ],
+    "result" : "142572564",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "11", "TOPCODERSRM", "INTHEMIDDLE", "OFTHEDAYNOO" ],
+    "result" : "2840613885160",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "18", "EVERYSTEPTHATITAKE", "ISANOTHERMISTAKETO", "YOOOOOOOOOOOOOOOOO" ],
+    "result" : "325013178",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "28", "ANDNEVERMINDTHENOISEYOUHEARD", "ITSJUSTTHEBEASTSUNDERYOURBED", "INYOURCLOSETINYOURHEAAAAAAAD" ],
+    "result" : "745",
+    "index" : 3,
+    "active" : true
+  } ],
+  "date" : "2020.07.04",
+  "contestName" : "TopCoder SRM #759",
+  "testClasses" : [ ],
+  "fqn" : "on2020_07.on2020_07_04_TopCoder_SRM__759.EllysHash.EllysHash",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

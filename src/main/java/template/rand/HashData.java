@@ -1,5 +1,6 @@
 package template.rand;
 
+import template.math.DigitUtils;
 import template.math.Modular;
 import template.math.Power;
 
@@ -8,9 +9,6 @@ public class HashData {
     public int[] inv;
     public int[] pow;
 
-    public HashData(int n, int p) {
-        this(n, p, RandomWrapper.INSTANCE.nextInt(3, p - 1));
-    }
 
     public HashData(int n, int p, int x) {
         this.mod = new Modular(p);
@@ -24,5 +22,23 @@ public class HashData {
             inv[i] = mod.mul(inv[i - 1], invX);
             pow[i] = mod.mul(pow[i - 1], x);
         }
+    }
+
+    public HashData(int n) {
+        this(n, (int) 1e9 + 7, RandomWrapper.INSTANCE.nextInt(3, (int) 1e9 + 6));
+    }
+
+    public int hash(int x) {
+        return mod.valueOf(x);
+    }
+
+    public int hash(long x) {
+        int high = DigitUtils.highBit(x);
+        int low = DigitUtils.lowBit(x);
+        return mod.valueOf(high * 31L + low);
+    }
+
+    public int hash(double x) {
+        return hash(Double.doubleToRawLongBits(x));
     }
 }

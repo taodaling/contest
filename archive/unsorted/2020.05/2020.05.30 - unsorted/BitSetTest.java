@@ -1,9 +1,9 @@
 package contest;
 
 
+import template.datastructure.BitSet;
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.primitve.generated.datastructure.BitSet;
 
 public class BitSetTest {
     public void solve(int testNumber, FastInput in, FastOutput out) {
@@ -69,6 +69,11 @@ public class BitSetTest {
                 int l = in.readInt();
                 int r = in.readInt();
                 out.println(seq[i].size(l, r));
+            } else if (t == 13) {
+                int index = in.readInt();
+                int prevSet = seq[i].prevSetBit(index);
+                int prevClear = seq[i].prevClearBit(index);
+                out.append(prevSet).append(' ').append(prevClear).println();
             }
             output(out, seq[i], 0, m - 1);
         }

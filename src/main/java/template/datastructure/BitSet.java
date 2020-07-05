@@ -251,6 +251,26 @@ public final class BitSet implements Serializable, Cloneable {
         return Long.numberOfTrailingZeros(data[w]) + w * BITS_FOR_EACH;
     }
 
+    public int prevSetBit(int start) {
+        int offset = offset(start);
+        int w = word(start);
+        if (offset != MAX_OFFSET) {
+            long mask = oneBetween(0, offset);
+            if ((data[w] & mask) != 0) {
+                return Long.numberOfLeadingZeros(data[w] & mask) + w * BITS_FOR_EACH;
+            }
+            w--;
+        }
+
+        while (w >= 0 && data[w] == ALL_ZERO) {
+            w--;
+        }
+        if (w < 0) {
+            return -1;
+        }
+        return Long.numberOfLeadingZeros(data[w]) + w * BITS_FOR_EACH;
+    }
+
     public int nextClearBit(int start) {
         int offset = offset(start);
         int w = word(start);
@@ -269,6 +289,26 @@ public final class BitSet implements Serializable, Cloneable {
             return capacity();
         }
         return Long.numberOfTrailingZeros(~data[w]) + w * BITS_FOR_EACH;
+    }
+
+    public int prevClearBit(int start) {
+        int offset = offset(start);
+        int w = word(start);
+        if (offset != MAX_OFFSET) {
+            long mask = oneBetween(0, offset);
+            if ((~data[w] & mask) != mask) {
+                return Long.numberOfLeadingZeros(~data[w] & mask) + w * BITS_FOR_EACH;
+            }
+            w++;
+        }
+
+        while (w >= 0 && data[w] == ALL_ONE) {
+            w--;
+        }
+        if (w < 0) {
+            return -1;
+        }
+        return Long.numberOfLeadingZeros(~data[w]) + w * BITS_FOR_EACH;
     }
 
     public void leftShift(int n) {

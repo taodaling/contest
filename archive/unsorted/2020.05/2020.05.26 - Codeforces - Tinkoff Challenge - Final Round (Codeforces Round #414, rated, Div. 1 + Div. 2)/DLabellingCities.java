@@ -6,7 +6,6 @@ import template.math.DigitUtils;
 import template.math.Modular;
 import template.primitve.generated.datastructure.LongObjectHashMap;
 import template.rand.HashData;
-import template.rand.Hasher;
 import template.rand.RandomWrapper;
 
 import java.util.ArrayList;

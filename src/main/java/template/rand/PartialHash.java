@@ -12,6 +12,9 @@ public class PartialHash {
     }
 
     public void populate(IntUnaryOperator function, int l, int r) {
+        if (l > r) {
+            return;
+        }
         if (l > 0) {
             hash[l - 1] = 0;
         }
@@ -22,6 +25,9 @@ public class PartialHash {
     }
 
     public int hash(int l, int r, boolean verbose) {
+        if (l > r) {
+            return verbose ? hd.pow[0] : 0;
+        }
         long h = hash[r];
         if (l > 0) {
             h -= hash[l - 1];

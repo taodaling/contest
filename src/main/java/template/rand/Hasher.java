@@ -1,9 +1,10 @@
 package template.rand;
 
 public class Hasher {
-    private long time = System.nanoTime() + System.currentTimeMillis();
+    private long time = System.nanoTime() + System.currentTimeMillis() * 31L;
 
-    private int shuffle(long x) {
+    public int shuffle(long x) {
+        // http://xorshift.di.unimi.it/splitmix64.c
         x += time;
         x += 0x9e3779b97f4a7c15L;
         x = (x ^ (x >>> 30)) * 0xbf58476d1ce4e5b9L;
@@ -20,7 +21,7 @@ public class Hasher {
     }
 
     public int hash(double x) {
-        return shuffle(Double.doubleToLongBits(x));
+        return shuffle(Double.doubleToRawLongBits(x));
     }
 
     public int hash(Object x) {
