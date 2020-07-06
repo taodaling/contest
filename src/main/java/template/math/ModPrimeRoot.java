@@ -78,7 +78,7 @@ public class ModPrimeRoot {
         }
 
         int logx = log.log(x);
-        int gcd = (int) extGCD.extgcd(k, powMod.getMod());
+        int gcd = extGCD.extgcd(k, powMod.getMod());
         if (logx % gcd != 0) {
             return -1;
         }
