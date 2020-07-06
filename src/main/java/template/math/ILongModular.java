@@ -21,6 +21,9 @@ public interface ILongModular {
         if (mod <= (1L << 54)) {
             return new LongModularDanger(mod);
         }
+        if (mod == (1L << 61) - 1) {
+            return LongModular2305843009213693951.getInstance();
+        }
         return new HandyLongModular(mod);//new BigLongModular(mod);//new LongModular(mod);
     }
 }

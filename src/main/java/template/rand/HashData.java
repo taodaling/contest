@@ -17,7 +17,7 @@ public class HashData {
         pow = new int[n + 1];
         inv[0] = 1;
         pow[0] = 1;
-        int invX = new Power(mod).inverseByFermat(x);
+        int invX = new Power(mod).inverse(x);
         for (int i = 1; i <= n; i++) {
             inv[i] = mod.mul(inv[i - 1], invX);
             pow[i] = mod.mul(pow[i - 1], x);
@@ -25,7 +25,7 @@ public class HashData {
     }
 
     public HashData(int n) {
-        this(n, (int) 1e9 + 7, RandomWrapper.INSTANCE.nextInt(3, (int) 1e9 + 6));
+        this(n, (int) 1e9 + 7, RandomWrapper.INSTANCE.nextInt(1, (int) 1e9 + 6));
     }
 
     public int hash(int x) {
@@ -33,8 +33,8 @@ public class HashData {
     }
 
     public int hash(long x) {
-        int high = DigitUtils.highBit(x);
-        int low = DigitUtils.lowBit(x);
+        long high = x >>> 32;
+        long low = x & ((1L << 32) - 1);
         return mod.valueOf(high * 31L + low);
     }
 

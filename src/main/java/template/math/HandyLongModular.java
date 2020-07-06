@@ -49,6 +49,17 @@ public class HandyLongModular implements ILongModular {
         }
 
         debug.elapse("LongModularDanger");
+
+        {
+            LongModular2305843009213693951 mod = LongModular2305843009213693951.getInstance();
+            long a = (long) 1e18;
+            long b = (long) 1e18;
+            for (int i = 0; i < 10000000; i++) {
+                mod.mul(a, b);
+            }
+        }
+
+        debug.elapse("LongModular2305843009213693951");
     }
 
     public HandyLongModular(long mod) {

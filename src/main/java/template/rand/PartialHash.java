@@ -1,6 +1,6 @@
 package template.rand;
 
-import java.util.function.IntUnaryOperator;
+import template.primitve.generated.datastructure.IntToIntegerFunction;
 
 public class PartialHash {
     HashData hd;
@@ -11,16 +11,16 @@ public class PartialHash {
         hash = new int[hd.pow.length];
     }
 
-    public void populate(IntUnaryOperator function, int l, int r) {
+    public void populate(IntToIntegerFunction function, int l, int r) {
         if (l > r) {
             return;
         }
         if (l > 0) {
             hash[l - 1] = 0;
         }
-        hash[l] = hd.mod.mul(function.applyAsInt(l), hd.pow[l]);
+        hash[l] = hd.mod.mul(function.apply(l), hd.pow[l]);
         for (int i = l + 1; i <= r; i++) {
-            hash[i] = hd.mod.valueOf(hash[i - 1] + hd.pow[i] * (long) function.applyAsInt(i));
+            hash[i] = hd.mod.valueOf(hash[i - 1] + hd.pow[i] * (long) function.apply(i));
         }
     }
 
