@@ -4,9 +4,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.io.UncheckedIOException;
-import java.util.List;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
@@ -30,98 +28,68 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            DIsomorphismFreak solver = new DIsomorphismFreak();
+            ESequenceGrowingHard solver = new ESequenceGrowingHard();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class DIsomorphismFreak {
-        int[] seq;
-        int depthest;
-        int minDepth;
-        long minLeaf;
+    static class ESequenceGrowingHard {
+        int[][] dp;
+        int[][] ps;
+        Modular mod;
+        int[][] f;
+
+        public int ps(int j, int k) {
+            if (k < 0) {
+                return 0;
+            }
+            if (ps[j][k] == -1) {
+                int ans = ps(j, k - 1);
+                ans = mod.plus(ans, dp(j, k));
+                ps[j][k] = ans;
+            }
+            return ps[j][k];
+        }
+
+        public int dp(int j, int k) {
+            if (j == 0) {
+                return k == 1 ? 1 : 0;
+            }
+            if (dp[j][k] == -1) {
+                dp[j][k] = mod.mul(k, ps(j - 1, k));
+            }
+            return dp[j][k];
+        }
+
+        public int f(int i, int j) {
+            if (i < 1) {
+                return j == 0 ? 1 : 0;
+            }
+            if (f[i][j] == -1) {
+                int ans = 0;
+                for (int k = 0; k <= j; k++) {
+                    ans = mod.plus(ans, mod.mul(f(i - 1, k), ps(j - k, k + 1)));
+                }
+                f[i][j] = ans;
+            }
+            return f[i][j];
+        }
 
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            Node[] nodes = new Node[n];
-            for (int i = 0; i < n; i++) {
-                nodes[i] = new Node();
-                nodes[i].id = i;
-            }
-            int[][] edges = new int[n - 1][2];
-            for (int i = 0; i < n - 1; i++) {
-                edges[i][0] = in.readInt() - 1;
-                edges[i][1] = in.readInt() - 1;
-                Node a = nodes[edges[i][0]];
-                Node b = nodes[edges[i][1]];
-                a.adj.add(b);
-                b.adj.add(a);
-            }
-            seq = new int[n];
+            int k = in.readInt();
+            mod = new Modular(in.readInt());
 
+            dp = new int[n + 1][n + 2];
+            ps = new int[n + 1][n + 2];
+            f = new int[k + 1][n + 1];
+            SequenceUtils.deepFill(dp, -1);
+            SequenceUtils.deepFill(ps, -1);
+            SequenceUtils.deepFill(f, -1);
 
-            minDepth = n;
-            minLeaf = Long.MAX_VALUE;
-            for (int i = 0; i < n; i++) {
-                reset();
-                dfs(nodes[i], null, 0);
-                update(1);
-            }
-
-            for (int[] e : edges) {
-                Node a = nodes[e[0]];
-                Node b = nodes[e[1]];
-                reset();
-                dfs(a, b, 0);
-                dfs(b, a, 0);
-                update(2);
-            }
-
-            out.println(minDepth + 1).println(minLeaf);
-        }
-
-        public void update(int mul) {
-            int depth = depthest;
-            long leaf = mul;
-            for (int j = 0; j <= depth; j++) {
-                leaf *= seq[j];
-            }
-
-            if (depth < minDepth) {
-                minDepth = depth;
-                minLeaf = Long.MAX_VALUE;
-            }
-            if (depth == minDepth) {
-                minLeaf = Math.min(minLeaf, leaf);
-            }
-        }
-
-        public void reset() {
-            Arrays.fill(seq, 1);
-            depthest = 0;
-        }
-
-        public void dfs(Node root, Node p, int d) {
-            depthest = Math.max(depthest, d);
-            int degree = root.adj.size() - (p == null ? 0 : 1);
-            seq[d] = Math.max(seq[d], degree);
-            for (Node node : root.adj) {
-                if (node == p) {
-                    continue;
-                }
-                dfs(node, root, d + 1);
-            }
-        }
-
-    }
-
-    static class Node {
-        List<Node> adj = new ArrayList<>();
-        int id;
-
-        public String toString() {
-            return "" + (id + 1);
+            int ans = f(k, n);
+            out.println(ans);
         }
 
     }
@@ -158,16 +126,7 @@ public class Main {
             return this;
         }
 
-        public FastOutput append(long c) {
-            cache.append(c);
-            return this;
-        }
-
         public FastOutput println(int c) {
-            return append(c).println();
-        }
-
-        public FastOutput println(long c) {
             return append(c).println();
         }
 
@@ -198,6 +157,75 @@ public class Main {
 
         public String toString() {
             return cache.toString();
+        }
+
+    }
+
+    static class Modular {
+        int m;
+
+        public Modular(int m) {
+            this.m = m;
+        }
+
+        public Modular(long m) {
+            this.m = (int) m;
+            if (this.m != m) {
+                throw new IllegalArgumentException();
+            }
+        }
+
+        public Modular(double m) {
+            this.m = (int) m;
+            if (this.m != m) {
+                throw new IllegalArgumentException();
+            }
+        }
+
+        public int valueOf(int x) {
+            x %= m;
+            if (x < 0) {
+                x += m;
+            }
+            return x;
+        }
+
+        public int valueOf(long x) {
+            x %= m;
+            if (x < 0) {
+                x += m;
+            }
+            return (int) x;
+        }
+
+        public int mul(int x, int y) {
+            return valueOf((long) x * y);
+        }
+
+        public int plus(int x, int y) {
+            return valueOf(x + y);
+        }
+
+        public String toString() {
+            return "mod " + m;
+        }
+
+    }
+
+    static class SequenceUtils {
+        public static void deepFill(Object array, int val) {
+            if (!array.getClass().isArray()) {
+                throw new IllegalArgumentException();
+            }
+            if (array instanceof int[]) {
+                int[] intArray = (int[]) array;
+                Arrays.fill(intArray, val);
+            } else {
+                Object[] objArray = (Object[]) array;
+                for (Object obj : objArray) {
+                    deepFill(obj, val);
+                }
+            }
         }
 
     }

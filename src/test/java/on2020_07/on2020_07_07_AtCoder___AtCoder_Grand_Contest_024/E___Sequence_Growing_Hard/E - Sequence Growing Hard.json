@@ -1,0 +1,45 @@
+{
+  "name" : "E - Sequence Growing Hard",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2 2 100\n",
+    "output" : "5\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "4 3 999999999\n",
+    "output" : "358\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "150 150 998244353\n",
+    "output" : "186248260\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_07.on2020_07_07_AtCoder___AtCoder_Grand_Contest_024.E___Sequence_Growing_Hard.ESequenceGrowingHard",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.07.07",
+  "contestName" : "AtCoder - AtCoder Grand Contest 024",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

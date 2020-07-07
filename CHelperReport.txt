@@ -1,2 +1,2 @@
-48 src/main/java/contest/D - Isomorphism Freak.json
+52 src/main/java/contest/E - Sequence Growing Hard.json
 0
