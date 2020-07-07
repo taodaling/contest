@@ -1,0 +1,40 @@
+{
+  "name" : "TieForMax",
+  "signature" : {
+    "name" : "getProbability",
+    "result" : "double",
+    "arguments" : [ "int", "int" ],
+    "argumentNames" : [ "t", "p" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "7", "1" ],
+    "result" : "0.0",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "2", "2" ],
+    "result" : "0.5",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "3", "3" ],
+    "result" : "0.2222222222222222",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "6", "4" ],
+    "result" : "0.380859375",
+    "index" : 3,
+    "active" : true
+  }, {
+    "arguments" : [ "50", "50" ],
+    "index" : 4,
+    "active" : true
+  } ],
+  "date" : "2020.07.08",
+  "contestName" : "TopCoder SRM #747",
+  "testClasses" : [ ],
+  "fqn" : "on2020_07.on2020_07_08_TopCoder_SRM__747.TieForMax.TieForMax",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

@@ -1,0 +1,31 @@
+{
+  "name" : "MostFrequentLastDigit",
+  "signature" : {
+    "name" : "generate",
+    "result" : "int[]",
+    "arguments" : [ "int", "int" ],
+    "argumentNames" : [ "n", "d" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "4", "7" ],
+    "result" : "1 6 13 4",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "2", "8" ],
+    "result" : "44 444",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "7", "2" ],
+    "result" : "109 22 74 23 29 9 1003",
+    "index" : 2,
+    "active" : true
+  } ],
+  "date" : "2020.07.08",
+  "contestName" : "TopCoder SRM #747",
+  "testClasses" : [ ],
+  "fqn" : "contest.MostFrequentLastDigit",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

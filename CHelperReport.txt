@@ -1,2 +1,2 @@
-52 src/main/java/contest/E - Sequence Growing Hard.json
+36 src/main/java/contest/TieForMax.json
 0
