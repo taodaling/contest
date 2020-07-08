@@ -1,2 +1,3 @@
-36 src/main/java/contest/TieForMax.json
-0
+44 src/main/java/contest/RochesterSequence.json
+1
+3
