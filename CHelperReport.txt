@@ -1,2 +1,2 @@
-31 src/main/java/contest/Task.json
+44 src/main/java/contest/RochesterSequence.json
 0

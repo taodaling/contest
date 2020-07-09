@@ -1,0 +1,41 @@
+{
+  "name" : "RochesterSequence",
+  "signature" : {
+    "name" : "solve",
+    "result" : "int[]",
+    "arguments" : [ "int[]", "int", "int", "int", "int" ],
+    "argumentNames" : [ "Sprefix", "n", "a", "b", "m" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "10 5 9 9 12 7", "6", "0", "0", "1" ],
+    "result" : "6 1",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "10 20 30 40 50 60 70", "7", "0", "0", "474747" ],
+    "result" : "6 5",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "64 32 16 8 4 2 1", "7", "0", "0", "1" ],
+    "result" : "2 21",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "1", "10", "1000", "1", "1000000007" ],
+    "result" : "8 10",
+    "index" : 3,
+    "active" : true
+  }, {
+    "arguments" : [ "2 1 1 2", "2", "0", "0", "1" ],
+    "result" : "1 1",
+    "index" : 4,
+    "active" : false
+  } ],
+  "date" : "2020.07.09",
+  "contestName" : "TopCoder SRM #747",
+  "testClasses" : [ ],
+  "fqn" : "contest.RochesterSequence",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

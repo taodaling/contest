@@ -1,0 +1,40 @@
+{
+  "name" : "GridSpiral",
+  "signature" : {
+    "name" : "findCell",
+    "result" : "long",
+    "arguments" : [ "int" ],
+    "argumentNames" : [ "D" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "5" ],
+    "result" : "0",
+    "index" : 0,
+    "active" : false
+  }, {
+    "arguments" : [ "11" ],
+    "result" : "2",
+    "index" : 1,
+    "active" : false
+  }, {
+    "arguments" : [ "47" ],
+    "result" : "110",
+    "index" : 2,
+    "active" : false
+  }, {
+    "arguments" : [ "100" ],
+    "result" : "-1",
+    "index" : 3,
+    "active" : false
+  }, {
+    "arguments" : [ "999999999" ],
+    "index" : 4,
+    "active" : true
+  } ],
+  "date" : "2020.07.09",
+  "contestName" : "2020 TopCoder Open Algo",
+  "testClasses" : [ ],
+  "fqn" : "contest.GridSpiral",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}
