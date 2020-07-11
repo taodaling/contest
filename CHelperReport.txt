@@ -1,2 +1,3 @@
-44 src/main/java/contest/RochesterSequence.json
-0
+52 src/main/java/contest/D. Hongcow Draws a Circle.json
+1
+1

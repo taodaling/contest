@@ -2,7 +2,9 @@ package template.geometry.geo2;
 
 import template.geometry.GeoConstant;
 import template.math.DigitUtils;
+import template.utils.CompareUtils;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -23,6 +25,17 @@ public class Point2 implements Cloneable {
         }
         return ans;
     };
+
+    public static Comparator<Point2> sortByPolarAngleAround(Point2 center) {
+        return (a, b) -> {
+            int aHalf = half(a.x - center.x, a.y - center.y);
+            int bHalf = half(b.x - center.x, b.y - center.y);
+            if (aHalf != bHalf) {
+                return aHalf - bHalf;
+            }
+            return orient(center, b, a);
+        };
+    }
 
     public static final Point2 ORIGIN = new Point2(0, 0);
 
@@ -49,6 +62,10 @@ public class Point2 implements Cloneable {
      * (0, PI] for upper half return 1, (-PI, 0] for bottom half return 0
      */
     public int half() {
+        return half(x, y);
+    }
+
+    private static int half(double x, double y) {
         return y > 0 || y == 0 && x < 0 ? 1 : 0;
     }
 
@@ -129,13 +146,10 @@ public class Point2 implements Cloneable {
     }
 
     public static double cross(Point2 a, Point2 b, Point2 c) {
-        return cross(b.x - a.x, b.y - a.y,
+        return GeoConstant.cross(b.x - a.x, b.y - a.y,
                 c.x - a.x, c.y - a.y);
     }
 
-    private static double cross(double x1, double y1, double x2, double y2) {
-        return x1 * y2 - y1 * x2;
-    }
 
     public static boolean isPerpendicular(Point2 a, Point2 b) {
         return GeoConstant.isZero(dot(a, b));
@@ -161,7 +175,7 @@ public class Point2 implements Cloneable {
     }
 
     public static int orient(Point2 a, Point2 b, Point2 c) {
-        return GeoConstant.sign(cross(b.x - a.x, b.y - a.y, c.x - a.x, c.y - a.y));
+        return GeoConstant.sign(GeoConstant.cross(b.x - a.x, b.y - a.y, c.x - a.x, c.y - a.y));
     }
 
     public static boolean inAngle(Point2 a, Point2 b, Point2 c,
@@ -184,11 +198,16 @@ public class Point2 implements Cloneable {
     }
 
     public static boolean isConvex(List<Point2> p) {
-        boolean hasPos = false, hasNeg = false;
+        boolean hasPos = false;
+        boolean hasNeg = false;
         for (int i = 0, n = p.size(); i < n; i++) {
             int o = orient(p.get(i), p.get((i + 1) % n), p.get((i + 2) % n));
-            if (o > 0) hasPos = true;
-            if (o < 0) hasNeg = true;
+            if (o > 0) {
+                hasPos = true;
+            }
+            if (o < 0) {
+                hasNeg = true;
+            }
         }
         return !(hasPos & hasNeg);
     }
@@ -311,6 +330,7 @@ public class Point2 implements Cloneable {
         return ans / 2;
     }
 
+
     /**
      * Get mirror of a
      */
@@ -352,5 +372,84 @@ public class Point2 implements Cloneable {
         }
         double area2 = Math.abs(cross(minus(a, c), minus(b, c)));
         return area2 / len;
+    }
+
+    public static Point2[] theNearestPointPair(List<Point2> pts) {
+        Point2[] ptsSortByX = pts.toArray(new Point2[0]);
+        Point2[] buf = new Point2[ptsSortByX.length];
+        Arrays.sort(ptsSortByX, (a, b) -> Double.compare(a.x, b.x));
+        return findTheNearestPointPair(ptsSortByX, buf, 0, ptsSortByX.length - 1);
+    }
+
+    private static Point2[] findTheNearestPointPair(Point2[] pts, Point2[] buf, int l, int r) {
+        if (l >= r) {
+            return null;
+        }
+        int m = (l + r) / 2;
+        double lMaxX = pts[m].x;
+        double rMinX = pts[m + 1].x;
+
+        Point2[] lAns = findTheNearestPointPair(pts, buf, l, m);
+        Point2[] rAns = findTheNearestPointPair(pts, buf, m + 1, r);
+        double lDist = lAns == null ? GeoConstant.INF : Point2.dist2(lAns[0], lAns[1]);
+        double rDist = rAns == null ? GeoConstant.INF : Point2.dist2(rAns[0], rAns[1]);
+        Point2[] ans;
+        double farthest;
+
+        if (lDist <= rDist) {
+            ans = lAns;
+            farthest = lDist;
+        } else {
+            ans = rAns;
+            farthest = rDist;
+        }
+        if (ans == null) {
+            ans = new Point2[2];
+        }
+
+        //copy to buf
+        int lr = l - 1;
+        int rr = m;
+        for (int i = l; i <= m; i++) {
+            if (GeoConstant.pow2(rMinX - pts[i].x) >= farthest) {
+                continue;
+            }
+            buf[++lr] = pts[i];
+        }
+        for (int i = m + 1; i <= r; i++) {
+            if (GeoConstant.pow2(pts[i].x - lMaxX) >= farthest) {
+                continue;
+            }
+            buf[++rr] = pts[i];
+        }
+
+        //merge
+        int intervalL = m + 1;
+        int intervalR = m;
+
+        for (int i = l; i <= lr; i++) {
+            while (intervalR + 1 <= rr && (buf[intervalR + 1].y <= buf[i].y || GeoConstant.pow2(buf[intervalR + 1].y - buf[i].y) <= farthest)) {
+                intervalR++;
+            }
+            while (intervalL <= rr && buf[i].y >= buf[intervalL].y && GeoConstant.pow2(buf[i].y - buf[intervalL].y) >= farthest) {
+                intervalL++;
+            }
+            if(intervalR - intervalL + 1 > 6){
+                throw new RuntimeException();
+            }
+            for (int j = intervalL; j <= intervalR; j++) {
+                double d2 = dist2(buf[i], buf[j]);
+                if (d2 < farthest) {
+                    farthest = d2;
+                    ans[0] = buf[i];
+                    ans[1] = buf[j];
+                }
+            }
+        }
+
+        //merge sort
+        CompareUtils.mergeAscending(pts, l, m, pts, m + 1, r, buf, l, (a, b) -> Double.compare(a.y, b.y));
+        System.arraycopy(buf, l, pts, l, r - l + 1);
+        return ans;
     }
 }

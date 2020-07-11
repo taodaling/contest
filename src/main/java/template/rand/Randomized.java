@@ -19,6 +19,10 @@ public class Randomized {
         shuffle(data, 0, data.length - 1);
     }
 
+    public static <T> void shuffle(T[] data) {
+        shuffle(data, 0, data.length - 1);
+    }
+
     public static void shuffle(int[] data, int from, int to) {
         to--;
         for (int i = from; i <= to; i++) {

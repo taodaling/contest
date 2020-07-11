@@ -1,5 +1,7 @@
 package template.datastructure;
 
+import template.math.KahanSummation;
+
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
@@ -20,15 +22,15 @@ public class DoubleIntervalMap implements Iterable<DoubleIntervalMap.Interval> {
     }
 
     private TreeMap<Double, DoubleIntervalMap.Interval> map = new TreeMap<>();
-    private double total = 0;
+    private KahanSummation total = new KahanSummation();
 
     public double countTrue() {
-        return total;
+        return total.sum();
     }
 
     private void removeInterval(DoubleIntervalMap.Interval interval) {
         map.remove(interval.l);
-        total -= interval.length();
+        total.subtract(interval.length());
     }
 
     private void addInterval(DoubleIntervalMap.Interval interval) {
@@ -36,7 +38,7 @@ public class DoubleIntervalMap implements Iterable<DoubleIntervalMap.Interval> {
             return;
         }
         map.put(interval.l, interval);
-        total += interval.length();
+        total.add(interval.length());
     }
 
     public double firstFalse(double l) {
@@ -60,6 +62,14 @@ public class DoubleIntervalMap implements Iterable<DoubleIntervalMap.Interval> {
             return entry.getKey();
         }
         return null;
+    }
+
+    public void set(double l, double r, boolean v) {
+        if (v) {
+            setTrue(l, r);
+        } else {
+            setFalse(l, r);
+        }
     }
 
     public void setTrue(double l, double r) {

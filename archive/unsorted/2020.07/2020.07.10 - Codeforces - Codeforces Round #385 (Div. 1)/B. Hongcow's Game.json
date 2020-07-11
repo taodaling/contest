@@ -1,0 +1,40 @@
+{
+  "name" : "B. Hongcow's Game",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2\n0 0 \n0 0",
+    "output" : "",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "3\n0 1 2\n3 0 2\n4 4 0",
+    "output" : "",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.BHongcowsGame",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.07.10",
+  "contestName" : "Codeforces - Codeforces Round #385 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : true,
+  "interactor" : "contest.BInteractor",
+  "newThread" : true
+}

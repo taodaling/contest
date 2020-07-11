@@ -112,6 +112,14 @@ public class LongIntervalMap implements Iterable<LongIntervalMap.Interval> {
         addInterval(interval);
     }
 
+    public void set(long l, long r, boolean v) {
+        if (v) {
+            setTrue(l, r);
+        } else {
+            setFalse(l, r);
+        }
+    }
+
     public void setFalse(long l, long r) {
         if (r < l) {
             return;
