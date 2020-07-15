@@ -1,3 +1,2 @@
-52 src/main/java/contest/D. Hongcow Draws a Circle.json
-1
-1
+41 src/main/java/contest/CoverTreePaths.json
+0

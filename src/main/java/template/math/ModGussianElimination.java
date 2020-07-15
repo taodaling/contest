@@ -62,6 +62,10 @@ public class ModGussianElimination {
         return solutions;
     }
 
+    /**
+     * O(nm^2)
+     * @return
+     */
     public boolean solve() {
         for (int i = 0; i <= n; i++) {
             for (int j = 0; j <= m; j++) {

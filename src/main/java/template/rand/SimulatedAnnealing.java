@@ -10,7 +10,7 @@ public abstract class SimulatedAnnealing<S> {
         this.threshold = threshold;
         this.k = k;
         this.reduce = reduce;
-        this.random = new RandomWrapper(random);
+        this.random = random;
     }
 
     public abstract S next(S old, double temperature);
@@ -27,7 +27,7 @@ public abstract class SimulatedAnnealing<S> {
         while (t > threshold) {
             S next = next(now, t);
             double nextWeight = eval(next);
-            if (nextWeight > weight || random.nextDouble(0, 1) < Math.exp((nextWeight - weight) / (k * t))) {
+            if (nextWeight > weight || random.nextDouble() < Math.exp((nextWeight - weight) / (k * t))) {
                 abandon(now);
                 now = next;
                 weight = nextWeight;
@@ -51,7 +51,7 @@ public abstract class SimulatedAnnealing<S> {
 
     private S best;
     private double bestWeight = -1e100;
-    private RandomWrapper random;
+    private Random random;
     private double threshold;
     /**
      * The larger k is, the more possible to challenge

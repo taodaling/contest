@@ -1,0 +1,64 @@
+{
+  "name" : "D - Banned X",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 3\n",
+    "output" : "14\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "8 6\n",
+    "output" : "1179\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "10 1\n",
+    "output" : "1024\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "9 13\n",
+    "output" : "18402\n",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "314 159\n",
+    "output" : "459765451\n",
+    "index" : 4,
+    "active" : true
+  }, {
+    "input" : "1000 2000",
+    "index" : 5,
+    "active" : true
+  }, {
+    "input" : "1 1",
+    "output" : "2",
+    "index" : 6,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1048M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_07.on2020_07_12_Virtual_Judge___20200711__.D___Banned_X.DBannedX",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "on2020_07.on2020_07_12_Virtual_Judge___20200711__.D___Banned_X.DBannedXTestCase" ],
+  "date" : "2020.07.12",
+  "contestName" : "Virtual Judge - 20200711训练",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

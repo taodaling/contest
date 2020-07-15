@@ -1,19 +1,20 @@
 package template.datastructure;
 
 import template.math.DigitUtils;
+import template.utils.Buffer;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
+public class MergeAbleCountSegment implements Cloneable {
+    private static final MergeAbleCountSegment NIL = new MergeAbleCountSegment();
+    private static Buffer<MergeAbleCountSegment> allocator = new Buffer<MergeAbleCountSegment>(MergeAbleCountSegment::new, x -> {
+        x.left = x.right = null;
+        x.cnt = 0;
+    });
 
-public class MergeAbleSegment implements Cloneable {
-    private static final MergeAbleSegment NIL = new MergeAbleSegment();
-    private static Deque<MergeAbleSegment> allocator = new ArrayDeque<>();
-
-    public static MergeAbleSegment alloc() {
-        return new MergeAbleSegment();
+    public static MergeAbleCountSegment alloc() {
+        return new MergeAbleCountSegment();
     }
 
-    public static void destroy(MergeAbleSegment segment) {
+    public static void destroy(MergeAbleCountSegment segment) {
         //allocator.addLast(segment);
     }
 
@@ -22,8 +23,8 @@ public class MergeAbleSegment implements Cloneable {
         NIL.right = NIL;
     }
 
-    private MergeAbleSegment left;
-    private MergeAbleSegment right;
+    private MergeAbleCountSegment left;
+    private MergeAbleCountSegment right;
     private int cnt;
 
     public void pushUp() {
@@ -33,7 +34,7 @@ public class MergeAbleSegment implements Cloneable {
     public void pushDown() {
     }
 
-    public MergeAbleSegment() {
+    public MergeAbleCountSegment() {
         left = right = NIL;
     }
 
@@ -94,8 +95,8 @@ public class MergeAbleSegment implements Cloneable {
      * split this by kth element, and kth element belong to the left part.
      * Return the k-th element as result
      */
-    public MergeAbleSegment splitByKth(int k, int l, int r) {
-        MergeAbleSegment ret = alloc();
+    public MergeAbleCountSegment splitByKth(int k, int l, int r) {
+        MergeAbleCountSegment ret = alloc();
         if (l == r) {
             ret.cnt = k;
             cnt -= k;
@@ -124,7 +125,7 @@ public class MergeAbleSegment implements Cloneable {
         return ret;
     }
 
-    public MergeAbleSegment merge(int l, int r, MergeAbleSegment segment) {
+    public MergeAbleCountSegment merge(int l, int r, MergeAbleCountSegment segment) {
         if (this == NIL) {
             return segment;
         } else if (segment == NIL) {

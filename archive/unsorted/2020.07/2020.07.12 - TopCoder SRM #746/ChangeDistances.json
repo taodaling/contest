@@ -1,0 +1,31 @@
+{
+  "name" : "ChangeDistances",
+  "signature" : {
+    "name" : "findGraph",
+    "result" : "String[]",
+    "arguments" : [ "String[]" ],
+    "argumentNames" : [ "g" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "011ф100ф100" ],
+    "result" : "000ф001ф010",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "000ф000ф000" ],
+    "result" : "011ф100ф100",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "0100ф1000ф0001ф0010" ],
+    "result" : "0011ф0010ф1100ф1000",
+    "index" : 2,
+    "active" : true
+  } ],
+  "date" : "2020.07.12",
+  "contestName" : "TopCoder SRM #746",
+  "testClasses" : [ ],
+  "fqn" : "contest.ChangeDistances",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

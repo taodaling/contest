@@ -45,6 +45,10 @@ public class GuassianElimination {
         mat[row][col] = val;
     }
 
+    /**
+     * O(nm^2)
+     * @return
+     */
     public boolean solve() {
         int n = mat.length - 1;
         int m = mat[0].length - 1;

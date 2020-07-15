@@ -3,18 +3,23 @@ package template.datastructure;
 import template.math.DigitUtils;
 
 public class SparseSegment {
-    private SparseSegment left;
-    private SparseSegment right;
+    private SparseSegment left = NIL;
+    private SparseSegment right = NIL;
+    public static final SparseSegment NIL = new SparseSegment();
+
+    static {
+        NIL.left = NIL.right = NIL;
+    }
 
     private SparseSegment getLeft() {
-        if (left == null) {
+        if (left == NIL) {
             left = new SparseSegment();
         }
         return left;
     }
 
     private SparseSegment getRight() {
-        if (right == null) {
+        if (right == NIL) {
             right = new SparseSegment();
         }
         return right;

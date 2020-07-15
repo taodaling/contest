@@ -1,0 +1,31 @@
+{
+  "name" : "FindStringHard",
+  "signature" : {
+    "name" : "withAntipalindromicSubstrings",
+    "result" : "String",
+    "arguments" : [ "int" ],
+    "argumentNames" : [ "n" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "3" ],
+    "result" : "bbaab",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "8" ],
+    "result" : "ababbaab",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "139" ],
+    "result" : "ababaabbaabbaaabbbaaabbbaaaabbbbaaaabbbbaaaaabbbbbaaaaabbbbbaaaaaabbbbbbaaaaaabbbbbb",
+    "index" : 2,
+    "active" : true
+  } ],
+  "date" : "2020.07.12",
+  "contestName" : "TopCoder SRM #746",
+  "testClasses" : [ ],
+  "fqn" : "on2020_07.on2020_07_12_TopCoder_SRM__746.FindStringHard.FindStringHard",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

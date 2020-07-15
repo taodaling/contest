@@ -3,7 +3,7 @@ package template.math;
 /**
  * Composition
  */
-public class Combination implements IntCombination{
+public class Combination implements IntCombination {
     final Factorial factorial;
     final Modular modular;
 
@@ -18,7 +18,7 @@ public class Combination implements IntCombination{
     }
 
     public int combination(int m, int n) {
-        if (n > m) {
+        if (n > m || n < 0) {
             return 0;
         }
         return modular.mul(modular.mul(factorial.fact(m), factorial.invFact(n)), factorial.invFact(m - n));

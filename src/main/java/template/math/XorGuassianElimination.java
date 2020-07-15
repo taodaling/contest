@@ -6,74 +6,104 @@ public class XorGuassianElimination {
     int[][] mat;
     int[] solutions;
     int rank;
+    int n;
+    int m;
+
+    public int rank() {
+        return rank;
+    }
 
     public XorGuassianElimination(int n, int m) {
+        this.n = n;
+        this.m = m;
         mat = new int[n + 1][m + 1];
         solutions = mat[n];
     }
 
-    public void clear() {
-        for (int[] row : mat) {
-            Arrays.fill(row, 0);
+    public void clear(int n, int m) {
+        this.n = n;
+        this.m = m;
+        for (int i = 0; i <= n; i++) {
+            for (int j = 0; j <= m; j++) {
+                mat[i][j] = 0;
+            }
         }
-    }
-
-    public void swapRow(int i, int j) {
-        int[] tmp = mat[i];
-        mat[i] = mat[j];
-        mat[j] = tmp;
+        solutions = mat[n];
     }
 
     public void setRight(int row, int val) {
-        mat[row][mat[row].length - 1] = val;
+        mat[row][m] = val;
+    }
+
+    public void setLeft(int row, int col, int val) {
+        mat[row][col] = val;
+    }
+
+    public int getLeft(int row, int col) {
+        return mat[row][col];
+    }
+
+    public int getRight(int row) {
+        return mat[row][m];
+    }
+
+    public void modifyLeft(int row, int col, int val) {
+        mat[row][col] = mat[row][col] ^ val;
+    }
+
+
+    public void modifyRight(int row, int val) {
+        mat[row][m] = mat[row][m] ^ val;
+    }
+
+    public int[] getSolutions() {
+        return solutions;
     }
 
     /**
-     * Let a[i] = a[i] ^ a[j]
+     * O(nm^2)
+     * @return
      */
-    public void xorRow(int i, int j) {
-        int m = mat[0].length;
-        for (int k = 0; k < m; k++) {
-            mat[i][k] ^= mat[j][k];
-        }
-    }
-
     public boolean solve() {
-        int n = mat.length - 1;
-        int m = mat[0].length - 1;
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                mat[i][j] &= 1;
+        for (int i = 0; i <= n; i++) {
+            for (int j = 0; j <= m; j++) {
+                mat[i][j] = mat[i][j] & 1;
             }
         }
+
         int now = 0;
-        for (int i = 0; i < n; i++) {
-            int swapRow = -1;
-            for (int j = now; j < m; j++) {
+        for (int i = 0; i < m; i++) {
+            int maxRow = now;
+            for (int j = now; j < n; j++) {
                 if (mat[j][i] != 0) {
-                    swapRow = j;
+                    maxRow = j;
                     break;
                 }
             }
-            if (swapRow == -1) {
+
+            if (mat[maxRow][i] == 0) {
                 continue;
             }
-            swapRow(now, swapRow);
-            for (int j = now + 1; j < m; j++) {
-                if (mat[j][i] == 1) {
-                    xorRow(j, now);
+            swapRow(now, maxRow);
+            divideRow(now, mat[now][i]);
+            for (int j = now + 1; j < n; j++) {
+                if (mat[j][i] == 0) {
+                    continue;
                 }
+                int f = mat[j][i];
+                subtractRow(j, now, f);
             }
+
             now++;
         }
 
+        rank = now;
         for (int i = now; i < n; i++) {
             if (mat[i][m] != 0) {
                 return false;
             }
         }
 
-        rank = now;
         for (int i = now - 1; i >= 0; i--) {
             int x = -1;
             for (int j = 0; j < m; j++) {
@@ -87,23 +117,43 @@ public class XorGuassianElimination {
                 if (mat[j][x] == 0) {
                     continue;
                 }
+                mat[j][m] = mat[j][m] ^ mat[n][x];
                 mat[j][x] = 0;
-                mat[j][m] ^= mat[n][x];
             }
         }
         return true;
     }
 
+    void swapRow(int i, int j) {
+        int[] row = mat[i];
+        mat[i] = mat[j];
+        mat[j] = row;
+    }
+
+    void subtractRow(int i, int j, int f) {
+        for (int k = 0; k <= m; k++) {
+            mat[i][k] = mat[i][k] ^ (mat[j][k] & f);
+        }
+    }
+
+    void divideRow(int i, int f) {
+        int divisor = f;
+        for (int k = 0; k <= m; k++) {
+            mat[i][k] = mat[i][k] & divisor;
+        }
+    }
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        int n = mat.length - 1;
-        int m = mat[0].length - 1;
         for (int i = 0; i < n; i++) {
             StringBuilder row = new StringBuilder();
             for (int j = 0; j < m; j++) {
                 if (mat[i][j] == 0) {
                     continue;
+                }
+                if (mat[i][j] != 1) {
+                    row.append(mat[i][j]);
                 }
                 row.append("x").append(j).append('+');
             }
