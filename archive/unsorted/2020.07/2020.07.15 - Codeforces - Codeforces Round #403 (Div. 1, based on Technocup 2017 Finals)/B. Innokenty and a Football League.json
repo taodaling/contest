@@ -1,0 +1,50 @@
+{
+  "name" : "B. Innokenty and a Football League",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2\nDINAMO BYTECITY\nFOOTBALL MOSCOW\n",
+    "output" : "YES\nDIN\nFOO\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "2\nDINAMO BYTECITY\nDINAMO BITECITY\n",
+    "output" : "NO\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "3\nPLAYFOOTBALL MOSCOW\nPLAYVOLLEYBALL SPB\nGOGO TECHNOCUP\n",
+    "output" : "YES\nPLM\nPLS\nGOG\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "3\nABC DEF\nABC EFG\nABD OOO\n",
+    "output" : "YES\nABD\nABE\nABO\n",
+    "index" : 3,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.BInnokentyAndAFootballLeague",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.07.15",
+  "contestName" : "Codeforces - Codeforces Round #403 (Div. 1, based on Technocup 2017 Finals)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

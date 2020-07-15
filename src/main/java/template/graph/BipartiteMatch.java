@@ -3,7 +3,7 @@ package template.graph;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HungaryAlgo {
+public class BipartiteMatch {
     public static class Node {
         List<Node> nodes = new ArrayList<>();
         int visited;
@@ -63,7 +63,7 @@ public class HungaryAlgo {
         dfsRight(node.partner);
     }
 
-    public HungaryAlgo(int l, int r) {
+    public BipartiteMatch(int l, int r) {
         leftSides = new Node[l];
         for (int i = 0; i < l; i++) {
             leftSides[i] = new Node();
