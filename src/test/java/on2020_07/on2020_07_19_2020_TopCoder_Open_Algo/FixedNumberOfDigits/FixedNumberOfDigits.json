@@ -1,0 +1,41 @@
+{
+  "name" : "FixedNumberOfDigits",
+  "signature" : {
+    "name" : "sum",
+    "result" : "long",
+    "arguments" : [ "int", "int", "long" ],
+    "argumentNames" : [ "start", "step", "numberOfDigits" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "47", "10", "7" ],
+    "result" : "7",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "98", "1", "10" ],
+    "result" : "101",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "0", "1", "7" ],
+    "result" : "6",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "123456789", "10", "5" ],
+    "result" : "12345",
+    "index" : 3,
+    "active" : true
+  }, {
+    "arguments" : [ "123456789", "10", "17" ],
+    "result" : "12345679",
+    "index" : 4,
+    "active" : true
+  } ],
+  "date" : "2020.07.19",
+  "contestName" : "2020 TopCoder Open Algo",
+  "testClasses" : [ "on2020_07.on2020_07_19_2020_TopCoder_Open_Algo.FixedNumberOfDigits.FixedNumberOfDigitsTestCase" ],
+  "fqn" : "on2020_07.on2020_07_19_2020_TopCoder_Open_Algo.FixedNumberOfDigits.FixedNumberOfDigits",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

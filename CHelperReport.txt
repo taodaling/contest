@@ -1,2 +1,2 @@
-57 src/main/java/contest/D. Axel and Marston in Bitland.json
+45 src/main/java/contest/D. Bacterial Melee.json
 0

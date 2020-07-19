@@ -1,0 +1,41 @@
+{
+  "name" : "ExpectedSum",
+  "signature" : {
+    "name" : "solve",
+    "result" : "double",
+    "arguments" : [ "int[]", "int[]" ],
+    "argumentNames" : [ "sequence", "probMinus" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "10 20 30", "0 0 0" ],
+    "result" : "60.0",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "10 40 20", "0 100 0" ],
+    "result" : "20.0",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "1 1 1", "50 50 50" ],
+    "result" : "1.375",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "1 1 1", "30 27 43" ],
+    "result" : "1.89227",
+    "index" : 3,
+    "active" : true
+  }, {
+    "arguments" : [ "47", "100" ],
+    "result" : "0.0",
+    "index" : 4,
+    "active" : true
+  } ],
+  "date" : "2020.07.18",
+  "contestName" : "TopCoder SRM #743",
+  "testClasses" : [ "contest.ExpectedSumTestCase" ],
+  "fqn" : "contest.ExpectedSum",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

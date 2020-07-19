@@ -10,7 +10,6 @@ public class BipartiteMatch {
         Node partner;
         int id;
         boolean leftSide;
-        boolean inMinVertexCover;
 
         @Override
         public String toString() {

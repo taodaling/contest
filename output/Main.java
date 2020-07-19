@@ -2,9 +2,9 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.Arrays;
 import java.io.IOException;
-import java.io.Serializable;
 import java.io.UncheckedIOException;
 import java.io.Closeable;
 import java.io.Writer;
@@ -29,66 +29,323 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            DAxelAndMarstonInBitland solver = new DAxelAndMarstonInBitland();
+            DBacterialMelee solver = new DBacterialMelee();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class DAxelAndMarstonInBitland {
-        int n;
+    static class DBacterialMelee {
+        Debug debug = new Debug(true);
 
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            n = in.readInt();
-            int m = in.readInt();
-            int limit = 60;
-            BitSet[][] f = new BitSet[limit + 1][n];
-            long[][] fBest = new long[limit + 1][n];
-            BitSet[][] g = new BitSet[limit + 1][n];
-            long[][] gBest = new long[limit + 1][n];
-
-            for (int i = 0; i <= limit; i++) {
-                for (int j = 0; j < n; j++) {
-                    f[i][j] = new BitSet(n);
-                    g[i][j] = new BitSet(n);
+            int n = in.readInt();
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < n; i++) {
+                char c = in.readChar();
+                if (sb.length() == 0 || sb.charAt(sb.length() - 1) != c) {
+                    sb.append(c);
                 }
             }
-            for (int i = 0; i < m; i++) {
-                int a = in.readInt() - 1;
-                int b = in.readInt() - 1;
-                int t = in.readInt();
-                if (t == 0) {
-                    f[0][a].set(b);
-                    fBest[0][a] = 1;
-                } else {
-                    g[0][a].set(b);
-                    gBest[0][a] = 1;
+            int m = sb.length();
+            int[] seq = new int[sb.length() + 1];
+            for (int i = 1; i <= sb.length(); i++) {
+                seq[i] = sb.charAt(i - 1) - 'a';
+            }
+            seq[0] = -1;
+            //debug.debug("seq", seq);
+            int charset = 'z' - 'a' + 1;
+            int[][] next = new int[m + 1][charset];
+            Arrays.fill(next[m], m + 1);
+            for (int i = m - 1; i >= 0; i--) {
+                for (int j = 0; j < charset; j++) {
+                    next[i][j] = next[i + 1][j];
+                }
+                next[i][seq[i + 1]] = i + 1;
+            }
+            debug.elapse("init");
+            //debug.debug("next", next);
+
+            int[][] dp = new int[m + 1][m + 1];
+            dp[0][0] = 1;
+            Modular mod = new Modular(1e9 + 7);
+            int[][] sum = new int[charset][m + 1];
+            int[] global = new int[m + 1];
+            for (int i = 0; i <= m; i++) {
+                int c = seq[i];
+                if (i > 0) {
+                    for (int j = 0; j <= i; j++) {
+                        dp[i][j] = mod.plus(sum[c][j], global[j]);
+                        sum[c][j] = mod.valueOf(-global[j]);
+                    }
+                }
+                if (i == m) {
+                    break;
+                }
+                for (int j = 0; j <= i; j++) {
+                    global[j + 1] = mod.plus(global[j + 1], dp[i][j]);
+                    if (c >= 0) {
+                        sum[c][j + 1] = mod.subtract(sum[c][j + 1], dp[i][j]);
+                    }
                 }
             }
+            debug.elapse("dp");
 
-            int level = 0;
-            for (; level < limit && fBest[level][0] == (1L << level); level++) {
-                //calc f
-                update(f[level + 1], fBest[level + 1], f[level], fBest[level], g[level], gBest[level]);
-                update(g[level + 1], gBest[level + 1], g[level], gBest[level], f[level], fBest[level]);
+            int[] cnts = new int[m + 1];
+            for (int i = 1; i <= m; i++) {
+                for (int j = 0; j <= m; j++) {
+                    cnts[j] = mod.plus(cnts[j], dp[i][j]);
+                }
+            }
+            //debug.debug("cnts", cnts);
+
+            int ans = 0;
+            Power pow = new Power(mod);
+            Combination comb = new Combination(n, pow);
+            for (int i = 1; i <= m; i++) {
+                int contrib = comb.combination(n - i + i - 1, i - 1);
+                contrib = mod.mul(contrib, cnts[i]);
+                ans = mod.plus(ans, contrib);
             }
 
-            if (fBest[level][0] > 1e18) {
-                out.println(-1);
-                return;
-            }
-
-            out.println(fBest[level][0]);
+            debug.elapse("calc ans");
+            out.println(ans);
         }
 
-        public void update(BitSet[] nextF, long[] nextFBest, BitSet[] f, long[] fBest, BitSet[] g, long[] gBest) {
-            for (int i = 0; i < n; i++) {
-                nextFBest[i] = fBest[i];
-                for (int j = f[i].nextSetBit(0); j < f[i].capacity(); j = f[i].nextSetBit(j + 1)) {
-                    nextFBest[i] = Math.max(nextFBest[i], fBest[i] + gBest[j]);
-                    nextF[i].or(g[j]);
-                }
+    }
+
+    static class Debug {
+        private boolean offline;
+        private PrintStream out = System.err;
+        private long time = System.currentTimeMillis();
+
+        public Debug(boolean enable) {
+            offline = enable && System.getSecurityManager() == null;
+        }
+
+        public Debug elapse(String name) {
+            if (offline) {
+                debug(name, System.currentTimeMillis() - time);
+                time = System.currentTimeMillis();
             }
+            return this;
+        }
+
+        public Debug debug(String name, long x) {
+            if (offline) {
+                debug(name, "" + x);
+            }
+            return this;
+        }
+
+        public Debug debug(String name, String x) {
+            if (offline) {
+                out.printf("%s=%s", name, x);
+                out.println();
+            }
+            return this;
+        }
+
+    }
+
+    static class Combination implements IntCombination {
+        final Factorial factorial;
+        final Modular modular;
+
+        public Combination(Factorial factorial) {
+            this.factorial = factorial;
+            this.modular = factorial.getMod();
+        }
+
+        public Combination(int limit, Power pow) {
+            this(new Factorial(limit, pow));
+        }
+
+        public int combination(int m, int n) {
+            if (n > m || n < 0) {
+                return 0;
+            }
+            return modular.mul(modular.mul(factorial.fact(m), factorial.invFact(n)), factorial.invFact(m - n));
+        }
+
+    }
+
+    static class IntExtGCDObject {
+        private int[] xy = new int[2];
+
+        public int extgcd(int a, int b) {
+            return ExtGCD.extGCD(a, b, xy);
+        }
+
+        public int getX() {
+            return xy[0];
+        }
+
+    }
+
+    static class Factorial {
+        int[] fact;
+        int[] inv;
+        Modular mod;
+
+        public Modular getMod() {
+            return mod;
+        }
+
+        public Factorial(int[] fact, int[] inv, Power pow) {
+            this.mod = pow.getModular();
+            this.fact = fact;
+            this.inv = inv;
+            fact[0] = inv[0] = 1;
+            for (int i = 1; i < fact.length; i++) {
+                fact[i] = i;
+                fact[i] = mod.mul(fact[i], fact[i - 1]);
+            }
+            inv[inv.length - 1] = pow.inverse(fact[inv.length - 1]);
+            for (int i = inv.length - 2; i >= 1; i--) {
+                inv[i] = mod.mul(inv[i + 1], i + 1);
+            }
+        }
+
+        public Factorial(int limit, Power pow) {
+            this(new int[limit + 1], new int[limit + 1], pow);
+        }
+
+        public int fact(int n) {
+            return fact[n];
+        }
+
+        public int invFact(int n) {
+            return inv[n];
+        }
+
+    }
+
+    static class SequenceUtils {
+        public static void swap(int[] data, int i, int j) {
+            int tmp = data[i];
+            data[i] = data[j];
+            data[j] = tmp;
+        }
+
+    }
+
+    static class Power implements InverseNumber {
+        static IntExtGCDObject extGCD = new IntExtGCDObject();
+        final Modular modular;
+
+        public Modular getModular() {
+            return modular;
+        }
+
+        public Power(Modular modular) {
+            this.modular = modular;
+        }
+
+        public int inverse(int x) {
+            int ans = inverseExtGCD(x);
+//        if(modular.mul(ans, x) != 1){
+//            throw new IllegalStateException();
+//        }
+            return ans;
+        }
+
+        public int inverseExtGCD(int x) {
+            if (extGCD.extgcd(x, modular.getMod()) != 1) {
+                throw new IllegalArgumentException();
+            }
+            return modular.valueOf(extGCD.getX());
+        }
+
+    }
+
+    static class ExtGCD {
+        public static int extGCD(int a, int b, int[] xy) {
+            if (a >= b) {
+                return extGCD0(a, b, xy);
+            }
+            int ans = extGCD0(b, a, xy);
+            SequenceUtils.swap(xy, 0, 1);
+            return ans;
+        }
+
+        private static int extGCD0(int a, int b, int[] xy) {
+            if (b == 0) {
+                xy[0] = 1;
+                xy[1] = 0;
+                return a;
+            }
+            int ans = extGCD0(b, a % b, xy);
+            int x = xy[0];
+            int y = xy[1];
+            xy[0] = y;
+            xy[1] = x - a / b * y;
+            return ans;
+        }
+
+    }
+
+    static interface InverseNumber {
+    }
+
+    static interface IntCombination {
+    }
+
+    static class Modular {
+        int m;
+
+        public int getMod() {
+            return m;
+        }
+
+        public Modular(int m) {
+            this.m = m;
+        }
+
+        public Modular(long m) {
+            this.m = (int) m;
+            if (this.m != m) {
+                throw new IllegalArgumentException();
+            }
+        }
+
+        public Modular(double m) {
+            this.m = (int) m;
+            if (this.m != m) {
+                throw new IllegalArgumentException();
+            }
+        }
+
+        public int valueOf(int x) {
+            x %= m;
+            if (x < 0) {
+                x += m;
+            }
+            return x;
+        }
+
+        public int valueOf(long x) {
+            x %= m;
+            if (x < 0) {
+                x += m;
+            }
+            return (int) x;
+        }
+
+        public int mul(int x, int y) {
+            return valueOf((long) x * y);
+        }
+
+        public int plus(int x, int y) {
+            return valueOf(x + y);
+        }
+
+        public int subtract(int x, int y) {
+            return valueOf(x - y);
+        }
+
+        public String toString() {
+            return "mod " + m;
         }
 
     }
@@ -150,6 +407,13 @@ public class Main {
             return val;
         }
 
+        public char readChar() {
+            skipBlank();
+            char c = (char) next;
+            next = read();
+            return c;
+        }
+
     }
 
     static class FastOutput implements AutoCloseable, Closeable, Appendable {
@@ -184,16 +448,7 @@ public class Main {
             return this;
         }
 
-        public FastOutput append(long c) {
-            cache.append(c);
-            return this;
-        }
-
         public FastOutput println(int c) {
-            return append(c).println();
-        }
-
-        public FastOutput println(long c) {
             return append(c).println();
         }
 
@@ -224,174 +479,6 @@ public class Main {
 
         public String toString() {
             return cache.toString();
-        }
-
-    }
-
-    static final class BitSet implements Serializable, Cloneable {
-        private long[] data;
-        private long tailAvailable;
-        private int capacity;
-        private int m;
-        private static final int SHIFT = 6;
-        private static final int LOW = 63;
-        private static final int BITS_FOR_EACH = 64;
-        private static final long ALL_ONE = ~0L;
-        private static final long ALL_ZERO = 0L;
-        private static final int MAX_OFFSET = 63;
-        private static long[] EMPTY_ARRAY = new long[0];
-
-        public BitSet(int n) {
-            capacity = n;
-            this.m = (capacity + 64 - 1) / 64;
-            data = new long[m];
-            tailAvailable = oneBetween(0, offset(capacity - 1));
-        }
-
-        public BitSet(BitSet bs) {
-            this.data = bs.data.clone();
-            this.tailAvailable = bs.tailAvailable;
-            this.capacity = bs.capacity;
-            this.m = bs.m;
-        }
-
-        private BitSet(BitSet bs, int l, int r) {
-            this.data = EMPTY_ARRAY;
-            copyInterval(bs, l, r);
-        }
-
-        public void copyInterval(BitSet bs, int l, int r) {
-            capacity = r - l + 1;
-            tailAvailable = oneBetween(0, offset(capacity - 1));
-            int reqLength = word(r) - word(l) + 1;
-            if (data.length >= word(r) - word(l) + 1) {
-                System.arraycopy(bs.data, word(l), data, 0, reqLength);
-            } else {
-                data = Arrays.copyOfRange(bs.data, word(l), word(r) + 1);
-            }
-            this.m = reqLength;
-            leftShift(offset(l));
-            this.m = (capacity + 64 - 1) / 64;
-            data[m - 1] &= tailAvailable;
-            for (int i = m; i < reqLength; i++) {
-                data[i] = 0;
-            }
-        }
-
-        public void set(int i) {
-            data[word(i)] |= (1L << offset(i));
-        }
-
-        private static int word(int i) {
-            return i >>> SHIFT;
-        }
-
-        private static int offset(int i) {
-            return i & LOW;
-        }
-
-        private long oneBetween(int l, int r) {
-            if (r < l) {
-                return 0;
-            }
-            long lBegin = 1L << offset(l);
-            long rEnd = 1L << offset(r);
-            return (ALL_ONE ^ (lBegin - 1)) & ((rEnd << 1) - 1);
-        }
-
-        public int capacity() {
-            return capacity;
-        }
-
-        public void or(BitSet bs) {
-            int n = Math.min(this.m, bs.m);
-            for (int i = 0; i < n; i++) {
-                data[i] |= bs.data[i];
-            }
-        }
-
-        public int nextSetBit(int start) {
-            int offset = offset(start);
-            int w = word(start);
-            if (offset != 0) {
-                long mask = oneBetween(offset, MAX_OFFSET);
-                if ((data[w] & mask) != 0) {
-                    return Long.numberOfTrailingZeros(data[w] & mask) + w * BITS_FOR_EACH;
-                }
-                w++;
-            }
-
-            while (w < m && data[w] == ALL_ZERO) {
-                w++;
-            }
-            if (w >= m) {
-                return capacity();
-            }
-            return Long.numberOfTrailingZeros(data[w]) + w * BITS_FOR_EACH;
-        }
-
-        public void leftShift(int n) {
-            int wordMove = word(n);
-            int offsetMove = offset(n);
-            int rshift = MAX_OFFSET - (offsetMove - 1);
-
-            if (offsetMove != 0) {
-                //slightly
-                for (int i = 0; i < m; i++) {
-                    if (i > 0) {
-                        data[i - 1] |= data[i] << rshift;
-                    }
-                    data[i] >>>= offsetMove;
-                }
-            }
-            if (wordMove > 0) {
-                for (int i = 0; i < m; i++) {
-                    if (i >= wordMove) {
-                        data[i - wordMove] = data[i];
-                    }
-                    data[i] = 0;
-                }
-            }
-        }
-
-        public BitSet clone() {
-            return new BitSet(this);
-        }
-
-        public String toString() {
-            StringBuilder builder = new StringBuilder("{");
-            for (int i = nextSetBit(0); i < capacity(); i = nextSetBit(i + 1)) {
-                builder.append(i).append(',');
-            }
-            if (builder.length() > 1) {
-                builder.setLength(builder.length() - 1);
-            }
-            builder.append("}");
-            return builder.toString();
-        }
-
-        public int hashCode() {
-            int ans = 1;
-            for (int i = 0; i < m; i++) {
-                ans = ans * 31 + Long.hashCode(data[i]);
-            }
-            return ans;
-        }
-
-        public boolean equals(Object obj) {
-            if (!(obj instanceof BitSet)) {
-                return false;
-            }
-            BitSet other = (BitSet) obj;
-            if (other.capacity != capacity) {
-                return false;
-            }
-            for (int i = 0; i < m; i++) {
-                if (other.data[i] != data[i]) {
-                    return false;
-                }
-            }
-            return true;
         }
 
     }

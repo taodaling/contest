@@ -1,0 +1,56 @@
+{
+  "name" : "RoomPairs",
+  "signature" : {
+    "name" : "construct",
+    "result" : "String[]",
+    "arguments" : [ "int", "int", "int" ],
+    "argumentNames" : [ "R", "C", "N" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "2", "4", "1" ],
+    "result" : "+-+-+-+-+ф| |   | |ф+ + +-+ +ф|   |   |ф+-+-+-+-+",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "3", "3", "4" ],
+    "result" : "+-+-+-+ф| | | |ф+-+ +-+ф|     |ф+-+ +-+ф| | | |ф+-+-+-+",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "3", "4", "3" ],
+    "result" : "+-+-+-+-+ф|       |ф+ +-+-+ +ф| | | | |ф+ +-+-+ +ф|       |ф+-+-+-+-+",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "4", "5", "31" ],
+    "result" : "+-+-+-+-+-+ф| | | | | |ф+-+-+-+-+-+ф| | | | | |ф+-+-+-+-+-+ф| | | | | |ф+-+-+-+-+-+ф| | | | | |ф+-+-+-+-+-+",
+    "index" : 3,
+    "active" : true
+  }, {
+    "arguments" : [ "2", "2", "3" ],
+    "index" : 4,
+    "active" : true
+  }, {
+    "arguments" : [ "2", "2", "4" ],
+    "index" : 5,
+    "active" : true
+  }, {
+    "arguments" : [ "2", "2", "2" ],
+    "index" : 6,
+    "active" : true
+  }, {
+    "arguments" : [ "30", "30", "100" ],
+    "index" : 7,
+    "active" : true
+  }, {
+    "arguments" : [ "3", "3", "3" ],
+    "index" : 8,
+    "active" : true
+  } ],
+  "date" : "2020.07.19",
+  "contestName" : "2020 TopCoder Open Algo",
+  "testClasses" : [ ],
+  "fqn" : "on2020_07.on2020_07_19_2020_TopCoder_Open_Algo.RoomPairs.RoomPairs",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

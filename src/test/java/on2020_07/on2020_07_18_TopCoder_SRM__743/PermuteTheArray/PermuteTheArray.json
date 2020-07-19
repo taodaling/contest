@@ -1,0 +1,41 @@
+{
+  "name" : "PermuteTheArray",
+  "signature" : {
+    "name" : "getPermutation",
+    "result" : "int[]",
+    "arguments" : [ "int[]", "int[]", "int[]", "int[]" ],
+    "argumentNames" : [ "A", "x", "y", "d" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "1 3 5 2", "0", "1", "0" ],
+    "result" : "1 3 2 5",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "1 3 5 2", "0 1 0 1 2", "1 2 3 3 3", "0 0 1 1 0" ],
+    "result" : "",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "1 3 2 5", "0 1 0 1 2", "1 2 3 3 3", "0 0 1 1 1" ],
+    "result" : "1 3 5 2",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "1 2 3 4 5 6 7 8", "0 0 1 5 6", "1 2 2 6 7", "0 0 0 0 1" ],
+    "result" : "1 3 5 2 4 6 8 7",
+    "index" : 3,
+    "active" : true
+  }, {
+    "arguments" : [ "20 546 23 20 4 573 1 3 665 32 329 54 23 9", "", "", "" ],
+    "result" : "1 3 4 9 20 20 23 23 32 54 329 546 573 665",
+    "index" : 4,
+    "active" : true
+  } ],
+  "date" : "2020.07.18",
+  "contestName" : "TopCoder SRM #743",
+  "testClasses" : [ ],
+  "fqn" : "on2020_07.on2020_07_18_TopCoder_SRM__743.PermuteTheArray.PermuteTheArray",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}
