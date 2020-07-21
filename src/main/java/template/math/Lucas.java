@@ -18,8 +18,6 @@ public class Lucas implements IntCombination, LongCombination {
         return combination((long) m, (long) n);
     }
 
-
-
     /**
      * O(\log_p \min(n, m))
      */
