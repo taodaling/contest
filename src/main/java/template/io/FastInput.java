@@ -65,6 +65,16 @@ public class FastInput {
         return readString();
     }
 
+    public long readModInt(long mod) {
+        skipBlank();
+        long ans = 0;
+        while (next >= '0' && next <= '9') {
+            ans = (ans * 10 + next - '0') % mod;
+            next = read();
+        }
+        return ans;
+    }
+
     public int readInt() {
         int sign = 1;
 

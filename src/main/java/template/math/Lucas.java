@@ -3,7 +3,7 @@ package template.math;
 /**
  * Lucas algorithm
  */
-public class Lucas implements IntCombination, LongCombination {
+public class Lucas implements IntCombination, LargeIntCombination {
     private final IntCombination primeCombination;
     private int mod;
 
@@ -11,6 +11,10 @@ public class Lucas implements IntCombination, LongCombination {
     public Lucas(IntCombination primeCombination, int mod) {
         this.primeCombination = primeCombination;
         this.mod = mod;
+    }
+
+    public Lucas(IntCombination primeCombination, Modular mod) {
+        this(primeCombination, mod.getMod());
     }
 
     @Override

@@ -1,5 +1,5 @@
 package template.math;
 
-public interface LongCombination {
+public interface LargeIntCombination {
     int combination(long n, long m);
 }

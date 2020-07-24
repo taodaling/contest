@@ -1,6 +1,7 @@
 package template.datastructure;
 
 import template.math.Modular;
+import template.primitve.generated.datastructure.IntToIntegerFunction;
 
 public class ModPreSum {
     private int[] pre;
@@ -11,17 +12,14 @@ public class ModPreSum {
         this.mod = mod;
     }
 
-    public void populate(int[] a) {
-        int n = a.length;
-        pre[0] = a[0];
-        for (int i = 1; i < n; i++) {
-            pre[i] = mod.plus(pre[i - 1], a[i]);
+    public void populate(IntToIntegerFunction a, int n) {
+        if(n <= 0){
+            return;
         }
-    }
-
-    public ModPreSum(int[] a, Modular mod) {
-        this(a.length, mod);
-        populate(a);
+        pre[0] = a.apply(0);
+        for (int i = 1; i < n; i++) {
+            pre[i] = mod.plus(pre[i - 1], a.apply(i));
+        }
     }
 
     /**

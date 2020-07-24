@@ -508,6 +508,46 @@ public class CompareUtils {
         }
     }
 
+    public static void mergeAscending(long[] a, int al, int ar, long[] b, int bl, int br, long[] c, int cl) {
+        while (al <= ar || bl <= br) {
+            if (bl > br || (al <= ar && a[al] <= b[bl])) {
+                c[cl++] = a[al++];
+            } else {
+                c[cl++] = b[bl++];
+            }
+        }
+    }
+
+    public static void mergeAscending(long[] a, int al, int ar, long[] b, int bl, int br, long[] c, int cl, LongComparator comparator) {
+        while (al <= ar || bl <= br) {
+            if (bl > br || (al <= ar && comparator.compare(a[al], b[bl]) <= 0)) {
+                c[cl++] = a[al++];
+            } else {
+                c[cl++] = b[bl++];
+            }
+        }
+    }
+
+    public static void mergeAscending(double[] a, int al, int ar, double[] b, int bl, int br, double[] c, int cl) {
+        while (al <= ar || bl <= br) {
+            if (bl > br || (al <= ar && a[al] <= b[bl])) {
+                c[cl++] = a[al++];
+            } else {
+                c[cl++] = b[bl++];
+            }
+        }
+    }
+
+    public static void mergeAscending(double[] a, int al, int ar, double[] b, int bl, int br, double[] c, int cl, DoubleComparator comparator) {
+        while (al <= ar || bl <= br) {
+            if (bl > br || (al <= ar && comparator.compare(a[al], b[bl]) <= 0)) {
+                c[cl++] = a[al++];
+            } else {
+                c[cl++] = b[bl++];
+            }
+        }
+    }
+
     public static void mergeDescending(int[] a, int al, int ar, int[] b, int bl, int br, int[] c, int cl) {
         while (al <= ar || bl <= br) {
             if (bl > br || (al <= ar && a[al] >= b[bl])) {
@@ -518,15 +558,16 @@ public class CompareUtils {
         }
     }
 
-    public static <T> void mergeAscending(T[] a, int al, int ar, T[] b, int bl, int br, T[] c, int cl, Comparator<T> comp) {
+    public static <T> void mergeAscending(Object[] a, int al, int ar, Object[] b, int bl, int br, Object[] c, int cl, Comparator<T> comp) {
         while (al <= ar || bl <= br) {
-            if (bl > br || (al <= ar && comp.compare(a[al], b[bl]) <= 0)) {
+            if (bl > br || (al <= ar && comp.compare((T)a[al], (T)b[bl]) <= 0)) {
                 c[cl++] = a[al++];
             } else {
                 c[cl++] = b[bl++];
             }
         }
     }
+
 
     public static boolean notStrictAscending(long[] data, int l, int r) {
         for (int i = l + 1; i <= r; i++) {

@@ -14,6 +14,9 @@ public class IntRecursiveCombination implements IntCombination {
         if (m < n || n < 0) {
             return 0;
         }
+        if (m - n < n) {
+            n = m - n;
+        }
         return comb(m, n);
     }
 

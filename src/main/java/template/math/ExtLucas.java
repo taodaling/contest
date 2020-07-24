@@ -7,13 +7,13 @@ import java.util.Map;
 /**
  * Extend lucas algorithm
  */
-public class ExtLucas implements LongCombination, Iterable<Map.Entry<Integer, LongCombination>> {
+public class ExtLucas implements LargeIntCombination, Iterable<Map.Entry<Integer, LargeIntCombination>> {
     PollardRho pr = new PollardRho();
-    Map<Integer, LongCombination> factorialMap = new HashMap();
+    Map<Integer, LargeIntCombination> factorialMap = new HashMap();
     int p;
 
     @Override
-    public Iterator<Map.Entry<Integer, LongCombination>> iterator() {
+    public Iterator<Map.Entry<Integer, LargeIntCombination>> iterator() {
         return factorialMap.entrySet().iterator();
     }
 
@@ -30,9 +30,9 @@ public class ExtLucas implements LongCombination, Iterable<Map.Entry<Integer, Lo
         this.p = p;
         Map<Integer, Integer> factors = pr.findAllFactors(p);
         for (Map.Entry<Integer, Integer> entry : factors.entrySet()) {
-            LongCombination combination;
+            LargeIntCombination combination;
             if (entry.getKey().equals(entry.getValue())) {
-                combination = new Lucas(new Combination((int) Math.min(m, entry.getKey()), new Power(new Modular(entry.getKey()))),
+                combination = new Lucas(new Combination((int) Math.min(m, entry.getKey() - 1), new Power(new Modular(entry.getKey()))),
                         entry.getKey());
             } else {
                 combination = new ExtLucasFactorial(entry.getKey(), entry.getValue(), m);
@@ -51,7 +51,7 @@ public class ExtLucas implements LongCombination, Iterable<Map.Entry<Integer, Lo
             return 0;
         }
         IntExtCRT extCRT = new IntExtCRT();
-        for (Map.Entry<Integer, LongCombination> entry : factorialMap.entrySet()) {
+        for (Map.Entry<Integer, LargeIntCombination> entry : factorialMap.entrySet()) {
             extCRT.add(entry.getValue().combination(m, n), entry.getKey());
         }
 
@@ -61,7 +61,7 @@ public class ExtLucas implements LongCombination, Iterable<Map.Entry<Integer, Lo
         return extCRT.getValue();
     }
 
-    public static class ExtLucasFactorial implements LongCombination {
+    public static class ExtLucasFactorial implements LargeIntCombination {
         int exp;
         int fact;
         int p;

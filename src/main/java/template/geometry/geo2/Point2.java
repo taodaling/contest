@@ -448,7 +448,7 @@ public class Point2 implements Cloneable {
         }
 
         //merge sort
-        CompareUtils.mergeAscending(pts, l, m, pts, m + 1, r, buf, l, (a, b) -> Double.compare(a.y, b.y));
+        CompareUtils.<Point2>mergeAscending(pts, l, m, pts, m + 1, r, buf, l, (a, b) -> Double.compare(a.y, b.y));
         System.arraycopy(buf, l, pts, l, r - l + 1);
         return ans;
     }

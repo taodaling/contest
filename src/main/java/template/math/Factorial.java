@@ -17,12 +17,13 @@ public class Factorial {
         this.fact = fact;
         this.inv = inv;
         fact[0] = inv[0] = 1;
-        for (int i = 1; i < fact.length; i++) {
+        int n = Math.min(fact.length, pow.getModular().getMod());
+        for (int i = 1; i < n; i++) {
             fact[i] = i;
             fact[i] = mod.mul(fact[i], fact[i - 1]);
         }
-        inv[inv.length - 1] = pow.inverse(fact[inv.length - 1]);
-        for (int i = inv.length - 2; i >= 1; i--) {
+        inv[n - 1] = pow.inverse(fact[n - 1]);
+        for (int i = n - 2; i >= 1; i--) {
             inv[i] = mod.mul(inv[i + 1], i + 1);
         }
     }

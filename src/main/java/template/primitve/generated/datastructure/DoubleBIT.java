@@ -6,6 +6,9 @@ import java.util.Arrays;
  * Created by dalt on 2018/5/20.
  */
 public class DoubleBIT {
+    /**
+     * data[i] = \sum_{j \in (i- (i), i]} A[i]
+     */
     private double[] data;
     private int n;
 

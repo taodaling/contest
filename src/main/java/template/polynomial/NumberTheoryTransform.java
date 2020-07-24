@@ -232,7 +232,12 @@ public class NumberTheoryTransform {
     }
 
     /**
+     * <p>
      * make ans = ln a mod x^n
+     * </p>
+     * <p>
+     * it run in O(n\log_2 n)
+     * </p>
      */
     public void ln(IntegerArrayList a, IntegerArrayList ans, int n, InverseNumber inverse) {
         a = clone(a);
@@ -257,7 +262,8 @@ public class NumberTheoryTransform {
     }
 
     /**
-     * ans = exp(a) mod x^n
+     * <p> ans = exp(a) mod x^n </p>
+     * <p> it run in O(n\log_2 n) </p>
      */
     public void exp(IntegerArrayList a, IntegerArrayList ans, int n, InverseNumber inverse) {
         if (n == 0) {
@@ -307,7 +313,7 @@ public class NumberTheoryTransform {
     }
 
     /**
-     * 多项式多点插值
+     * 多项式多点插值 O(p\log p+x(\log x)^2)
      */
     public void multiApply(IntegerArrayList p, IntegerArrayList x, IntegerArrayList y) {
         int l = 0;

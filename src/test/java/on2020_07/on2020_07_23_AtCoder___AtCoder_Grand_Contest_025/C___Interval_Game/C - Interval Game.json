@@ -1,5 +1,5 @@
 {
-  "name" : "E - Black or White",
+  "name" : "C - Interval Game",
   "testType" : "SINGLE",
   "input" : {
     "type" : "STANDARD",
@@ -10,30 +10,30 @@
     "fileName" : "output.txt"
   },
   "tests" : [ {
-    "input" : "2 1\n",
-    "output" : "500000004\n750000006\n750000006\n",
+    "input" : "3\n-5 1\n3 7\n-4 -2\n",
+    "output" : "10\n",
     "index" : 0,
     "active" : true
   }, {
-    "input" : "3 2\n",
-    "output" : "500000004\n500000004\n625000005\n187500002\n187500002\n",
+    "input" : "3\n1 2\n3 4\n5 6\n",
+    "output" : "12\n",
     "index" : 1,
     "active" : true
   }, {
-    "input" : "6 9\n",
-    "output" : "500000004\n500000004\n500000004\n500000004\n500000004\n500000004\n929687507\n218750002\n224609377\n303710940\n633300786\n694091802\n172485353\n411682132\n411682132\n",
+    "input" : "5\n-2 0\n-2 0\n7 8\n9 10\n-2 -1\n",
+    "output" : "34\n",
     "index" : 2,
     "active" : true
   } ],
   "location" : "src/main/java/contest",
   "vmArgs" : "-Xmx1024M",
   "mainClass" : "Main",
-  "taskClass" : "on2020_07.on2020_07_20_AtCoder___ExaWizards_2019.E___Black_or_White.EBlackOrWhite",
+  "taskClass" : "on2020_07.on2020_07_23_AtCoder___AtCoder_Grand_Contest_025.C___Interval_Game.CIntervalGame",
   "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
   "checkerParameters" : "",
   "testClasses" : [ ],
-  "date" : "2020.07.20",
-  "contestName" : "AtCoder - ExaWizards 2019",
+  "date" : "2020.07.23",
+  "contestName" : "AtCoder - AtCoder Grand Contest 025",
   "truncate" : true,
   "inputClass" : "template.io.FastInput",
   "outputClass" : "template.io.FastOutput",

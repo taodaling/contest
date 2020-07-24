@@ -6,6 +6,9 @@ import java.util.Arrays;
  * Created by dalt on 2018/5/20.
  */
 public class IntegerBIT {
+    /**
+     * data[i] = \sum_{j \in (i-lowbit(i), i]} A[i]
+     */
     private int[] data;
     private int n;
 

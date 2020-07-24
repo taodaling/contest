@@ -36,7 +36,7 @@ public class LinearRecurrenceSolver {
     /**
      * Auto detect linear recurrence from given sequence
      */
-    public static LinearRecurrenceSolver newSolverFromSequence(IntegerArrayList seq, Modular mod) {
+    public static LinearRecurrenceSolver newSolverByAutoDetectLinearRecurrence(IntegerArrayList seq, Modular mod) {
         ModLinearFeedbackShiftRegister lfsr = new ModLinearFeedbackShiftRegister(mod, seq.size());
         for (int i = 0; i < seq.size(); i++) {
             lfsr.add(seq.get(i));
@@ -82,5 +82,10 @@ public class LinearRecurrenceSolver {
     public int solve(BitSet k, IntegerArrayList a) {
         Polynomials.module(k, p, remainder, pow);
         return solve(a);
+    }
+
+    @Override
+    public String toString() {
+        return coe.toString();
     }
 }
