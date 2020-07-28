@@ -1,14 +1,22 @@
 import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.function.Function;
+import java.util.ArrayList;
+import java.util.Map;
+import java.io.OutputStreamWriter;
 import java.io.OutputStream;
-import java.util.Arrays;
+import java.util.Collection;
 import java.io.IOException;
-import java.io.Serializable;
+import java.util.stream.Collectors;
 import java.io.UncheckedIOException;
+import java.util.List;
+import java.util.stream.Stream;
 import java.io.Closeable;
 import java.io.Writer;
-import java.io.OutputStreamWriter;
+import java.util.Comparator;
+import java.util.Collections;
 import java.io.InputStream;
 
 /**
@@ -29,52 +37,133 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            DPermutations solver = new DPermutations();
+            FAirSafety solver = new FAirSafety();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class DPermutations {
+    static class FAirSafety {
+        long ans = (long) 1e18;
+
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            int m = in.readInt();
-            int[] x = new int[m];
-            int[] y = new int[m];
-            boolean[][] retain = new boolean[n][n];
-            BitSet[] rows = new BitSet[n];
+            List<Point>[] upDown = new List[]{new ArrayList(n), new ArrayList(n)};
+            List<Point>[] leftRight = new List[]{new ArrayList(n), new ArrayList(n)};
             for (int i = 0; i < n; i++) {
-                rows[i] = new BitSet(n);
-            }
-            for (int i = 0; i < m; i++) {
-                x[i] = in.readInt() - 1;
-                y[i] = in.readInt() - 1;
-                rows[x[i]].set(y[i]);
-            }
-
-            GenericLinearBasis lb = new GenericLinearBasis(n);
-            for (int i = 0; i < n; i++) {
-                lb.clear();
-                for (int j = 0; j < n; j++) {
-                    if (i == j) {
-                        continue;
-                    }
-                    lb.add(rows[j]);
-                }
-                for (int j = rows[i].nextSetBit(0); j < rows[i].capacity();
-                     j = rows[i].nextSetBit(j + 1)) {
-                    rows[i].clear(j);
-                    if (!lb.test(rows[i])) {
-                        retain[i][j] = true;
-                    }
-                    rows[i].set(j);
+                Point pt = new Point();
+                pt.x = in.readInt() * 10;
+                pt.y = in.readInt() * 10;
+                switch (in.readChar()) {
+                    case 'U':
+                        upDown[0].add(pt);
+                        break;
+                    case 'D':
+                        upDown[1].add(pt);
+                        break;
+                    case 'L':
+                        leftRight[0].add(pt);
+                        break;
+                    default:
+                        leftRight[1].add(pt);
                 }
             }
 
-            for (int i = 0; i < m; i++) {
-                out.println(retain[x[i]][y[i]] ? "YES" : "NO");
+            Comparator<Point> sortByX = (a, b) -> Integer.compare(a.x, b.x);
+            for (int i = 0; i < 2; i++) {
+                upDown[i].sort(sortByX);
+                leftRight[i].sort(sortByX);
+            }
+
+            optimizeHorizontal(cast(leftRight[1], x -> x.y, x -> x.x),
+                    cast(leftRight[0], x -> x.y, x -> x.x));
+            optimizeHorizontal(cast(upDown[0], x -> x.x, x -> x.y),
+                    cast(upDown[1], x -> x.x, x -> x.y));
+
+
+            //inc
+            Map<Integer, List<Point>>[] uDGroupByInc = new Map[2];
+            Map<Integer, List<Point>>[] lRGGroupByInc = new Map[2];
+            for (int i = 0; i < 2; i++) {
+                uDGroupByInc[i] = upDown[i].stream().collect(Collectors.groupingBy(x -> x.y - x.x));
+                lRGGroupByInc[i] = leftRight[i].stream().collect(Collectors.groupingBy(x -> x.y - x.x));
+            }
+
+            //dec
+            Map<Integer, List<Point>>[] uDGroupByDec = new Map[2];
+            Map<Integer, List<Point>>[] lRGGroupByDec = new Map[2];
+            for (int i = 0; i < 2; i++) {
+                uDGroupByDec[i] = upDown[i].stream().collect(Collectors.groupingBy(x -> x.y + x.x));
+                lRGGroupByDec[i] = leftRight[i].stream().collect(Collectors.groupingBy(x -> x.y + x.x));
+            }
+
+            optimize(uDGroupByInc[0], lRGGroupByInc[0]);
+            optimize(lRGGroupByInc[1], uDGroupByInc[1]);
+
+            optimize(uDGroupByDec[1], lRGGroupByDec[0]);
+            optimize(lRGGroupByDec[1], uDGroupByDec[0]);
+
+            if (ans == 1e18) {
+                out.println("SAFE");
+                return;
+            }
+
+            out.println(ans);
+        }
+
+        public Map<Integer, List<Integer>> cast(List<Point> a, Function<Point, Integer> key,
+                                                Function<Point, Integer> value) {
+            Map<Integer, List<Integer>> map = new HashMap<>(a.size());
+            for (Point pt : a) {
+                map.computeIfAbsent(key.apply(pt), x -> new ArrayList<>())
+                        .add(value.apply(pt));
+            }
+            return map;
+        }
+
+        public void optimizeHorizontal(Map<Integer, List<Integer>> a, Map<Integer, List<Integer>> b) {
+            for (Integer key : a.keySet()) {
+                List<Integer> l1 = a.get(key);
+                List<Integer> l2 = b.getOrDefault(key, Collections.emptyList());
+                l1.sort(Comparator.naturalOrder());
+                l2.sort(Comparator.naturalOrder());
+
+                int l2Idx = 0;
+                for (int x : l1) {
+                    while (l2Idx < l2.size() && l2.get(l2Idx) < x) {
+                        l2Idx++;
+                    }
+                    if (l2Idx >= l2.size()) {
+                        break;
+                    }
+                    ans = Math.min(ans, (l2.get(l2Idx) - x) / 2);
+                }
             }
         }
+
+        public void optimize(Map<Integer, List<Point>> a, Map<Integer, List<Point>> b) {
+            for (Integer key : a.keySet()) {
+                List<Point> l1 = a.get(key);
+                List<Point> l2 = b.getOrDefault(key, Collections.emptyList());
+
+                int l2Idx = 0;
+                for (Point pt : l1) {
+                    while (l2Idx < l2.size() && l2.get(l2Idx).x < pt.x) {
+                        l2Idx++;
+                    }
+                    if (l2Idx >= l2.size()) {
+                        break;
+                    }
+                    ans = Math.min(ans, l2.get(l2Idx).x - pt.x);
+                }
+            }
+        }
+
+    }
+
+    static class Point {
+        int x;
+        int y;
 
     }
 
@@ -105,12 +194,21 @@ public class Main {
             return this;
         }
 
+        public FastOutput append(long c) {
+            cache.append(c);
+            return this;
+        }
+
         public FastOutput append(String c) {
             cache.append(c);
             return this;
         }
 
         public FastOutput println(String c) {
+            return append(c).println();
+        }
+
+        public FastOutput println(long c) {
             return append(c).println();
         }
 
@@ -202,294 +300,11 @@ public class Main {
             return val;
         }
 
-    }
-
-    static class GenericLinearBasis {
-        private BitSet[] basis;
-        private int size;
-        private int dimension;
-        private BitSet or;
-        private BitSet buf;
-
-        public GenericLinearBasis(int dimension) {
-            this.dimension = dimension;
-            basis = new BitSet[dimension];
-            for (int i = 0; i < dimension; i++) {
-                basis[i] = new BitSet(dimension);
-            }
-            or = new BitSet(dimension);
-            buf = new BitSet(dimension);
-        }
-
-        public void clear() {
-            size = 0;
-            or.fill(false);
-        }
-
-        public boolean test(BitSet bits) {
-            buf.copy(bits);
-            bits = buf;
-            for (int i = dimension - 1; i >= 0; i--) {
-                if (!bits.get(i)) {
-                    continue;
-                }
-                if (or.get(i)) {
-                    bits.xor(basis[i]);
-                    continue;
-                }
-                return false;
-            }
-            return true;
-        }
-
-        public void add(BitSet bits) {
-            buf.copy(bits);
-            bits = buf;
-            for (int i = dimension - 1; i >= 0; i--) {
-                if (!bits.get(i)) {
-                    continue;
-                }
-                if (or.get(i)) {
-                    bits.xor(basis[i]);
-                    continue;
-                }
-                or.set(i);
-                size++;
-                basis[i].copy(bits);
-                for (int j = i + 1; j < dimension; j++) {
-                    if (!or.get(j) || !basis[j].get(i)) {
-                        continue;
-                    }
-                    basis[j].xor(basis[i]);
-                }
-                return;
-            }
-        }
-
-    }
-
-    static final class BitSet implements Serializable, Cloneable {
-        private long[] data;
-        private long tailAvailable;
-        private int capacity;
-        private int m;
-        private static final int SHIFT = 6;
-        private static final int LOW = 63;
-        private static final int BITS_FOR_EACH = 64;
-        private static final long ALL_ONE = ~0L;
-        private static final long ALL_ZERO = 0L;
-        private static final int MAX_OFFSET = 63;
-        private static long[] EMPTY_ARRAY = new long[0];
-
-        public BitSet(int n) {
-            capacity = n;
-            this.m = (capacity + 64 - 1) / 64;
-            data = new long[m];
-            tailAvailable = oneBetween(0, offset(capacity - 1));
-        }
-
-        public BitSet(BitSet bs) {
-            this.data = bs.data.clone();
-            this.tailAvailable = bs.tailAvailable;
-            this.capacity = bs.capacity;
-            this.m = bs.m;
-        }
-
-        private BitSet(BitSet bs, int l, int r) {
-            this.data = EMPTY_ARRAY;
-            copyInterval(bs, l, r);
-        }
-
-        public void copyInterval(BitSet bs, int l, int r) {
-            capacity = r - l + 1;
-            tailAvailable = oneBetween(0, offset(capacity - 1));
-            int reqLength = word(r) - word(l) + 1;
-            if (data.length >= word(r) - word(l) + 1) {
-                System.arraycopy(bs.data, word(l), data, 0, reqLength);
-            } else {
-                data = Arrays.copyOfRange(bs.data, word(l), word(r) + 1);
-            }
-            this.m = reqLength;
-            leftShift(offset(l));
-            this.m = (capacity + 64 - 1) / 64;
-            data[m - 1] &= tailAvailable;
-            for (int i = m; i < reqLength; i++) {
-                data[i] = 0;
-            }
-        }
-
-        public boolean get(int i) {
-            return (data[word(i)] & (1L << offset(i))) != 0;
-        }
-
-        public void set(int i) {
-            data[word(i)] |= (1L << offset(i));
-        }
-
-        private static int word(int i) {
-            return i >>> SHIFT;
-        }
-
-        private static int offset(int i) {
-            return i & LOW;
-        }
-
-        private long oneBetween(int l, int r) {
-            if (r < l) {
-                return 0;
-            }
-            long lBegin = 1L << offset(l);
-            long rEnd = 1L << offset(r);
-            return (ALL_ONE ^ (lBegin - 1)) & ((rEnd << 1) - 1);
-        }
-
-        public void fill(boolean val) {
-            if (val) {
-                set(0, capacity() - 1);
-            } else {
-                clear(0, capacity() - 1);
-            }
-        }
-
-        public void set(int l, int r) {
-            if (r < l) {
-                return;
-            }
-            int lWord = l >>> SHIFT;
-            int rWord = r >>> SHIFT;
-            for (int i = lWord + 1; i < rWord; i++) {
-                data[i] = ALL_ONE;
-            }
-            //lword
-            if (lWord == rWord) {
-                data[lWord] |= oneBetween(offset(l), offset(r));
-            } else {
-                data[lWord] |= oneBetween(offset(l), MAX_OFFSET);
-                data[rWord] |= oneBetween(0, offset(r));
-            }
-        }
-
-        public void clear(int i) {
-            data[word(i)] &= ~(1L << offset(i));
-        }
-
-        public void clear(int l, int r) {
-            if (r < l) {
-                return;
-            }
-            int lWord = l >>> SHIFT;
-            int rWord = r >>> SHIFT;
-            for (int i = lWord + 1; i < rWord; i++) {
-                data[i] = ALL_ZERO;
-            }
-            //lword
-            if (lWord == rWord) {
-                data[lWord] &= ~oneBetween(offset(l), offset(r));
-            } else {
-                data[lWord] &= ~oneBetween(offset(l), MAX_OFFSET);
-                data[rWord] &= ~oneBetween(0, offset(r));
-            }
-        }
-
-        public int capacity() {
-            return capacity;
-        }
-
-        public void copy(BitSet bs) {
-            int n = Math.min(this.m, bs.m);
-            System.arraycopy(bs.data, 0, data, 0, n);
-            Arrays.fill(data, n, n, 0);
-        }
-
-        public void xor(BitSet bs) {
-            int n = Math.min(this.m, bs.m);
-            for (int i = 0; i < n; i++) {
-                data[i] ^= bs.data[i];
-            }
-        }
-
-        public int nextSetBit(int start) {
-            int offset = offset(start);
-            int w = word(start);
-            if (offset != 0) {
-                long mask = oneBetween(offset, MAX_OFFSET);
-                if ((data[w] & mask) != 0) {
-                    return Long.numberOfTrailingZeros(data[w] & mask) + w * BITS_FOR_EACH;
-                }
-                w++;
-            }
-
-            while (w < m && data[w] == ALL_ZERO) {
-                w++;
-            }
-            if (w >= m) {
-                return capacity();
-            }
-            return Long.numberOfTrailingZeros(data[w]) + w * BITS_FOR_EACH;
-        }
-
-        public void leftShift(int n) {
-            int wordMove = word(n);
-            int offsetMove = offset(n);
-            int rshift = MAX_OFFSET - (offsetMove - 1);
-
-            if (offsetMove != 0) {
-                //slightly
-                for (int i = 0; i < m; i++) {
-                    if (i > 0) {
-                        data[i - 1] |= data[i] << rshift;
-                    }
-                    data[i] >>>= offsetMove;
-                }
-            }
-            if (wordMove > 0) {
-                for (int i = 0; i < m; i++) {
-                    if (i >= wordMove) {
-                        data[i - wordMove] = data[i];
-                    }
-                    data[i] = 0;
-                }
-            }
-        }
-
-        public BitSet clone() {
-            return new BitSet(this);
-        }
-
-        public String toString() {
-            StringBuilder builder = new StringBuilder("{");
-            for (int i = nextSetBit(0); i < capacity(); i = nextSetBit(i + 1)) {
-                builder.append(i).append(',');
-            }
-            if (builder.length() > 1) {
-                builder.setLength(builder.length() - 1);
-            }
-            builder.append("}");
-            return builder.toString();
-        }
-
-        public int hashCode() {
-            int ans = 1;
-            for (int i = 0; i < m; i++) {
-                ans = ans * 31 + Long.hashCode(data[i]);
-            }
-            return ans;
-        }
-
-        public boolean equals(Object obj) {
-            if (!(obj instanceof BitSet)) {
-                return false;
-            }
-            BitSet other = (BitSet) obj;
-            if (other.capacity != capacity) {
-                return false;
-            }
-            for (int i = 0; i < m; i++) {
-                if (other.data[i] != data[i]) {
-                    return false;
-                }
-            }
-            return true;
+        public char readChar() {
+            skipBlank();
+            char c = (char) next;
+            next = read();
+            return c;
         }
 
     }
