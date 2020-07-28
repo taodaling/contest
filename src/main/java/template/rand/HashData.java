@@ -8,9 +8,10 @@ public class HashData {
     public Modular mod;
     public int[] inv;
     public int[] pow;
-
+    public int x;
 
     public HashData(int n, int p, int x) {
+        this.x = x;
         this.mod = new Modular(p);
         n = Math.max(n, 1);
         inv = new int[n + 1];
@@ -35,7 +36,7 @@ public class HashData {
     public int hash(long x) {
         long high = x >>> 32;
         long low = x & ((1L << 32) - 1);
-        return mod.valueOf(high * 31L + low);
+        return mod.valueOf(high * this.x + low);
     }
 
     public int hash(double x) {

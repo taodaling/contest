@@ -4,14 +4,8 @@ package template.math;
  * Mod operations
  */
 public class Modular {
-    static MillerRabin mr = new MillerRabin();
 
     int m;
-    private boolean isPrime;
-
-    public boolean isPrime() {
-        return isPrime;
-    }
 
     public int getMod() {
         return m;
@@ -19,7 +13,6 @@ public class Modular {
 
     public Modular(int m) {
         this.m = m;
-        isPrime = mr.mr(m, 10);
     }
 
     public Modular(long m) {

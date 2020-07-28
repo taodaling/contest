@@ -7,6 +7,10 @@ public class GenericLinearBasis {
     private BitSet or;
     private BitSet buf;
 
+    /**
+     * O(n^2/32)
+     * @param dimension
+     */
     public GenericLinearBasis(int dimension) {
         this.dimension = dimension;
         basis = new BitSet[dimension];
@@ -17,11 +21,38 @@ public class GenericLinearBasis {
         buf = new BitSet(dimension);
     }
 
+    /**
+     * O(n^2/32)
+     */
     public void clear() {
         size = 0;
         or.fill(false);
     }
 
+    /**
+     * <p>Determine is bits can be written as linear composition of existing bases</p>
+     * <p>O(n\log_2n)</p>
+     */
+    public boolean test(BitSet bits) {
+        buf.copy(bits);
+        bits = buf;
+        for (int i = dimension - 1; i >= 0; i--) {
+            if (!bits.get(i)) {
+                continue;
+            }
+            if (or.get(i)) {
+                bits.xor(basis[i]);
+                continue;
+            }
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * O(n\log_2n)
+     * @param bits
+     */
     public void add(BitSet bits) {
         buf.copy(bits);
         bits = buf;
@@ -46,6 +77,10 @@ public class GenericLinearBasis {
         }
     }
 
+    /**
+     * O(1)
+     * @return
+     */
     public int size() {
         return size;
     }

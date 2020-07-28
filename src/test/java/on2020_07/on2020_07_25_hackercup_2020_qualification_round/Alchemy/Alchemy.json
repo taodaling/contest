@@ -1,0 +1,35 @@
+{
+  "name" : "Alchemy",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "6\n3\nBAB\n3\nBBB\n5\nAABBA\n7\nBAAABAA\n11\nBBBAABAAAAB\n11\nBABBBABBABB\n",
+    "output" : "Case #1: Y\nCase #2: N\nCase #3: Y\nCase #4: N\nCase #5: Y\nCase #6: N\n",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256m -Xss64m",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_07.on2020_07_25_hackercup_2020_qualification_round.Alchemy.Alchemy",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.07.25",
+  "contestName" : "hackercup/2020/qualification-round",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

@@ -1,0 +1,35 @@
+{
+  "name" : "Timber",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "8\n2\n0 5\n5 4\n2\n0 5\n9 4\n3\n0 5\n9 3\n2 6\n5\n3 2\n2 8\n-4 5\n8 5\n1 4\n6\n-15 15\n-9 9\n-3 3\n5 5\n9 9\n18 18\n8\n10 20\n20 20\n30 20\n40 20\n50 20\n60 20\n70 20\n80 20\n12\n13 8\n-14 5\n2 19\n33 10\n-31 9\n15 21\n5 3\n-22 16\n-6 11\n25 12\n-40 24\n21 18\n2\n-500000000 500000000\n500000000 500000000\n",
+    "output" : "Case #1: 9\nCase #2: 9\nCase #3: 6\nCase #4: 12\nCase #5: 33\nCase #6: 80\nCase #7: 56\nCase #8: 1000000000\n",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256m -Xss64m",
+  "mainClass" : "Main",
+  "taskClass" : "contest.Timber",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.07.25",
+  "contestName" : "hackercup/2020/qualification-round",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

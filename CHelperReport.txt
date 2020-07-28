@@ -1,2 +1,2 @@
-46 src/main/java/contest/B - Removing Blocks.json
+42 src/main/java/contest/D. Permutations.json
 0

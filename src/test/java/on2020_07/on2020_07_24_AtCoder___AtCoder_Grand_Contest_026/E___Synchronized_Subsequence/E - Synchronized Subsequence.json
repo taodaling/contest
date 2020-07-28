@@ -1,0 +1,50 @@
+{
+  "name" : "E - Synchronized Subsequence",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3\naababb\n",
+    "output" : "abab\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "3\nbbabaa\n",
+    "output" : "bbabaa\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "6\nbbbaabbabaaa\n",
+    "output" : "bbbabaaa\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "9\nabbbaababaababbaba\n",
+    "output" : "bbaababababa\n",
+    "index" : 3,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_07.on2020_07_24_AtCoder___AtCoder_Grand_Contest_026.E___Synchronized_Subsequence.ESynchronizedSubsequence",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.07.24",
+  "contestName" : "AtCoder - AtCoder Grand Contest 026",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}
