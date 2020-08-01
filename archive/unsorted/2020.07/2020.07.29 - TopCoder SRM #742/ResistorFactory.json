@@ -1,0 +1,41 @@
+{
+  "name" : "ResistorFactory",
+  "signature" : {
+    "name" : "construct",
+    "result" : "int[]",
+    "arguments" : [ "long" ],
+    "argumentNames" : [ "nanoOhms" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "3000000000" ],
+    "result" : "0 0 0 0 1 0",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "1200000000" ],
+    "result" : "0 0 0 1 0 0 1 2 1",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "1428571428" ],
+    "result" : "0 0 0 0 1 0 1 2 0 3 1 1",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "12000000001" ],
+    "result" : "0 0 0 0 1 0 2 2 0 3 3 0",
+    "index" : 3,
+    "active" : true
+  }, {
+    "arguments" : [ "333333333" ],
+    "result" : "0 0 1 0 1 1",
+    "index" : 4,
+    "active" : true
+  } ],
+  "date" : "2020.07.29",
+  "contestName" : "TopCoder SRM #742",
+  "testClasses" : [ ],
+  "fqn" : "contest.ResistorFactory",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

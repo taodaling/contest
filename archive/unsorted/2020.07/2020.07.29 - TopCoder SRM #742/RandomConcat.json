@@ -1,0 +1,46 @@
+{
+  "name" : "RandomConcat",
+  "signature" : {
+    "name" : "expectation",
+    "result" : "double",
+    "arguments" : [ "String[]", "String" ],
+    "argumentNames" : [ "pieces", "needle" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "hahaha", "aha" ],
+    "result" : "2.0",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "hahфah", "aha" ],
+    "result" : "0.5",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "tфoфpфcфoфdфeфr", "topcoder" ],
+    "result" : "4.9603174603174596E-5",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "hellotopcфoderhellotopфcoderbye", "topcoder" ],
+    "result" : "0.6666666666666666",
+    "index" : 3,
+    "active" : true
+  }, {
+    "arguments" : [ "aabaaфaabaaaaaфabaфgoodluckфhavefun", "aaaa" ],
+    "result" : "2.8000000000000016",
+    "index" : 4,
+    "active" : true
+  }, {
+    "arguments" : [ "aфaфaaфb", "aba" ],
+    "result" : "0.5",
+    "index" : 5,
+    "active" : true
+  } ],
+  "date" : "2020.07.29",
+  "contestName" : "TopCoder SRM #742",
+  "testClasses" : [ ],
+  "fqn" : "contest.RandomConcat",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

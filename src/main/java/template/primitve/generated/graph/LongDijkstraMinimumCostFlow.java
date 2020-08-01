@@ -57,6 +57,7 @@ public class LongDijkstraMinimumCostFlow implements LongMinimumCostFlow {
         segment.reset(0, m);
         for (int i = 0; i < n; i++) {
             curDist[i] = INF;
+            inq[i] = true;
             prev[i] = null;
         }
         curDist[s] = 0;
@@ -64,12 +65,13 @@ public class LongDijkstraMinimumCostFlow implements LongMinimumCostFlow {
 
         for (int i = 0; i < n; i++) {
             int head = segment.pop(0, m);
+            inq[head] = false;
             if (curDist[head] >= INF) {
                 break;
             }
             for (LongCostFlowEdge e : g[head]) {
                 long dist;
-                if (e.rev.flow == 0 || curDist[e.to] <= (dist = curDist[head] + e.cost - lastDist[e.to] + lastDist[head])) {
+                if (e.rev.flow == 0 || !inq[e.to] || curDist[e.to] <= (dist = curDist[head] + e.cost - lastDist[e.to] + lastDist[head])) {
                     continue;
                 }
                 prev[e.to] = e.rev;

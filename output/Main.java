@@ -1,22 +1,15 @@
 import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.function.Function;
-import java.util.ArrayList;
-import java.util.Map;
-import java.io.OutputStreamWriter;
 import java.io.OutputStream;
 import java.util.Collection;
 import java.io.IOException;
-import java.util.stream.Collectors;
+import java.util.Deque;
 import java.io.UncheckedIOException;
-import java.util.List;
-import java.util.stream.Stream;
 import java.io.Closeable;
 import java.io.Writer;
-import java.util.Comparator;
-import java.util.Collections;
+import java.io.OutputStreamWriter;
+import java.util.ArrayDeque;
 import java.io.InputStream;
 
 /**
@@ -37,208 +30,153 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            FAirSafety solver = new FAirSafety();
+            P5308COCI2019Quiz solver = new P5308COCI2019Quiz();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class FAirSafety {
-        long ans = (long) 1e18;
-
+    static class P5308COCI2019Quiz {
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            List<Point>[] upDown = new List[]{new ArrayList(n), new ArrayList(n)};
-            List<Point>[] leftRight = new List[]{new ArrayList(n), new ArrayList(n)};
-            for (int i = 0; i < n; i++) {
-                Point pt = new Point();
-                pt.x = in.readInt() * 10;
-                pt.y = in.readInt() * 10;
-                switch (in.readChar()) {
-                    case 'U':
-                        upDown[0].add(pt);
-                        break;
-                    case 'D':
-                        upDown[1].add(pt);
-                        break;
-                    case 'L':
-                        leftRight[0].add(pt);
-                        break;
-                    default:
-                        leftRight[1].add(pt);
+            int k = in.readInt();
+
+            double[] dp = new double[n + 1];
+            int[] times = new int[n + 1];
+            DoubleGeqSlopeOptimizer optimizer = new DoubleGeqSlopeOptimizer(n + 1);
+
+            WQSBinarySearch bs = new WQSBinarySearch() {
+                double best;
+                int time;
+
+
+                public double getBest() {
+                    return best;
                 }
-            }
-
-            Comparator<Point> sortByX = (a, b) -> Integer.compare(a.x, b.x);
-            for (int i = 0; i < 2; i++) {
-                upDown[i].sort(sortByX);
-                leftRight[i].sort(sortByX);
-            }
-
-            optimizeHorizontal(cast(leftRight[1], x -> x.y, x -> x.x),
-                    cast(leftRight[0], x -> x.y, x -> x.x));
-            optimizeHorizontal(cast(upDown[0], x -> x.x, x -> x.y),
-                    cast(upDown[1], x -> x.x, x -> x.y));
 
 
-            //inc
-            Map<Integer, List<Point>>[] uDGroupByInc = new Map[2];
-            Map<Integer, List<Point>>[] lRGGroupByInc = new Map[2];
-            for (int i = 0; i < 2; i++) {
-                uDGroupByInc[i] = upDown[i].stream().collect(Collectors.groupingBy(x -> x.y - x.x));
-                lRGGroupByInc[i] = leftRight[i].stream().collect(Collectors.groupingBy(x -> x.y - x.x));
-            }
-
-            //dec
-            Map<Integer, List<Point>>[] uDGroupByDec = new Map[2];
-            Map<Integer, List<Point>>[] lRGGroupByDec = new Map[2];
-            for (int i = 0; i < 2; i++) {
-                uDGroupByDec[i] = upDown[i].stream().collect(Collectors.groupingBy(x -> x.y + x.x));
-                lRGGroupByDec[i] = leftRight[i].stream().collect(Collectors.groupingBy(x -> x.y + x.x));
-            }
-
-            optimize(uDGroupByInc[0], lRGGroupByInc[0]);
-            optimize(lRGGroupByInc[1], uDGroupByInc[1]);
-
-            optimize(uDGroupByDec[1], lRGGroupByDec[0]);
-            optimize(lRGGroupByDec[1], uDGroupByDec[0]);
-
-            if (ans == 1e18) {
-                out.println("SAFE");
-                return;
-            }
-
-            out.println(ans);
-        }
-
-        public Map<Integer, List<Integer>> cast(List<Point> a, Function<Point, Integer> key,
-                                                Function<Point, Integer> value) {
-            Map<Integer, List<Integer>> map = new HashMap<>(a.size());
-            for (Point pt : a) {
-                map.computeIfAbsent(key.apply(pt), x -> new ArrayList<>())
-                        .add(value.apply(pt));
-            }
-            return map;
-        }
-
-        public void optimizeHorizontal(Map<Integer, List<Integer>> a, Map<Integer, List<Integer>> b) {
-            for (Integer key : a.keySet()) {
-                List<Integer> l1 = a.get(key);
-                List<Integer> l2 = b.getOrDefault(key, Collections.emptyList());
-                l1.sort(Comparator.naturalOrder());
-                l2.sort(Comparator.naturalOrder());
-
-                int l2Idx = 0;
-                for (int x : l1) {
-                    while (l2Idx < l2.size() && l2.get(l2Idx) < x) {
-                        l2Idx++;
-                    }
-                    if (l2Idx >= l2.size()) {
-                        break;
-                    }
-                    ans = Math.min(ans, (l2.get(l2Idx) - x) / 2);
+                public int getTime() {
+                    return time;
                 }
-            }
-        }
 
-        public void optimize(Map<Integer, List<Point>> a, Map<Integer, List<Point>> b) {
-            for (Integer key : a.keySet()) {
-                List<Point> l1 = a.get(key);
-                List<Point> l2 = b.getOrDefault(key, Collections.emptyList());
 
-                int l2Idx = 0;
-                for (Point pt : l1) {
-                    while (l2Idx < l2.size() && l2.get(l2Idx).x < pt.x) {
-                        l2Idx++;
+                public void check(double costPerOperation) {
+                    time = 0;
+                    times[0] = 0;
+                    dp[0] = 0;
+                    optimizer.clear();
+                    optimizer.add(0, 0, 0);
+                    for (int i = 1; i <= n; i++) {
+                        int j = optimizer.getBestChoice(1D / i);
+                        times[i] = times[j] + 1;
+                        dp[i] = 1 + dp[j] - (double) j / i - costPerOperation;
+                        optimizer.add(dp[i], i, i);
                     }
-                    if (l2Idx >= l2.size()) {
-                        break;
-                    }
-                    ans = Math.min(ans, l2.get(l2Idx).x - pt.x);
+                    best = dp[n];
+                    time = times[n];
                 }
-            }
+            };
+
+            double ans = bs.search(0, 1, 60, k, true);
+            out.printf("%.9f", ans);
         }
 
     }
 
-    static class Point {
-        int x;
-        int y;
+    static class DoubleGeqSlopeOptimizer {
+        Deque<DoubleGeqSlopeOptimizer.Point> deque;
+
+        public DoubleGeqSlopeOptimizer() {
+            this(0);
+        }
+
+        public DoubleGeqSlopeOptimizer(int exp) {
+            deque = new ArrayDeque<>(exp);
+        }
+
+        private double slope(DoubleGeqSlopeOptimizer.Point a, DoubleGeqSlopeOptimizer.Point b) {
+            if (b.x == a.x) {
+                if (b.y == a.y) {
+                    return 0;
+                } else if (b.y > a.y) {
+                    return 1e50;
+                } else {
+                    return 1e-50;
+                }
+            }
+            return (b.y - a.y) / (b.x - a.x);
+        }
+
+        public DoubleGeqSlopeOptimizer.Point add(double y, double x, int id) {
+            DoubleGeqSlopeOptimizer.Point t1 = new DoubleGeqSlopeOptimizer.Point(x, y, id);
+            while (deque.size() >= 2) {
+                DoubleGeqSlopeOptimizer.Point t2 = deque.removeLast();
+                DoubleGeqSlopeOptimizer.Point t3 = deque.peekLast();
+                if (slope(t3, t2) > slope(t2, t1)) {
+                    deque.addLast(t2);
+                    break;
+                }
+            }
+            deque.addLast(t1);
+            return t1;
+        }
+
+        public int getBestChoice(double s) {
+            while (deque.size() >= 2) {
+                DoubleGeqSlopeOptimizer.Point h1 = deque.removeFirst();
+                DoubleGeqSlopeOptimizer.Point h2 = deque.peekFirst();
+                if (slope(h2, h1) < s) {
+                    deque.addFirst(h1);
+                    break;
+                }
+            }
+            return deque.peekFirst().id;
+        }
+
+        public void clear() {
+            deque.clear();
+        }
+
+        private static class Point {
+            final double x;
+            final double y;
+            final int id;
+
+            private Point(double x, double y, int id) {
+                this.x = x;
+                this.y = y;
+                this.id = id;
+            }
+
+        }
 
     }
 
-    static class FastOutput implements AutoCloseable, Closeable, Appendable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
+    static abstract class WQSBinarySearch {
+        protected abstract double getBest();
 
-        public FastOutput append(CharSequence csq) {
-            cache.append(csq);
-            return this;
-        }
+        protected abstract int getTime();
 
-        public FastOutput append(CharSequence csq, int start, int end) {
-            cache.append(csq, start, end);
-            return this;
-        }
+        protected abstract void check(double costPerOperation);
 
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput append(char c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput append(long c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput append(String c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput println(String c) {
-            return append(c).println();
-        }
-
-        public FastOutput println(long c) {
-            return append(c).println();
-        }
-
-        public FastOutput println() {
-            cache.append(System.lineSeparator());
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
+        public double search(double l, double r, int round, int k, boolean top) {
+            if (l > r || round <= 0) {
+                throw new IllegalArgumentException();
             }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
+            double m = 0;
+            while (round-- > 0) {
+                m = (l + r) / 2;
+                check(m);
+                if (getTime() == k) {
+                    break;
+                }
+                if (getTime() > k == top) {
+                    l = m;
+                } else {
+                    r = m;
+                }
             }
-        }
-
-        public String toString() {
-            return cache.toString();
+            return getBest() + m * k;
         }
 
     }
@@ -300,11 +238,62 @@ public class Main {
             return val;
         }
 
-        public char readChar() {
-            skipBlank();
-            char c = (char) next;
-            next = read();
-            return c;
+    }
+
+    static class FastOutput implements AutoCloseable, Closeable, Appendable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
+
+        public FastOutput append(CharSequence csq) {
+            cache.append(csq);
+            return this;
+        }
+
+        public FastOutput append(CharSequence csq, int start, int end) {
+            cache.append(csq, start, end);
+            return this;
+        }
+
+        public FastOutput(Writer os) {
+            this.os = os;
+        }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput append(char c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput printf(String format, Object... args) {
+            cache.append(String.format(format, args));
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            return this;
+        }
+
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+
+        public String toString() {
+            return cache.toString();
         }
 
     }

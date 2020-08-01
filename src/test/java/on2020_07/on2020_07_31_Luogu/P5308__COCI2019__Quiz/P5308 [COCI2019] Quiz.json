@@ -1,0 +1,40 @@
+{
+  "name" : "P5308 [COCI2019] Quiz",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5 3\n",
+    "output" : "2.100000000\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "10 10\n",
+    "output" : "2.928968254\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx250M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_07.on2020_07_31_Luogu.P5308__COCI2019__Quiz.P5308COCI2019Quiz",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.07.31",
+  "contestName" : "Luogu",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

@@ -1,7 +1,7 @@
 package template.primitve.generated.graph;
 
 import template.primitve.generated.datastructure.IntegerDequeImpl;
-import template.primitve.generated.datastructure.IntegerList;
+import template.primitve.generated.datastructure.IntegerArrayList;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,7 +16,7 @@ public class LongHLPP implements LongMaximumFlow {
     private int s;
     private int t;
     private List<LongFlowEdge>[] adj;
-    private IntegerList[] lst;
+    private IntegerArrayList[] lst;
     private List<Integer>[] gap;
     private long[] excess;
     private int highest;
@@ -27,13 +27,13 @@ public class LongHLPP implements LongMaximumFlow {
 
     public LongHLPP(int maxV) {
         deque = new IntegerDequeImpl(maxV);
-        lst = new IntegerList[maxV + 5];
+        lst = new IntegerArrayList[maxV + 5];
         gap = new ArrayList[maxV + 5];
         cnt = new int[maxV + 5];
         height = new int[maxV + 5];
         excess = new long[maxV + 5];
         for (int i = 0; i < maxV + 5; ++i) {
-            lst[i] = new IntegerList();
+            lst[i] = new IntegerArrayList();
             gap[i] = new ArrayList<>();
         }
     }

@@ -27,6 +27,30 @@ public class CompareUtils {
         return c;
     }
 
+    public static double maxOf(double... a) {
+        return Arrays.stream(a).max().orElse(0);
+    }
+
+    public static int maxOf(int... a) {
+        return Arrays.stream(a).max().orElse(0);
+    }
+
+    public static long maxOf(long... a) {
+        return Arrays.stream(a).max().orElse(0);
+    }
+
+    public static double minOf(double... a) {
+        return Arrays.stream(a).min().orElse(0);
+    }
+
+    public static int minOf(int... a) {
+        return Arrays.stream(a).min().orElse(0);
+    }
+
+    public static long minOf(long... a) {
+        return Arrays.stream(a).min().orElse(0);
+    }
+
     public static int minOf(int[] a, int l, int r) {
         int x = a[l];
         for (int i = l; i <= r; i++) {
@@ -560,7 +584,7 @@ public class CompareUtils {
 
     public static <T> void mergeAscending(Object[] a, int al, int ar, Object[] b, int bl, int br, Object[] c, int cl, Comparator<T> comp) {
         while (al <= ar || bl <= br) {
-            if (bl > br || (al <= ar && comp.compare((T)a[al], (T)b[bl]) <= 0)) {
+            if (bl > br || (al <= ar && comp.compare((T) a[al], (T) b[bl]) <= 0)) {
                 c[cl++] = a[al++];
             } else {
                 c[cl++] = b[bl++];

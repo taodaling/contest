@@ -479,19 +479,29 @@ public class IntervalPickProblem {
      * 区间需要满足intervals[i].l < intervals[i + 1].l且intervals[i].r < intervals[i + 1].r
      * <br>
      */
-    public static long solveNonNegative(long[] data, IntervalPickProblem.Interval[] intervals, int k) {
-        NonNegativeWQSSolver solver = new NonNegativeWQSSolver(data, intervals);
-        DoubleBinarySearch dbs = new DoubleBinarySearch(1e-12, 1e-12) {
-            public boolean check(double mid) {
-                return solver.solveNonNegative(mid).time <= k;
-            }
-        };
-        long sum = 0;
-        for (long x : data) {
-            sum += x;
+    public static long solveNonNegative(long[] data, IntervalPickProblem.Interval[] intervals, int k, int round) {
+        if (round <= 0) {
+            throw new IllegalArgumentException();
         }
-        double cost = dbs.binarySearch(0, sum);
-        long ans = DigitUtils.round(solver.solveNonNegative(cost).maxValue + k * cost);
+        long sum = Arrays.stream(data).sum();
+        NonNegativeWQSSolver solver = new NonNegativeWQSSolver(data, intervals);
+        WQSResult result = null;
+
+        double l = 0;
+        double r = sum;
+        double m = 0;
+        while (round-- > 0) {
+            m = (l + r) / 2;
+            result = solver.solveNonNegative(m);
+            if (result.time > k) {
+                l = m;
+            } else if (result.time < k) {
+                r = m;
+            } else {
+                break;
+            }
+        }
+        long ans = DigitUtils.round(result.maxValue + k * m);
         return ans;
     }
 
