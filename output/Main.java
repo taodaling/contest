@@ -2,14 +2,13 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Collection;
 import java.io.IOException;
-import java.util.Deque;
+import java.util.ArrayList;
 import java.io.UncheckedIOException;
+import java.util.List;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
-import java.util.ArrayDeque;
 import java.io.InputStream;
 
 /**
@@ -30,153 +29,330 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            P5308COCI2019Quiz solver = new P5308COCI2019Quiz();
+            EWanderingTKHS solver = new EWanderingTKHS();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class P5308COCI2019Quiz {
+    static class EWanderingTKHS {
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            int k = in.readInt();
+            Node[] nodes = new Node[n];
+            for (int i = 0; i < n; i++) {
+                nodes[i] = new Node();
+                nodes[i].id = i;
+                nodes[i].lctNode = new LCTNode();
+                nodes[i].lctNode.id = i;
+                nodes[i].lctNode.pushUp();
+            }
+            for (int i = 0; i < n - 1; i++) {
+                Node a = nodes[in.readInt() - 1];
+                Node b = nodes[in.readInt() - 1];
+                a.adj.add(b);
+                b.adj.add(a);
 
-            double[] dp = new double[n + 1];
-            int[] times = new int[n + 1];
-            DoubleGeqSlopeOptimizer optimizer = new DoubleGeqSlopeOptimizer(n + 1);
+                LCTNode.join(a.lctNode, b.lctNode);
+            }
 
-            WQSBinarySearch bs = new WQSBinarySearch() {
-                double best;
-                int time;
+            for (Node node : nodes[0].adj) {
+                dfs(node, nodes[0], nodes[0], node, nodes[0]);
+            }
+            solve(nodes[0], null, 0);
 
+            for (int i = 1; i < n; i++) {
+                out.println(nodes[i].cnt);
+            }
+        }
 
-                public double getBest() {
-                    return best;
+        public int maxIdBetween(Node a, Node b) {
+            LCTNode.findRoute(a.lctNode, b.lctNode);
+            LCTNode.splay(a.lctNode);
+            return a.lctNode.maxId;
+        }
+
+        public void dfs(Node root, Node p, Node max, Node second, Node top) {
+            root.p = p;
+            if (max.id <= root.id) {
+                root.add++;
+            } else if (max.p != null && maxIdBetween(max.p, top) >=
+                    maxIdBetween(root, second)) {
+                max.add++;
+            } else {
+                second.add++;
+            }
+
+            for (Node node : root.adj) {
+                if (node == p) {
+                    continue;
                 }
-
-
-                public int getTime() {
-                    return time;
+                if (max.id > root.id) {
+                    dfs(node, root, max, second, top);
+                } else {
+                    dfs(node, root, root, node, top);
                 }
+            }
+        }
 
+        public void solve(Node root, Node p, int cnt) {
+            cnt += root.add;
+            root.cnt = cnt;
+            for (Node node : root.adj) {
+                if (node == p) {
+                    continue;
+                }
+                solve(node, root, cnt);
+            }
+        }
 
-                public void check(double costPerOperation) {
-                    time = 0;
-                    times[0] = 0;
-                    dp[0] = 0;
-                    optimizer.clear();
-                    optimizer.add(0, 0, 0);
-                    for (int i = 1; i <= n; i++) {
-                        int j = optimizer.getBestChoice(1D / i);
-                        times[i] = times[j] + 1;
-                        dp[i] = 1 + dp[j] - (double) j / i - costPerOperation;
-                        optimizer.add(dp[i], i, i);
+    }
+
+    static class FastOutput implements AutoCloseable, Closeable, Appendable {
+        private StringBuilder cache = new StringBuilder(10 << 20);
+        private final Writer os;
+
+        public FastOutput append(CharSequence csq) {
+            cache.append(csq);
+            return this;
+        }
+
+        public FastOutput append(CharSequence csq, int start, int end) {
+            cache.append(csq, start, end);
+            return this;
+        }
+
+        public FastOutput(Writer os) {
+            this.os = os;
+        }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput append(char c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput append(int c) {
+            cache.append(c);
+            return this;
+        }
+
+        public FastOutput println(int c) {
+            return append(c).println();
+        }
+
+        public FastOutput println() {
+            cache.append(System.lineSeparator());
+            return this;
+        }
+
+        public FastOutput flush() {
+            try {
+                os.append(cache);
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            return this;
+        }
+
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+
+        public String toString() {
+            return cache.toString();
+        }
+
+    }
+
+    static class Node {
+        List<Node> adj = new ArrayList<>();
+        int id;
+        int cnt;
+        int add;
+        Node p;
+        LCTNode lctNode;
+
+        public String toString() {
+            return String.format("%d=%d", id, add);
+        }
+
+    }
+
+    static class LCTNode {
+        public static final LCTNode NIL = new LCTNode();
+        LCTNode left = NIL;
+        LCTNode right = NIL;
+        LCTNode father = NIL;
+        LCTNode treeFather = NIL;
+        boolean reverse;
+        int id;
+        int maxId;
+
+        static {
+            NIL.left = NIL;
+            NIL.right = NIL;
+            NIL.father = NIL;
+            NIL.treeFather = NIL;
+            NIL.maxId = NIL.id = -1;
+        }
+
+        public static void access(LCTNode x) {
+            LCTNode last = NIL;
+            while (x != NIL) {
+                splay(x);
+                x.right.father = NIL;
+                x.right.treeFather = x;
+                x.setRight(last);
+                x.pushUp();
+
+                last = x;
+                x = x.treeFather;
+            }
+        }
+
+        public static void makeRoot(LCTNode x) {
+            access(x);
+            splay(x);
+            x.reverse();
+        }
+
+        public static void join(LCTNode y, LCTNode x) {
+            makeRoot(x);
+            x.treeFather = y;
+        }
+
+        public static void findRoute(LCTNode x, LCTNode y) {
+            makeRoot(y);
+            access(x);
+        }
+
+        public static void splay(LCTNode x) {
+            if (x == NIL) {
+                return;
+            }
+            LCTNode y, z;
+            while ((y = x.father) != NIL) {
+                if ((z = y.father) == NIL) {
+                    y.pushDown();
+                    x.pushDown();
+                    if (x == y.left) {
+                        zig(x);
+                    } else {
+                        zag(x);
                     }
-                    best = dp[n];
-                    time = times[n];
-                }
-            };
-
-            double ans = bs.search(0, 1, 60, k, true);
-            out.printf("%.9f", ans);
-        }
-
-    }
-
-    static class DoubleGeqSlopeOptimizer {
-        Deque<DoubleGeqSlopeOptimizer.Point> deque;
-
-        public DoubleGeqSlopeOptimizer() {
-            this(0);
-        }
-
-        public DoubleGeqSlopeOptimizer(int exp) {
-            deque = new ArrayDeque<>(exp);
-        }
-
-        private double slope(DoubleGeqSlopeOptimizer.Point a, DoubleGeqSlopeOptimizer.Point b) {
-            if (b.x == a.x) {
-                if (b.y == a.y) {
-                    return 0;
-                } else if (b.y > a.y) {
-                    return 1e50;
                 } else {
-                    return 1e-50;
+                    z.pushDown();
+                    y.pushDown();
+                    x.pushDown();
+                    if (x == y.left) {
+                        if (y == z.left) {
+                            zig(y);
+                            zig(x);
+                        } else {
+                            zig(x);
+                            zag(x);
+                        }
+                    } else {
+                        if (y == z.left) {
+                            zag(x);
+                            zig(x);
+                        } else {
+                            zag(y);
+                            zag(x);
+                        }
+                    }
                 }
             }
-            return (b.y - a.y) / (b.x - a.x);
+
+            x.pushDown();
+            x.pushUp();
         }
 
-        public DoubleGeqSlopeOptimizer.Point add(double y, double x, int id) {
-            DoubleGeqSlopeOptimizer.Point t1 = new DoubleGeqSlopeOptimizer.Point(x, y, id);
-            while (deque.size() >= 2) {
-                DoubleGeqSlopeOptimizer.Point t2 = deque.removeLast();
-                DoubleGeqSlopeOptimizer.Point t3 = deque.peekLast();
-                if (slope(t3, t2) > slope(t2, t1)) {
-                    deque.addLast(t2);
-                    break;
-                }
-            }
-            deque.addLast(t1);
-            return t1;
+        public static void zig(LCTNode x) {
+            LCTNode y = x.father;
+            LCTNode z = y.father;
+            LCTNode b = x.right;
+
+            y.setLeft(b);
+            x.setRight(y);
+            z.changeChild(y, x);
+
+            y.pushUp();
         }
 
-        public int getBestChoice(double s) {
-            while (deque.size() >= 2) {
-                DoubleGeqSlopeOptimizer.Point h1 = deque.removeFirst();
-                DoubleGeqSlopeOptimizer.Point h2 = deque.peekFirst();
-                if (slope(h2, h1) < s) {
-                    deque.addFirst(h1);
-                    break;
-                }
-            }
-            return deque.peekFirst().id;
+        public static void zag(LCTNode x) {
+            LCTNode y = x.father;
+            LCTNode z = y.father;
+            LCTNode b = x.left;
+
+            y.setRight(b);
+            x.setLeft(y);
+            z.changeChild(y, x);
+
+            y.pushUp();
         }
 
-        public void clear() {
-            deque.clear();
+        public String toString() {
+            return "" + id;
         }
 
-        private static class Point {
-            final double x;
-            final double y;
-            final int id;
+        public void pushDown() {
+            if (this == NIL) {
+                return;
+            }
+            if (reverse) {
+                reverse = false;
 
-            private Point(double x, double y, int id) {
-                this.x = x;
-                this.y = y;
-                this.id = id;
+                LCTNode tmpNode = left;
+                left = right;
+                right = tmpNode;
+
+                left.reverse();
+                right.reverse();
             }
 
+            left.treeFather = treeFather;
+            right.treeFather = treeFather;
         }
 
-    }
+        public void reverse() {
+            reverse = !reverse;
+        }
 
-    static abstract class WQSBinarySearch {
-        protected abstract double getBest();
+        public void setLeft(LCTNode x) {
+            left = x;
+            x.father = this;
+        }
 
-        protected abstract int getTime();
+        public void setRight(LCTNode x) {
+            right = x;
+            x.father = this;
+        }
 
-        protected abstract void check(double costPerOperation);
-
-        public double search(double l, double r, int round, int k, boolean top) {
-            if (l > r || round <= 0) {
-                throw new IllegalArgumentException();
+        public void changeChild(LCTNode y, LCTNode x) {
+            if (left == y) {
+                setLeft(x);
+            } else {
+                setRight(x);
             }
-            double m = 0;
-            while (round-- > 0) {
-                m = (l + r) / 2;
-                check(m);
-                if (getTime() == k) {
-                    break;
-                }
-                if (getTime() > k == top) {
-                    l = m;
-                } else {
-                    r = m;
-                }
+        }
+
+        public void pushUp() {
+            if (this == NIL) {
+                return;
             }
-            return getBest() + m * k;
+            maxId = Math.max(left.maxId, right.maxId);
+            maxId = Math.max(id, maxId);
         }
 
     }
@@ -236,64 +412,6 @@ public class Main {
             }
 
             return val;
-        }
-
-    }
-
-    static class FastOutput implements AutoCloseable, Closeable, Appendable {
-        private StringBuilder cache = new StringBuilder(10 << 20);
-        private final Writer os;
-
-        public FastOutput append(CharSequence csq) {
-            cache.append(csq);
-            return this;
-        }
-
-        public FastOutput append(CharSequence csq, int start, int end) {
-            cache.append(csq, start, end);
-            return this;
-        }
-
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput append(char c) {
-            cache.append(c);
-            return this;
-        }
-
-        public FastOutput printf(String format, Object... args) {
-            cache.append(String.format(format, args));
-            return this;
-        }
-
-        public FastOutput flush() {
-            try {
-                os.append(cache);
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        }
-
-        public String toString() {
-            return cache.toString();
         }
 
     }

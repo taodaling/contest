@@ -1,0 +1,50 @@
+{
+  "name" : "E - Bichrome Tree",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3\n1 1\n4 3 2\n",
+    "output" : "POSSIBLE\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "3\n1 2\n1 2 3\n",
+    "output" : "IMPOSSIBLE\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "8\n1 1 1 3 4 5 5\n4 1 6 2 2 1 3 3\n",
+    "output" : "POSSIBLE\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "1\n\n0\n",
+    "output" : "POSSIBLE\n",
+    "index" : 3,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.EBichromeTree",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.08.05",
+  "contestName" : "AtCoder - AtCoder Regular Contest 083",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

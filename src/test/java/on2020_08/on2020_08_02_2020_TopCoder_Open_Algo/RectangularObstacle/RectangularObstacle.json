@@ -1,0 +1,41 @@
+{
+  "name" : "RectangularObstacle",
+  "signature" : {
+    "name" : "countReachable",
+    "result" : "long",
+    "arguments" : [ "int", "int", "int", "int", "int" ],
+    "argumentNames" : [ "x1", "x2", "y1", "y2", "s" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "-5", "5", "3", "3", "2" ],
+    "result" : "13",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "-5", "5", "3", "3", "3" ],
+    "result" : "24",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "-4", "1", "1", "2", "6" ],
+    "result" : "61",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "0", "0", "1", "1", "4" ],
+    "result" : "38",
+    "index" : 3,
+    "active" : true
+  }, {
+    "arguments" : [ "-100", "100", "42", "47", "0" ],
+    "result" : "1",
+    "index" : 4,
+    "active" : true
+  } ],
+  "date" : "2020.08.02",
+  "contestName" : "2020 TopCoder Open Algo",
+  "testClasses" : [ ],
+  "fqn" : "on2020_08.on2020_08_02_2020_TopCoder_Open_Algo.RectangularObstacle.RectangularObstacle",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

@@ -1,0 +1,21 @@
+{
+  "name" : "Hamiltons",
+  "signature" : {
+    "name" : "construct",
+    "result" : "int[]",
+    "arguments" : [ "int", "int" ],
+    "argumentNames" : [ "N", "L" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "6", "1000" ],
+    "result" : "174 325 60 839 248 437 398 965 806 658 985 969 319 100 149",
+    "index" : 0,
+    "active" : true
+  } ],
+  "date" : "2020.08.02",
+  "contestName" : "2020 TopCoder Open Algo",
+  "testClasses" : [ ],
+  "fqn" : "contest.Hamiltons",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

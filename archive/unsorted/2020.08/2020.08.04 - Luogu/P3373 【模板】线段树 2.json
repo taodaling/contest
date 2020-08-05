@@ -1,0 +1,40 @@
+{
+  "name" : "P3373 【模板】线段树 2",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5 5 38\n1 5 4 2 3\n2 1 4 1\n3 2 5\n1 2 4 2\n2 3 5 5\n3 1 4\n",
+    "output" : "17\n2\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "8 10 571373\n5929 7152 8443 6028 8580 5449 8473 4237 \n2 4 8 4376\n1 2 8 9637\n2 2 6 7918\n2 5 8 5681\n3 2 8\n1 1 5 6482\n3 1 5\n1 5 8 8701\n2 5 8 7992\n2 5 8 7806\n",
+    "output" : "478836\n562114\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx125M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.P33732",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.08.04",
+  "contestName" : "Luogu",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

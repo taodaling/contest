@@ -1,6 +1,50 @@
-package template.graph;
+package contest;
 
-public class OfflineConnectionChecker {
+import template.datastructure.Range2DequeAdapter;
+import template.datastructure.SimplifiedDeque;
+import template.io.FastInput;
+import template.io.FastOutput;
+
+import java.util.Arrays;
+
+public class Task {
+    public void solve(int testNumber, FastInput in, FastOutput out) {
+        int n = in.readInt();
+        int m = in.readInt();
+        int t = in.readInt();
+
+        int[][] edges = new int[m][4];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < 4; j++) {
+                edges[i][j] = in.readInt();
+            }
+        }
+        Arrays.sort(edges, (a, b) -> Integer.compare(a[2], b[2]));
+
+        OfflineConnectionChecker cc = new OfflineConnectionChecker(n);
+        cc.elapse(0);
+        int next = -1;
+        String yes = "Yes";
+        String no = "No";
+
+        SimplifiedDeque<int[]> dq = new Range2DequeAdapter<>(i -> edges[i], 0, edges.length - 1);
+        for (int i = 0; i < t; i++) {
+            if (i < next) {
+                out.println(no);
+                continue;
+            }
+            cc.elapse(i);
+            while (!dq.isEmpty() && dq.peekFirst()[2] <= i) {
+                int[] e = dq.removeFirst();
+                int ret = cc.addEdge(e[0] - 1, e[1] - 1, e[3]);
+                next = Math.max(next, ret);
+            }
+            out.println(i < next ? no : yes);
+        }
+    }
+}
+
+class OfflineConnectionChecker {
     private LCTNode[] nodes;
     private int time = -1;
 
@@ -9,6 +53,7 @@ public class OfflineConnectionChecker {
         for (int i = 0; i < n; i++) {
             nodes[i] = new LCTNode();
             nodes[i].id = i;
+            nodes[i].val = 1;
             nodes[i].dieTime = Integer.MAX_VALUE;
             nodes[i].pushUp();
         }
@@ -26,14 +71,17 @@ public class OfflineConnectionChecker {
     /**
      * 增加一条有效期截止到dieTime的边
      */
-    public void addEdge(int aId, int bId, int dieTime) {
+    public int addEdge(int aId, int bId, int dieTime) {
         LCTNode a = nodes[aId];
         LCTNode b = nodes[bId];
         LCTNode.findRoute(a, b);
         LCTNode.splay(a);
+
+        int ans = a.sum % 2 == 1 ? Math.min(a.eldest.dieTime, dieTime) : -1;
         if (a.eldest.dieTime >= dieTime) {
-            return;
+            return ans;
         }
+
         LCTNode eldest = a.eldest;
         LCTNode.splay(eldest);
         LCTNode.cut(eldest.a, eldest);
@@ -46,6 +94,7 @@ public class OfflineConnectionChecker {
         node.pushUp();
         LCTNode.join(node.a, node);
         LCTNode.join(node.b, node);
+        return ans;
     }
 
     /**
@@ -61,9 +110,6 @@ public class OfflineConnectionChecker {
 
 
     public void elapse(int t) {
-        if (t < time) {
-            throw new IllegalArgumentException();
-        }
         time = t;
     }
 
@@ -90,6 +136,8 @@ public class OfflineConnectionChecker {
         LCTNode b;
         LCTNode eldest;
         int dieTime;
+        int sum;
+        int val;
 
         public static LCTNode elder(LCTNode a, LCTNode b) {
             return a.dieTime < b.dieTime ? a : b;
@@ -255,8 +303,12 @@ public class OfflineConnectionChecker {
         }
 
         public void pushUp() {
+            if (this == NIL) {
+                return;
+            }
             eldest = elder(this, left.eldest);
             eldest = elder(eldest, right.eldest);
+            sum = left.sum + right.sum + val;
         }
     }
 }
