@@ -7,7 +7,7 @@ import java.util.Arrays;
  */
 public class DoubleBIT {
     /**
-     * data[i] = \sum_{j \in (i- (i), i]} A[i]
+     * data[i] = \sum_{j \in (i-lowbit(i), i]} A[i]
      */
     private double[] data;
     private int n;

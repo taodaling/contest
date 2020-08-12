@@ -5,6 +5,13 @@ import template.binary.Bits;
 import template.binary.Log2;
 
 public class MaximumIndependentSet {
+    /**
+     * meet in middle, O(2^{n/2})
+     * @param edges
+     * @param weights
+     * @param selections
+     * @return
+     */
     public static long solve(boolean[][] edges, long[] weights, boolean[] selections) {
         int n = weights.length;
         if (n > 60) {

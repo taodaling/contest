@@ -1,0 +1,36 @@
+{
+  "name" : "DigitStringDiv1",
+  "signature" : {
+    "name" : "count",
+    "result" : "long",
+    "arguments" : [ "String", "int" ],
+    "argumentNames" : [ "S", "X" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "0", "1" ],
+    "result" : "0",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "101", "9" ],
+    "result" : "3",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "471", "47" ],
+    "result" : "2",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "2222", "97" ],
+    "result" : "5",
+    "index" : 3,
+    "active" : true
+  } ],
+  "date" : "2020.08.07",
+  "contestName" : "TopCoder SRM #741",
+  "testClasses" : [ ],
+  "fqn" : "contest.DigitStringDiv1",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

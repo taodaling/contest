@@ -78,15 +78,4 @@ public class Power implements InverseNumber {
         return modular.valueOf(extGCD.getX());
     }
 
-    public int pow2(int x) {
-        return x * x;
-    }
-
-    public long pow2(long x) {
-        return x * x;
-    }
-
-    public double pow2(double x) {
-        return x * x;
-    }
 }

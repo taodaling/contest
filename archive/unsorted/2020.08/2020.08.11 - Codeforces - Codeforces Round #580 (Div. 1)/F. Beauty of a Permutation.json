@@ -1,0 +1,48 @@
+{
+  "name" : "F. Beauty of a Permutation",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4\n1 1\n5 6\n5 8\n5 10\n",
+    "output" : "YES\n1 \nYES\n2 4 1 5 3 \nNO\nYES\n2 3 1 4 5 \n",
+    "index" : 0,
+    "active" : false
+  }, {
+    "input" : "2\n4 10\n100 1\n",
+    "output" : "YES\n1 2 3 4 \nNO\n",
+    "index" : 1,
+    "active" : false
+  }, {
+    "input" : "1\n5 6",
+    "index" : 2,
+    "active" : false
+  }, {
+    "input" : "1\n5 10",
+    "index" : 3,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.FBeautyOfAPermutation",
+  "checkerClass" : "contest.FTokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.08.11",
+  "contestName" : "Codeforces - Codeforces Round #580 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

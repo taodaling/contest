@@ -6,7 +6,9 @@ import template.rand.Hasher;
 import java.util.Arrays;
 
 public class DoubleHashSet {
+    private int now;
     private int[] slot;
+    private int[] version;
     private int[] next;
     private double[] keys;
     private int alloc;
@@ -17,12 +19,21 @@ public class DoubleHashSet {
     private Hasher hasher = new Hasher();
 
     public DoubleHashSet(int cap, boolean rehash) {
+        now = 1;
         this.mask = (1 << (32 - Integer.numberOfLeadingZeros(cap - 1))) - 1;
         this.rehash = rehash;
         slot = new int[mask + 1];
+        version = new int[slot.length + 1];
         next = new int[cap + 1];
         keys = new double[cap + 1];
         removed = new boolean[cap + 1];
+    }
+
+    private void access(int i) {
+        if (version[i] != now) {
+            version[i] = now;
+            slot[i] = 0;
+        }
     }
 
     private void doubleCapacity() {
@@ -49,6 +60,7 @@ public class DoubleHashSet {
     public void add(double x) {
         int h = hash(x);
         int s = h & mask;
+        access(s);
         if (slot[s] == 0) {
             alloc();
             slot[s] = alloc;
@@ -69,8 +81,10 @@ public class DoubleHashSet {
 
     private void rehash() {
         int[] newSlots = new int[Math.max(16, slot.length * 2)];
+        int[] newVersions = new int[newSlots.length];
         int newMask = newSlots.length - 1;
         for (int i = 0; i < slot.length; i++) {
+            access(i);
             if (slot[i] == 0) {
                 continue;
             }
@@ -84,6 +98,8 @@ public class DoubleHashSet {
             }
         }
         this.slot = newSlots;
+        this.version = newVersions;
+        now = 0;
         this.mask = newMask;
     }
 
@@ -91,6 +107,7 @@ public class DoubleHashSet {
     public boolean contain(double x) {
         int h = hash(x);
         int s = h & mask;
+        access(s);
         if (slot[s] == 0) {
             return false;
         }
@@ -100,6 +117,7 @@ public class DoubleHashSet {
     public void remove(double x) {
         int h = hash(x);
         int s = h & mask;
+        access(s);
         if (slot[s] == 0) {
             return;
         }
@@ -139,8 +157,8 @@ public class DoubleHashSet {
 
     public void clear() {
         alloc = 0;
-        Arrays.fill(slot, 0);
         size = 0;
+        now++;
     }
 
     public DoubleIterator iterator() {

@@ -6,14 +6,14 @@ public class MisWeighted {
 
     // maximum independent weighted set in O(3^(n/3))
     // prerequisite: g[i] has i'th bit set
-    public static int mis(long[] g, long unused, int[] weights) {
+    public static long mis(long[] g, long unused, long[] weights) {
         if (unused == 0)
             return 0;
         int v = -1;
         for (int u = Long.numberOfTrailingZeros(unused); u < g.length; u += Long.numberOfTrailingZeros(unused >> (u + 1)) + 1)
             if (v == -1 || Long.bitCount(g[v] & unused) > Long.bitCount(g[u] & unused))
                 v = u;
-        int res = 0;
+        long res = 0;
         long nv = g[v] & unused;
         for (int y = Long.numberOfTrailingZeros(nv); y < g.length; y += Long.numberOfTrailingZeros(nv >> (y + 1)) + 1)
             res = Math.max(res, weights[y] + mis(g, unused & ~g[y], weights));
@@ -26,7 +26,7 @@ public class MisWeighted {
         for (int step = 0; step < 1000; step++) {
             int n = rnd.nextInt(16) + 1;
             long[] g = new long[n];
-            int[] weights = new int[n];
+            long[] weights = new long[n];
             for (int i = 0; i < n; i++)
                 weights[i] = rnd.nextInt(1000);
             for (int i = 0; i < n; i++)
@@ -37,14 +37,14 @@ public class MisWeighted {
                     }
             for (int i = 0; i < n; i++)
                 g[i] |= 1 << i;
-            int res1 = mis(g, (1L << n) - 1, weights);
-            int res2 = misSlow(g, weights);
+            long res1 = mis(g, (1L << n) - 1, weights);
+            long res2 = misSlow(g, weights);
             if (res1 != res2)
                 throw new RuntimeException();
         }
     }
 
-    static int misSlow(long[] g, int[] weights) {
+    static long misSlow(long[] g, long[] weights) {
         int res = 0;
         int n = g.length;
         for (int set = 0; set < 1 << n; set++) {
