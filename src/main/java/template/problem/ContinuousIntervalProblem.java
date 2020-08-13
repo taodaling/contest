@@ -1,5 +1,6 @@
 package template.problem;
 
+import dp.Lis;
 import template.datastructure.PermutationNode;
 import template.graph.DirectedEdge;
 import template.graph.KthAncestorOnTree;
@@ -7,6 +8,7 @@ import template.graph.LcaOnTree;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
@@ -35,13 +37,10 @@ public class ContinuousIntervalProblem {
         leaf = new Node[n + 2];
 
         int m = nodes.size();
-        List<DirectedEdge>[] g = IntStream.range(0, m).mapToObj(i -> new ArrayList<>()).toArray(i -> new List[i]);
+        List<DirectedEdge>[] g = new List[m];
         for (int i = 0; i < m; i++) {
             Node node = nodes.get(i);
-            for (PermutationNode pn : node.adj) {
-                Node next = (Node) pn;
-                g[i].add(new DirectedEdge(next.id));
-            }
+            g[i] = node.adj.stream().map(x -> new DirectedEdge(((Node) x).id)).collect(Collectors.toList());
         }
         kthAncestorOnTree = new KthAncestorOnTree(g, root.id);
         lcaOnTree = new LcaOnTree(g, root.id);

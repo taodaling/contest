@@ -31,7 +31,7 @@ public class HalfPlaneIntersection {
         int n = lines.length;
 
 
-        Deque<Line2D> deque = new ArrayDeque(n);
+        Deque<Line2D> deque = new ArrayDeque<>(n);
         for (int i = 0; i < n; i++) {
             Line2D line = lines[i];
             while (i + 1 < n && GeometryUtils.valueOf(line.getTheta() - lines[i + 1].getTheta()) == 0) {
@@ -48,7 +48,7 @@ public class HalfPlaneIntersection {
         if (!hasSolution) {
             return;
         }
-        convex = new LineConvexHull(new ArrayList(deque));
+        convex = new LineConvexHull(new ArrayList<>(deque));
     }
 
     private void insert(Deque<Line2D> deque, Line2D line, boolean close) {

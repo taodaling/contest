@@ -2,6 +2,7 @@ package template.geometry.geo2;
 
 import template.geometry.GeoConstant;
 import template.math.DigitUtils;
+import template.math.KahanSummation;
 import template.utils.CompareUtils;
 
 import java.util.Arrays;
@@ -9,6 +10,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class Point2 implements Cloneable {
+    //按照极角进行排序，极角范围为(-pi,pi]
     public static final Comparator<Point2> SORT_BY_POLAR_ANGLE = (a, b) ->
     {
         if (a.half() != b.half()) {
@@ -321,13 +323,13 @@ public class Point2 implements Cloneable {
     /**
      * 计算多边形面积（如果以逆时针给定顶点，则结果符号为正数，否则为负数）
      */
-    public static double area(List<Point2> polygon) {
-        double ans = 0;
-        int n = polygon.size();
+    public static double area(Point2[] polygon) {
+        KahanSummation sum = new KahanSummation();
+        int n = polygon.length;
         for (int i = 0; i < n; i++) {
-            ans += cross(polygon.get(i), polygon.get((i + 1) % n));
+            sum.add(cross(polygon[i], polygon[(i + 1) % n]));
         }
-        return ans / 2;
+        return sum.sum() /2;
     }
 
 
@@ -434,7 +436,7 @@ public class Point2 implements Cloneable {
             while (intervalL <= rr && buf[i].y >= buf[intervalL].y && GeoConstant.pow2(buf[i].y - buf[intervalL].y) >= farthest) {
                 intervalL++;
             }
-            if(intervalR - intervalL + 1 > 6){
+            if (intervalR - intervalL + 1 > 6) {
                 throw new RuntimeException();
             }
             for (int j = intervalL; j <= intervalR; j++) {
@@ -450,6 +452,15 @@ public class Point2 implements Cloneable {
         //merge sort
         CompareUtils.<Point2>mergeAscending(pts, l, m, pts, m + 1, r, buf, l, (a, b) -> Double.compare(a.y, b.y));
         System.arraycopy(buf, l, pts, l, r - l + 1);
+        return ans;
+    }
+
+    public static Point2[] asPointPolygon(Line2[] line2s){
+        int n = line2s.length;
+        Point2[] ans = new Point2[n];
+        for(int i = 0; i < n; i++){
+            ans[i] = Line2.intersect(line2s[i], line2s[(i + 1) % n]);
+        }
         return ans;
     }
 }

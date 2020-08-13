@@ -35,16 +35,17 @@ public class IntegerPreSum {
      * get a[0] + a[1] + ... + a[i]
      */
     public int prefix(int i) {
+        i = Math.min(i, n - 1);
         if (i < 0) {
             return 0;
         }
-        return pre[Math.min(i, n - 1)];
+        return pre[i];
     }
 
     /**
      * get a[i] + a[i + 1] + ... + a[n - 1]
      */
     public int post(int i) {
-        return pre[n - 1] - prefix(i - 1);
+        return prefix(n) - prefix(i - 1);
     }
 }

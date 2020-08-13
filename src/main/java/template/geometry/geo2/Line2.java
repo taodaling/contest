@@ -5,12 +5,25 @@ import template.geometry.GeoConstant;
 import java.util.Comparator;
 
 public class Line2 {
+    /**
+     * 顺时针旋转pi/2得到的法向量
+     */
     public Point2 vec;
     public double c;
 
     public Line2(Point2 vec, double c) {
         this.vec = vec;
         this.c = c;
+    }
+
+    public Point2 anyPoint() {
+        double a = -vec.y;
+        double b = vec.x;
+        if (GeoConstant.sign(a) != 0) {
+            return new Point2(c / a, 0);
+        } else {
+            return new Point2(0, c / b);
+        }
     }
 
     /**
@@ -29,6 +42,9 @@ public class Line2 {
         return Point2.cross(vec, pt) - c;
     }
 
+    /**
+     * 如果pt在逆时针方向，返回1，顺时针方向返回-1，否则返回0
+     */
     public int side(Point2 pt) {
         return GeoConstant.sign(side0(pt));
     }
@@ -44,6 +60,14 @@ public class Line2 {
 
     public Line2 perpendicularThrough(Point2 pt) {
         return new Line2(pt, Point2.plus(pt, vec.perpendicular()));
+    }
+
+    /**
+     * 判断一条平行的直线处于当前的上方还是下方，上方为1，下方为-1，重合为0
+     */
+    public int side(Line2 line) {
+        //return GeoConstant.compare(line.c, c);
+        return side(line.anyPoint());
     }
 
     public static Comparator<Point2> sortPointOnLine(Line2 line) {
@@ -88,5 +112,14 @@ public class Line2 {
     @Override
     public String toString() {
         return -vec.y + "x + " + vec.x + "y = " + c;
+    }
+
+    public static Line2[] asLinePolygon(Point2[] pts){
+        int n = pts.length;
+        Line2[] ans = new Line2[n];
+        for(int i = 0; i < n; i++){
+            ans[i] = new Line2(pts[i], pts[(i + 1) % n]);
+        }
+        return ans;
     }
 }

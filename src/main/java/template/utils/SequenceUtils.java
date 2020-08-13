@@ -498,6 +498,10 @@ public class SequenceUtils {
         reverse(data, 0, data.size() - 1);
     }
 
+    public static <T> void reverse(T[] data){
+        reverse(data, 0, data.length - 1);
+    }
+
     public static <T> void reverse(T[] data, int l, int r) {
         while (l < r) {
             swap(data, l, r);
