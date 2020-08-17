@@ -12,11 +12,11 @@ public class MinQueue<T> {
     Deque<T> increasing;
     Comparator<T> comparator;
 
-    public int size(){
+    public int size() {
         return data.size();
     }
 
-    public boolean isEmpty(){
+    public boolean isEmpty() {
         return data.isEmpty();
     }
 
@@ -34,7 +34,7 @@ public class MinQueue<T> {
         data.addLast(x);
     }
 
-    public T remove() {
+    public T removeFirst() {
         T head = data.removeFirst();
         if (increasing.peekFirst() == head) {
             increasing.removeFirst();
@@ -51,7 +51,11 @@ public class MinQueue<T> {
         return increasing.peekFirst();
     }
 
-    public T peek() {
+    public T first() {
         return data.peekFirst();
+    }
+
+    public T last() {
+        return data.peekLast();
     }
 }

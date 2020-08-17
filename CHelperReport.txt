@@ -1,2 +1,2 @@
-49 src/main/java/contest/D. Boboniu and Jianghu.json
+40 src/main/java/contest/C- Quarantine.json
 0

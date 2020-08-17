@@ -1,0 +1,35 @@
+{
+  "name" : "A1: Perimetric - Chapter 1",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "perimetric_chapter__.*input[.]txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5\n2 2 2\n1 2\n0 0 0 100\n3 3\n0 0 0 100\n2 2 2\n10 20\n0 0 0 100\n3 3\n0 0 0 100\n5 5 3\n2 4 5 9 12\n0 0 0 100\n4 3 6 3 2\n0 0 0 100\n10 3 8\n9 14 15\n0 1 3 53\n12 7 16\n5 2 1 38\n50 10 17\n4 9 10 26 28 59 97 100 105 106\n1 0 7 832\n130 12 82 487 12 30 214 104 104 527\n21 81 410 605\n",
+    "output" : "Case #1: 120\nCase #2: 200\nCase #3: 9144576\nCase #4: 803986060\nCase #5: 271473330\n",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_08.on2020_08_16_Facebook_Coding_Competitions___Facebook_Hacker_Cup_2020_Round_1.A1__Perimetric___Chapter_1.A1PerimetricChapter1",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.08.16",
+  "contestName" : "Facebook Coding Competitions - Facebook Hacker Cup 2020 Round 1",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}
