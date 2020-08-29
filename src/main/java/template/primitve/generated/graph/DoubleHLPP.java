@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class DoubleHLPP implements DoubleMaximumFlow {
     private double inf;
-    private int maxV;
+    private int vertexNum;
     private int s;
     private int t;
     private List<DoubleFlowEdge>[] adj;
@@ -25,14 +25,20 @@ public class DoubleHLPP implements DoubleMaximumFlow {
     private int[] cnt;
     IntegerDequeImpl deque;
 
-    public DoubleHLPP(int maxV) {
-        deque = new IntegerDequeImpl(maxV);
-        lst = new IntegerArrayList[maxV + 5];
-        gap = new ArrayList[maxV + 5];
-        cnt = new int[maxV + 5];
-        height = new int[maxV + 5];
-        excess = new double[maxV + 5];
-        for (int i = 0; i < maxV + 5; ++i) {
+    public DoubleHLPP() {
+    }
+
+    public void ensure(int vertexNum) {
+        if (lst != null && lst.length >= vertexNum + 5) {
+            return;
+        }
+        deque = new IntegerDequeImpl(vertexNum);
+        lst = new IntegerArrayList[vertexNum + 5];
+        gap = new ArrayList[vertexNum + 5];
+        cnt = new int[vertexNum + 5];
+        height = new int[vertexNum + 5];
+        excess = new double[vertexNum + 5];
+        for (int i = 0; i < vertexNum + 5; ++i) {
             lst[i] = new IntegerArrayList();
             gap[i] = new ArrayList<>();
         }
@@ -40,7 +46,7 @@ public class DoubleHLPP implements DoubleMaximumFlow {
 
     private void init() {
         deque.clear();
-        for (int i = 0; i < maxV + 5; ++i) {
+        for (int i = 0; i < vertexNum + 5; ++i) {
             cnt[i] = 0;
             height[i] = 0;
             excess[i] = 0;
@@ -51,11 +57,11 @@ public class DoubleHLPP implements DoubleMaximumFlow {
 
     void updHeight(int v, int nh) {
         work++;
-        if (height[v] != maxV) {
+        if (height[v] != vertexNum) {
             cnt[height[v]]--;
         }
         height[v] = nh;
-        if (nh == maxV) {
+        if (nh == vertexNum) {
             return;
         }
         cnt[nh]++;
@@ -68,7 +74,7 @@ public class DoubleHLPP implements DoubleMaximumFlow {
 
     private void globalRelabel() {
         work = 0;
-        Arrays.fill(height, maxV);
+        Arrays.fill(height, vertexNum);
         Arrays.fill(cnt, 0);
         for (int i = 0; i < highest; ++i) {
             lst[i].clear();
@@ -79,7 +85,7 @@ public class DoubleHLPP implements DoubleMaximumFlow {
         while (!deque.isEmpty()) {
             int v = deque.removeFirst();
             for (DoubleFlowEdge e : adj[v]) {
-                if (height[e.to] == maxV && e.flow > 0) {
+                if (height[e.to] == vertexNum && e.flow > 0) {
                     deque.addLast(e.to);
                     updHeight(e.to, height[v] + 1);
                 }
@@ -100,7 +106,7 @@ public class DoubleHLPP implements DoubleMaximumFlow {
     }
 
     private void discharge(int v) {
-        int nh = maxV;
+        int nh = vertexNum;
         for (DoubleFlowEdge e : adj[v]) {
             if (e.rev.flow > 0) {
                 if (height[v] == height[e.to] + 1) {
@@ -118,7 +124,7 @@ public class DoubleHLPP implements DoubleMaximumFlow {
         } else {
             for (int i = height[v]; i <= highest; ++i) {
                 for (int curGap : gap[i]) {
-                    updHeight(curGap, maxV);
+                    updHeight(curGap, vertexNum);
                 }
                 gap[i].clear();
             }
@@ -146,14 +152,15 @@ public class DoubleHLPP implements DoubleMaximumFlow {
     }
 
     public double calc() {
-        return calc(maxV);
+        return calc(vertexNum);
     }
 
     public double apply(List<DoubleFlowEdge>[] net, int s, int t, double send) {
+        ensure(net.length);
         this.adj = net;
         this.s = s;
         this.t = t;
-        this.maxV = net.length;
+        this.vertexNum = net.length;
         this.inf = send;
         init();
         return calc();

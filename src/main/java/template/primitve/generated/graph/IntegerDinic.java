@@ -15,7 +15,13 @@ public class IntegerDinic implements IntegerMaximumFlow {
     int[] dists;
     ListIterator<IntegerFlowEdge>[] iterators;
 
-    public IntegerDinic(int vertexNum) {
+    public IntegerDinic() {
+    }
+
+    public void ensure(int vertexNum) {
+        if (dists != null && dists.length >= vertexNum) {
+            return;
+        }
         deque = new IntegerDequeImpl(vertexNum);
         dists = new int[vertexNum];
         iterators = new ListIterator[vertexNum];
@@ -45,6 +51,7 @@ public class IntegerDinic implements IntegerMaximumFlow {
 
     @Override
     public int apply(List<IntegerFlowEdge>[] g, int s, int t, int send) {
+        ensure(g.length);
         this.s = s;
         this.t = t;
         this.g = g;

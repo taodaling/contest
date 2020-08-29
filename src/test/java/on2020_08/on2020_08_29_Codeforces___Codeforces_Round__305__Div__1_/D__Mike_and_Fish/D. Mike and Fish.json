@@ -1,0 +1,40 @@
+{
+  "name" : "D. Mike and Fish",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4\n1 1\n1 2\n2 1\n2 2\n",
+    "output" : "brrb\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "3\n1 1\n1 2\n2 1\n",
+    "output" : "brr\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_08.on2020_08_29_Codeforces___Codeforces_Round__305__Div__1_.D__Mike_and_Fish.DMikeAndFish",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.08.29",
+  "contestName" : "Codeforces - Codeforces Round #305 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

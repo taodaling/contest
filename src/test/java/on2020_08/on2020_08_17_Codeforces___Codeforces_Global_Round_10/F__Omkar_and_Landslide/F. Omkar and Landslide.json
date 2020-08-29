@@ -1,0 +1,30 @@
+{
+  "name" : "F. Omkar and Landslide",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_08.on2020_08_17_Codeforces___Codeforces_Global_Round_10.F__Omkar_and_Landslide.FOmkarAndLandslide",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "on2020_08.on2020_08_17_Codeforces___Codeforces_Global_Round_10.F__Omkar_and_Landslide.FOmkarAndLandslideTestCase" ],
+  "date" : "2020.08.17",
+  "contestName" : "Codeforces - Codeforces Global Round 10",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

@@ -1,15 +1,20 @@
 import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.io.IOException;
+import java.util.stream.IntStream;
+import java.util.Arrays;
+import java.util.ListIterator;
+import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.Map;
+import java.io.OutputStreamWriter;
+import java.io.OutputStream;
+import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.List;
+import java.util.stream.Stream;
 import java.io.Closeable;
 import java.io.Writer;
-import java.io.OutputStreamWriter;
 import java.io.InputStream;
 
 /**
@@ -30,259 +35,229 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            CQuarantine solver = new CQuarantine();
-            int testCount = Integer.parseInt(in.next());
-            for (int i = 1; i <= testCount; i++)
-                solver.solve(i, in, out);
+            DCaptainAmerica solver = new DCaptainAmerica();
+            solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class CQuarantine {
-        Debug debug = new Debug(true);
-        Tuple best;
-
+    static class DCaptainAmerica {
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            out.printf("Case #%d: ", testNumber);
-            debug.debug("testNumber", testNumber);
             int n = in.readInt();
-            int k = in.readInt();
-            Node[] nodes = new Node[n];
+            int m = in.readInt();
+            int r = in.readInt();
+            int b = in.readInt();
+            char rChar = 'r';
+            char bChar = 'b';
+            if (r > b) {
+                int tmp = r;
+                r = b;
+                b = tmp;
+
+                char cTmp = rChar;
+                rChar = bChar;
+                bChar = cTmp;
+            }
+
+            Edge[] edges = new Edge[n];
+            Map<Integer, Node> rows = new HashMap<>();
+            Map<Integer, Node> cols = new HashMap<>();
             for (int i = 0; i < n; i++) {
-                nodes[i] = new Node();
-                nodes[i].id = i;
-                nodes[i].color = in.readChar() == '#' ? 0 : 1;
-            }
-            int[] p = new int[n + 1];
-            for (int i = 2; i <= k + 1; i++) {
-                p[i] = in.readInt();
-            }
-            long a = in.readInt();
-            long b = in.readInt();
-            long c = in.readInt();
-            for (int i = k + 2; i <= n; i++) {
-                p[i] = (int) ((a * p[i - 2] + b * p[i - 1] + c) % (i - 1) + 1);
-            }
-            for (int i = 2; i <= n; i++) {
-                Node fa = nodes[p[i] - 1];
-                Node child = nodes[i - 1];
-                addEdge(fa, child);
+                Node u = rows.computeIfAbsent(in.readInt(), x -> new Node());
+                Node v = cols.computeIfAbsent(in.readInt(), x -> new Node());
+                Edge e = new Edge();
+                edges[i] = e;
+                e.a = u;
+                e.b = v;
+                e.a.deg++;
+                e.b.deg++;
             }
 
-            long pairs = 0;
-            long way = 0;
-            int block = 0;
-            for (Node node : nodes) {
-                if (node.color == 0 || node.visited) {
-                    continue;
+            for (int i = 0; i < m; i++) {
+                int t = in.readInt();
+                int l = in.readInt();
+                int k = in.readInt();
+                Node node;
+                if (t == 1) {
+                    node = rows.computeIfAbsent(l, x -> new Node());
+                } else {
+                    node = cols.computeIfAbsent(l, x -> new Node());
                 }
-                block++;
-                dfsForSize(node, null);
-                dfsForCost(node, null, node.size);
-                pairs += countPair(node.size);
+                intersect(node.lr, bounds(node.deg, k));
+                if (node.lr[0] > node.lr[1]) {
+                    out.println(-1);
+                    return;
+                }
             }
 
-            if (block <= 1) {
-                bruteForceForSize(nodes[0], null);
-                way = bruteForceForWay(nodes[0], null, nodes[0].size, nodes[0].size1);
-            } else {
-                nodes[0].adj.add(null);
-                dfsForTuple(nodes[0], null);
-                best = new Tuple();
-                upDown(nodes[0], null, 0, new Tuple());
-
-                pairs += best.size;
-                way = best.cnt;
+            int idAlloc = 0;
+            for (Node u : rows.values()) {
+                u.id = idAlloc++;
             }
-            out.append(pairs).append(' ').println(way);
-        }
+            for (Node v : cols.values()) {
+                v.id = idAlloc++;
+            }
+            int src = idAlloc++;
+            int dst = idAlloc++;
+            List<IntegerLRFlowEdge>[] g = IntegerFlow.createLRFlow(dst + 1);
 
-        public long bruteForceForWay(Node root, Edge p, long total, long total1) {
+            for (Edge e : edges) {
+                e.e = IntegerFlow.addLREdge(g, e.a.id, e.b.id, 1, 0);
+            }
+
+            for (Node node : rows.values()) {
+                IntegerFlow.addLREdge(g, src, node.id, node.lr[1], node.lr[0]);
+            }
+            for (Node node : cols.values()) {
+                IntegerFlow.addLREdge(g, node.id, dst, node.lr[1], node.lr[0]);
+            }
+
+            IntegerMaximumFlow flow = new IntegerHLPPBeta();
+            boolean feasible = IntegerFlow.feasibleFlow(g, src, dst, flow);
+            if (!feasible) {
+                out.println(-1);
+                return;
+            }
+            flow.apply((List[]) g, src, dst, (int) 1e9);
             long ans = 0;
-            for (Edge e : root.adj) {
-                if (e == p) {
-                    continue;
-                }
-                Node node = e.other(root);
-                ans += bruteForceForWay(node, e, total, total1);
-                if (e.a.color == 1 && e.b.color == 1) {
-                    ans += node.size1 * (total1 - node.size1);
+            for (Edge e : edges) {
+                if (e.e.flow == 1) {
+                    ans += r;
                 } else {
-                    ans += node.size * (total - node.size);
+                    ans += b;
                 }
             }
-            return ans;
-        }
 
-        public void bruteForceForSize(Node root, Edge p) {
-            root.size1 = root.color;
-            root.size = 1;
-            for (Edge e : root.adj) {
-                if (e == p) {
-                    continue;
-                }
-                Node node = e.other(root);
-                bruteForceForSize(node, e);
-                root.size1 += node.size1;
-                root.size += node.size;
-            }
-        }
-
-        public void addEdge(Node a, Node b) {
-            Edge e = new Edge();
-            e.a = a;
-            e.b = b;
-            a.adj.add(e);
-            b.adj.add(e);
-        }
-
-        public long countPair(long n) {
-            return n * (n - 1) / 2;
-        }
-
-        public void dfsForSize(Node root, Edge p) {
-            root.visited = true;
-            root.size = 1;
-            for (Edge e : root.adj) {
-                if (e == p) {
-                    continue;
-                }
-                Node node = e.other(root);
-                if (node.color == 0) {
-                    continue;
-                }
-                dfsForSize(node, e);
-                root.size += node.size;
-            }
-        }
-
-        public void dfsForCost(Node root, Edge p, int total) {
-            for (Edge e : root.adj) {
-                if (e == p) {
-                    continue;
-                }
-                Node node = e.other(root);
-                if (node.color == 0) {
-                    continue;
-                }
-                e.cost = countPair(total) - countPair(total - node.size) -
-                        countPair(node.size);
-                dfsForCost(node, e, total);
-            }
-        }
-
-        public void dfsForTuple(Node root, Edge p) {
-            root.curSize = root.color;
-            for (Edge e : root.adj) {
-                if (e == p) {
-                    continue;
-                }
-                Node node = e.other(root);
-                dfsForTuple(node, e);
-                root.tuple.update(node.tuple);
-                if (root.color == 1) {
-                    root.curSize += node.curSize;
+            out.println(ans);
+            for (Edge e : edges) {
+                if (e.e.flow == 1) {
+                    out.append(rChar);
                 } else {
-                    root.tuple.update(node.curSize, 1);
+                    out.append(bChar);
                 }
             }
         }
 
-        public void upDown(Node root, Edge p, int curSize, Tuple fromP) {
-            //two way
-            if (root.color == 1) {
-                curSize += root.curSize;
-                int n = root.adj.size();
-                Tuple[] l2r = new Tuple[n];
-                Tuple[] r2l = new Tuple[n];
-                for (int i = 0; i < n; i++) {
-                    Edge e = root.adj.get(i);
-                    if (e == p) {
-                        r2l[i] = l2r[i] = fromP;
-                    } else {
-                        r2l[i] = l2r[i] = e.other(root).tuple;
-                    }
-                }
-                for (int i = 1; i < n; i++) {
-                    l2r[i] = Tuple.merge(l2r[i - 1], l2r[i]);
-                }
-                for (int i = n - 2; i >= 0; i--) {
-                    r2l[i] = Tuple.merge(r2l[i + 1], r2l[i]);
-                }
+        public void intersect(int[] a, int[] b) {
+            a[0] = Math.max(a[0], b[0]);
+            a[1] = Math.min(a[1], b[1]);
+        }
 
-                for (int i = 0; i < n; i++) {
-                    Edge e = root.adj.get(i);
-                    if (e == p) {
-                        continue;
-                    }
-                    Node node = e.other(root);
-                    //remove edge e
-                    Tuple up = new Tuple();
-                    if (i > 0) {
-                        up.update(l2r[i - 1]);
-                    }
-                    if (i + 1 < n) {
-                        up.update(r2l[i + 1]);
-                    }
-                    //recursive
-                    upDown(node, e, curSize - node.curSize, up);
+        public int[] bounds(int n, int k) {
+            //x-(n-x)<=k
+            //(n-x)-x<=k
+            //2x<=n+k
+            //2x>=n-k
+            return new int[]{DigitUtils.ceilDiv(n - k, 2),
+                    DigitUtils.floorDiv(n + k, 2)};
+        }
 
-                    up.update(curSize - node.curSize, 1);
-                    Tuple down = node.tuple.clone();
-                    down.update(node.curSize, 1);
+    }
 
-                    best.update(up.size * down.size - e.cost,
-                            up.cnt * down.cnt * up.size * down.size);
+    static interface IntegerMaximumFlow {
+        int apply(List<IntegerFlowEdge>[] g, int s, int t, int send);
+
+    }
+
+    static class Node {
+        int id;
+        int[] lr = new int[]{0, (int) 1e8};
+        int deg;
+
+    }
+
+    static class FastInput {
+        private final InputStream is;
+        private byte[] buf = new byte[1 << 13];
+        private int bufLen;
+        private int bufOffset;
+        private int next;
+
+        public FastInput(InputStream is) {
+            this.is = is;
+        }
+
+        private int read() {
+            while (bufLen == bufOffset) {
+                bufOffset = 0;
+                try {
+                    bufLen = is.read(buf);
+                } catch (IOException e) {
+                    bufLen = -1;
+                }
+                if (bufLen == -1) {
+                    return -1;
+                }
+            }
+            return buf[bufOffset++];
+        }
+
+        public void skipBlank() {
+            while (next >= 0 && next <= 32) {
+                next = read();
+            }
+        }
+
+        public int readInt() {
+            int sign = 1;
+
+            skipBlank();
+            if (next == '+' || next == '-') {
+                sign = next == '+' ? 1 : -1;
+                next = read();
+            }
+
+            int val = 0;
+            if (sign == 1) {
+                while (next >= '0' && next <= '9') {
+                    val = val * 10 + next - '0';
+                    next = read();
                 }
             } else {
-                if (p != null) {
-                    fromP = fromP.clone();
-                    fromP.update(curSize, 1);
-                }
-                int n = root.adj.size();
-                Tuple[] l2r = new Tuple[n];
-                Tuple[] r2l = new Tuple[n];
-                for (int i = 0; i < n; i++) {
-                    Edge e = root.adj.get(i);
-                    if (e == p) {
-                        r2l[i] = l2r[i] = fromP;
-                    } else {
-                        r2l[i] = l2r[i] = e.other(root).tuple.clone();
-                        r2l[i].update(e.other(root).curSize, 1);
-                    }
-                }
-                for (int i = 1; i < n; i++) {
-                    l2r[i] = Tuple.merge(l2r[i - 1], l2r[i]);
-                }
-                for (int i = n - 2; i >= 0; i--) {
-                    r2l[i] = Tuple.merge(r2l[i + 1], r2l[i]);
-                }
-
-                for (int i = 0; i < n; i++) {
-                    Edge e = root.adj.get(i);
-                    if (e == p) {
-                        continue;
-                    }
-                    Node node = e.other(root);
-                    //remove edge e
-                    Tuple up = new Tuple();
-                    if (i > 0) {
-                        up.update(l2r[i - 1]);
-                    }
-                    if (i + 1 < n) {
-                        up.update(r2l[i + 1]);
-                    }
-                    //recursive
-                    upDown(node, e, 0, up);
-
-                    up.update(0, 1);
-                    Tuple down = node.tuple.clone();
-                    down.update(node.curSize, 1);
-
-                    best.update(up.size * down.size - e.cost,
-                            up.cnt * down.cnt * up.size * down.size);
+                while (next >= '0' && next <= '9') {
+                    val = val * 10 - next + '0';
+                    next = read();
                 }
             }
+
+            return val;
+        }
+
+    }
+
+    static class Edge {
+        Node a;
+        Node b;
+        IntegerFlowEdge e;
+
+    }
+
+    static class DirectedEdge {
+        public int to;
+
+        public DirectedEdge(int to) {
+            this.to = to;
+        }
+
+        public String toString() {
+            return "->" + to;
+        }
+
+    }
+
+    static class IntegerFlowEdge<T extends IntegerFlowEdge<T>> extends DirectedEdge {
+        public int flow;
+        public boolean real;
+        public T rev;
+
+        public IntegerFlowEdge(int to, int flow, boolean real) {
+            super(to);
+            this.flow = flow;
+            this.real = real;
+        }
+
+        public String toString() {
+            return rev.to + "-[" + flow + "/" + (flow + rev.flow) + "]->" + to;
         }
 
     }
@@ -314,14 +289,18 @@ public class Main {
             return this;
         }
 
+        public FastOutput append(int c) {
+            cache.append(c);
+            return this;
+        }
+
         public FastOutput append(long c) {
             cache.append(c);
             return this;
         }
 
-        public FastOutput printf(String format, Object... args) {
-            cache.append(String.format(format, args));
-            return this;
+        public FastOutput println(int c) {
+            return append(c).println();
         }
 
         public FastOutput println(long c) {
@@ -359,180 +338,263 @@ public class Main {
 
     }
 
-    static class Node {
-        boolean visited;
-        List<Edge> adj = new ArrayList<>();
-        int color;
-        int curSize;
-        Tuple tuple = new Tuple();
-        int size;
-        int size1;
-        int id;
+    static class IntegerLRFlowEdge extends IntegerFlowEdge<IntegerLRFlowEdge> {
+        public int low;
 
-        public String toString() {
-            return "" + (id + 1);
+        public IntegerLRFlowEdge(int to, int flow, boolean real, int low) {
+            super(to, flow, real);
+            this.low = low;
         }
 
     }
 
-    static class Debug {
-        private boolean offline;
-        private PrintStream out = System.err;
+    static class IntegerHLPPBeta implements IntegerMaximumFlow {
+        private List<IntegerFlowEdge>[] g;
+        private ListIterator<IntegerFlowEdge>[] iterators;
+        private int[] heights;
+        private int[] excess;
+        private int vertexNum;
+        IntegerHLPPBeta.Node[] nodes;
+        private int sink;
+        private int source;
 
-        public Debug(boolean enable) {
-            offline = enable && System.getSecurityManager() == null;
+        public IntegerHLPPBeta() {
         }
 
-        public Debug debug(String name, int x) {
-            if (offline) {
-                debug(name, "" + x);
+        public void ensure(int vertexNum) {
+            if (iterators != null && iterators.length >= vertexNum) {
+                return;
             }
-            return this;
+            iterators = new ListIterator[vertexNum];
+            heights = new int[vertexNum];
+            excess = new int[vertexNum];
+            nodes = new IntegerHLPPBeta.Node[vertexNum];
+            for (int i = 0; i < vertexNum; i++) {
+                nodes[i] = new IntegerHLPPBeta.Node();
+                nodes[i].val = i;
+            }
         }
 
-        public Debug debug(String name, String x) {
-            if (offline) {
-                out.printf("%s=%s", name, x);
-                out.println();
+        public int send(int flow) {
+            init(flow);
+            relabelToFront();
+            return excess[sink];
+        }
+
+        private void relabel(int root) {
+            int minHeight = 2 * vertexNum;
+            for (IntegerFlowEdge c : g[root]) {
+                if (c.rev.flow > 0) {
+                    minHeight = Math.min(minHeight, heights[c.to]);
+                }
             }
-            return this;
+            heights[root] = minHeight + 1;
+        }
+
+        private void discharge(int root) {
+            while (excess[root] > 0) {
+                if (!iterators[root].hasNext()) {
+                    relabel(root);
+                    iterators[root] = g[root].listIterator();
+                    continue;
+                }
+                IntegerFlowEdge c = iterators[root].next();
+                int remain;
+                if ((remain = c.rev.flow) > 0 && heights[c.to] + 1 == heights[root]) {
+                    int sent = Math.min(excess[root], remain);
+                    excess[root] -= sent;
+                    excess[c.to] += sent;
+                    IntegerFlow.send(c, sent);
+                    if (excess[root] == 0) {
+                        iterators[root].previous();
+                        return;
+                    }
+                }
+            }
+        }
+
+        private void relabelToFront() {
+            IntegerHLPPBeta.Node head = null;
+            for (int i = 0; i < vertexNum; i++) {
+                if (i == source || i == sink) {
+                    continue;
+                }
+                nodes[i].next = head;
+                head = nodes[i];
+            }
+
+            IntegerHLPPBeta.Node trace = head;
+            IntegerHLPPBeta.Node pre = null;
+            while (trace != null) {
+                int i = trace.val;
+                int oldHeight = heights[i];
+                discharge(i);
+                if (heights[i] != oldHeight) {
+                    if (pre != null) {
+                        pre.next = trace.next;
+                        trace.next = head;
+                        head = trace;
+                    }
+                    trace = head;
+                }
+                pre = trace;
+                trace = trace.next;
+            }
+        }
+
+        private void init(int flow) {
+            for (int i = 0; i < vertexNum; i++) {
+                nodes[i].next = null;
+                heights[i] = 0;
+                excess[i] = 0;
+            }
+            heights[source] = vertexNum;
+            int sent = 0;
+            for (IntegerFlowEdge c : g[source]) {
+                int newFlow = Math.min(c.rev.flow, flow - sent);
+                sent += newFlow;
+                IntegerFlow.send(c, newFlow);
+                excess[source] -= newFlow;
+                excess[c.to] += newFlow;
+            }
+
+            for (int i = 0; i < vertexNum; i++) {
+                iterators[i] = g[i].listIterator();
+            }
+        }
+
+        public int apply(List<IntegerFlowEdge>[] g, int s, int t, int send) {
+            ensure(g.length);
+            vertexNum = g.length;
+            this.g = g;
+            this.source = s;
+            this.sink = t;
+            return send(send);
+        }
+
+        private static class Node {
+            IntegerHLPPBeta.Node next;
+            int val;
+
         }
 
     }
 
-    static class Edge {
-        Node a;
-        Node b;
-        long cost;
-
-        Node other(Node x) {
-            return a == x ? b : a;
+    static class IntegerFlow {
+        public static <T extends IntegerFlowEdge> void send(T edge, int flow) {
+            edge.flow += flow;
+            edge.rev.flow -= flow;
         }
 
-    }
-
-    static class FastInput {
-        private final InputStream is;
-        private StringBuilder defaultStringBuf = new StringBuilder(1 << 13);
-        private byte[] buf = new byte[1 << 13];
-        private int bufLen;
-        private int bufOffset;
-        private int next;
-
-        public FastInput(InputStream is) {
-            this.is = is;
+        public static IntegerFlowEdge addEdge(List<IntegerFlowEdge>[] g, int s, int t, int cap) {
+            IntegerFlowEdge real = new IntegerFlowEdge(t, 0, true);
+            IntegerFlowEdge virtual = new IntegerFlowEdge(s, cap, false);
+            real.rev = virtual;
+            virtual.rev = real;
+            g[s].add(real);
+            g[t].add(virtual);
+            return real;
         }
 
-        private int read() {
-            while (bufLen == bufOffset) {
-                bufOffset = 0;
-                try {
-                    bufLen = is.read(buf);
-                } catch (IOException e) {
-                    bufLen = -1;
-                }
-                if (bufLen == -1) {
-                    return -1;
-                }
-            }
-            return buf[bufOffset++];
+        public static IntegerLRFlowEdge addLREdge(List<IntegerLRFlowEdge>[] g, int s, int t, int cap, int low) {
+            IntegerLRFlowEdge real = new IntegerLRFlowEdge(t, 0, true, low);
+            IntegerLRFlowEdge virtual = new IntegerLRFlowEdge(s, cap - low, false, low);
+            real.rev = virtual;
+            virtual.rev = real;
+            g[s].add(real);
+            g[t].add(virtual);
+            return real;
         }
 
-        public void skipBlank() {
-            while (next >= 0 && next <= 32) {
-                next = read();
-            }
+        public static List<IntegerLRFlowEdge>[] createLRFlow(int n) {
+            return createGraph(n);
         }
 
-        public String next() {
-            return readString();
-        }
-
-        public int readInt() {
-            int sign = 1;
-
-            skipBlank();
-            if (next == '+' || next == '-') {
-                sign = next == '+' ? 1 : -1;
-                next = read();
-            }
-
-            int val = 0;
-            if (sign == 1) {
-                while (next >= '0' && next <= '9') {
-                    val = val * 10 + next - '0';
-                    next = read();
-                }
-            } else {
-                while (next >= '0' && next <= '9') {
-                    val = val * 10 - next + '0';
-                    next = read();
-                }
-            }
-
-            return val;
-        }
-
-        public char readChar() {
-            skipBlank();
-            char c = (char) next;
-            next = read();
-            return c;
-        }
-
-        public String readString(StringBuilder builder) {
-            skipBlank();
-
-            while (next > 32) {
-                builder.append((char) next);
-                next = read();
-            }
-
-            return builder.toString();
-        }
-
-        public String readString() {
-            defaultStringBuf.setLength(0);
-            return readString(defaultStringBuf);
-        }
-
-    }
-
-    static class Tuple implements Cloneable {
-        long size;
-        long cnt;
-
-        public static Tuple merge(Tuple a, Tuple b) {
-            Tuple ans = new Tuple();
-            ans.update(a);
-            ans.update(b);
+        public static boolean feasibleFlow(List<IntegerLRFlowEdge>[] g, int s, int t, IntegerMaximumFlow mf) {
+            addLREdge(g, t, s, Integer.MAX_VALUE / 4, 0);
+            boolean ans = feasibleFlow(g, mf);
+            g[s].remove(g[s].size() - 1);
+            g[t].remove(g[t].size() - 1);
             return ans;
         }
 
-        public void update(Tuple tuple) {
-            update(tuple.size, tuple.cnt);
+        public static boolean feasibleFlow(List<IntegerLRFlowEdge>[] g, IntegerMaximumFlow mf) {
+            int n = g.length;
+            List<IntegerFlowEdge>[] expand = expand(g, n + 2);
+            int src = n;
+            int dst = n + 1;
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < expand[i].size(); j++) {
+                    IntegerFlowEdge fe = expand[i].get(j);
+                    if (fe.to == src || fe.to == dst ||
+                            !fe.real) {
+                        continue;
+                    }
+                    IntegerLRFlowEdge e = (IntegerLRFlowEdge) fe;
+                    addEdge(expand, src, e.to, e.low);
+                    addEdge(expand, i, dst, e.low);
+                }
+            }
+
+            mf.apply(expand, src, dst, Integer.MAX_VALUE / 4);
+
+            boolean ans = true;
+            for (IntegerFlowEdge e : expand[src]) {
+                ans = ans && DigitUtils.equal(e.rev.flow, 0);
+            }
+            for (IntegerFlowEdge e : expand[dst]) {
+                ans = ans && DigitUtils.equal(e.flow, 0);
+            }
+
+            for (int i = 0; i < n; i++) {
+                while (g[i].size() > 0) {
+                    IntegerFlowEdge tail = g[i].get(g[i].size() - 1);
+                    if (tail.to == src || tail.to == dst) {
+                        g[i].remove(g[i].size() - 1);
+                    } else {
+                        break;
+                    }
+                }
+            }
+
+            return ans;
         }
 
-        public void update(long size, long cnt) {
-            if (this.size < size) {
-                this.size = size;
-                this.cnt = 0;
+        private static List[] expand(List[] g, int n) {
+            List[] ans = Arrays.copyOf(g, n);
+            for (int i = g.length; i < n; i++) {
+                ans[i] = new ArrayList();
             }
-            if (this.size == size) {
-                this.cnt += cnt;
-            }
+            return ans;
         }
 
-        public Tuple clone() {
-            try {
-                return (Tuple) super.clone();
-            } catch (CloneNotSupportedException e) {
-                throw new RuntimeException(e);
-            }
+        private static List[] createGraph(int n) {
+            return IntStream.range(0, n).mapToObj(i -> new ArrayList<>()).toArray(i -> new List[i]);
         }
 
-        public String toString() {
-            return String.format("(%d, %d)", size, cnt);
+    }
+
+    static class DigitUtils {
+        private DigitUtils() {
+        }
+
+        public static int floorDiv(int a, int b) {
+            return a < 0 ? -ceilDiv(-a, b) : a / b;
+        }
+
+        public static int ceilDiv(int a, int b) {
+            if (a < 0) {
+                return -floorDiv(-a, b);
+            }
+            int c = a / b;
+            if (c * b < a) {
+                return c + 1;
+            }
+            return c;
+        }
+
+        public static boolean equal(int a, int b) {
+            return a == b;
         }
 
     }

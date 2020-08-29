@@ -1,0 +1,41 @@
+{
+  "name" : "HorseTicket",
+  "signature" : {
+    "name" : "getTicket",
+    "result" : "String",
+    "arguments" : [ "String[]", "long" ],
+    "argumentNames" : [ "races", "index" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "BфA", "4" ],
+    "result" : "BA",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "BфA", "6" ],
+    "result" : "!",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "aceфbhgфfdz", "47" ],
+    "result" : "bz",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "TopфC0Derф1sфfun", "673" ],
+    "result" : "Cup1",
+    "index" : 3,
+    "active" : true
+  }, {
+    "arguments" : [ "qфwфeфrфtфyфuфiфoфpфaфsфdфfфgфhфjфkфlфzфxфcфvфbфnфm", "1000000000000000" ],
+    "result" : "abcdefghjitoxyzrwqsmpvuln",
+    "index" : 4,
+    "active" : true
+  } ],
+  "date" : "2020.08.20",
+  "contestName" : "TopCoder Open Round #3B",
+  "testClasses" : [ ],
+  "fqn" : "contest.HorseTicket",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

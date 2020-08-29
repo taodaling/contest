@@ -1,0 +1,49 @@
+{
+  "name" : "D. Captain America",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5 6\n8 3\n2 10\n1 5\n9 10\n9 10\n2 8\n1 9 1\n1 2 1\n2 10 3\n2 10 2\n1 1 1\n2 5 2\n",
+    "output" : "25\nrbrbb\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "4 4\n7 3\n10 3\n9 8\n10 3\n2 8\n2 8 0\n2 8 0\n1 2 0\n1 9 0\n",
+    "output" : "-1\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "2 2\n10 0\n1 1\n1 1\n1 1 0\n2 1 0",
+    "index" : 2,
+    "active" : false
+  }, {
+    "input" : "1 0\n1 0\n1 1",
+    "output" : "",
+    "index" : 3,
+    "active" : false
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.DCaptainAmerica",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.08.29",
+  "contestName" : "Codeforces - Codeforces Round #366 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

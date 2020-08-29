@@ -130,7 +130,7 @@ public class DigitUtils {
     }
 
     public static long mul(long a, long b, long overflowVal) {
-        return mul(a, b, Long.MAX_VALUE, overflowVal);
+        return mul(a, b, overflowVal, overflowVal);
     }
 
     /**
@@ -252,5 +252,17 @@ public class DigitUtils {
 
     public static long ceilAverage(long x, long y) {
         return (x | y) - ((x ^ y) >> 1);
+    }
+
+    public static boolean equal(long a, long b) {
+        return a == b;
+    }
+
+    public static boolean equal(int a, int b) {
+        return a == b;
+    }
+
+    public static boolean equal(double a, double b) {
+        return Math.abs(a - b) < 1e-10;
     }
 }

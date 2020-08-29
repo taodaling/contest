@@ -1,5 +1,6 @@
 package template.primitve.generated.graph;
 
+import template.math.DigitUtils;
 import template.primitve.generated.datastructure.IntegerDeque;
 import template.primitve.generated.datastructure.IntegerDequeImpl;
 
@@ -38,7 +39,7 @@ public class IntegerDijkstraV2MinimumCostFlow implements IntegerMinimumCostFlow 
             int head = dq.removeFirst();
             inq[head] = false;
             for (IntegerCostFlowEdge e : g[head]) {
-                if (e.rev.flow == 0 || lastDist[e.to] <= lastDist[head] + e.cost) {
+                if (DigitUtils.equal(e.rev.flow, 0) || lastDist[e.to] <= lastDist[head] + e.cost) {
                     continue;
                 }
                 lastDist[e.to] = lastDist[head] + e.cost;

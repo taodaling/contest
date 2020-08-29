@@ -8,15 +8,21 @@ public class IntegerHLPPBeta implements IntegerMaximumFlow {
     private ListIterator<IntegerFlowEdge>[] iterators;
     private int[] heights;
     private int[] excess;
-    private int vertexNumber;
+    private int vertexNum;
     Node[] nodes;
 
-    public IntegerHLPPBeta(int vertexNumber) {
-        iterators = new ListIterator[vertexNumber];
-        heights = new int[vertexNumber];
-        excess = new int[vertexNumber];
-        nodes = new Node[vertexNumber];
-        for (int i = 0; i < vertexNumber; i++) {
+    public IntegerHLPPBeta() {
+    }
+
+    public void ensure(int vertexNum){
+        if(iterators != null && iterators.length >= vertexNum){
+            return;
+        }
+        iterators = new ListIterator[vertexNum];
+        heights = new int[vertexNum];
+        excess = new int[vertexNum];
+        nodes = new Node[vertexNum];
+        for (int i = 0; i < vertexNum; i++) {
             nodes[i] = new Node();
             nodes[i].val = i;
         }
@@ -32,7 +38,7 @@ public class IntegerHLPPBeta implements IntegerMaximumFlow {
     }
 
     private void relabel(int root) {
-        int minHeight = 2 * vertexNumber;
+        int minHeight = 2 * vertexNum;
         for (IntegerFlowEdge c : g[root]) {
             if (c.rev.flow > 0) {
                 minHeight = Math.min(minHeight, heights[c.to]);
@@ -65,7 +71,7 @@ public class IntegerHLPPBeta implements IntegerMaximumFlow {
 
     private void relabelToFront() {
         Node head = null;
-        for (int i = 0; i < vertexNumber; i++) {
+        for (int i = 0; i < vertexNum; i++) {
             if (i == source || i == sink) {
                 continue;
             }
@@ -93,12 +99,12 @@ public class IntegerHLPPBeta implements IntegerMaximumFlow {
     }
 
     private void init(int flow) {
-        for (int i = 0; i < vertexNumber; i++) {
+        for (int i = 0; i < vertexNum; i++) {
             nodes[i].next = null;
             heights[i] = 0;
             excess[i] = 0;
         }
-        heights[source] = vertexNumber;
+        heights[source] = vertexNum;
         int sent = 0;
         for (IntegerFlowEdge c : g[source]) {
             int newFlow = Math.min(c.rev.flow, flow - sent);
@@ -108,7 +114,7 @@ public class IntegerHLPPBeta implements IntegerMaximumFlow {
             excess[c.to] += newFlow;
         }
 
-        for (int i = 0; i < vertexNumber; i++) {
+        for (int i = 0; i < vertexNum; i++) {
             iterators[i] = g[i].listIterator();
         }
     }
@@ -120,7 +126,8 @@ public class IntegerHLPPBeta implements IntegerMaximumFlow {
 
     @Override
     public int apply(List<IntegerFlowEdge>[] g, int s, int t, int send) {
-        vertexNumber = g.length;
+        ensure(g.length);
+        vertexNum = g.length;
         this.g = g;
         this.source = s;
         this.sink = t;

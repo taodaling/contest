@@ -28,7 +28,7 @@ public class DirectedMinSpanningTree {
     private static class Node {
         int id = -1;
         List<Edge> inEdges = new ArrayList<>();
-        LeftSideTree queue = LeftSideTree.NIL;
+        LeftistTree queue = LeftistTree.NIL;
         Node parent;
         Edge outEdge;
         Node outNode;
@@ -103,13 +103,13 @@ public class DirectedMinSpanningTree {
 
     public void contract() {
         now++;
-        Deque<LeftSideTree> deque = new ArrayDeque<>();
+        Deque<LeftistTree> deque = new ArrayDeque<>();
         for (Node node : nodes) {
             for (Edge edge : node.inEdges) {
                 edge.fixedWeight = edge.weight;
-                deque.addLast(new LeftSideTree(edge));
+                deque.addLast(new LeftistTree(edge));
             }
-            node.queue = LeftSideTree.createFromDeque(deque);
+            node.queue = LeftistTree.createFromDeque(deque);
         }
 
         Deque<Node> stack = new ArrayDeque<>();
@@ -121,7 +121,7 @@ public class DirectedMinSpanningTree {
             Edge minInEdge = null;
             while (true) {
                 minInEdge = tail.queue.peek();
-                tail.queue = LeftSideTree.pop(tail.queue);
+                tail.queue = LeftistTree.pop(tail.queue);
                 //self loop
                 if (minInEdge.src.find() != minInEdge.dst.find()) {
                     break;
@@ -147,7 +147,7 @@ public class DirectedMinSpanningTree {
                 t.parent = p;
                 last.outNode = t;
                 t.queue.modify(-last.outEdge.fixedWeight);
-                p.queue = LeftSideTree.merge(t.queue, p.queue);
+                p.queue = LeftistTree.merge(t.queue, p.queue);
                 Node.merge(p, t);
                 last = t;
                 remain--;
@@ -184,8 +184,8 @@ public class DirectedMinSpanningTree {
         }
     }
 
-    private static class LeftSideTree {
-        public static final LeftSideTree NIL = new LeftSideTree(null);
+    private static class LeftistTree {
+        public static final LeftistTree NIL = new LeftistTree(null);
 
         static {
             NIL.left = NIL;
@@ -193,8 +193,8 @@ public class DirectedMinSpanningTree {
             NIL.dist = -1;
         }
 
-        LeftSideTree left = NIL;
-        LeftSideTree right = NIL;
+        LeftistTree left = NIL;
+        LeftistTree right = NIL;
         int dist;
         DirectedMinSpanningTree.Edge key;
         long mod;
@@ -215,18 +215,18 @@ public class DirectedMinSpanningTree {
             mod += k;
         }
 
-        public LeftSideTree(DirectedMinSpanningTree.Edge key) {
+        public LeftistTree(DirectedMinSpanningTree.Edge key) {
             this.key = key;
         }
 
-        public static LeftSideTree createFromDeque(Deque<LeftSideTree> deque) {
+        public static LeftistTree createFromDeque(Deque<LeftistTree> deque) {
             while (deque.size() > 1) {
                 deque.addLast(merge(deque.removeFirst(), deque.removeFirst()));
             }
             return deque.removeLast();
         }
 
-        public static LeftSideTree merge(LeftSideTree a, LeftSideTree b) {
+        public static LeftistTree merge(LeftistTree a, LeftistTree b) {
             if (a == NIL) {
                 return b;
             } else if (b == NIL) {
@@ -235,13 +235,13 @@ public class DirectedMinSpanningTree {
             a.pushDown();
             b.pushDown();
             if (a.key.fixedWeight > b.key.fixedWeight) {
-                LeftSideTree tmp = a;
+                LeftistTree tmp = a;
                 a = b;
                 b = tmp;
             }
             a.right = merge(a.right, b);
             if (a.left.dist < a.right.dist) {
-                LeftSideTree tmp = a.left;
+                LeftistTree tmp = a.left;
                 a.left = a.right;
                 a.right = tmp;
             }
@@ -253,7 +253,7 @@ public class DirectedMinSpanningTree {
             return key;
         }
 
-        public static LeftSideTree pop(LeftSideTree root) {
+        public static LeftistTree pop(LeftistTree root) {
             root.pushDown();
             return merge(root.left, root.right);
         }

@@ -17,7 +17,13 @@ public class LongISAP implements LongMaximumFlow {
     private boolean exit;
     private IntegerDeque deque;
 
-    public LongISAP(int vertexNum) {
+    public LongISAP() {
+    }
+
+    public void ensure(int vertexNum) {
+        if (dists != null && dists.length >= vertexNum) {
+            return;
+        }
         dists = new int[vertexNum];
         cnts = new int[vertexNum + 2];
         deque = new IntegerDequeImpl(n);
@@ -53,6 +59,7 @@ public class LongISAP implements LongMaximumFlow {
 
     @Override
     public long apply(List<LongFlowEdge>[] g, int s, int t, long send) {
+        ensure(g.length);
         this.net = g;
         this.s = s;
         this.t = t;
