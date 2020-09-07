@@ -12,7 +12,7 @@ public class CachedEulerFunction {
         return get(x, 2);
     }
 
-    public static int get(int x, int begin) {
+    private static int get(int x, int begin) {
         if (x <= boundary) {
             return sieve.euler[x];
         }

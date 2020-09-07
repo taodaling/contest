@@ -13,7 +13,7 @@ import template.primitve.generated.datastructure.IntToLongFunction;
  * </ul>
  * <p>each operation finished with O((log n)^2) time complexity</p>
  */
-public class SegmentBeatExt implements Cloneable{
+public class SegmentBeatExt implements Cloneable {
     private static long inf = (long) 2e18;
     private SegmentBeatExt left;
     private SegmentBeatExt right;

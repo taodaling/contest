@@ -37,7 +37,7 @@ public class FPuttingBoxesTogether {
             if (x < 0) {
                 int id = -x;
                 int nw = y;
-                segment.update(id, id, 1, n, nw);
+                segment.updatePlus(id, id, 1, n, nw);
                 bit.update(id, -bit.interval(id, id));
                 bit.update(id, mod.mul(nw, as[id]));
                 indexBIT.update(id, -indexBIT.interval(id, id));
@@ -115,8 +115,8 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = DigitUtils.floorAverage(l, r);
-        left.update(ll, rr, l, m, x);
-        right.update(ll, rr, m + 1, r, x);
+        left.updatePlus(ll, rr, l, m, x);
+        right.updatePlus(ll, rr, m + 1, r, x);
         pushUp();
     }
 

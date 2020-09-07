@@ -1,0 +1,41 @@
+{
+  "name" : "LightbulbGame",
+  "signature" : {
+    "name" : "countWinningMoves",
+    "result" : "int",
+    "arguments" : [ "String[]" ],
+    "argumentNames" : [ "board" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "000ф000ф000" ],
+    "result" : "0",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "0000ф0100ф0000" ],
+    "result" : "1",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "00000ф01001ф00000" ],
+    "result" : "1",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "10ф01" ],
+    "result" : "0",
+    "index" : 3,
+    "active" : true
+  }, {
+    "arguments" : [ "1111ф1110" ],
+    "result" : "3",
+    "index" : 4,
+    "active" : true
+  } ],
+  "date" : "2020.09.03",
+  "contestName" : "TopCoder SRM #738",
+  "testClasses" : [ ],
+  "fqn" : "on2020_09.on2020_09_03_TopCoder_SRM__738.LightbulbGame.LightbulbGame",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

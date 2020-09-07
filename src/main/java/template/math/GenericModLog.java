@@ -30,6 +30,9 @@ public class GenericModLog {
         mul = modular.valueOf(extGCD.getX());
     }
 
+    /**
+     * return log_a y \mod p with O(\sqrt{p}) time complexity or -1 if doesn't exit
+     */
     public int log(int y) {
         y = original.valueOf(y);
         int prod = original.valueOf(1);

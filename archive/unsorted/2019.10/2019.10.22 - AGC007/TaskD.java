@@ -19,8 +19,8 @@ public class TaskD {
         Segment seg2 = new Segment(0, n);
 
         long[] dp = new long[n + 1];
-        seg1.update(0, 0, 0, n, dp[0] + bears[1] - bears[0] - 3 * bears[1] + 2 * bears[1]);
-        seg2.update(0, 0, 0, n, dp[0] + bears[1] - bears[0] - 3 * bears[1]);
+        seg1.updatePlus(0, 0, 0, n, dp[0] + bears[1] - bears[0] - 3 * bears[1] + 2 * bears[1]);
+        seg2.updatePlus(0, 0, 0, n, dp[0] + bears[1] - bears[0] - 3 * bears[1]);
 
         int j = -1;
         for(int i = 1; i <= n; i++){
@@ -31,8 +31,8 @@ public class TaskD {
             long ans2 = seg2.queryMax(0, j, 0, n) + 3 * bears[i];
             dp[i] = Math.min(ans1, ans2);
 
-            seg1.update(i, i, 0, n, dp[i] + bears[i + 1] - bears[i] - 3 * bears[i + 1] + 2 * bears[i + 1]);
-            seg2.update(i, i, 0, n, dp[i] + bears[i + 1] - bears[i] - 3 * bears[i + 1]);
+            seg1.updatePlus(i, i, 0, n, dp[i] + bears[i + 1] - bears[i] - 3 * bears[i + 1] + 2 * bears[i + 1]);
+            seg2.updatePlus(i, i, 0, n, dp[i] + bears[i + 1] - bears[i] - 3 * bears[i + 1]);
         }
 
         long ans = e - bears[n] + dp[n];
@@ -85,8 +85,8 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = DigitUtils.floorAverage(l, r);
-        left.update(ll, rr, l, m, x);
-        right.update(ll, rr, m + 1, r, x);
+        left.updatePlus(ll, rr, l, m, x);
+        right.updatePlus(ll, rr, m + 1, r, x);
         pushUp();
     }
 

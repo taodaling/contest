@@ -1,0 +1,40 @@
+{
+  "name" : "Dominator Tree",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5 6 0\n0 1\n1 2\n2 3\n3 4\n0 3\n2 4\n",
+    "output" : "0 0 1 0 0\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "8 8 4\n4 2\n4 3\n2 0\n3 0\n0 1\n3 5\n3 6\n7 6\n",
+    "output" : "4 0 4 4 4 3 3 -1\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_09.on2020_09_01_Library_Checker.Dominator_Tree.DominatorTree",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.09.01",
+  "contestName" : "Library Checker",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

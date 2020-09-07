@@ -50,7 +50,7 @@ public class CWorldOfDarkraftBattleForAzathoth {
             while (!dq.isEmpty() && dq.peekFirst().x < w.w) {
                 Monster monster = dq.removeFirst();
                 int index = binarySearch(armor, monster.y + 1);
-                segment.update(index, armor.length - 1, 0, armor.length - 1, monster.z);
+                segment.updatePlus(index, armor.length - 1, 0, armor.length - 1, monster.z);
             }
             ans = Math.max(ans, segment.query(0, armor.length - 1, 0, armor.length - 1) - w.price);
         }
@@ -153,8 +153,8 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = DigitUtils.floorAverage(l, r);
-        left.update(ll, rr, l, m, x);
-        right.update(ll, rr, m + 1, r, x);
+        left.updatePlus(ll, rr, l, m, x);
+        right.updatePlus(ll, rr, m + 1, r, x);
         pushUp();
     }
 

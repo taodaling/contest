@@ -157,15 +157,15 @@ public class SparseMatrix {
     }
 
     /**
-     * return A^{-1}b in O(n(m+n)) time complexity
+     * return A^{-1}b in O(n(m+n)) time complexity, or null when there is no solution
      */
     public double[] solveLinearEquation(double[] b) {
         DoubleArrayList minPoly = getMinimalPolynomialByRandom();
         double c0 = minPoly.get(0);
         if (c0 == 0) {
-            throw new IllegalStateException("Can't invert singular matrix");
+            return null;
         }
-       // double inv = -1 / c0;
+        // double inv = -1 / c0;
         double[] sum = new double[n];
         double[] v = b;
         double[] next = new double[n];

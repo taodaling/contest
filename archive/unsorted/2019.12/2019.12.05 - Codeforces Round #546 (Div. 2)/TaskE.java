@@ -28,7 +28,7 @@ public class TaskE {
         }
         int q = in.readInt();
         Segment seg = new Segment(0, n, aa);
-        seg.update(n, n, 0, n, (long)1e18);
+        seg.updatePlus(n, n, 0, n, (long)1e18);
         for (int i = 0; i < q; i++) {
             char cmd = in.readChar();
             if (cmd == '+') {
@@ -36,7 +36,7 @@ public class TaskE {
                 int x = in.readInt();
                 long val = seg.query(index, index, 0, n) + x;
                 int until = seg.queryFloorIndex(val, 0, n);
-                seg.update(index, until, 0, n, val);
+                seg.updatePlus(index, until, 0, n, val);
             } else {
                 int l = in.readInt() - 1;
                 int r = in.readInt() - 1;
@@ -108,8 +108,8 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = DigitUtils.floorAverage(l, r);
-        left.update(ll, rr, l, m, x);
-        right.update(ll, rr, m + 1, r, x);
+        left.updatePlus(ll, rr, l, m, x);
+        right.updatePlus(ll, rr, m + 1, r, x);
         pushUp();
     }
 

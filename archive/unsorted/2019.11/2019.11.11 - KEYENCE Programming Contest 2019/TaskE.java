@@ -20,7 +20,7 @@ public class TaskE {
         Segment left = new Segment(1, n, leftCost);
         Segment right = new Segment(1, n, rightCost);
 
-        left.update(1, 1, 1, n, -leftCost[1]);
+        left.updatePlus(1, 1, 1, n, -leftCost[1]);
 
 
         long ans = 0;
@@ -39,8 +39,8 @@ public class TaskE {
             ans += forLeft.val;
             left.kill(forLeft.index, forLeft.index, 1, n);
             right.kill(forLeft.index, forLeft.index, 1, n);
-            left.update(1, forLeft.index - 1, 1, n, rightCost[forLeft.index]);
-            right.update(forLeft.index + 1, n, 1, n, leftCost[forLeft.index]);
+            left.updatePlus(1, forLeft.index - 1, 1, n, rightCost[forLeft.index]);
+            right.updatePlus(forLeft.index + 1, n, 1, n, leftCost[forLeft.index]);
         }
 
         out.println(ans);
@@ -127,8 +127,8 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = DigitUtils.floorAverage(l, r);
-        left.update(ll, rr, l, m, x);
-        right.update(ll, rr, m + 1, r, x);
+        left.updatePlus(ll, rr, l, m, x);
+        right.updatePlus(ll, rr, m + 1, r, x);
         pushUp();
     }
 

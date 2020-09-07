@@ -25,7 +25,7 @@ public class CAlyonaAndTowers {
             int r = in.readInt();
             int d = in.readInt();
 
-            seg.update(l, r, 1, n, d);
+            seg.updatePlus(l, r, 1, n, d);
 
             //seg.toString();
             int ans = seg.state.hill;
@@ -171,8 +171,8 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = DigitUtils.floorAverage(l, r);
-        left.update(ll, rr, l, m, x);
-        right.update(ll, rr, m + 1, r, x);
+        left.updatePlus(ll, rr, l, m, x);
+        right.updatePlus(ll, rr, m + 1, r, x);
         pushUp();
     }
 

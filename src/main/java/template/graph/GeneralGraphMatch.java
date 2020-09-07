@@ -1,9 +1,11 @@
 package template.graph;
 
 /**
- * Find max matching in general graph with vertex 0, 1, ..., n - 1
+ * <p>
+ * Find max matching in general graph with vertex 0, 1, ..., n - 1 with time complexity O(V^3)
+ * </p>
  */
-public class EdmondBlossom {
+public class GeneralGraphMatch {
     int n;
     int[] pre;
     boolean[][] edges;
@@ -108,7 +110,7 @@ public class EdmondBlossom {
         return total;
     }
 
-    public EdmondBlossom(int n) {
+    public GeneralGraphMatch(int n) {
         this.n = n;
         int len = n + 1;
         pre = new int[len];

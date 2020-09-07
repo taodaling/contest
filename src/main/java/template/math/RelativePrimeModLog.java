@@ -3,46 +3,45 @@ package template.math;
 import template.primitve.generated.datastructure.IntegerHashMap;
 
 public class RelativePrimeModLog {
-    Modular mod;
-    Modular powMod;
-    int x;
-    int phi;
     IntegerHashMap map;
+    int modVal;
     int m;
     int invM;
     private static IntExtGCDObject extGCD = new IntExtGCDObject();
+    Modular mod;
+    int phi;
 
     public RelativePrimeModLog(int x, Modular mod) {
-        this.x = x;
         this.mod = mod;
-        phi = mod.getMod();
-        powMod = new Modular(phi);
+        modVal = mod.getMod();
+        phi = CachedEulerFunction.get(modVal);
         if (extGCD.extgcd(x, mod.getMod()) != 1) {
             throw new IllegalArgumentException();
         }
-        m = (int) Math.ceil(Math.sqrt(phi));
+        m = (int) Math.ceil(Math.sqrt(modVal));
         map = new IntegerHashMap(m, false);
 
         int inv = mod.valueOf(extGCD.getX());
         invM = new Power(mod).pow(inv, m);
 
-        int prod = mod.valueOf(1);
+        long prod = mod.valueOf(1);
         for (int i = 0; i < m; i++) {
-            map.putIfNotExist(prod, i);
-            prod = mod.mul(prod, x);
+            map.putIfNotExist((int) prod, i);
+            prod = prod * x % modVal;
         }
     }
 
     /**
-     * return log_x y
+     * <p>return log_x y</p>
+     * <p>O(p^0.5)</p>
      */
     public int log(int y) {
         y = mod.valueOf(y);
-        int start = y;
-        for (int i = 0; i * m < phi; start = mod.mul(start, invM), i++) {
-            int val = map.getOrDefault(start, -1);
+        long start = y;
+        for (int i = 0; i * m < modVal; start = start * invM % modVal, i++) {
+            int val = map.getOrDefault((int) start, -1);
             if (val >= 0) {
-                return powMod.valueOf(val + i * m);
+                return (int) (((long) val + i * m) % phi);
             }
         }
         return -1;

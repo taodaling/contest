@@ -55,13 +55,10 @@ public class Matrix implements Cloneable {
     public static Matrix mul(Matrix a, Matrix b, Matrix c) {
         //KahanSummation sum = new KahanSummation();
         for (int i = 0; i < c.n; i++) {
-            for (int j = 0; j < c.m; j++) {
-                // sum.reset();
-                double sum = 0;
-                for (int k = 0; k < a.m; k++) {
-                    sum += (a.mat[i][k] * b.mat[k][j]);
+            for (int k = 0; k < a.m; k++) {
+                for (int j = 0; j < c.m; j++) {
+                    c.mat[i][j] += (a.mat[i][k] * b.mat[k][j]);
                 }
-                c.mat[i][j] = sum;
             }
         }
         return c;

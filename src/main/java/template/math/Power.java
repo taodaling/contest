@@ -13,9 +13,11 @@ public class Power implements InverseNumber {
     static IntExtGCDObject extGCD = new IntExtGCDObject();
 
     final Modular modular;
+    int modVal;
 
     public Power(Modular modular) {
         this.modular = modular;
+        this.modVal = modular.getMod();
     }
 
     public int pow(int x, long n) {
@@ -23,9 +25,9 @@ public class Power implements InverseNumber {
             return modular.valueOf(1);
         }
         long r = pow(x, n >> 1);
-        r = modular.valueOf(r * r);
+        r = r * r % modVal;
         if ((n & 1) == 1) {
-            r = modular.valueOf(r * x);
+            r = r * x % modVal;
         }
         return (int) r;
     }
@@ -35,9 +37,9 @@ public class Power implements InverseNumber {
             return modular.valueOf(1);
         }
         long r = pow(x, n >> 1);
-        r = modular.valueOf(r * r);
+        r = r * r % modVal;
         if ((n & 1) == 1) {
-            r = modular.valueOf(r * x);
+            r = r * x % modVal;
         }
         return (int) r;
     }
@@ -51,20 +53,20 @@ public class Power implements InverseNumber {
             return modular.valueOf(1);
         }
         long r = pow(x, n, i - 1);
-        r = modular.valueOf(r * r);
+        r = r * r % modVal;
         if (n.get(i)) {
-            r = modular.valueOf(r * x);
+            r = r * x % modVal;
         }
         return (int) r;
     }
 
     public int inverseByFermat(int x) {
-        return pow(x, modular.m - 2);
+        return pow(x, modVal - 2);
     }
 
     @Override
     public int inverse(int x) {
-        int ans =  inverseExtGCD(x);
+        int ans = inverseExtGCD(x);
 //        if(modular.mul(ans, x) != 1){
 //            throw new IllegalStateException();
 //        }
@@ -72,7 +74,7 @@ public class Power implements InverseNumber {
     }
 
     public int inverseExtGCD(int x) {
-        if (extGCD.extgcd(x, modular.getMod()) != 1) {
+        if (extGCD.extgcd(x, modVal) != 1) {
             throw new IllegalArgumentException();
         }
         return modular.valueOf(extGCD.getX());

@@ -1,0 +1,40 @@
+{
+  "name" : "A. Letters Cyclic Shift",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "codeforces\n",
+    "output" : "bncdenqbdr\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "abacaba\n",
+    "output" : "aaacaba\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_08.on2020_08_31_Codeforces___AIM_Tech_Round_3__Div__1_.A__Letters_Cyclic_Shift.ALettersCyclicShift",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.08.31",
+  "contestName" : "Codeforces - AIM Tech Round 3 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

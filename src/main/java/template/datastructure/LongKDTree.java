@@ -45,7 +45,7 @@ public class LongKDTree {
         delta = new long[dimension];
         curLow = new long[dimension];
         curHigh = new long[dimension];
-        buf = new Node[expect];
+        buf = new Node[Math.max(expect, points == null ? 0 : points.length)];
         for (int i = 0; i < dimension; i++) {
             int finalI = i;
             comparators[i] = (a, b) -> Long.compare(a.coordinates[finalI], b.coordinates[finalI]);

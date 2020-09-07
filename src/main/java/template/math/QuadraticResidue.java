@@ -16,7 +16,8 @@ public class QuadraticResidue {
     }
 
     /**
-     * return \sqrt{n} or -1 if it doesn't exist
+     * <p>return \sqrt{n} or -1 if it doesn't exist</p>
+     * <p>O(\log_2 p)</p>
      */
     public int square(int n) {
         n = modular.valueOf(n);

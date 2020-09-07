@@ -1,0 +1,60 @@
+{
+  "name" : "D. Incorrect Flow",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2 1\n1 2 2 1\n",
+    "output" : "0\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "2 1\n1 2 1 2\n",
+    "output" : "1\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "3 3\n1 2 1 1\n2 3 2 2\n1 3 3 3\n",
+    "output" : "1\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "4 2\n2 3 1 1\n3 2 1 1\n",
+    "output" : "0\n",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "4 2\n\n2 3 0 10\n3 2 0 10",
+    "output" : "20",
+    "index" : 4,
+    "active" : true
+  }, {
+    "input" : "3 2\n1 2 10 0\n2 3 0 10",
+    "output" : "10",
+    "index" : 5,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_08.on2020_08_31_Codeforces___AIM_Tech_Round_3__Div__1_.D__Incorrect_Flow.DIncorrectFlow",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.08.31",
+  "contestName" : "Codeforces - AIM Tech Round 3 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

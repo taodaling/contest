@@ -24,11 +24,11 @@ public class TaskD {
                 .collect(Collectors.groupingBy(x -> x[0]));
 
         Segment seg = new Segment(1, n);
-        seg.update(1, 1, 1, n, 0);
+        seg.updatePlus(1, 1, 1, n, 0);
         for (int i = 1; i <= n; i++) {
             long dist = seg.queryMax(i, i, 1, n);
             for (int[] op : group.getOrDefault(i, Collections.emptyList())) {
-                seg.update(op[0], op[1], 1, n, dist + op[2]);
+                seg.updatePlus(op[0], op[1], 1, n, dist + op[2]);
             }
         }
 
@@ -89,8 +89,8 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = DigitUtils.floorAverage(l, r);
-        left.update(ll, rr, l, m, x);
-        right.update(ll, rr, m + 1, r, x);
+        left.updatePlus(ll, rr, l, m, x);
+        right.updatePlus(ll, rr, m + 1, r, x);
         pushUp();
     }
 

@@ -69,7 +69,7 @@ public class DKarenAndCards {
                     int x = cards[j][0];
                     int y = cards[j][1];
                     pq.update(1, x, 1, limits[0], y);
-                    seg.update(1, x, 1, limits[0], y);
+                    seg.updatePlus(1, x, 1, limits[0], y);
                 }
             }
             i = r;
@@ -317,8 +317,8 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = DigitUtils.floorAverage(l, r);
-        left.update(ll, rr, l, m, x);
-        right.update(ll, rr, m + 1, r, x);
+        left.updatePlus(ll, rr, l, m, x);
+        right.updatePlus(ll, rr, m + 1, r, x);
         pushUp();
     }
 

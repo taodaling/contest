@@ -1,0 +1,31 @@
+{
+  "name" : "CovidCinema",
+  "signature" : {
+    "name" : "seat",
+    "result" : "String[]",
+    "arguments" : [ "int", "int", "int", "int" ],
+    "argumentNames" : [ "R", "C", "A", "B" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "4", "5", "13", "7" ],
+    "result" : "",
+    "index" : 0,
+    "active" : false
+  }, {
+    "arguments" : [ "4", "5", "14", "2" ],
+    "result" : "B.AAAф.AAAAфAAAA.фAAA.B",
+    "index" : 1,
+    "active" : false
+  }, {
+    "arguments" : [ "5", "5", "17", "4" ],
+    "result" : "AAAAAфAAAAAф..AAAфBB.AAфBB.AA",
+    "index" : 2,
+    "active" : true
+  } ],
+  "date" : "2020.09.06",
+  "contestName" : "2020 TopCoder Open Algo",
+  "testClasses" : [ ],
+  "fqn" : "contest.CovidCinema",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

@@ -108,7 +108,7 @@ public class FIndecisiveTaxiFee {
         long dist = a.distToSrc + b.distToDst + w;
         int l = prev(a);
         int r = post(b);
-        seg.update(l + 1, r - 1, 1, curTag, dist);
+        seg.updatePlus(l + 1, r - 1, 1, curTag, dist);
     }
 
     public int post(Node root) {
@@ -226,8 +226,8 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = DigitUtils.floorAverage(l, r);
-        left.update(ll, rr, l, m, x);
-        right.update(ll, rr, m + 1, r, x);
+        left.updatePlus(ll, rr, l, m, x);
+        right.updatePlus(ll, rr, m + 1, r, x);
         pushUp();
     }
 

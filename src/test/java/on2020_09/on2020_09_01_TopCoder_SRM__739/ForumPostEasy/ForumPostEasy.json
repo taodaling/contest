@@ -1,0 +1,36 @@
+{
+  "name" : "ForumPostEasy",
+  "signature" : {
+    "name" : "getCurrentTime",
+    "result" : "String",
+    "arguments" : [ "String[]", "String[]" ],
+    "argumentNames" : [ "exactPostTime", "showPostTime" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "12:12:12", "few seconds ago" ],
+    "result" : "12:12:12",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "23:23:23ф23:23:23", "59 minutes agoф59 minutes ago" ],
+    "result" : "00:22:23",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "00:10:10ф00:10:10", "59 minutes agoф1 hours ago" ],
+    "result" : "impossible",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "11:59:13ф11:13:23ф12:25:15", "few seconds agoф46 minutes agoф23 hours ago" ],
+    "result" : "11:59:23",
+    "index" : 3,
+    "active" : true
+  } ],
+  "date" : "2020.09.01",
+  "contestName" : "TopCoder SRM #739",
+  "testClasses" : [ ],
+  "fqn" : "on2020_09.on2020_09_01_TopCoder_SRM__739.ForumPostEasy.ForumPostEasy",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

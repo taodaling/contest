@@ -1,0 +1,41 @@
+{
+  "name" : "SortInversions",
+  "signature" : {
+    "name" : "count",
+    "result" : "long",
+    "arguments" : [ "int" ],
+    "argumentNames" : [ "N" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "12" ],
+    "result" : "24",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "7" ],
+    "result" : "0",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "199" ],
+    "result" : "9610",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "999999" ],
+    "result" : "45451601010",
+    "index" : 3,
+    "active" : true
+  }, {
+    "arguments" : [ "5" ],
+    "result" : "0",
+    "index" : 4,
+    "active" : true
+  } ],
+  "date" : "2020.09.06",
+  "contestName" : "2020 TopCoder Open Algo",
+  "testClasses" : [ ],
+  "fqn" : "on2020_09.on2020_09_06_2020_TopCoder_Open_Algo.SortInversions.SortInversions",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}
