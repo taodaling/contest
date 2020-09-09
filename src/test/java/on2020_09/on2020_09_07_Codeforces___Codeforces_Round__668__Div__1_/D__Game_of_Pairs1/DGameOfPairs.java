@@ -1,4 +1,6 @@
-package contest;
+package on2020_09.on2020_09_07_Codeforces___Codeforces_Round__668__Div__1_.D__Game_of_Pairs1;
+
+
 
 import template.io.FastInput;
 import template.io.FastOutput;

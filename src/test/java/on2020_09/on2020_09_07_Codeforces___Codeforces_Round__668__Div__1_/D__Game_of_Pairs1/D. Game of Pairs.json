@@ -1,0 +1,40 @@
+{
+  "name" : "D. Game of Pairs",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2\n\n1 1 2 2\n\n0\n",
+    "output" : "Second\n\n1 3\n\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "2\n\n\n0\n",
+    "output" : "First\n2 1 2 1\n\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_09.on2020_09_07_Codeforces___Codeforces_Round__668__Div__1_.D__Game_of_Pairs1.DGameOfPairs",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.09.07",
+  "contestName" : "Codeforces - Codeforces Round #668 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : true,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

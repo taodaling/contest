@@ -6,7 +6,7 @@ import template.primitve.generated.datastructure.IntegerDequeImpl;
 
 import java.util.List;
 
-public class DoubleDijkstraV2MinimumCostFlow implements DoubleMinimumCostFlow {
+public class DoubleDijkstraV2MinimumCostFlow implements DoubleAugmentMinimumCostFlow {
     private int m;
     private double[] lastDist;
     private double[] curDist;
@@ -14,7 +14,12 @@ public class DoubleDijkstraV2MinimumCostFlow implements DoubleMinimumCostFlow {
     private boolean[] inq;
     private IntegerDeque dq;
     private static final double INF = Double.MAX_VALUE / 4;
-    List<DoubleCostFlowEdge>[] g;
+    private List<DoubleCostFlowEdge>[] g;
+    private DoubleAugmentCallback callback = DoubleAugmentCallback.NIL;
+
+    public void setCallback(DoubleAugmentCallback callback) {
+        this.callback = callback;
+    }
 
     public DoubleDijkstraV2MinimumCostFlow(int m) {
         this.m = m - 1;
@@ -100,11 +105,14 @@ public class DoubleDijkstraV2MinimumCostFlow implements DoubleMinimumCostFlow {
             for (DoubleCostFlowEdge trace = prev[t]; trace != null; trace = prev[trace.to]) {
                 remain = Math.min(remain, trace.flow);
             }
+            double sumOfCost = 0;
             for (DoubleCostFlowEdge trace = prev[t]; trace != null; trace = prev[trace.to]) {
-                cost += trace.cost * -remain;
+                sumOfCost -= trace.cost;
                 DoubleFlow.send(trace, -remain);
             }
+            cost += sumOfCost * -remain;
             flow += remain;
+            callback.callback(remain, sumOfCost);
         }
         return new double[]{flow, cost};
     }

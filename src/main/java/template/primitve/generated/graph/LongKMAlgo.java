@@ -4,7 +4,6 @@ import java.util.Arrays;
 
 /**
  * http://longrm.com/2018/05/05/2018-05-05-KM/
- * O(n^3)
  */
 public class LongKMAlgo {
     private static final long INF = Long.MAX_VALUE / 4;

@@ -6,7 +6,7 @@ import template.primitve.generated.datastructure.IntegerDequeImpl;
 
 import java.util.List;
 
-public class LongDijkstraMinimumCostFlow implements LongMinimumCostFlow {
+public class LongDijkstraMinimumCostFlow implements LongAugmentMinimumCostFlow {
     private int m;
     private LongPriorityQueueBasedOnSegment segment;
     private long[] lastDist;
@@ -15,7 +15,12 @@ public class LongDijkstraMinimumCostFlow implements LongMinimumCostFlow {
     private boolean[] inq;
     private IntegerDeque dq;
     private static final long INF = Long.MAX_VALUE / 4;
-    List<LongCostFlowEdge>[] g;
+    private List<LongCostFlowEdge>[] g;
+    private LongAugmentCallback callback = LongAugmentCallback.NIL;
+
+    public void setCallback(LongAugmentCallback callback) {
+        this.callback = callback;
+    }
 
     public LongDijkstraMinimumCostFlow(int m) {
         this.m = m - 1;
@@ -100,11 +105,16 @@ public class LongDijkstraMinimumCostFlow implements LongMinimumCostFlow {
             for (LongCostFlowEdge trace = prev[t]; trace != null; trace = prev[trace.to]) {
                 remain = Math.min(remain, trace.flow);
             }
+            long sumCost = 0;
             for (LongCostFlowEdge trace = prev[t]; trace != null; trace = prev[trace.to]) {
-                cost += trace.cost * -remain;
+                sumCost -= trace.cost;
                 LongFlow.send(trace, -remain);
             }
+            cost += sumCost * remain;
             flow += remain;
+            if(!callback.callback(remain, sumCost)){
+                break;
+            }
         }
         return new long[]{flow, cost};
     }
