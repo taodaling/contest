@@ -91,6 +91,18 @@ public class BigFraction extends Number implements Comparable<BigFraction> {
         }
     }
 
+    public BigInteger top() {
+        return top;
+    }
+
+    public BigInteger bot() {
+        return bot;
+    }
+
+    public String toFormattedString() {
+        return String.format("%s/%s", top.toString(), bot.toString());
+    }
+
     @Override
     public int compareTo(BigFraction o) {
         return top.multiply(o.bot).compareTo(o.top.multiply(bot));

@@ -143,6 +143,11 @@ public class ACAutomaton {
             cnt++;
         }
 
+
+        public void increaseCnt(int k) {
+            cnt += k;
+        }
+
         public int getPreSum() {
             return preSum;
         }

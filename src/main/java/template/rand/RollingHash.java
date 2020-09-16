@@ -18,19 +18,19 @@ public class RollingHash {
     }
 
     public void addLast(int x) {
-        h = hd.mod.plus(h, (long) hd.pow[dq.size()] * x);
+        h = hd.modular.plus(h, (long) hd.pow[dq.size()] * x);
         dq.addLast(x);
     }
 
     public void removeFirst() {
-        h = hd.mod.subtract(h, dq.removeFirst());
-        h = hd.mod.mul(h, hd.inv[1]);
+        h = hd.modular.subtract(h, dq.removeFirst());
+        h = hd.modular.mul(h, hd.inv[1]);
     }
 
     public int hash(boolean verbose) {
         int ans = h;
         if (verbose) {
-            ans = hd.mod.plus(ans, hd.pow[dq.size()]);
+            ans = hd.modular.plus(ans, hd.pow[dq.size()]);
         }
         return ans;
     }

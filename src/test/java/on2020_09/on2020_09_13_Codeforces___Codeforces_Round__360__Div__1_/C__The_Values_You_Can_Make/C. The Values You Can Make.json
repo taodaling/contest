@@ -1,0 +1,40 @@
+{
+  "name" : "C. The Values You Can Make",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "6 18\n5 6 1 10 12 2\n",
+    "output" : "16\n0 1 2 3 5 6 7 8 10 11 12 13 15 16 17 18 \n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "3 50\n25 25 50\n",
+    "output" : "3\n0 25 50 \n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_09.on2020_09_13_Codeforces___Codeforces_Round__360__Div__1_.C__The_Values_You_Can_Make.CTheValuesYouCanMake",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.09.13",
+  "contestName" : "Codeforces - Codeforces Round #360 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

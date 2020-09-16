@@ -21,21 +21,21 @@ public class XorDeltaDSU {
     }
 
     public int find(int a) {
-        if(p[a] == p[p[a]]){
+        if (p[a] == p[p[a]]) {
             return p[a];
         }
         find(p[a]);
         delta[a] ^= delta[p[a]];
-        return p[a] = find(p[a]);
+        return p[a] = p[p[a]];
     }
 
     /**
      * return a - b, you should ensure a and b belong to same set
      */
-    public int delta(int a, int b){
-       find(a);
-       find(b);
-       return delta[a] ^ delta[b];
+    public int delta(int a, int b) {
+        find(a);
+        find(b);
+        return delta[a] ^ delta[b];
     }
 
     /**

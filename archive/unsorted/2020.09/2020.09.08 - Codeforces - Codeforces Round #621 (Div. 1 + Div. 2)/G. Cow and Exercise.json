@@ -13,6 +13,11 @@
     "input" : "3 3\n1 2 2\n2 3 2\n1 3 3\n5\n0\n1\n2\n3\n4\n",
     "output" : "3.0000000000\n4.0000000000\n4.5000000000\n5.0000000000\n5.5000000000\n",
     "index" : 0,
+    "active" : false
+  }, {
+    "input" : "3 6\n1 2 1\n1 3 1\n2 1 1\n2 3 1\n3 1 1\n3 2 1\n1\n1",
+    "output" : "2",
+    "index" : 1,
     "active" : true
   } ],
   "location" : "src/main/java/contest",

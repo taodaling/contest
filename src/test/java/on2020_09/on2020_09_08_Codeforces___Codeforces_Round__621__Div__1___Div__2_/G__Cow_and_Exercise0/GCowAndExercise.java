@@ -1,4 +1,6 @@
-package contest;
+package on2020_09.on2020_09_08_Codeforces___Codeforces_Round__621__Div__1___Div__2_.G__Cow_and_Exercise0;
+
+
 
 
 

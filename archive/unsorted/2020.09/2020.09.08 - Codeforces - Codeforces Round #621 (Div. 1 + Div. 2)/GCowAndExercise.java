@@ -1,5 +1,7 @@
 package contest;
 
+
+
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.primitve.generated.graph.LongDijkstraV2MinimumCostFlow;
@@ -13,11 +15,11 @@ public class GCowAndExercise {
         for (int i = 0; i < m; i++) {
             mdf.addEdge(in.readInt() - 1, in.readInt() - 1, in.readInt(), 1);
         }
-        mdf.solve(new LongDijkstraV2MinimumCostFlow(n), 0, n - 1);
+        mdf.solve(new LongDijkstraV2MinimumCostFlow(n), 0, n - 1, (int)1e5, (long)1e18, (int)1e9);
         int q = in.readInt();
         for(int i = 0; i < q; i++){
             int x = in.readInt();
-            double ans = mdf.query(x);
+            double ans = mdf.queryByExpense(x);
             out.println(ans);
         }
     }

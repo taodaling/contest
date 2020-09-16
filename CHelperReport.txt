@@ -1,2 +1,2 @@
-63 src/main/java/contest/#6511. 「雅礼集训 2018 Day8」B.json
+47 src/main/java/contest/ProposalOptimization.json
 0

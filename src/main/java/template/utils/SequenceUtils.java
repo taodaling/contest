@@ -3,6 +3,7 @@ package template.utils;
 import template.primitve.generated.datastructure.IntToIntegerFunction;
 import template.primitve.generated.datastructure.IntegerArrayList;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -325,6 +326,7 @@ public class SequenceUtils {
             }
         }
     }
+
 
     public static void deepFill(Object array, long val) {
         if (!array.getClass().isArray()) {

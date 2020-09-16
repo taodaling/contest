@@ -1,0 +1,41 @@
+{
+  "name" : "ProposalOptimization",
+  "signature" : {
+    "name" : "bestPath",
+    "result" : "double",
+    "arguments" : [ "int", "int", "int", "int[]", "int[]", "int[]" ],
+    "argumentNames" : [ "R", "C", "K", "roses", "tulips", "costs" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "2", "2", "100", "0 2 3 0", "0 3 5 0", "0 70 80 0" ],
+    "result" : "0.6666666666666667",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "2", "2", "100", "0 2 3 0", "0 3 5 0", "0 170 100 0" ],
+    "result" : "0.6",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "3", "3", "98", "0 1 1 1 1 1 1 1 0", "0 1 1 1 1 1 1 1 0", "0 33 33 33 33 33 33 33 0" ],
+    "result" : "-1.0",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "5", "9", "622", "0 2 12 1 6 10 10 24 3 1 7 4 4 1 37 4 6 8 2 20 5 20 6 7 22 3 2 8 31 18 5 28 11 1 34 1 4 2 6 1 6 9 5 7 0", "0 4 37 22 3 14 10 6 5 6 5 17 4 7 12 3 1 3 3 1 5 1 11 37 6 24 6 3 21 1 2 27 7 1 8 1 8 1 26 20 6 6 6 7 0", "0 19 70 79 18 43 49 65 16 38 61 69 43 12 62 11 44 35 7 62 40 88 60 57 65 38 46 18 69 87 28 80 47 5 64 1 15 3 86 41 86 21 56 28 0" ],
+    "result" : "2.161290322580645",
+    "index" : 3,
+    "active" : true
+  }, {
+    "arguments" : [ "2", "3", "15", "0 1 3 1 1 0", "0 1 2 6 1 0", "0 1 18 9 1 0" ],
+    "result" : "1.0",
+    "index" : 4,
+    "active" : true
+  } ],
+  "date" : "2020.09.10",
+  "contestName" : "Single Round Match 790",
+  "testClasses" : [ ],
+  "fqn" : "on2020_09.on2020_09_10_Single_Round_Match_790.ProposalOptimization.ProposalOptimization",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

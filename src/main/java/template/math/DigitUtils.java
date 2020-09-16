@@ -5,6 +5,16 @@ public class DigitUtils {
     private DigitUtils() {
     }
 
+    public static long plus(long a, long b, long inf) {
+        if (Long.signum(a) * Long.signum(b) <= 0) {
+            return clamp(a + b, -inf, inf);
+        }
+        long ans = a + b;
+        if (Long.signum(ans) == -Long.signum(a)) {
+            return Long.signum(a) * inf;
+        }
+        return clamp(ans, -inf, inf);
+    }
 
     public static double clamp(double x, double low, double high) {
         return Math.max(Math.min(x, high), low);
