@@ -1,15 +1,9 @@
 package template.geometry.geo2;
 
 import template.geometry.GeoConstant;
-import template.utils.GeometryUtils;
 import template.utils.SequenceUtils;
 
-import java.util.ArrayDeque;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Deque;
-import java.util.List;
+import java.util.*;
 
 public class ConvexHull2 {
     public static Collection<Point2> grahamScan(List<Point2> pointPolygon) {
@@ -45,7 +39,7 @@ public class ConvexHull2 {
             while (stack.size() >= 2) {
                 Point2 last = stack.removeLast();
                 Point2 second = stack.peekLast();
-                if (GeometryUtils.valueOf(Point2.cross(second, points[i], last)) < 0) {
+                if (GeoConstant.sign(Point2.cross(second, points[i], last)) < 0) {
                     stack.addLast(last);
                     break;
                 }

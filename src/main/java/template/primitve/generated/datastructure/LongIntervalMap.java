@@ -22,6 +22,7 @@ public class LongIntervalMap implements Iterable<LongIntervalMap.Interval> {
         total -= interval.length();
     }
 
+
     public boolean isEmpty() {
         return map.isEmpty();
     }
@@ -50,12 +51,6 @@ public class LongIntervalMap implements Iterable<LongIntervalMap.Interval> {
         }
     }
 
-
-    public void clear() {
-        total = 0;
-        map.clear();
-    }
-
     public void or(LongIntervalMap map) {
         for (Interval interval : map) {
             add(interval.l, interval.r);
@@ -67,6 +62,9 @@ public class LongIntervalMap implements Iterable<LongIntervalMap.Interval> {
         return map.values().iterator();
     }
 
+    /**
+     * [l, r)
+     */
     public void add(long l, long r) {
         if (l >= r) {
             return;
@@ -102,7 +100,7 @@ public class LongIntervalMap implements Iterable<LongIntervalMap.Interval> {
         }
         while (true) {
             Map.Entry<Long, Interval> ceilEntry = map.ceilingEntry(l);
-            if (ceilEntry == null || ceilEntry.getValue().l > r) {
+            if (ceilEntry == null || ceilEntry.getValue().l >= r) {
                 break;
             }
             Interval ceil = ceilEntry.getValue();
@@ -112,16 +110,29 @@ public class LongIntervalMap implements Iterable<LongIntervalMap.Interval> {
         }
         while (true) {
             Map.Entry<Long, Interval> floorEntry = map.floorEntry(l);
-            if (floorEntry == null || floorEntry.getValue().r < l) {
+            if (floorEntry == null || floorEntry.getValue().r <= l) {
                 break;
             }
             Interval floor = floorEntry.getValue();
             remove(floor);
+            if (floor.r > r) {
+                Interval left = floor;
+                Interval right = new Interval();
+                right.l = r;
+                right.r = left.r;
+                left.r = l;
+                add(left);
+                add(right);
+                break;
+            }
             floor.r = l;
             add(floor);
         }
     }
 
+    /**
+     * [l, r)
+     */
     public static class Interval {
         public long l;
         public long r;
@@ -132,12 +143,17 @@ public class LongIntervalMap implements Iterable<LongIntervalMap.Interval> {
 
         @Override
         public String toString() {
-            return "(" + l + "," + r + ")";
+            return "[" + l + "," + r + ")";
         }
     }
 
     @Override
     public String toString() {
         return map.values().toString();
+    }
+
+    public void clear() {
+        map.clear();
+        total = 0;
     }
 }

@@ -112,7 +112,9 @@ public class IntegerDijkstraV2MinimumCostFlow implements IntegerAugmentMinimumCo
             }
             cost += sumOfCost * -remain;
             flow += remain;
-            callback.callback(remain, sumOfCost);
+            if (!callback.callback(remain, sumOfCost)) {
+                break;
+            }
         }
         return new int[]{flow, cost};
     }

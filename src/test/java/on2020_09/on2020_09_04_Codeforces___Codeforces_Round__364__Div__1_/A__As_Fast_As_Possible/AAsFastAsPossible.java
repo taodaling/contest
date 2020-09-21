@@ -5,7 +5,6 @@ package on2020_09.on2020_09_04_Codeforces___Codeforces_Round__364__Div__1_.A__As
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.math.DigitUtils;
-import template.math.KahanSummation;
 
 public class AAsFastAsPossible {
     public void solve(int testNumber, FastInput in, FastOutput out) {

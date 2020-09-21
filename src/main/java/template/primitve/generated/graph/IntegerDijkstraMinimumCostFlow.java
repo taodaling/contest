@@ -112,7 +112,9 @@ public class IntegerDijkstraMinimumCostFlow implements IntegerAugmentMinimumCost
             }
             cost += sumCost * remain;
             flow += remain;
-            callback.callback(remain, sumCost);
+            if(!callback.callback(remain, sumCost)){
+                break;
+            }
         }
         return new int[]{flow, cost};
     }

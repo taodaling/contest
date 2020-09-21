@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 /**
  * O(1) error for real number summation
  */
-public class KahanSummation {
+public class KahamSummation {
     private double error;
     private double sum;
 

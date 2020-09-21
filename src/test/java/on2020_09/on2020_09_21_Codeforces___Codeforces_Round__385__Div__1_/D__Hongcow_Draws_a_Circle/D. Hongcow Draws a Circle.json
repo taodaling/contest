@@ -1,0 +1,50 @@
+{
+  "name" : "D. Hongcow Draws a Circle",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2 5\n2 3\n3 4\n1 1\n1 4\n4 2\n4 7\n2 5\n",
+    "output" : "3.5355338827\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "1 6\n3 3\n1 5\n5 4\n2 1\n3 4\n4 2\n1 3\n",
+    "output" : "1.5811388195\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "2 2\n2 2\n3 3\n1 1\n4 4\n",
+    "output" : "-1\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "1 3\n2 2\n1 1\n9999 10000\n10000 1",
+    "output" : "141364798.3127119500",
+    "index" : 3,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_09.on2020_09_21_Codeforces___Codeforces_Round__385__Div__1_.D__Hongcow_Draws_a_Circle.DHongcowDrawsACircle",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.09.21",
+  "contestName" : "Codeforces - Codeforces Round #385 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

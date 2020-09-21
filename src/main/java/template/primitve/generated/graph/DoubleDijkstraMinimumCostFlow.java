@@ -112,7 +112,9 @@ public class DoubleDijkstraMinimumCostFlow implements DoubleAugmentMinimumCostFl
             }
             cost += sumCost * remain;
             flow += remain;
-            callback.callback(remain, sumCost);
+            if(!callback.callback(remain, sumCost)){
+                break;
+            }
         }
         return new double[]{flow, cost};
     }

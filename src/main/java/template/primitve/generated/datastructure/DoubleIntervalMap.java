@@ -22,10 +22,6 @@ public class DoubleIntervalMap implements Iterable<DoubleIntervalMap.Interval> {
         total -= interval.length();
     }
 
-    public void clear() {
-        total = 0;
-        map.clear();
-    }
 
     public boolean isEmpty() {
         return map.isEmpty();
@@ -66,6 +62,9 @@ public class DoubleIntervalMap implements Iterable<DoubleIntervalMap.Interval> {
         return map.values().iterator();
     }
 
+    /**
+     * [l, r)
+     */
     public void add(double l, double r) {
         if (l >= r) {
             return;
@@ -101,7 +100,7 @@ public class DoubleIntervalMap implements Iterable<DoubleIntervalMap.Interval> {
         }
         while (true) {
             Map.Entry<Double, Interval> ceilEntry = map.ceilingEntry(l);
-            if (ceilEntry == null || ceilEntry.getValue().l > r) {
+            if (ceilEntry == null || ceilEntry.getValue().l >= r) {
                 break;
             }
             Interval ceil = ceilEntry.getValue();
@@ -111,16 +110,29 @@ public class DoubleIntervalMap implements Iterable<DoubleIntervalMap.Interval> {
         }
         while (true) {
             Map.Entry<Double, Interval> floorEntry = map.floorEntry(l);
-            if (floorEntry == null || floorEntry.getValue().r < l) {
+            if (floorEntry == null || floorEntry.getValue().r <= l) {
                 break;
             }
             Interval floor = floorEntry.getValue();
             remove(floor);
+            if (floor.r > r) {
+                Interval left = floor;
+                Interval right = new Interval();
+                right.l = r;
+                right.r = left.r;
+                left.r = l;
+                add(left);
+                add(right);
+                break;
+            }
             floor.r = l;
             add(floor);
         }
     }
 
+    /**
+     * [l, r)
+     */
     public static class Interval {
         public double l;
         public double r;
@@ -131,12 +143,17 @@ public class DoubleIntervalMap implements Iterable<DoubleIntervalMap.Interval> {
 
         @Override
         public String toString() {
-            return "(" + l + "," + r + ")";
+            return "[" + l + "," + r + ")";
         }
     }
 
     @Override
     public String toString() {
         return map.values().toString();
+    }
+
+    public void clear() {
+        map.clear();
+        total = 0;
     }
 }

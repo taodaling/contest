@@ -12,7 +12,7 @@ public class Generator {
     public static void main(String[] args) {
         String srcPath = "/media/share/sourcecode/contest/src/main/java/template/primitve/generator";
         String dstPath = "/media/share/sourcecode/contest/src/main/java/template/primitve/generated";
-        String packagePrefix = "template.primitve.generated";
+        String packagePrefix = "package template.primitve.generated";
 
         for (File dir : new File(srcPath).listFiles()) {
             if (dir.isFile()) {
@@ -20,7 +20,7 @@ public class Generator {
             }
             File src = dir;
             File dst = new File(dstPath + "/" + dir.getName());
-            String packageName = packagePrefix + "." + dir.getName();
+            String packageName = packagePrefix + "." + dir.getName() + ";";
             System.out.println("transfer " + dir.getName());
             handle(src, dst, packageName);
         }

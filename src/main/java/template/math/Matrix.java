@@ -65,7 +65,7 @@ public class Matrix implements Cloneable {
     }
 
     public static Matrix mulPrecisely(Matrix a, Matrix b, Matrix c) {
-        KahanSummation sum = new KahanSummation();
+        KahamSummation sum = new KahamSummation();
         for (int i = 0; i < c.n; i++) {
             for (int j = 0; j < c.m; j++) {
                 sum.reset();

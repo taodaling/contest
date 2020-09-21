@@ -1,7 +1,7 @@
 package template.geometry;
 
 public class GeoConstant {
-    public static final double PREC = 1e-15;
+    public static final double PREC = 1e-12;
 
     public static final double INF = 1e50;
 

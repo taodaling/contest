@@ -22,6 +22,7 @@ public class IntegerIntervalMap implements Iterable<IntegerIntervalMap.Interval>
         total -= interval.length();
     }
 
+
     public boolean isEmpty() {
         return map.isEmpty();
     }
@@ -61,6 +62,9 @@ public class IntegerIntervalMap implements Iterable<IntegerIntervalMap.Interval>
         return map.values().iterator();
     }
 
+    /**
+     * [l, r)
+     */
     public void add(int l, int r) {
         if (l >= r) {
             return;
@@ -96,7 +100,7 @@ public class IntegerIntervalMap implements Iterable<IntegerIntervalMap.Interval>
         }
         while (true) {
             Map.Entry<Integer, Interval> ceilEntry = map.ceilingEntry(l);
-            if (ceilEntry == null || ceilEntry.getValue().l > r) {
+            if (ceilEntry == null || ceilEntry.getValue().l >= r) {
                 break;
             }
             Interval ceil = ceilEntry.getValue();
@@ -106,16 +110,29 @@ public class IntegerIntervalMap implements Iterable<IntegerIntervalMap.Interval>
         }
         while (true) {
             Map.Entry<Integer, Interval> floorEntry = map.floorEntry(l);
-            if (floorEntry == null || floorEntry.getValue().r < l) {
+            if (floorEntry == null || floorEntry.getValue().r <= l) {
                 break;
             }
             Interval floor = floorEntry.getValue();
             remove(floor);
+            if (floor.r > r) {
+                Interval left = floor;
+                Interval right = new Interval();
+                right.l = r;
+                right.r = left.r;
+                left.r = l;
+                add(left);
+                add(right);
+                break;
+            }
             floor.r = l;
             add(floor);
         }
     }
 
+    /**
+     * [l, r)
+     */
     public static class Interval {
         public int l;
         public int r;
@@ -123,5 +140,20 @@ public class IntegerIntervalMap implements Iterable<IntegerIntervalMap.Interval>
         public int length() {
             return r - l;
         }
+
+        @Override
+        public String toString() {
+            return "[" + l + "," + r + ")";
+        }
+    }
+
+    @Override
+    public String toString() {
+        return map.values().toString();
+    }
+
+    public void clear() {
+        map.clear();
+        total = 0;
     }
 }
