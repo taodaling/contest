@@ -3,7 +3,7 @@ package template.math;
 import java.util.Map;
 import java.util.function.ToIntBiFunction;
 
-public class MultiplicativeFunctionCalculator {
+public class IntegerMultiplicativeFunctionCalculator {
     private final ToIntBiFunction<Integer, Integer> function;
     private PollardRho rho = new PollardRho();
 
@@ -12,7 +12,7 @@ public class MultiplicativeFunctionCalculator {
      *
      * @param function
      */
-    public MultiplicativeFunctionCalculator(ToIntBiFunction<Integer, Integer> function) {
+    public IntegerMultiplicativeFunctionCalculator(ToIntBiFunction<Integer, Integer> function) {
         this.function = function;
     }
 

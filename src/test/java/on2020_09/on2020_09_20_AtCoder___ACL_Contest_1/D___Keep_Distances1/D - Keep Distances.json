@@ -1,0 +1,40 @@
+{
+  "name" : "D - Keep Distances",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5 3\n1 2 4 7 8\n2\n1 5\n1 2\n",
+    "output" : "4\n2\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "15 220492538\n4452279 12864090 23146757 31318558 133073771 141315707 263239555 350278176 401243954 418305779 450172439 560311491 625900495 626194585 891960194\n5\n6 14\n1 8\n1 13\n7 12\n4 12\n",
+    "output" : "4\n6\n11\n2\n3\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_09.on2020_09_20_AtCoder___ACL_Contest_1.D___Keep_Distances1.DKeepDistances",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.09.20",
+  "contestName" : "AtCoder - ACL Contest 1",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

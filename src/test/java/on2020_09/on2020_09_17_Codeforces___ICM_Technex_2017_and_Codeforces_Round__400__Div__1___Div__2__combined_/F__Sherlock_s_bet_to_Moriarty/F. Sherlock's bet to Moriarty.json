@@ -1,0 +1,44 @@
+{
+  "name" : "F. Sherlock's bet to Moriarty",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4 1\n1 3\n",
+    "output" : "1 2\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "6 3\n1 3\n1 4\n1 5\n",
+    "output" : "2 1 2 3\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "8 5\n1 7\n2 5\n4 2\n5 7\n2 7",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx512M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_09.on2020_09_17_Codeforces___ICM_Technex_2017_and_Codeforces_Round__400__Div__1___Div__2__combined_.F__Sherlock_s_bet_to_Moriarty.FSherlocksBetToMoriarty",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.09.17",
+  "contestName" : "Codeforces - ICM Technex 2017 and Codeforces Round #400 (Div. 1 + Div. 2, combined)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

@@ -6,7 +6,7 @@ import java.util.Comparator;
 
 public class Line2 {
     /**
-     * 顺时针旋转pi/2得到的法向量
+     * direction of line
      */
     public Point2 vec;
     public double c;

@@ -1,5 +1,6 @@
 package template.datastructure;
 
+import template.math.DigitUtils;
 import template.math.Modular;
 
 import java.util.Arrays;
@@ -8,17 +9,17 @@ import java.util.Arrays;
  * Created by dalt on 2018/5/20.
  */
 public class ModBIT {
-    private int[] data;
+    private long[] data;
     private int n;
-    private Modular modular;
+    private int mod;
 
     /**
      * 创建大小A[1...n]
      */
-    public ModBIT(int n, Modular mod) {
+    public ModBIT(int n, int mod) {
         this.n = n;
-        data = new int[n + 1];
-        this.modular = mod;
+        data = new long[n + 1];
+        this.mod = mod;
     }
 
     /**
@@ -29,25 +30,26 @@ public class ModBIT {
         for (; i > 0; i -= i & -i) {
             sum += data[i];
         }
-        return modular.valueOf(sum);
+        return (int) (sum % mod);
     }
 
     /**
      * 将A[i]更新为A[i]+modular
      */
-    public void update(int i, int mod) {
+    public void update(int i, int x) {
         if (i <= 0) {
             return;
         }
+        x = DigitUtils.mod(x, mod);
         for (; i <= n; i += i & -i) {
-            data[i] = modular.plus(data[i], mod);
+            data[i] = (data[i] + x) % mod;
         }
     }
 
-    public int interval(int l, int r) {
+    public int query(int l, int r) {
         int sum = query(r);
         if (l > 1) {
-            sum = modular.subtract(sum, query(l - 1));
+            sum = DigitUtils.mod(sum - query(l - 1), mod);
         }
         return sum;
     }

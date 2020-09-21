@@ -22,6 +22,11 @@ public class DoubleIntervalMap implements Iterable<DoubleIntervalMap.Interval> {
         total -= interval.length();
     }
 
+    public void clear() {
+        total = 0;
+        map.clear();
+    }
+
     public boolean isEmpty() {
         return map.isEmpty();
     }
@@ -123,5 +128,15 @@ public class DoubleIntervalMap implements Iterable<DoubleIntervalMap.Interval> {
         public double length() {
             return r - l;
         }
+
+        @Override
+        public String toString() {
+            return "(" + l + "," + r + ")";
+        }
+    }
+
+    @Override
+    public String toString() {
+        return map.values().toString();
     }
 }

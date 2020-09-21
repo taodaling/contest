@@ -50,6 +50,12 @@ public class LongIntervalMap implements Iterable<LongIntervalMap.Interval> {
         }
     }
 
+
+    public void clear() {
+        total = 0;
+        map.clear();
+    }
+
     public void or(LongIntervalMap map) {
         for (Interval interval : map) {
             add(interval.l, interval.r);
@@ -123,5 +129,15 @@ public class LongIntervalMap implements Iterable<LongIntervalMap.Interval> {
         public long length() {
             return r - l;
         }
+
+        @Override
+        public String toString() {
+            return "(" + l + "," + r + ")";
+        }
+    }
+
+    @Override
+    public String toString() {
+        return map.values().toString();
     }
 }
