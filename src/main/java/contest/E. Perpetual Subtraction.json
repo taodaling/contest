@@ -1,0 +1,45 @@
+{
+  "name" : "E. Perpetual Subtraction",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2 1\n0 0 1\n",
+    "output" : "332748118 332748118 332748118\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "2 2\n0 0 1\n",
+    "output" : "942786334 610038216 443664157\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "9 350\n3 31 314 3141 31415 314159 3141592 31415926 314159265 649178508\n",
+    "output" : "822986014 12998613 84959018 728107923 939229297 935516344 27254497 413831286 583600448 442738326\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.EPerpetualSubtraction",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.09.24",
+  "contestName" : "Codeforces - VK Cup 2018 - Round 1",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

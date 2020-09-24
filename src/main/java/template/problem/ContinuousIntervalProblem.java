@@ -132,7 +132,7 @@ public class ContinuousIntervalProblem {
         return ans;
     }
 
-    private long choose2(int n) {
+    private long choose2(long n) {
         return n * (n - 1) / 2;
     }
 

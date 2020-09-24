@@ -1,30 +1,12 @@
 package template.problem;
 
 import template.math.DigitUtils;
-import template.math.EulerSieve;
 import template.math.LongPollardRho;
 import template.primitve.generated.datastructure.LongArrayList;
 
-import java.math.BigInteger;
-import java.util.Arrays;
-
-public class MinimumNumberWithMaximumFactors {
+public class MaximumFactorMinimumNumber {
     public static void main(String[] args) {
-        System.out.println(MinimumNumberWithMaximumFactors.find((long) 1e15));
-        //System.out.println(MinimumNumberWithMaximumFactors.divisionRelation(978217616376000L));
-        System.out.println(Arrays.toString(MinimumNumberWithMaximumFactors.maximumPrimeFactor((long) 1e15)));
-        System.out.println(MinimumNumberWithMaximumFactors.incSequence(80, 19, 80));
-        System.out.println(MinimumNumberWithMaximumFactors.incDivisor((long) 1e18, 0, 80));
-        EulerSieve es = new EulerSieve(1000);
-        BigInteger prod = BigInteger.valueOf(1);
-        BigInteger limit = BigInteger.valueOf(10).pow(24);
-        int cnt = 0;
-        for (; prod.compareTo(limit) <= 0; ) {
-            prod = prod.multiply(BigInteger.valueOf(es.get(cnt)));
-            cnt++;
-        }
-        System.out.println("cnt=" + cnt);
-        // System.out.println(new LongPollardRho().findAllFactors(978217616376000L));
+        System.out.println(MaximumFactorMinimumNumber.findMinimumNumberWithMaximumFactors((long) 2e5));
     }
 
     private static int[] primes = new int[]{2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53};
@@ -32,9 +14,9 @@ public class MinimumNumberWithMaximumFactors {
     /**
      * Find the minimum x, while x <= r and x has as many factors as possible
      */
-    public static Answer find(long r) {
+    public static Answer findMinimumNumberWithMaximumFactors(long r) {
         Answer answer = new Answer();
-        find(r, answer, 1, 1, 0, 65);
+        findMinimumNumberWithMaximumFactors(r, answer, 1, 1, 0, 65);
         return answer;
     }
 
@@ -120,7 +102,7 @@ public class MinimumNumberWithMaximumFactors {
         }
     }
 
-    private static void find(long r, Answer answer, long factorNumber, long value, int step, int last) {
+    private static void findMinimumNumberWithMaximumFactors(long r, Answer answer, long factorNumber, long value, int step, int last) {
         if (value > r) {
             return;
         }
@@ -134,7 +116,7 @@ public class MinimumNumberWithMaximumFactors {
             if (DigitUtils.isMultiplicationOverflow(mul, value, r)) {
                 return;
             }
-            find(r, answer, factorNumber * (j + 1), value * mul, step + 1, j);
+            findMinimumNumberWithMaximumFactors(r, answer, factorNumber * (j + 1), value * mul, step + 1, j);
             if (DigitUtils.isMultiplicationOverflow(mul, mul, Long.MAX_VALUE)) {
                 return;
             }
