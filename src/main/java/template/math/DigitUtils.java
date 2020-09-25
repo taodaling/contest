@@ -203,6 +203,26 @@ public class DigitUtils {
         return x;
     }
 
+    public static int negate(int x, int mod) {
+        return x == 0 ? 0 : mod - x;
+    }
+
+    public static int modsub(int a, int b, int mod) {
+        int ans = a - b;
+        if (ans < 0) {
+            ans += mod;
+        }
+        return ans;
+    }
+
+    public static int modplus(int a, int b, int mod){
+        int ans = a + b;
+        if(ans >= mod){
+            ans -= mod;
+        }
+        return ans;
+    }
+
     public static long mod(long x, long mod) {
         x %= mod;
         if (x < 0) {

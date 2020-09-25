@@ -21,9 +21,9 @@ public class SecondStirlingNumber {
 
     public SecondStirlingNumber(NumberTheoryTransform ntt, Factorial factorial, int n) {
         this.ntt = ntt;
-        this.mod = factorial.getMod();
+        this.mod = new Modular(factorial.getMod());
         this.factorial = factorial;
-        power = new Power(factorial.getMod());
+        power = new Power(mod);
         stirling = getStirling(n);
     }
 

@@ -14,7 +14,7 @@ public class ModLinearFeedbackShiftRegisterTest {
     
     @Test
     public void test1() {
-        ModLinearFeedbackShiftRegister lfsr = new ModLinearFeedbackShiftRegister(mod);
+        ModLinearFeedbackShiftRegister lfsr = new ModLinearFeedbackShiftRegister(mod.getMod());
         ModLinearFeedbackShiftRegister.Estimator estimator = lfsr.newEstimator();
         assertNear(estimator.next(), 0);
         assertNear(estimator.next(), 0);
@@ -25,7 +25,7 @@ public class ModLinearFeedbackShiftRegisterTest {
 
     @Test
     public void test2() {
-        ModLinearFeedbackShiftRegister lfsr = new ModLinearFeedbackShiftRegister(mod);
+        ModLinearFeedbackShiftRegister lfsr = new ModLinearFeedbackShiftRegister(mod.getMod());
         lfsr.add(1);
         lfsr.add(2);
         lfsr.add(4);
@@ -39,7 +39,7 @@ public class ModLinearFeedbackShiftRegisterTest {
 
     @Test
     public void test3() {
-        ModLinearFeedbackShiftRegister lfsr = new ModLinearFeedbackShiftRegister(mod);
+        ModLinearFeedbackShiftRegister lfsr = new ModLinearFeedbackShiftRegister(mod.getMod());
         lfsr.add(0);
         lfsr.add(1);
         lfsr.add(1);
@@ -56,7 +56,7 @@ public class ModLinearFeedbackShiftRegisterTest {
 
     @Test
     public void test4() {
-        ModLinearFeedbackShiftRegister lfsr = new ModLinearFeedbackShiftRegister(mod);
+        ModLinearFeedbackShiftRegister lfsr = new ModLinearFeedbackShiftRegister(mod.getMod());
         lfsr.add(1);
         lfsr.add(2);
         lfsr.add(5);
@@ -73,7 +73,7 @@ public class ModLinearFeedbackShiftRegisterTest {
 
     @Test
     public void test5() {
-        ModLinearFeedbackShiftRegister lfsr = new ModLinearFeedbackShiftRegister(mod);
+        ModLinearFeedbackShiftRegister lfsr = new ModLinearFeedbackShiftRegister(mod.getMod());
         lfsr.add(0);
         lfsr.add(0);
         lfsr.add(1);

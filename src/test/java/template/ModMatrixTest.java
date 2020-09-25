@@ -64,23 +64,23 @@ public class ModMatrixTest {
         Power pow = new Power(mod);
 
         ModMatrix matrix = new ModMatrix(new int[][]{
-                {0,0,2},
-                {1,2,1},
-                {2,2,0}
+                {0, 0, 2},
+                {1, 2, 1},
+                {2, 2, 0}
         });
 
         ModGravityLagrangeInterpolation.Polynomial p = matrix.getCharacteristicPolynomial(pow);
         ModMatrix mat = new ModMatrix(3, 3);
-        mat.asStandard(mod);
+        mat.asStandard(mod.getMod());
         ModMatrix ans = new ModMatrix(3, 3);
-        for(int i = 0; i <= p.getRank(); i++){
+        for (int i = 0; i <= p.getRank(); i++) {
             int c = p.getCoefficient(i);
-            ans = ModMatrix.plus(ans, ModMatrix.mul(mat, c, mod), mod);
-            mat = ModMatrix.mul(mat, matrix, mod);
+            ans = ModMatrix.plus(ans, ModMatrix.mul(mat, c, mod.getMod()), mod.getMod());
+            mat = ModMatrix.mul(mat, matrix, mod.getMod());
         }
 
-        for(int i = 0; i < 3; i++){
-            for(int j = 0; j < 3; j++){
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
                 Assert.assertEquals(0, ans.get(i, j));
             }
         }

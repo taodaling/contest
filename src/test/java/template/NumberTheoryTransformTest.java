@@ -14,7 +14,7 @@ public class NumberTheoryTransformTest {
         Modular mod = new Modular(998244353);
         int[] p = new int[]{0, 1, 0, 0, 0, 0, 0, 0};
         int[] remainder = new int[]{0, 0, 0, 0, 0, 0, 0, 0};
-        NumberTheoryTransform ntt = new NumberTheoryTransform(mod);
+        NumberTheoryTransform ntt = new NumberTheoryTransform(mod.getMod());
         ntt.module(0, p, remainder, 3);
 
         Assert.assertArrayEquals(new int[]{1, 0, 0, 0, 0, 0, 0, 0}, remainder);
@@ -25,7 +25,7 @@ public class NumberTheoryTransformTest {
         Modular mod = new Modular(998244353);
         int[] p = new int[]{1, 1, 0, 0, 0, 0, 0, 0};
         int[] remainder = new int[]{0, 0, 0, 0, 0, 0, 0, 0};
-        NumberTheoryTransform ntt = new NumberTheoryTransform(mod);
+        NumberTheoryTransform ntt = new NumberTheoryTransform(mod.getMod());
         ntt.module(0, p, remainder, 3);
 
         Assert.assertArrayEquals(new int[]{1, 0, 0, 0, 0, 0, 0, 0}, remainder);
@@ -36,7 +36,7 @@ public class NumberTheoryTransformTest {
         Modular mod = new Modular(998244353);
         int[] p = new int[]{0, 1, 0, 0, 0, 0, 0, 0};
         int[] remainder = new int[]{0, 0, 0, 0, 0, 0, 0, 0};
-        NumberTheoryTransform ntt = new NumberTheoryTransform(mod);
+        NumberTheoryTransform ntt = new NumberTheoryTransform(mod.getMod());
         ntt.module(1, p, remainder, 3);
 
         Assert.assertArrayEquals(new int[]{0, 0, 0, 0, 0, 0, 0, 0}, remainder);
@@ -47,7 +47,7 @@ public class NumberTheoryTransformTest {
         Modular mod = new Modular(998244353);
         int[] p = new int[]{1, 1, 0, 0, 0, 0, 0, 0};
         int[] remainder = new int[]{0, 0, 0, 0, 0, 0, 0, 0};
-        NumberTheoryTransform ntt = new NumberTheoryTransform(mod);
+        NumberTheoryTransform ntt = new NumberTheoryTransform(mod.getMod());
         ntt.module(1, p, remainder, 3);
 
         Assert.assertArrayEquals(new int[]{mod.valueOf(-1), 0, 0, 0, 0, 0, 0, 0}, remainder);
@@ -58,7 +58,7 @@ public class NumberTheoryTransformTest {
         Modular mod = new Modular(998244353);
         int[] p = new int[]{0, 1, 0, 0, 0, 0, 0, 0};
         int[] remainder = new int[]{0, 0, 0, 0, 0, 0, 0, 0};
-        NumberTheoryTransform ntt = new NumberTheoryTransform(mod);
+        NumberTheoryTransform ntt = new NumberTheoryTransform(mod.getMod());
         ntt.module(2, p, remainder, 3);
 
         Assert.assertArrayEquals(new int[]{0, 0, 0, 0, 0, 0, 0, 0}, remainder);
@@ -69,7 +69,7 @@ public class NumberTheoryTransformTest {
         Modular mod = new Modular(998244353);
         int[] p = new int[]{0, 1, 0, 0, 0, 0, 0, 0};
         int[] remainder = new int[]{0, 0, 0, 0, 0, 0, 0, 0};
-        NumberTheoryTransform ntt = new NumberTheoryTransform(mod);
+        NumberTheoryTransform ntt = new NumberTheoryTransform(mod.getMod());
         ntt.module(2, p, remainder, 3);
 
         Assert.assertArrayEquals(new int[]{0, 0, 0, 0, 0, 0, 0, 0}, remainder);
@@ -80,7 +80,7 @@ public class NumberTheoryTransformTest {
         Modular mod = new Modular(998244353);
         int[] p = new int[]{1, 1, 0, 0, 0, 0, 0, 0};
         int[] remainder = new int[]{0, 0, 0, 0, 0, 0, 0, 0};
-        NumberTheoryTransform ntt = new NumberTheoryTransform(mod);
+        NumberTheoryTransform ntt = new NumberTheoryTransform(mod.getMod());
         ntt.module(2, p, remainder, 3);
 
         Assert.assertArrayEquals(new int[]{1, 0, 0, 0, 0, 0, 0, 0}, remainder);
@@ -94,7 +94,7 @@ public class NumberTheoryTransformTest {
 
         int[] clone = p.clone();
         Modular mod = new Modular(998244353);
-        NumberTheoryTransform ntt = new NumberTheoryTransform(mod);
+        NumberTheoryTransform ntt = new NumberTheoryTransform(mod.getMod());
         ntt.dft(p, m);
         ntt.idft(p, m);
 
@@ -105,7 +105,7 @@ public class NumberTheoryTransformTest {
     @Test
     public void test9(){
         Modular mod = new Modular(998244353);
-        NumberTheoryTransform ntt = new NumberTheoryTransform(mod);
+        NumberTheoryTransform ntt = new NumberTheoryTransform(mod.getMod());
 
         IntegerArrayList[] lists = new IntegerArrayList[3];
         lists[0] = new IntegerArrayList();

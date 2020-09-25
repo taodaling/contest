@@ -25,10 +25,12 @@ public class Test {
             test("doublePlus", obj::doublePlus);
             test("doubleMul", obj::doubleMul);
             test("doubleDiv", obj::doubleDiv);
+            test("mulModByInt", obj::mulModByInt);
+            test("mulModByLong", obj::mulModByLong);
         }
 
         for (String key : elapse.keySet()) {
-            System.out.println(key + " finished in " + Math.round(elapse.get(key) / (double)time) + "ms");
+            System.out.println(key + " finished in " + Math.round(elapse.get(key) / (double) time) + "ms");
         }
     }
 
@@ -83,6 +85,22 @@ public class Test {
         for (int i = 1; i <= round; i += 2) {
             sum += i;
             sum += i + 1;
+        }
+    }
+
+    public void mulModByInt() {
+        int sum = 1;
+        int mod = (int) (1e9 + 7);
+        for (int i = 1; i <= round; i++) {
+            sum = (int) ((long) sum * i % mod);
+        }
+    }
+
+    public void mulModByLong() {
+        long sum = 1;
+        int mod = (int) (1e9 + 7);
+        for (int i = 1; i <= round; i++) {
+            sum = (sum * i % mod);
         }
     }
 
@@ -144,21 +162,21 @@ public class Test {
         return local += x + y;
     }
 
-    private void doublePlus(){
+    private void doublePlus() {
         double sum = 1;
         for (int i = 1; i <= round; i++) {
             sum += i;
         }
     }
 
-    private void doubleMul(){
+    private void doubleMul() {
         double sum = 1;
         for (int i = 1; i <= round; i++) {
             sum *= i;
         }
     }
 
-    private void doubleDiv(){
+    private void doubleDiv() {
         double sum = 1;
         for (int i = 1; i <= round; i++) {
             sum /= i;
@@ -184,3 +202,4 @@ public class Test {
         }
     }
 }
+

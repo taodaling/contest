@@ -19,7 +19,7 @@ public class BigFactorial {
         this.mod = mod;
         this.pow = new Power(mod);
         int sqrt = (int) Math.ceil(Math.sqrt(mod.getMod()));
-        factorial = new Factorial(sqrt, pow);
+        factorial = new Factorial(sqrt, mod.getMod());
     }
 
 

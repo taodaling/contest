@@ -12,7 +12,7 @@ public class ModPrimeRoot {
     private int primitiveRoot;
 
     public ModPrimeRoot(Modular p) {
-        this(p, new PrimitiveRoot(p).findMinPrimitiveRoot());
+        this(p, new PrimitiveRoot(p.getMod()).findMinPrimitiveRoot());
     }
 
     public ModPrimeRoot(Modular p, int g) {

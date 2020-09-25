@@ -1,2 +1,2 @@
-40 src/main/java/contest/B - Best Tree.json
+42 src/main/java/contest/G - Divisor Set.json
 0

@@ -37,7 +37,7 @@ public class BinomialCombination {
      */
     private void mul(IntegerArrayList a, IntegerArrayList b, IntegerArrayList c) {
         if (!fft) {
-            Polynomials.mul(a, b, c, mod);
+            Polynomials.mul(a, b, c, mod.getMod());
         } else {
             int[] ans = FastFourierTransform.multiplyMod(a.getData(), a.size(), b.getData(), b.size(), mod.getMod());
             c.clear();

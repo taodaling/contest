@@ -5,15 +5,15 @@ import template.primitve.generated.datastructure.IntegerArrayList;
 
 import java.util.BitSet;
 
-public class LinearRecurrenceSolver {
-    Modular mod;
+public class ModLinearRecurrenceSolver {
+    int mod;
     IntegerArrayList coe;
     IntegerArrayList p;
     IntegerArrayList remainder;
     Power pow;
     int n;
 
-    private LinearRecurrenceSolver(IntegerArrayList coe, Modular mod) {
+    private ModLinearRecurrenceSolver(IntegerArrayList coe, int mod) {
         this.coe = coe;
         this.mod = mod;
         n = coe.size();
@@ -21,7 +21,7 @@ public class LinearRecurrenceSolver {
         remainder = new IntegerArrayList(coe.size());
         p = new IntegerArrayList(coe.size() + 1);
         for (int i = n - 1; i >= 0; i--) {
-            p.add(mod.valueOf(-coe.get(i)));
+            p.add(DigitUtils.negate(coe.get(i), mod));
         }
         p.add(1);
     }
@@ -29,14 +29,14 @@ public class LinearRecurrenceSolver {
     /**
      * a_i = coe(0) * (a_{i-1}) + ...
      */
-    public static LinearRecurrenceSolver newSolverFromLinearRecurrence(IntegerArrayList coe, Modular mod) {
-        return new LinearRecurrenceSolver(coe, mod);
+    public static ModLinearRecurrenceSolver newSolverFromLinearRecurrence(IntegerArrayList coe, int mod) {
+        return new ModLinearRecurrenceSolver(coe, mod);
     }
 
     /**
      * Auto detect linear recurrence from given sequence
      */
-    public static LinearRecurrenceSolver newSolverByAutoDetectLinearRecurrence(IntegerArrayList seq, Modular mod) {
+    public static ModLinearRecurrenceSolver newSolverByAutoDetectLinearRecurrence(IntegerArrayList seq, int mod) {
         ModLinearFeedbackShiftRegister lfsr = new ModLinearFeedbackShiftRegister(mod, seq.size());
         for (int i = 0; i < seq.size(); i++) {
             lfsr.add(seq.get(i));
@@ -49,12 +49,13 @@ public class LinearRecurrenceSolver {
     }
 
     private int solve(IntegerArrayList a) {
-        int ans = 0;
+        long ans = 0;
         remainder.expandWith(0, n);
         for (int i = 0; i < n; i++) {
-            ans = mod.plus(ans, mod.mul(remainder.get(i), a.get(i)));
+            ans += remainder.get(i) * (long) a.get(i) % mod;
         }
-        return ans;
+        ans %= mod;
+        return (int) ans;
     }
 
     /**

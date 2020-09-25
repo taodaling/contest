@@ -24,6 +24,10 @@
     "output" : "822986014 12998613 84959018 728107923 939229297 935516344 27254497 413831286 583600448 442738326\n",
     "index" : 2,
     "active" : true
+  }, {
+    "input" : "1 1\n0 1",
+    "index" : 3,
+    "active" : true
   } ],
   "location" : "src/main/java/contest",
   "vmArgs" : "-Xmx256M",

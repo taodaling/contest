@@ -57,7 +57,7 @@ public class FBarrelsAndBoxes {
 
     Modular mod = new Modular(1e9 + 7);
     int modVal = mod.getMod();
-    Combination comb = new Combination(1000000, new Power(mod));
+    Combination comb = new Combination(1000000, mod.getMod());
 
     //while xi >= k and x1 + ... + xn = m
     public long way(int n, int m, int k) {

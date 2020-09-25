@@ -1,12 +1,12 @@
 package template.math;
 
 public class IntRecursiveCombination implements IntCombination {
-    private Modular mod;
+    private int mod;
     private Power pow;
 
     public IntRecursiveCombination(Power pow) {
         this.pow = pow;
-        this.mod = pow.getModular();
+        this.mod = pow.getMod();
     }
 
     @Override
@@ -22,11 +22,10 @@ public class IntRecursiveCombination implements IntCombination {
 
     private int comb(int m, int n) {
         if (n == 0) {
-            return mod.valueOf(1);
+            return 1 % mod;
         }
-        int ans = comb(m - 1, n - 1);
-        ans = mod.mul(ans, m);
-        ans = mod.mul(ans, pow.inverse(n));
-        return ans;
+        long ans = comb(m - 1, n - 1);
+        ans = ans * m % mod * pow.inverse(n) % mod;
+        return (int) ans;
     }
 }

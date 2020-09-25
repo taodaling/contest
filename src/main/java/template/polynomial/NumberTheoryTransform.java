@@ -3,7 +3,6 @@ package template.polynomial;
 import template.binary.Log2;
 import template.math.DigitUtils;
 import template.math.InverseNumber;
-import template.math.Modular;
 import template.math.Power;
 import template.math.PrimitiveRoot;
 import template.primitve.generated.datastructure.IntegerArrayList;
@@ -15,33 +14,31 @@ import java.util.BitSet;
 import java.util.PriorityQueue;
 
 public class NumberTheoryTransform {
-    public static final NumberTheoryTransform STANDARD =
-            new NumberTheoryTransform(new Modular(998244353), 3);
-    private Modular modular;
+    private int mod;
     private Power power;
     private int g;
     private int[] wCache = new int[30];
     private int[] invCache = new int[30];
     public static Buffer<IntegerArrayList> listBuffer = Polynomials.listBuffer;
 
-    public NumberTheoryTransform(Modular mod) {
-        this(mod, mod.getMod() == 998244353 ? 3 : new PrimitiveRoot(mod.getMod()).findMinPrimitiveRoot());
+    public NumberTheoryTransform(int mod) {
+        this(mod, mod == 998244353 ? 3 : new PrimitiveRoot(mod).findMinPrimitiveRoot());
     }
 
-    public NumberTheoryTransform(Modular mod, int g) {
-        this.modular = mod;
+    public NumberTheoryTransform(int mod, int g) {
+        this.mod = mod;
         this.power = new Power(mod);
         this.g = g;
         for (int i = 0, until = wCache.length; i < until; i++) {
             int s = 1 << i;
-            wCache[i] = power.pow(this.g, (modular.getMod() - 1) / 2 / s);
+            wCache[i] = power.pow(this.g, (mod - 1) / 2 / s);
             invCache[i] = power.inverseByFermat(s);
         }
     }
 
     public void dotMul(int[] a, int[] b, int[] c, int m) {
         for (int i = 0, n = 1 << m; i < n; i++) {
-            c[i] = modular.mul(a[i], b[i]);
+            c[i] = (int) ((long) a[i] * b[i] % mod);
         }
     }
 
@@ -69,10 +66,10 @@ public class NumberTheoryTransform {
                 for (int j = 0; j < s; j++) {
                     int a = i + j;
                     int b = a + s;
-                    t = modular.mul(w, p[b]);
-                    p[b] = modular.plus(p[a], -t);
-                    p[a] = modular.plus(p[a], t);
-                    w = modular.mul(w, w1);
+                    t = (int) ((long) w * p[b] % mod);
+                    p[b] = DigitUtils.modsub(p[a], t, mod);
+                    p[a] = DigitUtils.modplus(p[a], t, mod);
+                    w = (int) ((long) w * w1 % mod);
                 }
             }
         }
@@ -82,14 +79,14 @@ public class NumberTheoryTransform {
         dft(p, m);
 
         int n = 1 << m;
-        int invN = invCache[m];
+        long invN = invCache[m];
 
-        p[0] = modular.mul(p[0], invN);
-        p[n / 2] = modular.mul(p[n / 2], invN);
+        p[0] = (int) ((long) p[0] * invN % mod);
+        p[n / 2] = (int) (p[n / 2] * invN % mod);
         for (int i = 1, until = n / 2; i < until; i++) {
             int a = p[n - i];
-            p[n - i] = modular.mul(p[i], invN);
-            p[i] = modular.mul(a, invN);
+            p[n - i] = (int) (p[i] * invN % mod);
+            p[i] = (int) (a * invN % mod);
         }
     }
 
@@ -144,7 +141,7 @@ public class NumberTheoryTransform {
         dft(b, m);
         dft(c, m);
         for (int i = 0; i < n; i++) {
-            remainder[i] = modular.subtract(a[i], modular.mul(b[i], c[i]));
+            remainder[i] = DigitUtils.mod(a[i] - (long) b[i] * c[i], mod);
         }
         idft(remainder, m);
         System.arraycopy(aSnapshot.getData(), 0, a, 0, n);
@@ -188,9 +185,17 @@ public class NumberTheoryTransform {
         while (pqs.size() > 1) {
             IntegerArrayList a = pqs.remove();
             IntegerArrayList b = pqs.remove();
-            multiplyAndStoreAnswerIntoA(a, b);
-            listBuffer.release(b);
-            pqs.add(a);
+            if (a.size() < NTT_THRESHOLD || b.size() < NTT_THRESHOLD) {
+                IntegerArrayList c = listBuffer.alloc();
+                Polynomials.mul(a, b, c, mod);
+                listBuffer.release(a);
+                listBuffer.release(b);
+                pqs.add(c);
+            } else {
+                multiplyAndStoreAnswerIntoA(a, b);
+                listBuffer.release(b);
+                pqs.add(a);
+            }
         }
 
         IntegerArrayList last = pqs.remove();
@@ -250,10 +255,10 @@ public class NumberTheoryTransform {
         inverse(a.getData(), inv.getData(), proper);
         Polynomials.module(a, n);
         Polynomials.module(inv, n);
-        Polynomials.differential(a, diff, modular);
+        Polynomials.differential(a, diff, mod);
         Polynomials.module(diff, n);
         modmul(diff, inv, a, n);
-        Polynomials.integral(a, ans, modular, inverse);
+        Polynomials.integral(a, ans, mod, inverse);
         Polynomials.module(ans, n);
 
         listBuffer.release(a);
@@ -293,9 +298,9 @@ public class NumberTheoryTransform {
             int[] data = lnf0.getData();
             int[] aData = a.getData();
             for (int i = 0; i < n; i++) {
-                data[i] = modular.valueOf(aData[i] - data[i]);
+                data[i] = DigitUtils.modsub(aData[i], data[i], mod);
             }
-            data[0] = modular.plus(data[0], 1);
+            data[0] = DigitUtils.modplus(data[0], 1, mod);
         }
         modmul(f0, lnf0, ans, n);
         listBuffer.release(f0);
@@ -323,14 +328,14 @@ public class NumberTheoryTransform {
     }
 
     private int apply(IntegerArrayList p, int x) {
+        x = DigitUtils.mod(x, mod);
         Polynomials.normalize(p);
-        int y = 0;
+        long y = 0;
         int[] data = p.getData();
         for (int i = p.size() - 1; i >= 0; i--) {
-            y = modular.mul(y, x);
-            y = modular.plus(y, data[i]);
+            y = (y * x + data[i]) % mod;
         }
-        return y;
+        return (int) y;
     }
 
     /**
@@ -373,8 +378,8 @@ public class NumberTheoryTransform {
         PolynomialBTree tree = new PolynomialBTree();
         if (l == r) {
             tree.p = new IntegerArrayList(2);
-            tree.p.add(modular.valueOf(-x.get(l)));
-            tree.p.add(modular.valueOf(1));
+            tree.p.add(DigitUtils.negate(x.get(l), mod));
+            tree.p.add(1 % mod);
         } else {
             int m = DigitUtils.floorAverage(l, r);
             tree.left = build(x, l, m);
@@ -418,7 +423,7 @@ public class NumberTheoryTransform {
 
         if (a.size() < NTT_THRESHOLD || b.size() < NTT_THRESHOLD) {
             IntegerArrayList ans = listBuffer.alloc();
-            Polynomials.mul(a, b, ans, modular);
+            Polynomials.mul(a, b, ans, mod);
             listBuffer.release(a);
             listBuffer.release(b);
             return ans;
@@ -448,7 +453,7 @@ public class NumberTheoryTransform {
         dft(bufData, (m + 1));
         dft(inv, (m + 1));
         for (int i = 0; i < n; i++) {
-            inv[i] = modular.mul(inv[i], 2 - modular.mul(bufData[i], inv[i]));
+            inv[i] = DigitUtils.mod(inv[i] * (2 - (long) bufData[i] * inv[i] % mod), mod);
         }
         idft(inv, (m + 1));
         for (int i = 1 << m; i < n; i++) {
@@ -481,7 +486,7 @@ public class NumberTheoryTransform {
     private void module(long k, int[] a, int[] b, int[] c, int[] remainder, int rb, int m) {
         if (k < rb) {
             Arrays.fill(remainder, 0);
-            remainder[(int) k] = modular.valueOf(1);
+            remainder[(int) k] = 1 % mod;
             return;
         }
         module(k / 2, a, b, c, remainder, rb, m);
@@ -529,7 +534,7 @@ public class NumberTheoryTransform {
     private void module(BitSet k, int i, int[] a, int[] b, int[] c, int[] remainder, int m) {
         if (i < 0) {
             Arrays.fill(remainder, 0);
-            remainder[0] = modular.valueOf(1);
+            remainder[0] = 1 % mod;
             return;
         }
         module(k, i - 1, a, b, c, remainder, m);
@@ -561,7 +566,7 @@ public class NumberTheoryTransform {
     private IntegerArrayList modpow(IntegerArrayList x, long k, int n) {
         if (k == 0) {
             IntegerArrayList ans = listBuffer.alloc();
-            ans.add(modular.valueOf(1));
+            ans.add(1 % mod);
             return ans;
         }
         IntegerArrayList ans = modpow(x, k / 2, n);
@@ -575,5 +580,33 @@ public class NumberTheoryTransform {
         }
         listBuffer.release(ans);
         return newAns;
+    }
+
+    /**
+     * c[i]=\sum_{j} a[i+j]*b[j]
+     */
+    public void deltaNTT(IntegerArrayList a, IntegerArrayList b, IntegerArrayList c) {
+        a = clone(a);
+        b = clone(b);
+        int n = a.size();
+        b.retain(n);
+        a.reverse();
+
+        int m = Log2.ceilLog(n + n - 1);
+        a.expandWith(0, 1 << m);
+        b.expandWith(0, 1 << m);
+        c.clear();
+        c.expandWith(0, 1 << m);
+
+        dft(a.getData(), m);
+        dft(b.getData(), m);
+        dotMul(a.getData(), b.getData(), c.getData(), m);
+        idft(c.getData(), m);
+        c.retain(n);
+        c.reverse();
+        Polynomials.normalize(c);
+
+        listBuffer.release(a);
+        listBuffer.release(b);
     }
 }

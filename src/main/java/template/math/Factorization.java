@@ -3,7 +3,7 @@ package template.math;
 import template.primitve.generated.datastructure.IntegerArrayList;
 import template.primitve.generated.datastructure.IntegerMultiWayStack;
 import template.primitve.generated.datastructure.LongArrayList;
-import template.problem.MinimumNumberWithMaximumFactors;
+import template.problem.MaximumFactorMinimumNumber;
 
 public class Factorization {
     public static void main(String[] args){
@@ -14,7 +14,7 @@ public class Factorization {
      * factorize all number in [1, n], and only return their prime factors
      */
     public static IntegerMultiWayStack factorizeRangePrime(int n) {
-        int maxFactorCnt = (int) MinimumNumberWithMaximumFactors.maximumPrimeFactor(n)[1];
+        int maxFactorCnt = (int) MaximumFactorMinimumNumber.maximumPrimeFactor(n)[1];
         IntegerMultiWayStack stack = new IntegerMultiWayStack(n + 1, n * maxFactorCnt);
         boolean[] isComp = new boolean[n + 1];
         for (int i = 2; i <= n; i++) {

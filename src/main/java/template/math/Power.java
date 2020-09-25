@@ -6,40 +6,42 @@ import java.util.BitSet;
  * Power operations
  */
 public class Power implements InverseNumber {
-    public Modular getModular() {
-        return modular;
+    public int getMod() {
+        return mod;
     }
 
     static IntExtGCDObject extGCD = new IntExtGCDObject();
 
-    final Modular modular;
-    int modVal;
+    int mod;
 
     public Power(Modular modular) {
-        this.modular = modular;
-        this.modVal = modular.getMod();
+        this.mod = modular.getMod();
+    }
+
+    public Power(int mod) {
+        this(new Modular(mod));
     }
 
     public int pow(int x, long n) {
         if (n == 0) {
-            return modular.valueOf(1);
+            return 1 % mod;
         }
         long r = pow(x, n >> 1);
-        r = r * r % modVal;
+        r = r * r % mod;
         if ((n & 1) == 1) {
-            r = r * x % modVal;
+            r = r * x % mod;
         }
         return (int) r;
     }
 
     public int pow(int x, int n) {
         if (n == 0) {
-            return modular.valueOf(1);
+            return 1 % mod;
         }
         long r = pow(x, n >> 1);
-        r = r * r % modVal;
+        r = r * r % mod;
         if ((n & 1) == 1) {
-            r = r * x % modVal;
+            r = r * x % mod;
         }
         return (int) r;
     }
@@ -50,18 +52,23 @@ public class Power implements InverseNumber {
 
     private int pow(int x, BitSet n, int i) {
         if (i < 0) {
-            return modular.valueOf(1);
+            return 1 % mod;
         }
         long r = pow(x, n, i - 1);
-        r = r * r % modVal;
+        r = r * r % mod;
         if (n.get(i)) {
-            r = r * x % modVal;
+            r = r * x % mod;
         }
         return (int) r;
     }
 
     public int inverseByFermat(int x) {
-        return pow(x, modVal - 2);
+        return pow(x, mod - 2);
+    }
+
+    public int inversePower(int x, long n) {
+        n = DigitUtils.mod(-n, mod - 1);
+        return pow(x, n);
     }
 
     @Override
@@ -74,10 +81,10 @@ public class Power implements InverseNumber {
     }
 
     public int inverseExtGCD(int x) {
-        if (extGCD.extgcd(x, modVal) != 1) {
+        if (extGCD.extgcd(x, mod) != 1) {
             throw new IllegalArgumentException();
         }
-        return modular.valueOf(extGCD.getX());
+        return DigitUtils.mod(extGCD.getX(), mod);
     }
 
 }

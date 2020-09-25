@@ -73,10 +73,10 @@ public class ModSparseMatrix {
     /**
      * Store Av => output
      */
-    public void rightMul(int[] v, int[] output, Modular mod) {
+    public void rightMul(int[] v, int[] output, int mod) {
         Arrays.fill(output, 0);
         for (int j = 0; j < elements.length; j++) {
-            output[x[j]] = mod.plus(output[x[j]], mod.mul(elements[j], v[y[j]]));
+            output[x[j]] = DigitUtils.mod(output[x[j]] + (long) elements[j] * v[y[j]], mod);
         }
     }
 
@@ -93,8 +93,8 @@ public class ModSparseMatrix {
     /**
      * <p>Randomly get the minimal-polynomial of n * n matrix A with m non-zero entry. O(n(m+n))</p>
      */
-    public IntegerArrayList getMinimalPolynomialByRandom(Modular mod) {
-        int modVal = mod.getMod();
+    public IntegerArrayList getMinimalPolynomialByRandom(int mod) {
+        int modVal = mod;
         int[] u = new int[n];
         int[] v = new int[n];
         int[] next = new int[n];
@@ -119,7 +119,7 @@ public class ModSparseMatrix {
 
         IntegerArrayList polynomials = new IntegerArrayList(lfsr.length() + 1);
         for (int i = lfsr.length(); i >= 1; i--) {
-            polynomials.add(mod.valueOf(-lfsr.codeAt(i)));
+            polynomials.add(DigitUtils.negate(lfsr.codeAt(i), mod));
         }
         polynomials.add(1);
         return polynomials;
@@ -129,50 +129,49 @@ public class ModSparseMatrix {
      * O(n(m+n))
      */
     public int determinant(Power pow) {
-        Modular mod = pow.getModular();
-        int modVal = mod.getMod();
+        int mod = pow.getMod();
         int[] rand = new int[n];
         for (int i = 0; i < n; i++) {
-            rand[i] = RandomWrapper.INSTANCE.nextInt(1, modVal - 1);
+            rand[i] = RandomWrapper.INSTANCE.nextInt(1, mod - 1);
         }
         for (int i = 0; i < elements.length; i++) {
-            elements[i] = mod.mul(elements[i], rand[x[i]]);
+            elements[i] = (int) ((long) elements[i] * rand[x[i]] % mod);
         }
         IntegerArrayList minPoly = getMinimalPolynomialByRandom(mod);
-        int ans = minPoly.get(0);
+        long ans = minPoly.get(0);
         if (n % 2 == 1) {
-            ans = mod.valueOf(-ans);
+            ans = DigitUtils.negate((int) ans, mod);
         }
         for (int i = 0; i < n; i++) {
             rand[i] = pow.inverse(rand[i]);
         }
         for (int i = 0; i < elements.length; i++) {
-            elements[i] = mod.mul(elements[i], rand[x[i]]);
+            elements[i] = (int) ((long) elements[i] * rand[x[i]] % mod);
         }
         for (int i = 0; i < n; i++) {
-            ans = mod.mul(ans, rand[i]);
+            ans = ans * rand[i] % mod;
         }
-        return ans;
+        return (int) ans;
     }
 
     /**
      * return A^{-1}b in O(n(m+n)) time complexity
      */
     public int[] solveLinearEquation(int[] b, Power pow) {
-        Modular mod = pow.getModular();
+        int mod = pow.getMod();
         IntegerArrayList minPoly = getMinimalPolynomialByRandom(mod);
         int c0 = minPoly.get(0);
         if (c0 == 0) {
             throw new IllegalStateException("Can't invert singular matrix");
         }
-        int inv = pow.inverse(mod.valueOf(-c0));
+        long inv = pow.inverse(DigitUtils.negate(c0, mod));
         int[] sum = new int[n];
         int[] v = b;
         int[] next = new int[n];
         for (int i = 1; i < minPoly.size(); i++) {
-            int c = minPoly.get(i);
+            long c = minPoly.get(i);
             for (int j = 0; j < n; j++) {
-                sum[j] = mod.plus(sum[j], mod.mul(c, v[j]));
+                sum[j] = (int) ((sum[j] + c * v[j]) % mod);
             }
             rightMul(v, next, mod);
 
@@ -182,7 +181,7 @@ public class ModSparseMatrix {
         }
 
         for (int i = 0; i < n; i++) {
-            sum[i] = mod.mul(sum[i], inv);
+            sum[i] = (int) (sum[i] * inv % mod);
         }
 
         return sum;

@@ -9,12 +9,12 @@ public class Combination implements IntCombination {
 
     public Combination(Factorial factorial) {
         this.factorial = factorial;
-        this.modVal = factorial.getMod().getMod();
+        this.modVal = factorial.getMod();
     }
 
 
-    public Combination(int limit, Power pow) {
-        this(new Factorial(limit, pow));
+    public Combination(int limit, int mod) {
+        this(new Factorial(limit, mod));
     }
 
     public int combination(int m, int n) {
