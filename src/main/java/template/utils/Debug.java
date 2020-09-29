@@ -12,6 +12,12 @@ public class Debug {
         offline = enable && System.getSecurityManager() == null;
     }
 
+    public void run(Runnable task) {
+        if (offline) {
+            task.run();
+        }
+    }
+
     public Debug elapse(String name) {
         if (offline) {
             debug(name, System.currentTimeMillis() - time);

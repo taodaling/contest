@@ -130,7 +130,7 @@ public class ModMatrix {
                 ans = -ans;
             }
             ans = ans * l.mat[i][i] % mod;
-            l.mulRow(i, power.inverseByFermat(l.mat[i][i]), mod);
+            l.mulRow(i, power.inverse(l.mat[i][i]), mod);
 
             for (int j = i + 1; j < n; j++) {
                 if (j == i) {
@@ -171,7 +171,7 @@ public class ModMatrix {
             r.swapRow(i, maxRow);
             l.swapRow(i, maxRow);
 
-            int inv = power.inverseByFermat(l.mat[i][i]);
+            int inv = power.inverse(l.mat[i][i]);
             r.mulRow(i, inv, mod);
             l.mulRow(i, inv, mod);
 
@@ -336,7 +336,7 @@ public class ModMatrix {
                 swapRow(maxRow, i + 1);
                 swapCol(maxRow, i + 1);
             }
-            long inv = pow.inverseByFermat(mat[maxRow][i]);
+            long inv = pow.inverse(mat[maxRow][i]);
             for (int j = i + 2; j < n; j++) {
                 if (mat[j][i] == 0) {
                     continue;
@@ -358,7 +358,7 @@ public class ModMatrix {
                 ans = -ans;
             }
             if (mat[i + 1][i] != 0) {
-                subtractRow(i + 1, i, (long) mat[i + 1][i] * pow.inverseByFermat(mat[i][i]) % mod, mod);
+                subtractRow(i + 1, i, (long) mat[i + 1][i] * pow.inverse(mat[i][i]) % mod, mod);
             }
             ans = ans * mat[i][i] % mod;
         }

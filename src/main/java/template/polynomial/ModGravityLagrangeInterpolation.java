@@ -72,7 +72,7 @@ public class ModGravityLagrangeInterpolation {
         long sum = 0;
         for (int i = 0; i < n; i++) {
             int val = DigitUtils.mod((long) invW.coes[i] * (x - xs.coes[i]), mod);
-            val = (int) ((long) power.inverseByFermat(val) * ys.coes[i] % mod);
+            val = (int) ((long) power.inverse(val) * ys.coes[i] % mod);
             sum += val;
         }
 
@@ -87,7 +87,7 @@ public class ModGravityLagrangeInterpolation {
         Polynomial ans = new Polynomial(n);
         Polynomial ansBuf = new Polynomial(n);
         for (int i = 0; i < n; i++) {
-            long c = (long) ys.coes[i] * power.inverseByFermat(invW.coes[i]) % mod;
+            long c = (long) ys.coes[i] * power.inverse(invW.coes[i]) % mod;
             lx.div(DigitUtils.mod(-xs.coes[i], mod), ansBuf);
             ansBuf.mulConstant(c, ansBuf);
             ans.plus(ansBuf, ans);

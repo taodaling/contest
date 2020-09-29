@@ -1,2 +1,3 @@
-42 src/main/java/contest/G - Divisor Set.json
+31 src/main/java/contest/Task.json
+1
 0

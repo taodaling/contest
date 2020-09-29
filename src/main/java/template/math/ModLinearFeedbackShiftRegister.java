@@ -71,7 +71,7 @@ public class ModLinearFeedbackShiftRegister {
         buf.addAll(cn);
         buf.expandWith(0, len + 1);
 
-        long factor = (long) dn * pow.inverseByFermat(dm) % mod;
+        long factor = (long) dn * pow.inverse(dm) % mod;
 
         int[] bufData = buf.getData();
         int[] cmData = cm.getData();

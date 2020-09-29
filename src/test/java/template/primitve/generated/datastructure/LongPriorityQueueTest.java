@@ -5,7 +5,7 @@ import org.junit.Test;
 import java.util.PriorityQueue;
 
 public class LongPriorityQueueTest {
-    int limit = 10000;
+    int limit = 1000000;
 
     @Test
     public void testStd() {
