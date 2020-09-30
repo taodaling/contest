@@ -226,11 +226,14 @@ public class ModMatrix {
 
     public static ModMatrix mul(ModMatrix a, ModMatrix b, Modular modular) {
         ModMatrix c = new ModMatrix(a.n, b.m);
+        int modVal = modular.getMod();
         for (int i = 0; i < c.n; i++) {
             for (int j = 0; j < c.m; j++) {
+                long sum = 0;
                 for (int k = 0; k < a.m; k++) {
-                    c.mat[i][j] = modular.plus(c.mat[i][j], modular.mul(a.mat[i][k], b.mat[k][j]));
+                    sum += a.mat[i][k] * b.mat[k][j] % modVal;
                 }
+                c.mat[i][j] = (int) (sum % modVal);
             }
         }
         return c;

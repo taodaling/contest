@@ -1,0 +1,36 @@
+{
+  "name" : "LongPalindromes",
+  "signature" : {
+    "name" : "count",
+    "result" : "int",
+    "arguments" : [ "int", "String" ],
+    "argumentNames" : [ "repeats", "pattern" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "1", "blob" ],
+    "result" : "8",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "1", "various" ],
+    "result" : "8",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "30", "aa" ],
+    "result" : "536396504",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "3", "abac" ],
+    "result" : "343",
+    "index" : 3,
+    "active" : true
+  } ],
+  "date" : "2020.08.14",
+  "contestName" : "TopCoder SRM #740",
+  "testClasses" : [ ],
+  "fqn" : "on2020_08.on2020_08_14_TopCoder_SRM__740.LongPalindromes.LongPalindromes",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

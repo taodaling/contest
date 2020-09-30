@@ -1,2 +1,2 @@
-49 src/main/java/contest/D. Boboniu and Jianghu.json
+42 src/main/java/contest/LongPalindromes.json
 0

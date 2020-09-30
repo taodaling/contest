@@ -1,0 +1,31 @@
+{
+  "name" : "DieDesign",
+  "signature" : {
+    "name" : "design",
+    "result" : "int[]",
+    "arguments" : [ "int[]" ],
+    "argumentNames" : [ "pips" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "1 2 3 4 5 6" ],
+    "result" : "0 0 0 7 7 7",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "0 0 0 2" ],
+    "result" : "0 0 1 1",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "1 1 13 1" ],
+    "result" : "4 4 4 4",
+    "index" : 2,
+    "active" : true
+  } ],
+  "date" : "2020.08.14",
+  "contestName" : "TopCoder SRM #740",
+  "testClasses" : [ ],
+  "fqn" : "contest.DieDesign",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

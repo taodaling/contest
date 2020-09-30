@@ -51,7 +51,7 @@ public class ModVectorLinearRecurrenceSolver {
         Polynomials.module(k, p, remainder, pow);
         return solve();
     }
-//
+
 //    /**
 //     * Auto detect linear recurrence from given matrix and vec.
 //     * <br>
