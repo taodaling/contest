@@ -1,6 +1,5 @@
 package template.problem;
 
-import dp.Lis;
 import template.datastructure.PermutationNode;
 import template.graph.DirectedEdge;
 import template.graph.KthAncestorOnTree;
@@ -9,7 +8,6 @@ import template.graph.LcaOnTree;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * <p>连续段问题，O(n)时间复杂度预处理一个0~n-1的排列。之后O(1)回答如下两类请求：</p>
@@ -134,7 +132,7 @@ public class ContinuousIntervalProblem {
         return ans;
     }
 
-    private long choose2(int n) {
+    private long choose2(long n) {
         return n * (n - 1) / 2;
     }
 

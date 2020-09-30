@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.function.IntPredicate;
 import java.util.function.LongPredicate;
 import java.util.function.Predicate;
+import java.util.function.ToIntFunction;
 
 /**
  * Be careful. the radix sort will regard the number in sequence as unsigned integer, it means -1 > -2 > 2 > 1.
@@ -403,6 +404,7 @@ public class CompareUtils {
     private static final int[] BUF8 = new int[1 << 8];
     private static final IntegerArrayList INT_LIST_A = new IntegerArrayList();
     private static final LongArrayList LONG_LIST_A = new LongArrayList();
+    private static Object[] objectList = new Object[0];
 
     public static void ensureIntSpace(int n) {
         INT_LIST_A.ensureSpace(n);
@@ -410,6 +412,12 @@ public class CompareUtils {
 
     public static void ensureLongSpace(int n) {
         LONG_LIST_A.ensureSpace(n);
+    }
+
+    public static void ensureObjectSpace(int n) {
+        if (objectList.length < n) {
+            objectList = new Object[n];
+        }
     }
 
     public static void radixSort(long[] data, int l, int r) {
@@ -434,6 +442,54 @@ public class CompareUtils {
         }
         for (int i = dr; i >= dl; i--) {
             output[ol + (--buf[(int) ((data[i] >>> rightShift) & mask)])] = data[i];
+        }
+    }
+
+    public static <T> void radixSortLongObject(T[] data, int l, int r, ToLongFunction<T> func) {
+        ensureObjectSpace(r - l + 1);
+
+        int n = r - l + 1;
+        for (int i = 0; i < 8; i += 2) {
+            radixSortLongObject0(data, l, r, (T[]) objectList, 0, BUF8, i * 8, func);
+            radixSortLongObject0((T[]) objectList, 0, n - 1, data, l, BUF8, (i + 1) * 8, func);
+        }
+    }
+
+    private static <T> void radixSortLongObject0(T[] data, int dl, int dr, T[] output, int ol, int[] buf, int rightShift, ToLongFunction<T> func) {
+        Arrays.fill(buf, 0);
+        int mask = buf.length - 1;
+        for (int i = dl; i <= dr; i++) {
+            buf[(int) ((func.apply(data[i]) >>> rightShift) & mask)]++;
+        }
+        for (int i = 1; i < buf.length; i++) {
+            buf[i] += buf[i - 1];
+        }
+        for (int i = dr; i >= dl; i--) {
+            output[ol + (--buf[(int) ((func.apply(data[i]) >>> rightShift) & mask)])] = data[i];
+        }
+    }
+
+    public static <T> void radixSortIntObject(T[] data, int l, int r, ToIntFunction<T> func) {
+        ensureObjectSpace(r - l + 1);
+
+        int n = r - l + 1;
+        for (int i = 0; i < 4; i += 2) {
+            radixSortIntObject0(data, l, r, (T[]) objectList, 0, BUF8, i * 8, func);
+            radixSortIntObject0((T[]) objectList, 0, n - 1, data, l, BUF8, (i + 1) * 8, func);
+        }
+    }
+
+    private static <T> void radixSortIntObject0(T[] data, int dl, int dr, T[] output, int ol, int[] buf, int rightShift, ToIntFunction<T> func) {
+        Arrays.fill(buf, 0);
+        int mask = buf.length - 1;
+        for (int i = dl; i <= dr; i++) {
+            buf[((func.applyAsInt(data[i]) >>> rightShift) & mask)]++;
+        }
+        for (int i = 1; i < buf.length; i++) {
+            buf[i] += buf[i - 1];
+        }
+        for (int i = dr; i >= dl; i--) {
+            output[ol + (--buf[((func.applyAsInt(data[i]) >>> rightShift) & mask)])] = data[i];
         }
     }
 

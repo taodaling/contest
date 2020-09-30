@@ -1,0 +1,40 @@
+{
+  "name" : "D. Omkar and Bed Wars",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5\n4\nRLRL\n6\nLRRRRL\n8\nRLLRRRLL\n12\nLLLLRRLRRRLL\n5\nRRRRR\n",
+    "output" : "0\n1\n1\n3\n2\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "1\n6\nLRRRRL",
+    "output" : "1",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.DOmkarAndBedWars",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.08.17",
+  "contestName" : "Codeforces - Codeforces Global Round 10",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

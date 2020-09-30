@@ -99,7 +99,7 @@ public class CBipartiteSegments {
         Segment seg = new Segment(0, n);
         SimplifiedDeque<Query> dq = new Range2DequeAdapter<>(i -> sorted[i], 0, sorted.length - 1);
         for (int i = n - 1; i >= 0; i--) {
-            seg.update(i, right[i], 0, n, 1);
+            seg.updatePlus(i, right[i], 0, n, 1);
             while (!dq.isEmpty() && dq.peekFirst().l == i) {
                 Query head = dq.removeFirst();
                 head.ans = seg.query(head.l, head.r, 0, n);
@@ -228,8 +228,8 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = DigitUtils.floorAverage(l, r);
-        left.update(ll, rr, l, m, x);
-        right.update(ll, rr, m + 1, r, x);
+        left.updatePlus(ll, rr, l, m, x);
+        right.updatePlus(ll, rr, m + 1, r, x);
         pushUp();
     }
 

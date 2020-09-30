@@ -15,7 +15,13 @@ public class DoubleDinic implements DoubleMaximumFlow {
     int[] dists;
     ListIterator<DoubleFlowEdge>[] iterators;
 
-    public DoubleDinic(int vertexNum) {
+    public DoubleDinic() {
+    }
+
+    public void ensure(int vertexNum) {
+        if (dists != null && dists.length >= vertexNum) {
+            return;
+        }
         deque = new IntegerDequeImpl(vertexNum);
         dists = new int[vertexNum];
         iterators = new ListIterator[vertexNum];
@@ -45,6 +51,7 @@ public class DoubleDinic implements DoubleMaximumFlow {
 
     @Override
     public double apply(List<DoubleFlowEdge>[] g, int s, int t, double send) {
+        ensure(g.length);
         this.s = s;
         this.t = t;
         this.g = g;

@@ -10,21 +10,31 @@ import java.util.function.Function;
 
 public class Generator {
     public static void main(String[] args) {
-        FastInput fi = new FastInput(System.in);
-        System.out.print("Directory for input file: ");
-        File src = new File(fi.readString());
-        System.out.print("Directory for output file: ");
-        File dst = new File(fi.readString());
-        System.out.print("Package for output file: ");
-        String packageTo = "package " + fi.readString() + ";";
+        String srcPath = "/media/share/sourcecode/contest/src/main/java/template/primitve/generator";
+        String dstPath = "/media/share/sourcecode/contest/src/main/java/template/primitve/generated";
+        String packagePrefix = "package template.primitve.generated";
 
+        for (File dir : new File(srcPath).listFiles()) {
+            if (dir.isFile()) {
+                continue;
+            }
+            File src = dir;
+            File dst = new File(dstPath + "/" + dir.getName());
+            String packageName = packagePrefix + "." + dir.getName() + ";";
+            System.out.println("transfer " + dir.getName());
+            handle(src, dst, packageName);
+        }
+
+        System.out.print("Done!");
+    }
+
+    public static void handle(File src, File dst, String packageTo) {
         List<Function<FileItem, FileItem>> functions = new ArrayList<>();
         functions.add(new Transformer("Long", "long", "%d", packageTo));
         functions.add(new Transformer("Integer", "int", "%d", packageTo));
         functions.add(new Transformer("Double", "double", "%f", packageTo));
 
         new Generator().handleFile(src, dst, functions);
-        System.out.print("Done!");
     }
 
 

@@ -8,15 +8,21 @@ public class LongHLPPBeta implements LongMaximumFlow {
     private ListIterator<LongFlowEdge>[] iterators;
     private int[] heights;
     private long[] excess;
-    private int vertexNumber;
+    private int vertexNum;
     Node[] nodes;
 
-    public LongHLPPBeta(int vertexNumber) {
-        iterators = new ListIterator[vertexNumber];
-        heights = new int[vertexNumber];
-        excess = new long[vertexNumber];
-        nodes = new Node[vertexNumber];
-        for (int i = 0; i < vertexNumber; i++) {
+    public LongHLPPBeta() {
+    }
+
+    public void ensure(int vertexNum){
+        if(iterators != null && iterators.length >= vertexNum){
+            return;
+        }
+        iterators = new ListIterator[vertexNum];
+        heights = new int[vertexNum];
+        excess = new long[vertexNum];
+        nodes = new Node[vertexNum];
+        for (int i = 0; i < vertexNum; i++) {
             nodes[i] = new Node();
             nodes[i].val = i;
         }
@@ -32,7 +38,7 @@ public class LongHLPPBeta implements LongMaximumFlow {
     }
 
     private void relabel(int root) {
-        int minHeight = 2 * vertexNumber;
+        int minHeight = 2 * vertexNum;
         for (LongFlowEdge c : g[root]) {
             if (c.rev.flow > 0) {
                 minHeight = Math.min(minHeight, heights[c.to]);
@@ -65,7 +71,7 @@ public class LongHLPPBeta implements LongMaximumFlow {
 
     private void relabelToFront() {
         Node head = null;
-        for (int i = 0; i < vertexNumber; i++) {
+        for (int i = 0; i < vertexNum; i++) {
             if (i == source || i == sink) {
                 continue;
             }
@@ -93,12 +99,12 @@ public class LongHLPPBeta implements LongMaximumFlow {
     }
 
     private void init(long flow) {
-        for (int i = 0; i < vertexNumber; i++) {
+        for (int i = 0; i < vertexNum; i++) {
             nodes[i].next = null;
             heights[i] = 0;
             excess[i] = 0;
         }
-        heights[source] = vertexNumber;
+        heights[source] = vertexNum;
         long sent = 0;
         for (LongFlowEdge c : g[source]) {
             long newFlow = Math.min(c.rev.flow, flow - sent);
@@ -108,7 +114,7 @@ public class LongHLPPBeta implements LongMaximumFlow {
             excess[c.to] += newFlow;
         }
 
-        for (int i = 0; i < vertexNumber; i++) {
+        for (int i = 0; i < vertexNum; i++) {
             iterators[i] = g[i].listIterator();
         }
     }
@@ -120,7 +126,8 @@ public class LongHLPPBeta implements LongMaximumFlow {
 
     @Override
     public long apply(List<LongFlowEdge>[] g, int s, int t, long send) {
-        vertexNumber = g.length;
+        ensure(g.length);
+        vertexNum = g.length;
         this.g = g;
         this.source = s;
         this.sink = t;

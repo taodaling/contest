@@ -5,6 +5,16 @@ public class DigitUtils {
     private DigitUtils() {
     }
 
+    public static long plus(long a, long b, long inf) {
+        if (Long.signum(a) * Long.signum(b) <= 0) {
+            return clamp(a + b, -inf, inf);
+        }
+        long ans = a + b;
+        if (Long.signum(ans) == -Long.signum(a)) {
+            return Long.signum(a) * inf;
+        }
+        return clamp(ans, -inf, inf);
+    }
 
     public static double clamp(double x, double low, double high) {
         return Math.max(Math.min(x, high), low);
@@ -130,7 +140,7 @@ public class DigitUtils {
     }
 
     public static long mul(long a, long b, long overflowVal) {
-        return mul(a, b, Long.MAX_VALUE, overflowVal);
+        return mul(a, b, overflowVal, overflowVal);
     }
 
     /**
@@ -193,6 +203,26 @@ public class DigitUtils {
         return x;
     }
 
+    public static int negate(int x, int mod) {
+        return x == 0 ? 0 : mod - x;
+    }
+
+    public static int modsub(int a, int b, int mod) {
+        int ans = a - b;
+        if (ans < 0) {
+            ans += mod;
+        }
+        return ans;
+    }
+
+    public static int modplus(int a, int b, int mod){
+        int ans = a + b;
+        if(ans >= mod){
+            ans -= mod;
+        }
+        return ans;
+    }
+
     public static long mod(long x, long mod) {
         x %= mod;
         if (x < 0) {
@@ -252,5 +282,17 @@ public class DigitUtils {
 
     public static long ceilAverage(long x, long y) {
         return (x | y) - ((x ^ y) >> 1);
+    }
+
+    public static boolean equal(long a, long b) {
+        return a == b;
+    }
+
+    public static boolean equal(int a, int b) {
+        return a == b;
+    }
+
+    public static boolean equal(double a, double b) {
+        return Math.abs(a - b) < 1e-10;
     }
 }

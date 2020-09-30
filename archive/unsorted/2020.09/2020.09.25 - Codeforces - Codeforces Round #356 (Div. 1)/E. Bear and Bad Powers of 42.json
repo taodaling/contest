@@ -1,0 +1,44 @@
+{
+  "name" : "E. Bear and Bad Powers of 42",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "6 12\n40 1700 7 1672 4 1722\n3 2 4 42\n1 2\n1 3\n3 2 6 50\n1 2\n1 4\n1 6\n2 3 4 41\n3 1 5 1\n1 1\n1 3\n1 5\n",
+    "output" : "1742\n49\n1842\n1814\n1822\n43\n44\n107\n",
+    "index" : 0,
+    "active" : false
+  }, {
+    "input" : "3 3\n2 41 1762\n3 2 3 1\n1 2\n1 3",
+    "output" : "44\n1765",
+    "index" : 1,
+    "active" : false
+  }, {
+    "input" : "\n10 20\n46 44 31 40 11 20 12 44 17 40\n2 3 5 22\n1 4\n2 1 5 26\n3 5 10 2\n1 5\n1 7\n3 3 7 1740\n3 4 5 3108186\n3 3 5 124471354\n1 2\n3 1 1 1738\n3 3 5 3260\n3 10 10 1720\n3 4 6 4186\n3 3 7 1642\n3 6 6 771\n2 1 2 18\n2 4 5 52\n2 1 3 32\n3 8 9 74040",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.EBearAndBadPowersOf42",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.09.25",
+  "contestName" : "Codeforces - Codeforces Round #356 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

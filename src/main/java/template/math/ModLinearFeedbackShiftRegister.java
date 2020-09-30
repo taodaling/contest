@@ -16,10 +16,10 @@ public class ModLinearFeedbackShiftRegister {
     private IntegerArrayList cn;
     private IntegerArrayList buf;
     private IntegerArrayList seq;
-    private Modular mod;
+    private int mod;
     private Power pow;
 
-    public ModLinearFeedbackShiftRegister(Modular mod, int cap) {
+    public ModLinearFeedbackShiftRegister(int mod, int cap) {
         cm = new IntegerArrayList(cap + 1);
         cn = new IntegerArrayList(cap + 1);
         seq = new IntegerArrayList(cap + 1);
@@ -30,23 +30,23 @@ public class ModLinearFeedbackShiftRegister {
         this.pow = new Power(mod);
     }
 
-    public ModLinearFeedbackShiftRegister(Modular mod) {
+    public ModLinearFeedbackShiftRegister(int mod) {
         this(mod, 0);
     }
 
     private int estimateDelta() {
         int n = seq.size() - 1;
-        int ans = 0;
+        long ans = 0;
         int[] cnData = cn.getData();
         int[] seqData = seq.getData();
         for (int i = 0, until = cn.size(); i < until; i++) {
-            ans = mod.plus(ans, mod.mul(cnData[i], seqData[n - i]));
+            ans = (ans + (long) cnData[i] * seqData[n - i]) % mod;
         }
-        return ans;
+        return (int) ans;
     }
 
     public void add(int x) {
-        x = mod.valueOf(x);
+        x = DigitUtils.mod(x, mod);
         int n = seq.size();
 
         seq.add(x);
@@ -71,12 +71,12 @@ public class ModLinearFeedbackShiftRegister {
         buf.addAll(cn);
         buf.expandWith(0, len + 1);
 
-        int factor = mod.mul(dn, pow.inverseByFermat(dm));
+        long factor = (long) dn * pow.inverse(dm) % mod;
 
         int[] bufData = buf.getData();
         int[] cmData = cm.getData();
         for (int i = n - m, until = n - m + cm.size(); i < until; i++) {
-            bufData[i] = mod.subtract(bufData[i], mod.mul(factor, cmData[i - (n - m)]));
+            bufData[i] = DigitUtils.mod(bufData[i] - factor * cmData[i - (n - m)], mod);
         }
 
         if (cn.size() < buf.size()) {
@@ -126,8 +126,8 @@ public class ModLinearFeedbackShiftRegister {
     }
 
     //start from 1
-    public int codeAt(int i){
-        return mod.valueOf(-cn.get(i));
+    public int codeAt(int i) {
+        return DigitUtils.negate(cn.get(i), mod);
     }
 
     private class EstimatorImpl implements Estimator {
@@ -153,14 +153,14 @@ public class ModLinearFeedbackShiftRegister {
         }
 
         public int next() {
-            int ans = 0;
+            long ans = 0;
             int[] cnData = cn.getData();
             for (int i = 1, until = cn.size(); i < until; i++) {
-                ans = mod.plus(ans, mod.mul(cnData[i], get(len - i)));
+                ans += (long) cnData[i] * get(len - i) % mod;
             }
-            ans = mod.subtract(0, ans);
-            record(ans);
-            return ans;
+            ans = DigitUtils.mod(-ans, mod);
+            record((int) ans);
+            return (int) ans;
         }
     }
 }

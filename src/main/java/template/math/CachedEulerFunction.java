@@ -6,13 +6,12 @@ public class CachedEulerFunction {
     private static int boundary = 1 << 16;
     private static MultiplicativeFunctionSieve sieve = new MultiplicativeFunctionSieve(boundary, false, true, false);
     private static IntegerHashMap map = new IntegerHashMap(64, true);
-//    private static PollardRho rho = new PollardRho();
 
     public static int get(int x) {
         return get(x, 2);
     }
 
-    public static int get(int x, int begin) {
+    private static int get(int x, int begin) {
         if (x <= boundary) {
             return sieve.euler[x];
         }

@@ -1,0 +1,40 @@
+{
+  "name" : "Big String",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "xrabrsagqw\n3\n",
+    "output" : "16 8 0 0 0 0 8 0 0 0 0 0 0 0 0 0 8 16 8 0 0 0 4 5 0 0\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "agjv\n1\n",
+    "output" : "2 0 0 0 0 0 2 0 0 2 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.BigString",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.08.20",
+  "contestName" : "CS Academy - Virtual FII Code 2020 Round #2 (rated)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

@@ -6,7 +6,7 @@ import java.util.Random;
  * Test whether a number is primes
  */
 public class MillerRabin {
-    Modular modular;
+    int mod;
     Power power;
     Random random = new Random();
 
@@ -27,8 +27,8 @@ public class MillerRabin {
         while (m % 2 == 0) {
             m /= 2;
         }
-        modular = new Modular(n);
-        power = new Power(modular);
+        mod = n;
+        power = new Power(mod);
         for (int i = 0; i < s; i++) {
             int x = random.nextInt(n - 2) + 2;
             if (!mr0(x, n, m)) {
@@ -43,7 +43,7 @@ public class MillerRabin {
     }
 
     private boolean test(int y, int exp, int n) {
-        int y2 = modular.mul(y, y);
+        int y2 = (int) ((long)y * y % mod);
         if (!(exp == n - 1 || test(y2, exp * 2, n))) {
             return false;
         }

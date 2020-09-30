@@ -1,0 +1,40 @@
+{
+  "name" : "B. Ant Man",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "7 4 3\n8 11 12 16 17 18 20\n17 16 20 2 20 5 13\n17 8 8 16 12 15 13\n12 4 16 4 15 7 6\n8 14 2 11 17 12 8\n",
+    "output" : "139\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "2 1 2\n75475634 804928248\n476927808 284875072\n503158867 627937890\n322595515 786026685\n645468307 669240390",
+    "output" : "1659795993",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.BAntMan",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.08.27",
+  "contestName" : "Codeforces - Codeforces Round #366 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

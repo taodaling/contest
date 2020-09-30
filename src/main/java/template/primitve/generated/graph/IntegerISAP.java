@@ -17,7 +17,13 @@ public class IntegerISAP implements IntegerMaximumFlow {
     private boolean exit;
     private IntegerDeque deque;
 
-    public IntegerISAP(int vertexNum) {
+    public IntegerISAP() {
+    }
+
+    public void ensure(int vertexNum) {
+        if (dists != null && dists.length >= vertexNum) {
+            return;
+        }
         dists = new int[vertexNum];
         cnts = new int[vertexNum + 2];
         deque = new IntegerDequeImpl(n);
@@ -53,6 +59,7 @@ public class IntegerISAP implements IntegerMaximumFlow {
 
     @Override
     public int apply(List<IntegerFlowEdge>[] g, int s, int t, int send) {
+        ensure(g.length);
         this.net = g;
         this.s = s;
         this.t = t;

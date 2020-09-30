@@ -7,10 +7,9 @@ public class DSU {
     public DSU(int n) {
         p = new int[n];
         rank = new int[n];
-        reset();
     }
 
-    public final void reset() {
+    public void reset() {
         for (int i = 0; i < p.length; i++) {
             p[i] = i;
             rank[i] = 0;
@@ -21,9 +20,24 @@ public class DSU {
         if (p[a] == p[p[a]]) {
             return p[a];
         }
+        preAccess(a);
         return p[a] = find(p[a]);
     }
 
+    /**
+     * before setting p[a] = p[p[a]]
+     */
+    protected void preAccess(int a) {
+
+    }
+
+
+    /**
+     * before setting p[b] = a
+     */
+    protected void preMerge(int a, int b) {
+
+    }
 
     public final void merge(int a, int b) {
         a = find(a);
@@ -41,6 +55,7 @@ public class DSU {
             b = tmp;
         }
 
+        preMerge(a, b);
         p[b] = a;
     }
 }

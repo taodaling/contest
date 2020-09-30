@@ -1,11 +1,13 @@
 package template.primitve.generated.graph;
 
 
+import template.math.DigitUtils;
 import template.primitve.generated.datastructure.IntegerDeque;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class DoubleFlow {
     /**
@@ -69,7 +71,7 @@ public class DoubleFlow {
     }
 
     public static DoubleFlowEdge addEdge(List<DoubleFlowEdge>[] g, int s, int t, double cap) {
-        DoubleFlowEdge real = new DoubleFlowEdge(t,0, true);
+        DoubleFlowEdge real = new DoubleFlowEdge(t, 0, true);
         DoubleFlowEdge virtual = new DoubleFlowEdge(s, cap, false);
         real.rev = virtual;
         virtual.rev = real;
@@ -78,8 +80,8 @@ public class DoubleFlow {
         return real;
     }
 
-    public static DoubleCostFlowEdge addEdge(List<DoubleCostFlowEdge>[] g, int s, int t, double cap, double cost) {
-        DoubleCostFlowEdge real = new DoubleCostFlowEdge(t,0, true, cost);
+    public static DoubleCostFlowEdge addCostEdge(List<DoubleCostFlowEdge>[] g, int s, int t, double cap, double cost) {
+        DoubleCostFlowEdge real = new DoubleCostFlowEdge(t, 0, true, cost);
         DoubleCostFlowEdge virtual = new DoubleCostFlowEdge(s, cap, false, -cost);
         real.rev = virtual;
         virtual.rev = real;
@@ -88,20 +90,97 @@ public class DoubleFlow {
         return real;
     }
 
+    public static DoubleLRFlowEdge addLREdge(List<DoubleLRFlowEdge>[] g, int s, int t, double cap, double low) {
+        DoubleLRFlowEdge real = new DoubleLRFlowEdge(t, 0, true, low);
+        DoubleLRFlowEdge virtual = new DoubleLRFlowEdge(s, cap - low, false, low);
+        real.rev = virtual;
+        virtual.rev = real;
+        g[s].add(real);
+        g[t].add(virtual);
+        return real;
+    }
+
+    public static List<DoubleLRFlowEdge>[] createLRFlow(int n) {
+        return createGraph(n);
+    }
+
     public static List<DoubleFlowEdge>[] createFlow(int n) {
-        List<DoubleFlowEdge>[] g = new List[n];
-        for (int i = 0; i < n; i++) {
-            g[i] = new ArrayList<>();
-        }
-        return g;
+        return createGraph(n);
     }
 
     public static List<DoubleCostFlowEdge>[] createCostFlow(int n) {
-        List<DoubleCostFlowEdge>[] g = new List[n];
+        return createGraph(n);
+    }
+
+    /**
+     * find feasible flow with specified source and sink point or return false when it doesn't exist
+     */
+    public static boolean feasibleFlow(List<DoubleLRFlowEdge>[] g, int s, int t, DoubleMaximumFlow mf) {
+        addLREdge(g, t, s, Double.MAX_VALUE / 4, 0);
+        boolean ans = feasibleFlow(g, mf);
+        g[s].remove(g[s].size() - 1);
+        g[t].remove(g[t].size() - 1);
+        return ans;
+    }
+
+    /**
+     * find feasible flow without source and sink point or return false when it doesn't exist
+     *
+     * @param g
+     * @return
+     */
+    public static boolean feasibleFlow(List<DoubleLRFlowEdge>[] g, DoubleMaximumFlow mf) {
+        int n = g.length;
+        List<DoubleFlowEdge>[] expand = expand(g, n + 2);
+        int src = n;
+        int dst = n + 1;
         for (int i = 0; i < n; i++) {
-            g[i] = new ArrayList<>();
+            for (int j = 0; j < expand[i].size(); j++) {
+                DoubleFlowEdge fe = expand[i].get(j);
+                if (fe.to == src || fe.to == dst ||
+                        !fe.real) {
+                    continue;
+                }
+                DoubleLRFlowEdge e = (DoubleLRFlowEdge) fe;
+                addEdge(expand, src, e.to, e.low);
+                addEdge(expand, i, dst, e.low);
+            }
         }
-        return g;
+
+        mf.apply(expand, src, dst, Double.MAX_VALUE / 4);
+
+        boolean ans = true;
+        for (DoubleFlowEdge e : expand[src]) {
+            ans = ans && DigitUtils.equal(e.rev.flow, 0);
+        }
+        for (DoubleFlowEdge e : expand[dst]) {
+            ans = ans && DigitUtils.equal(e.flow, 0);
+        }
+
+        for (int i = 0; i < n; i++) {
+            while (g[i].size() > 0) {
+                DoubleFlowEdge tail = g[i].get(g[i].size() - 1);
+                if (tail.to == src || tail.to == dst) {
+                    g[i].remove(g[i].size() - 1);
+                } else {
+                    break;
+                }
+            }
+        }
+
+        return ans;
+    }
+
+    private static List[] expand(List[] g, int n) {
+        List[] ans = Arrays.copyOf(g, n);
+        for (int i = g.length; i < n; i++) {
+            ans[i] = new ArrayList();
+        }
+        return ans;
+    }
+
+    private static List[] createGraph(int n) {
+        return IntStream.range(0, n).mapToObj(i -> new ArrayList<>()).toArray(i -> new List[i]);
     }
 
     public static <T extends DoubleFlowEdge> void bfsForFlow(List<T>[] g, int s, int[] dist, int inf, IntegerDeque deque) {
@@ -112,7 +191,7 @@ public class DoubleFlow {
         while (!deque.isEmpty()) {
             int head = deque.removeFirst();
             for (T e : g[head]) {
-                if (e.flow > 0 && dist[e.to] == inf) {
+                if (!DigitUtils.equal(e.flow, 0) && dist[e.to] == inf) {
                     dist[e.to] = dist[head] + 1;
                     deque.addLast(e.to);
                 }

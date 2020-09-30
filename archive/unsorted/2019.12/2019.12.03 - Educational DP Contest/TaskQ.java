@@ -18,7 +18,7 @@ public class TaskQ {
         Segment inc = new Segment(0, n);
         for (int i = 0; i < n; i++) {
             long x = inc.queryMax(0, h[i], 0, n);
-            inc.update(h[i], h[i], 0, n, x + a[i]);
+            inc.updatePlus(h[i], h[i], 0, n, x + a[i]);
         }
         long ans = inc.queryMax(0, n, 0, n);
 
@@ -67,8 +67,8 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = DigitUtils.floorAverage(l, r);
-        left.update(ll, rr, l, m, x);
-        right.update(ll, rr, m + 1, r, x);
+        left.updatePlus(ll, rr, l, m, x);
+        right.updatePlus(ll, rr, m + 1, r, x);
         pushUp();
     }
 

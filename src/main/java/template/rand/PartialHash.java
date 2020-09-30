@@ -18,9 +18,9 @@ public class PartialHash {
         if (l > 0) {
             hash[l - 1] = 0;
         }
-        hash[l] = hd.mod.mul(function.apply(l), hd.pow[l]);
+        hash[l] = hd.modular.mul(function.apply(l), hd.pow[l]);
         for (int i = l + 1; i <= r; i++) {
-            hash[i] = hd.mod.valueOf(hash[i - 1] + hd.pow[i] * (long) function.apply(i));
+            hash[i] = hd.modular.valueOf(hash[i - 1] + hd.pow[i] * (long) function.apply(i));
         }
     }
 
@@ -36,7 +36,7 @@ public class PartialHash {
         if (verbose) {
             h += hd.pow[r - l + 1];
         }
-        return hd.mod.valueOf(h);
+        return hd.modular.valueOf(h);
     }
 }
 

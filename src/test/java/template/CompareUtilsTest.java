@@ -5,15 +5,18 @@ import java.util.Random;
 
 import org.junit.Assert;
 import org.junit.Test;
+import template.primitve.generated.datastructure.IntegerComparator;
+import template.primitve.generated.datastructure.LongComparator;
 import template.utils.CompareUtils;
 import template.rand.RandomWrapper;
 
 public class CompareUtilsTest {
 
+    int n = 10000000;
+
     @Test
     public void quickSort() {
         RandomWrapper rw = new RandomWrapper(new Random(0));
-        int n = 10000000;
         long[] data = new long[n];
         for (int i = 0; i < n; i++) {
             data[i] = rw.nextInt(0, 1000000000);
@@ -23,11 +26,22 @@ public class CompareUtilsTest {
         Assert.assertTrue(CompareUtils.notStrictAscending(data, 0, n - 1));
     }
 
+    @Test
+    public void customQuickSort() {
+        RandomWrapper rw = new RandomWrapper(new Random(0));
+        long[] data = new long[n];
+        for (int i = 0; i < n; i++) {
+            data[i] = rw.nextInt(0, 1000000000);
+        }
+
+        CompareUtils.quickSort(data, LongComparator.NATURE_ORDER, 0, n);
+        Assert.assertTrue(CompareUtils.notStrictAscending(data, 0, n - 1));
+    }
+
 
     @Test
     public void radixSortTest() {
         RandomWrapper rw = new RandomWrapper(new Random(0));
-        int n = 10000000;
         long[] data = new long[n];
         for (int i = 0; i < n; i++) {
             data[i] = rw.nextInt(0, 1000000000);
@@ -43,7 +57,6 @@ public class CompareUtilsTest {
     @Test
     public void radixSortIntTest() {
         RandomWrapper rw = new RandomWrapper(new Random(0));
-        int n = 10000000;
         int[] data = new int[n];
         for (int i = 0; i < n; i++) {
             data[i] = rw.nextInt(0, 1000000000);
@@ -58,7 +71,6 @@ public class CompareUtilsTest {
     @Test
     public void radixSortIntFetchTest() {
         RandomWrapper rw = new RandomWrapper(new Random(0));
-        int n = 10000000;
         int[] data = new int[n];
         for (int i = 0; i < n; i++) {
             data[i] = rw.nextInt(0, 1000000000);
@@ -74,7 +86,6 @@ public class CompareUtilsTest {
     @Test
     public void radixSortIntFetchRangeTest() {
         RandomWrapper rw = new RandomWrapper(new Random(0));
-        int n = 10000000;
         int[] data = new int[n];
         for (int i = 0; i < n; i++) {
             data[i] = rw.nextInt(0, 1000000000);

@@ -44,15 +44,15 @@ public class CSashaAndAPatientFriend {
                 Map.Entry<Integer, Integer> ceil = events.ceilingEntry(t);
                 if (floor != null && ceil != null) {
                     long contrib = (long) (dm.iThElement(ceil.getKey()) - dm.iThElement(floor.getKey())) * floor.getValue();
-                    segment.update(ceil.getKey(), ceil.getKey(), dm.minRank(), dm.maxRank(), -contrib);
+                    segment.updatePlus(ceil.getKey(), ceil.getKey(), dm.minRank(), dm.maxRank(), -contrib);
                 }
                 if (floor != null) {
                     long contrib = (long) (dm.iThElement(t) - dm.iThElement(floor.getKey())) * floor.getValue();
-                    segment.update(t, t, dm.minRank(), dm.maxRank(), contrib);
+                    segment.updatePlus(t, t, dm.minRank(), dm.maxRank(), contrib);
                 }
                 if (ceil != null) {
                     long contrib = (long) (dm.iThElement(ceil.getKey()) - dm.iThElement(t)) * s;
-                    segment.update(ceil.getKey(), ceil.getKey(), dm.minRank(), dm.maxRank(), contrib);
+                    segment.updatePlus(ceil.getKey(), ceil.getKey(), dm.minRank(), dm.maxRank(), contrib);
                 }
                 events.put(t, s);
             } else if (qs[i][0] == 2) {
@@ -62,15 +62,15 @@ public class CSashaAndAPatientFriend {
                 Map.Entry<Integer, Integer> ceil = events.ceilingEntry(t);
                 if (floor != null) {
                     long contrib = (long) (dm.iThElement(t) - dm.iThElement(floor.getKey())) * floor.getValue();
-                    segment.update(t, t, dm.minRank(), dm.maxRank(), -contrib);
+                    segment.updatePlus(t, t, dm.minRank(), dm.maxRank(), -contrib);
                 }
                 if (ceil != null) {
                     long contrib = (long) (dm.iThElement(ceil.getKey()) - dm.iThElement(t)) * s;
-                    segment.update(ceil.getKey(), ceil.getKey(), dm.minRank(), dm.maxRank(), -contrib);
+                    segment.updatePlus(ceil.getKey(), ceil.getKey(), dm.minRank(), dm.maxRank(), -contrib);
                 }
                 if (floor != null && ceil != null) {
                     long contrib = (long) (dm.iThElement(ceil.getKey()) - dm.iThElement(floor.getKey())) * floor.getValue();
-                    segment.update(ceil.getKey(), ceil.getKey(), dm.minRank(), dm.maxRank(), contrib);
+                    segment.updatePlus(ceil.getKey(), ceil.getKey(), dm.minRank(), dm.maxRank(), contrib);
                 }
             } else {
                 int l = dm.rankOf(qs[i][1]);
@@ -200,8 +200,8 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = DigitUtils.floorAverage(l, r);
-        left.update(ll, rr, l, m, x);
-        right.update(ll, rr, m + 1, r, x);
+        left.updatePlus(ll, rr, l, m, x);
+        right.updatePlus(ll, rr, m + 1, r, x);
         pushUp();
     }
 

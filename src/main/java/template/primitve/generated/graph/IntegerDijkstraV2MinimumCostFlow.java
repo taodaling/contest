@@ -1,11 +1,12 @@
 package template.primitve.generated.graph;
 
+import template.math.DigitUtils;
 import template.primitve.generated.datastructure.IntegerDeque;
 import template.primitve.generated.datastructure.IntegerDequeImpl;
 
 import java.util.List;
 
-public class IntegerDijkstraV2MinimumCostFlow implements IntegerMinimumCostFlow {
+public class IntegerDijkstraV2MinimumCostFlow implements IntegerAugmentMinimumCostFlow {
     private int m;
     private int[] lastDist;
     private int[] curDist;
@@ -13,7 +14,12 @@ public class IntegerDijkstraV2MinimumCostFlow implements IntegerMinimumCostFlow 
     private boolean[] inq;
     private IntegerDeque dq;
     private static final int INF = Integer.MAX_VALUE / 4;
-    List<IntegerCostFlowEdge>[] g;
+    private List<IntegerCostFlowEdge>[] g;
+    private IntegerAugmentCallback callback = IntegerAugmentCallback.NIL;
+
+    public void setCallback(IntegerAugmentCallback callback) {
+        this.callback = callback;
+    }
 
     public IntegerDijkstraV2MinimumCostFlow(int m) {
         this.m = m - 1;
@@ -38,7 +44,7 @@ public class IntegerDijkstraV2MinimumCostFlow implements IntegerMinimumCostFlow 
             int head = dq.removeFirst();
             inq[head] = false;
             for (IntegerCostFlowEdge e : g[head]) {
-                if (e.rev.flow == 0 || lastDist[e.to] <= lastDist[head] + e.cost) {
+                if (DigitUtils.equal(e.rev.flow, 0) || lastDist[e.to] <= lastDist[head] + e.cost) {
                     continue;
                 }
                 lastDist[e.to] = lastDist[head] + e.cost;
@@ -99,11 +105,16 @@ public class IntegerDijkstraV2MinimumCostFlow implements IntegerMinimumCostFlow 
             for (IntegerCostFlowEdge trace = prev[t]; trace != null; trace = prev[trace.to]) {
                 remain = Math.min(remain, trace.flow);
             }
+            int sumOfCost = 0;
             for (IntegerCostFlowEdge trace = prev[t]; trace != null; trace = prev[trace.to]) {
-                cost += trace.cost * -remain;
+                sumOfCost -= trace.cost;
                 IntegerFlow.send(trace, -remain);
             }
+            cost += sumOfCost * -remain;
             flow += remain;
+            if (!callback.callback(remain, sumOfCost)) {
+                break;
+            }
         }
         return new int[]{flow, cost};
     }

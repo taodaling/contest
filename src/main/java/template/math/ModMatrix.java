@@ -41,9 +41,9 @@ public class ModMatrix {
         }
     }
 
-    public void asStandard(Modular mod) {
+    public void asStandard(int mod) {
         fill(0);
-        if (mod.getMod() == 1) {
+        if (mod == 1) {
             return;
         }
         for (int i = 0; i < n && i < m; i++) {
@@ -59,13 +59,6 @@ public class ModMatrix {
         return mat[i][j];
     }
 
-    public void normalize(Modular mod) {
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                mat[i][j] = mod.valueOf(mat[i][j]);
-            }
-        }
-    }
 
     public static ModMatrix region(ModMatrix x, int b, int t, int l, int r) {
         ModMatrix y = new ModMatrix(t - b + 1, r - l + 1);
@@ -80,34 +73,33 @@ public class ModMatrix {
     /**
      * |x| while mod a non-zero number
      */
-    public static int determinant(ModMatrix x, Modular modular) {
+    public static int determinant(ModMatrix x, int mod) {
         if (x.n != x.m) {
             throw new RuntimeException("ModMatrix is not square");
         }
         int n = x.n;
         ModMatrix l = new ModMatrix(x);
-        l.normalize(modular);
-        int ans = 1;
+        long ans = 1;
         for (int i = 0; i < n; i++) {
             for (int j = i + 1; j < n; j++) {
-                if (modular.valueOf(l.mat[j][i]) == 0) {
+                if (l.mat[j][i] % mod == 0) {
                     continue;
                 }
                 if (l.mat[i][i] == 0 || l.mat[i][i] > l.mat[j][i]) {
                     l.swapRow(i, j);
                     ans = -ans;
                 }
-                l.subtractRow(j, i, l.mat[j][i] / l.mat[i][i], modular);
+                l.subtractRow(j, i, l.mat[j][i] / l.mat[i][i], mod);
                 j--;
             }
 
             if (l.mat[i][i] == 0) {
                 return 0;
             }
-            ans = modular.mul(ans, l.mat[i][i]);
+            ans = ans * l.mat[i][i] % mod;
         }
 
-        return ans;
+        return (int) ans;
     }
 
     /**
@@ -117,15 +109,14 @@ public class ModMatrix {
         if (x.n != x.m) {
             throw new RuntimeException("ModMatrix is not square");
         }
-        Modular modular = power.getModular();
+        int mod = power.getMod();
         int n = x.n;
         ModMatrix l = new ModMatrix(x);
-        l.normalize(modular);
-        int ans = 1;
+        long ans = 1;
         for (int i = 0; i < n; i++) {
             int maxRow = i;
             for (int j = i; j < n; j++) {
-                if (modular.valueOf(l.mat[j][i]) != 0) {
+                if (l.mat[j][i] % mod != 0) {
                     maxRow = j;
                     break;
                 }
@@ -138,8 +129,8 @@ public class ModMatrix {
                 l.swapRow(i, maxRow);
                 ans = -ans;
             }
-            ans = modular.mul(ans, l.mat[i][i]);
-            l.mulRow(i, power.inverseByFermat(l.mat[i][i]), modular);
+            ans = ans * l.mat[i][i] % mod;
+            l.mulRow(i, power.inverse(l.mat[i][i]), mod);
 
             for (int j = i + 1; j < n; j++) {
                 if (j == i) {
@@ -149,27 +140,26 @@ public class ModMatrix {
                     continue;
                 }
                 int f = l.mat[j][i];
-                l.subtractRow(j, i, f, modular);
+                l.subtractRow(j, i, f, mod);
             }
         }
 
-        return ans;
+        return (int) ans;
     }
 
     public static ModMatrix inverse(ModMatrix x, Power power) {
         if (x.n != x.m) {
             throw new RuntimeException("ModMatrix is not square");
         }
-        Modular modular = power.getModular();
+        int mod = power.getMod();
         int n = x.n;
         ModMatrix l = new ModMatrix(x);
-        l.normalize(modular);
         ModMatrix r = new ModMatrix(n, n);
-        r.asStandard(modular);
+        r.asStandard(mod);
         for (int i = 0; i < n; i++) {
             int maxRow = i;
             for (int j = i; j < n; j++) {
-                if (modular.valueOf(l.mat[j][i]) != 0) {
+                if (l.mat[j][i] % mod != 0) {
                     maxRow = j;
                     break;
                 }
@@ -181,9 +171,9 @@ public class ModMatrix {
             r.swapRow(i, maxRow);
             l.swapRow(i, maxRow);
 
-            int inv = power.inverseByFermat(l.mat[i][i]);
-            r.mulRow(i, inv, modular);
-            l.mulRow(i, inv, modular);
+            int inv = power.inverse(l.mat[i][i]);
+            r.mulRow(i, inv, mod);
+            l.mulRow(i, inv, mod);
 
             for (int j = 0; j < n; j++) {
                 if (j == i) {
@@ -193,8 +183,8 @@ public class ModMatrix {
                     continue;
                 }
                 int f = l.mat[j][i];
-                r.subtractRow(j, i, f, modular);
-                l.subtractRow(j, i, f, modular);
+                r.subtractRow(j, i, f, mod);
+                l.subtractRow(j, i, f, mod);
             }
         }
         return r;
@@ -206,84 +196,83 @@ public class ModMatrix {
         mat[j] = row;
     }
 
-    void subtractRow(int i, int j, int f, Modular modular) {
+    void subtractRow(int i, int j, long f, int mod) {
         for (int k = 0; k < m; k++) {
-            mat[i][k] = modular.subtract(mat[i][k], modular.mul(mat[j][k], f));
+            mat[i][k] = DigitUtils.mod(mat[i][k] - mat[j][k] * f, mod);
         }
     }
 
-    void subtractCol(int i, int j, int f, Modular modular) {
+    void subtractCol(int i, int j, long f, int mod) {
         for (int k = 0; k < n; k++) {
-            mat[k][i] = modular.subtract(mat[k][i], modular.mul(mat[k][j], f));
+            mat[k][i] = DigitUtils.mod(mat[k][i] - mat[k][j] * f, mod);
         }
     }
 
-    void mulRow(int i, int f, Modular modular) {
+    void mulRow(int i, long f, int mod) {
         for (int k = 0; k < m; k++) {
-            mat[i][k] = modular.mul(mat[i][k], f);
+            mat[i][k] = (int) (mat[i][k] * f % mod);
         }
     }
 
-    public static ModMatrix mul(ModMatrix a, ModMatrix b, Modular modular) {
+    public static ModMatrix mul(ModMatrix a, ModMatrix b, int mod) {
         ModMatrix c = new ModMatrix(a.n, b.m);
-        int modVal = modular.getMod();
         for (int i = 0; i < c.n; i++) {
             for (int j = 0; j < c.m; j++) {
                 long sum = 0;
                 for (int k = 0; k < a.m; k++) {
-                    sum += a.mat[i][k] * b.mat[k][j] % modVal;
+                    sum += (long) a.mat[i][k] * b.mat[k][j] % mod;
                 }
-                c.mat[i][j] = (int) (sum % modVal);
+                c.mat[i][j] = (int) (sum % mod);
             }
         }
         return c;
     }
 
-    public static ModMatrix pow(ModMatrix x, long n, Modular modular) {
+    public static ModMatrix pow(ModMatrix x, long n, int mod) {
         if (n == 0) {
             ModMatrix r = new ModMatrix(x.n, x.m);
-            r.asStandard(modular);
+            r.asStandard(mod);
             return r;
         }
-        ModMatrix r = pow(x, n >> 1, modular);
-        r = ModMatrix.mul(r, r, modular);
+        ModMatrix r = pow(x, n >> 1, mod);
+        r = ModMatrix.mul(r, r, mod);
         if (n % 2 == 1) {
-            r = ModMatrix.mul(r, x, modular);
+            r = ModMatrix.mul(r, x, mod);
         }
         return r;
     }
 
-    public static ModMatrix plus(ModMatrix a, ModMatrix b, Modular mod) {
+    public static ModMatrix plus(ModMatrix a, ModMatrix b, int mod) {
         if (a.n != b.n || a.m != b.m) {
             throw new IllegalArgumentException();
         }
         ModMatrix ans = new ModMatrix(a.n, a.m);
         for (int i = 0; i < a.n; i++) {
             for (int j = 0; j < a.m; j++) {
-                ans.mat[i][j] = mod.plus(a.mat[i][j], b.mat[i][j]);
+                ans.mat[i][j] = DigitUtils.modplus(a.mat[i][j], b.mat[i][j], mod);
             }
         }
         return ans;
     }
 
-    public static ModMatrix subtract(ModMatrix a, ModMatrix b, Modular mod) {
+    public static ModMatrix subtract(ModMatrix a, ModMatrix b, int mod) {
         if (a.n != b.n || a.m != b.m) {
             throw new IllegalArgumentException();
         }
         ModMatrix ans = new ModMatrix(a.n, a.m);
         for (int i = 0; i < a.n; i++) {
             for (int j = 0; j < a.m; j++) {
-                ans.mat[i][j] = mod.subtract(a.mat[i][j], b.mat[i][j]);
+                ans.mat[i][j] = DigitUtils.modsub(a.mat[i][j], b.mat[i][j], mod);
             }
         }
         return ans;
     }
 
-    public static ModMatrix mul(ModMatrix a, int k, Modular mod) {
+    public static ModMatrix mul(ModMatrix a, int k, int mod) {
         ModMatrix ans = new ModMatrix(a.n, a.m);
         for (int i = 0; i < a.n; i++) {
             for (int j = 0; j < a.m; j++) {
-                ans.mat[i][j] = mod.mul(a.mat[i][j], k);
+                ans.mat[i][j] = (int) ((a.mat[i][j] * (long) k) % mod);
             }
         }
         return ans;
@@ -330,7 +319,7 @@ public class ModMatrix {
     }
 
     private void asTopHeisenbergModMatrix(Power pow) {
-        Modular mod = pow.getModular();
+        int mod = pow.getMod();
 
         for (int i = 0; i < n - 1; i++) {
             int maxRow = i + 1;
@@ -347,21 +336,21 @@ public class ModMatrix {
                 swapRow(maxRow, i + 1);
                 swapCol(maxRow, i + 1);
             }
-            int inv = pow.inverseByFermat(mat[maxRow][i]);
+            long inv = pow.inverse(mat[maxRow][i]);
             for (int j = i + 2; j < n; j++) {
                 if (mat[j][i] == 0) {
                     continue;
                 }
-                int c = mod.mul(mat[j][i], inv);
+                long c = mat[j][i] * inv % mod;
                 subtractRow(j, i + 1, c, mod);
-                subtractCol(i + 1, j, mod.valueOf(-c), mod);
+                subtractCol(i + 1, j, DigitUtils.negate((int) c, mod), mod);
             }
         }
     }
 
     private int topHeisenbergModMatrixDeterminant(Power pow) {
-        Modular mod = pow.getModular();
-        int ans = mod.valueOf(1);
+        int mod = pow.getMod();
+        long ans = 1 % mod;
 
         for (int i = 0; i < n - 1; i++) {
             if (mat[i][i] == 0 && mat[i + 1][i] != 0) {
@@ -369,20 +358,20 @@ public class ModMatrix {
                 ans = -ans;
             }
             if (mat[i + 1][i] != 0) {
-                subtractRow(i + 1, i, mod.mul(mat[i + 1][i], pow.inverseByFermat(mat[i][i])), mod);
+                subtractRow(i + 1, i, (long) mat[i + 1][i] * pow.inverse(mat[i][i]) % mod, mod);
             }
-            ans = mod.mul(ans, mat[i][i]);
+            ans = ans * mat[i][i] % mod;
         }
 
-        ans = mod.mul(mat[n - 1][n - 1], ans);
-        return ans;
+        ans = mat[n - 1][n - 1] * ans % mod;
+        return (int) ans;
     }
 
     /**
      * <p>Get the minimal-polynomial of this, O(n^3)</p>
      */
     public ModGravityLagrangeInterpolation.Polynomial getCharacteristicPolynomial(Power pow) {
-        Modular mod = pow.getModular();
+        int mod = pow.getMod();
         if (n != m) {
             throw new UnsupportedOperationException();
         }
@@ -395,11 +384,11 @@ public class ModMatrix {
         for (int i = 0; i <= n; i++) {
             copy.asSame(heisenberg);
             for (int j = 0; j < n; j++) {
-                copy.mat[j][j] = mod.subtract(copy.mat[j][j], i);
+                copy.mat[j][j] = DigitUtils.modsub(copy.mat[j][j], i, mod);
             }
             int y = copy.topHeisenbergModMatrixDeterminant(pow);
             if (n % 2 == 1) {
-                y = mod.valueOf(-y);
+                y = DigitUtils.modsub(0, y, mod);
             }
             gli.addPoint(i, y);
         }

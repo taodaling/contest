@@ -1,24 +1,25 @@
 package template.datastructure;
 
+import template.math.DigitUtils;
 import template.math.Modular;
 import template.primitve.generated.datastructure.IntToIntegerFunction;
 
 public class ModPreSum {
     private int[] pre;
-    private Modular mod;
+    private int mod;
 
-    public ModPreSum(int n, Modular mod) {
+    public ModPreSum(int n, int mod) {
         pre = new int[n];
         this.mod = mod;
     }
 
     public void populate(IntToIntegerFunction a, int n) {
-        if(n <= 0){
+        if (n <= 0) {
             return;
         }
         pre[0] = a.apply(0);
         for (int i = 1; i < n; i++) {
-            pre[i] = mod.plus(pre[i - 1], a.apply(i));
+            pre[i] = (pre[i - 1] + a.apply(i)) % mod;
         }
     }
 
@@ -26,7 +27,7 @@ public class ModPreSum {
      * get a[l] + a[l + 1] + ... + a[r]
      */
     public int intervalSum(int l, int r) {
-        return mod.subtract(prefix(r), prefix(l - 1));
+        return DigitUtils.mod(prefix(r) - prefix(l - 1), mod);
     }
 
     /**
@@ -43,6 +44,6 @@ public class ModPreSum {
      * get a[i] + a[i + 1] + ... + a[n - 1]
      */
     public int suffix(int i) {
-        return mod.subtract(pre[pre.length - 1], prefix(i - 1));
+        return DigitUtils.mod(pre[pre.length - 1] - prefix(i - 1), mod);
     }
 }

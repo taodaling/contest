@@ -113,6 +113,10 @@ public class Bits {
         return Log2.floorLog(x ^ y);
     }
 
+    public static int theFirstDifferentIndex(long x, long y) {
+        return Log2.floorLog(x ^ y);
+    }
+
     public static int lowestBit(int x) {
         return x & -x;
     }

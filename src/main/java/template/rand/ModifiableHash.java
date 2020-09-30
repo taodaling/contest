@@ -22,7 +22,7 @@ public class ModifiableHash {
     }
 
     public void modify(int i, int x) {
-        h = hd.mod.plus(h, ((long) x - vals[i]) * hd.pow[i]);
+        h = hd.modular.plus(h, ((long) x - vals[i]) * hd.pow[i]);
         vals[i] = x;
     }
 }

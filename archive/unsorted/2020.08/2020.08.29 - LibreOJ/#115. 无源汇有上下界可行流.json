@@ -1,0 +1,35 @@
+{
+  "name" : "#115. 无源汇有上下界可行流",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "7 12 6 7\n6 1 0 2147483647\n1 7 0 2147483647\n6 2 0 2147483647\n2 7 0 2147483647\n6 3 0 2147483647\n3 7 0 2147483647\n6 4 0 2147483647\n4 7 0 2147483647\n6 5 0 2147483647\n5 7 0 2147483647\n5 1 1 2147483647\n3 4 1 2147483647",
+    "output" : "2",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.Task",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.08.29",
+  "contestName" : "LibreOJ",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : false
+}

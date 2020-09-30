@@ -17,7 +17,13 @@ public class DoubleISAP implements DoubleMaximumFlow {
     private boolean exit;
     private IntegerDeque deque;
 
-    public DoubleISAP(int vertexNum) {
+    public DoubleISAP() {
+    }
+
+    public void ensure(int vertexNum) {
+        if (dists != null && dists.length >= vertexNum) {
+            return;
+        }
         dists = new int[vertexNum];
         cnts = new int[vertexNum + 2];
         deque = new IntegerDequeImpl(n);
@@ -53,6 +59,7 @@ public class DoubleISAP implements DoubleMaximumFlow {
 
     @Override
     public double apply(List<DoubleFlowEdge>[] g, int s, int t, double send) {
+        ensure(g.length);
         this.net = g;
         this.s = s;
         this.t = t;

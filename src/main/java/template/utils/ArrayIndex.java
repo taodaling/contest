@@ -20,23 +20,23 @@ public class ArrayIndex {
     }
 
     public int indexOf(int a, int b, int c) {
-        return indexOf(a, b) * dimensions[2] + c;
+        return (a * dimensions[1] + b) * dimensions[2] + c;
     }
 
     public int indexOf(int a, int b, int c, int d) {
-        return indexOf(a, b, c) * dimensions[3] + d;
+        return ((a * dimensions[1] + b) * dimensions[2] + c) * dimensions[3] + d;
     }
 
     public int indexOf(int a, int b, int c, int d, int e) {
-        return indexOf(a, b, c, d) * dimensions[4] + e;
+        return (((a * dimensions[1] + b) * dimensions[2] + c) * dimensions[3] + d) * dimensions[4] + e;
     }
 
     public int indexOf(int a, int b, int c, int d, int e, int f) {
-        return indexOf(a, b, c, d, e) * dimensions[5] + f;
+        return ((((a * dimensions[1] + b) * dimensions[2] + c) * dimensions[3] + d) * dimensions[4] + e) * dimensions[5] + f;
     }
 
     public int indexOf(int a, int b, int c, int d, int e, int f, int g) {
-        return indexOf(a, b, c, d, e, f) * dimensions[6] + g;
+        return (((((a * dimensions[1] + b) * dimensions[2] + c) * dimensions[3] + d) * dimensions[4] + e) * dimensions[5] + f) * dimensions[6] + g;
     }
 
     public boolean isValid(int a, int d) {

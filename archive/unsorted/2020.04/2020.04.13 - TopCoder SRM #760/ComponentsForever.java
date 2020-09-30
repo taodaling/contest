@@ -101,8 +101,8 @@ public class ComponentsForever {
                 ans = mod.plus(ans, pick2(l, (int) atLeast - 1));
             }
 
-            top.update(yR, yR, dm.minRank(), dm.maxRank(), (long)-pt.x + pt.y);
-            bot.update(yR, yR, dm.minRank(), dm.maxRank(), (long)-pt.x - pt.y);
+            top.updatePlus(yR, yR, dm.minRank(), dm.maxRank(), (long)-pt.x + pt.y);
+            bot.updatePlus(yR, yR, dm.minRank(), dm.maxRank(), (long)-pt.x - pt.y);
         }
 
         int exp = mod.mul(ans, power.inverseByFermat(total));
@@ -174,8 +174,8 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = DigitUtils.floorAverage(l, r);
-        left.update(ll, rr, l, m, x);
-        right.update(ll, rr, m + 1, r, x);
+        left.updatePlus(ll, rr, l, m, x);
+        right.updatePlus(ll, rr, m + 1, r, x);
         pushUp();
     }
 

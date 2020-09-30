@@ -5,29 +5,29 @@ package template.math;
  */
 public class Combination implements IntCombination {
     final Factorial factorial;
-    final Modular modular;
+    int modVal;
 
     public Combination(Factorial factorial) {
         this.factorial = factorial;
-        this.modular = factorial.getMod();
+        this.modVal = factorial.getMod();
     }
 
 
-    public Combination(int limit, Power pow) {
-        this(new Factorial(limit, pow));
+    public Combination(int limit, int mod) {
+        this(new Factorial(limit, mod));
     }
 
     public int combination(int m, int n) {
         if (n > m || n < 0) {
             return 0;
         }
-        return modular.mul(modular.mul(factorial.fact(m), factorial.invFact(n)), factorial.invFact(m - n));
+        return (int) ((long) factorial.fact(m) * factorial.invFact(n) % modVal * factorial.invFact(m - n) % modVal);
     }
 
     /**
      * return 1 / composite(m, n)
      */
     public int invCombination(int m, int n) {
-        return modular.mul(modular.mul(factorial.invFact(m), factorial.fact(n)), factorial.fact(m - n));
+        return (int) ((long) factorial.invFact(m) * factorial.fact(n) % modVal * factorial.fact(m - n) % modVal);
     }
 }

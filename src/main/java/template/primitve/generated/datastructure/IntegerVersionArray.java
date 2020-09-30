@@ -4,13 +4,13 @@ public class IntegerVersionArray {
     int[] data;
     int[] version;
     int now;
-    int def;
+    IntToIntegerFunction def;
 
     public IntegerVersionArray(int cap) {
-        this(cap, 0);
+        this(cap, i -> 0);
     }
 
-    public IntegerVersionArray(int cap, int def) {
+    public IntegerVersionArray(int cap, IntToIntegerFunction def) {
         data = new int[cap];
         version = new int[cap];
         now = 0;
@@ -24,7 +24,7 @@ public class IntegerVersionArray {
     public void visit(int i) {
         if (version[i] < now) {
             version[i] = now;
-            data[i] = def;
+            data[i] = def.apply(i);
         }
     }
 

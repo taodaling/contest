@@ -4,13 +4,13 @@ public class DoubleVersionArray {
     double[] data;
     int[] version;
     int now;
-    double def;
+    IntToDoubleFunction def;
 
     public DoubleVersionArray(int cap) {
-        this(cap, 0);
+        this(cap, i -> 0);
     }
 
-    public DoubleVersionArray(int cap, double def) {
+    public DoubleVersionArray(int cap, IntToDoubleFunction def) {
         data = new double[cap];
         version = new int[cap];
         now = 0;
@@ -24,7 +24,7 @@ public class DoubleVersionArray {
     public void visit(int i) {
         if (version[i] < now) {
             version[i] = now;
-            data[i] = def;
+            data[i] = def.apply(i);
         }
     }
 

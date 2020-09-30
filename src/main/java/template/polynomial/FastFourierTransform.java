@@ -4,12 +4,18 @@ import template.binary.Log2;
 import template.math.DigitUtils;
 import template.math.Modular;
 import template.math.Power;
+import template.primitve.generated.datastructure.DoubleArrayList;
+import template.utils.Buffer;
 import template.utils.SequenceUtils;
 
 public class FastFourierTransform {
     private static double eps = 1e-12;
     private static double[][] realLevels = new double[30][];
     private static double[][] imgLevels = new double[30][];
+    private static Buffer<DoubleArrayList> listBuffer = new Buffer<>(DoubleArrayList::new, x -> {
+        x.clear();
+    });
+
 
     private static void prepareLevel(int i) {
         if (realLevels[i] == null) {
@@ -20,6 +26,79 @@ public class FastFourierTransform {
                 imgLevels[i][j] = Math.sin(Math.PI / s * j);
             }
         }
+    }
+
+    private static DoubleArrayList clone(double[] x) {
+        DoubleArrayList ans = listBuffer.alloc();
+        ans.clear();
+        ans.addAll(x);
+        return ans;
+    }
+
+    private static DoubleArrayList clone(int n) {
+        DoubleArrayList ans = listBuffer.alloc();
+        ans.expandWith(0, n);
+        return ans;
+    }
+
+    private static double[][] wrap(DoubleArrayList a, DoubleArrayList b) {
+        return new double[][]{a.getData(), b.getData()};
+    }
+    /**
+     * c[i]=\sum_{j} a[i-j]*b[j]
+     */
+    public static void mul(double[] a, double[] b, double[] c, int m) {
+        DoubleArrayList aReal = clone(a);
+        DoubleArrayList aImg = clone(1 << m);
+        DoubleArrayList bReal = clone(b);
+        DoubleArrayList bImg = clone(1 << m);
+        DoubleArrayList cImg = clone(1 << m);
+
+        double[][] aa = new double[][]{aReal.getData(), aImg.getData()};
+        double[][] bb = new double[][]{bReal.getData(), bImg.getData()};
+        double[][] cc = new double[][]{c, cImg.getData()};
+        dft(aa, m);
+        dft(bb, m);
+        dotMul(aa, bb, cc, m);
+        idft(cc, m);
+
+        listBuffer.release(aReal);
+        listBuffer.release(aImg);
+        listBuffer.release(bReal);
+        listBuffer.release(bImg);
+        listBuffer.release(cImg);
+    }
+
+
+    /**
+     * c[i]=\sum_{j} a[i+j]*b[j]
+     */
+    public static void deltaFFT(double[] a, double[] b, double[] c, int m) {
+        DoubleArrayList aReal = clone(a);
+        DoubleArrayList aImg = clone(1 << m);
+        DoubleArrayList bReal = clone(b);
+        DoubleArrayList bImg = clone(1 << m);
+        DoubleArrayList cImg = clone(1 << m);
+
+        int n = a.length - 1;
+        while (n > 0 && a[n] == 0) {
+            n--;
+        }
+        aReal.reverse(0, n - 1);
+        double[][] aa = new double[][]{aReal.getData(), aImg.getData()};
+        double[][] bb = new double[][]{bReal.getData(), bImg.getData()};
+        double[][] cc = new double[][]{c, cImg.getData()};
+        dft(aa, m);
+        dft(bb, m);
+        dotMul(aa, bb, cc, m);
+        idft(cc, m);
+        SequenceUtils.reverse(c, 0, n - 1);
+
+        listBuffer.release(aReal);
+        listBuffer.release(aImg);
+        listBuffer.release(bReal);
+        listBuffer.release(bImg);
+        listBuffer.release(cImg);
     }
 
     public static void dotMul(double[][] a, double[][] b, double[][] c, int m) {
@@ -202,4 +281,5 @@ public class FastFourierTransform {
         }
         return res;
     }
+
 }

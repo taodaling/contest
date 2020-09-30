@@ -35,7 +35,7 @@ public class PollardRho {
      * pk => pk^ck
      */
     public Map<Integer, Integer> findAllFactors(int n) {
-        Map<Integer, Integer> map = new HashMap();
+        Map<Integer, Integer> map = new HashMap<>();
         findAllFactors(map, n);
         return map;
     }

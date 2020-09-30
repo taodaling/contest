@@ -1,11 +1,12 @@
 package template.primitve.generated.graph;
 
+import template.math.DigitUtils;
 import template.primitve.generated.datastructure.IntegerDeque;
 import template.primitve.generated.datastructure.IntegerDequeImpl;
 
 import java.util.List;
 
-public class DoubleDijkstraMinimumCostFlow implements DoubleMinimumCostFlow {
+public class DoubleDijkstraMinimumCostFlow implements DoubleAugmentMinimumCostFlow {
     private int m;
     private DoublePriorityQueueBasedOnSegment segment;
     private double[] lastDist;
@@ -14,7 +15,12 @@ public class DoubleDijkstraMinimumCostFlow implements DoubleMinimumCostFlow {
     private boolean[] inq;
     private IntegerDeque dq;
     private static final double INF = Double.MAX_VALUE / 4;
-    List<DoubleCostFlowEdge>[] g;
+    private List<DoubleCostFlowEdge>[] g;
+    private DoubleAugmentCallback callback = DoubleAugmentCallback.NIL;
+
+    public void setCallback(DoubleAugmentCallback callback) {
+        this.callback = callback;
+    }
 
     public DoubleDijkstraMinimumCostFlow(int m) {
         this.m = m - 1;
@@ -71,7 +77,7 @@ public class DoubleDijkstraMinimumCostFlow implements DoubleMinimumCostFlow {
             }
             for (DoubleCostFlowEdge e : g[head]) {
                 double dist;
-                if (e.rev.flow == 0 || !inq[e.to] || curDist[e.to] <= (dist = curDist[head] + e.cost - lastDist[e.to] + lastDist[head])) {
+                if (DigitUtils.equal(e.rev.flow, 0) || !inq[e.to] || curDist[e.to] <= (dist = curDist[head] + e.cost - lastDist[e.to] + lastDist[head])) {
                     continue;
                 }
                 prev[e.to] = e.rev;
@@ -99,11 +105,16 @@ public class DoubleDijkstraMinimumCostFlow implements DoubleMinimumCostFlow {
             for (DoubleCostFlowEdge trace = prev[t]; trace != null; trace = prev[trace.to]) {
                 remain = Math.min(remain, trace.flow);
             }
+            double sumCost = 0;
             for (DoubleCostFlowEdge trace = prev[t]; trace != null; trace = prev[trace.to]) {
-                cost += trace.cost * -remain;
+                sumCost -= trace.cost;
                 DoubleFlow.send(trace, -remain);
             }
+            cost += sumCost * remain;
             flow += remain;
+            if(!callback.callback(remain, sumCost)){
+                break;
+            }
         }
         return new double[]{flow, cost};
     }

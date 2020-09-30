@@ -67,6 +67,9 @@ public class DominatorTree {
         //debug.debug("span", span);
     }
 
+    /**
+     * return -1 if we can't access i from root
+     */
     public int parent(int i) {
         return idom[i];
     }

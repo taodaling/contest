@@ -50,10 +50,10 @@ public class EConcatenationWithIntersection {
             int limit = Math.min(n - 1, m + i - 2);
             while (r < limit) {
                 r++;
-                segtree.update(m - suf[r], m - 1, 0, m, 1);
+                segtree.updatePlus(m - suf[r], m - 1, 0, m, 1);
             }
             while (l < i) {
-                segtree.update(m - suf[l], m - 1, 0, m, -1);
+                segtree.updatePlus(m - suf[l], m - 1, 0, m, -1);
                 l++;
             }
             if(pre[i] == 0){
@@ -119,8 +119,8 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = DigitUtils.floorAverage(l, r);
-        left.update(ll, rr, l, m, x);
-        right.update(ll, rr, m + 1, r, x);
+        left.updatePlus(ll, rr, l, m, x);
+        right.updatePlus(ll, rr, m + 1, r, x);
         pushUp();
     }
 

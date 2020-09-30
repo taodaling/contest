@@ -1,5 +1,6 @@
 package template.polynomial;
 
+import template.math.DigitUtils;
 import template.math.Modular;
 import template.math.Power;
 import template.primitve.generated.datastructure.IntegerArrayList;
@@ -10,14 +11,14 @@ import java.util.Map;
 
 public class ModGravityLagrangeInterpolation {
     private Power power;
-    private Modular modular;
+    private int mod;
 
-    public ModGravityLagrangeInterpolation(Modular modular, int expect) {
-        this(new Power(modular), expect);
+    public ModGravityLagrangeInterpolation(int mod, int expect) {
+        this(new Power(mod), expect);
     }
 
     public ModGravityLagrangeInterpolation(Power power, int expect) {
-        this.modular = power.getModular();
+        this.mod = power.getMod();
         this.power = power;
         xs = new Polynomial(expect);
         ys = new Polynomial(expect);
@@ -32,8 +33,8 @@ public class ModGravityLagrangeInterpolation {
      * O(n)
      */
     public void addPoint(int x, int y) {
-        x = modular.valueOf(x);
-        y = modular.valueOf(y);
+        x = DigitUtils.mod(x, mod);
+        y = DigitUtils.mod(y, mod);
         Integer exist = points.get(x);
         if (exist != null) {
             if (exist != y) {
@@ -47,13 +48,13 @@ public class ModGravityLagrangeInterpolation {
         xs.coes[n] = x;
         ys.setN(n + 1);
         ys.coes[n] = y;
-        lx.multiply(modular.valueOf(-x), lxBuf);
+        lx.multiply(DigitUtils.mod(-x, mod), lxBuf);
         switchBuf();
         invW.setN(n + 1);
         invW.coes[n] = 1;
         for (int i = 0; i < n; i++) {
-            invW.coes[i] = modular.mul(invW.coes[i], modular.subtract(xs.coes[i], x));
-            invW.coes[n] = modular.mul(invW.coes[n], modular.subtract(x, xs.coes[i]));
+            invW.coes[i] = DigitUtils.mod((long) invW.coes[i] * (xs.coes[i] - x), mod);
+            invW.coes[n] = DigitUtils.mod((long) invW.coes[n] * (x - xs.coes[i]), mod);
         }
         n++;
     }
@@ -62,20 +63,21 @@ public class ModGravityLagrangeInterpolation {
      * O(n)
      */
     public int getYByInterpolation(int x) {
-        x = modular.valueOf(x);
+        x = DigitUtils.mod(x, mod);
         if (points.containsKey(x)) {
             return points.get(x);
         }
 
         int y = lx.function(x);
-        int sum = 0;
+        long sum = 0;
         for (int i = 0; i < n; i++) {
-            int val = modular.mul(invW.coes[i], modular.subtract(x, xs.coes[i]));
-            val = modular.mul(power.inverseByFermat(val), ys.coes[i]);
-            sum = modular.plus(sum, val);
+            int val = DigitUtils.mod((long) invW.coes[i] * (x - xs.coes[i]), mod);
+            val = (int) ((long) power.inverse(val) * ys.coes[i] % mod);
+            sum += val;
         }
 
-        return modular.mul(y, sum);
+        sum %= mod;
+        return (int) (y * sum % mod);
     }
 
     /**
@@ -85,8 +87,8 @@ public class ModGravityLagrangeInterpolation {
         Polynomial ans = new Polynomial(n);
         Polynomial ansBuf = new Polynomial(n);
         for (int i = 0; i < n; i++) {
-            int c = modular.mul(ys.coes[i], power.inverseByFermat(invW.coes[i]));
-            lx.div(modular.valueOf(-xs.coes[i]), ansBuf);
+            long c = (long) ys.coes[i] * power.inverse(invW.coes[i]) % mod;
+            lx.div(DigitUtils.mod(-xs.coes[i], mod), ansBuf);
             ansBuf.mulConstant(c, ansBuf);
             ans.plus(ansBuf, ans);
         }
@@ -141,10 +143,10 @@ public class ModGravityLagrangeInterpolation {
 
         public int function(int x) {
             int ans = 0;
-            int xi = 1;
+            long xi = 1;
             for (int i = 0; i < n; i++) {
-                ans = modular.plus(ans, modular.mul(xi, coes[i]));
-                xi = modular.mul(xi, x);
+                ans = (int) ((ans + xi * coes[i]) % mod);
+                xi = xi * x % mod;
             }
             return ans;
         }
@@ -177,24 +179,25 @@ public class ModGravityLagrangeInterpolation {
         /**
          * this * (x + b) => ans
          */
-        public void multiply(int b, Polynomial ans) {
+        public void multiply(long b, Polynomial ans) {
             ans.setN(n + 1);
             for (int i = 0; i < n; i++) {
-                ans.coes[i] = modular.mul(coes[i], b);
+                long sum = coes[i] * b;
+                if (i > 0) {
+                    sum += coes[i - 1];
+                }
+                ans.coes[i] = (int) (sum % mod);
             }
-            ans.coes[n] = 0;
-            for (int i = 0; i < n; i++) {
-                ans.coes[i + 1] = modular.plus(ans.coes[i + 1], coes[i]);
-            }
+            ans.coes[n] = coes[n - 1];
         }
 
         /**
          * this * b => ans
          */
-        public void mulConstant(int b, Polynomial ans) {
+        public void mulConstant(long b, Polynomial ans) {
             ans.setN(n);
             for (int i = 0; i < n; i++) {
-                ans.coes[i] = modular.mul(coes[i], b);
+                ans.coes[i] = (int) (coes[i] * b % mod);
             }
         }
 
@@ -207,20 +210,20 @@ public class ModGravityLagrangeInterpolation {
                 ans.coes[i] = coes[i];
             }
             for (int i = 0; i < a.n; i++) {
-                ans.coes[i] = modular.plus(ans.coes[i], a.coes[i]);
+                ans.coes[i] = (ans.coes[i] + a.coes[i]) % mod;
             }
         }
 
         /**
          * this / (x + b) => ans
          */
-        public void div(int b, Polynomial ans) {
+        public void div(long b, Polynomial ans) {
             ans.setN(n - 1);
             int affect = 0;
             for (int i = n - 1; i >= 1; i--) {
-                affect = modular.plus(affect, coes[i]);
+                affect = (affect + coes[i]) % mod;
                 ans.coes[i - 1] = affect;
-                affect = modular.mul(-affect, b);
+                affect = DigitUtils.mod(-affect * b, mod);
             }
         }
 

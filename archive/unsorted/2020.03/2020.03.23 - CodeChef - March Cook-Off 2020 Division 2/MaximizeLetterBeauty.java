@@ -36,12 +36,12 @@ public class MaximizeLetterBeauty {
                 long ans = sum - lDiscard - rDiscard;
                 out.println(ans);
             } else {
-                left.update(x, n, 1, n, -vals[x]);
-                right.update(1, x, 1, n, -vals[x]);
+                left.updatePlus(x, n, 1, n, -vals[x]);
+                right.updatePlus(1, x, 1, n, -vals[x]);
                 sum -= vals[x];
                 vals[x] = y;
-                left.update(x, n, 1, n, vals[x]);
-                right.update(1, x, 1, n, vals[x]);
+                left.updatePlus(x, n, 1, n, vals[x]);
+                right.updatePlus(1, x, 1, n, vals[x]);
                 sum += vals[x];
                 debug.debug("left", left);
                 debug.debug("right", right);
@@ -103,8 +103,8 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = DigitUtils.floorAverage(l, r);
-        left.update(ll, rr, l, m, x);
-        right.update(ll, rr, m + 1, r, x);
+        left.updatePlus(ll, rr, l, m, x);
+        right.updatePlus(ll, rr, m + 1, r, x);
         pushUp();
     }
 

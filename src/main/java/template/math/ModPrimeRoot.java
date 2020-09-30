@@ -12,7 +12,7 @@ public class ModPrimeRoot {
     private int primitiveRoot;
 
     public ModPrimeRoot(Modular p) {
-        this(p, new PrimitiveRoot(p).findMinPrimitiveRoot());
+        this(p, new PrimitiveRoot(p.getMod()).findMinPrimitiveRoot());
     }
 
     public ModPrimeRoot(Modular p, int g) {
@@ -59,17 +59,18 @@ public class ModPrimeRoot {
     }
 
     /**
-     * Find x^{1/k}, if there doesn't exist such number, -1 will be returned
+     * <p>Find x^{1/k}, if there doesn't exist such number, -1 will be returned</p>
+     * <p>O(p^0.5)</p>
      */
     public int root(int x, int k) {
         x = mod.valueOf(x);
-        k = powMod.valueOf(k);
         if (x == 0) {
             if (k == 0) {
                 return -1;
             }
             return 0;
         }
+        k = powMod.valueOf(k);
         if (k == 0) {
             if (x == 1) {
                 return 1;

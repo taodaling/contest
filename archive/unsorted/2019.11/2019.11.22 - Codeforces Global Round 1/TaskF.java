@@ -50,7 +50,7 @@ public class TaskF {
         root.l = root.r = root.id;
         root.next.remove(p);
         if (root.next.isEmpty()) {
-            seg.update(root.id, root.id, 1, n, dist);
+            seg.updatePlus(root.id, root.id, 1, n, dist);
             return;
         }
         for (Edge e : root.next) {
@@ -59,13 +59,13 @@ public class TaskF {
             root.l = Math.min(root.l, node.l);
             root.r = Math.max(root.r, node.r);
         }
-        seg.update(root.id, root.id, 1, n, (long) 1e18);
+        seg.updatePlus(root.id, root.id, 1, n, (long) 1e18);
     }
 
     public void dfsForQuery(Node root, Edge p) {
         if (p != null) {
-            seg.update(1, n, 1, n, p.w);
-            seg.update(root.l, root.r, 1, n, p.w * -2);
+            seg.updatePlus(1, n, 1, n, p.w);
+            seg.updatePlus(root.l, root.r, 1, n, p.w * -2);
         }
 
         for (Edge e : root.next) {
@@ -78,8 +78,8 @@ public class TaskF {
         }
 
         if (p != null) {
-            seg.update(root.l, root.r, 1, n, p.w * 2);
-            seg.update(1, n, 1, n, -p.w);
+            seg.updatePlus(root.l, root.r, 1, n, p.w * 2);
+            seg.updatePlus(1, n, 1, n, -p.w);
         }
     }
 }
@@ -160,8 +160,8 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = DigitUtils.floorAverage(l, r);
-        left.update(ll, rr, l, m, mod);
-        right.update(ll, rr, m + 1, r, mod);
+        left.updatePlus(ll, rr, l, m, mod);
+        right.updatePlus(ll, rr, m + 1, r, mod);
         pushUp();
     }
 
