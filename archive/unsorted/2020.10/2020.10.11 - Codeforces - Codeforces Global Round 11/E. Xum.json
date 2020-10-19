@@ -1,0 +1,40 @@
+{
+  "name" : "E. Xum",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3\n",
+    "output" : "5\n3 + 3\n3 ^ 6\n3 + 5\n3 + 6\n8 ^ 9\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "123\n",
+    "output" : "10\n123 + 123\n123 ^ 246\n141 + 123\n246 + 123\n264 ^ 369\n121 + 246\n367 ^ 369\n30 + 30\n60 + 60\n120 ^ 121\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.EXum",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.10.11",
+  "contestName" : "Codeforces - Codeforces Global Round 11",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "java.io.PrintWriter",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

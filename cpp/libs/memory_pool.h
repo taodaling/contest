@@ -3,9 +3,10 @@
 #include <memory>
 
 #ifndef MEM_LIMIT
-#define MEM_LIMIT 250
+
 #endif
 
+#define MEM_LIMIT 250
 char MEM_HEAD[MEM_LIMIT << 20];
 char *MEM_TAIL = MEM_HEAD;
 void FreeAll() {

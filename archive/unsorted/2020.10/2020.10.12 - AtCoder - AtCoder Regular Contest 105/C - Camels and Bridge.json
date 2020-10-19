@@ -1,0 +1,50 @@
+{
+  "name" : "C - Camels and Bridge",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 2\n1 4 2\n10 4\n2 6\n",
+    "output" : "10\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "2 1\n12 345\n1 1\n",
+    "output" : "-1\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "8 1\n1 1 1 1 1 1 1 1\n100000000 1\n",
+    "output" : "700000000\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "8 20\n57 806 244 349 608 849 513 857\n778 993\n939 864\n152 984\n308 975\n46 860\n123 956\n21 950\n850 876\n441 899\n249 949\n387 918\n34 965\n536 900\n875 889\n264 886\n583 919\n88 954\n845 869\n208 963\n511 975\n",
+    "output" : "3802\n",
+    "index" : 3,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.CCamelsAndBridge",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "contest.CCamelsAndBridgeTestCase" ],
+  "date" : "2020.10.12",
+  "contestName" : "AtCoder - AtCoder Regular Contest 105",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "java.io.PrintWriter",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

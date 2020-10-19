@@ -188,7 +188,9 @@ public class DigitUtils {
     }
 
     public static int mod(long x, int mod) {
-        x %= mod;
+        if (x < -mod || x >= mod) {
+            x %= mod;
+        }
         if (x < 0) {
             x += mod;
         }
@@ -196,7 +198,9 @@ public class DigitUtils {
     }
 
     public static int mod(int x, int mod) {
-        x %= mod;
+        if (x < -mod || x >= mod) {
+            x %= mod;
+        }
         if (x < 0) {
             x += mod;
         }
@@ -215,16 +219,18 @@ public class DigitUtils {
         return ans;
     }
 
-    public static int modplus(int a, int b, int mod){
+    public static int modplus(int a, int b, int mod) {
         int ans = a + b;
-        if(ans >= mod){
+        if (ans >= mod) {
             ans -= mod;
         }
         return ans;
     }
 
     public static long mod(long x, long mod) {
-        x %= mod;
+        if (x < -mod || x >= mod) {
+            x %= mod;
+        }
         if (x < 0) {
             x += mod;
         }

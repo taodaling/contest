@@ -1,0 +1,50 @@
+{
+  "name" : "F - Lotus Leaves",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 3\nS.o\n.o.\no.T\n",
+    "output" : "2\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "3 4\nS...\n.oo.\n...T\n",
+    "output" : "0\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "4 3\n.S.\n.o.\n.o.\n.T.\n",
+    "output" : "-1\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "10 10\n.o...o..o.\n....o.....\n....oo.oo.\n..oooo..o.\n....oo....\n..o..o....\no..o....So\no....T....\n....o.....\n........oo\n",
+    "output" : "5\n",
+    "index" : 3,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.FLotusLeaves",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.10.16",
+  "contestName" : "AtCoder - AtCoder Regular Contest 074",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "java.io.PrintWriter",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

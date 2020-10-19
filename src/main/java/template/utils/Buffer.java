@@ -38,4 +38,10 @@ public class Buffer<T> {
         cleaner.accept(e);
         deque.addLast(e);
     }
+
+    public void check(){
+        if(allocTime != releaseTime){
+            throw new IllegalStateException("Buffer alloc " + allocTime + " but release " + releaseTime);
+        }
+    }
 }

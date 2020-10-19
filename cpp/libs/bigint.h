@@ -33,7 +33,6 @@ namespace bigint {
 
 const int BASE_DIGITS = 9;
 const int BASE = 1000000000;
-using namespace std;
 struct BigInt {
   int sign;
   vector<int> a;

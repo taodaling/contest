@@ -1,9 +1,10 @@
 package template.problem;
 
 import template.binary.Log2;
+import template.math.DigitUtils;
 import template.math.Modular;
-import template.polynomial.FastFourierTransform;
-import template.polynomial.NumberTheoryTransform;
+import template.polynomial.*;
+import template.utils.PrimitiveBuffers;
 
 import java.util.Arrays;
 
@@ -13,17 +14,18 @@ import java.util.Arrays;
  * n^1.5
  */
 public class WayToSplitNumber {
-    public static void main(String[] args){
-        System.out.println(new WayToSplitNumber(19, new Modular(1e9 + 7)).wayOf(80));
+    public static void main(String[] args) {
+        int mod = (int)1e9 + 7;
+        System.out.println(new WayToSplitNumber(19, mod, new IntPolyFFT(mod)).wayOf(80));
     }
 
     int[] ways;
     int[] f;
     int[] g;
     int n;
-    Modular mod;
+    int mod;
 
-    private void prepare(int n, Modular mod) {
+    private void prepare(int n, int mod) {
         this.n = n;
         this.mod = mod;
 
@@ -37,7 +39,7 @@ public class WayToSplitNumber {
         for (int i = 1; i < k; i++) {
             for (int j = 0; j <= n; j++) {
                 if (j - i >= 0) {
-                    a[j] = mod.plus(a[j], a[j - i]);
+                    a[j] = DigitUtils.modplus(a[j], a[j - i], mod);
                 }
             }
         }
@@ -49,10 +51,10 @@ public class WayToSplitNumber {
                 b[j] = j >= k ? b[j - k] : 0;
             }
             for (int j = i; j <= n; j++) {
-                b[j] = mod.plus(b[j], b[j - i]);
+                b[j] = DigitUtils.modplus(b[j], b[j - i], mod);
             }
             for (int j = 0; j <= n; j++) {
-                g[j] = mod.plus(g[j], b[j]);
+                g[j] = DigitUtils.modplus(g[j], b[j], mod);
             }
         }
     }
@@ -60,22 +62,14 @@ public class WayToSplitNumber {
     /**
      * 1 * x1 + 2 * x2 + ... + n * xn = m while m <= n and xi >= 0
      */
-    public WayToSplitNumber(int n, Modular mod, NumberTheoryTransform ntt) {
+    public WayToSplitNumber(int n, int mod, IntPoly poly) {
         prepare(n, mod);
 
-        int m = Log2.ceilLog(n * 2 + 1);
-        ways = new int[1 << m];
-        f = Arrays.copyOf(f, 1 << m);
-        g = Arrays.copyOf(g, 1 << m);
-        ntt.dft(f, m);
-        ntt.dft(g, m);
-        ntt.dotMul(f, g, ways, m);
-        ntt.idft(ways, m);
-    }
+        int[] fp = PrimitiveBuffers.allocIntPow2(f);
+        int[] gp = PrimitiveBuffers.allocIntPow2(g);
+        int[] wp = poly.convolution(fp, gp);
 
-    public WayToSplitNumber(int n, Modular mod) {
-        prepare(n, mod);
-        ways = FastFourierTransform.multiplyMod(f, g, mod.getMod());
+        ways = Arrays.copyOf(wp, n + 1);
     }
 
     public int wayOf(int i) {

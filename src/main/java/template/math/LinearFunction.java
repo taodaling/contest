@@ -17,39 +17,39 @@ public class LinearFunction {
         this.b = b;
     }
 
-    public int apply(int x, Modular mod) {
-        return mod.valueOf((long) a * x + b);
+    public int apply(int x, int mod) {
+        return DigitUtils.mod((long) a * x + b, mod);
     }
 
     //a(b) = a.a(b.a x + b.b) + a.b
-    public static LinearFunction merge(LinearFunction a, LinearFunction b, Modular mod) {
-        return new LinearFunction(mod.valueOf((long) a.a * b.a), mod.valueOf((long) a.a * b.b + a.b));
+    public static LinearFunction merge(LinearFunction a, LinearFunction b, int mod) {
+        return new LinearFunction(DigitUtils.mod((long) a.a * b.a, mod), DigitUtils.mod((long) a.a * b.b + a.b, mod));
     }
 
-    public static LinearFunction plus(LinearFunction a, LinearFunction b, Modular mod) {
-        return new LinearFunction(mod.plus(a.a, b.a), mod.plus(a.b, b.b));
+    public static LinearFunction plus(LinearFunction a, LinearFunction b, int mod) {
+        return new LinearFunction(DigitUtils.modplus(a.a, b.a, mod), DigitUtils.modplus(a.b, b.b, mod));
     }
 
-    public static LinearFunction plus(LinearFunction a, int ba, int bb, Modular mod) {
-        return new LinearFunction(mod.plus(a.a, ba), mod.plus(a.b, bb));
+    public static LinearFunction plus(LinearFunction a, int ba, int bb, int mod) {
+        return new LinearFunction(DigitUtils.modplus(a.a, ba, mod), DigitUtils.modplus(a.b, bb, mod));
     }
 
-    public static LinearFunction subtract(LinearFunction a, LinearFunction b, Modular mod) {
-        return new LinearFunction(mod.subtract(a.a, b.a), mod.subtract(a.b, b.b));
+    public static LinearFunction subtract(LinearFunction a, LinearFunction b, int mod) {
+        return new LinearFunction(DigitUtils.modsub(a.a, b.a, mod), DigitUtils.modsub(a.b, b.b, mod));
     }
 
-    public static LinearFunction subtract(LinearFunction a, int ba, int bb, Modular mod) {
-        return new LinearFunction(mod.subtract(a.a, ba), mod.subtract(a.b, bb));
+    public static LinearFunction subtract(LinearFunction a, int ba, int bb, int mod) {
+        return new LinearFunction(DigitUtils.modsub(a.a, ba, mod), DigitUtils.modsub(a.b, bb, mod));
     }
 
-    public static LinearFunction mul(LinearFunction a, int b, Modular mod) {
-        return new LinearFunction(mod.mul(a.a, b), mod.mul(a.b, b));
+    public static LinearFunction mul(LinearFunction a, int b, int mod) {
+        return new LinearFunction(DigitUtils.mod((long) a.a * b, mod), DigitUtils.mod((long) a.b * b, mod));
     }
 
     //ax+b=y => x=(y-b)/a
-    public static LinearFunction inverse(LinearFunction func, Modular mod, Power pow) {
+    public static LinearFunction inverse(LinearFunction func, int mod, Power pow) {
         int invA = pow.inverseExtGCD(func.a);
-        return new LinearFunction(invA, mod.valueOf((long) -func.b * invA));
+        return new LinearFunction(invA, DigitUtils.mod((long) -func.b * invA, mod));
     }
 
     @Override

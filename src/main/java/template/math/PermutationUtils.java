@@ -1,7 +1,5 @@
 package template.math;
 
-import template.primitve.generated.datastructure.IntegerArrayList;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -19,6 +17,9 @@ public class PermutationUtils {
         }
     }
 
+    /**
+     * find next permutation
+     */
     public static boolean nextPermutation(int[] p) {
         for (int a = p.length - 2; a >= 0; --a) {
             if (p[a] < p[a + 1]) {

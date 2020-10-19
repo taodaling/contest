@@ -154,7 +154,7 @@ public class CompareUtils {
         return comp.compare(a, b) == 0;
     }
 
-    private static final int THRESHOLD = 4;
+    private static final int THRESHOLD = 8;
 
     public static void partition(int[] data, IntPredicate predicate) {
         int l = 0;

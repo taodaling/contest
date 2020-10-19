@@ -1,11 +1,21 @@
 package template.math;
 
+import java.util.HashMap;
+
 public class PrimitiveRoot {
     private int[] factors;
     private int mod;
     private Power pow;
-    int phi;
+    private int phi;
     private static PollardRho rho = new PollardRho();
+    private static HashMap<Integer, Integer> root = new HashMap<>();
+
+    public static int findAnyRoot(int x) {
+        if (!root.containsKey(x)) {
+            root.put(x, new PrimitiveRoot(x).findMinPrimitiveRoot());
+        }
+        return root.get(x);
+    }
 
     public PrimitiveRoot(int x) {
         phi = x - 1;

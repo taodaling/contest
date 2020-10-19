@@ -2,7 +2,6 @@ package contest;
 
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.primitve.generated.graph.DoubleKMAlgo;
 
 public class UVA1411Ants {
     public void solve(int testNumber, FastInput in, FastOutput out) {

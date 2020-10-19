@@ -1,0 +1,45 @@
+{
+  "name" : "D - An Ordinary Game",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "aba\n",
+    "output" : "Second\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "abc\n",
+    "output" : "First\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "abcab\n",
+    "output" : "First\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.DAnOrdinaryGame",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.10.17",
+  "contestName" : "AtCoder - AtCoder Regular Contest 064",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "java.io.PrintWriter",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

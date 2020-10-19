@@ -7,6 +7,8 @@ import template.primitve.generated.datastructure.LongArrayList;
 public class MaximumFactorMinimumNumber {
     public static void main(String[] args) {
         System.out.println(MaximumFactorMinimumNumber.findMinimumNumberWithMaximumFactors((long) 2e5));
+
+        System.out.println(MaximumFactorMinimumNumber.maximumPrimeFactor((long)1e6)[1]);
     }
 
     private static int[] primes = new int[]{2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53};

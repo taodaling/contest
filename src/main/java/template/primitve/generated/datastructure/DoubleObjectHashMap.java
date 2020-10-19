@@ -16,10 +16,20 @@ public class DoubleObjectHashMap<V> {
     private int size;
     private boolean rehash;
     private Hasher hasher = new Hasher();
+    private int[] version;
+    private int now;
+
+    private void access(int i) {
+        if (version[i] != now) {
+            slot[i] = 0;
+            version[i] = now;
+        }
+    }
 
     public DoubleObjectHashMap(int cap, boolean rehash) {
         this.mask = (1 << (32 - Integer.numberOfLeadingZeros(cap - 1))) - 1;
         slot = new int[mask + 1];
+        version = new int[mask + 1];
         next = new int[cap + 1];
         keys = new double[cap + 1];
         values = new Object[cap + 1];
@@ -37,8 +47,10 @@ public class DoubleObjectHashMap<V> {
 
     private void rehash() {
         int[] newSlots = new int[Math.max(16, slot.length * 2)];
+        int[] newVersions = new int[newSlots.length];
         int newMask = newSlots.length - 1;
         for (int i = 0; i < slot.length; i++) {
+            access(i);
             if (slot[i] == 0) {
                 continue;
             }
@@ -53,9 +65,11 @@ public class DoubleObjectHashMap<V> {
         }
         this.slot = newSlots;
         this.mask = newMask;
+        this.version = newVersions;
+        now = 0;
     }
 
-    public void alloc() {
+    private void alloc() {
         alloc++;
         if (alloc >= next.length) {
             doubleCapacity();
@@ -73,6 +87,7 @@ public class DoubleObjectHashMap<V> {
     public void put(double x, V y) {
         int h = hash(x);
         int s = h & mask;
+        access(s);
         if (slot[s] == 0) {
             alloc();
             slot[s] = alloc;
@@ -98,6 +113,7 @@ public class DoubleObjectHashMap<V> {
     public boolean containKey(double x) {
         int h = hash(x);
         int s = h & mask;
+        access(s);
         if (slot[s] == 0) {
             return false;
         }
@@ -107,6 +123,7 @@ public class DoubleObjectHashMap<V> {
     public V getOrDefault(double x, V def) {
         int h = hash(x);
         int s = h & mask;
+        access(s);
         if (slot[s] == 0) {
             return def;
         }
@@ -121,6 +138,7 @@ public class DoubleObjectHashMap<V> {
     public V remove(double x) {
         int h = hash(x);
         int s = h & mask;
+        access(s);
         if (slot[s] == 0) {
             return null;
         }
@@ -161,8 +179,8 @@ public class DoubleObjectHashMap<V> {
 
     public void clear() {
         alloc = 0;
-        Arrays.fill(slot, 0);
         size = 0;
+        now++;
     }
 
     public DoubleObjectEntryIterator<V> iterator() {

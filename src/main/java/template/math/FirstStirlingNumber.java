@@ -1,7 +1,9 @@
 package template.math;
 
 import template.binary.Log2;
+import template.polynomial.IntPoly;
 import template.polynomial.NumberTheoryTransform;
+import template.utils.PrimitiveBuffers;
 import template.utils.SequenceUtils;
 
 import java.util.Arrays;
@@ -10,69 +12,71 @@ import java.util.Arrays;
  * For all i, prepare c(n, i) in O(nlog2n)
  */
 public class FirstStirlingNumber {
-    private Modular mod;
-    private NumberTheoryTransform ntt;
-    private Log2 log2 = new Log2();
     private Factorial factorial;
     private int[] stirling;
+    private int mod;
+    private int n;
 
-    public int stirlingAt(int i) {
+    /**
+     * stirling number without sign
+     */
+    public int getNoSign(int i) {
         return stirling[i];
     }
 
-    public FirstStirlingNumber(NumberTheoryTransform ntt, Factorial factorial, int n) {
-        this.ntt = ntt;
+    public int getSign(int i) {
+        int ans = getNoSign(i);
+        if (((n - i) & 1) == 1) {
+            ans = DigitUtils.negate(ans, mod);
+        }
+        return ans;
+    }
+
+    public FirstStirlingNumber(IntPoly poly, Factorial factorial, int n) {
+        this.mod = factorial.getMod();
         this.factorial = factorial;
-        stirling = getStirling(n);
+        stirling = getStirling(n, poly);
+        this.n = n;
     }
 
-    private int[] getStirling(int n) {
-        int proper = log2.ceilLog(n + 1);
-        int[][] ans = new int[3][1 << proper];
-        calcStirling(ans[0], ans[1], ans[2], n);
-        return ans[0];
+    private int[] getStirling(int n, IntPoly poly) {
+        int[] ans = calcStirling(n, poly);
+        ans = PrimitiveBuffers.replace(Arrays.copyOf(ans, n + 1), ans);
+        return ans;
     }
 
-    private void calcStirling(int[] ans, int[] buf, int[] buf2, int n) {
+    private int[] calcStirling(int n, IntPoly poly) {
         if (n == 0) {
-            ans[0] = 1;
-            return;
+            int[] ans = PrimitiveBuffers.allocIntPow2(1);
+            ans[0] = DigitUtils.mod(1, mod);
+            return ans;
         }
         if (n % 2 == 1) {
-            calcStirling(ans, buf, buf2, n - 1);
+            int[] ans = calcStirling(n - 1, poly);
+            ans = PrimitiveBuffers.resize(ans, n + 1);
             for (int i = n; i >= 0; i--) {
-                ans[i] = mod.mul(n - 1, ans[i]);
+                ans[i] = (int) ((long) (n - 1) * ans[i] % mod);
                 if (i >= 1) {
-                    ans[i] = mod.plus(ans[i], ans[i - 1]);
+                    ans[i] = DigitUtils.modplus(ans[i], ans[i - 1], mod);
                 }
             }
-            return;
+            return ans;
         }
-        int half = n / 2;
-        calcStirling(ans, buf, buf2, half);
-        int proper = log2.ceilLog((half + 1) * 2 - 1);
-        Arrays.fill(buf, 0, 1 << proper, 0);
-        Arrays.fill(buf2, 0, 1 << proper, 0);
-        int ni = 1;
+        int half = n >> 1;
+        int[] ans = calcStirling(half, poly);
+        int[] A = PrimitiveBuffers.allocIntPow2(half + 1);
+        int[] B = PrimitiveBuffers.allocIntPow2(half + 1);
+        long ni = 1;
         for (int i = 0; i <= half; i++) {
-            buf[i] = mod.mul(ans[i], factorial.fact(i));
-            buf2[i] = mod.mul(ni, factorial.invFact(i));
-            ni = mod.mul(ni, half);
+            A[i] = (int) ((long) ans[i] * factorial.fact(i) % mod);
+            B[i] = (int) (ni * factorial.invFact(i) % mod);
+            ni = (int) (ni * half % mod);
         }
-        SequenceUtils.reverse(buf, 0, half);
-        ntt.dft(buf, proper);
-        ntt.dft(buf2, proper);
-        ntt.dotMul(buf, buf2, buf, proper);
-        ntt.idft(buf, proper);
-        SequenceUtils.reverse(buf, 0, half);
-        for (int i = 0; i <= half; i++) {
-            buf[i] = mod.mul(buf[i], factorial.invFact(i));
+        A = PrimitiveBuffers.replace(poly.deltaConvolution(A, B), A, B);
+        for (int i = 0; i <= half && i < A.length; i++) {
+            A[i] = (int) ((long) A[i] * factorial.invFact(i) % mod);
         }
-        Arrays.fill(buf, half + 1, 1 << proper, 0);
-        ntt.dft(buf, proper);
-        ntt.dft(ans, proper);
-        ntt.dotMul(ans, buf, ans, proper);
-        ntt.idft(ans, proper);
+        return PrimitiveBuffers.replace(poly.convolution(A, ans), A, ans);
     }
 
 }

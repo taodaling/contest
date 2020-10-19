@@ -5,42 +5,42 @@ import template.math.DigitUtils;
 import java.util.function.IntFunction;
 import java.util.function.Supplier;
 
-public class GenericSegment<S extends GenericSegment.Summary<S>, M extends GenericSegment.Modify<S, M>> implements Cloneable {
-    private GenericSegment<S, M> left;
-    private GenericSegment<S, M> right;
-    private S summary;
-    private M modify;
+public class GenericSegment<S extends GenericSegment.Sum<S, U>, U extends GenericSegment.Update<U>> implements Cloneable {
+    private GenericSegment<S, U> left;
+    private GenericSegment<S, U> right;
+    private S sum;
+    private U update;
     private boolean dirty;
 
-    private void modify(M modify) {
-        this.modify.merge(modify);
-        modify.modify(summary);
+    private void modify(U modify) {
+        update.update(modify);
+        sum.update(modify);
         dirty = true;
     }
 
     public void pushUp() {
-        summary.merge(left.summary, right.summary);
+        sum.merge(left.sum, right.sum);
     }
 
     public void pushDown() {
         if (dirty) {
-            left.modify(modify);
-            right.modify(modify);
-            modify.clear();
+            left.modify(update);
+            right.modify(update);
+            update.clear();
             dirty = false;
         }
     }
 
-    public GenericSegment(int l, int r, Supplier<M> modifySupplier, Supplier<S> summarySupplier, IntFunction<S> function) {
-        modify = modifySupplier.get();
+    public GenericSegment(int l, int r, Supplier<U> modifySupplier, Supplier<S> summarySupplier, IntFunction<S> function) {
+        update = modifySupplier.get();
         if (l < r) {
-            summary = summarySupplier.get();
+            sum = summarySupplier.get();
             int m = DigitUtils.floorAverage(l, r);
             left = new GenericSegment<>(l, m, modifySupplier, summarySupplier, function);
             right = new GenericSegment<>(m + 1, r, modifySupplier, summarySupplier, function);
             pushUp();
         } else {
-            summary = function.apply(l);
+            sum = function.apply(l);
         }
     }
 
@@ -52,7 +52,7 @@ public class GenericSegment<S extends GenericSegment.Summary<S>, M extends Gener
         return ll > r || rr < l;
     }
 
-    public void update(int ll, int rr, int l, int r, M modify) {
+    public void update(int ll, int rr, int l, int r, U modify) {
         if (noIntersection(ll, rr, l, r)) {
             return;
         }
@@ -72,7 +72,7 @@ public class GenericSegment<S extends GenericSegment.Summary<S>, M extends Gener
             return;
         }
         if (covered(ll, rr, l, r)) {
-            summary.merge(this.summary);
+            summary.add(this.sum);
             return;
         }
         pushDown();
@@ -96,8 +96,8 @@ public class GenericSegment<S extends GenericSegment.Summary<S>, M extends Gener
     protected GenericSegment clone() {
         try {
             GenericSegment ans = (GenericSegment) super.clone();
-            ans.modify = ans.modify.clone();
-            ans.summary = ans.summary.clone();
+            ans.update = (U) ans.update.clone();
+            ans.sum = ans.sum.clone();
             return ans;
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException(e);
@@ -106,7 +106,7 @@ public class GenericSegment<S extends GenericSegment.Summary<S>, M extends Gener
 
     private void toString(StringBuilder builder) {
         if (left == null && right == null) {
-            builder.append(summary).append(",");
+            builder.append(sum).append(",");
             return;
         }
         pushDown();
@@ -124,20 +124,20 @@ public class GenericSegment<S extends GenericSegment.Summary<S>, M extends Gener
         return builder.toString();
     }
 
-    public static interface Modify<S extends Summary, M extends Modify<S, M>> extends Cloneable {
-        void modify(S summary);
-
-        void merge(M modify);
+    public static interface Update<U> extends Cloneable {
+        void update(U u);
 
         void clear();
 
-        M clone();
+        U clone();
     }
 
-    public static interface Summary<S extends Summary<S>> extends Cloneable {
-        void merge(S a);
+    public static interface Sum<S extends Sum<S, U>, U extends Update<U>> extends Cloneable {
+        void add(S a);
 
         void merge(S a, S b);
+
+        void update(U u);
 
         S clone();
     }

@@ -1,34 +1,34 @@
 package template.math;
 
-import template.polynomial.Polynomials;
+import template.datastructure.BitSet;
+import template.polynomial.IntPoly;
 import template.primitve.generated.datastructure.IntegerArrayList;
+import template.utils.PrimitiveBuffers;
 
-import java.util.BitSet;
 
 public class ModVectorLinearRecurrenceSolver {
     int mod;
     int[][] a;
-    IntegerArrayList p;
-    IntegerArrayList remainder;
+    int[] p;
     Power pow;
     int n;
     int m;
+    IntPoly poly;
 
-    private void init(int[][] a, IntegerArrayList coe, int mod) {
+    private void init(int[][] a, IntegerArrayList coe, int mod, IntPoly poly) {
+        this.poly = poly;
         this.a = a;
         this.mod = mod;
         n = a[0].length;
         m = coe.size();
         pow = new Power(mod);
-        remainder = new IntegerArrayList(coe.size());
-        p = coe;
+        p = coe.toArray();
     }
 
-    private int[] solve() {
+    private int[] solve(int[] remainder) {
         int[] ans = new int[n];
-        remainder.expandWith(0, m);
-        for (int i = 0; i < m; i++) {
-            long r = remainder.get(i);
+        for (int i = 0; i < m && i < remainder.length; i++) {
+            long r = remainder[i];
             for (int j = 0; j < n; j++) {
                 ans[j] = (int) ((ans[j] + r * a[i][j]) % mod);
             }
@@ -40,16 +40,20 @@ public class ModVectorLinearRecurrenceSolver {
      * O(n^2log_2k)
      */
     public int[] solve(long k) {
-        Polynomials.module(k, p, remainder, pow);
-        return solve();
+        int[] remainder = poly.module(k, p);
+        int[] ans = solve(remainder);
+        PrimitiveBuffers.release(remainder);
+        return ans;
     }
 
     /**
      * O(n^2log_2k)
      */
     public int[] solve(BitSet k) {
-        Polynomials.module(k, p, remainder, pow);
-        return solve();
+        int[] remainder = poly.module(k, p);
+        int[] ans = solve(remainder);
+        PrimitiveBuffers.release(remainder);
+        return ans;
     }
 
 //    /**
@@ -84,7 +88,7 @@ public class ModVectorLinearRecurrenceSolver {
      * <br>
      * O(n(m+n))
      */
-    public ModVectorLinearRecurrenceSolver(ModSparseMatrix mat, int[] vec, int mod) {
+    public ModVectorLinearRecurrenceSolver(ModSparseMatrix mat, int[] vec, int mod, IntPoly poly) {
         IntegerArrayList coe = mat.getMinimalPolynomialByRandom(mod);
         int m = coe.size();
         int n = vec.length;
@@ -94,6 +98,6 @@ public class ModVectorLinearRecurrenceSolver {
             lists[i] = new int[n];
             mat.rightMul(lists[i - 1], lists[i], mod);
         }
-        init(lists, coe, mod);
+        init(lists, coe, mod, poly);
     }
 }

@@ -1,0 +1,45 @@
+{
+  "name" : "C. XOR Inverse",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4\n0 1 3 2\n",
+    "output" : "1 0\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "9\n10 7 9 10 7 5 5 3 5\n",
+    "output" : "4 14\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "3\n8 10 3\n",
+    "output" : "0 8\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx512M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.CXORInverse",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "contest.CXORInverseTestCase" ],
+  "date" : "2020.10.02",
+  "contestName" : "Codeforces - Codeforces Round #673 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "java.io.PrintWriter",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

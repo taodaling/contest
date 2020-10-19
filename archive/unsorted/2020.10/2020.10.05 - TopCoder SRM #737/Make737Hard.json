@@ -1,0 +1,45 @@
+{
+  "name" : "Make737Hard",
+  "signature" : {
+    "name" : "make",
+    "result" : "String",
+    "arguments" : [ "int" ],
+    "argumentNames" : [ "X" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "1" ],
+    "result" : "737",
+    "index" : 0,
+    "active" : false
+  }, {
+    "arguments" : [ "8" ],
+    "result" : "773377",
+    "index" : 1,
+    "active" : false
+  }, {
+    "arguments" : [ "0" ],
+    "result" : "777333",
+    "index" : 2,
+    "active" : false
+  }, {
+    "arguments" : [ "4" ],
+    "result" : "73737",
+    "index" : 3,
+    "active" : false
+  }, {
+    "arguments" : [ "1737373" ],
+    "index" : 4,
+    "active" : false
+  }, {
+    "arguments" : [ "1737372" ],
+    "result" : "",
+    "index" : 5,
+    "active" : false
+  } ],
+  "date" : "2020.10.05",
+  "contestName" : "TopCoder SRM #737",
+  "testClasses" : [ "contest.Make737HardTestCase" ],
+  "fqn" : "contest.Make737Hard",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

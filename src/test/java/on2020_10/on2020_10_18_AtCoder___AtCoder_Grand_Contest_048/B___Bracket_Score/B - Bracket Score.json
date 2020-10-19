@@ -1,0 +1,40 @@
+{
+  "name" : "B - Bracket Score",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4\n4 2 3 1\n2 3 2 4\n",
+    "output" : "12\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "10\n866111664 844917655 383133839 353498483 472381277 550309930 378371075 304570952 955719384 705445072\n178537096 218662351 231371336 865935868 579910117 62731178 681212831 16537461 267238505 318106937\n",
+    "output" : "6629738472\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_10.on2020_10_18_AtCoder___AtCoder_Grand_Contest_048.B___Bracket_Score.BBracketScore",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.10.18",
+  "contestName" : "AtCoder - AtCoder Grand Contest 048",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "java.io.PrintWriter",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

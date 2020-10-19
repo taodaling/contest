@@ -1,0 +1,31 @@
+{
+  "name" : "NearPalindromesDiv1",
+  "signature" : {
+    "name" : "solve",
+    "result" : "int",
+    "arguments" : [ "String" ],
+    "argumentNames" : [ "S" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "cocoa" ],
+    "result" : "0",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "daddy" ],
+    "result" : "2",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "abcdefgh" ],
+    "result" : "4",
+    "index" : 2,
+    "active" : true
+  } ],
+  "date" : "2020.10.18",
+  "contestName" : "Single Round Match 791",
+  "testClasses" : [ ],
+  "fqn" : "contest.NearPalindromesDiv1",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

@@ -1,0 +1,45 @@
+{
+  "name" : "B. Chess Cheater",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "8\n5 2\nWLWLL\n6 5\nLLLWWL\n7 1\nLWLWLWL\n15 5\nWWWLLLWWWLLLWWW\n40 7\nLLWLWLWWWLWLLWLWWWLWLLWLLWLLLLWLLWWWLWWL\n1 0\nL\n1 1\nL\n6 1\nWLLWLW\n",
+    "output" : "7\n11\n6\n26\n46\n0\n1\n6\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "5\n3 2\nLLL\n3 1\nLWL\n3 0\nLWL\n5 \nLLL",
+    "output" : "3\n3\n1",
+    "index" : 1,
+    "active" : false
+  }, {
+    "input" : "1 \n5  1\nLLLLW",
+    "output" : "3",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.BChessCheater",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.10.10",
+  "contestName" : "Codeforces - Codeforces Global Round 11",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "java.io.PrintWriter",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

@@ -1,0 +1,35 @@
+{
+  "name" : "AliceAndBobEasy",
+  "signature" : {
+    "name" : "make",
+    "result" : "int[]",
+    "arguments" : [ "int" ],
+    "argumentNames" : [ "N" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "1" ],
+    "result" : "737",
+    "index" : 0,
+    "active" : false
+  }, {
+    "arguments" : [ "2" ],
+    "result" : "737 373",
+    "index" : 1,
+    "active" : false
+  }, {
+    "arguments" : [ "3" ],
+    "result" : "3337 3373 3733",
+    "index" : 2,
+    "active" : false
+  }, {
+    "arguments" : [ "20" ],
+    "index" : 3,
+    "active" : true
+  } ],
+  "date" : "2020.10.05",
+  "contestName" : "TopCoder SRM #737",
+  "testClasses" : [ ],
+  "fqn" : "contest.AliceAndBobEasy",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

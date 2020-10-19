@@ -2,50 +2,45 @@ package template.math;
 
 
 import template.binary.Log2;
+import template.polynomial.IntPoly;
 import template.polynomial.NumberTheoryTransform;
+import template.polynomial.Polynomials;
+import template.utils.PrimitiveBuffers;
+
+import java.rmi.dgc.DGC;
+import java.util.Arrays;
 
 /**
  * for all i, prepare all s(n,i) in O(nlog2n) time complexity
  */
 public class SecondStirlingNumber {
-    private NumberTheoryTransform ntt;
-    private Modular mod;
-    private Factorial factorial;
-    private Log2 log2 = new Log2();
-    private Power power;
+    private int mod;
     private int[] stirling;
 
     public int stirling(int i) {
         return stirling[i];
     }
 
-    public SecondStirlingNumber(NumberTheoryTransform ntt, Factorial factorial, int n) {
-        this.ntt = ntt;
-        this.mod = new Modular(factorial.getMod());
-        this.factorial = factorial;
-        power = new Power(mod);
-        stirling = getStirling(n);
+    public SecondStirlingNumber(Factorial factorial, int n, IntPoly poly) {
+        this.mod = factorial.getMod();
+        stirling = getStirling(n, factorial, poly, new Power(mod));
     }
 
-    private int[] getStirling(int n) {
-        int m = log2.ceilLog(n + 1) + 1;
-        int proper = 1 << m;
-        int[] a = new int[proper];
-        int[] b = new int[proper];
+    private int[] getStirling(int n, Factorial factorial, IntPoly poly, Power power) {
+        int[] a = PrimitiveBuffers.allocIntPow2(n + 1);
+        int[] b = PrimitiveBuffers.allocIntPow2(n + 1);
 
         for (int i = 0; i <= n; i++) {
-            a[i] = factorial.inv[i];
+            a[i] = factorial.invFact(i);
             if (i % 2 == 1) {
-                a[i] = mod.valueOf(-a[i]);
+                a[i] = DigitUtils.negate(a[i], mod);
             }
-            b[i] = factorial.inv[i];
-            b[i] = mod.mul(b[i], power.pow(i, n));
+            b[i] = DigitUtils.mod((long) factorial.invFact(i) * power.pow(i, n), mod);
         }
 
-        ntt.dft(a, m);
-        ntt.dft(b, m);
-        ntt.dotMul(a, b, a, m);
-        ntt.idft(a, m);
-        return a;
+        int[] c = poly.convolution(a, b);
+        int[] ans = Arrays.copyOf(c, n + 1);
+        PrimitiveBuffers.release(a, b, c);
+        return ans;
     }
 }

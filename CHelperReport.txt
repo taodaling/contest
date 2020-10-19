@@ -1,2 +1,2 @@
-40 src/main/java/contest/B. Arrays Sum.json
+44 src/main/java/contest/B - Bracket Score.json
 0

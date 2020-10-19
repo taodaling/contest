@@ -15,8 +15,20 @@ public class LongModular implements ILongModular {
         this.m = m;
     }
 
+
     public long mul(long a, long b) {
-        return b == 0 ? 0 : ((mul(a, b >> 1) << 1) % m + a * (b & 1)) % m;
+        if (b == 0) {
+            return 0;
+        }
+        long ans = mul(a, b >> 1) << 1;
+        if (ans >= m) {
+            ans -= m;
+        }
+        ans += a * (b & 1);
+        if (ans >= m) {
+            ans -= m;
+        }
+        return ans;
     }
 
     public long plus(long a, long b) {

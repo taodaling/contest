@@ -3,9 +3,11 @@ package template.math;
 public class SimpsonIntegral {
     private final double eps;
     private Function function;
+    private final double threshold;
 
-    public SimpsonIntegral(double eps, Function function) {
+    public SimpsonIntegral(double eps, double threshold, Function function) {
         this.eps = eps;
+        this.threshold = threshold;
         this.function = function;
     }
 
@@ -22,7 +24,7 @@ public class SimpsonIntegral {
         double m = (l + r) / 2;
         double lArea = simpson(l, m);
         double rArea = simpson(m, r);
-        if (Math.abs(lArea + rArea - totalArea) <= 15 * eps) {
+        if (r - l <= threshold && Math.abs(lArea + rArea - totalArea) <= 15 * eps) {
             return lArea + rArea + (lArea + rArea - totalArea) / 15;
         }
         return integral(l, m, lArea) + integral(m, r, rArea);

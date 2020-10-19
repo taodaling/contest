@@ -14,8 +14,14 @@ class Lca {
   vector<int> head;
   vector<unsigned> A;
   unsigned time;
-  unsigned highest_one_bit(unsigned x) const {
-    return x ? 1u << FloorLog2(x) : 0;
+  unsigned highestOneBit(unsigned x) const {
+    if(x == 0){
+      return 0;
+    }
+    return 1u << (31 - __builtin_clz(x));
+  }
+  unsigned lowestOneBit(unsigned x){
+    return x & -x;
   }
   void dfs1(const vector<vector<int>> &tree, int u, int p) {
     parent[u] = p;
@@ -23,7 +29,7 @@ class Lca {
     for (int v : tree[u]) {
       if (v == p) continue;
       dfs1(tree, v, u);
-      if (LowestOneBit(I[u]) < LowestOneBit(I[v])) {
+      if (lowestOneBit(I[u]) < lowestOneBit(I[v])) {
         I[u] = I[v];
       }
     }
@@ -31,7 +37,7 @@ class Lca {
   }
 
   void dfs2(const vector<vector<int>> &tree, int u, int p, unsigned up) {
-    A[u] = up | LowestOneBit(I[u]);
+    A[u] = up | lowestOneBit(I[u]);
     for (int v : tree[u]) {
       if (v == p) continue;
       dfs2(tree, v, u, A[u]);
@@ -39,16 +45,16 @@ class Lca {
   }
 
   int enter_into_strip(int x, int hz) const {
-    if (LowestOneBit(I[x]) == hz) return x;
-    int hw = highest_one_bit(A[x] & (hz - 1));
+    if (lowestOneBit(I[x]) == hz) return x;
+    int hw = highestOneBit(A[x] & (hz - 1));
     return parent[head[(I[x] & -hw) | hw]];
   }
 
  public:
   // lca in O(1)
   int operator()(int x, int y) const {
-    int hb = I[x] == I[y] ? LowestOneBit(I[x]) : highest_one_bit(I[x] ^ I[y]);
-    int hz = LowestOneBit(A[x] & A[y] & -hb);
+    int hb = I[x] == I[y] ? lowestOneBit(I[x]) : highestOneBit(I[x] ^ I[y]);
+    int hz = lowestOneBit(A[x] & A[y] & -hb);
     int ex = enter_into_strip(x, hz);
     int ey = enter_into_strip(y, hz);
     return pre_order[ex] < pre_order[ey] ? ex : ey;

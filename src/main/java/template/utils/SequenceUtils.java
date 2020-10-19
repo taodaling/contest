@@ -472,6 +472,15 @@ public class SequenceUtils {
     /**
      * 旋转区间[l,r],使得原本在l的元素落在to处
      */
+    public static void rotate(char[] list, int l, int r, int to) {
+        SequenceUtils.reverse(list, l, r);
+        SequenceUtils.reverse(list, l, to - 1);
+        SequenceUtils.reverse(list, to, r);
+    }
+
+    /**
+     * 旋转区间[l,r],使得原本在l的元素落在to处
+     */
     public static void rotate(long[] list, int l, int r, int to) {
         SequenceUtils.reverse(list, l, r);
         SequenceUtils.reverse(list, l, to - 1);

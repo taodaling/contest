@@ -1,0 +1,165 @@
+{
+  "name" : "C - Fair Elevator",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3\n1 -1\n-1 4\n-1 6\n",
+    "output" : "Yes\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "2\n1 4\n2 3\n",
+    "output" : "No\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "2\n4 1\n2 4\n",
+    "output" : "No\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "3\n1 -1\n2 -1\n4 -1",
+    "output" : "No",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "3\n1 -1\n2 -1\n3 -1",
+    "output" : "Yes",
+    "index" : 4,
+    "active" : true
+  }, {
+    "input" : "3\n1 5\n2 -1\n-1 -1",
+    "output" : "No",
+    "index" : 5,
+    "active" : true
+  }, {
+    "input" : "3\n1 4\n-1 -1\n2 -1",
+    "output" : "Yes",
+    "index" : 6,
+    "active" : true
+  }, {
+    "input" : "3\n1 4\n-1 5\n3 -1",
+    "output" : "Yes",
+    "index" : 7,
+    "active" : true
+  }, {
+    "input" : "3\n1 3\n-1 4\n3 5",
+    "output" : "No",
+    "index" : 8,
+    "active" : true
+  }, {
+    "input" : "4\n1 2\n3 -1\n4 -1\n7 -1",
+    "output" : "Yes",
+    "index" : 9,
+    "active" : true
+  }, {
+    "input" : "1\n1 2",
+    "output" : "Yes",
+    "index" : 10,
+    "active" : true
+  }, {
+    "input" : "2\n1 4\n-1 -1",
+    "output" : "No",
+    "index" : 11,
+    "active" : true
+  }, {
+    "input" : "4\n-1 -1\n3 7\n-1 4\n5 -1\n\n",
+    "output" : "No",
+    "index" : 12,
+    "active" : true
+  }, {
+    "input" : "3\n1 5\n-1 -1\n-1 -1",
+    "output" : "No",
+    "index" : 13,
+    "active" : true
+  }, {
+    "input" : "3\n1 2 \n-1 -1\n3 5",
+    "output" : "Yes",
+    "index" : 14,
+    "active" : true
+  }, {
+    "input" : "3\n1 2 \n-1 -1\n3 6",
+    "output" : "No",
+    "index" : 15,
+    "active" : true
+  }, {
+    "input" : "3\n3 6\n-1 -1\n-1 -1\n",
+    "output" : "Yes",
+    "index" : 16,
+    "active" : true
+  }, {
+    "input" : "4\n-1 1\n-1 -1\n-1 -1\n-1 -1",
+    "output" : "No",
+    "index" : 17,
+    "active" : true
+  }, {
+    "input" : "1\n-1 -1",
+    "output" : "Yes",
+    "index" : 18,
+    "active" : true
+  }, {
+    "input" : "1\n-1 2",
+    "output" : "Yes",
+    "index" : 19,
+    "active" : true
+  }, {
+    "input" : "1\n1 -1",
+    "output" : "Yes",
+    "index" : 20,
+    "active" : true
+  }, {
+    "input" : "1\n-1 1",
+    "output" : "No",
+    "index" : 21,
+    "active" : true
+  }, {
+    "input" : "1\n2 1",
+    "output" : "No",
+    "index" : 22,
+    "active" : true
+  }, {
+    "input" : "1\n1 1",
+    "output" : "No",
+    "index" : 23,
+    "active" : true
+  }, {
+    "input" : "1\n1 2",
+    "output" : "Yes",
+    "index" : 24,
+    "active" : true
+  }, {
+    "input" : "5\n1 -1\n3 -1\n4 7\n-1 8\n-1 -1",
+    "output" : "Yes",
+    "index" : 25,
+    "active" : true
+  }, {
+    "input" : "2\n1 -1\n-1 2",
+    "output" : "No",
+    "index" : 26,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.CFairElevator",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.10.03",
+  "contestName" : "AtCoder - AtCoder Regular Contest 104",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "java.io.PrintWriter",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

@@ -2,7 +2,6 @@ package contest;
 
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.primitve.generated.graph.LongKMAlgo;
 
 public class AssignmentProblem {
     public void solve(int testNumber, FastInput in, FastOutput out) {

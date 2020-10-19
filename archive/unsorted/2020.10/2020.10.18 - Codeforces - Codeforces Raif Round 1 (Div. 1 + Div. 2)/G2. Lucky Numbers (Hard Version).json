@@ -1,0 +1,40 @@
+{
+  "name" : "G2. Lucky Numbers (Hard Version)",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3\n1 2 3 4 5 6\n2\n57\n63\n",
+    "output" : "11\n8\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "3\n1 2 3  4 5 6\n1\n9",
+    "output" : "3",
+    "index" : 1,
+    "active" : false
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.G2LuckyNumbersHardVersion",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.10.18",
+  "contestName" : "Codeforces - Codeforces Raif Round 1 (Div. 1 + Div. 2)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "java.io.PrintWriter",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

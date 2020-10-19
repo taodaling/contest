@@ -3,11 +3,9 @@
 
 #ifndef LOCAL
 
-#pragma GCC target("avx")
-#pragma GCC optimize(3)
-#pragma GCC optimize("Ofast")
-#pragma GCC target("sse4.2")
-#pragma GCC optimize("inline")
+#pragma GCC target ("avx2")
+#pragma GCC optimization ("O3")
+#pragma GCC optimization ("unroll-loops")
 
 #endif
 

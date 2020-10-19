@@ -1,50 +1,51 @@
 package platform.leetcode;
 
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class Solution {
-    public int connectTwoGroups(List<List<Integer>> cost) {
-        int n = cost.size();
-        int m = cost.get(0).size();
-        int[][] dp = new int[n + 1][1 << m];
-        int inf = (int) 1e9;
-        for (int i = 0; i <= n; i++) {
-            Arrays.fill(dp[i], inf);
+    public static void main(String[] arg){
+        new Solution().minimumOneBitOperations(16);
+    }
+
+    public int minimumOneBitOperations(int n) {
+        if (n == 0) {
+            return 0;
+        }
+        long[] cost = new long[40];
+        cost[0] = 1;
+        for (int i = 1; i < 40; i++) {
+            cost[i] = cost[i - 1] + 1 + cost[i - 1];
+        }
+
+        long inf = (long) 1e18;
+        long[][] dp = new long[40][2];
+        for (int i = 0; i < 40; i++) {
+            for (int j = 0; j < 2; j++) {
+                dp[i][j] = inf;
+            }
         }
         dp[0][0] = 0;
-        for (int i = 0; i < n; i++) {
-            List<Integer> prices = cost.get(i);
-            for (int j = 0; j < 1 << m; j++) {
-                for (int k = 0; k < m; k++) {
-                    int transfer = j | (1 << k);
-                    dp[i + 1][transfer] = Math.min(dp[i + 1][transfer], dp[i][j] + prices.get(k));
+        dp[0][1] = 1;
+        for (int i = 0; i < 40 - 1; i++) {
+            for (int j = 0; j < 2; j++) {
+                int bit = (n >>> i) & 1;
+                bit ^= j;
+                if (bit == 1) {
+                    dp[i + 1][1] = Math.min(dp[i + 1][1], dp[i][j] + 1 + cost[i]);
+                    dp[i + 1][0] = Math.min(dp[i + 1][0], dp[i][j] + cost[i]);
+                } else {
+                    dp[i + 1][1] = Math.min(dp[i + 1][1], dp[i][j] + cost[i + 1]);
+                    dp[i + 1][0] = Math.min(dp[i + 1][0], dp[i][j]);
                 }
-            }
-        }
-        int[] minCost = new int[1 << m];
-        Arrays.fill(minCost, inf);
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                minCost[j] = Math.min(minCost[j], cost.get(i).get(j));
-            }
-        }
 
-        int ans = inf;
-        for(int i = 0; i < 1 << m; i++){
-            int delta = (1 << m) - 1 - i;
-            int can = dp[n][i];
-            for(int j = 0; j < m; j++){
-                if((delta & (1 << j)) != 0){
-                    can += minCost[j];
-                }
-            }
-            ans = Math.min(ans, can);
-        }
 
-        return ans;
+            }
+        }
+        System.out.println(Arrays.deepToString(dp));
+
+        long ans = dp[39][0];
+        return (int) ans;
     }
 }
 

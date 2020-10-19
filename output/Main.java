@@ -2,7 +2,11 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.util.AbstractCollection;
+import java.util.PriorityQueue;
+import java.util.AbstractQueue;
 import java.io.IOException;
+import java.util.Comparator;
 import java.io.InputStream;
 
 /**
@@ -23,47 +27,45 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             PrintWriter out = new PrintWriter(outputStream);
-            BArraysSum solver = new BArraysSum();
-            int testCount = Integer.parseInt(in.next());
-            for (int i = 1; i <= testCount; i++)
-                solver.solve(i, in, out);
+            BBracketScore solver = new BBracketScore();
+            solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class BArraysSum {
+    static class BBracketScore {
         public void solve(int testNumber, FastInput in, PrintWriter out) {
             int n = in.readInt();
-            int k = in.readInt();
-            int[] a = new int[n];
+            long[] a = new long[n];
+            long[] b = new long[n];
             in.populate(a);
-            int delta = 1;
-            for (int i = 1; i < n; i++) {
-                if (a[i] != a[i - 1]) {
-                    delta++;
+            in.populate(b);
+            long sum = 0;
+            for (int i = 0; i < n; i++) {
+                a[i] -= b[i];
+                sum += b[i];
+            }
+            PriorityQueue<Long> x = new PriorityQueue<>(n, Comparator.reverseOrder());
+            PriorityQueue<Long> y = new PriorityQueue<>(n, Comparator.reverseOrder());
+            for (int i = 0; i < n; i++) {
+                if (i % 2 == 0) {
+                    x.add(a[i]);
+                } else {
+                    y.add(a[i]);
                 }
             }
-
-            if (k == 1 && delta > 1) {
-                out.println(-1);
-                return;
+            while (!x.isEmpty()) {
+                long xh = x.remove();
+                long yh = y.remove();
+                sum += Math.max(0, xh + yh);
             }
-
-            int ans = 1;
-            delta -= k;
-            while (delta > 0) {
-                delta -= k - 1;
-                ans++;
-            }
-
-            out.println(ans);
+            out.println(sum);
         }
 
     }
 
     static class FastInput {
         private final InputStream is;
-        private StringBuilder defaultStringBuf = new StringBuilder(1 << 13);
         private byte[] buf = new byte[1 << 13];
         private int bufLen;
         private int bufOffset;
@@ -73,9 +75,9 @@ public class Main {
             this.is = is;
         }
 
-        public void populate(int[] data) {
+        public void populate(long[] data) {
             for (int i = 0; i < data.length; i++) {
-                data[i] = readInt();
+                data[i] = readLong();
             }
         }
 
@@ -98,10 +100,6 @@ public class Main {
             while (next >= 0 && next <= 32) {
                 next = read();
             }
-        }
-
-        public String next() {
-            return readString();
         }
 
         public int readInt() {
@@ -129,20 +127,29 @@ public class Main {
             return val;
         }
 
-        public String readString(StringBuilder builder) {
-            skipBlank();
+        public long readLong() {
+            int sign = 1;
 
-            while (next > 32) {
-                builder.append((char) next);
+            skipBlank();
+            if (next == '+' || next == '-') {
+                sign = next == '+' ? 1 : -1;
                 next = read();
             }
 
-            return builder.toString();
-        }
+            long val = 0;
+            if (sign == 1) {
+                while (next >= '0' && next <= '9') {
+                    val = val * 10 + next - '0';
+                    next = read();
+                }
+            } else {
+                while (next >= '0' && next <= '9') {
+                    val = val * 10 - next + '0';
+                    next = read();
+                }
+            }
 
-        public String readString() {
-            defaultStringBuf.setLength(0);
-            return readString(defaultStringBuf);
+            return val;
         }
 
     }

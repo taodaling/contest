@@ -19,8 +19,15 @@ public class %TestCaseClass% {
         return tests;
     }
 
-    private void printLine(StringBuilder builder, Object...vals){
-        for(Object val : vals){
+    private void printLine(StringBuilder builder, int...vals){
+        for(int val : vals){
+            builder.append(val).append(' ');
+        }
+        builder.append('\n');
+    }
+
+    private void printLine(StringBuilder builder, long...vals){
+        for(long val : vals){
             builder.append(val).append(' ');
         }
         builder.append('\n');

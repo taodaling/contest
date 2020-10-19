@@ -1,0 +1,60 @@
+{
+  "name" : "B - Boxes",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5\n4 5 1 2 3\n",
+    "output" : "YES\n",
+    "index" : 0,
+    "active" : false
+  }, {
+    "input" : "5\n6 9 12 10 8\n",
+    "output" : "YES\n",
+    "index" : 1,
+    "active" : false
+  }, {
+    "input" : "4\n1 2 3 1\n",
+    "output" : "NO\n",
+    "index" : 2,
+    "active" : false
+  }, {
+    "input" : "2\n1 2",
+    "output" : "YES",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "2\n2 1",
+    "output" : "YES",
+    "index" : 4,
+    "active" : true
+  }, {
+    "input" : "3\n3 1 2",
+    "output" : "YES",
+    "index" : 5,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.BBoxes",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.10.16",
+  "contestName" : "AtCoder - AtCoder Grand Contest 010",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "java.io.PrintWriter",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}
