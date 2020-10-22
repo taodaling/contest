@@ -2,8 +2,6 @@ package on2020_10.on2020_10_17_Library_Checker.Range_Affine_Range_Sum;
 
 
 
-import template.datastructure.GenericSegment;
-import template.datastructure.SegTree;
 import template.io.FastInput;
 import template.math.DigitUtils;
 import template.primitve.generated.datastructure.IntToIntegerFunction;

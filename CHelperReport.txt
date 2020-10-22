@@ -1,2 +1,2 @@
-44 src/main/java/contest/B - Bracket Score.json
+52 src/main/java/contest/Problem G - Rainbow Graph.json
 0

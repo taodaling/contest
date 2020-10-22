@@ -22,7 +22,7 @@ public class FastOutput implements AutoCloseable, Closeable, Appendable {
         return this;
     }
 
-    private StringBuilder cache = new StringBuilder();
+    private StringBuilder cache = new StringBuilder(15 << 20);
     private final Writer os;
 
     public FastOutput(Writer os) {

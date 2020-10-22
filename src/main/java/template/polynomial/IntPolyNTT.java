@@ -24,6 +24,7 @@ public class IntPolyNTT extends IntPoly {
         if (Math.min(rA, rB) <= NTT_THRESHOLD) {
             return mulBF(a, b);
         }
+
         if (a != b) {
             a = PrimitiveBuffers.allocIntPow2(a, rA + rB + 1);
             b = PrimitiveBuffers.allocIntPow2(b, rA + rB + 1);

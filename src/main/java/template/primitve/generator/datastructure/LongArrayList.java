@@ -40,6 +40,11 @@ public class LongArrayList implements Cloneable {
         }
     }
 
+    public LongArrayList(long[] data) {
+        this(0);
+        addAll(data);
+    }
+
     public void addAll(LongIterator iterator) {
         while (iterator.hasNext()) {
             add(iterator.next());

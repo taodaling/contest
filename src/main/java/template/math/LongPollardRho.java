@@ -7,6 +7,9 @@ public class LongPollardRho {
     static long[] smallPrimes = new long[]{2, 3, 5, 7, 11, 13, 17, 19};
 
     public static long findFactor(long n) {
+        if (n == 1) {
+            return 1;
+        }
         if (LongMillerRabin.mr(n, 10)) {
             return n;
         }

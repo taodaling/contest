@@ -40,6 +40,11 @@ public class IntegerArrayList implements Cloneable {
         }
     }
 
+    public IntegerArrayList(int[] data) {
+        this(0);
+        addAll(data);
+    }
+
     public void addAll(IntegerIterator iterator) {
         while (iterator.hasNext()) {
             add(iterator.next());

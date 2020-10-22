@@ -3,9 +3,11 @@ package template;
 import org.junit.Assert;
 import org.junit.Test;
 import template.math.ModMatrix;
+import template.math.ModSparseMatrix;
 import template.math.Modular;
 import template.math.Power;
 import template.polynomial.ModGravityLagrangeInterpolation;
+import template.primitve.generated.datastructure.IntegerArrayList;
 
 public class ModMatrixTest {
     Modular mod = new Modular(1e9 + 7);
@@ -13,7 +15,8 @@ public class ModMatrixTest {
 
     @Test
     public void test1() {
-        ModMatrix m = new ModMatrix(new int[][]{{2, 1}, {1, 2}});
+        ModMatrix m = new ModMatrix(new int[]{2, 1,
+                1, 2}, 2);
         ModGravityLagrangeInterpolation.Polynomial p = m.getCharacteristicPolynomial(pow);
         Assert.assertEquals(2, p.getRank());
         Assert.assertEquals(3, p.getCoefficient(0));
@@ -23,7 +26,9 @@ public class ModMatrixTest {
 
     @Test
     public void test2() {
-        ModMatrix m = new ModMatrix(new int[][]{{1, 1, 0}, {1, 1, 1}, {0, 1, 1}});
+        ModMatrix m = new ModMatrix(new int[]{1, 1, 0,
+                1, 1, 1,
+                0, 1, 1}, 3);
         ModGravityLagrangeInterpolation.Polynomial p = m.getCharacteristicPolynomial(pow);
         Assert.assertEquals(3, p.getRank());
         Assert.assertEquals(1, p.getCoefficient(0));
@@ -63,13 +68,17 @@ public class ModMatrixTest {
         Modular mod = new Modular(1e9 + 7);
         Power pow = new Power(mod);
 
-        ModMatrix matrix = new ModMatrix(new int[][]{
-                {0, 0, 2},
-                {1, 2, 1},
-                {2, 2, 0}
-        });
+        ModMatrix matrix = new ModMatrix(new int[]{
+                0, 0, 2,
+                1, 2, 1,
+                2, 2, 0
+        }, 3);
 
         ModGravityLagrangeInterpolation.Polynomial p = matrix.getCharacteristicPolynomial(pow);
+        ModSparseMatrix x = new ModSparseMatrix(matrix);
+        IntegerArrayList list = x.getMinimalPolynomialByRandom(mod.getMod());
+
+
         ModMatrix mat = new ModMatrix(3, 3);
         mat.asStandard(mod.getMod());
         ModMatrix ans = new ModMatrix(3, 3);

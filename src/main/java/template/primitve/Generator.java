@@ -1,7 +1,5 @@
 package template.primitve;
 
-import template.io.FastInput;
-
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.ArrayList;

@@ -1,7 +1,6 @@
 package contest;
 
 import template.datastructure.GenericSegment;
-import template.datastructure.SegTree;
 import template.io.FastInput;
 import template.math.DigitUtils;
 import template.primitve.generated.datastructure.IntToIntegerFunction;

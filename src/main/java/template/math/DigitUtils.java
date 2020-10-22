@@ -1,6 +1,7 @@
 package template.math;
 
 public class DigitUtils {
+    private static LongExtGCDObject longExtGCDObject = new LongExtGCDObject();
 
     private DigitUtils() {
     }
@@ -300,5 +301,11 @@ public class DigitUtils {
 
     public static boolean equal(double a, double b) {
         return Math.abs(a - b) < 1e-10;
+    }
+
+    public static long modInverse(long x, long mod) {
+        assert longExtGCDObject.extgcd(x, mod) == 1;
+        long a = longExtGCDObject.getX();
+        return DigitUtils.mod(a, mod);
     }
 }

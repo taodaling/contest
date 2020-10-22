@@ -1,0 +1,35 @@
+{
+  "name" : "Dynamic Graph Vertex Add Component Sum",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5 16\n1 10 100 1000 10000\n0 0 1\n0 1 2\n0 2 3\n0 3 4\n0 0 4\n3 3\n1 1 2\n3 1\n1 3 4\n3 0\n2 1 100000\n3 1\n0 1 4\n3 2\n0 3 4\n3 0\n",
+    "output" : "11111\n11111\n10011\n110011\n1100\n111111\n",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_10.on2020_10_20_Library_Checker.Dynamic_Graph_Vertex_Add_Component_Sum.DynamicGraphVertexAddComponentSum",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.10.20",
+  "contestName" : "Library Checker",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "java.io.PrintWriter",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

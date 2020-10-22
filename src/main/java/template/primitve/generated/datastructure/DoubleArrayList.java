@@ -40,6 +40,11 @@ public class DoubleArrayList implements Cloneable {
         }
     }
 
+    public DoubleArrayList(double[] data) {
+        this(0);
+        addAll(data);
+    }
+
     public void addAll(DoubleIterator iterator) {
         while (iterator.hasNext()) {
             add(iterator.next());

@@ -3,8 +3,11 @@ package template.datastructure;
 import template.math.DigitUtils;
 import template.primitve.generated.datastructure.IntToLongFunction;
 
+/**
+ * upper-bound convex hull, query O(\log_2n), update O((\log_2n)^2)
+ */
 public class LongLiChaoSegment {
-    static final long INF = Long.MAX_VALUE / 2;
+    public static final long INF = Long.MAX_VALUE / 2;
 
     public static class Line {
         public long a;
@@ -84,12 +87,12 @@ public class LongLiChaoSegment {
             long mid = func.apply(m);
             if (mid >= intersect) {
                 this.line = line2;
-                if(left != null) {
+                if (left != null) {
                     left.update(ll, rr, l, m, line1, func);
                 }
             } else {
                 this.line = line1;
-                if(right != null) {
+                if (right != null) {
                     right.update(ll, rr, m + 1, r, line2, func);
                 }
             }

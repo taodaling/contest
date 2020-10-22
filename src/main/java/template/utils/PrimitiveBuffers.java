@@ -8,12 +8,12 @@ public class PrimitiveBuffers {
     public static Buffer<int[]>[] intPow2Bufs = new Buffer[30];
     public static Buffer<double[]>[] doublePow2Bufs = new Buffer[30];
 
-    public static void check(){
-        for(int i = 0; i < 30; i++){
+    public static void check() {
+        for (int i = 0; i < 30; i++) {
             try {
                 intPow2Bufs[i].check();
                 doublePow2Bufs[i].check();
-            }catch (IllegalStateException e){
+            } catch (IllegalStateException e) {
                 throw new IllegalArgumentException("Alloc more element of size " + i, e);
             }
         }
@@ -67,6 +67,18 @@ public class PrimitiveBuffers {
 
     public static void release(int[] data) {
         intPow2Bufs[Log2.ceilLog(data.length)].release(data);
+    }
+
+    public static void release(int[] a, int[] b) {
+        release(a);
+        release(b);
+    }
+
+
+    public static void release(int[] a, int[] b, int[] c) {
+        release(a);
+        release(b);
+        release(c);
     }
 
     public static double[] allocDoublePow2(int n) {
@@ -132,6 +144,19 @@ public class PrimitiveBuffers {
         for (int[] x : b) {
             release(x);
         }
+        return a;
+    }
+
+    public static int[] replace(int[] a, int[] b0, int[] b1) {
+        release(b0);
+        release(b1);
+        return a;
+    }
+
+    public static int[] replace(int[] a, int[] b0, int[] b1, int[] b2) {
+        release(b0);
+        release(b1);
+        release(b2);
         return a;
     }
 

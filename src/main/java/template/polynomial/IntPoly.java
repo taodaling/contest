@@ -3,11 +3,12 @@ package template.polynomial;
 import template.binary.Log2;
 import template.datastructure.BitSet;
 import template.math.CachedPow;
-import template.math.Combination;
 import template.math.DigitUtils;
 import template.math.Power;
 import template.utils.PrimitiveBuffers;
 import template.utils.SequenceUtils;
+
+import java.util.PrimitiveIterator;
 
 public class IntPoly {
     protected int mod;
@@ -261,12 +262,12 @@ public class IntPoly {
     }
 
     /**
-     * 多项式多点插值 O(p\log p+x(\log x)^2)
+     * 多项式多点插值 O(p\log p+m(lg m)^2)
      */
-    public void multiApply(int[] p, int[] x, int[] y) {
+    public void multiApply(int[] p, int[] x, int[] y, int n) {
         int l = 0;
-        int r = x.length - 1;
-        PolynomialEvalTree tree = build(x, l, r);
+        int r = n - 1;
+        PolynomialTree tree = build(x, l, r);
         multiApply(p, x, y, l, r, tree);
         releaseTree(tree, l, r);
     }
@@ -281,8 +282,10 @@ public class IntPoly {
     }
 
 
-    protected void multiApply(int[] p, int[] x, int[] y, int l, int r, PolynomialEvalTree tree) {
-        if (r - l + 1 <= 4) {
+    private static final int MULTI_APPLY_THRESHOLD = 128;
+
+    protected void multiApply(int[] p, int[] x, int[] y, int l, int r, PolynomialTree tree) {
+        if (r - l + 1 <= MULTI_APPLY_THRESHOLD) {
             for (int i = l; i <= r; i++) {
                 y[i] = apply(p, x[i]);
             }
@@ -298,8 +301,8 @@ public class IntPoly {
         PrimitiveBuffers.release(remainder);
     }
 
-    protected PolynomialEvalTree build(int[] x, int l, int r) {
-        PolynomialEvalTree tree = new PolynomialEvalTree();
+    protected PolynomialTree build(int[] x, int l, int r) {
+        PolynomialTree tree = new PolynomialTree();
         if (l == r) {
             tree.p = PrimitiveBuffers.allocIntPow2(2);
             tree.p[0] = DigitUtils.negate(x[l], mod);
@@ -313,7 +316,7 @@ public class IntPoly {
         return tree;
     }
 
-    protected void releaseTree(PolynomialEvalTree tree, int l, int r) {
+    protected void releaseTree(PolynomialTree tree, int l, int r) {
         PrimitiveBuffers.release(tree.p);
         if (l == r) {
             return;
@@ -355,10 +358,10 @@ public class IntPoly {
     }
 
 
-    protected static class PolynomialEvalTree {
+    protected static class PolynomialTree {
         public int[] p;
-        public PolynomialEvalTree left;
-        public PolynomialEvalTree right;
+        public PolynomialTree left;
+        public PolynomialTree right;
     }
 
     protected int[] dacMul(int[][] lists, int l, int r) {
@@ -544,4 +547,51 @@ public class IntPoly {
         PrimitiveBuffers.release(dc);
     }
 
+
+    /**
+     * O(n (lg n)^2) to got a rank n-1 polynomial f while f(xi)=yi
+     */
+    public int[] interpolate(int[] x, int[] y, int n) {
+        PolynomialTree tree = build(x, 0, n - 1);
+        int[] diffM = differential(tree.p);
+        int[] v = PrimitiveBuffers.allocIntPow2(n);
+        multiApply(diffM, x, v, 0, n - 1, tree);
+        for (int i = 0; i < n; i++) {
+            v[i] = (int) ((long) y[i] * power.inverse(v[i]) % mod);
+        }
+        int[] ans = interpolate0(v, 0, n - 1, tree);
+        releaseTree(tree, 0, n - 1);
+        return ans;
+    }
+
+    private int[] interpolate0(int[] v, int l, int r, PolynomialTree tree) {
+        if (l == r) {
+            int[] ans = PrimitiveBuffers.allocIntPow2(1);
+            ans[0] = v[l];
+            return ans;
+        }
+        int m = DigitUtils.floorAverage(l, r);
+        int[] f0 = interpolate0(v, l, m, tree.left);
+        int[] f1 = interpolate0(v, m + 1, r, tree.right);
+        int[] a = PrimitiveBuffers.replace(convolution(f0, tree.right.p), f0);
+        int[] b = PrimitiveBuffers.replace(convolution(f1, tree.left.p), f1);
+        int[] sum = PrimitiveBuffers.replace(plus(a, b), a, b);
+        return sum;
+    }
+
+    /**
+     * Get (x - c[l]) * ... * (x - c[r]) in O(n(lg n)^2)
+     */
+    public int[] dacPointMul(int[] c, int l, int r) {
+        if (l == r) {
+            int[] ans = PrimitiveBuffers.allocIntPow2(2);
+            ans[1] = 1;
+            ans[0] = DigitUtils.negate(c[l], mod);
+            return ans;
+        }
+        int m = DigitUtils.floorAverage(l, r);
+        int[] a = dacPointMul(c, l, m);
+        int[] b = dacPointMul(c, m + 1, r);
+        return PrimitiveBuffers.replace(convolution(a, b), a, b);
+    }
 }

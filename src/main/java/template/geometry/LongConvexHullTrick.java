@@ -40,6 +40,7 @@ public class LongConvexHullTrick implements Iterable<LongConvexHullTrick.Line> {
 
     //y.a > x.a
     private long intersect(Line x, Line y) {
+        assert y.a > x.a;
         return DigitUtils.ceilDiv(x.b - y.b, y.a - x.a);
     }
 
@@ -88,7 +89,8 @@ public class LongConvexHullTrick implements Iterable<LongConvexHullTrick.Line> {
                 removeLine(floor);
                 continue;
             }
-            floor.r = r;
+
+            floor.r = Math.min(floor.r, r);
             line.l = r;
             break;
         }
@@ -104,7 +106,7 @@ public class LongConvexHullTrick implements Iterable<LongConvexHullTrick.Line> {
                 removeLine(ceil);
                 continue;
             }
-            ceil.l = r;
+            ceil.l = Math.max(ceil.l, r);
             line.r = r;
             break;
         }

@@ -1,5 +1,6 @@
 package template.math;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -12,6 +13,9 @@ public class PollardRho {
     Random random = new Random(1);
 
     public int findFactor(int n) {
+        if (n == 1) {
+            return n;
+        }
         if (mr.mr(n, 5)) {
             return n;
         }
@@ -24,6 +28,9 @@ public class PollardRho {
     }
 
     public int findPrimeFactor(int n) {
+        if (n == 1) {
+            return n;
+        }
         int ans = findFactor(n);
         return ans == n ? ans : findPrimeFactor(ans);
     }
@@ -35,15 +42,15 @@ public class PollardRho {
      * pk => pk^ck
      */
     public Map<Integer, Integer> findAllFactors(int n) {
+        if (n == 1) {
+            return Collections.emptyMap();
+        }
         Map<Integer, Integer> map = new HashMap<>();
         findAllFactors(map, n);
         return map;
     }
 
     private void findAllFactors(Map<Integer, Integer> map, int n) {
-        if (n == 1) {
-            return;
-        }
         int f = findFactor(n);
         if (f == n) {
             Integer value = map.get(f);
@@ -58,6 +65,9 @@ public class PollardRho {
     }
 
     private int rho(int n) {
+        if (n == 1) {
+            return 1;
+        }
         if (n % 2 == 0) {
             return 2;
         }

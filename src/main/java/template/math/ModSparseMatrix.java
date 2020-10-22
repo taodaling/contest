@@ -16,11 +16,12 @@ public class ModSparseMatrix {
     }
 
     public ModSparseMatrix(ModMatrix mat) {
-        this.n = mat.n;
+        assert mat.square();
+        this.n = mat.m;
         int m = 0;
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                if (mat.mat[i][j] > 0) {
+                if (mat.mat[i * n + j] > 0) {
                     m++;
                 }
             }
@@ -31,10 +32,10 @@ public class ModSparseMatrix {
         int cur = 0;
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                if (mat.mat[i][j] > 0) {
+                if (mat.mat[i * n + j] > 0) {
                     x[cur] = i;
                     y[cur] = j;
-                    elements[cur] = mat.mat[i][j];
+                    elements[cur] = mat.mat[i * n + j];
                     cur++;
                 }
             }

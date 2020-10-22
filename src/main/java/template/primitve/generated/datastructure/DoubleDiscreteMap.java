@@ -10,19 +10,19 @@ public class DoubleDiscreteMap {
     int t;
 
     public DoubleDiscreteMap(double[] val, int f, int t) {
-            Randomized.shuffle(val, f, t);
-            Arrays.sort(val, f, t);
-            int wpos = f + 1;
-            for (int i = f + 1; i < t; i++) {
-                if (val[i] == val[i - 1]) {
-                    continue;
-                }
-                val[wpos++] = val[i];
+        Randomized.shuffle(val, f, t);
+        Arrays.sort(val, f, t);
+        int wpos = f + 1;
+        for (int i = f + 1; i < t; i++) {
+            if (val[i] == val[i - 1]) {
+                continue;
             }
-            this.val = val;
-            this.f = f;
-            this.t = wpos;
+            val[wpos++] = val[i];
         }
+        this.val = val;
+        this.f = f;
+        this.t = wpos;
+    }
 
     /**
      * Return 0, 1, so on
@@ -69,4 +69,11 @@ public class DoubleDiscreteMap {
         return Arrays.toString(Arrays.copyOfRange(val, f, t));
     }
 
+    public static void discrete(double[] data) {
+        DoubleArrayList list = new DoubleArrayList(data);
+        list.unique();
+        for (int i = 0; i < data.length; i++) {
+            data[i] = list.binarySearch(data[i]);
+        }
+    }
 }

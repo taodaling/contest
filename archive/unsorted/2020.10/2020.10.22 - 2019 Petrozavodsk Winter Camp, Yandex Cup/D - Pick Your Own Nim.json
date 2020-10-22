@@ -1,0 +1,35 @@
+{
+  "name" : "D - Pick Your Own Nim",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2 \n7 52 \n2 \n2 16 50 \n1 35 ",
+    "output" : "1",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx512M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.TaskD",
+  "checkerClass" : "contest.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "contest.TaskDTestCase" ],
+  "date" : "2020.10.22",
+  "contestName" : "2019 Petrozavodsk Winter Camp, Yandex Cup",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "java.io.PrintWriter",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

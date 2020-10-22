@@ -95,6 +95,7 @@ public class ConvexHullTrick implements Iterable<ConvexHullTrick.Line> {
 
     public Line insert(double a, double b) {
         Line line = new Line(a, b);
+
         while (true) {
             Line floor = setSortedByA.floor(line);
             if (floor == null) {
@@ -115,7 +116,8 @@ public class ConvexHullTrick implements Iterable<ConvexHullTrick.Line> {
                 removeLine(floor);
                 continue;
             }
-            floor.r = r;
+
+            floor.r = Math.min(floor.r, r);
             line.l = r;
             break;
         }
@@ -131,7 +133,7 @@ public class ConvexHullTrick implements Iterable<ConvexHullTrick.Line> {
                 removeLine(ceil);
                 continue;
             }
-            ceil.l = r;
+            ceil.l = Math.max(ceil.l, r);
             line.r = r;
             break;
         }

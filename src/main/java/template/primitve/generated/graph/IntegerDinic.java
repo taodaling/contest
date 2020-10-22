@@ -13,7 +13,7 @@ public class IntegerDinic implements IntegerMaximumFlow {
     int t;
     IntegerDeque deque;
     int[] dists;
-    ListIterator<IntegerFlowEdge>[] iterators;
+    int[] iterators;
 
     public IntegerDinic() {
     }
@@ -24,7 +24,7 @@ public class IntegerDinic implements IntegerMaximumFlow {
         }
         deque = new IntegerDequeImpl(vertexNum);
         dists = new int[vertexNum];
-        iterators = new ListIterator[vertexNum];
+        iterators = new int[vertexNum];
     }
 
     public int send(int root, int flow) {
@@ -32,19 +32,17 @@ public class IntegerDinic implements IntegerMaximumFlow {
             return flow;
         }
         int snapshot = flow;
-        while (iterators[root].hasNext()) {
-            IntegerFlowEdge e = iterators[root].next();
-            int remain;
-            if (dists[e.to] + 1 != dists[root] || (remain = e.rev.flow) == 0) {
-                continue;
+        while (iterators[root] >= 0 && flow > 0) {
+            IntegerFlowEdge e = g[root].get(iterators[root]);
+            if (dists[e.to] + 1 == dists[root] && e.rev.flow != 0) {
+                int sent = send(e.to, Math.min(flow, e.rev.flow));
+                if (sent > 0) {
+                    flow -= sent;
+                    IntegerFlow.send(e, sent);
+                    continue;
+                }
             }
-            int sent = send(e.to, Math.min(flow, remain));
-            flow -= sent;
-            IntegerFlow.send(e, sent);
-            if (flow == 0) {
-                iterators[root].previous();
-                break;
-            }
+            iterators[root]--;
         }
         return snapshot - flow;
     }
@@ -62,7 +60,7 @@ public class IntegerDinic implements IntegerMaximumFlow {
                 break;
             }
             for (int i = 0; i < g.length; i++) {
-                iterators[i] = g[i].listIterator();
+                iterators[i] = g[i].size() - 1;
             }
             flow += send(s, send - flow);
         }

@@ -1,0 +1,50 @@
+{
+  "name" : "Problem G - Rainbow Graph",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5 8\n1 5 1 R\n2 1 2 R\n5 4 5 R\n4 5 3 G\n1 3 3 G\n4 3 5 G\n5 4 1 B\n1 2 2 B\n",
+    "output" : "-1\n-1\n-1\n-1\n15\n14\n17\n22\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "3 3\n1 2 1 G\n1 3 10 G\n2 3 5 G",
+    "output" : "-1\n6\n16",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "3 3\n1 2 1 G\n1 3 10 G\n2 3 5 R",
+    "output" : "-1\n11\n16",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "3 4\n1 2 2 R\n1 3 1 R\n2 3 9 B\n1 3 10 B",
+    "output" : "-1\n-1\n-1\n22",
+    "index" : 3,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.ProblemGRainbowGraph",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.10.22",
+  "contestName" : "Kattis - NAIPC 2018",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "java.io.PrintWriter",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

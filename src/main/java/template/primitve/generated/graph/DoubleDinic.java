@@ -13,7 +13,7 @@ public class DoubleDinic implements DoubleMaximumFlow {
     int t;
     IntegerDeque deque;
     int[] dists;
-    ListIterator<DoubleFlowEdge>[] iterators;
+    int[] iterators;
 
     public DoubleDinic() {
     }
@@ -24,7 +24,7 @@ public class DoubleDinic implements DoubleMaximumFlow {
         }
         deque = new IntegerDequeImpl(vertexNum);
         dists = new int[vertexNum];
-        iterators = new ListIterator[vertexNum];
+        iterators = new int[vertexNum];
     }
 
     public double send(int root, double flow) {
@@ -32,19 +32,17 @@ public class DoubleDinic implements DoubleMaximumFlow {
             return flow;
         }
         double snapshot = flow;
-        while (iterators[root].hasNext()) {
-            DoubleFlowEdge e = iterators[root].next();
-            double remain;
-            if (dists[e.to] + 1 != dists[root] || (remain = e.rev.flow) == 0) {
-                continue;
+        while (iterators[root] >= 0 && flow > 0) {
+            DoubleFlowEdge e = g[root].get(iterators[root]);
+            if (dists[e.to] + 1 == dists[root] && e.rev.flow != 0) {
+                double sent = send(e.to, Math.min(flow, e.rev.flow));
+                if (sent > 0) {
+                    flow -= sent;
+                    DoubleFlow.send(e, sent);
+                    continue;
+                }
             }
-            double sent = send(e.to, Math.min(flow, remain));
-            flow -= sent;
-            DoubleFlow.send(e, sent);
-            if (flow == 0) {
-                iterators[root].previous();
-                break;
-            }
+            iterators[root]--;
         }
         return snapshot - flow;
     }
@@ -62,7 +60,7 @@ public class DoubleDinic implements DoubleMaximumFlow {
                 break;
             }
             for (int i = 0; i < g.length; i++) {
-                iterators[i] = g[i].listIterator();
+                iterators[i] = g[i].size() - 1;
             }
             flow += send(s, send - flow);
         }

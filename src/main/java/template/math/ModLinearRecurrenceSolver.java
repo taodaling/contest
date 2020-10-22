@@ -15,6 +15,11 @@ public class ModLinearRecurrenceSolver {
     IntPoly poly;
     IntegerArrayList coe;
 
+    public IntegerArrayList getCoe() {
+        return coe;
+    }
+
+
     private ModLinearRecurrenceSolver(IntegerArrayList coe, int mod, IntPoly poly) {
         this.coe = coe;
         this.mod = mod;

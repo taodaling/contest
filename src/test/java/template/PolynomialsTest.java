@@ -24,7 +24,7 @@ public class PolynomialsTest {
     }
 
     public IntPoly getPoly() {
-        return new IntPolyMTT(getMod().getMod());
+        return new IntPolyNTT(getMod().getMod());
     }
 
     public boolean equal(int[] a, int[] b) {
@@ -46,6 +46,7 @@ public class PolynomialsTest {
     public void afterTest() {
         PrimitiveBuffers.check();
     }
+
 
     @Test
     public void test() {
@@ -158,12 +159,11 @@ public class PolynomialsTest {
 
     @Test
     public void test8() {
-        int m = 3;
+        int m = 2;
         int[] p = new int[1 << m];
         p[1] = 1;
 
         int[] clone = p.clone();
-        Modular mod = new Modular(998244353);
         NumberTheoryTransform.ntt(p, false, getMod().getMod(), 3, new Power(getMod().getMod()));
         NumberTheoryTransform.ntt(p, true, getMod().getMod(), 3, new Power(getMod().getMod()));
 
@@ -195,6 +195,23 @@ public class PolynomialsTest {
     }
 
     @Test
+    public void testInv() {
+        int[] p = new int[]{1, 0};
+        int[] inv = getPoly().inverse(p, 2);
+        int[] c = getPoly().modmul(p, inv, 2);
+        Assert.assertTrue(equal(SequenceUtils.wrapArray(1), c));
+        PrimitiveBuffers.release(inv);
+        PrimitiveBuffers.release(c);
+    }
+
+    @Test
+    public void test14() {
+        int[] p = new int[]{1, 2, 3, 4, 5, 6, 7, 8};
+        int[] inv = getPoly().inverse(p, 8);
+        PrimitiveBuffers.release(inv);
+    }
+
+    @Test
     public void convolution() {
         int[] a = new int[]{0, 1};
         int[] b = new int[]{2, 3};
@@ -212,7 +229,7 @@ public class PolynomialsTest {
         int[] x = new int[]{1, 2, 3, 4, 5, 6, 7, 8};
         int[] y = new int[8];
 
-        getPoly().multiApply(p, x, y);
+        getPoly().multiApply(p, x, y, 8);
         for (int i = 0; i < 8; i++) {
             Assert.assertEquals(getPoly().apply(p, x[i]), y[i]);
         }

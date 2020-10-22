@@ -1,37 +1,45 @@
 package template.rand;
 
+import template.math.DigitUtils;
 import template.primitve.generated.datastructure.IntegerDequeImpl;
 
 public class RollingHash {
-    HashData hd;
+    HashData hd1;
+    HashData hd2;
     IntegerDequeImpl dq;
-    int h;
+    int h1;
+    int h2;
 
-    public RollingHash(HashData hd) {
-        this.hd = hd;
-        dq = new IntegerDequeImpl(hd.pow.length);
+    public RollingHash(HashData hd1, HashData hd2, int n) {
+        this.hd1 = hd1;
+        this.hd2 = hd2;
+        dq = new IntegerDequeImpl(n + 10);
     }
 
     public void reset() {
-        h = 0;
+        h1 = h2 = 0;
         dq.clear();
     }
 
     public void addLast(int x) {
-        h = hd.modular.plus(h, (long) hd.pow[dq.size()] * x);
+        h1 = DigitUtils.mod((h1 + (long) hd1.pow[dq.size()] * x), hd1.mod);
+        h2 = DigitUtils.mod((h2 + (long) hd2.pow[dq.size()] * x), hd2.mod);
         dq.addLast(x);
     }
 
     public void removeFirst() {
-        h = hd.modular.subtract(h, dq.removeFirst());
-        h = hd.modular.mul(h, hd.inv[1]);
+        int x = dq.removeFirst();
+        h1 = DigitUtils.mod((long) (h1 - x) * hd1.inv[1], hd1.mod);
+        h2 = DigitUtils.mod((long) (h2 - x) * hd2.inv[1], hd2.mod);
     }
 
-    public int hash(boolean verbose) {
-        int ans = h;
-        if (verbose) {
-            ans = hd.modular.plus(ans, hd.pow[dq.size()]);
-        }
-        return ans;
+    public long hash() {
+        return DigitUtils.asLong(h1, h2);
+    }
+
+    public long hashV() {
+        int ans1 = DigitUtils.modplus(h1, hd1.pow[dq.size() + 1], hd1.mod);
+        int ans2 = DigitUtils.modplus(h2, hd2.pow[dq.size() + 1], hd2.mod);
+        return DigitUtils.asLong(ans1, ans2);
     }
 }
