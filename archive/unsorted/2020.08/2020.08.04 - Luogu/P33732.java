@@ -1,6 +1,5 @@
 package contest;
 
-import template.datastructure.GenericSegment;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.utils.Debug;

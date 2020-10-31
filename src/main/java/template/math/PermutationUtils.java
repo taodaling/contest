@@ -18,7 +18,7 @@ public class PermutationUtils {
     }
 
     /**
-     * find next permutation
+     * find next permutation (strict increasing order)
      */
     public static boolean nextPermutation(int[] p) {
         for (int a = p.length - 2; a >= 0; --a) {

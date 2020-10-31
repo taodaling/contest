@@ -1,0 +1,40 @@
+{
+  "name" : "F - Yakiniku Optimization Problem",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4 3\n-1 0 3\n0 0 3\n1 0 2\n1 1 40\n",
+    "output" : "2.4\n",
+    "index" : 0,
+    "active" : false
+  }, {
+    "input" : "10 5\n-879 981 26\n890 -406 81\n512 859 97\n362 -955 25\n128 553 17\n-885 763 2\n449 310 57\n-656 -204 11\n-270 76 40\n184 170 16\n",
+    "output" : "7411.2252\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.FYakinikuOptimizationProblem",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.10.26",
+  "contestName" : "AtCoder - AtCoder Beginner Contest 157",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

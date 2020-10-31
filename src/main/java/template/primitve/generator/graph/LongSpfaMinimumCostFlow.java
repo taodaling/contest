@@ -6,18 +6,29 @@ import template.primitve.generated.datastructure.IntegerDequeImpl;
 
 import java.util.List;
 
-public class LongSpfaMinimumCostFlow implements LongMinimumCostFlow {
+public class LongSpfaMinimumCostFlow implements LongMinimumCostFlow, LongAugmentMinimumCostFlow {
     IntegerDeque deque;
     long[] dists;
     boolean[] inque;
     LongCostFlowEdge[] prev;
     List<LongCostFlowEdge>[] net;
+    LongAugmentCallback callback = LongAugmentCallback.NIL;
 
-    public LongSpfaMinimumCostFlow(int vertexNum) {
-        deque = new IntegerDequeImpl(vertexNum);
-        dists = new long[vertexNum];
-        inque = new boolean[vertexNum];
-        prev = new LongCostFlowEdge[vertexNum];
+    @Override
+    public void setCallback(LongAugmentCallback callback) {
+        this.callback = callback == null ? LongAugmentCallback.NIL : callback;
+    }
+
+    public LongSpfaMinimumCostFlow() {
+    }
+
+    private void prepare(int vertexNum) {
+        if (dists == null || dists.length < vertexNum) {
+            deque = new IntegerDequeImpl(vertexNum);
+            dists = new long[vertexNum];
+            inque = new boolean[vertexNum];
+            prev = new LongCostFlowEdge[vertexNum];
+        }
     }
 
     private void spfa(int s, long inf) {
@@ -50,6 +61,7 @@ public class LongSpfaMinimumCostFlow implements LongMinimumCostFlow {
 
     @Override
     public long[] apply(List<LongCostFlowEdge>[] net, int s, int t, long send) {
+        prepare(net.length);
         long cost = 0;
         long flow = 0;
         this.net = net;
@@ -63,6 +75,9 @@ public class LongSpfaMinimumCostFlow implements LongMinimumCostFlow {
             while (prev[iter] != null) {
                 sent = Math.min(sent, prev[iter].flow);
                 iter = prev[iter].rev.to;
+            }
+            if (!callback.callback(sent, dists[s])) {
+                break;
             }
             iter = s;
             while (prev[iter] != null) {

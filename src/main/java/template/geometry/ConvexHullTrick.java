@@ -1,7 +1,9 @@
 package template.geometry;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
 import java.util.TreeSet;
 
 /**
@@ -12,10 +14,10 @@ public class ConvexHullTrick implements Iterable<ConvexHullTrick.Line> {
 
     public static class Line {
         // y = ax + b
-        double a;
-        double b;
-        double l;
-        double r;
+        public double a;
+        public double b;
+        public double l;
+        public double r;
 
         static Comparator<Line> orderByA = new Comparator<Line>() {
             @Override
@@ -63,19 +65,20 @@ public class ConvexHullTrick implements Iterable<ConvexHullTrick.Line> {
     private TreeSet<Line> setSortedByA = new TreeSet<>(Line.orderByA);
     private TreeSet<Line> setSortedByL = new TreeSet<>(Line.orderByLx);
 
-    private Line queryLine = new Line(0, 0);
-
     public boolean isEmpty() {
         return setSortedByA.isEmpty();
     }
 
+
     public double query(double x) {
-        if (setSortedByL.isEmpty()) {
-            return -INF;
-        }
-        queryLine.l = x;
-        Line line = setSortedByL.floor(queryLine);
-        return line.y(x);
+        return queryLine(x).y(x);
+    }
+
+    private Line qBody = new Line(0, 0);
+
+    public Line queryLine(double x) {
+        qBody.l = x;
+        return setSortedByL.floor(qBody);
     }
 
     //y.a > x.a
@@ -166,6 +169,24 @@ public class ConvexHullTrick implements Iterable<ConvexHullTrick.Line> {
         setSortedByL.clear();
     }
 
+    public static ConvexHullTrick plus(ConvexHullTrick a, ConvexHullTrick b) {
+        ConvexHullTrick ans = new ConvexHullTrick();
+        List<Line> al = new ArrayList<>(a.setSortedByA);
+        List<Line> bl = new ArrayList<>(b.setSortedByA);
+        int ai = 0;
+        int bi = 0;
+        while (ai < al.size() && bi < bl.size()) {
+            Line x = al.get(ai);
+            Line y = bl.get(bi);
+            ans.insert(x.a + y.a, x.b + y.b);
+            if (x.r <= y.r) {
+                ai++;
+            } else {
+                bi++;
+            }
+        }
+        return ans;
+    }
 
     @Override
     public String toString() {

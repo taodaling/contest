@@ -31,7 +31,7 @@ public class DominatorTree {
     public DominatorTree(List<? extends DirectedEdge>[] g, int root) {
         this.root = root;
         this.g = g;
-        this.span = Graph.createDirectedGraph(g.length);
+        this.span = Graph.createGraph(g.length);
         sdom = new int[g.length];
         idom = new int[g.length];
         Arrays.fill(idom, -1);
@@ -78,7 +78,7 @@ public class DominatorTree {
 
     public List<DirectedEdge>[] getTree() {
         if (tree == null) {
-            tree = Graph.createDirectedGraph(g.length);
+            tree = Graph.createGraph(g.length);
             for (int i = 0; i < g.length; i++) {
                 int p = idom[i];
                 if (p == -1) {

@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class ModPrimeRootTest {
-    Modular mod = new Modular(998244353);
+    int mod = 998244353;
 
     @Test
     public void test1() {

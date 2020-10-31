@@ -2,8 +2,10 @@ package template.geometry;
 
 import template.math.DigitUtils;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
 import java.util.TreeSet;
 
 /**
@@ -13,10 +15,10 @@ public class LongConvexHullTrick implements Iterable<LongConvexHullTrick.Line> {
     static final long INF = Long.MAX_VALUE / 2;
 
     public static class Line {
-        long a;
-        long b;
-        long l;
-        long r;
+        public long a;
+        public long b;
+        public long l;
+        public long r;
 
         public Line(long a, long b) {
             this.a = a;
@@ -32,6 +34,11 @@ public class LongConvexHullTrick implements Iterable<LongConvexHullTrick.Line> {
 
         public boolean isEmpty() {
             return r <= l;
+        }
+
+        @Override
+        public String toString() {
+            return String.format("%dx+%d", a, b);
         }
     }
 
@@ -134,6 +141,25 @@ public class LongConvexHullTrick implements Iterable<LongConvexHullTrick.Line> {
         return b;
     }
 
+    public static LongConvexHullTrick plus(LongConvexHullTrick a, LongConvexHullTrick b) {
+        LongConvexHullTrick ans = new LongConvexHullTrick();
+        List<Line> al = new ArrayList<>(a.setSortedByA);
+        List<Line> bl = new ArrayList<>(b.setSortedByA);
+        int ai = 0;
+        int bi = 0;
+        while (ai < al.size() && bi < bl.size()) {
+            Line x = al.get(ai);
+            Line y = bl.get(bi);
+            ans.insert(x.a + y.a, x.b + y.b);
+            if (x.r <= y.r) {
+                ai++;
+            } else {
+                bi++;
+            }
+        }
+        return ans;
+    }
+
     public boolean isEmpty() {
         return setSortedByA.isEmpty();
     }
@@ -141,5 +167,14 @@ public class LongConvexHullTrick implements Iterable<LongConvexHullTrick.Line> {
     @Override
     public Iterator<Line> iterator() {
         return setSortedByA.iterator();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        for (Line line : this) {
+            builder.append(line).append('\n');
+        }
+        return builder.toString();
     }
 }

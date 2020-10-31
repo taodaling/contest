@@ -120,8 +120,8 @@ public class ACAutomaton {
 
     public static class Node {
         public Node[] next;
-        Node fail;
-        Node father;
+        public Node fail;
+        public Node father;
         int index;
         public int id;
         int cnt;

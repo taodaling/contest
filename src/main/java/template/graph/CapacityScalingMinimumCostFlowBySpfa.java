@@ -5,6 +5,7 @@ import template.primitve.generated.datastructure.IntegerDeque;
 import template.primitve.generated.datastructure.IntegerDequeImpl;
 import template.primitve.generated.graph.LongCostFlowEdge;
 import template.primitve.generated.graph.LongFlow;
+import template.primitve.generated.graph.LongFlowEdge;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,7 +37,7 @@ public class CapacityScalingMinimumCostFlowBySpfa {
         dq = new IntegerDequeImpl(n);
     }
 
-    private long flow(LongCostFlowEdge e, int shift) {
+    private long flow(LongFlowEdge e, int shift) {
         return e.flow >> shift;
     }
 
@@ -82,14 +83,14 @@ public class CapacityScalingMinimumCostFlowBySpfa {
         long maxCapacity = 0;
         for (List<LongCostFlowEdge> list : g) {
             for (LongCostFlowEdge e : list) {
-                if (!e.real) {
-                    continue;
-                }
+//                if (!e.real) {
+//                    continue;
+//                }
                 maxCapacity = Math.max(maxCapacity, e.rev.flow);
             }
         }
 
-        LongFlow.addCostEdge(g, t, s, inf, maxFlow ? -inf : 0);
+        LongFlow.addCostFlowEdge(g, t, s, inf, maxFlow ? -inf : 0);
         for (int i = Log2.floorLog(maxCapacity); i >= 0; i--) {
             long bit = 1L << i;
             marked.clear();

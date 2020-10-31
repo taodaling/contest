@@ -4,15 +4,13 @@ import template.math.DigitUtils;
 import template.math.Factorial;
 
 public class ModContinuousInterpolation {
-    private int x0;
-    private int[] y;
     private int mod;
     private int[] pre;
     private int[] post;
     private Factorial fact;
 
-    public ModContinuousInterpolation(int x0, int[] y, int mod){
-        this(x0, y, mod, new Factorial(y.length - 1, mod));
+    public ModContinuousInterpolation(int maxN, int mod) {
+        this(maxN, new Factorial(maxN + 10, mod));
     }
 
     /**
@@ -20,22 +18,21 @@ public class ModContinuousInterpolation {
      * Given n points, the i-th points located at (x0+i,y[i])
      * </pre>
      * <p>
-     * fact are supposed to support [0, n - 1]
+     * precondition: fact are supposed to support [0, n - 1]
+     * </p>
      */
-    public ModContinuousInterpolation(int x0, int[] y, int mod, Factorial fact) {
-        this.x0 = x0;
-        this.y = y;
-        this.mod = mod;
-
-        int n = y.length;
-        pre = new int[n];
-        post = new int[n];
+    public ModContinuousInterpolation(int maxN, Factorial fact) {
+        this.mod = fact.getMod();
+        pre = new int[maxN + 10];
+        post = new int[maxN + 10];
         this.fact = fact;
     }
 
-    public int interpolate(int x) {
+    /**
+     * O(n)
+     */
+    public int interpolate(int x0, int[] y,  int n, int x) {
         x = DigitUtils.modsub(x, x0, mod);
-        int n = y.length;
         if (x < n) {
             return y[x];
         }

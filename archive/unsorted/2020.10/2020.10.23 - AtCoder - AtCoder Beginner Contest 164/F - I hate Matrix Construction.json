@@ -1,0 +1,40 @@
+{
+  "name" : "F - I hate Matrix Construction",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2\n0 1\n1 0\n1 1\n1 0\n",
+    "output" : "1 1\n1 0\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "2\n1 1\n1 0\n15 15\n15 11\n",
+    "output" : "15 11\n15 11\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.FIHateMatrixConstruction",
+  "checkerClass" : "contest.FTokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "contest.FIHateMatrixConstructionTestCase" ],
+  "date" : "2020.10.23",
+  "contestName" : "AtCoder - AtCoder Beginner Contest 164",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "java.io.PrintWriter",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

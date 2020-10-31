@@ -143,4 +143,27 @@ public class MergeAbleCountSegment implements Cloneable {
         pushUp();
         return this;
     }
+
+    public void toString(int l, int r, StringBuilder builder) {
+        if (this == NIL) {
+            return;
+        }
+        if (l == r) {
+            builder.append(l).append(':').append(cnt).append(',');
+            return;
+        }
+        int m = DigitUtils.floorAverage(l, r);
+        toString(l, m, builder);
+        toString(m + 1, r, builder);
+    }
+
+    public String toString(int l, int r) {
+        StringBuilder builder = new StringBuilder("{");
+        toString(l, r, builder);
+        if (builder.length() > 1) {
+            builder.setLength(builder.length() - 1);
+        }
+        builder.append('}');
+        return builder.toString();
+    }
 }

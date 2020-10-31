@@ -1,6 +1,6 @@
 package template.primitve.generated.graph;
 
-public class DoubleCostFlowEdge extends DoubleFlowEdge<DoubleCostFlowEdge> {
+public class DoubleCostFlowEdge<T extends DoubleCostFlowEdge<T>> extends DoubleFlowEdge<T> {
     public double cost;
 
     public DoubleCostFlowEdge(int to, double flow, boolean real, double cost) {

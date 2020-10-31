@@ -1,6 +1,7 @@
 package template.primitve.generated.graph;
 
 import template.graph.DirectedEdge;
+import template.graph.Graph;
 
 import java.util.List;
 
@@ -17,20 +18,20 @@ public class DoubleMaximumCloseSubGraphAdapter implements DoubleMaximumCloseSubG
         int n = g.length;
         int s = n;
         int t = n + 1;
-        List<DoubleFlowEdge>[] net = DoubleFlow.createFlow(n + 2);
+        List<DoubleFlowEdge>[] net = Graph.createGraph(n + 2);
         double sumOfPositive = 0;
         for (int i = 0; i < n; i++) {
             if (weights[i] > 0) {
-                DoubleFlow.addEdge(net, s, i, weights[i]);
+                DoubleFlow.addFlowEdge(net, s, i, weights[i]);
                 sumOfPositive += weights[i];
             }
             if (weights[i] < 0) {
-                DoubleFlow.addEdge(net, i, t, -weights[i]);
+                DoubleFlow.addFlowEdge(net, i, t, -weights[i]);
             }
         }
         for (int i = 0; i < n; i++) {
             for (DirectedEdge e : g[i]) {
-                DoubleFlow.addEdge(net, i, e.to, INF);
+                DoubleFlow.addFlowEdge(net, i, e.to, INF);
             }
         }
         double minCut = mf.apply(net, s, t, INF);

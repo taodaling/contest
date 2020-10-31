@@ -22,8 +22,16 @@ public class FastOutput implements AutoCloseable, Closeable, Appendable {
         return this;
     }
 
-    private StringBuilder cache = new StringBuilder(15 << 20);
+    private static final int THRESHOLD = 1 << 13;
     private final Writer os;
+    private StringBuilder cache = new StringBuilder(THRESHOLD * 2);
+
+    private void afterWrite() {
+        if (cache.length() < THRESHOLD) {
+            return;
+        }
+        flush();
+    }
 
     public FastOutput(Writer os) {
         this.os = os;
@@ -35,42 +43,48 @@ public class FastOutput implements AutoCloseable, Closeable, Appendable {
 
     public FastOutput append(char c) {
         cache.append(c);
+        afterWrite();
         return this;
     }
 
     public FastOutput append(int c) {
         cache.append(c);
+        afterWrite();
         return this;
     }
 
     public FastOutput append(long c) {
         cache.append(c);
+        afterWrite();
         return this;
     }
 
     public FastOutput append(float c) {
-        cache.append(c);
+        cache.append(new BigDecimal(c).toPlainString());
+        afterWrite();
         return this;
     }
 
     public FastOutput append(double c) {
         cache.append(new BigDecimal(c).toPlainString());
+        afterWrite();
         return this;
     }
 
     public FastOutput append(String c) {
         cache.append(c);
+        afterWrite();
         return this;
     }
 
     public FastOutput append(Object c) {
         cache.append(c);
+        afterWrite();
         return this;
     }
 
     public FastOutput printf(String format, Object... args) {
-        cache.append(String.format(format, args));
-        return this;
+        return append(String.format(format, args));
     }
 
     public FastOutput println(char c) {
@@ -102,8 +116,7 @@ public class FastOutput implements AutoCloseable, Closeable, Appendable {
     }
 
     public FastOutput println() {
-        cache.append(System.lineSeparator());
-        return this;
+        return append(System.lineSeparator());
     }
 
     public FastOutput clear() {

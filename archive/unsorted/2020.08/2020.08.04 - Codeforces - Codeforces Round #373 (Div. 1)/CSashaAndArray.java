@@ -1,7 +1,6 @@
 package contest;
 
 import com.sun.org.apache.xpath.internal.operations.Mod;
-import template.datastructure.GenericSegment;
 import template.io.FastInput;
 import template.io.FastOutput;
 

@@ -4,35 +4,35 @@ import template.primitve.generated.datastructure.IntegerArrayList;
 import template.primitve.generated.datastructure.IntegerHashSet;
 
 public class ModPrimeRoot {
-    private RelativePrimeModLog log;
-    private Modular mod;
-    private Modular powMod;
+    private CoprimeModLog log;
+    private int mod;
+    private int powMod;
     private static IntExtGCDObject extGCD = new IntExtGCDObject();
     private Power power;
     private int primitiveRoot;
 
-    public ModPrimeRoot(Modular p) {
-        this(p, new PrimitiveRoot(p.getMod()).findMinPrimitiveRoot());
+    public ModPrimeRoot(int p) {
+        this(p, PrimitiveRoot.findAnyRoot(p));
     }
 
-    public ModPrimeRoot(Modular p, int g) {
+    public ModPrimeRoot(int p, int g) {
         mod = p;
-        log = new RelativePrimeModLog(g, mod);
-        powMod = mod.getModularForPowerComputation();
+        log = new CoprimeModLog(g, mod);
+        powMod = mod - 1;
         power = new Power(mod);
         primitiveRoot = g;
     }
 
     public void allRoot(int x, int k, IntegerArrayList list) {
-        x = mod.valueOf(x);
-        k = powMod.valueOf(k);
+        x = DigitUtils.mod(x, mod);
+        k = DigitUtils.mod(k, powMod);
         if (x == 0) {
             list.add(0);
             return;
         }
         if (k == 0) {
             if (x == 1) {
-                for (int i = 1, end = mod.getMod(); i < end; i++) {
+                for (int i = 1, end = mod; i < end; i++) {
                     list.add(i);
                 }
                 return;
@@ -41,18 +41,18 @@ public class ModPrimeRoot {
         }
 
         int logx = log.log(x);
-        int gcd = extGCD.extgcd(k, powMod.getMod());
+        int gcd = extGCD.extgcd(k, powMod);
         if (logx % gcd != 0) {
             return;
         }
-        int loga = powMod.mul(logx / gcd, powMod.valueOf(extGCD.getX()));
-        int phi = powMod.getMod();
+        int loga = DigitUtils.mod((long) logx / gcd * extGCD.getX(), powMod);
+        int phi = powMod;
         phi = phi / GCDs.gcd(phi, k);
         loga %= phi;
         int first = power.pow(primitiveRoot, loga);
         int step = power.pow(primitiveRoot, phi);
         IntegerHashSet set = new IntegerHashSet(1, true);
-        for (; !set.contain(first); first = mod.mul(first, step)) {
+        for (; !set.contain(first); first = (int) ((long) first * step % mod)) {
             set.add(first);
             list.add(first);
         }
@@ -63,14 +63,14 @@ public class ModPrimeRoot {
      * <p>O(p^0.5)</p>
      */
     public int root(int x, int k) {
-        x = mod.valueOf(x);
+        x = DigitUtils.mod(x, mod);
         if (x == 0) {
             if (k == 0) {
                 return -1;
             }
             return 0;
         }
-        k = powMod.valueOf(k);
+        k = DigitUtils.mod(k, powMod);
         if (k == 0) {
             if (x == 1) {
                 return 1;
@@ -79,11 +79,11 @@ public class ModPrimeRoot {
         }
 
         int logx = log.log(x);
-        int gcd = extGCD.extgcd(k, powMod.getMod());
+        int gcd = extGCD.extgcd(k, powMod);
         if (logx % gcd != 0) {
             return -1;
         }
-        int loga = powMod.mul(logx / gcd, powMod.valueOf(extGCD.getX()));
+        int loga = DigitUtils.mod((long) logx / gcd * extGCD.getX(), powMod);
         return power.pow(primitiveRoot, loga);
     }
 }

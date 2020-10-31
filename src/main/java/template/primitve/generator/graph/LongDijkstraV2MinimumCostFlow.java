@@ -7,27 +7,35 @@ import template.primitve.generated.datastructure.IntegerDequeImpl;
 import java.util.List;
 
 public class LongDijkstraV2MinimumCostFlow implements LongAugmentMinimumCostFlow {
-    private int m;
-    private long[] lastDist;
-    private long[] curDist;
-    private LongCostFlowEdge[] prev;
-    private boolean[] inq;
-    private IntegerDeque dq;
-    private static final long INF = Long.MAX_VALUE / 4;
-    private List<LongCostFlowEdge>[] g;
-    private LongAugmentCallback callback = LongAugmentCallback.NIL;
+    protected long[] lastDist;
+    protected long[] curDist;
+    protected LongCostFlowEdge[] prev;
+    protected boolean[] inq;
+    protected IntegerDeque dq;
+    protected static final long INF = Long.MAX_VALUE / 4;
+    protected List<LongCostFlowEdge>[] g;
+    protected LongAugmentCallback callback = LongAugmentCallback.NIL;
 
     public void setCallback(LongAugmentCallback callback) {
         this.callback = callback;
     }
 
-    public LongDijkstraV2MinimumCostFlow(int m) {
-        this.m = m - 1;
+    public LongDijkstraV2MinimumCostFlow() {
+    }
+
+    protected void resize(int m){
         lastDist = new long[m];
         curDist = new long[m];
         prev = new LongCostFlowEdge[m];
         inq = new boolean[m];
         dq = new IntegerDequeImpl(m);
+    }
+
+    private void prepare(int m) {
+        if (inq != null && inq.length >= m) {
+            return;
+        }
+        resize(m);
     }
 
     private void bf(int s) {
@@ -40,9 +48,14 @@ public class LongDijkstraV2MinimumCostFlow implements LongAugmentMinimumCostFlow
         lastDist[s] = 0;
         inq[s] = true;
         dq.addLast(s);
+        int round = 0;
         while (!dq.isEmpty()) {
+            round++;
             int head = dq.removeFirst();
             inq[head] = false;
+            if (round > (long) n * n) {
+                throw new RuntimeException();
+            }
             for (LongCostFlowEdge e : g[head]) {
                 if (DigitUtils.equal(e.rev.flow, 0) || lastDist[e.to] <= lastDist[head] + e.cost) {
                     continue;
@@ -56,7 +69,7 @@ public class LongDijkstraV2MinimumCostFlow implements LongAugmentMinimumCostFlow
         }
     }
 
-    private void dijkstra(int s) {
+    protected void dijkstra(int s) {
         int n = g.length;
         for (int i = 0; i < n; i++) {
             curDist[i] = INF;
@@ -81,41 +94,46 @@ public class LongDijkstraV2MinimumCostFlow implements LongAugmentMinimumCostFlow
                 if (e.rev.flow == 0 || curDist[e.to] <= (dist = curDist[head] + e.cost - lastDist[e.to] + lastDist[head])) {
                     continue;
                 }
-                prev[e.to] = e.rev;
+                prev[e.to] = (LongCostFlowEdge) e.rev;
                 curDist[e.to] = dist;
             }
         }
+    }
 
-        for (int i = 0; i < n; i++) {
+    protected void fixDist() {
+        for (int i = 0; i < g.length; i++) {
             lastDist[i] = Math.min(curDist[i] + lastDist[i], INF);
         }
     }
 
-    public long[] apply(List<LongCostFlowEdge>[] net, int s, int t, long send) {
-        this.g = net;
+    public long[] apply(List<LongCostFlowEdge>[] g, int s, int t, long send) {
+        prepare(g.length);
+        this.g = g;
         bf(s);
-        long flow = 0;
+        long remain = send;
         long cost = 0;
-        while (flow < send) {
+        while (remain > 0) {
             dijkstra(s);
+            fixDist();
             if (prev[t] == null) {
                 break;
             }
-            long remain = send - flow;
-            for (LongCostFlowEdge trace = prev[t]; trace != null; trace = prev[trace.to]) {
-                remain = Math.min(remain, trace.flow);
-            }
+            long maxFlow = remain;
             long sumOfCost = 0;
             for (LongCostFlowEdge trace = prev[t]; trace != null; trace = prev[trace.to]) {
+                maxFlow = Math.min(maxFlow, trace.flow);
                 sumOfCost -= trace.cost;
-                LongFlow.send(trace, -remain);
             }
-            cost += sumOfCost * -remain;
-            flow += remain;
-            if (!callback.callback(remain, sumOfCost)) {
+            if (!callback.callback(maxFlow, sumOfCost)) {
                 break;
             }
+            for (LongCostFlowEdge trace = prev[t]; trace != null; trace = prev[trace.to]) {
+                LongFlow.send(trace, -maxFlow);
+            }
+            assert maxFlow > 0;
+            cost += sumOfCost * maxFlow;
+            remain -= maxFlow;
         }
-        return new long[]{flow, cost};
+        return new long[]{send - remain, cost};
     }
 }

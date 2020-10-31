@@ -36,18 +36,18 @@ public class DinicBipartiteMatch {
         this.r = r;
         lMates = new int[l];
         rMates = new int[r];
-        g = IntegerFlow.createFlow(idOfDst() + 1);
+        g = Graph.createGraph(idOfDst() + 1);
         dinic = new IntegerDinic();
         for (int i = 0; i < l; i++) {
-            IntegerFlow.addEdge(g, idOfSrc(), idOfL(i), 1);
+            IntegerFlow.addFlowEdge(g, idOfSrc(), idOfL(i), 1);
         }
         for (int i = 0; i < r; i++) {
-            IntegerFlow.addEdge(g, idOfR(i), idOfDst(), 1);
+            IntegerFlow.addFlowEdge(g, idOfR(i), idOfDst(), 1);
         }
     }
 
     public void addEdge(int u, int v) {
-        IntegerFlow.addEdge(g, idOfL(u), idOfR(v), 1);
+        IntegerFlow.addFlowEdge(g, idOfL(u), idOfR(v), 1);
     }
 
     public int solve() {

@@ -32,4 +32,9 @@ public class ModifiableHash {
         h2 = DigitUtils.mod(h2 + (long) (x - data[i]) * hd2.pow[i], hd2.mod);
         data[i] = x;
     }
+
+    @Override
+    public String toString() {
+        return Arrays.toString(data);
+    }
 }

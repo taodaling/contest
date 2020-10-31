@@ -1,0 +1,61 @@
+{
+  "name" : "TwoRobots",
+  "signature" : {
+    "name" : "move",
+    "result" : "int",
+    "arguments" : [ "String[]" ],
+    "argumentNames" : [ "plan" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "Ab.aф...B" ],
+    "result" : "3",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "#a#фA.bф#B#" ],
+    "result" : "-1",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "#b#фA.aф#B#ф#.#" ],
+    "result" : "-1",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "...ф#a#фA.bф#B#ф#.#" ],
+    "result" : "4",
+    "index" : 3,
+    "active" : true
+  }, {
+    "arguments" : [ "AB......ab" ],
+    "result" : "8",
+    "index" : 4,
+    "active" : true
+  }, {
+    "arguments" : [ "bA......Ba" ],
+    "result" : "-1",
+    "index" : 5,
+    "active" : true
+  }, {
+    "arguments" : [ "bA.......Ba" ],
+    "result" : "-1",
+    "index" : 6,
+    "active" : true
+  }, {
+    "arguments" : [ "AB.........ф...........ф...........ф........b.a" ],
+    "result" : "-1",
+    "index" : 7,
+    "active" : true
+  }, {
+    "arguments" : [ "...A...ф.#####.ф.#####bфB#####.ф.#####.ф.#####.ф..a...." ],
+    "result" : "13",
+    "index" : 8,
+    "active" : true
+  } ],
+  "date" : "2020.10.23",
+  "contestName" : "Single Round Match 792",
+  "testClasses" : [ ],
+  "fqn" : "on2020_10.on2020_10_23_Single_Round_Match_792.TwoRobots.TwoRobots",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

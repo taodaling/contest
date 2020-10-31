@@ -1,2 +1,2 @@
-52 src/main/java/contest/Problem G - Rainbow Graph.json
+40 src/main/java/contest/G. Death DBMS.json
 0

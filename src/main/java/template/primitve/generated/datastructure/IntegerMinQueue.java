@@ -26,6 +26,7 @@ public class IntegerMinQueue {
     }
 
     public int removeFirst() {
+        assert size() > 0;
         int val = data.removeFirst();
         if (minQueue.peekFirst() == val) {
             minQueue.removeFirst();
@@ -34,6 +35,7 @@ public class IntegerMinQueue {
     }
 
     public int peek() {
+        assert size() > 0;
         return data.peekFirst();
     }
 
@@ -42,6 +44,7 @@ public class IntegerMinQueue {
     }
 
     public int min() {
+        assert size() > 0;
         return minQueue.peekFirst();
     }
 

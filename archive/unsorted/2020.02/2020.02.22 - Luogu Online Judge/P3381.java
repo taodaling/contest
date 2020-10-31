@@ -5,7 +5,6 @@ import template.io.FastOutput;
 import template.primitve.generated.graph.LongCostFlowEdge;
 import template.primitve.generated.graph.LongDijkstraMinimumCostFlow;
 import template.primitve.generated.graph.LongFlow;
-import template.primitve.generated.graph.LongMinCostFlowPolynomial;
 import template.primitve.generated.graph.LongMinimumCostFlow;
 
 import java.util.List;

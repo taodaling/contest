@@ -6,18 +6,29 @@ import template.primitve.generated.datastructure.IntegerDequeImpl;
 
 import java.util.List;
 
-public class IntegerSpfaMinimumCostFlow implements IntegerMinimumCostFlow {
+public class IntegerSpfaMinimumCostFlow implements IntegerMinimumCostFlow, IntegerAugmentMinimumCostFlow {
     IntegerDeque deque;
     int[] dists;
     boolean[] inque;
     IntegerCostFlowEdge[] prev;
     List<IntegerCostFlowEdge>[] net;
+    IntegerAugmentCallback callback = IntegerAugmentCallback.NIL;
 
-    public IntegerSpfaMinimumCostFlow(int vertexNum) {
-        deque = new IntegerDequeImpl(vertexNum);
-        dists = new int[vertexNum];
-        inque = new boolean[vertexNum];
-        prev = new IntegerCostFlowEdge[vertexNum];
+    @Override
+    public void setCallback(IntegerAugmentCallback callback) {
+        this.callback = callback == null ? IntegerAugmentCallback.NIL : callback;
+    }
+
+    public IntegerSpfaMinimumCostFlow() {
+    }
+
+    private void prepare(int vertexNum) {
+        if (dists == null || dists.length < vertexNum) {
+            deque = new IntegerDequeImpl(vertexNum);
+            dists = new int[vertexNum];
+            inque = new boolean[vertexNum];
+            prev = new IntegerCostFlowEdge[vertexNum];
+        }
     }
 
     private void spfa(int s, int inf) {
@@ -50,6 +61,7 @@ public class IntegerSpfaMinimumCostFlow implements IntegerMinimumCostFlow {
 
     @Override
     public int[] apply(List<IntegerCostFlowEdge>[] net, int s, int t, int send) {
+        prepare(net.length);
         int cost = 0;
         int flow = 0;
         this.net = net;
@@ -63,6 +75,9 @@ public class IntegerSpfaMinimumCostFlow implements IntegerMinimumCostFlow {
             while (prev[iter] != null) {
                 sent = Math.min(sent, prev[iter].flow);
                 iter = prev[iter].rev.to;
+            }
+            if (!callback.callback(sent, dists[s])) {
+                break;
             }
             iter = s;
             while (prev[iter] != null) {

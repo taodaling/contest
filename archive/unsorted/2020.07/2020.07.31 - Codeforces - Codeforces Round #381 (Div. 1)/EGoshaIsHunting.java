@@ -5,7 +5,6 @@ import template.io.FastOutput;
 import template.primitve.generated.graph.DoubleCostFlowEdge;
 import template.primitve.generated.graph.DoubleDijkstraMinimumCostFlow;
 import template.primitve.generated.graph.DoubleFlow;
-import template.primitve.generated.graph.DoubleMinCostFlowPolynomial;
 import template.primitve.generated.graph.DoubleMinimumCostFlow;
 import template.utils.Debug;
 

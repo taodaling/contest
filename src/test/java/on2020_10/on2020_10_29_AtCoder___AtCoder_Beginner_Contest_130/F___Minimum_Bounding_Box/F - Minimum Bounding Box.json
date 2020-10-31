@@ -1,0 +1,50 @@
+{
+  "name" : "F - Minimum Bounding Box",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2\n0 3 D\n3 0 L\n",
+    "output" : "0\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "5\n-7 -10 U\n7 -6 U\n-8 7 D\n-3 3 D\n0 -6 R\n",
+    "output" : "97.5\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "20\n6 -10 R\n-4 -9 U\n9 6 D\n-3 -2 R\n0 7 D\n4 5 D\n10 -10 U\n-1 -8 U\n10 -6 D\n8 -5 U\n6 4 D\n0 3 D\n7 9 R\n9 -4 R\n3 10 D\n1 9 U\n1 -6 U\n9 -8 R\n6 7 D\n7 -3 D\n",
+    "output" : "273\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "1\n0 0 L",
+    "output" : "0",
+    "index" : 3,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_10.on2020_10_29_AtCoder___AtCoder_Beginner_Contest_130.F___Minimum_Bounding_Box.FMinimumBoundingBox",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.10.29",
+  "contestName" : "AtCoder - AtCoder Beginner Contest 130",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

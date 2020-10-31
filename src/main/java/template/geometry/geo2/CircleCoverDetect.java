@@ -12,7 +12,9 @@ public class CircleCoverDetect {
     private double cr;
     private double eps;
     private static double max = 2 * Math.PI;
-    private DoubleBinaryConsumer consumer;
+    private DoubleBinaryConsumer consumer = NIL_CONSUMER;
+    private static DoubleBinaryConsumer NIL_CONSUMER = (l, r) -> {
+    };
 
     public CircleCoverDetect(double eps) {
         this.eps = eps;
@@ -22,10 +24,13 @@ public class CircleCoverDetect {
      * all interval [l, r] coverage information will invoke consumer.accept(l, r)
      * to notify invoker
      */
-    public void reset(Point2 center, double r, DoubleBinaryConsumer consumer) {
+    public void reset(Point2 center, double r) {
         this.center = center;
         this.cr = r;
-        this.consumer = consumer;
+    }
+
+    public void setConsumer(DoubleBinaryConsumer consumer) {
+        this.consumer = consumer == null ? NIL_CONSUMER : consumer;
     }
 
     private void add(double l, double r) {

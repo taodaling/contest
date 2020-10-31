@@ -1,7 +1,6 @@
 package template.datastructure;
 
 import template.math.DigitUtils;
-import template.math.Modular;
 
 import java.util.Arrays;
 

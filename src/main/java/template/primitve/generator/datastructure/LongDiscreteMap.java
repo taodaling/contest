@@ -69,11 +69,17 @@ public class LongDiscreteMap {
         return Arrays.toString(Arrays.copyOfRange(val, f, t));
     }
 
-    public static void discrete(long[] data) {
-        LongArrayList list = new LongArrayList(data);
-        list.unique();
-        for (int i = 0; i < data.length; i++) {
-            data[i] = list.binarySearch(data[i]);
+    public static int discrete(long[]... data) {
+        LongArrayList list = new LongArrayList(Arrays.stream(data).mapToInt(x -> x.length).sum());
+        for (long[] x : data) {
+            list.addAll(x);
         }
+        list.unique();
+        for (long[] x : data) {
+            for (int i = 0; i < x.length; i++) {
+                x[i] = list.binarySearch(x[i]);
+            }
+        }
+        return list.size();
     }
 }

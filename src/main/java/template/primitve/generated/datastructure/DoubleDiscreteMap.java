@@ -69,11 +69,17 @@ public class DoubleDiscreteMap {
         return Arrays.toString(Arrays.copyOfRange(val, f, t));
     }
 
-    public static void discrete(double[] data) {
-        DoubleArrayList list = new DoubleArrayList(data);
-        list.unique();
-        for (int i = 0; i < data.length; i++) {
-            data[i] = list.binarySearch(data[i]);
+    public static int discrete(double[]... data) {
+        DoubleArrayList list = new DoubleArrayList(Arrays.stream(data).mapToInt(x -> x.length).sum());
+        for (double[] x : data) {
+            list.addAll(x);
         }
+        list.unique();
+        for (double[] x : data) {
+            for (int i = 0; i < x.length; i++) {
+                x[i] = list.binarySearch(x[i]);
+            }
+        }
+        return list.size();
     }
 }

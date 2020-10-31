@@ -6,7 +6,6 @@ import template.io.FastInput;
 import template.math.DigitUtils;
 import template.primitve.generated.datastructure.Int2ToIntegerFunction;
 import template.primitve.generated.datastructure.IntToIntegerFunction;
-import template.utils.AlgebraController;
 import template.utils.Buffer;
 import template.utils.Debug;
 

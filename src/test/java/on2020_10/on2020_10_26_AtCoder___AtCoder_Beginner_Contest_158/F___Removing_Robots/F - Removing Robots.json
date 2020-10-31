@@ -1,0 +1,50 @@
+{
+  "name" : "F - Removing Robots",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2\n1 5\n3 3\n",
+    "output" : "3\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "3\n6 5\n-1 10\n3 3\n",
+    "output" : "5\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "4\n7 10\n-10 3\n4 3\n-4 3\n",
+    "output" : "16\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "20\n-8 1\n26 4\n0 5\n9 1\n19 4\n22 20\n28 27\n11 8\n-3 20\n-25 17\n10 4\n-18 27\n24 28\n-11 19\n2 27\n-2 18\n-1 12\n-24 29\n31 29\n29 7\n",
+    "output" : "110\n",
+    "index" : 3,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_10.on2020_10_26_AtCoder___AtCoder_Beginner_Contest_158.F___Removing_Robots.FRemovingRobots",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.10.26",
+  "contestName" : "AtCoder - AtCoder Beginner Contest 158",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

@@ -7,7 +7,6 @@ import template.primitve.generated.datastructure.IntegerDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.IntStream;
 
 public class DoubleFlow {
     /**
@@ -70,7 +69,7 @@ public class DoubleFlow {
         edge.rev.flow -= flow;
     }
 
-    public static DoubleFlowEdge addEdge(List<DoubleFlowEdge>[] g, int s, int t, double cap) {
+    public static DoubleFlowEdge addFlowEdge(List[] g, int s, int t, double cap) {
         DoubleFlowEdge real = new DoubleFlowEdge(t, 0, true);
         DoubleFlowEdge virtual = new DoubleFlowEdge(s, cap, false);
         real.rev = virtual;
@@ -80,7 +79,7 @@ public class DoubleFlow {
         return real;
     }
 
-    public static DoubleCostFlowEdge addCostEdge(List<DoubleCostFlowEdge>[] g, int s, int t, double cap, double cost) {
+    public static DoubleCostFlowEdge addCostFlowEdge(List[] g, int s, int t, double cap, double cost) {
         DoubleCostFlowEdge real = new DoubleCostFlowEdge(t, 0, true, cost);
         DoubleCostFlowEdge virtual = new DoubleCostFlowEdge(s, cap, false, -cost);
         real.rev = virtual;
@@ -90,7 +89,7 @@ public class DoubleFlow {
         return real;
     }
 
-    public static DoubleLRFlowEdge addLREdge(List<DoubleLRFlowEdge>[] g, int s, int t, double cap, double low) {
+    public static DoubleLRFlowEdge addLRFlowEdge(List[] g, int s, int t, double cap, double low) {
         DoubleLRFlowEdge real = new DoubleLRFlowEdge(t, 0, true, low);
         DoubleLRFlowEdge virtual = new DoubleLRFlowEdge(s, cap - low, false, low);
         real.rev = virtual;
@@ -100,23 +99,21 @@ public class DoubleFlow {
         return real;
     }
 
-    public static List<DoubleLRFlowEdge>[] createLRFlow(int n) {
-        return createGraph(n);
-    }
-
-    public static List<DoubleFlowEdge>[] createFlow(int n) {
-        return createGraph(n);
-    }
-
-    public static List<DoubleCostFlowEdge>[] createCostFlow(int n) {
-        return createGraph(n);
+    public static DoubleLRCostFlowEdge addLRCostFlowEdge(List[] g, int s, int t, double cap, double cost, double low) {
+        DoubleLRCostFlowEdge real = new DoubleLRCostFlowEdge(t, 0, true, cost, low);
+        DoubleLRCostFlowEdge virtual = new DoubleLRCostFlowEdge(s, cap - low, false, -cost, low);
+        real.rev = virtual;
+        virtual.rev = real;
+        g[s].add(real);
+        g[t].add(virtual);
+        return real;
     }
 
     /**
      * find feasible flow with specified source and sink point or return false when it doesn't exist
      */
-    public static boolean feasibleFlow(List<DoubleLRFlowEdge>[] g, int s, int t, DoubleMaximumFlow mf) {
-        addLREdge(g, t, s, Double.MAX_VALUE / 4, 0);
+    public static <T extends DoubleFlowEdge & DoubleLowBound> boolean feasibleFlow(List<T>[] g, int s, int t, DoubleMaximumFlow mf) {
+        addLRFlowEdge(g, t, s, Double.MAX_VALUE / 4, 0);
         boolean ans = feasibleFlow(g, mf);
         g[s].remove(g[s].size() - 1);
         g[t].remove(g[t].size() - 1);
@@ -129,37 +126,100 @@ public class DoubleFlow {
      * @param g
      * @return
      */
-    public static boolean feasibleFlow(List<DoubleLRFlowEdge>[] g, DoubleMaximumFlow mf) {
+    public static <T extends DoubleFlowEdge & DoubleLowBound> boolean feasibleFlow(List<T>[] g, DoubleMaximumFlow mf) {
         int n = g.length;
-        List<DoubleFlowEdge>[] expand = expand(g, n + 2);
+        List<T>[] expand = expand(g, n + 2);
         int src = n;
         int dst = n + 1;
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < expand[i].size(); j++) {
-                DoubleFlowEdge fe = expand[i].get(j);
+                T fe = expand[i].get(j);
                 if (fe.to == src || fe.to == dst ||
                         !fe.real) {
                     continue;
                 }
-                DoubleLRFlowEdge e = (DoubleLRFlowEdge) fe;
-                addEdge(expand, src, e.to, e.low);
-                addEdge(expand, i, dst, e.low);
+                T e = fe;
+                if (e.low() > 0) {
+                    addFlowEdge(expand, src, e.to, e.low());
+                    addFlowEdge(expand, i, dst, e.low());
+                }
             }
         }
 
-        mf.apply(expand, src, dst, Double.MAX_VALUE / 4);
+        mf.apply((List[]) expand, src, dst, Double.MAX_VALUE / 4);
 
         boolean ans = true;
-        for (DoubleFlowEdge e : expand[src]) {
+        for (T e : expand[src]) {
             ans = ans && DigitUtils.equal(e.rev.flow, 0);
         }
-        for (DoubleFlowEdge e : expand[dst]) {
+        for (T e : expand[dst]) {
             ans = ans && DigitUtils.equal(e.flow, 0);
         }
 
         for (int i = 0; i < n; i++) {
             while (g[i].size() > 0) {
-                DoubleFlowEdge tail = g[i].get(g[i].size() - 1);
+                T tail = g[i].get(g[i].size() - 1);
+                if (tail.to == src || tail.to == dst) {
+                    g[i].remove(g[i].size() - 1);
+                } else {
+                    break;
+                }
+            }
+        }
+
+        return ans;
+    }
+
+    /**
+     * find feasible flow with specified source and sink point or return false when it doesn't exist
+     */
+    public static <T extends DoubleCostFlowEdge & DoubleLowBound> boolean feasibleMinCostFlow(List<T>[] g, int s, int t, DoubleMinimumCostFlow mf) {
+        addLRCostFlowEdge(g, t, s, Double.MAX_VALUE / 4, 0, 0);
+        boolean ans = feasibleMinCostFlow(g, mf);
+        g[s].remove(g[s].size() - 1);
+        g[t].remove(g[t].size() - 1);
+        return ans;
+    }
+
+    /**
+     * find feasible flow without source and sink point or return false when it doesn't exist
+     *
+     * @param g
+     * @return
+     */
+    public static <T extends DoubleCostFlowEdge & DoubleLowBound> boolean feasibleMinCostFlow(List<T>[] g, DoubleMinimumCostFlow mf) {
+        int n = g.length;
+        List<T>[] expand = expand(g, n + 2);
+        int src = n;
+        int dst = n + 1;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < expand[i].size(); j++) {
+                T fe = expand[i].get(j);
+                if (fe.to == src || fe.to == dst ||
+                        !fe.real) {
+                    continue;
+                }
+                T e = fe;
+                if (e.low() > 0) {
+                    addCostFlowEdge(expand, src, e.to, e.low(), 0);
+                    addCostFlowEdge(expand, i, dst, e.low(), 0);
+                }
+            }
+        }
+
+        double[] flow = mf.apply((List[]) expand, src, dst, Double.MAX_VALUE / 4);
+
+        boolean ans = true;
+        for (T e : expand[src]) {
+            ans = ans && DigitUtils.equal(e.rev.flow, 0);
+        }
+        for (T e : expand[dst]) {
+            ans = ans && DigitUtils.equal(e.flow, 0);
+        }
+
+        for (int i = 0; i < n; i++) {
+            while (g[i].size() > 0) {
+                T tail = g[i].get(g[i].size() - 1);
                 if (tail.to == src || tail.to == dst) {
                     g[i].remove(g[i].size() - 1);
                 } else {
@@ -179,9 +239,6 @@ public class DoubleFlow {
         return ans;
     }
 
-    private static List[] createGraph(int n) {
-        return IntStream.range(0, n).mapToObj(i -> new ArrayList<>()).toArray(i -> new List[i]);
-    }
 
     public static <T extends DoubleFlowEdge> void bfsForFlow(List<T>[] g, int s, int[] dist, int inf, IntegerDeque deque) {
         Arrays.fill(dist, 0, g.length, inf);
@@ -212,7 +269,7 @@ public class DoubleFlow {
         return builder.toString();
     }
 
-    public static String costFlowToString(List<DoubleCostFlowEdge>[] g) {
+    public static <T extends DoubleCostFlowEdge> String costFlowToString(List<T>[] g) {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < g.length; i++) {
             for (DoubleCostFlowEdge e : g[i]) {

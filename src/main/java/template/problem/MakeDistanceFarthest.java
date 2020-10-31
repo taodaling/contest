@@ -1,5 +1,6 @@
 package template.problem;
 
+import template.graph.Graph;
 import template.primitve.generated.graph.LongAugmentCallback;
 import template.primitve.generated.graph.LongAugmentMinimumCostFlow;
 import template.primitve.generated.graph.LongCostFlowEdge;
@@ -48,16 +49,16 @@ public class MakeDistanceFarthest {
     LinearFunction[] fs;
 
     public MakeDistanceFarthest(int n) {
-        g = LongFlow.createCostFlow(n);
+        g = Graph.createGraph(n);
     }
 
     public void addEdge(int u, int v, long len, long cost) {
-        LongFlow.addCostEdge(g, u, v, cost, len);
+        LongFlow.addCostFlowEdge(g, u, v, cost, len);
     }
 
     public void addLimitedEdge(int u, int v, long len, long cost, long limit) {
-        LongFlow.addCostEdge(g, u, v, cost, len);
-        LongFlow.addCostEdge(g, u, v, inf, len + limit);
+        LongFlow.addCostFlowEdge(g, u, v, cost, len);
+        LongFlow.addCostFlowEdge(g, u, v, inf, len + limit);
     }
 
     /**

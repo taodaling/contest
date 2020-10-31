@@ -6,17 +6,17 @@ import java.util.Random;
 public class Treap implements Cloneable {
     private static Random random = new Random();
 
-    static Treap NIL = new Treap();
+    public static final Treap NIL = new Treap();
 
     static {
         NIL.left = NIL.right = NIL;
         NIL.size = 0;
     }
 
-    Treap left = NIL;
-    Treap right = NIL;
-    int size = 1;
-    int key;
+    public Treap left = NIL;
+    public Treap right = NIL;
+    public int size = 1;
+    public int key;
 
     @Override
     public Treap clone() {

@@ -7,27 +7,35 @@ import template.primitve.generated.datastructure.IntegerDequeImpl;
 import java.util.List;
 
 public class DoubleDijkstraV2MinimumCostFlow implements DoubleAugmentMinimumCostFlow {
-    private int m;
-    private double[] lastDist;
-    private double[] curDist;
-    private DoubleCostFlowEdge[] prev;
-    private boolean[] inq;
-    private IntegerDeque dq;
-    private static final double INF = Double.MAX_VALUE / 4;
-    private List<DoubleCostFlowEdge>[] g;
-    private DoubleAugmentCallback callback = DoubleAugmentCallback.NIL;
+    protected double[] lastDist;
+    protected double[] curDist;
+    protected DoubleCostFlowEdge[] prev;
+    protected boolean[] inq;
+    protected IntegerDeque dq;
+    protected static final double INF = Double.MAX_VALUE / 4;
+    protected List<DoubleCostFlowEdge>[] g;
+    protected DoubleAugmentCallback callback = DoubleAugmentCallback.NIL;
 
     public void setCallback(DoubleAugmentCallback callback) {
         this.callback = callback;
     }
 
-    public DoubleDijkstraV2MinimumCostFlow(int m) {
-        this.m = m - 1;
+    public DoubleDijkstraV2MinimumCostFlow() {
+    }
+
+    protected void resize(int m){
         lastDist = new double[m];
         curDist = new double[m];
         prev = new DoubleCostFlowEdge[m];
         inq = new boolean[m];
         dq = new IntegerDequeImpl(m);
+    }
+
+    private void prepare(int m) {
+        if (inq != null && inq.length >= m) {
+            return;
+        }
+        resize(m);
     }
 
     private void bf(int s) {
@@ -40,9 +48,14 @@ public class DoubleDijkstraV2MinimumCostFlow implements DoubleAugmentMinimumCost
         lastDist[s] = 0;
         inq[s] = true;
         dq.addLast(s);
+        int round = 0;
         while (!dq.isEmpty()) {
+            round++;
             int head = dq.removeFirst();
             inq[head] = false;
+            if (round > (double) n * n) {
+                throw new RuntimeException();
+            }
             for (DoubleCostFlowEdge e : g[head]) {
                 if (DigitUtils.equal(e.rev.flow, 0) || lastDist[e.to] <= lastDist[head] + e.cost) {
                     continue;
@@ -56,7 +69,7 @@ public class DoubleDijkstraV2MinimumCostFlow implements DoubleAugmentMinimumCost
         }
     }
 
-    private void dijkstra(int s) {
+    protected void dijkstra(int s) {
         int n = g.length;
         for (int i = 0; i < n; i++) {
             curDist[i] = INF;
@@ -81,41 +94,46 @@ public class DoubleDijkstraV2MinimumCostFlow implements DoubleAugmentMinimumCost
                 if (e.rev.flow == 0 || curDist[e.to] <= (dist = curDist[head] + e.cost - lastDist[e.to] + lastDist[head])) {
                     continue;
                 }
-                prev[e.to] = e.rev;
+                prev[e.to] = (DoubleCostFlowEdge) e.rev;
                 curDist[e.to] = dist;
             }
         }
+    }
 
-        for (int i = 0; i < n; i++) {
+    protected void fixDist() {
+        for (int i = 0; i < g.length; i++) {
             lastDist[i] = Math.min(curDist[i] + lastDist[i], INF);
         }
     }
 
-    public double[] apply(List<DoubleCostFlowEdge>[] net, int s, int t, double send) {
-        this.g = net;
+    public double[] apply(List<DoubleCostFlowEdge>[] g, int s, int t, double send) {
+        prepare(g.length);
+        this.g = g;
         bf(s);
-        double flow = 0;
+        double remain = send;
         double cost = 0;
-        while (flow < send) {
+        while (remain > 0) {
             dijkstra(s);
+            fixDist();
             if (prev[t] == null) {
                 break;
             }
-            double remain = send - flow;
-            for (DoubleCostFlowEdge trace = prev[t]; trace != null; trace = prev[trace.to]) {
-                remain = Math.min(remain, trace.flow);
-            }
+            double maxFlow = remain;
             double sumOfCost = 0;
             for (DoubleCostFlowEdge trace = prev[t]; trace != null; trace = prev[trace.to]) {
+                maxFlow = Math.min(maxFlow, trace.flow);
                 sumOfCost -= trace.cost;
-                DoubleFlow.send(trace, -remain);
             }
-            cost += sumOfCost * -remain;
-            flow += remain;
-            if (!callback.callback(remain, sumOfCost)) {
+            if (!callback.callback(maxFlow, sumOfCost)) {
                 break;
             }
+            for (DoubleCostFlowEdge trace = prev[t]; trace != null; trace = prev[trace.to]) {
+                DoubleFlow.send(trace, -maxFlow);
+            }
+            assert maxFlow > 0;
+            cost += sumOfCost * maxFlow;
+            remain -= maxFlow;
         }
-        return new double[]{flow, cost};
+        return new double[]{send - remain, cost};
     }
 }

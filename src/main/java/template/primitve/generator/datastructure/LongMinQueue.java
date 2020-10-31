@@ -26,6 +26,7 @@ public class LongMinQueue {
     }
 
     public long removeFirst() {
+        assert size() > 0;
         long val = data.removeFirst();
         if (minQueue.peekFirst() == val) {
             minQueue.removeFirst();
@@ -34,6 +35,7 @@ public class LongMinQueue {
     }
 
     public long peek() {
+        assert size() > 0;
         return data.peekFirst();
     }
 
@@ -42,6 +44,7 @@ public class LongMinQueue {
     }
 
     public long min() {
+        assert size() > 0;
         return minQueue.peekFirst();
     }
 

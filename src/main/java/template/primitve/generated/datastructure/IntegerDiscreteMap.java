@@ -69,11 +69,17 @@ public class IntegerDiscreteMap {
         return Arrays.toString(Arrays.copyOfRange(val, f, t));
     }
 
-    public static void discrete(int[] data) {
-        IntegerArrayList list = new IntegerArrayList(data);
-        list.unique();
-        for (int i = 0; i < data.length; i++) {
-            data[i] = list.binarySearch(data[i]);
+    public static int discrete(int[]... data) {
+        IntegerArrayList list = new IntegerArrayList(Arrays.stream(data).mapToInt(x -> x.length).sum());
+        for (int[] x : data) {
+            list.addAll(x);
         }
+        list.unique();
+        for (int[] x : data) {
+            for (int i = 0; i < x.length; i++) {
+                x[i] = list.binarySearch(x[i]);
+            }
+        }
+        return list.size();
     }
 }

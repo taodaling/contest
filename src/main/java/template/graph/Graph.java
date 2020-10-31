@@ -6,6 +6,7 @@ import template.primitve.generated.datastructure.IntegerArrayList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class Graph {
     public static <T extends DirectedEdge> void bfs(List<T>[] g, int s, int[] dist, int inf, IntegerDeque deque) {
@@ -56,19 +57,7 @@ public class Graph {
         g[t].add(toS);
     }
 
-    public static List<DirectedEdge>[] createDirectedGraph(int n) {
-        List<DirectedEdge>[] ans = new List[n];
-        for (int i = 0; i < n; i++) {
-            ans[i] = new ArrayList<>();
-        }
-        return ans;
-    }
-
-    public static List<UndirectedEdge>[] createUndirectedGraph(int n) {
-        List<UndirectedEdge>[] ans = new List[n];
-        for (int i = 0; i < n; i++) {
-            ans[i] = new ArrayList<>();
-        }
-        return ans;
+    public static List[] createGraph(int n) {
+        return IntStream.range(0, n).mapToObj(i -> new ArrayList<>()).toArray(i -> new List[i]);
     }
 }

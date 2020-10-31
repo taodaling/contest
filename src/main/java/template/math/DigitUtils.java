@@ -220,8 +220,24 @@ public class DigitUtils {
         return ans;
     }
 
+    public static long modsub(long a, long b, long mod) {
+        long ans = a - b;
+        if (ans < 0) {
+            ans += mod;
+        }
+        return ans;
+    }
+
     public static int modplus(int a, int b, int mod) {
         int ans = a + b;
+        if (ans >= mod) {
+            ans -= mod;
+        }
+        return ans;
+    }
+
+    public static long modplus(long a, long b, long mod) {
+        long ans = a + b;
         if (ans >= mod) {
             ans -= mod;
         }

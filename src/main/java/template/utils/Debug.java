@@ -2,6 +2,7 @@ package template.utils;
 
 import java.io.PrintStream;
 import java.util.Arrays;
+import java.util.function.Supplier;
 
 public class Debug {
     private boolean offline;
@@ -16,6 +17,13 @@ public class Debug {
         if (offline) {
             task.run();
         }
+    }
+
+    public Debug debug(String name, Supplier<Object> supplier) {
+        if (offline) {
+            debug(name, supplier.get());
+        }
+        return this;
     }
 
     public Debug elapse(String name) {

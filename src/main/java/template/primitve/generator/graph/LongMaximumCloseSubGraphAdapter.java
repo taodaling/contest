@@ -1,6 +1,7 @@
 package template.primitve.generated.graph;
 
 import template.graph.DirectedEdge;
+import template.graph.Graph;
 
 import java.util.List;
 
@@ -17,20 +18,20 @@ public class LongMaximumCloseSubGraphAdapter implements LongMaximumCloseSubGraph
         int n = g.length;
         int s = n;
         int t = n + 1;
-        List<LongFlowEdge>[] net = LongFlow.createFlow(n + 2);
+        List<LongFlowEdge>[] net = Graph.createGraph(n + 2);
         long sumOfPositive = 0;
         for (int i = 0; i < n; i++) {
             if (weights[i] > 0) {
-                LongFlow.addEdge(net, s, i, weights[i]);
+                LongFlow.addFlowEdge(net, s, i, weights[i]);
                 sumOfPositive += weights[i];
             }
             if (weights[i] < 0) {
-                LongFlow.addEdge(net, i, t, -weights[i]);
+                LongFlow.addFlowEdge(net, i, t, -weights[i]);
             }
         }
         for (int i = 0; i < n; i++) {
             for (DirectedEdge e : g[i]) {
-                LongFlow.addEdge(net, i, e.to, INF);
+                LongFlow.addFlowEdge(net, i, e.to, INF);
             }
         }
         long minCut = mf.apply(net, s, t, INF);

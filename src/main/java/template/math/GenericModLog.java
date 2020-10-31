@@ -4,49 +4,49 @@ package template.math;
  * Used to find k while x^k = y % p
  */
 public class GenericModLog {
-    private RelativePrimeModLog log;
+    private CoprimeModLog log;
     private int mul = 1;
     private int div = 1;
     private int k = 0;
     private int a;
-    private Modular original;
-    private Modular modular;
+    private int original;
+    private int mod;
     private static IntExtGCDObject extGCD = new IntExtGCDObject();
 
     public GenericModLog(int a, int p) {
         a = DigitUtils.mod(a, p);
-        original = new Modular(p);
+        original = p;
         int g;
         while ((g = GCDs.gcd(a, p)) != 1) {
-            mul = original.mul(mul, a / g);
+            mul = (int) ((long) mul * a / g % original);
             div *= g;
             p /= g;
             k++;
         }
         this.a = a;
-        this.modular = new Modular(p);
-        log = new RelativePrimeModLog(a, modular);
+        this.mod = p;
+        log = new CoprimeModLog(a, mod);
         extGCD.extgcd(mul, p);
-        mul = modular.valueOf(extGCD.getX());
+        mul = DigitUtils.mod(extGCD.getX(), mod);
     }
 
     /**
      * return log_a y \mod p with O(\sqrt{p}) time complexity or -1 if doesn't exit
      */
     public int log(int y) {
-        y = original.valueOf(y);
-        int prod = original.valueOf(1);
+        y = DigitUtils.mod(y, original);
+        long prod = DigitUtils.mod(1, original);
         for (int i = 0; i < k; i++) {
             if (prod == y) {
                 return i;
             }
-            prod = original.mul(prod, a);
+            prod = prod * a % original;
         }
         if (y % div != 0) {
             return -1;
         }
 
-        y = modular.mul(y / div, mul);
+        y = (int) ((long) y / div * mul % mod);
         int ans = log.log(y);
         if (ans >= 0) {
             ans += k;

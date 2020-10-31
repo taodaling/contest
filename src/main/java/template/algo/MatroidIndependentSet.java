@@ -3,7 +3,6 @@ package template.algo;
 import template.binary.Bits;
 import template.datastructure.DSU;
 import template.datastructure.LinearBasis;
-import template.datastructure.MultiWayStack;
 import template.primitve.generated.datastructure.IntegerArrayList;
 import template.primitve.generated.datastructure.IntegerDequeImpl;
 import template.primitve.generated.datastructure.IntegerIterator;
@@ -224,7 +223,7 @@ public interface MatroidIndependentSet {
             @Override
             public void prepare(boolean[] added) {
                 g.clear();
-                dsu.reset();
+                dsu.init();
                 inset.clear();
                 for (int i = 0; i < added.length; i++) {
                     if (added[i]) {

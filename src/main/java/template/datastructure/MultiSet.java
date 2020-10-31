@@ -64,7 +64,7 @@ public class MultiSet<T> {
         return map.floorKey(x);
     }
 
-    private void update(T key, int cnt) {
+    public void update(T key, int cnt) {
         if (cnt == 0) {
             map.remove(key);
         } else if (cnt > 0) {
@@ -72,5 +72,26 @@ public class MultiSet<T> {
         } else {
             size++;
         }
+    }
+
+    public void addAll(MultiSet<T> set) {
+        for (Map.Entry<T, Integer> entry : set.map.entrySet()) {
+            update(entry.getKey(), entry.getValue());
+        }
+    }
+
+    public static <T> MultiSet<T> merge(MultiSet<T> a, MultiSet<T> b) {
+        if (a.distinct() < b.distinct()) {
+            MultiSet<T> tmp = a;
+            a = b;
+            b = tmp;
+        }
+        a.addAll(b);
+        return a;
+    }
+
+    @Override
+    public String toString() {
+        return map.toString();
     }
 }

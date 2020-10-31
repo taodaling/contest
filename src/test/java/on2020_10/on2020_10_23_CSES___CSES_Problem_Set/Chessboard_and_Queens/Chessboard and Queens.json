@@ -1,0 +1,45 @@
+{
+  "name" : "Chessboard and Queens",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "........\n........\n..*.....\n........\n........\n.....**.\n...*....\n........\n",
+    "output" : "65\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : ".*\n*.",
+    "output" : "1",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "..\n..",
+    "output" : "2",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx512M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_10.on2020_10_23_CSES___CSES_Problem_Set.Chessboard_and_Queens.ChessboardAndQueens",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.10.23",
+  "contestName" : "CSES - CSES Problem Set",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "java.io.PrintWriter",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

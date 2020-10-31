@@ -8,8 +8,57 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.IntFunction;
 
 public class SequenceUtils {
+    public static <T> T[] pack(IntFunction<T[]> func, T[]... arr) {
+        int len = Arrays.stream(arr).mapToInt(x -> x.length).sum();
+        T[] ans = func.apply(len);
+        int wpos = 0;
+        for (T[] x : arr) {
+            for (T y : x) {
+                ans[wpos++] = y;
+            }
+        }
+        return ans;
+    }
+
+    public static int[] pack(IntFunction<int[]> func, int[]... arr) {
+        int len = Arrays.stream(arr).mapToInt(x -> x.length).sum();
+        int[] ans = func.apply(len);
+        int wpos = 0;
+        for (int[] x : arr) {
+            for (int y : x) {
+                ans[wpos++] = y;
+            }
+        }
+        return ans;
+    }
+
+    public static long[] pack(IntFunction<long[]> func, long[]... arr) {
+        int len = Arrays.stream(arr).mapToInt(x -> x.length).sum();
+        long[] ans = func.apply(len);
+        int wpos = 0;
+        for (long[] x : arr) {
+            for (long y : x) {
+                ans[wpos++] = y;
+            }
+        }
+        return ans;
+    }
+
+    public static double[] pack(IntFunction<double[]> func, double[]... arr) {
+        int len = Arrays.stream(arr).mapToInt(x -> x.length).sum();
+        double[] ans = func.apply(len);
+        int wpos = 0;
+        for (double[] x : arr) {
+            for (double y : x) {
+                ans[wpos++] = y;
+            }
+        }
+        return ans;
+    }
+
     /**
      * Find a index k while data[k] >= x and data[k - 1] < x. If it doesn't exist, r+1 will return.
      */
@@ -509,7 +558,7 @@ public class SequenceUtils {
         reverse(data, 0, data.size() - 1);
     }
 
-    public static <T> void reverse(T[] data){
+    public static <T> void reverse(T[] data) {
         reverse(data, 0, data.length - 1);
     }
 
