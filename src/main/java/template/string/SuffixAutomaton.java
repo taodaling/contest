@@ -1,5 +1,12 @@
 package template.string;
 
+import template.primitve.generated.datastructure.IntToIntegerFunction;
+
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.List;
+
 /**
  * Created by dalt on 2018/5/25.
  */
@@ -7,21 +14,37 @@ public class SuffixAutomaton {
     final int minCharacter;
     final int maxCharacter;
     final int alphabet;
-    Node root;
-    Node buildLast;
-    Node matchLast;
-    int matchLength;
+    public SANode root;
+    public SANode buildLast;
+    public SANode matchLast;
+    public int matchLength;
+    public List<SANode> all = new ArrayList<>();
+    public boolean sorted = true;
 
-    public int lengthMatch(){
-        return matchLength;
+    public long realTimeDistinctSubstr = -1;
+
+    public void enableDistinctSubstr() {
+        realTimeDistinctSubstr = 0;
     }
 
     public SuffixAutomaton(int minCharacter, int maxCharacter) {
         this.minCharacter = minCharacter;
         this.maxCharacter = maxCharacter;
         alphabet = maxCharacter - minCharacter + 1;
-        buildLast = root = new Node(alphabet);
+        buildLast = root = newNode();
         root.fail = null;
+    }
+
+    private SANode newNode() {
+        SANode ans = new SANode(alphabet);
+        all.add(ans);
+        return ans;
+    }
+
+    private SANode cloneNode(SANode x) {
+        SANode ans = x.clone();
+        all.add(ans);
+        return ans;
     }
 
     public void beginMatch() {
@@ -29,7 +52,7 @@ public class SuffixAutomaton {
         matchLength = 0;
     }
 
-    public void match(char c) {
+    public void match(int c) {
         int index = c - minCharacter;
         if (matchLast.next[index] != null) {
             matchLast = matchLast.next[index];
@@ -48,31 +71,38 @@ public class SuffixAutomaton {
         }
     }
 
-    public void build(char c) {
+    public void build(int c) {
+        sorted = false;
         int index = c - minCharacter;
-        Node now = new Node(alphabet);
+        SANode now = newNode();
         now.maxlen = buildLast.maxlen + 1;
 
-        Node p = visit(index, buildLast, null, now);
+        SANode p = visit(index, buildLast, null, now);
         if (p == null) {
             now.fail = root;
         } else {
-            Node q = p.next[index];
+            SANode q = p.next[index];
             if (q.maxlen == p.maxlen + 1) {
                 now.fail = q;
             } else {
-                Node clone = q.clone();
+                SANode clone = cloneNode(q);
                 clone.maxlen = p.maxlen + 1;
-
                 now.fail = q.fail = clone;
+                if (realTimeDistinctSubstr != -1) {
+                    realTimeDistinctSubstr -= q.maxlen - clone.fail.maxlen;
+                    realTimeDistinctSubstr += q.maxlen - q.fail.maxlen;
+                    realTimeDistinctSubstr += clone.maxlen - clone.fail.maxlen;
+                }
                 visit(index, p, q, clone);
             }
         }
-
+        if (realTimeDistinctSubstr != -1) {
+            realTimeDistinctSubstr += now.maxlen - now.fail.maxlen;
+        }
         buildLast = now;
     }
 
-    public Node visit(int index, Node trace, Node target, Node replacement) {
+    public SANode visit(int index, SANode trace, SANode target, SANode replacement) {
         while (trace != null && trace.next[index] == target) {
             trace.next[index] = replacement;
             trace = trace.fail;
@@ -80,19 +110,78 @@ public class SuffixAutomaton {
         return trace;
     }
 
-    public static class Node implements Cloneable {
-        Node[] next;
-        Node fail;
-        int maxlen;
+    public void topoSort() {
+        if (sorted) {
+            return;
+        }
+        sorted = true;
+        Deque<SANode> dq = new ArrayDeque<>(all.size());
+        for (SANode node : all) {
+            if (node.fail != null) {
+                node.fail.indeg++;
+            }
+        }
+        for (SANode node : all) {
+            if (node.indeg == 0) {
+                dq.addLast(node);
+            }
+        }
+        all.clear();
+        while (!dq.isEmpty()) {
+            SANode head = dq.removeFirst();
+            all.add(head);
+            if (head.fail != null) {
+                head.fail.indeg--;
+                if (head.fail.indeg == 0) {
+                    dq.addLast(head.fail);
+                }
+            }
+        }
+    }
 
-        public Node(int alphabet){
-            next = new Node[alphabet];
+    public void calcRight(IntToIntegerFunction func, int n) {
+        topoSort();
+        beginMatch();
+        for (int i = 0; i < n; i++) {
+            match(func.apply(i));
+            matchLast.right++;
+        }
+        for (SANode node : all) {
+            if (node.fail != null) {
+                node.fail.right += node.right;
+            }
+        }
+    }
+
+
+    public static class SANode implements Cloneable {
+        public SANode[] next;
+        /**
+         * right最小的一个顶点，且满足fail.right是right的真超集
+         */
+        public SANode fail;
+        /**
+         * 对于每个right集合中的元素r，以及minLength()<=i<=maxlen, S[r-i+1,r]都会转移到这个状态
+         */
+        public int maxlen;
+        /**
+         * right表示这个子串在S中出现的右端点位置
+         */
+        public int right;
+        public int indeg;
+
+        public SANode(int alphabet) {
+            next = new SANode[alphabet];
+        }
+
+        public int minLength() {
+            return fail == null ? 0 : fail.maxlen + 1;
         }
 
         @Override
-        public Node clone() {
+        public SANode clone() {
             try {
-                Node res = (Node) super.clone();
+                SANode res = (SANode) super.clone();
                 res.next = res.next.clone();
                 return res;
             } catch (CloneNotSupportedException e) {

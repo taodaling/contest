@@ -1,0 +1,45 @@
+{
+  "name" : "F - Sum of Abs",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4 4\n4 1 2 3\n0 2 -3 1\n1 2\n2 3\n3 4\n4 2\n",
+    "output" : "1\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "10 12\n733454 729489 956011 464983 822120 364691 271012 762026 751760 965431\n-817837 -880667 -822819 -131079 740891 581865 -191711 -383018 273044 476880\n3 1\n4 1\n6 9\n3 8\n1 6\n10 5\n5 6\n1 5\n4 3\n7 1\n7 4\n10 3\n",
+    "output" : "2306209\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "4 2\n1 1 1 1\n1 1 -1 -1\n1 2\n3 4\n",
+    "output" : "4\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_10.on2020_10_31_AtCoder___AtCoder_Regular_Contest_107.F___Sum_of_Abs.FSumOfAbs",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "on2020_10.on2020_10_31_AtCoder___AtCoder_Regular_Contest_107.F___Sum_of_Abs.FSumOfAbsTestCase" ],
+  "date" : "2020.10.31",
+  "contestName" : "AtCoder - AtCoder Regular Contest 107",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

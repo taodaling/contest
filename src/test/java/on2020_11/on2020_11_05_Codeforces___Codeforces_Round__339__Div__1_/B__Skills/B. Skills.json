@@ -1,0 +1,70 @@
+{
+  "name" : "B. Skills",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 5 10 1 5\n1 3 1\n",
+    "output" : "12\n2 5 2 \n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "3 5 10 1 339\n1 3 1\n",
+    "output" : "35\n5 5 5 \n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "3 5 0 0 100\n0 0 0",
+    "output" : "0\n0 0 0",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "3 5 1 1 1\n0 5 0",
+    "output" : "1\n1 5 0",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "3 10 0 1 10\n0 0 6",
+    "output" : "5\n5 5 6",
+    "index" : 4,
+    "active" : true
+  }, {
+    "input" : "3 5 1 10 10\n0 0 0",
+    "output" : "30\n3 3 3",
+    "index" : 5,
+    "active" : true
+  }, {
+    "input" : "",
+    "output" : "",
+    "index" : 6,
+    "active" : true
+  }, {
+    "input" : "1 10 10 1 10\n9",
+    "output" : "20\n10",
+    "index" : 7,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_11.on2020_11_05_Codeforces___Codeforces_Round__339__Div__1_.B__Skills.BSkills",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.11.05",
+  "contestName" : "Codeforces - Codeforces Round #339 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

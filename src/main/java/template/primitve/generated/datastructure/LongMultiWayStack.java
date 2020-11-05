@@ -85,6 +85,7 @@ public class LongMultiWayStack {
         Arrays.fill(heads, 0, stackNum, 0);
     }
 
+
     public boolean isEmpty(int qId) {
         return heads[qId] == 0;
     }

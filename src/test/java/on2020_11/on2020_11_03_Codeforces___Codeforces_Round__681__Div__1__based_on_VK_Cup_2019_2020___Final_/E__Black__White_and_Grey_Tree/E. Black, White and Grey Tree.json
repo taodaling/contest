@@ -1,0 +1,35 @@
+{
+  "name" : "E. Black, White and Grey Tree",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4\n2\n1 1\n1 2\n4\n1 2 1 2\n1 2\n2 3\n3 4\n5\n1 1 0 1 2\n1 2\n2 3\n3 4\n3 5\n8\n1 2 1 2 2 2 1 2\n1 3\n2 3\n3 4\n4 5\n5 6\n5 7\n5 8\n",
+    "output" : "1\n3\n2\n3\n",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx512M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_11.on2020_11_03_Codeforces___Codeforces_Round__681__Div__1__based_on_VK_Cup_2019_2020___Final_.E__Black__White_and_Grey_Tree.EBlackWhiteAndGreyTree",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.11.03",
+  "contestName" : "Codeforces - Codeforces Round #681 (Div. 1, based on VK Cup 2019-2020 - Final)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

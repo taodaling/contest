@@ -1,0 +1,45 @@
+{
+  "name" : "#2102. 「TJOI2015」弦论",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "aabc\n0 3\n",
+    "output" : "aab\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "aabc\n1 3\n",
+    "output" : "aa",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "xjadyaapxgwphoajsgmqqxtpiozrumltvnywnalmhjdoadzsjmjcjctrtulphyjemjazkootxrhxvjsgvbkgfgayanojlzoxiqzugnngexfbgxibysheyhezwskirafcrgwztmfajlbpkjqlezrcjvdfqonjovlhdkhxwozfbaummmzqnqsylyebmtlcqykuittgjslnuhbgvawjqrhbrnfdjsfbqrxbkqhwktjfcknykmjcfsfwgkzrcgsvyqwkidityrabdnbpzkrgcxckhbbmkwjkofuykftlwtmcjnrkzjrbgtmpxpdhnmrdtncesxprrdtcskmrvfsbzgrwwuflhypcltggsxzlaunugclchgdgmwektlycjpexknfckgonabhgdvilbotpmaaflyjxnowxbbblhpajrkpwfajgqfvchxksxtrmhnlkqnyzcyiviyunadvqktursemqydchtosldqlfqtdztxotcmlnfgexmspmyuurkoengpuwjxxeumazylmftsegnuslooeaeinkyhhjfenbsnasboxujecwyxhonlosvdctklersuvmjxfkmehxijtgicwwnmoipsecgktyeqkooracwjzevundwjzjyptnkzpqklqqbcgrujtqsuwnojtkvuvtkriuqymclcvogdiambsfypumanzviuqulzqezeikgdamhipvmjckyxybmxwwunshoilnmwxubzjkiygujigiheluejsyylhmttziryesyndgnjcxrihzosvsbnsayaouvocmmiekwhsjsuimepntjinnxinykbsfrwteezqcjjobfwnkoafxkskiczgmdaruwmacmrfvctyjpotdqadbtnlxptksvdorqpvciazmvzvnnrservfmlskanuuixibpzwtjzsvusrhhkclbxsoimakzuehtpijofcygxvarokyymkaleqwrqgqmnafeiqsptsvqqwjeihdutffyxbrn\n0 49708",
+    "output" : "cknykmjcfsfwgkzrcgsvyqwkidityrabdnbpzkrgcxckhbbmkwjkofuykftlwtmcjnrkzjrbgtmpxpdhnmrdtncesxprrdtcskmrvfsbzgrwwuflhypcltggsxzlaunugclchgdgmwektlycjpexknfckgonabhgdvilbotpmaaflyjxnowxbbblhpajrkpwfajgqfvchxksxtrmhnlkqnyzcyiviyunadvqktursemqydchtosldqlfqtdztxotcmlnfgexmspmyuurkoengpuwjxxeumazylmftsegnuslooeaeinkyhhjfenbsnasboxujecwyxhonlosvdctklersuvmjxfkmehxijtgicwwnmoipsecgktyeqkooracwjzevundwjzjyptnkzpqklqqbcgrujtqsuwnojtkvuvtkriuqymclcvogdiambsfypumanzviuqulzqezeikgdamhipvmjckyxybmxwwunshoilnmwxubzjkiygujigiheluejsyylhmttziryesyndgnjcxrihzosvsbnsayaouvocmmiekwhsjsuimepntjinnxinykbsfrwteezqcjjobfwnkoafxkskiczgmdaruwmacmrfvctyjpotdqadbtnlxptksvdorqpvciazmvzvnnrservfmlskanuuixibpzwtjzsvusrhhkclbxsoimakzuehtpijofcygxvarokyymkaleqwrqgqmnafeiqsptsvqqwjei",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.TJOI2015",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.11.01",
+  "contestName" : "LibreOJ",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : false
+}

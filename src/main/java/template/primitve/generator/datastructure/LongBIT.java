@@ -48,6 +48,13 @@ public class LongBIT {
     }
 
     /**
+     * 将A[i]更新为x
+     */
+    public void set(int i, long x) {
+        update(i, x - query(i, i));
+    }
+
+    /**
      * 将A全部清0
      */
     public void clear() {

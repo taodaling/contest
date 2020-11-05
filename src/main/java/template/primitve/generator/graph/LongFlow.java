@@ -32,7 +32,7 @@ public class LongFlow {
         }
         visited[root] = true;
         for (LongFlowEdge e : g[root]) {
-            if (e.rev.flow > 0) {
+            if (!DigitUtils.equal(e.rev.flow, 0)) {
                 dfs(g, visited, e.to);
             }
         }

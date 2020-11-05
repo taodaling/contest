@@ -1,0 +1,50 @@
+{
+  "name" : "F - Silver Woods",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2\n0 -40\n0 40\n",
+    "output" : "40\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "4\n0 -10\n99 10\n0 91\n99 -91\n",
+    "output" : "50.5\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "10\n-90 40\n20 -30\n0 -90\n10 -70\n80 70\n-90 30\n-20 -80\n10 90\n50 30\n60 -70\n",
+    "output" : "33.541019662496845446\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "10\n65 -90\n-34 -2\n62 99\n42 -13\n47 -84\n84 87\n16 -78\n56 35\n90 8\n90 19\n",
+    "output" : "35.003571246374276203\n",
+    "index" : 3,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_11.on2020_11_04_AtCoder___AtCoder_Beginner_Contest_181.F___Silver_Woods.FSilverWoods",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.11.04",
+  "contestName" : "AtCoder - AtCoder Beginner Contest 181",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

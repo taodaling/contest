@@ -1,0 +1,50 @@
+{
+  "name" : "E - Popping Balls",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 3\n",
+    "output" : "20\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "4 4\n",
+    "output" : "67\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "7 9\n",
+    "output" : "7772\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "1987 1789\n",
+    "output" : "456315553\n",
+    "index" : 3,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.EPoppingBalls",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.11.04",
+  "contestName" : "AtCoder - CODE FESTIVAL 2017 qual B",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

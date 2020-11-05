@@ -35,7 +35,7 @@ public class RMQ {
         }
     }
 
-    public <T> void reset(int l, int r, IntegerComparator comp) {
+    public void reset(int l, int r, IntegerComparator comp) {
         int len = r - l + 1;
         stack.expandStackNum(len);
         stack.clear();

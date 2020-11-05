@@ -1,2 +1,2 @@
-40 src/main/java/contest/G. Death DBMS.json
+52 src/main/java/contest/D. Kingdom and its Cities.json
 0

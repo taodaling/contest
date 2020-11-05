@@ -69,10 +69,16 @@ public class DinicBipartiteMatch {
         return ans;
     }
 
+    /**
+     * Find the mate of left i or -1 means nobody
+     */
     public int mateOfLeft(int i) {
         return lMates[i];
     }
 
+    /**
+     * Find the mate of right i or -1 means nobody
+     */
     public int mateOfRight(int i) {
         return rMates[i];
     }

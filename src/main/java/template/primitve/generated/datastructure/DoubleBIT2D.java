@@ -47,6 +47,13 @@ public class DoubleBIT2D {
     }
 
     /**
+     * 将A[x][y] 更新为mod
+     */
+    public void set(int x, int y, double mod) {
+        update(x, y, mod - rect(x, x, y, y));
+    }
+
+    /**
      * 将A全部清0
      */
     public void clear() {
