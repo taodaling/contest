@@ -37,6 +37,17 @@ public class RandomWrapper {
         return random;
     }
 
+    public int range(int... x) {
+        return x[nextInt(0, x.length - 1)];
+    }
+
+    public char range(char... x) {
+        return x[nextInt(0, x.length - 1)];
+    }
+
+    public <T> T rangeT(T... x) {
+        return x[nextInt(0, x.length - 1)];
+    }
 
     public static final RandomWrapper INSTANCE = new RandomWrapper(new Random());
 }

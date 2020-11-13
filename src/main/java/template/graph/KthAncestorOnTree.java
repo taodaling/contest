@@ -17,7 +17,7 @@ public class KthAncestorOnTree {
     int[][] jump;
     List<? extends DirectedEdge>[] g;
 
-    public int alloc(int n) {
+    private int alloc(int n) {
         int ans = memIndicator;
         memIndicator += n;
         if(memIndicator > mem.length){

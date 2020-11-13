@@ -27,6 +27,10 @@ public class ACAutomaton {
         return allNodes;
     }
 
+    public Node getRoot(){
+        return root;
+    }
+
     private Node addNode() {
         Node node = new Node(range);
         node.id = allNodes.size();
@@ -45,9 +49,15 @@ public class ACAutomaton {
         buildLast = root;
     }
 
-    public void endBuilding() {
-        //treeOrder = new ArrayList<>(allNodes.size());
-        //treeOrder.add(root);
+    public List<ACAutomaton.Node> getTreeOrder() {
+        return treeOrder;
+    }
+
+    public void endBuilding(boolean calcTreeOrder) {
+        if (calcTreeOrder) {
+            treeOrder = new ArrayList<>(allNodes.size());
+            treeOrder.add(root);
+        }
         Deque<Node> deque = new ArrayDeque(allNodes.size());
         for (int i = 0; i < range; i++) {
             if (root.next[i] != null) {
@@ -57,7 +67,9 @@ public class ACAutomaton {
 
         while (!deque.isEmpty()) {
             Node head = deque.removeFirst();
-            //treeOrder.add(head);
+            if (calcTreeOrder) {
+                treeOrder.add(head);
+            }
             Node fail = visit(head.father.fail, head.index);
             if (fail == null) {
                 head.fail = root;
@@ -122,10 +134,10 @@ public class ACAutomaton {
         public Node[] next;
         public Node fail;
         public Node father;
-        int index;
+        public int index;
         public int id;
-        int cnt;
-        int preSum;
+        public int cnt;
+        public int preSum;
 
         public int getId() {
             return id;

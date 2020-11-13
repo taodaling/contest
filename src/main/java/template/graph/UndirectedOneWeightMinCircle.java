@@ -32,12 +32,18 @@ public class UndirectedOneWeightMinCircle {
     }
 
     /**
+     * <pre>
      * 搜索包含root的最小环，并保存在circle中。（如果circle的大小为0表示无解），否则
      * 找到长度小于circle.size()的包含root的最小的环。
-     * <br>
+     * </pre>
+     * <pre>
      * 返回结果表示是否找到这样的环。
+     * </pre>
+     * <pre>
+     *  时间复杂度O(V+E)
+     * </pre>
      */
-    public boolean optimize(int root, IntegerArrayList circle) {
+    public boolean findCircle(int root, IntegerArrayList circle, int best) {
         Arrays.fill(dist, -1);
         Arrays.fill(prev, -1);
         Arrays.fill(tag, null);
@@ -71,9 +77,12 @@ public class UndirectedOneWeightMinCircle {
         }
 
         UndirectedEdge cross = null;
-        int best = circle.size() == 0 ? g.length + 1 : circle.size();
+        best = Math.min(best, circle.size() == 0 ? g.length + 1 : circle.size());
         while (!dq.isEmpty()) {
             int head = dq.removeFirst();
+            if (dist[head] * 2 + 1 >= best) {
+                break;
+            }
             for (UndirectedEdge e : g[head]) {
                 if (dist[e.to] != -1) {
                     if (e.to != root && tag[e.to] != tag[head] && best > dist[head] + dist[e.to] + 1) {

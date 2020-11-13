@@ -4,6 +4,7 @@ import java.math.BigInteger;
 
 public class BigCombination {
     public static BigInteger combination(long m, long n) {
+        n = Math.min(n, m - n);
         if (m < n) {
             return BigInteger.ZERO;
         }

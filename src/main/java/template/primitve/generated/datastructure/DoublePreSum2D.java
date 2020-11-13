@@ -19,7 +19,11 @@ public class DoublePreSum2D {
         }
     }
 
-    double rect(int low, int hi, int l, int r) {
+    public double rect(int low, int hi, int l, int r) {
         return ps[hi + 1][r + 1] - ps[low][r + 1] - ps[hi + 1][l] + ps[low][l];
+    }
+
+    public double leftTopCorder(int hi, int r) {
+        return ps[hi + 1][r + 1];
     }
 }

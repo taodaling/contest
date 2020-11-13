@@ -1,0 +1,45 @@
+{
+  "name" : "E - Handshake",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5 3\n10 14 19 34 33\n",
+    "output" : "202\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "9 14\n1 3 5 110 24 21 34 5 3\n",
+    "output" : "1837\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "9 73\n67597 52981 5828 66249 75177 64141 40773 79105 16076\n",
+    "output" : "8128170\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.EHandshake",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.11.11",
+  "contestName" : "AtCoder - AtCoder Beginner Contest 149",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

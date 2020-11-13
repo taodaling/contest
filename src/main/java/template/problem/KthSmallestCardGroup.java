@@ -1,10 +1,10 @@
 package template.problem;
 
-import template.primitve.generated.datastructure.LongArrayList;
 import template.rand.Randomized;
 
 import java.util.Arrays;
 import java.util.PriorityQueue;
+import java.util.function.LongConsumer;
 
 /**
  * There are n groups of cards, now select one card from each group, call such set valid.
@@ -15,7 +15,7 @@ public class KthSmallestCardGroup {
     private int start;
     private long sum;
 
-    public KthSmallestCardGroup(long[][] groups) {
+    public KthSmallestCardGroup(long[]... groups) {
         this.groups = groups;
         Arrays.sort(groups, (a, b) -> Integer.compare(a.length, b.length));
         start = 0;
@@ -35,13 +35,17 @@ public class KthSmallestCardGroup {
     }
 
     /**
-     * result[i] store the i+1-th smallest sum of valid set
+     * <pre>
+     * Find 1,2,...,kth smallest sum of valid set in order.
+     * </pre>
+     * <pre>
+     * O(klog k) complexity
+     * </pre>
      */
-    public LongArrayList theFirstKSmallestSet(int k) {
-        LongArrayList ans = new LongArrayList(k);
+    public void theFirstKSmallestSet(int k, LongConsumer consumer) {
         if (start == groups.length) {
-            ans.add(sum);
-            return ans;
+            consumer.accept(sum);
+            return;
         }
 
         PriorityQueue<State> pq = new PriorityQueue<>(3 * k, (a, b) -> Long.compare(a.val, b.val));
@@ -50,7 +54,7 @@ public class KthSmallestCardGroup {
         while (k > 0 && !pq.isEmpty()) {
             k--;
             State head = pq.remove();
-            ans.add(head.val);
+            consumer.accept(head.val);
 
             if (head.cId + 1 < groups[head.gId].length) {
                 pq.add(new State(head.val + groups[head.gId][head.cId + 1],
@@ -67,7 +71,6 @@ public class KthSmallestCardGroup {
             }
         }
 
-        return ans;
     }
 
     private static class State {

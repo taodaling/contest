@@ -1,7 +1,5 @@
 package contest;
 
-import template.graph.ForestDiameter;
-import template.graph.TreeDiameter;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.primitve.generated.IntegerMultiWayDeque;

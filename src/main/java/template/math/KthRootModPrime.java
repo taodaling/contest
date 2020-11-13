@@ -6,9 +6,9 @@ import java.util.HashMap;
  * https://judge.yosupo.jp/submission/7053
  */
 public class KthRootModPrime {
-    public long kth_root(long a, long k, long p) {
+    public static long kth_root(long a, long k, long p) {
         if (k == 0) return a == 1 ? 1 : -1;
-        if (k >0 && a == 0) return 0;
+        if (k > 0 && a == 0) return 0;
         long g = gcd(k, p - 1);
         if (pow(a, (p - 1) / g, p) != 1)
             return -1;
@@ -29,7 +29,7 @@ public class KthRootModPrime {
         return a;
     }
 
-    private long peth_root(long a, long p, int e, long mod) {
+    private static long peth_root(long a, long p, int e, long mod) {
         long q = mod - 1;
         int s = 0;
         while (q % p == 0) {
@@ -51,7 +51,8 @@ public class KthRootModPrime {
             add = add * mul % mod;
         }
         mul = inv(pow(c, pow(p, s - 1, mod - 1), mod), mod);
-        out: for (int i = e; i < s; ++i) {
+        out:
+        for (int i = e; i < s; ++i) {
             long err = inv(pow(ans, pe, mod), mod) * a % mod;
             long target = pow(err, pow(p, s - 1 - i, mod - 1), mod);
             for (int j = 0; j <= v; ++j) {
@@ -67,7 +68,7 @@ public class KthRootModPrime {
         return ans;
     }
 
-    private int cnt(long a, long base, long p) {
+    private static int cnt(long a, long base, long p) {
         int ret = 0;
         while (a != 1) {
             a = pow(a, base, p);
@@ -76,7 +77,7 @@ public class KthRootModPrime {
         return ret;
     }
 
-    private long inv(long a, long p) {
+    private static long inv(long a, long p) {
         a %= p;
         long u = 1, v = 0;
         long b = p;
@@ -97,7 +98,7 @@ public class KthRootModPrime {
         return u < 0 ? u + p : u;
     }
 
-    private long pow(long a, long n, long p) {
+    private static long pow(long a, long n, long p) {
         n %= p - 1;
         long r = 1;
         for (; n > 0; n >>= 1, a = a * a % p)
@@ -106,7 +107,7 @@ public class KthRootModPrime {
         return r;
     }
 
-    private long gcd(long a, long b) {
+    private static long gcd(long a, long b) {
         return a == 0 ? b : gcd(b % a, a);
     }
 }

@@ -1,0 +1,40 @@
+{
+  "name" : "D. Power Tree",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2 5\n1 1 3\n1 2 5\n1 3 7\n1 4 11\n2 1\n",
+    "output" : "344\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "5 5\n1 1 4\n1 2 3\n2 2\n1 2 7\n2 1\n",
+    "output" : "14\n94\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_11.on2020_11_13_Codeforces___Codeforces_Round__336__Div__1_.D__Power_Tree.DPowerTree",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.11.13",
+  "contestName" : "Codeforces - Codeforces Round #336 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

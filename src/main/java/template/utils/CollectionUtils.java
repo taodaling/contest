@@ -63,4 +63,8 @@ public class CollectionUtils {
         }
         return ans;
     }
+
+    public static <T> T pop(List<T> list) {
+        return list.remove(list.size() - 1);
+    }
 }

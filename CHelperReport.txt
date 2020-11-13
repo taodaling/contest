@@ -1,2 +1,4 @@
-52 src/main/java/contest/D. Kingdom and its Cities.json
+36 src/main/java/contest/Coin Grid.json
+2
 0
+1

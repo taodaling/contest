@@ -15,6 +15,19 @@ public class IntegerPriorityQueue implements Cloneable {
         this.comparator = comparator;
     }
 
+    public IntegerPriorityQueue(int n, IntegerComparator comparator, IntegerFunction generator) {
+        this.data = new int[n + 1];
+        this.comparator = comparator;
+
+        for (int i = 1; i <= n; i++) {
+            data[i] = generator.apply(i - 1);
+        }
+        size = n;
+        for (int i = n; i >= 1; i--) {
+            shiftDown(i);
+        }
+    }
+
     private int left(int i) {
         return i << 1;
     }

@@ -21,8 +21,8 @@ public class ExpressionSolver {
      * The time complexity of this method is O(log2(max(a,b)))</p>
      */
     public static long findWaysToAssignXYSatisfyEquation(long a, long b, long c, long xl, long xr, long yl, long yr) {
-        if(a == 0 && b == 0){
-            if(c == 0 && xr >= xl && yr >= yl){
+        if (a == 0 && b == 0) {
+            if (c == 0 && xr >= xl && yr >= yl) {
                 return (xr - xl + 1) * (yr - yl + 1);
             }
             return 0;
@@ -53,30 +53,30 @@ public class ExpressionSolver {
     /**
      * 1 + 2 + ... + n
      */
-    public static long sumOfIncrementSequence(int n) {
-        return (long) (1 + n) * n / 2;
+    public static long sumOfIncrementSequence(long n) {
+        return (1 + n) * n / 2;
     }
 
     /**
      * l + (l + 1) + ... + (r - 1) + r
      */
-    public static long sumOfIncrementSequence(int l, int r) {
+    public static long sumOfIncrementSequence(long l, long r) {
         return sumOfIncrementSequence(r) - sumOfIncrementSequence(l - 1);
     }
 
     /**
      * sum_{i=0}^y \lfloor i/x \rfloor
      */
-    public static long sumOfImmutableDenominator(int x, int y) {
-        int round = y / x;
-        int extra = y - round * x + 1;
-        return sumOfIncrementSequence(round - 1) * x + (long) extra * round;
+    public static long sumOfImmutableDenominator(long x, long y) {
+        long round = y / x;
+        long extra = y - round * x + 1;
+        return sumOfIncrementSequence(round - 1) * x + extra * round;
     }
 
     /**
      * sum_{i=b}^y \lfloor i/x \rfloor
      */
-    public static long sumOfImmutableDenominator(int b, int x, int y) {
+    public static long sumOfImmutableDenominator(long b, long x, long y) {
         if (b == 0) {
             return sumOfImmutableDenominator(x, y);
         }
@@ -87,9 +87,9 @@ public class ExpressionSolver {
     /**
      * sum_{i=l}^r function(\lfloor m / i \rfloor)
      */
-    public static long sumOfFunctionFloorDiv(LongUnaryOperator function, int l, int r, int m) {
+    public static long sumOfFunctionFloorDiv(LongUnaryOperator function, long l, long r, long m) {
         long ans = 0;
-        for (int i = l, j; i <= r; i = j + 1) {
+        for (long i = l, j; i <= r; i = j + 1) {
             j = Math.min(r, m / (m / i));
             ans += function.applyAsLong(i) * (j - i + 1);
         }

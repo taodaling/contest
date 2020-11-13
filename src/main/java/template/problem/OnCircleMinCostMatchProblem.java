@@ -24,6 +24,9 @@ public class OnCircleMinCostMatchProblem {
         return minimumCost;
     }
 
+    /**
+     * Find which house will be lived by person i
+     */
     public int getMateOf(int i){
         return matching[i];
     }

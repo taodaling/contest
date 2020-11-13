@@ -84,29 +84,6 @@ public class DifferenceConstraintSystem {
 
     boolean hasSolution;
 
-    private boolean dijkstraElog2V() {
-        TreeSet<Node> heap = new TreeSet(new Comparator<Node>() {
-            @Override
-            public int compare(DifferenceConstraintSystem.Node a, DifferenceConstraintSystem.Node b) {
-                return a.dist == b.dist ? a.id - b.id : a.dist < b.dist ? -1 : 1;
-            }
-        });
-        heap.addAll(deque);
-        while (!heap.isEmpty()) {
-            Node head = heap.pollFirst();
-            for (Edge edge : head.edges) {
-                Node node = edge.next;
-                if (node.dist <= head.dist + edge.len) {
-                    continue;
-                }
-                heap.remove(node);
-                node.dist = head.dist + edge.len;
-                heap.add(node);
-            }
-        }
-        return true;
-    }
-
     private boolean spfa() {
         while (!deque.isEmpty()) {
             Node head = deque.removeFirst();
@@ -126,45 +103,6 @@ public class DifferenceConstraintSystem {
                 node.times++;
                 node.inque = true;
                 deque.addLast(node);
-            }
-        }
-        return true;
-    }
-
-    private static boolean spfaDfs0(Node root, long dist) {
-        if (root.dist <= dist) {
-            return true;
-        }
-        if (root.instk) {
-            return false;
-        }
-        root.instk = true;
-        root.dist = dist;
-        for (Edge edge : root.edges) {
-            if (!spfaDfs0(edge.next, dist + edge.len)) {
-                return false;
-            }
-        }
-        root.instk = false;
-        return true;
-    }
-
-    private static boolean spfaDfs1(Node root, long dist) {
-        root.instk = true;
-        for (Edge edge : root.edges) {
-            if (!spfaDfs0(edge.next, dist + edge.len)) {
-                return false;
-            }
-        }
-        root.instk = false;
-        return true;
-    }
-
-    private boolean spfaDfs() {
-        while (!deque.isEmpty()) {
-            Node head = deque.removeFirst();
-            if (!spfaDfs1(deque.removeFirst(), head.dist)) {
-                return false;
             }
         }
         return true;

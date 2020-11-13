@@ -243,6 +243,9 @@ public interface MatroidIndependentSet {
         };
     }
 
+    /**
+     * 一个边集是独立的当且仅当删除这些边不会使得图不联通
+     */
     public static MatroidIndependentSet ofDeletionOnGraphRetainConnected(int n, int[][] edges) {
         return new MatroidIndependentSet() {
             int[] left = new int[n];

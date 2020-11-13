@@ -3,6 +3,9 @@ package template.polynomial;
 import template.math.DigitUtils;
 
 public class FastWalshHadamardTransform {
+    /**
+     * res[i] is how many subsets of i occur in p
+     */
     public static void orFWT(long[] p, int l, int r) {
         if (l == r) {
             return;
@@ -16,7 +19,9 @@ public class FastWalshHadamardTransform {
             p[m + 1 + i] = a + b;
         }
     }
-
+    /**
+     * p[i] is the number of subset of i, ret[i] is the occurrence number of number i
+     */
     public static void orIFWT(long[] p, int l, int r) {
         if (l == r) {
             return;
@@ -31,6 +36,9 @@ public class FastWalshHadamardTransform {
         orIFWT(p, m + 1, r);
     }
 
+    /**
+     * res[i] is how many subsets of i occur in p
+     */
     public static void orFWT(int[] p, int l, int r) {
         if (l == r) {
             return;
@@ -45,6 +53,9 @@ public class FastWalshHadamardTransform {
         }
     }
 
+    /**
+     * p[i] is the number of subset of i, ret[i] is the occurrence number of number i
+     */
     public static void orIFWT(int[] p, int l, int r) {
         if (l == r) {
             return;
@@ -59,6 +70,9 @@ public class FastWalshHadamardTransform {
         orIFWT(p, m + 1, r);
     }
 
+    /**
+     * res[i] is how many superset of i occur in p
+     */
     public static void andFWT(long[] p, int l, int r) {
         if (l == r) {
             return;
@@ -73,6 +87,9 @@ public class FastWalshHadamardTransform {
         }
     }
 
+    /**
+     * p[i] is the number of superset of i, ret[i] is the occurrence number of number i
+     */
     public static void andIFWT(long[] p, int l, int r) {
         if (l == r) {
             return;
@@ -87,7 +104,9 @@ public class FastWalshHadamardTransform {
         andIFWT(p, m + 1, r);
     }
 
-
+    /**
+     * res[i] is how many superset of i occur in p
+     */
     public static void andFWT(int[] p, int l, int r) {
         if (l == r) {
             return;
@@ -102,6 +121,9 @@ public class FastWalshHadamardTransform {
         }
     }
 
+    /**
+     * p[i] is the number of superset of i, ret[i] is the occurrence number of number i
+     */
     public static void andIFWT(int[] p, int l, int r) {
         if (l == r) {
             return;

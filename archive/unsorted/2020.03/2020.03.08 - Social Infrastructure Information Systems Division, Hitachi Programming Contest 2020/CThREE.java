@@ -3,7 +3,6 @@ package contest;
 import template.datastructure.DeltaDSU;
 import template.datastructure.XorDeltaDSU;
 import template.graph.Graph;
-import template.graph.TreeDiameter;
 import template.graph.UndirectedEdge;
 import template.io.FastInput;
 import template.io.FastOutput;

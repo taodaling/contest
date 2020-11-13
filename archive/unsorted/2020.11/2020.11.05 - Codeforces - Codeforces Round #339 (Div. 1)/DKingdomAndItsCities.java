@@ -1,5 +1,7 @@
 package contest;
 
+
+
 import template.graph.UndirectedEdge;
 import template.graph.VirtualTree;
 import template.io.FastInput;
@@ -54,8 +56,7 @@ public class DKingdomAndItsCities {
 
     public boolean dfs(int root, int p) {
         int sub = imp[root] == round ? 1 : 0;
-        for (int iter = vt.heads[root]; iter != 0; iter = vt.next[iter]) {
-            int node = vt.vals[iter];
+        for (int node : vt.adj[root]) {
             boolean ans = dfs(node, root);
             sub += ans ? 1 : 0;
         }

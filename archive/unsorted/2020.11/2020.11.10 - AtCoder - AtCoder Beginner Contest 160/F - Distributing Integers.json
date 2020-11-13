@@ -1,0 +1,50 @@
+{
+  "name" : "F - Distributing Integers",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3\n1 2\n1 3\n",
+    "output" : "2\n1\n1\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "2\n1 2\n",
+    "output" : "1\n1\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "5\n1 2\n2 3\n3 4\n3 5\n",
+    "output" : "2\n8\n12\n3\n3\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "8\n1 2\n2 3\n3 4\n3 5\n3 6\n6 7\n6 8\n",
+    "output" : "40\n280\n840\n120\n120\n504\n72\n72\n",
+    "index" : 3,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.FDistributingIntegers",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.11.10",
+  "contestName" : "AtCoder - AtCoder Beginner Contest 160",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

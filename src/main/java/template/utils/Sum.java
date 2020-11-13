@@ -5,6 +5,10 @@ public interface Sum<S, U> extends Cloneable {
 
     void update(U u);
 
+    /**
+     * copy s.data
+     * @param s
+     */
     void copy(S s);
 
     S clone();

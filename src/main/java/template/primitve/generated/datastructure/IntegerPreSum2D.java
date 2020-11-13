@@ -19,7 +19,11 @@ public class IntegerPreSum2D {
         }
     }
 
-    int rect(int low, int hi, int l, int r) {
+    public int rect(int low, int hi, int l, int r) {
         return ps[hi + 1][r + 1] - ps[low][r + 1] - ps[hi + 1][l] + ps[low][l];
+    }
+
+    public int leftTopCorder(int hi, int r) {
+        return ps[hi + 1][r + 1];
     }
 }

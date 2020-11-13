@@ -19,6 +19,90 @@ public class Debug {
         }
     }
 
+    public Debug debugMatrix(String name, int[][] matrix) {
+        if (offline) {
+            StringBuilder content = new StringBuilder("\n");
+            for (int[] row : matrix) {
+                for (int cell : row) {
+                    content.append(cell).append(' ');
+                }
+                content.append(System.lineSeparator());
+            }
+            debug(name, content);
+        }
+        return this;
+    }
+
+    public Debug debugMatrix(String name, char[][] matrix) {
+        if (offline) {
+            StringBuilder content = new StringBuilder("\n");
+            for (char[] row : matrix) {
+                for (char cell : row) {
+                    content.append(cell);
+                }
+                content.append(System.lineSeparator());
+            }
+            debug(name, content);
+        }
+        return this;
+    }
+
+    public Debug debugMatrix(String name, long[][] matrix) {
+        if (offline) {
+            StringBuilder content = new StringBuilder("\n");
+            for (long[] row : matrix) {
+                for (long cell : row) {
+                    content.append(cell).append(' ');
+                }
+                content.append(System.lineSeparator());
+            }
+            debug(name, content);
+        }
+        return this;
+    }
+
+    public Debug debugMatrix(String name, double[][] matrix) {
+        if (offline) {
+            StringBuilder content = new StringBuilder("\n");
+            for (double[] row : matrix) {
+                for (double cell : row) {
+                    content.append(cell).append(' ');
+                }
+                content.append(System.lineSeparator());
+            }
+            debug(name, content);
+        }
+        return this;
+    }
+
+    public Debug debugArray(String name, int[] matrix) {
+        if (offline) {
+            debug(name, Arrays.toString(matrix));
+        }
+        return this;
+    }
+
+    public Debug debugArray(String name, char[] matrix) {
+        if (offline) {
+            debug(name, String.valueOf(matrix));
+        }
+        return this;
+    }
+
+    public Debug debugArray(String name, long[] matrix) {
+        if (offline) {
+            debug(name, Arrays.toString(matrix));
+        }
+        return this;
+    }
+
+    public Debug debugArray(String name, double[] matrix) {
+        if (offline) {
+            debug(name, Arrays.toString(matrix));
+        }
+        return this;
+    }
+
     public Debug debug(String name, Supplier<Object> supplier) {
         if (offline) {
             debug(name, supplier.get());
@@ -85,6 +169,7 @@ public class Debug {
     public Debug debug(String name, Object x) {
         return debug(name, x, empty);
     }
+
 
     public Debug debug(String name, Object x, ArrayIndex ai) {
         if (offline) {

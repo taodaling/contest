@@ -50,6 +50,14 @@ public class IntRadix {
         return x + (val - get(x, i)) * pow[i];
     }
 
+    public int swap(int x, int i, int j) {
+        int a = get(x, i);
+        int b = get(x, j);
+        x = set(x, i, b);
+        x = set(x, j, a);
+        return x;
+    }
+
     public int bitCount() {
         return pow.length;
     }

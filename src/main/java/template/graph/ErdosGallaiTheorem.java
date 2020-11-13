@@ -1,6 +1,9 @@
 package template.graph;
 
+import template.primitve.generated.datastructure.IntegerArrayList;
 import template.primitve.generated.datastructure.IntegerPreSum;
+import template.primitve.generated.datastructure.IntegerPriorityQueue;
+import template.primitve.generated.utils.IntegerBinaryConsumer;
 import template.utils.CompareUtils;
 import template.utils.SequenceUtils;
 
@@ -8,14 +11,43 @@ import template.utils.SequenceUtils;
  * Check whether there is a way to construct a simple undirected graph with specified degrees.
  */
 public class ErdosGallaiTheorem {
-    public static boolean possible(int[] degs) {
-        try {
-            return maxOnAllK(degs) <= 0;
-        } catch (IllegalArgumentException e) {
-            return false;
+    /**
+     * Build a graph in O(\sum_{i} degs[i])
+     *
+     * @param degs
+     * @param consumer
+     */
+    public static void buildGraph(int[] degs, IntegerBinaryConsumer consumer) {
+        IntegerPriorityQueue pq = new IntegerPriorityQueue(degs.length, (i, j) ->
+                -Integer.compare(degs[i], degs[j]), i -> i);
+        IntegerArrayList buf = new IntegerArrayList(degs.length);
+        while (!pq.isEmpty()) {
+            int head = pq.pop();
+            while (degs[head] > 0) {
+                int x = pq.pop();
+                degs[head]--;
+                degs[x]--;
+                buf.add(x);
+                consumer.accept(head, x);
+            }
+            while (!buf.isEmpty()) {
+                pq.add(buf.pop());
+            }
         }
     }
 
+    public static boolean possible(int[] degs) {
+        return maxOnAllK(degs) <= 0;
+    }
+
+    /**
+     * <pre>
+     *  O(n) solution
+     * </pre>
+     * <pre>
+     * return Long.MAX_VALUE for impossible
+     * </pre>
+     */
     public static long maxOnAllK(int[] degs) {
         long sum = 0;
         int min = 0;
@@ -24,7 +56,7 @@ public class ErdosGallaiTheorem {
             min = Math.min(min, degs[i]);
         }
         if (sum % 2 == 1 || min < 0) {
-            throw new IllegalArgumentException();
+            return Long.MAX_VALUE;
         }
         CompareUtils.radixSort(degs, 0, degs.length - 1);
         SequenceUtils.reverse(degs, 0, degs.length - 1);

@@ -1,6 +1,7 @@
 package template.math;
 
 import template.polynomial.ModGravityLagrangeInterpolation;
+import template.primitve.generated.datastructure.Int2ToIntegerFunction;
 import template.utils.SequenceUtils;
 
 import java.util.Arrays;
@@ -23,6 +24,16 @@ public class ModMatrix {
         assert mat.length % m == 0;
         this.mat = mat;
         this.m = m;
+    }
+
+    public ModMatrix(Int2ToIntegerFunction func, int n, int m) {
+        this.mat = new int[n * m];
+        this.m = m;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                mat[i * m + j] = func.apply(i, j);
+            }
+        }
     }
 
     public int getHeight() {
@@ -207,8 +218,8 @@ public class ModMatrix {
         ModMatrix c = new ModMatrix(h, w);
 
         for (int i = 0; i < h; i++) {
-            for (int j = 0; j < w; j++) {
-                for (int k = 0; k < mid; k++) {
+            for (int k = 0; k < mid; k++) {
+                for (int j = 0; j < w; j++) {
                     c.mat[i * w + j] = DigitUtils.modplus(c.mat[i * w + j], (int) ((long) a.mat[i * mid + k] * b.mat[k * w + j] % mod), mod);
                 }
             }

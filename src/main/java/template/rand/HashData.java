@@ -25,7 +25,7 @@ public class HashData {
     }
 
     public HashData(int n) {
-        this(n, (int) 1e9 + 7, RandomWrapper.INSTANCE.nextInt(1, (int) 1e9 + 6));
+        this(n, (int) 1e9 + 7, RandomWrapper.INSTANCE.nextInt(3, (int) 1e9 + 6));
     }
 
     public int hash(int x) {

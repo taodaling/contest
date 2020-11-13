@@ -1,0 +1,35 @@
+{
+  "name" : "P2495 [SDOI2011]消耗战",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "10\n1 5 13\n1 9 6\n2 1 19\n2 4 8\n2 3 91\n5 6 8\n7 5 4\n7 8 31\n10 7 9\n3\n2 10 6\n4 5 7 8 3\n3 9 4 6\n",
+    "output" : "12\n32\n22\n",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx505M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.P2495SDOI2011",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.11.06",
+  "contestName" : "Luogu",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

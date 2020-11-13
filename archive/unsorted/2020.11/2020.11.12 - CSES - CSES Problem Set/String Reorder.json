@@ -1,0 +1,55 @@
+{
+  "name" : "String Reorder",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "HATTIVATTI\n",
+    "output" : "AHATITITVT\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "BAB",
+    "output" : "BAB",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "BBAB",
+    "output" : "-1",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "ABCD",
+    "output" : "ABCD",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "AABBBCCCCC",
+    "output" : "ACACBCBCBC",
+    "index" : 4,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx512M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.StringReorder",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.11.12",
+  "contestName" : "CSES - CSES Problem Set",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

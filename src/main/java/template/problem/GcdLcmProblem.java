@@ -64,7 +64,7 @@ public class GcdLcmProblem {
     private int[] dp;
 
     /**
-     * return the minimum size of subset to ensure all element in subset has gcd | i, INF means impossible.
+     * return the minimum size of subset to ensure all element in subset has gcd | x, INF means impossible.
      */
     public int minimumSizeOfSubsetWhoseGCDDivisibleBy(int x) {
         if (dp == null) {

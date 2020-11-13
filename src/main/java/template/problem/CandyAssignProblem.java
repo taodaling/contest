@@ -18,19 +18,19 @@ import java.util.List;
  * You have to ensure location i has yi candies, while x_0 + x_1 + ... + x_{c_1} = y_0 + y_1 + ... + y_{c_1}.
  */
 public class CandyAssignProblem {
-    private int c;
+    private long c;
     List<Candy> addedCandies;
     Candy[] candies;
     int candieCnt;
     long minimumCost;
 
 
-    public CandyAssignProblem(int c, int exp) {
+    public CandyAssignProblem(long c, int exp) {
         this.c = c;
         addedCandies = new ArrayList<>(exp);
     }
 
-    public void requestOn(int i, int x, int y) {
+    public void requestOn(long i, long x, long y) {
         Candy candy = new Candy();
         candy.location = i;
         candy.x = x;
@@ -38,15 +38,15 @@ public class CandyAssignProblem {
         addedCandies.add(candy);
     }
 
-    public void assignCandyOn(int i, int x) {
+    public void assignCandyOn(long i, long x) {
         requestOn(i, x, 0);
     }
 
-    public void requireCandyOn(int i, int y) {
+    public void requireCandyOn(long i, long y) {
         requestOn(i, 0, y);
     }
 
-    public void solve() {
+    public long solve() {
         if (addedCandies.isEmpty()) {
             addedCandies.add(new Candy());
         }
@@ -92,6 +92,8 @@ public class CandyAssignProblem {
         for (int i = 0; i < candieCnt; i++) {
             minimumCost += Math.abs(candies[i].a) * candies[i].w;
         }
+
+        return minimumCost;
     }
 
     public long minimumCost() {
@@ -104,7 +106,7 @@ public class CandyAssignProblem {
     /**
      * How many candies are delivered from i to i + 1, the returned value could be negative.
      */
-    public long deliverBetween(int i) {
+    public long deliverBetween(long i) {
         tmp.location = i;
         int index = SequenceUtils.lowerBound(candies, tmp, 0, candieCnt - 1, Candy.sortByA);
         if (index < 0) {
@@ -114,13 +116,13 @@ public class CandyAssignProblem {
     }
 
     static class Candy {
-        int location;
-        int x;
-        int y;
+        long location;
+        long x;
+        long y;
 
         long a;
-        int w;
+        long w;
 
-        static Comparator<Candy> sortByA = (a, b) -> Integer.compare(a.location, b.location);
+        static Comparator<Candy> sortByA = (a, b) -> Long.compare(a.location, b.location);
     }
 }
