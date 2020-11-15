@@ -434,8 +434,8 @@ public class IntervalPickProblem {
         public WQSResult solveNonNegative(double cost) {
             Arrays.fill(dp, 0);
             Arrays.fill(time, 0);
-            left.reset();
-            middle.reset();
+            left.clear();
+            middle.clear();
 
             left.addLast(0);
             for (int i = 1; i <= n; i++) {

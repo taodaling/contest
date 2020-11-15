@@ -1,0 +1,40 @@
+{
+  "name" : "Maximum Building II",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : ".\n",
+    "output" : "*\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "4 7\n...*.*.\n.*.....\n.......\n......*\n",
+    "output" : "24 17 13 9 6 3 1 \n16 9 7 5 3 1 0 \n9 3 2 1 0 0 0 \n3 0 0 0 0 0 0\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx512M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.MaximumBuildingII",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.11.15",
+  "contestName" : "CSES - CSES Problem Set",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

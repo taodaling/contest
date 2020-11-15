@@ -68,7 +68,7 @@ public class DominatorTree {
     }
 
     /**
-     * return -1 if we can't access i from root
+     * return -1 if we can't access i from root or i is the root
      */
     public int parent(int i) {
         return idom[i];

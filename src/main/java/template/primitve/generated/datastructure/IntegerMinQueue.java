@@ -12,7 +12,7 @@ public class IntegerMinQueue {
         this.comparator = comparator;
     }
 
-    public void reset() {
+    public void clear() {
         minQueue.clear();
         data.clear();
     }

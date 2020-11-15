@@ -4,7 +4,7 @@ package on2020_11.on2020_11_13_CSES___CSES_Problem_Set.Maximum_Building_I;
 
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.problem.MaximumRectangleAreaProblem;
+import template.problem.RectOnGridProblem;
 import template.utils.Debug;
 
 public class MaximumBuildingI {
@@ -18,7 +18,7 @@ public class MaximumBuildingI {
                 mat[i][j] = in.readChar() == '*' ? 1 : 0;
             }
         }
-        int[] ans = MaximumRectangleAreaProblem.solve((i, j) -> mat[i][j], n, m);
+        int[] ans = RectOnGridProblem.maximumRectArea((i, j) -> mat[i][j], n, m);
         debug.debugMatrix("mat", mat);
         debug.debug("ans", ans);
         out.println(ans[0]);

@@ -2,13 +2,10 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.stream.IntStream;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.io.UncheckedIOException;
-import java.util.List;
-import java.util.stream.Stream;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
@@ -32,167 +29,129 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            CoinGrid solver = new CoinGrid();
+            MaximumBuildingII solver = new MaximumBuildingII();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class CoinGrid {
+    static class MaximumBuildingII {
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.readInt();
-            DinicBipartiteMatch dbm = new DinicBipartiteMatch(n, n);
+            int m = in.readInt();
+            char[][] mat = new char[n][m];
             for (int i = 0; i < n; i++) {
-                for (int j = 0; j < n; j++) {
-                    if (in.readChar() == 'o') {
-                        dbm.addEdge(i, j);
+                in.readString(mat[i], 0);
+            }
+            long[][] ans = RectOnGridProblem.countAvailableRect((i, j) -> mat[i][j] == '*' ? 1 : 0, n, m);
+            for (int i = 1; i <= n; i++) {
+                for (int j = 1; j <= m; j++) {
+                    out.append(ans[i][j]).append(' ');
+                }
+                out.println();
+            }
+        }
+
+    }
+
+    static interface RevokeIterator<E> extends Iterator<E> {
+    }
+
+    static class RectOnGridProblem {
+        public static long[][] countAvailableRect(Int2ToIntegerFunction mat, int n, int m) {
+            long[][] tag = new long[n + 1][m + 1];
+            int[] low = new int[m];
+            boolean[] active = new boolean[m];
+            int[] left = new int[m];
+            int[] right = new int[m];
+            Arrays.fill(low, n);
+            LinkedListBeta<Integer> list = new LinkedListBeta<>();
+            LinkedListBeta.Node<Integer>[] nodes = new LinkedListBeta.Node[m];
+            for (int i = 0; i < m; i++) {
+                nodes[i] = list.addLast(i);
+            }
+            for (int i = n - 1; i >= 0; i--) {
+                for (int j = 0; j < m; j++) {
+                    if (mat.apply(i, j) != 0) {
+                        list.remove(nodes[j]);
+                        list.addLast(nodes[j]);
+                        low[j] = i;
                     }
                 }
-            }
-            dbm.solve();
-            boolean[][] cover = dbm.minVertexCover();
-            int ans = 0;
-            for (boolean[] a : cover) {
-                for (boolean x : a) {
-                    ans += x ? 1 : 0;
-                }
-            }
-            out.println(ans);
-            for (int i = 0; i < n; i++) {
-                if (cover[0][i]) {
-                    out.append(1).append(' ').append(i + 1).println();
-                }
-            }
-            for (int i = 0; i < n; i++) {
-                if (cover[1][i]) {
-                    out.append(2).append(' ').append(i + 1).println();
-                }
-            }
-        }
-
-    }
-
-    static class IntegerFlow {
-        public static <T extends IntegerFlowEdge> void send(T edge, int flow) {
-            edge.flow += flow;
-            edge.rev.flow -= flow;
-        }
-
-        public static IntegerFlowEdge addFlowEdge(List[] g, int s, int t, int cap) {
-            IntegerFlowEdge real = new IntegerFlowEdge(t, 0, true);
-            IntegerFlowEdge virtual = new IntegerFlowEdge(s, cap, false);
-            real.rev = virtual;
-            virtual.rev = real;
-            g[s].add(real);
-            g[t].add(virtual);
-            return real;
-        }
-
-        public static <T extends IntegerFlowEdge> void bfsForFlow(List<T>[] g, int s, int[] dist, int inf, IntegerDeque deque) {
-            Arrays.fill(dist, 0, g.length, inf);
-            dist[s] = 0;
-            deque.clear();
-            deque.addLast(s);
-            while (!deque.isEmpty()) {
-                int head = deque.removeFirst();
-                for (T e : g[head]) {
-                    if (!DigitUtils.equal(e.flow, 0) && dist[e.to] == inf) {
-                        dist[e.to] = dist[head] + 1;
-                        deque.addLast(e.to);
+                Arrays.fill(active, false);
+                for (int j : list) {
+                    int row = low[j] - 1;
+                    int high = row - i + 1;
+                    active[j] = true;
+                    int l = j;
+                    int r = j;
+                    tag[high][1]++;
+                    while (l > 0 && active[l - 1]) {
+                        //merge
+                        int lr = l - 1;
+                        int ll = left[lr];
+                        tag[high][lr - ll + 1]--;
+                        tag[high][r - l + 1]--;
+                        l = ll;
+                        tag[high][r - l + 1]++;
                     }
-                }
-            }
-        }
-
-    }
-
-    static class IntegerDinic implements IntegerMaximumFlow {
-        List<IntegerFlowEdge>[] g;
-        int s;
-        int t;
-        IntegerDeque deque;
-        int[] dists;
-        int[] iterators;
-
-        public IntegerDinic() {
-        }
-
-        public void ensure(int vertexNum) {
-            if (dists != null && dists.length >= vertexNum) {
-                return;
-            }
-            deque = new IntegerDequeImpl(vertexNum);
-            dists = new int[vertexNum];
-            iterators = new int[vertexNum];
-        }
-
-        public int send(int root, int flow) {
-            if (root == t) {
-                return flow;
-            }
-            int snapshot = flow;
-            while (iterators[root] >= 0 && flow > 0) {
-                IntegerFlowEdge e = g[root].get(iterators[root]);
-                if (dists[e.to] + 1 == dists[root] && e.rev.flow != 0) {
-                    int sent = send(e.to, Math.min(flow, e.rev.flow));
-                    if (sent > 0) {
-                        flow -= sent;
-                        IntegerFlow.send(e, sent);
-                        continue;
+                    while (r + 1 < m && active[r + 1]) {
+                        //merge
+                        int rl = r + 1;
+                        int rr = right[rl];
+                        tag[high][rr - rl + 1]--;
+                        tag[high][r - l + 1]--;
+                        r = rr;
+                        tag[high][r - l + 1]++;
                     }
+                    left[l] = left[r] = l;
+                    right[r] = right[l] = r;
                 }
-                iterators[root]--;
             }
-            return snapshot - flow;
-        }
 
-        public int apply(List<IntegerFlowEdge>[] g, int s, int t, int send) {
-            ensure(g.length);
-            this.s = s;
-            this.t = t;
-            this.g = g;
-            int flow = 0;
-            while (flow < send) {
-                IntegerFlow.bfsForFlow(g, t, dists, Integer.MAX_VALUE, deque);
-                if (dists[s] == Integer.MAX_VALUE) {
-                    break;
+            for (int i = n - 1; i >= 0; i--) {
+                for (int j = 0; j <= m; j++) {
+                    tag[i][j] += tag[i + 1][j];
                 }
-                for (int i = 0; i < g.length; i++) {
-                    iterators[i] = g[i].size() - 1;
-                }
-                flow += send(s, send - flow);
             }
-            return flow;
+            for (int i = 1; i <= n; i++) {
+                long cc = 0;
+                long last = 0;
+                for (int j = m; j >= 0; j--) {
+                    cc += tag[i][j];
+                    last += cc;
+                    tag[i][j] = last;
+                }
+            }
+
+            for (int i = 0; i <= m; i++) {
+                tag[0][i] = 0;
+            }
+
+            for (int i = 0; i <= n; i++) {
+                tag[i][0] = 0;
+            }
+
+            return tag;
         }
 
     }
 
-    static class IntegerFlowEdge<T extends IntegerFlowEdge<T>> extends DirectedEdge {
-        public int flow;
-        public boolean real;
-        public T rev;
+    static class CircularLinkedNode<T extends CircularLinkedNode<T>> {
+        public T prev = (T) this;
+        public T next = (T) this;
 
-        public IntegerFlowEdge(int to, int flow, boolean real) {
-            super(to);
-            this.flow = flow;
-            this.real = real;
+        public void attach(T node) {
+            this.next = node.next;
+            this.prev = node;
+            this.next.prev = (T) this;
+            this.prev.next = (T) this;
         }
 
-        public String toString() {
-            return rev.to + "-[" + flow + "/" + (flow + rev.flow) + "]->" + to;
-        }
-
-    }
-
-    static class DirectedEdge {
-        public int to;
-
-        public DirectedEdge(int to) {
-            this.to = to;
-        }
-
-        public String toString() {
-            return "->" + to;
+        public void detach() {
+            this.prev.next = next;
+            this.next.prev = prev;
+            this.next = this.prev = (T) this;
         }
 
     }
@@ -254,21 +213,18 @@ public class Main {
             return val;
         }
 
-        public char readChar() {
+        public int readString(char[] data, int offset) {
             skipBlank();
-            char c = (char) next;
-            next = read();
-            return c;
+
+            int originalOffset = offset;
+            while (next > 32) {
+                data[offset++] = (char) next;
+                next = read();
+            }
+
+            return offset - originalOffset;
         }
 
-    }
-
-    static interface IntegerDeque extends IntegerStack {
-        int removeFirst();
-
-    }
-
-    static interface IntegerMaximumFlow {
     }
 
     static class FastOutput implements AutoCloseable, Closeable, Appendable {
@@ -307,7 +263,7 @@ public class Main {
             return this;
         }
 
-        public FastOutput append(int c) {
+        public FastOutput append(long c) {
             cache.append(c);
             afterWrite();
             return this;
@@ -317,10 +273,6 @@ public class Main {
             cache.append(c);
             afterWrite();
             return this;
-        }
-
-        public FastOutput println(int c) {
-            return append(c).println();
         }
 
         public FastOutput println() {
@@ -353,247 +305,60 @@ public class Main {
 
     }
 
-    static class DigitUtils {
-        private DigitUtils() {
+    static class LinkedListBeta<E> implements Iterable<E> {
+        public LinkedListBeta.Node<E> dummy = new LinkedListBeta.Node<>(null);
+        protected int size;
+
+        public LinkedListBeta.Node<E> addLast(E e) {
+            LinkedListBeta.Node node = new LinkedListBeta.Node(e);
+            return addLast(node);
         }
 
-        public static boolean equal(int a, int b) {
-            return a == b;
+        public LinkedListBeta.Node<E> addLast(LinkedListBeta.Node node) {
+            node.attach(dummy.prev);
+            size++;
+            return node;
         }
 
-    }
-
-    static class DinicBipartiteMatch {
-        private List<IntegerFlowEdge>[] g;
-        private IntegerDinic dinic;
-        private int[] lMates;
-        private int[] rMates;
-        int l;
-        int r;
-
-        private int idOfL(int i) {
-            return i;
+        public void remove(LinkedListBeta.Node<E> node) {
+            node.detach();
+            size--;
         }
 
-        private int idOfR(int i) {
-            return i + l;
-        }
+        public RevokeIterator<E> iterator() {
+            return new RevokeIterator<E>() {
+                LinkedListBeta.Node<E> trace = dummy;
 
-        private int idOfSrc() {
-            return l + r;
-        }
 
-        private int idOfDst() {
-            return idOfSrc() + 1;
-        }
-
-        public DinicBipartiteMatch(int l, int r) {
-            this.l = l;
-            this.r = r;
-            lMates = new int[l];
-            rMates = new int[r];
-            g = Graph.createGraph(idOfDst() + 1);
-            dinic = new IntegerDinic();
-            for (int i = 0; i < l; i++) {
-                IntegerFlow.addFlowEdge(g, idOfSrc(), idOfL(i), 1);
-            }
-            for (int i = 0; i < r; i++) {
-                IntegerFlow.addFlowEdge(g, idOfR(i), idOfDst(), 1);
-            }
-        }
-
-        public void addEdge(int u, int v) {
-            IntegerFlow.addFlowEdge(g, idOfL(u), idOfR(v), 1);
-        }
-
-        public int solve() {
-            Arrays.fill(lMates, -1);
-            Arrays.fill(rMates, -1);
-            dinic.apply(g, idOfSrc(), idOfDst(), l);
-            int ans = 0;
-            for (int i = 0; i < l; i++) {
-                for (IntegerFlowEdge e : g[idOfL(i)]) {
-                    if (e.real && e.flow == 1) {
-                        ans++;
-                        int to = e.to - idOfR(0);
-                        lMates[i] = to;
-                        rMates[to] = i;
-                        break;
-                    }
+                public void revoke() {
+                    trace = trace.prev;
                 }
-            }
-            return ans;
-        }
-
-        public boolean[][] minVertexCover() {
-            boolean[] lVis = new boolean[l];
-            boolean[] rVis = new boolean[r];
-            for (int i = 0; i < r; i++) {
-                if (rMates[i] == -1) {
-                    dfsRight(i, lVis, rVis);
-                }
-            }
-
-            boolean[] left = new boolean[l];
-            boolean[] right = new boolean[r];
-            for (int i = 0; i < l; i++) {
-                left[i] = lVis[i];
-            }
-            for (int i = 0; i < r; i++) {
-                right[i] = !rVis[i];
-            }
-
-            return new boolean[][]{left, right};
-        }
-
-        private void dfsRight(int i, boolean[] lVis, boolean[] rVis) {
-            if (rVis[i]) {
-                return;
-            }
-            rVis[i] = true;
-            for (IntegerFlowEdge e : g[idOfR(i)]) {
-                if (e.real) {
-                    continue;
-                }
-                dfsLeft(e.to - idOfL(0), lVis, rVis);
-            }
-        }
-
-        private void dfsLeft(int i, boolean[] lVis, boolean[] rVis) {
-            if (lMates[i] == -1) {
-                return;
-            }
-            if (lVis[i]) {
-                return;
-            }
-            lVis[i] = true;
-            dfsRight(lMates[i], lVis, rVis);
-        }
-
-    }
-
-    static interface IntegerIterator {
-        boolean hasNext();
-
-        int next();
-
-    }
-
-    static class IntegerDequeImpl implements IntegerDeque {
-        private int[] data;
-        private int bpos;
-        private int epos;
-        private static final int[] EMPTY = new int[0];
-        private int n;
-
-        public IntegerDequeImpl(int cap) {
-            if (cap == 0) {
-                data = EMPTY;
-            } else {
-                data = new int[cap];
-            }
-            bpos = 0;
-            epos = 0;
-            n = cap;
-        }
-
-        private void expandSpace(int len) {
-            while (n < len) {
-                n = Math.max(n + 10, n * 2);
-            }
-            int[] newData = new int[n];
-            if (bpos <= epos) {
-                if (bpos < epos) {
-                    System.arraycopy(data, bpos, newData, 0, epos - bpos);
-                }
-            } else {
-                System.arraycopy(data, bpos, newData, 0, data.length - bpos);
-                System.arraycopy(data, 0, newData, data.length - bpos, epos);
-            }
-            epos = size();
-            bpos = 0;
-            data = newData;
-        }
-
-        public IntegerIterator iterator() {
-            return new IntegerIterator() {
-                int index = bpos;
 
 
                 public boolean hasNext() {
-                    return index != epos;
+                    return trace.next != dummy;
                 }
 
 
-                public int next() {
-                    int ans = data[index];
-                    index = IntegerDequeImpl.this.next(index);
-                    return ans;
+                public E next() {
+                    return (trace = trace.next).val;
                 }
             };
         }
 
-        public int removeFirst() {
-            int ans = data[bpos];
-            bpos = next(bpos);
-            return ans;
-        }
+        public static class Node<E> extends CircularLinkedNode<LinkedListBeta.Node<E>> {
+            public E val;
 
-        public void addLast(int x) {
-            ensureMore();
-            data[epos] = x;
-            epos = next(epos);
-        }
-
-        public void clear() {
-            bpos = epos = 0;
-        }
-
-        private int next(int x) {
-            return x + 1 >= n ? 0 : x + 1;
-        }
-
-        private void ensureMore() {
-            if (next(epos) == bpos) {
-                expandSpace(n + 1);
+            public Node(E val) {
+                this.val = val;
             }
-        }
 
-        public int size() {
-            int ans = epos - bpos;
-            if (ans < 0) {
-                ans += data.length;
-            }
-            return ans;
-        }
-
-        public boolean isEmpty() {
-            return bpos == epos;
-        }
-
-        public String toString() {
-            StringBuilder builder = new StringBuilder();
-            for (IntegerIterator iterator = iterator(); iterator.hasNext(); ) {
-                builder.append(iterator.next()).append(' ');
-            }
-            return builder.toString();
         }
 
     }
 
-    static class Graph {
-        public static List[] createGraph(int n) {
-            return IntStream.range(0, n).mapToObj(i -> new ArrayList<>()).toArray(i -> new List[i]);
-        }
-
-    }
-
-    static interface IntegerStack {
-        void addLast(int x);
-
-        boolean isEmpty();
-
-        void clear();
+    static interface Int2ToIntegerFunction {
+        int apply(int a, int b);
 
     }
 }

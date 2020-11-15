@@ -67,4 +67,7 @@ public class CollectionUtils {
     public static <T> T pop(List<T> list) {
         return list.remove(list.size() - 1);
     }
+    public static <T> T peek(List<T> list) {
+        return list.get(list.size() - 1);
+    }
 }

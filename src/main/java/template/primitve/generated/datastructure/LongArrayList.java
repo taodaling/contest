@@ -92,7 +92,7 @@ public class LongArrayList implements Cloneable {
 
     private void checkRange(int i) {
         if (i < 0 || i >= size) {
-            throw new ArrayIndexOutOfBoundsException();
+            throw new ArrayIndexOutOfBoundsException("Access [" + i + "]");
         }
     }
 

@@ -12,7 +12,7 @@ public class ModPrimeInverseNumber implements InverseNumber {
         int p = mod;
         for (int i = 2; i <= limit; i++) {
             int k = p / i;
-            int r = p % i;
+            int r = p - k * i;
             inv[i] = DigitUtils.mod((long) -k * inv[r], mod);
         }
     }

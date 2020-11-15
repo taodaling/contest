@@ -26,19 +26,19 @@ public class Segment implements Cloneable {
         }
     }
 
-    private boolean covered(int ll, int rr, int l, int r) {
+    private boolean enter(int ll, int rr, int l, int r) {
         return ll <= l && rr >= r;
     }
 
-    private boolean noIntersection(int ll, int rr, int l, int r) {
+    private boolean leave(int ll, int rr, int l, int r) {
         return ll > r || rr < l;
     }
 
     public void update(int ll, int rr, int l, int r) {
-        if (noIntersection(ll, rr, l, r)) {
+        if (leave(ll, rr, l, r)) {
             return;
         }
-        if (covered(ll, rr, l, r)) {
+        if (enter(ll, rr, l, r)) {
             modify();
             return;
         }
@@ -50,10 +50,10 @@ public class Segment implements Cloneable {
     }
 
     public void query(int ll, int rr, int l, int r) {
-        if (noIntersection(ll, rr, l, r)) {
+        if (leave(ll, rr, l, r)) {
             return;
         }
-        if (covered(ll, rr, l, r)) {
+        if (enter(ll, rr, l, r)) {
             return;
         }
         pushDown();

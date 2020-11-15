@@ -1,4 +1,3 @@
-36 src/main/java/contest/Coin Grid.json
-2
-0
+46 src/main/java/contest/Maximum Building II.json
 1
+0
