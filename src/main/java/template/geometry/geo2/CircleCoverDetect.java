@@ -1,6 +1,6 @@
 package template.geometry.geo2;
 
-import template.geometry.GeoConstant;
+import template.geometry.old.GeoConstant;
 import template.primitve.generated.utils.DoubleBinaryConsumer;
 
 /**
@@ -69,7 +69,7 @@ public class CircleCoverDetect {
             return;
         }
 
-        double theta = GeoConstant.theta(pt.y - center.y, pt.x - center.x);
+        double theta = GeoConstant.theta(pt.x - center.x, pt.y - center.y);
         double angle = GeoConstant.triangleAngle(r, cr, dist);
         addForbidden(theta, angle);
     }
@@ -98,7 +98,7 @@ public class CircleCoverDetect {
             }
             return;
         }
-        double theta = valueOfRadian(GeoConstant.theta(line.vec.y, line.vec.x) - Math.PI / 2);
+        double theta = valueOfRadian(GeoConstant.theta(line.vec.x, line.vec.y) - Math.PI / 2);
         double angle = side == 0 ? Math.PI / 2 : Math.acos(dist / cr);
         if (side == -1) {
             angle = Math.PI - angle;

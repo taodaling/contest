@@ -9,11 +9,15 @@ public class XorDeltaDSU {
         p = new int[n];
         rank = new int[n];
         delta = new int[n];
-        reset();
+        init();
     }
 
-    public void reset() {
-        for (int i = 0; i < p.length; i++) {
+    public void init(){
+        init(p.length);
+    }
+
+    public void init(int n) {
+        for (int i = 0; i < n; i++) {
             p[i] = i;
             rank[i] = 0;
             delta[i] = 0;

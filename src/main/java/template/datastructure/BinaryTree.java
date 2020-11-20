@@ -3,9 +3,9 @@ package template.datastructure;
 import template.binary.Bits;
 
 public class BinaryTree {
-    private BinaryTree left;
-    private BinaryTree right;
-    private int size;
+    public BinaryTree left;
+    public BinaryTree right;
+    public int size;
 
     private BinaryTree get(int i) {
         if (i == 0) {

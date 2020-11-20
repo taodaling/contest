@@ -2,10 +2,10 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.Iterator;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.io.UncheckedIOException;
+import java.util.List;
 import java.io.Closeable;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
@@ -29,200 +29,154 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            MaximumBuildingII solver = new MaximumBuildingII();
+            FOpposition solver = new FOpposition();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class MaximumBuildingII {
+    static class FOpposition {
+        FastInput in;
+        FastOutput out;
+        int remain;
+        char[] s = new char[(int) 2e5];
+        int n;
+        List<Integer>[] goods = new List[4];
+        String target = "LOVE";
+        String[] pattern = new String[]{
+                "?OVE", "L?VE", "LO?E", "LOV?"
+        };
+        int scan;
+
+        {
+            for (int i = 0; i < 4; i++) {
+                goods[i] = new ArrayList<>();
+            }
+        }
+
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            int n = in.readInt();
-            int m = in.readInt();
-            char[][] mat = new char[n][m];
+            n = in.readString(s, 0);
             for (int i = 0; i < n; i++) {
-                in.readString(mat[i], 0);
-            }
-            long[][] ans = RectOnGridProblem.countAvailableRect((i, j) -> mat[i][j] == '*' ? 1 : 0, n, m);
-            for (int i = 1; i <= n; i++) {
-                for (int j = 1; j <= m; j++) {
-                    out.append(ans[i][j]).append(' ');
+                if (s[i] != '?') {
+                    continue;
                 }
-                out.println();
-            }
-        }
-
-    }
-
-    static interface RevokeIterator<E> extends Iterator<E> {
-    }
-
-    static class RectOnGridProblem {
-        public static long[][] countAvailableRect(Int2ToIntegerFunction mat, int n, int m) {
-            long[][] tag = new long[n + 1][m + 1];
-            int[] low = new int[m];
-            boolean[] active = new boolean[m];
-            int[] left = new int[m];
-            int[] right = new int[m];
-            Arrays.fill(low, n);
-            LinkedListBeta<Integer> list = new LinkedListBeta<>();
-            LinkedListBeta.Node<Integer>[] nodes = new LinkedListBeta.Node[m];
-            for (int i = 0; i < m; i++) {
-                nodes[i] = list.addLast(i);
-            }
-            for (int i = n - 1; i >= 0; i--) {
-                for (int j = 0; j < m; j++) {
-                    if (mat.apply(i, j) != 0) {
-                        list.remove(nodes[j]);
-                        list.addLast(nodes[j]);
-                        low[j] = i;
+                remain++;
+                for (int j = 0; j < 4; j++) {
+                    if (equal(i - j, pattern[j])) {
+                        goods[j].add(i);
                     }
                 }
-                Arrays.fill(active, false);
-                for (int j : list) {
-                    int row = low[j] - 1;
-                    int high = row - i + 1;
-                    active[j] = true;
-                    int l = j;
-                    int r = j;
-                    tag[high][1]++;
-                    while (l > 0 && active[l - 1]) {
-                        //merge
-                        int lr = l - 1;
-                        int ll = left[lr];
-                        tag[high][lr - ll + 1]--;
-                        tag[high][r - l + 1]--;
-                        l = ll;
-                        tag[high][r - l + 1]++;
-                    }
-                    while (r + 1 < m && active[r + 1]) {
-                        //merge
-                        int rl = r + 1;
-                        int rr = right[rl];
-                        tag[high][rr - rl + 1]--;
-                        tag[high][r - l + 1]--;
-                        r = rr;
-                        tag[high][r - l + 1]++;
-                    }
-                    left[l] = left[r] = l;
-                    right[r] = right[l] = r;
-                }
             }
+            int t = in.readInt();
+            this.in = in;
+            this.out = out;
 
-            for (int i = n - 1; i >= 0; i--) {
-                for (int j = 0; j <= m; j++) {
-                    tag[i][j] += tag[i + 1][j];
-                }
-            }
-            for (int i = 1; i <= n; i++) {
-                long cc = 0;
-                long last = 0;
-                for (int j = m; j >= 0; j--) {
-                    cc += tag[i][j];
-                    last += cc;
-                    tag[i][j] = last;
-                }
-            }
-
-            for (int i = 0; i <= m; i++) {
-                tag[0][i] = 0;
-            }
-
-            for (int i = 0; i <= n; i++) {
-                tag[i][0] = 0;
-            }
-
-            return tag;
-        }
-
-    }
-
-    static class CircularLinkedNode<T extends CircularLinkedNode<T>> {
-        public T prev = (T) this;
-        public T next = (T) this;
-
-        public void attach(T node) {
-            this.next = node.next;
-            this.prev = node;
-            this.next.prev = (T) this;
-            this.prev.next = (T) this;
-        }
-
-        public void detach() {
-            this.prev.next = next;
-            this.next.prev = prev;
-            this.next = this.prev = (T) this;
-        }
-
-    }
-
-    static class FastInput {
-        private final InputStream is;
-        private byte[] buf = new byte[1 << 13];
-        private int bufLen;
-        private int bufOffset;
-        private int next;
-
-        public FastInput(InputStream is) {
-            this.is = is;
-        }
-
-        private int read() {
-            while (bufLen == bufOffset) {
-                bufOffset = 0;
-                try {
-                    bufLen = is.read(buf);
-                } catch (IOException e) {
-                    bufLen = -1;
-                }
-                if (bufLen == -1) {
-                    return -1;
-                }
-            }
-            return buf[bufOffset++];
-        }
-
-        public void skipBlank() {
-            while (next >= 0 && next <= 32) {
-                next = read();
-            }
-        }
-
-        public int readInt() {
-            int sign = 1;
-
-            skipBlank();
-            if (next == '+' || next == '-') {
-                sign = next == '+' ? 1 : -1;
-                next = read();
-            }
-
-            int val = 0;
-            if (sign == 1) {
-                while (next >= '0' && next <= '9') {
-                    val = val * 10 + next - '0';
-                    next = read();
-                }
+            if (t == 1) {
+                first();
             } else {
-                while (next >= '0' && next <= '9') {
-                    val = val * 10 - next + '0';
-                    next = read();
+                second();
+            }
+        }
+
+        public boolean equal(int i, String cand) {
+            for (int j = 0; j < cand.length(); j++) {
+                if (i + j < 0 || i + j >= n || cand.charAt(j) != s[i + j]) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public int next() {
+            while (s[scan] != '?') {
+                scan++;
+            }
+            return scan++;
+        }
+
+        public void apply(int p, char x) {
+            assert s[p] == '?';
+            s[p] = x;
+            remain--;
+
+            for (int i = p - 3; i <= p + 3; i++) {
+                if (i < 0 || i >= n || s[i] != '?') {
+                    continue;
+                }
+                for (int j = 0; j < 4; j++) {
+                    if (equal(i - j, pattern[j])) {
+                        goods[j].add(i);
+                    }
                 }
             }
 
-            return val;
         }
 
-        public int readString(char[] data, int offset) {
-            skipBlank();
+        public void operate(int p, char x) {
+            apply(p, x);
+            out.append(p + 1).append(' ').append(x).println().flush();
+            respond();
+        }
 
-            int originalOffset = offset;
-            while (next > 32) {
-                data[offset++] = (char) next;
-                next = read();
+        public void respond() {
+            if (remain > 0) {
+                int t = in.ri() - 1;
+                char v = in.rc();
+                apply(t, v);
+            }
+        }
+
+        public void first() {
+            while (remain > 0) {
+                boolean find = false;
+                for (int i = 0; i < 4; i++) {
+                    while (!goods[i].isEmpty() && s[CollectionUtils.peek(goods[i])] != '?') {
+                        CollectionUtils.pop(goods[i]);
+                    }
+                    if (goods[i].isEmpty()) {
+                        continue;
+                    }
+                    find = true;
+                    operate(CollectionUtils.pop(goods[i]), target.charAt(i));
+                    break;
+                }
+                if (!find) {
+                    operate(next(), 'L');
+                }
             }
 
-            return offset - originalOffset;
+        }
+
+        public void second() {
+            respond();
+            while (remain > 0) {
+                boolean find = false;
+                for (int i = 0; i < 4; i++) {
+                    while (!goods[i].isEmpty() && s[CollectionUtils.peek(goods[i])] != '?') {
+                        CollectionUtils.pop(goods[i]);
+                    }
+                    if (goods[i].isEmpty()) {
+                        continue;
+                    }
+                    find = true;
+                    operate(CollectionUtils.pop(goods[i]), target.charAt(i) == 'V' ? 'E' : 'V');
+                    break;
+                }
+                if (!find) {
+                    operate(next(), 'E');
+                }
+            }
+        }
+
+    }
+
+    static class CollectionUtils {
+        public static <T> T pop(List<T> list) {
+            return list.remove(list.size() - 1);
+        }
+
+        public static <T> T peek(List<T> list) {
+            return list.get(list.size() - 1);
         }
 
     }
@@ -263,7 +217,7 @@ public class Main {
             return this;
         }
 
-        public FastOutput append(long c) {
+        public FastOutput append(int c) {
             cache.append(c);
             afterWrite();
             return this;
@@ -305,60 +259,89 @@ public class Main {
 
     }
 
-    static class LinkedListBeta<E> implements Iterable<E> {
-        public LinkedListBeta.Node<E> dummy = new LinkedListBeta.Node<>(null);
-        protected int size;
+    static class FastInput {
+        private final InputStream is;
+        private byte[] buf = new byte[1 << 13];
+        private int bufLen;
+        private int bufOffset;
+        private int next;
 
-        public LinkedListBeta.Node<E> addLast(E e) {
-            LinkedListBeta.Node node = new LinkedListBeta.Node(e);
-            return addLast(node);
+        public FastInput(InputStream is) {
+            this.is = is;
         }
 
-        public LinkedListBeta.Node<E> addLast(LinkedListBeta.Node node) {
-            node.attach(dummy.prev);
-            size++;
-            return node;
-        }
-
-        public void remove(LinkedListBeta.Node<E> node) {
-            node.detach();
-            size--;
-        }
-
-        public RevokeIterator<E> iterator() {
-            return new RevokeIterator<E>() {
-                LinkedListBeta.Node<E> trace = dummy;
-
-
-                public void revoke() {
-                    trace = trace.prev;
+        private int read() {
+            while (bufLen == bufOffset) {
+                bufOffset = 0;
+                try {
+                    bufLen = is.read(buf);
+                } catch (IOException e) {
+                    bufLen = -1;
                 }
-
-
-                public boolean hasNext() {
-                    return trace.next != dummy;
+                if (bufLen == -1) {
+                    return -1;
                 }
-
-
-                public E next() {
-                    return (trace = trace.next).val;
-                }
-            };
+            }
+            return buf[bufOffset++];
         }
 
-        public static class Node<E> extends CircularLinkedNode<LinkedListBeta.Node<E>> {
-            public E val;
+        public void skipBlank() {
+            while (next >= 0 && next <= 32) {
+                next = read();
+            }
+        }
 
-            public Node(E val) {
-                this.val = val;
+        public int ri() {
+            return readInt();
+        }
+
+        public int readInt() {
+            int sign = 1;
+
+            skipBlank();
+            if (next == '+' || next == '-') {
+                sign = next == '+' ? 1 : -1;
+                next = read();
             }
 
+            int val = 0;
+            if (sign == 1) {
+                while (next >= '0' && next <= '9') {
+                    val = val * 10 + next - '0';
+                    next = read();
+                }
+            } else {
+                while (next >= '0' && next <= '9') {
+                    val = val * 10 - next + '0';
+                    next = read();
+                }
+            }
+
+            return val;
         }
 
-    }
+        public char rc() {
+            return readChar();
+        }
 
-    static interface Int2ToIntegerFunction {
-        int apply(int a, int b);
+        public char readChar() {
+            skipBlank();
+            char c = (char) next;
+            next = read();
+            return c;
+        }
+
+        public int readString(char[] data, int offset) {
+            skipBlank();
+
+            int originalOffset = offset;
+            while (next > 32) {
+                data[offset++] = (char) next;
+                next = read();
+            }
+
+            return offset - originalOffset;
+        }
 
     }
 }

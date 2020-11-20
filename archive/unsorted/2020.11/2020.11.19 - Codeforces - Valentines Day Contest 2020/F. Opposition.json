@@ -1,0 +1,45 @@
+{
+  "name" : "F. Opposition",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "L?VEE?O??\n\n1\n\n6 L\n\n8 L\n",
+    "output" : "2 O\n\n9 E\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "LOV?OV?",
+    "output" : "",
+    "index" : 1,
+    "active" : false
+  }, {
+    "input" : "",
+    "output" : "",
+    "index" : 2,
+    "active" : false
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.FOpposition",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.11.19",
+  "contestName" : "Codeforces - Valentines Day Contest 2020",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : true,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

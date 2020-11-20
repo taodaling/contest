@@ -1,0 +1,35 @@
+{
+  "name" : "1004. Sightseeing Trip",
+  "testType" : "MULTI_EOF",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5 7\n1 4 1\n1 3 300\n3 1 10\n1 2 16\n2 3 100\n2 5 15\n5 3 20\n4 3\n1 2 10\n1 3 20\n1 4 30\n-1\n",
+    "output" : "1 3 5 2\nNo solution.\n",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx64M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.SightseeingTrip",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.11.17",
+  "contestName" : "Timus - Central European Olympiad in Informatics 1999",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

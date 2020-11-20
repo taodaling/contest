@@ -48,4 +48,16 @@ public class IntegerPreSum {
     public int post(int i) {
         return prefix(n) - prefix(i - 1);
     }
+
+    @Override
+    public String toString() {
+        StringBuilder ans = new StringBuilder();
+        for (int i = 0; i < n; i++) {
+            ans.append(intervalSum(i, i)).append(',');
+        }
+        if (ans.length() > 0) {
+            ans.setLength(ans.length() - 1);
+        }
+        return ans.toString();
+    }
 }

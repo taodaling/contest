@@ -76,6 +76,14 @@ public class FastInput {
         return ans;
     }
 
+    public long rmi(long mod) {
+        return readModInt(mod);
+    }
+
+    public int ri() {
+        return readInt();
+    }
+
     public int readInt() {
         int sign = 1;
 
@@ -99,6 +107,10 @@ public class FastInput {
         }
 
         return val;
+    }
+
+    public long rl() {
+        return readLong();
     }
 
     public long readLong() {
@@ -153,6 +165,10 @@ public class FastInput {
         return sign ? result : -result;
     }
 
+    public char rc() {
+        return readChar();
+    }
+
     public char readChar() {
         skipBlank();
         char c = (char) next;
@@ -162,6 +178,10 @@ public class FastInput {
 
     public boolean meetBlank() {
         return next <= 32;
+    }
+
+    public String rs() {
+        return readString();
     }
 
     public String readString(StringBuilder builder) {

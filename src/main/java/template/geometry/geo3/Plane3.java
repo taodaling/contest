@@ -1,6 +1,6 @@
 package template.geometry.geo3;
 
-import template.geometry.GeoConstant;
+import template.geometry.old.GeoConstant;
 
 public class Plane3 {
     public final Point3 n;

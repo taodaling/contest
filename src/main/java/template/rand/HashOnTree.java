@@ -1,6 +1,7 @@
 package template.rand;
 
 import template.graph.DirectedEdge;
+import template.graph.UndirectedEdge;
 import template.utils.CompareUtils;
 
 import java.util.Arrays;
@@ -8,7 +9,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class HashOnTree {
-    List<? extends DirectedEdge>[] g;
+    List<UndirectedEdge>[] g;
     long[] hash;
     long[] sub;
     IntRangeHash rh;
@@ -43,7 +44,7 @@ public class HashOnTree {
         return hash[root];
     }
 
-    public HashOnTree(List<? extends DirectedEdge>[] g, IntRangeHash rh, int top) {
+    public HashOnTree(List<UndirectedEdge>[] g, IntRangeHash rh, int top) {
         assert g.length > 0;
         this.g = g;
         sub = new long[g.length];
@@ -55,7 +56,7 @@ public class HashOnTree {
     private void dfsForSub(int root, int p) {
         long[] children = new long[g[root].size()];
         int len = 0;
-        for (DirectedEdge e : g[root]) {
+        for (UndirectedEdge e : g[root]) {
             if (e.to == p) {
                 continue;
             }
@@ -86,7 +87,7 @@ public class HashOnTree {
             children[i] = rh.hashV(0, i - 1, i + 1, children.length - 1);
         }
         for (int i = 0; i < g[root].size(); i++) {
-            DirectedEdge e = g[root].get(i);
+            UndirectedEdge e = g[root].get(i);
             if (e.to == p) {
                 continue;
             }

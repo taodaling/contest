@@ -1,6 +1,6 @@
 package template.geometry.geo2;
 
-import template.geometry.GeoConstant;
+import template.geometry.old.GeoConstant;
 import template.rand.Randomized;
 
 import java.util.List;
@@ -15,7 +15,15 @@ public class Circle2 {
     }
 
     public boolean contain(Point2 pt) {
-        return GeoConstant.sign(Point2.dist2(center, pt) - r * r) <= 0;
+        return contain(pt, true);
+    }
+
+    public boolean contain(Point2 pt, boolean includeCircle) {
+        if (includeCircle) {
+            return GeoConstant.sign(Point2.dist2(center, pt) - r * r) <= 0;
+        } else {
+            return GeoConstant.sign(Point2.dist2(center, pt) - r * r) < 0;
+        }
     }
 
     /**
@@ -40,6 +48,23 @@ public class Circle2 {
             list.add(Point2.minus(proj, vec));
             return 2;
         }
+    }
+
+    public static int tangent(Point2 o1, double r1, Point2 o2, double r2, boolean inner, List<Point2> out1, List<Point2> out2) {
+        if (inner) r2 = -r2;
+        Point2 d = Point2.minus(o2, o1);
+        double dr = r1 - r2, d2 = d.square(), h2 = d2 - dr * dr;
+        if (d2 == 0 || h2 < 0) {
+            assert (h2 != 0);
+            return 0;
+        }
+        double sqrtH2 = Math.sqrt(h2);
+        for (int sign = -1; sign <= 1; sign += 2) {
+            Point2 v = Point2.plus(Point2.mul(d, dr / d2), Point2.mul(d.perpendicular(), sqrtH2 * sign / d2));
+            out1.add(new Point2(o1.x + v.x * r1, o1.y + v.y * r1));
+            out2.add(new Point2(o2.x + v.x * r2, o2.y + v.y * r2));
+        }
+        return 1 + (h2 > 0 ? 1 : 0);
     }
 
     /**
@@ -129,5 +154,11 @@ public class Circle2 {
         double x = det(A.square(), A.y, B.square(), B.y, C.square(), C.y) / bot;
         double y = det(A.x, A.square(), B.x, B.square(), C.x, C.square()) / bot;
         return new Circle2(new Point2(x, y), r);
+    }
+
+    public Point2 getPointByRadian(double radian) {
+        double x = Math.cos(radian);
+        double y = Math.sin(radian);
+        return new Point2(center.x + x * r, center.y + y * r);
     }
 }

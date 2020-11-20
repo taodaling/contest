@@ -1,0 +1,60 @@
+{
+  "name" : "Coding Company",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 2\n2 5 3\n",
+    "output" : "3\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "1 0\n10",
+    "output" : "1",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "3 0\n10 10 10",
+    "output" : "5",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "10 50\n70 41 40 61 81 58 9 1 80 27",
+    "output" : "1761",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "3 10\n1 1 11",
+    "output" : "5",
+    "index" : 4,
+    "active" : true
+  }, {
+    "input" : "3 10\n1 2 12",
+    "output" : "3",
+    "index" : 5,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx512M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.CodingCompany",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.11.16",
+  "contestName" : "CSES - CSES Problem Set",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

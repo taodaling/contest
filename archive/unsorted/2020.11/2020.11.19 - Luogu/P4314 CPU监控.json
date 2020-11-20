@@ -1,0 +1,35 @@
+{
+  "name" : "P4314 CPU监控",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "10\n-62 -83 -9 -70 79 -78 -31 40 -18 -5 \n20\nA 2 7\nA 4 4\nQ 4 4\nP 2 2 -74\nP 7 9 -71\nP 7 10 -8\nA 10 10\nA 5 9\nC 1 8 10\nQ 6 6\nQ 8 10\nA 1 7\nP 9 9 96\nA 5 5\nP 8 10 -53\nP 6 6 5\nA 10 10\nA 4 4\nQ 1 5\nP 4 9 -69\n",
+    "output" : "79\n-70\n-70\n-5\n79\n10\n10\n79\n79\n-5\n10\n10\n",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx125M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.P4314CPU",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "contest.P4314CPUTestCase" ],
+  "date" : "2020.11.19",
+  "contestName" : "Luogu",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

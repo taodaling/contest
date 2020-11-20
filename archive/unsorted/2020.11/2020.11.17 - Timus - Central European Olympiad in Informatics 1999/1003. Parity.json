@@ -1,0 +1,45 @@
+{
+  "name" : "1003. Parity",
+  "testType" : "MULTI_EOF",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "10\n5\n1 2 even\n3 4 odd\n5 6 even\n1 6 even\n7 10 odd\n-1\n",
+    "output" : "3\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "5 3\n1 1 even\n2 2 even\n3 3 odd",
+    "output" : "3",
+    "index" : 1,
+    "active" : false
+  }, {
+    "input" : "3 2\n1 1 odd\n1 1 even\n ",
+    "output" : "1",
+    "index" : 2,
+    "active" : false
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx64M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.Parity",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.11.17",
+  "contestName" : "Timus - Central European Olympiad in Informatics 1999",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

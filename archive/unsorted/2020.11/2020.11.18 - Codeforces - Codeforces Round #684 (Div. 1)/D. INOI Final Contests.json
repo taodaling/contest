@@ -1,0 +1,55 @@
+{
+  "name" : "D. INOI Final Contests",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 1 1000000007\n",
+    "output" : "0\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "2 2 1000000009\n",
+    "output" : "4\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "3 2 998244353\n",
+    "output" : "8\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "20 10 1000000009\n",
+    "output" : "352081045\n",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "",
+    "output" : "",
+    "index" : 4,
+    "active" : false
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.DINOIFinalContests",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "contest.DINOIFinalContestsTestCase" ],
+  "date" : "2020.11.18",
+  "contestName" : "Codeforces - Codeforces Round #684 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

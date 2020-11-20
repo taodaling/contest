@@ -1,6 +1,6 @@
 package template.geometry.geo2;
 
-import template.geometry.GeoConstant;
+import template.geometry.old.GeoConstant;
 import template.math.DigitUtils;
 import template.math.KahamSummation;
 import template.utils.CompareUtils;
@@ -176,6 +176,9 @@ public class Point2 implements Cloneable {
         return GeoConstant.sign(cross(b, c));
     }
 
+    /**
+     * 获取c处于ab的方向
+     */
     public static int orient(Point2 a, Point2 b, Point2 c) {
         return GeoConstant.sign(GeoConstant.cross(b.x - a.x, b.y - a.y, c.x - a.x, c.y - a.y));
     }

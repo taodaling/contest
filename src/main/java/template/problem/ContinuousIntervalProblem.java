@@ -2,7 +2,7 @@ package template.problem;
 
 import template.datastructure.PermutationNode;
 import template.graph.DirectedEdge;
-import template.graph.KthAncestorOnTree;
+import template.graph.KthAncestorOnTreeByLongLink;
 import template.graph.LcaOnTree;
 
 import java.util.ArrayList;
@@ -40,7 +40,7 @@ public class ContinuousIntervalProblem {
             Node node = nodes.get(i);
             g[i] = node.adj.stream().map(x -> new DirectedEdge(((Node) x).id)).collect(Collectors.toList());
         }
-        kthAncestorOnTree = new KthAncestorOnTree(g, root.id);
+        kthAncestorOnTreeByLongLink = new KthAncestorOnTreeByLongLink(g, root.id);
         lcaOnTree = new LcaOnTree(g, root.id);
 
         dfs(root, null, -1);
@@ -58,8 +58,8 @@ public class ContinuousIntervalProblem {
         if (!ancestor.join) {
             return new int[]{ancestor.ll - 1, ancestor.rr - 1};
         } else {
-            l = nodes.get(kthAncestorOnTree.kthAncestor(l.id, l.depth - ancestor.depth - 1));
-            r = nodes.get(kthAncestorOnTree.kthAncestor(r.id, r.depth - ancestor.depth - 1));
+            l = nodes.get(kthAncestorOnTreeByLongLink.kthAncestor(l.id, l.depth - ancestor.depth - 1));
+            r = nodes.get(kthAncestorOnTreeByLongLink.kthAncestor(r.id, r.depth - ancestor.depth - 1));
             return new int[]{l.ll - 1, r.rr - 1};
         }
     }
@@ -76,8 +76,8 @@ public class ContinuousIntervalProblem {
         Node rNode = leaf[r];
         int lca = lcaOnTree.lca(lNode.id, rNode.id);
         Node lcaNode = nodes.get(lca);
-        Node lParent = nodes.get(kthAncestorOnTree.kthAncestor(lNode.id, lNode.depth - lcaNode.depth - 1));
-        Node rParent = nodes.get(kthAncestorOnTree.kthAncestor(rNode.id, rNode.depth - lcaNode.depth - 1));
+        Node lParent = nodes.get(kthAncestorOnTreeByLongLink.kthAncestor(lNode.id, lNode.depth - lcaNode.depth - 1));
+        Node rParent = nodes.get(kthAncestorOnTreeByLongLink.kthAncestor(rNode.id, rNode.depth - lcaNode.depth - 1));
         long ans = lNode.psA - lParent.psA;
         ans += rNode.psB - rParent.psB;
         int left = lParent.index + 1;
@@ -92,7 +92,7 @@ public class ContinuousIntervalProblem {
 
     Node[] leaf;
     List<Node> nodes;
-    KthAncestorOnTree kthAncestorOnTree;
+    KthAncestorOnTreeByLongLink kthAncestorOnTreeByLongLink;
     LcaOnTree lcaOnTree;
 
     private void dfs(Node root, Node p, int index) {

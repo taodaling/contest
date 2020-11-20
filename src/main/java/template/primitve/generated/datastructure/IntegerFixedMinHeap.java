@@ -30,6 +30,20 @@ public class IntegerFixedMinHeap {
         size = Math.min(size + 1, data.length - 1);
     }
 
+    private void checkRange(int k) {
+        if (k < 0 || k >= size) {
+            throw new ArrayIndexOutOfBoundsException("Access " + k + "-th element");
+        }
+    }
+
+    public void removeKthSmallest(int k) {
+        checkRange(k);
+        for (int i = k + 1; i < size; i++) {
+            data[i - 1] = data[i];
+        }
+        size--;
+    }
+
     public void addAll(IntegerFixedMinHeap other) {
         int newLen = Math.min(size + other.size, data.length - 1);
         CompareUtils.mergeAscending(data, 0, size - 1, other.data, 0, other.size - 1,
@@ -49,6 +63,7 @@ public class IntegerFixedMinHeap {
      * start with 0
      */
     public int getKthSmallest(int k) {
+        checkRange(k);
         return data[k];
     }
 

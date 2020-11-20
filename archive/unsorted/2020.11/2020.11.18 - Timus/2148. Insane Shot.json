@@ -1,0 +1,45 @@
+{
+  "name" : "2148. Insane Shot",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4 7 3\n0 0\n8 0\n",
+    "output" : "4.000000 4.000000\n",
+    "index" : 0,
+    "active" : false
+  }, {
+    "input" : "0 0 2\n-5 0\n-3 4\n",
+    "output" : "-1.788854 0.894427\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "0 0 1\n2 2\n-2 -2",
+    "output" : "No way",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.InsaneShot",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.11.18",
+  "contestName" : "Timus",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

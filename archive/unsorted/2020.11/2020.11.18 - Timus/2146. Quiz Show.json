@@ -1,0 +1,50 @@
+{
+  "name" : "2146. Quiz Show",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "6 3\nabcdef\n",
+    "output" : "3\nabcabc\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "4 1\naaab\n",
+    "output" : "1\naaaa\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "4 0\naaab\n",
+    "output" : "4\naaab\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "4 2\nabcd",
+    "output" : "2\nabab",
+    "index" : 3,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.QuizShow",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.11.18",
+  "contestName" : "Timus",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

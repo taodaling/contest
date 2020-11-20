@@ -9,6 +9,10 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 public class FileUtils {
+    public static String readFile(File dir, String filename) {
+        return readFile(new File(dir, filename));
+    }
+
     public static String readFile(File file) {
         return readFile(file, StandardCharsets.UTF_8);
     }
