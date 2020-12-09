@@ -1,0 +1,40 @@
+{
+  "name" : "D - Binomial Coefficient is Fun",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 5\n1 2 1\n",
+    "output" : "8\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "10 998244353\n31 41 59 26 53 58 97 93 23 84\n",
+    "output" : "642612171\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_12.on2020_12_08_AtCoder___AtCoder_Regular_Contest_110_Sponsored_by_KAJIMA_CORPORATION_.D___Binomial_Coefficient_is_Fun.DBinomialCoefficientIsFun",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.12.08",
+  "contestName" : "AtCoder - AtCoder Regular Contest 110（Sponsored by KAJIMA CORPORATION）",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

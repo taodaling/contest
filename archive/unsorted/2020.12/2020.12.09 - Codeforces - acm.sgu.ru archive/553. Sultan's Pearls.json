@@ -1,0 +1,40 @@
+{
+  "name" : "553. Sultan's Pearls",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5 2 1\n5 3\n4 2\n6 4\n3 2\n2 2\n",
+    "output" : "2 5\nTT\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "20 7 2\n3 4\n8 4\n8 5\n6 14\n5 10\n3 18\n2 5\n2 4\n1 6\n3 11\n4 3\n3 5\n2 8\n4 6\n9 14\n7 2\n7 6\n6 4\n8 2\n10 5\n",
+    "output" : "11 60\nHTHTHTHHHHH\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx262M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.SultansPearls",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.12.09",
+  "contestName" : "Codeforces - acm.sgu.ru archive",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

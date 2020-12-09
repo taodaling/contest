@@ -26,7 +26,7 @@ public class TreePickSpecialPointProblem {
     private int[] intervalR;
     private int[] inverse;
     private boolean[] visited;
-    private static final long INF = (long) 1e18 + 100;
+    private static final long INF = (long) 2e18;
 
     private int order;
 

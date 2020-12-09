@@ -1,0 +1,50 @@
+{
+  "name" : "Number of Substrings",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "abcbcba\n",
+    "output" : "21\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "mississippi\n",
+    "output" : "53\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "ababacaca\n",
+    "output" : "33\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "aaaaa\n",
+    "output" : "5\n",
+    "index" : 3,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.NumberOfSubstrings",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.11.27",
+  "contestName" : "Library Checker",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

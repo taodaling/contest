@@ -4,65 +4,85 @@ import template.math.DigitUtils;
 
 public class CountSegment implements Cloneable {
     private static final CountSegment NIL = new CountSegment();
-    private CountSegment left;
-    private CountSegment right;
-    private int cnt;
+    private CountSegment left = NIL;
+    private CountSegment right = NIL;
+    private long sum;
+    private long dirty;
 
-    public void pushUp() {
-        cnt = left.cnt + right.cnt;
+    static {
+        NIL.left = NIL.right = NIL;
     }
 
-    public void pushDown() {
-        left = left.clone();
-        right = right.clone();
+    public void pushUp() {
+        sum = left.sum + right.sum;
+    }
+
+    public void pushDown(int l, int r) {
+        if (left == NIL) {
+            left = left.clone();
+            right = right.clone();
+        }
+        if (dirty != 0) {
+            int m = DigitUtils.floorAverage(l, r);
+            left.modify(l, m, dirty);
+            right.modify(m + 1, r, dirty);
+            dirty = 0;
+        }
+    }
+
+    public void modify(int l, int r, long d) {
+        assert this != NIL;
+        dirty += d;
+        sum += (r - l + 1) * d;
     }
 
     public CountSegment() {
-        left = right = this;
     }
 
-    private boolean covered(int ll, int rr, int l, int r) {
+    private boolean enter(int ll, int rr, int l, int r) {
         return ll <= l && rr >= r;
     }
 
-    private boolean noIntersection(int ll, int rr, int l, int r) {
+    private boolean leave(int ll, int rr, int l, int r) {
         return ll > r || rr < l;
     }
 
-    public void update(int x, int l, int r, int mod) {
-        if (noIntersection(x, x, l, r)) {
+    public void update(int ll, int rr, int l, int r, int mod) {
+        if (leave(ll, rr, l, r)) {
             return;
         }
-        if (covered(x, x, l, r)) {
-            cnt++;
+        if (enter(ll, rr, l, r)) {
+            modify(l, r, mod);
             return;
         }
-        pushDown();
+        pushDown(l, r);
         int m = DigitUtils.floorAverage(l, r);
-        left.update(x, l, m, mod);
-        right.update(x, m + 1, r, mod);
+        left.update(ll, rr, l, m, mod);
+        right.update(ll, rr, m + 1, r, mod);
         pushUp();
     }
 
-    public int kth(int l, int r, int k) {
+
+    public int kth(int l, int r, long k) {
         if (l == r) {
             return l;
         }
         int m = DigitUtils.floorAverage(l, r);
-        if (left.cnt >= k) {
+        pushDown(l, r);
+        if (left.sum >= k) {
             return left.kth(l, m, k);
-        } else {
-            return right.kth(m + 1, r, k - left.cnt);
         }
+        return right.kth(m + 1, r, k - left.sum);
     }
 
-    public int query(int ll, int rr, int l, int r) {
-        if (noIntersection(ll, rr, l, r)) {
+    public long query(int ll, int rr, int l, int r) {
+        if (leave(ll, rr, l, r)) {
             return 0;
         }
-        if (covered(ll, rr, l, r)) {
-            return cnt;
+        if (enter(ll, rr, l, r)) {
+            return sum;
         }
+        pushDown(l, r);
         int m = DigitUtils.floorAverage(l, r);
         return left.query(ll, rr, l, m) +
                 right.query(ll, rr, m + 1, r);
@@ -75,7 +95,7 @@ public class CountSegment implements Cloneable {
             return this;
         }
         if (l == r) {
-            cnt += segment.cnt;
+            sum += segment.sum;
         }
         int m = DigitUtils.floorAverage(l, r);
         left = merge(l, m, segment.left);

@@ -64,7 +64,7 @@ public class ModBIT {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         for (int i = 1; i <= n; i++) {
-            builder.append(query(i) - query(i - 1)).append(' ');
+            builder.append(DigitUtils.mod(query(i) - query(i - 1), mod)).append(' ');
         }
         return builder.toString();
     }

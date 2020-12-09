@@ -8,8 +8,8 @@ import java.util.function.Function;
 
 public class Generator {
     public static void main(String[] args) {
-        String srcPath = "/media/share/sourcecode/contest/src/main/java/template/primitve/generator";
-        String dstPath = "/media/share/sourcecode/contest/src/main/java/template/primitve/generated";
+        String srcPath = "F:\\sourcecode\\contest/src/main/java/template/primitve/generator";
+        String dstPath = "F:\\sourcecode\\contest/src/main/java/template/primitve/generated";
         String packagePrefix = "package template.primitve.generated";
 
         for (File dir : new File(srcPath).listFiles()) {

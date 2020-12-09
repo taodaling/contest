@@ -1,0 +1,40 @@
+{
+  "name" : "D. Rating Compression",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5\n5\n1 5 3 4 2\n4\n1 3 2 1\n5\n1 3 3 3 2\n10\n1 2 3 4 5 6 7 8 9 10\n3\n3 3 2\n",
+    "output" : "10111\n0001\n00111\n1111111111\n000\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "1\n4\n1 3 2 1",
+    "output" : "",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_12.on2020_12_06_Codeforces___Codeforces_Global_Round_12.D__Rating_Compression.DRatingCompression",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.12.06",
+  "contestName" : "Codeforces - Codeforces Global Round 12",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

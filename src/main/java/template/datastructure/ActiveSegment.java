@@ -96,8 +96,12 @@ public class ActiveSegment implements Cloneable {
                 right.query(ll, rr, m + 1, r);
     }
 
-    public long queryAll() {
+    public long queryNonActive() {
         return min == 0 ? minWeight : 0;
+    }
+
+    public long queryActive(int l, int r) {
+        return r - l + 1 - queryNonActive();
     }
 
     private ActiveSegment deepClone() {

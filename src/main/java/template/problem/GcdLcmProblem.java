@@ -114,7 +114,10 @@ public class GcdLcmProblem {
     }
 
     /**
-     * Find a pair of indexes (i, j) satisfy i != j and make gcd(seq[i], seq[j]) as large as possible, return null for non-existence.
+     * <pre>
+     * Find a pair of indexes (i, j) satisfy i != j and make gcd(seq[i], seq[j]) as large as possible
+     * return null for non-existence.
+     *  </pre>
      */
     public int[] findAnyPairIndexesWhileGCDMaximized() {
         if (seq.length < 2) {

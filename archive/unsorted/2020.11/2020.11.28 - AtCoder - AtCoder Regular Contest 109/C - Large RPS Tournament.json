@@ -1,0 +1,45 @@
+{
+  "name" : "C - Large RPS Tournament",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 2\nRPS\n",
+    "output" : "P\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "11 1\nRPSSPRSPPRS\n",
+    "output" : "P\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "1 100\nS\n",
+    "output" : "S\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.CLargeRPSTournament",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.11.28",
+  "contestName" : "AtCoder - AtCoder Regular Contest 109",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

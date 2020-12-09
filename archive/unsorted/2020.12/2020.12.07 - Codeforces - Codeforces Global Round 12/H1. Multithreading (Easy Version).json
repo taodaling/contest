@@ -1,0 +1,55 @@
+{
+  "name" : "H1. Multithreading (Easy Version)",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "8 0\nbwbb?www\n",
+    "output" : "1\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "10 0\n???ww?wb??\n",
+    "output" : "436731905\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "4 0\nbw?b\n",
+    "output" : "0\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "2 0\n??",
+    "output" : "0",
+    "index" : 3,
+    "active" : false
+  }, {
+    "input" : "4 0\n????",
+    "output" : "2",
+    "index" : 4,
+    "active" : false
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.H1MultithreadingEasyVersion",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.12.07",
+  "contestName" : "Codeforces - Codeforces Global Round 12",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

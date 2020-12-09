@@ -57,6 +57,21 @@ public class LongIntervalMap implements Iterable<LongIntervalMap.Interval> {
         }
     }
 
+    public Interval floor(long x) {
+        Map.Entry<Long, Interval> entry = map.floorEntry(x);
+        return entry == null ? null : entry.getValue();
+    }
+
+    public Interval ceil(long x) {
+        Map.Entry<Long, Interval> entry = map.ceilingEntry(x);
+        return entry == null ? null : entry.getValue();
+    }
+
+    public boolean contain(long l, long r) {
+        Interval interval = floor(l);
+        return interval != null && interval.r >= r;
+    }
+
     @Override
     public Iterator<Interval> iterator() {
         return map.values().iterator();

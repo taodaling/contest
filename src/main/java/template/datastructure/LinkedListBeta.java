@@ -38,14 +38,22 @@ public class LinkedListBeta<E> implements Iterable<E> {
     }
 
     public Node<E> addLast(E e) {
-        Node node = new Node(e);
+        Node<E> node = new Node<>(e);
         return addLast(node);
     }
 
-    public Node<E> addLast(Node node) {
-        node.attach(dummy.prev);
+    public Node<E> addAfter(Node<E> node, E e) {
+        return addAfter(node, new Node<>(e));
+    }
+
+    public Node<E> addAfter(Node<E> node, Node<E> follow){
+        follow.attach(node);
         size++;
-        return node;
+        return follow;
+    }
+
+    public Node<E> addLast(Node<E> node) {
+        return addAfter(dummy.prev, node);
     }
 
     public void remove(Node<E> node) {

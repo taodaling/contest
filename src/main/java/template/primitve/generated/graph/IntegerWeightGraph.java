@@ -40,6 +40,7 @@ public class IntegerWeightGraph {
     public static <T extends IntegerWeightDirectedEdge> void dijkstraElogV(List<T>[] g, IntegerArrayList s, int[] dists, int inf) {
         int n = g.length;
         IntegerPriorityQueueBasedOnSegment pq = new IntegerPriorityQueueBasedOnSegment(0, n);
+        pq.reset(0, n);
         for (int i = 0; i < n; i++) {
             dists[i] = inf;
         }

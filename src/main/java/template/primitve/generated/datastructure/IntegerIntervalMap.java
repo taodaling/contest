@@ -57,6 +57,21 @@ public class IntegerIntervalMap implements Iterable<IntegerIntervalMap.Interval>
         }
     }
 
+    public Interval floor(int x) {
+        Map.Entry<Integer, Interval> entry = map.floorEntry(x);
+        return entry == null ? null : entry.getValue();
+    }
+
+    public Interval ceil(int x) {
+        Map.Entry<Integer, Interval> entry = map.ceilingEntry(x);
+        return entry == null ? null : entry.getValue();
+    }
+
+    public boolean contain(int l, int r) {
+        Interval interval = floor(l);
+        return interval != null && interval.r >= r;
+    }
+
     @Override
     public Iterator<Interval> iterator() {
         return map.values().iterator();

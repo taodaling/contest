@@ -1,19 +1,19 @@
 package template.math;
 
 /**
- * \sum_{i=1}^{limit}f(\lfloor n/i \rfloor)
+ * \sum_{i=l}^{r}f(\lfloor n/i \rfloor)
  */
 public class FloorDivisionOptimizer {
-    int l;
-    int r;
-    int n;
-    int limit;
+    public int l;
+    public int r;
+    private int n;
+    private int limit;
 
 
-    public FloorDivisionOptimizer(int n, int l, int limit) {
+    public FloorDivisionOptimizer(int n, int l, int r) {
         this.n = n;
-        this.l = 0;
-        this.limit = limit;
+        this.l = l;
+        this.limit = r;
         this.r = l - 1;
     }
 
@@ -22,8 +22,9 @@ public class FloorDivisionOptimizer {
     }
 
     public int next() {
+        int v = n / l;
         l = r + 1;
-        r = n / (n / l);
-        return n / l;
+        r = Math.min(n / v, limit);
+        return v;
     }
 }

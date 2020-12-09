@@ -1,0 +1,60 @@
+{
+  "name" : "B. XOR-gun",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4\n2 5 6 8\n",
+    "output" : "1\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "3\n1 2 3\n",
+    "output" : "-1\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "5\n1 2 4 6 20\n",
+    "output" : "2\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "3\n1 2 2",
+    "output" : "1",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "4\n8 18 34 59",
+    "output" : "2",
+    "index" : 4,
+    "active" : true
+  }, {
+    "input" : "4\n5 11 19 30",
+    "output" : "2",
+    "index" : 5,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.BXORGun",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.11.29",
+  "contestName" : "Codeforces - Codeforces Round #687 (Div. 1, based on Technocup 2021 Elimination Round 2)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

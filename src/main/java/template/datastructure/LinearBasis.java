@@ -46,22 +46,6 @@ public class LinearBasis implements Cloneable {
         return ans;
     }
 
-    /**
-     * translate bits returned by most methods into original style
-     *
-     * @param x
-     * @return
-     */
-    public long getOriginal(long x) {
-        long ans = 0;
-        for (int i = 0; i < 64; i++) {
-            if (bitAt(x, i) == 1) {
-                ans ^= source[i];
-            }
-        }
-        return ans;
-    }
-
     public long[] toArray() {
         long[] ans = new long[size()];
         int tail = 0;
@@ -160,7 +144,7 @@ public class LinearBasis implements Cloneable {
      * Find the maximum value x ^ v where v is generated
      */
     public long theMaximumNumberXor(long x) {
-        for (int i = 0; i < 64; i++) {
+        for (int i = 63; i >= 0; i--) {
             if (map[i] == 0) {
                 continue;
             }

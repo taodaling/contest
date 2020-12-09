@@ -24,8 +24,12 @@ public class IntRecursiveCombination implements IntCombination {
         if (n == 0) {
             return 1 % mod;
         }
-        long ans = comb(m - 1, n - 1);
-        ans = ans * m % mod * inv.inverse(n) % mod;
+        long ans = 1;
+        while (n != 0) {
+            ans = ans * m % mod * inv.inverse(n) % mod;
+            m--;
+            n--;
+        }
         return (int) ans;
     }
 }

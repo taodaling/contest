@@ -1,0 +1,40 @@
+{
+  "name" : "D. Equality",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "10\n2\n2 4\n6 9\n3\n1 3\n5 7\n9 10\n",
+    "output" : "5\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "10000000\n1\n4092001 5033941\n2\n206 314\n1214 10000000\n",
+    "output" : "941941\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_11.on2020_11_30_Codeforces___Valentines_Day_Contest_2020.D__Equality1.DEquality",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "on2020_11.on2020_11_30_Codeforces___Valentines_Day_Contest_2020.D__Equality1.DEqualityTestCase" ],
+  "date" : "2020.11.30",
+  "contestName" : "Codeforces - Valentines Day Contest 2020",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

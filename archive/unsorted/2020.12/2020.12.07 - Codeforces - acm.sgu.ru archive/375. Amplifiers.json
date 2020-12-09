@@ -1,0 +1,52 @@
+{
+  "name" : "375. Amplifiers",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5\n",
+    "output" : "2\n2 1\n",
+    "index" : 0,
+    "active" : false
+  }, {
+    "input" : "1",
+    "index" : 1,
+    "active" : false
+  }, {
+    "input" : "2",
+    "index" : 2,
+    "active" : false
+  }, {
+    "input" : "3",
+    "index" : 3,
+    "active" : false
+  }, {
+    "input" : "19",
+    "output" : "",
+    "index" : 4,
+    "active" : false
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx65M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.Amplifiers",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "contest.AmplifiersTestCase" ],
+  "date" : "2020.12.07",
+  "contestName" : "Codeforces - acm.sgu.ru archive",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

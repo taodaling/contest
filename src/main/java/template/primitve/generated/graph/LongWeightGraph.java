@@ -40,6 +40,7 @@ public class LongWeightGraph {
     public static <T extends LongWeightDirectedEdge> void dijkstraElogV(List<T>[] g, IntegerArrayList s, long[] dists, long inf) {
         int n = g.length;
         LongPriorityQueueBasedOnSegment pq = new LongPriorityQueueBasedOnSegment(0, n);
+        pq.reset(0, n);
         for (int i = 0; i < n; i++) {
             dists[i] = inf;
         }

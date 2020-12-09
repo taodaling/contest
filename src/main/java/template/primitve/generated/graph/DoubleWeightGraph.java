@@ -40,6 +40,7 @@ public class DoubleWeightGraph {
     public static <T extends DoubleWeightDirectedEdge> void dijkstraElogV(List<T>[] g, IntegerArrayList s, double[] dists, double inf) {
         int n = g.length;
         DoublePriorityQueueBasedOnSegment pq = new DoublePriorityQueueBasedOnSegment(0, n);
+        pq.reset(0, n);
         for (int i = 0; i < n; i++) {
             dists[i] = inf;
         }

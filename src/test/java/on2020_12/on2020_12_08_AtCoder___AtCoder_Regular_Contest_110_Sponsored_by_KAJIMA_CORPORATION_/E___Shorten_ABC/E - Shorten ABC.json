@@ -1,0 +1,55 @@
+{
+  "name" : "E - Shorten ABC",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5\nABAAC\n",
+    "output" : "11\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "50\nAACCCCBBBACCCCABABCCCCABACCACACACCACABABBBABABACCB\n",
+    "output" : "256972022\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "2 AB",
+    "output" : "2",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "3\nABA",
+    "output" : "4",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "4 ABAA",
+    "output" : "6",
+    "index" : 4,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_12.on2020_12_08_AtCoder___AtCoder_Regular_Contest_110_Sponsored_by_KAJIMA_CORPORATION_.E___Shorten_ABC.EShortenABC",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.12.08",
+  "contestName" : "AtCoder - AtCoder Regular Contest 110（Sponsored by KAJIMA CORPORATION）",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

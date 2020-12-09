@@ -57,6 +57,21 @@ public class DoubleIntervalMap implements Iterable<DoubleIntervalMap.Interval> {
         }
     }
 
+    public Interval floor(double x) {
+        Map.Entry<Double, Interval> entry = map.floorEntry(x);
+        return entry == null ? null : entry.getValue();
+    }
+
+    public Interval ceil(double x) {
+        Map.Entry<Double, Interval> entry = map.ceilingEntry(x);
+        return entry == null ? null : entry.getValue();
+    }
+
+    public boolean contain(double l, double r) {
+        Interval interval = floor(l);
+        return interval != null && interval.r >= r;
+    }
+
     @Override
     public Iterator<Interval> iterator() {
         return map.values().iterator();

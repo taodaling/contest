@@ -23,6 +23,8 @@ public class ManhattanMST {
      * @param y
      */
     public ManhattanMST(int n, long[] x, long[] y) {
+        assert x.length >= n;
+        assert y.length >= n;
         points = new Point[n];
         buf = new Point[n];
         mst = new int[2][n - 1];
@@ -114,6 +116,7 @@ public class ManhattanMST {
         }
         edges.sort((a, b) -> Long.compare(a.w, b.w));
         DSU dsu = new DSU(n);
+        dsu.init();
         int mstOffset = 0;
         for (Edge e : edges) {
             int a = e.a;
@@ -127,6 +130,7 @@ public class ManhattanMST {
             mstOffset++;
             total += e.w;
         }
+        assert mstOffset == n - 1;
     }
 
     public int[][] getMst() {
@@ -137,7 +141,7 @@ public class ManhattanMST {
         return total;
     }
 
-    public void dac(Point[] pts, int l, int r, int d1, int d2) {
+    private void dac(Point[] pts, int l, int r, int d1, int d2) {
         if (l >= r) {
             return;
         }

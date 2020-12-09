@@ -14,6 +14,7 @@ public class SegTree<S extends Sum<S, U>, U extends Update<U>> implements Clonea
     public S sum;
     private U update;
 
+
     private void modify(U x) {
         update.update(x);
         sum.update(x);

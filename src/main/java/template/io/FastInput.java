@@ -222,6 +222,14 @@ public class FastInput {
         return defaultStringBuf.toString();
     }
 
+    public int rs(char[] data, int offset) {
+        return readString(data, offset);
+    }
+
+    public int rs(char[] data) {
+        return rs(data, 0);
+    }
+
     public int readString(char[] data, int offset) {
         skipBlank();
 

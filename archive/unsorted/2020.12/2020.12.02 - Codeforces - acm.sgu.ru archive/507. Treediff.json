@@ -1,0 +1,60 @@
+{
+  "name" : "507. Treediff",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5 4\n1\n1\n1\n1\n1 \n4 \n7 \n9\n",
+    "output" : "2\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "5 4\n1\n1\n1\n1\n1 \n4 \n7 \n10\n",
+    "output" : "3\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "7 4\n1\n2\n1\n2\n3\n3\n2 \n10 \n7 \n15\n",
+    "output" : "3 3 8\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "2 1\n1\n100\n",
+    "output" : "2147483647 \n",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "5 2\n1 2 3 1\n100 100",
+    "output" : "0 2147483647 2147483647",
+    "index" : 4,
+    "active" : true
+  }, {
+    "input" : "5 4\n1 1 1 1\n-1 10 -12 4",
+    "output" : "5",
+    "index" : 5,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx262M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.Treediff",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "contest.TreediffTestCase" ],
+  "date" : "2020.12.02",
+  "contestName" : "Codeforces - acm.sgu.ru archive",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

@@ -1,95 +1,50 @@
 package platform.leetcode;
 
 
-import template.utils.Debug;
-
 import java.util.Arrays;
 
 public class Solution {
-    public static void main(String[] args) {
-        System.out.println(new Solution().getMaxGridHappiness(2, 2, 4, 0));
-    }
-
-    int[] pow3 = new int[10];
-
-    {
-        pow3[0] = 1;
-        for (int i = 1; i < 10; i++) {
-            pow3[i] = 3 * pow3[i - 1];
+    public int minimumIncompatibility(int[] nums, int k) {
+        int n = nums.length;
+        for(int i = 0; i < n; i++){
+            nums[i]--;
         }
-    }
 
-    public int get(int x, int i) {
-        return x % pow3[i + 1] / pow3[i];
-    }
-
-    public int set(int x, int i, int v) {
-        return x + (v - get(x, i)) * pow3[i];
-    }
-
-
-    public int getMaxGridHappiness(int m, int n, int a, int b) {
-        int p = pow3[n];
-        int[][][][] dp = new int[n * (m + 1)][a + 1][b + 1][p];
-        int inf = (int) 1e9;
-        for (int[][][] r3 : dp) {
-            for (int[][] r2 : r3) {
-                for (int[] r1 : r2) {
-                    Arrays.fill(r1, -inf);
+        int inf = (int)1e8;
+        int[] cost = new int[1 << n];
+        Arrays.fill(cost, inf);
+        for(int i = 0; i < 1 << n; i++){
+            if(Integer.bitCount(i) != 4){
+                continue;
+            }
+            int min = n + 1;
+            int max = -1;
+            int v = 0;
+            for(int j = 0; j < n; j++){
+                if(((i >> j) & 1) == 1){
+                    v |= 1 << j;
+                    min = Math.min(min, j);
+                    max = Math.max(max, j);
                 }
             }
-        }
-        dp[n - 1][0][0][0] = 0;
-        int[][] profit = new int[][]{
-                {0, 0, 0},
-                {0, -60, -10},
-                {0, -10, 40}
-        };
-        for (int i = n - 1; i + 1 < n * (m + 1); i++) {
-            int c = i % n;
-            int nc = (c + 1) % n;
-            for (int j = 0; j <= a; j++) {
-                for (int k = 0; k <= b; k++) {
-                    for (int t = 0; t < p; t++) {
-                        //nothing
-                        dp[i + 1][j][k][set(t, nc, 0)] = Math.max(dp[i + 1][j][k][set(t, nc, 0)],
-                                dp[i][j][k][t]);
-                        //set 1
-                        if (j + 1 <= a) {
-                            int cand = dp[i][j][k][t] + 120;
-                            if (nc > 0) {
-                                cand += profit[1][get(t, nc - 1)];
-                            }
-                            cand += profit[1][get(t, nc)];
-                            dp[i + 1][j + 1][k][set(t, nc, 1)] = Math.max(dp[i + 1][j + 1][k][set(t, nc, 1)],
-                                    cand);
-                        }
-
-                        //set 2
-                        if (k + 1 <= b) {
-                            int cand = dp[i][j][k][t] + 40;
-                            if (nc > 0) {
-                                cand += profit[2][get(t, nc - 1)];
-                            }
-                            cand += profit[2][get(t, nc)];
-                            dp[i + 1][j][k + 1][set(t, nc, 2)] = Math.max(dp[i + 1][j][k + 1][set(t, nc, 2)],
-                                    cand);
-                        }
-                    }
-                }
+            if(Integer.bitCount(v) != 4){
+                continue;
             }
+            cost[i] = max - min;
         }
 
-        int ans = -1;
-        for (int i = 0; i < p; i++) {
-            for (int j = 0; j <= a; j++) {
-                for (int k = 0; k <= b; k++) {
-                    ans = Math.max(ans, dp[n * (m + 1) - 1][j][k][i]);
-                }
-            }
+        int[] dp = new int[1 << n];
+        Arrays.fill(dp, inf);
+        dp[0] = 0;
+        for(int i = 0; i < 1 << n; i++){
+            int set = (1 << n) - 1 - i;
+            int now = set + 1;
+            do{
+                now = (now - 1) & set;
+                dp[i + now] = Math.min(dp[i + now], dp[i] + cost[now]);
+            }while (now != 0);
         }
-
-        return ans;
+        return dp[dp.length - 1];
     }
 }
 

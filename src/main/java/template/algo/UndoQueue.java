@@ -17,6 +17,7 @@ public class UndoQueue {
     }
 
     public void add(CommutativeUndoOperation op) {
+        op.flag = false;
         pushAndDo(op);
     }
 
@@ -35,7 +36,7 @@ public class UndoQueue {
         }
     }
 
-    public void remove() {
+    public CommutativeUndoOperation remove() {
         if (!dq.peekLast().flag) {
             popAndUndo();
             while (!dq.isEmpty() && bufB.size() != bufA.size()) {
@@ -58,7 +59,9 @@ public class UndoQueue {
             }
         }
 
-        dq.removeLast().undo();
+        CommutativeUndoOperation ans = dq.removeLast();
+        ans.undo();
+        return ans;
     }
 
     public int size() {

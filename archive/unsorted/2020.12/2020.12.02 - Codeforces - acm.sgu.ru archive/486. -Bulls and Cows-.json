@@ -1,0 +1,50 @@
+{
+  "name" : "486. \"Bulls and Cows\"",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5071\n6012\n",
+    "output" : "1 1\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "4321\n4321\n",
+    "output" : "4 0\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "1980\n0879\n",
+    "output" : "0 3\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "1234\n5678\n",
+    "output" : "0 0\n",
+    "index" : 3,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx262M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.BullsAndCows",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.12.02",
+  "contestName" : "Codeforces - acm.sgu.ru archive",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

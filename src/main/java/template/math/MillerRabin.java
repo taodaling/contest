@@ -6,14 +6,14 @@ import java.util.Random;
  * Test whether a number is primes
  */
 public class MillerRabin {
-    int mod;
-    Power power;
-    Random random = new Random();
+    static int mod;
+    static Power power;
+    static Random random = new Random();
 
     /**
      * Check whether n is a prime s times, O(slog n)
      */
-    public boolean mr(int n, int s) {
+    public static boolean mr(int n, int s) {
         if (n <= 1) {
             return false;
         }
@@ -38,12 +38,12 @@ public class MillerRabin {
         return true;
     }
 
-    private boolean mr0(int x, int n, int m) {
+    private static boolean mr0(int x, int n, int m) {
         return test(power.pow(x, m), m, n);
     }
 
-    private boolean test(int y, int exp, int n) {
-        int y2 = (int) ((long)y * y % mod);
+    private static boolean test(int y, int exp, int n) {
+        int y2 = (int) ((long) y * y % mod);
         if (!(exp == n - 1 || test(y2, exp * 2, n))) {
             return false;
         }
