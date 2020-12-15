@@ -1,10 +1,12 @@
 package template.primitve.generated.graph;
 
+import template.datastructure.PairingHeap;
 import template.primitve.generated.datastructure.IntegerArrayList;
 import template.primitve.generated.datastructure.IntegerDeque;
 import template.primitve.generated.datastructure.IntegerDequeImpl;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class DoubleWeightGraph {
@@ -37,12 +39,15 @@ public class DoubleWeightGraph {
         return ans;
     }
 
-    public static <T extends DoubleWeightDirectedEdge> void dijkstraElogV(List<T>[] g, IntegerArrayList s, double[] dists, double inf) {
+    public static <T extends DoubleWeightDirectedEdge> void dijkstraElogV(List<T>[] g, IntegerArrayList s, double[] dists, int[] prev, double inf) {
         int n = g.length;
         DoublePriorityQueueBasedOnSegment pq = new DoublePriorityQueueBasedOnSegment(0, n);
         pq.reset(0, n);
         for (int i = 0; i < n; i++) {
             dists[i] = inf;
+            if (prev != null) {
+                prev[i] = -1;
+            }
         }
         for (int i = s.size() - 1; i >= 0; i--) {
             int node = s.get(i);
@@ -58,6 +63,47 @@ public class DoubleWeightGraph {
                 if (dists[e.to] > dists[head] + e.weight) {
                     dists[e.to] = dists[head] + e.weight;
                     pq.update(e.to, 0, n, dists[e.to]);
+                    if (prev != null) {
+                        prev[e.to] = head;
+                    }
+                }
+            }
+        }
+    }
+
+
+    public static <T extends DoubleWeightDirectedEdge> void dijkstraPairingHeap(List<T>[] g, IntegerArrayList s, double[] dists, int[] prev, double inf) {
+        int n = g.length;
+        for (int i = 0; i < n; i++) {
+            dists[i] = inf;
+            if (prev != null) {
+                prev[i] = -1;
+            }
+        }
+        for (int i = s.size() - 1; i >= 0; i--) {
+            int node = s.get(i);
+            dists[node] = 0;
+        }
+        Comparator<Integer> cmpByDist = (a, b) -> Double.compare(dists[a], dists[b]);
+        PairingHeap<Integer>[] ph = new PairingHeap[n];
+        PairingHeap<Integer> heap = PairingHeap.NIL;
+        for (int i = 0; i < n; i++) {
+            ph[i] = new PairingHeap<>(i);
+            heap = PairingHeap.merge(heap, ph[i], cmpByDist);
+        }
+        for (int i = 0; i < n; i++) {
+            int head = PairingHeap.peek(heap);
+            heap = PairingHeap.pop(heap, cmpByDist);
+            if (dists[head] >= inf) {
+                break;
+            }
+            for (DoubleWeightDirectedEdge e : g[head]) {
+                if (dists[e.to] > dists[head] + e.weight) {
+                    dists[e.to] = dists[head] + e.weight;
+                    heap = PairingHeap.decrease(heap, ph[e.to], e.to, cmpByDist);
+                    if (prev != null) {
+                        prev[e.to] = head;
+                    }
                 }
             }
         }

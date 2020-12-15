@@ -7,8 +7,7 @@ public class ZAlgorithm {
      * Provide sequence : s(0), s(1), ... , s(n - 1), calculate their z function.<br>
      * z[i]: The longest substring start at i which is also a prefix of s
      */
-    public static void generate(int[] z, IntUnaryOperator s) {
-        int n = z.length;
+    public static void generate(int[] z, IntUnaryOperator s, int n) {
         if (n == 0) {
             return;
         }

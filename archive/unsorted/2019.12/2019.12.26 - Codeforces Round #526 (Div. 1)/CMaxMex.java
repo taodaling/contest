@@ -1,7 +1,6 @@
 package contest;
 
 import graphs.lca.Lca;
-import template.graph.TreePath;
 import template.graph.LcaOnTree;
 import template.io.FastInput;
 import template.io.FastOutput;

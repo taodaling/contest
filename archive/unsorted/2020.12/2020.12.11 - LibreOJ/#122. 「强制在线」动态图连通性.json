@@ -1,0 +1,45 @@
+{
+  "name" : "#122. 「强制在线」动态图连通性",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "200 5\n2 123 127\n0 4 0\n2 4 0\n1 4 0\n2 0 4\n",
+    "output" : "N\nY\nN\n",
+    "index" : 0,
+    "active" : false
+  }, {
+    "input" : "4 10\n0 1 2\n0 2 3\n0 3 1\n2 1 4\n0 0 7\n2 5 0\n1 3 2\n2 0 5\n1 0 2\n2 0 5\n",
+    "output" : "N\nY\nY\nN\n",
+    "index" : 1,
+    "active" : false
+  }, {
+    "input" : "2 2\n0 1 2\n2 1 2",
+    "output" : "Y",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.Task",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "contest.TaskTestCase" ],
+  "date" : "2020.12.11",
+  "contestName" : "LibreOJ",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : false
+}

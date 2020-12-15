@@ -1,7 +1,7 @@
 package template.problem;
 
+import template.algo.BinarySearch;
 import template.math.DigitUtils;
-import template.utils.SequenceUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,7 +51,7 @@ public class CandyAssignProblem {
             addedCandies.add(new Candy());
         }
         candies = addedCandies.toArray(new Candy[0]);
-        Arrays.sort(candies, Candy.sortByA);
+        Arrays.sort(candies, Candy.sortByLocation);
         candieCnt = 0;
         for (int i = 1; i < candies.length; i++) {
             if (candies[i].location == candies[candieCnt].location) {
@@ -108,7 +108,7 @@ public class CandyAssignProblem {
      */
     public long deliverBetween(long i) {
         tmp.location = i;
-        int index = SequenceUtils.lowerBound(candies, tmp, 0, candieCnt - 1, Candy.sortByA);
+        int index = BinarySearch.lowerBound(candies, 0, candieCnt - 1, tmp, Candy.sortByLocation);
         if (index < 0) {
             index = candieCnt - 1;
         }
@@ -123,6 +123,6 @@ public class CandyAssignProblem {
         long a;
         long w;
 
-        static Comparator<Candy> sortByA = (a, b) -> Long.compare(a.location, b.location);
+        static Comparator<Candy> sortByLocation = (a, b) -> Long.compare(a.location, b.location);
     }
 }

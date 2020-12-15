@@ -115,10 +115,10 @@ public class MakeDistanceFarthest {
     }
 
     /**
+     * <pre>
      * get minimum expense that make distance greater than or equal to x.
-     *
-     * @param x
-     * @return
+     * time complexity: O(\log_2n)
+     * </pre>
      */
     public long queryByShortestPath(long x) {
         int l = 0;

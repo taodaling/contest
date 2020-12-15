@@ -16,7 +16,7 @@ public class RollingHash {
         dq = new IntegerDequeImpl(n + 10);
     }
 
-    public void reset() {
+    public void clear() {
         h1 = h2 = 0;
         dq.clear();
     }

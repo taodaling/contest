@@ -1,0 +1,35 @@
+{
+  "name" : "F - Esoswap",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "8\n7 1 2 6 4 0 5 3\n",
+    "output" : "4\n6\n0\n3\n0\n",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_12.on2020_12_10_AtCoder___AtCoder_Regular_Contest_110_Sponsored_by_KAJIMA_CORPORATION_.F___Esoswap.FEsoswap",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.12.10",
+  "contestName" : "AtCoder - AtCoder Regular Contest 110（Sponsored by KAJIMA CORPORATION）",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

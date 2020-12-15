@@ -3,6 +3,9 @@ package template.algo;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
+/**
+ * each operation will be invoked and undo O(log_2n) times
+ */
 public class UndoQueue {
 
 

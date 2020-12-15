@@ -216,6 +216,12 @@ public class FastInput {
         }
     }
 
+    public void skipEmptyLine() {
+        while (next == '\r' || next == '\n') {
+            next = read();
+        }
+    }
+
     public String readLine() {
         defaultStringBuf.setLength(0);
         readLine(defaultStringBuf);

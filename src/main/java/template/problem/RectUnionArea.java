@@ -9,6 +9,13 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 public class RectUnionArea {
+    /**
+     * <pre>
+     * 计算矩阵交的面积
+     * 时间复杂度：O(n\log_2n)
+     * 空间复杂度：O(n)
+     * </pre>
+     */
     public static long unionArea(Rect[] rects) {
         LongArrayList list = new LongArrayList(rects.length * 2);
         for (Rect r : rects) {

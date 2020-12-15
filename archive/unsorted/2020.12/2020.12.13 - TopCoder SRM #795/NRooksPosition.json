@@ -1,0 +1,36 @@
+{
+  "name" : "NRooksPosition",
+  "signature" : {
+    "name" : "minSteps",
+    "result" : "long",
+    "arguments" : [ "int", "int[]", "int[]", "int", "int", "int" ],
+    "argumentNames" : [ "N", "Xprefix", "Yprefix", "A", "B", "C" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "3", "5 8 7", "1 3 5", "0", "0", "1" ],
+    "result" : "3",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "999999", "0 0", "0 0", "0", "0", "1" ],
+    "result" : "499999000000",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "2", "953523433 43", "2324 244525243", "4", "7", "47" ],
+    "result" : "1198046307",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "10", "47 530", "9421 125521", "1234567", "7654321", "987654321" ],
+    "result" : "5509135972",
+    "index" : 3,
+    "active" : true
+  } ],
+  "date" : "2020.12.13",
+  "contestName" : "TopCoder SRM #795",
+  "testClasses" : [ ],
+  "fqn" : "contest.NRooksPosition",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

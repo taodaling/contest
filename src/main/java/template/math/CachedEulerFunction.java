@@ -4,7 +4,7 @@ import template.primitve.generated.datastructure.IntegerHashMap;
 
 public class CachedEulerFunction {
     private static int boundary = 1 << 16;
-    private static MultiplicativeFunctionSieve sieve = new MultiplicativeFunctionSieve(boundary, false, true, false);
+    private static int[] euler = new MultiplicativeFunctionSieve(boundary).getEuler();
     private static IntegerHashMap map = new IntegerHashMap(64, true);
 
     public static int get(int x) {
@@ -13,7 +13,7 @@ public class CachedEulerFunction {
 
     private static int get(int x, int begin) {
         if (x <= boundary) {
-            return sieve.euler[x];
+            return euler[x];
         }
         int ans = map.getOrDefault(x, -1);
         if (ans == -1) {

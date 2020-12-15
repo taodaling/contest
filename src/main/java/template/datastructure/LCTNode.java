@@ -16,6 +16,12 @@ public class LCTNode {
     LCTNode treeFather = NIL;
     boolean reverse;
     int id;
+    /**
+     * 所在连通块中的treeWeight之和
+     */
+    int treeSize;
+    int vtreeSize;
+    byte treeWeight;
 
     public static void access(LCTNode x) {
         LCTNode last = NIL;
@@ -23,7 +29,9 @@ public class LCTNode {
             splay(x);
             x.right.father = NIL;
             x.right.treeFather = x;
+            x.vtreeSize += x.right.treeSize;
             x.setRight(last);
+            x.vtreeSize -= last.treeSize;
             x.pushUp();
 
             last = x;
@@ -49,7 +57,9 @@ public class LCTNode {
 
     public static void join(LCTNode y, LCTNode x) {
         makeRoot(x);
+        makeRoot(y);
         x.treeFather = y;
+        y.vtreeSize += x.treeSize;
     }
 
     public static void findRoute(LCTNode x, LCTNode y) {
@@ -184,5 +194,6 @@ public class LCTNode {
         if (this == NIL) {
             return;
         }
+        treeSize = left.treeSize + right.treeSize + vtreeSize + treeWeight;
     }
 }

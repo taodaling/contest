@@ -1,0 +1,67 @@
+{
+  "name" : "D - Convex Sequence",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 3\n",
+    "output" : "7\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "10 100\n",
+    "output" : "10804516\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "10000 100000\n",
+    "output" : "694681734\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "1 1",
+    "output" : "1",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "2 3",
+    "output" : "4",
+    "index" : 4,
+    "active" : true
+  }, {
+    "input" : "100000 100000",
+    "index" : 5,
+    "active" : true
+  }, {
+    "input" : "1000 100000",
+    "index" : 6,
+    "active" : true
+  }, {
+    "input" : "300 100000",
+    "index" : 7,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.DConvexSequence",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.12.14",
+  "contestName" : "AtCoder - AtCoder Grand Contest 049",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

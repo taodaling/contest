@@ -1,5 +1,6 @@
 package template.primitve.generated.datastructure;
 
+import template.algo.BinarySearch;
 import template.rand.Randomized;
 import template.utils.CompareUtils;
 import template.utils.SequenceUtils;
@@ -204,12 +205,12 @@ public class LongArrayList implements Cloneable {
         return Arrays.binarySearch(data, 0, size, x);
     }
 
-    public int leftBound(long x) {
-        return SequenceUtils.upperBound(data, x, 0, size - 1);
+    public int lowerBound(long x) {
+        return BinarySearch.lowerBound(data, 0, size - 1, x);
     }
 
-    public int rightBound(long x) {
-        return SequenceUtils.lowerBound(data, x, 0, size - 1);
+    public int upperBound(long x) {
+        return BinarySearch.upperBound(data, 0, size - 1, x);
     }
 
     public void push(int x) {

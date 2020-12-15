@@ -8,6 +8,9 @@ public class IntMath {
      * l + (l + 1) + ... + r
      */
     public static long sumOfInterval(long l, long r) {
+        if(l > r){
+            return 0;
+        }
         return (r + l) * (r - l + 1) / 2;
     }
 

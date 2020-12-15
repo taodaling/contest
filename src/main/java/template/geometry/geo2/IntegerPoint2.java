@@ -22,6 +22,18 @@ public class IntegerPoint2 {
         }
         return ans;
     };
+
+    public static Comparator<IntegerPoint2> sortByPolarAngleAround(IntegerPoint2 center) {
+        return (a, b) -> {
+            int aHalf = half(a.x - center.x, a.y - center.y);
+            int bHalf = half(b.x - center.x, b.y - center.y);
+            if (aHalf != bHalf) {
+                return aHalf - bHalf;
+            }
+            return orient(center, b, a);
+        };
+    }
+
     public static final IntegerPoint2 ORIGIN = new IntegerPoint2(0, 0);
 
     public final long x, y;
@@ -39,6 +51,10 @@ public class IntegerPoint2 {
      * (0, PI] for upper half return 1, (-PI, 0] for bottom half return 0
      */
     public int half() {
+        return half(x, y);
+    }
+
+    private static int half(double x, double y) {
         return y > 0 || y == 0 && x < 0 ? 1 : 0;
     }
 

@@ -1,0 +1,31 @@
+{
+  "name" : "AtLeastKDays",
+  "signature" : {
+    "name" : "sumOfMinCosts",
+    "result" : "long",
+    "arguments" : [ "String[]", "int" ],
+    "argumentNames" : [ "costs", "minDays" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "-12ф3-6ф45-", "1" ],
+    "result" : "34",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "-111111111ф1-11111111ф11-1111111ф111-111111ф1111-11111ф11111-1111ф111111-111ф1111111-11ф11111111-1ф111111111-", "1000000000" ],
+    "result" : "100000000000",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "-12ф3-6ф45-", "6" ],
+    "result" : "122",
+    "index" : 2,
+    "active" : true
+  } ],
+  "date" : "2020.12.13",
+  "contestName" : "Single Round Match 795",
+  "testClasses" : [ ],
+  "fqn" : "contest.AtLeastKDays",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

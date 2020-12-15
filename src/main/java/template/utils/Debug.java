@@ -125,6 +125,14 @@ public class Debug {
         return this;
     }
 
+    public Debug summary() {
+        if (offline) {
+            elapse("used time");
+            debug("used memory", (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) >> 20);
+        }
+        return this;
+    }
+
     public Debug debug(String name, int x) {
         if (offline) {
             debug(name, "" + x);

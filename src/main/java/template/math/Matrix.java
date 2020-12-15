@@ -1,11 +1,12 @@
 package template.math;
 
 import template.polynomial.GravityLagrangeInterpolation;
+import template.utils.CloneSupportObject;
 import template.utils.SequenceUtils;
 
 import java.util.Arrays;
 
-public class Matrix implements Cloneable {
+public class Matrix extends CloneSupportObject<Matrix> {
     double[] mat;
     int m;
 

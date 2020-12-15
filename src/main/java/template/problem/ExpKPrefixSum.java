@@ -13,7 +13,7 @@ public class ExpKPrefixSum {
     private Power power;
 
     public ExpKPrefixSum(int maxK, int mod) {
-        sieve = new MultiplicativeFunctionSieve(maxK, false, false, false);
+        sieve = new MultiplicativeFunctionSieve(maxK);
         interpolation = new ModContinuousInterpolation(maxK + 2, mod);
         this.mod = mod;
         this.power = new Power(mod);
@@ -23,7 +23,7 @@ public class ExpKPrefixSum {
     /**
      * return \sum_{i=1}^n i^k in O(k)
      */
-    public int solve(int k, int n, int mod) {
+    public int solve(int k, int n) {
         if (k == 0) {
             return n % mod;
         }

@@ -19,6 +19,7 @@ public class FastWalshHadamardTransform {
             p[m + 1 + i] = a + b;
         }
     }
+
     /**
      * p[i] is the number of subset of i, ret[i] is the occurrence number of number i
      */
@@ -122,6 +123,23 @@ public class FastWalshHadamardTransform {
     }
 
     /**
+     * res[i] is how many superset of i occur in p
+     */
+    public static void andFWT(int[] p, int l, int r, int mod) {
+        if (l == r) {
+            return;
+        }
+        int m = DigitUtils.floorAverage(l, r);
+        andFWT(p, l, m, mod);
+        andFWT(p, m + 1, r, mod);
+        for (int i = 0, until = m - l; i <= until; i++) {
+            int a = p[l + i];
+            int b = p[m + 1 + i];
+            p[l + i] = DigitUtils.modplus(a, b, mod);
+        }
+    }
+
+    /**
      * p[i] is the number of superset of i, ret[i] is the occurrence number of number i
      */
     public static void andIFWT(int[] p, int l, int r) {
@@ -136,6 +154,23 @@ public class FastWalshHadamardTransform {
         }
         andIFWT(p, l, m);
         andIFWT(p, m + 1, r);
+    }
+
+    /**
+     * p[i] is the number of superset of i, ret[i] is the occurrence number of number i
+     */
+    public static void andIFWT(int[] p, int l, int r, int mod) {
+        if (l == r) {
+            return;
+        }
+        int m = DigitUtils.floorAverage(l, r);
+        for (int i = 0, until = m - l; i <= until; i++) {
+            int a = p[l + i];
+            int b = p[m + 1 + i];
+            p[l + i] = DigitUtils.modsub(a, b, mod);
+        }
+        andIFWT(p, l, m, mod);
+        andIFWT(p, m + 1, r, mod);
     }
 
     public static void xorFWT(long[] p, int l, int r) {
@@ -201,6 +236,12 @@ public class FastWalshHadamardTransform {
     public static void dotMul(int[] a, int[] b, int[] c, int l, int r) {
         for (int i = l; i <= r; i++) {
             c[i] = a[i] * b[i];
+        }
+    }
+
+    public static void dotMul(int[] a, int[] b, int[] c, int l, int r, int mod) {
+        for (int i = l; i <= r; i++) {
+            c[i] = (int) ((long)a[i] * b[i] % mod);
         }
     }
 

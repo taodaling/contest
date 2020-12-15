@@ -4,12 +4,11 @@ import template.primitve.generated.datastructure.LongObjectHashMap;
 import template.utils.Buffer;
 
 public class EulerTourTree {
-    Splay[] nodes;
+    public Splay[] nodes;
     LongObjectHashMap<Edge> map;
-    Buffer<Splay> buffer = new Buffer<>(Splay::new);
 
     public EulerTourTree(int n) {
-        map = new LongObjectHashMap<>(n, true);
+        map = new LongObjectHashMap<>(0, true);
         nodes = new Splay[n];
         for (int i = 0; i < n; i++) {
             nodes[i] = alloc(i);
@@ -17,13 +16,13 @@ public class EulerTourTree {
     }
 
     private Splay alloc(int id) {
-        Splay splay = buffer.alloc();
+        Splay splay = new Splay();//buffer.alloc();
         splay.id = id;
         return splay;
     }
 
     private void destroy(Splay s) {
-        buffer.release(s);
+        //buffer.release(s);
     }
 
     public int rootOf(int i) {

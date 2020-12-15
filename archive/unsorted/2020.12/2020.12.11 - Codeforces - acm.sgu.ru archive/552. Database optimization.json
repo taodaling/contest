@@ -1,0 +1,40 @@
+{
+  "name" : "552. Database optimization",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4\n3 width=5 ht=3 len=10\n2 name=circ rad=5\n2 name=circ rad=5\n3 name=sqr width=5 ht=3\n4\n2 ht=3 width=5\n1 name=circ\n1 name=sqr\n2 width=5 ht=03\n",
+    "output" : "2\n2\n1\n0\n\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "1\n2 name=tao gender=man\n2\n0\n2 name=tao gender=man",
+    "output" : "1\n1",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx262M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.DatabaseOptimization",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.12.11",
+  "contestName" : "Codeforces - acm.sgu.ru archive",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

@@ -30,12 +30,12 @@ public class PentagonalNumber {
         getPolynomial(list.getData(), n);
     }
 
-    public static void getPolynomial(int[] data, int n, Modular mod) {
+    public static void getPolynomial(int[] data, int n, int mod) {
         if (n == 0) {
             return;
         }
-        int one = mod.valueOf(1);
-        int neg = mod.valueOf(-1);
+        int one = DigitUtils.mod(1, mod);
+        int neg = DigitUtils.mod(-1, mod);
         data[0] = one;
         for (int k = 1; k * (3 * k + 1) / 2 < n; k++) {
             int val = k % 2 == 1 ? neg : one;
@@ -50,7 +50,7 @@ public class PentagonalNumber {
     /**
      * \prod_{i=1}^\infin (1-x^i) \mod x^n
      */
-    public static void getPolynomial(IntegerArrayList list, int n, Modular mod) {
+    public static void getPolynomial(IntegerArrayList list, int n, int mod) {
         list.clear();
         list.expandWith(0, n);
         getPolynomial(list.getData(), n, mod);
