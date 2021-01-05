@@ -24,7 +24,7 @@ public class FixedNumberOfDigitsTestCase {
         builder.append('\n');
     }
 
-    RandomWrapper random = new RandomWrapper(new Random(0));
+    RandomWrapper random = new RandomWrapper(0);
 
     public NewTopCoderTest create(int testNum) {
         int start = random.nextInt(0, 10);

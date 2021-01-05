@@ -11,6 +11,8 @@ public class IntervalInversePairProblem {
     private int[] a;
     private int n;
     private int blockSize;
+    private int BIT;
+    private int mask;
     private int blockCnt;
     private long[][] blockPairs;
     private long[] prefix;
@@ -21,15 +23,15 @@ public class IntervalInversePairProblem {
     private long[] suffix;
 
     private int left(int i) {
-        return i * blockSize;
+        return i << BIT;
     }
 
     private int right(int i) {
-        return Math.min((i + 1) * blockSize - 1, n - 1);
+        return Math.min(left(i + 1), n) - 1;
     }
 
     private int getBlock(int i) {
-        return i / blockSize;
+        return i >> BIT;
     }
 
     public IntervalInversePairProblem(IntToLongFunction func, int n) {
@@ -78,8 +80,13 @@ public class IntervalInversePairProblem {
     }
 
     private void prepare() {
-        blockSize = (int) Math.ceil(Math.sqrt(n));
-        blockCnt = DigitUtils.ceilDiv(n, blockSize);
+        BIT = 0;
+        while ((1 << BIT * 2) < n) {
+            BIT++;
+        }
+        blockSize = 1 << BIT;
+        mask = blockSize - 1;
+        blockCnt = (n - 1) / blockSize + 1;
         prefix = new long[n];
         prefixSorted = new int[n][];
         for (int i = 0; i < blockCnt; i++) {
@@ -151,7 +158,7 @@ public class IntervalInversePairProblem {
                     int[] subOccur = i == 0 ? zero : prefixOccur[i - 1];
                     int[] plusOccur = prefixOccur[j - 1];
                     for (int k = l; k <= r; k++) {
-                       // blockPairs[i][j] += geq(i, j - 1, a[k] + 1);
+                        // blockPairs[i][j] += geq(i, j - 1, a[k] + 1);
                         blockPairs[i][j] += plusOccur[m - 1] -
                                 plusOccur[a[k]] - subOccur[m - 1] +
                                 subOccur[a[k]];

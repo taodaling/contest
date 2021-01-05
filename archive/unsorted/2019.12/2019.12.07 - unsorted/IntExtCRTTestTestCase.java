@@ -20,7 +20,7 @@ public class IntExtCRTTestTestCase {
         return tests;
     }
 
-    RandomWrapper random = new RandomWrapper(new Random(0));
+    RandomWrapper random = new RandomWrapper(0);
 
     public Test create(int testNum) {
         int p = random.nextInt(2, (int) 2e9);

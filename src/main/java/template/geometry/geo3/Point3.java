@@ -63,6 +63,18 @@ public class Point3 {
         return a.x * b.x + a.y * b.y + a.z * b.z;
     }
 
+    private static double square(double x) {
+        return x * x;
+    }
+
+    public static double dist2(Point3 a, Point3 b) {
+        return square(a.x - b.x) + square(a.y - b.y) + square(a.z - b.z);
+    }
+
+    public static double dist(Point3 a, Point3 b) {
+        return Math.sqrt(dist2(a, b));
+    }
+
     public double square() {
         return dot(this, this);
     }
@@ -124,6 +136,7 @@ public class Point3 {
      * norm是a、b、c构成平面的法向量，判断ac在ab的顺逆时针方向。
      * <br>
      * 平行返回0，逆时针返回1，顺时针返回-1。
+     *
      * @param a
      * @param b
      * @param c

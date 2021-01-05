@@ -43,6 +43,10 @@ public class IntegerPoint2 {
         this.y = y;
     }
 
+    public IntegerPoint2() {
+        this(0, 0);
+    }
+
     public double arg() {
         return Math.atan2(y, x);
     }

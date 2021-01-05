@@ -1,0 +1,46 @@
+{
+  "name" : "ChristmasBatteries",
+  "signature" : {
+    "name" : "mostFun",
+    "result" : "int",
+    "arguments" : [ "int", "int", "int", "int", "int", "int" ],
+    "argumentNames" : [ "B", "N", "X", "Y", "Z", "M" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "0", "5", "1", "1", "1", "1000" ],
+    "result" : "1",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "3", "5", "1", "1", "1", "1000" ],
+    "result" : "14",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "3", "5", "1", "1", "1", "13" ],
+    "result" : "11",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "4", "10000", "123", "456", "789", "1" ],
+    "result" : "0",
+    "index" : 3,
+    "active" : true
+  }, {
+    "arguments" : [ "7", "4", "3", "5", "7", "997" ],
+    "result" : "100",
+    "index" : 4,
+    "active" : true
+  }, {
+    "arguments" : [ "2", "12345", "234", "34", "5", "117" ],
+    "result" : "143371",
+    "index" : 5,
+    "active" : true
+  } ],
+  "date" : "2020.12.23",
+  "contestName" : "Single Round Match 796",
+  "testClasses" : [ ],
+  "fqn" : "contest.ChristmasBatteries",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

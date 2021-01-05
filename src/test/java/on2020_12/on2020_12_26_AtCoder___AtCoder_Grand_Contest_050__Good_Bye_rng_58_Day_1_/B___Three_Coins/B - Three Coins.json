@@ -1,0 +1,45 @@
+{
+  "name" : "B - Three Coins",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4\n1\n2\n3\n4\n",
+    "output" : "9\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "6\n3\n-2\n-1\n0\n-1\n4\n",
+    "output" : "6\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "10\n-84\n-60\n-41\n-100\n8\n-8\n-52\n-62\n-61\n-76\n",
+    "output" : "0\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_12.on2020_12_26_AtCoder___AtCoder_Grand_Contest_050__Good_Bye_rng_58_Day_1_.B___Three_Coins.BThreeCoins",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.12.26",
+  "contestName" : "AtCoder - AtCoder Grand Contest 050 (Good Bye rng_58 Day 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

@@ -11,7 +11,7 @@ import template.SimulatedAnnealing;
 public class TaskC {
     public void solve(int testNumber, FastInput in, FastOutput out) {
         long n = in.readLong();
-        RandomWrapper rw = new RandomWrapper(new Random(0));
+        RandomWrapper rw = new RandomWrapper(0);
         SimulatedAnnealing<int[]> sa = new SimulatedAnnealing<int[]>(1e-5, 1e-5, 0.99, rw.getRandom()) {
             @Override
             public int[] next(int[] old, double temperature) {

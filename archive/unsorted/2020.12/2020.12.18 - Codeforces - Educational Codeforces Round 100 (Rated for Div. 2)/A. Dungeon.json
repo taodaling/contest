@@ -1,0 +1,40 @@
+{
+  "name" : "A. Dungeon",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3\n3 2 4\n1 1 1\n10 1 7\n",
+    "output" : "YES\nNO\nNO\n",
+    "index" : 0,
+    "active" : false
+  }, {
+    "input" : "3\n3 3 3\n1 1 1\n2 2 2",
+    "output" : "yes\nno\nno",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.ADungeon",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.12.18",
+  "contestName" : "Codeforces - Educational Codeforces Round 100 (Rated for Div. 2)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

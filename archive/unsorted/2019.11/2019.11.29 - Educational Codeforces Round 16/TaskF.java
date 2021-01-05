@@ -3,7 +3,6 @@ package contest;
 import template.algo.BitDecomposeFramework;
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.string.ACAutomaton;
 
 import java.util.ArrayList;
 import java.util.List;

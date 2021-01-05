@@ -233,6 +233,37 @@ public class FastWalshHadamardTransform {
         xorIFWT(p, m + 1, r);
     }
 
+    public static void xorFWT(int[] p, int l, int r, int mod) {
+        if (l == r) {
+            return;
+        }
+        int m = DigitUtils.floorAverage(l, r);
+        xorFWT(p, l, m, mod);
+        xorFWT(p, m + 1, r, mod);
+        for (int i = 0, until = m - l; i <= until; i++) {
+            int a = p[l + i];
+            int b = p[m + 1 + i];
+            p[l + i] = DigitUtils.modplus(a, b, mod);
+            p[m + 1 + i] = DigitUtils.modsub(a, b, mod);
+        }
+    }
+
+    public static void xorIFWT(int[] p, int l, int r, int mod) {
+        if (l == r) {
+            return;
+        }
+        int inv2 = (mod + 1) / 2;
+        int m = DigitUtils.floorAverage(l, r);
+        for (int i = 0, until = m - l; i <= until; i++) {
+            long a = p[l + i];
+            long b = p[m + 1 + i];
+            p[l + i] = (int) ((a + b) * inv2 % mod);
+            p[m + 1 + i] = (int) ((a - b + mod) * inv2 % mod);
+        }
+        xorIFWT(p, l, m, mod);
+        xorIFWT(p, m + 1, r, mod);
+    }
+
     public static void dotMul(int[] a, int[] b, int[] c, int l, int r) {
         for (int i = l; i <= r; i++) {
             c[i] = a[i] * b[i];
@@ -241,7 +272,7 @@ public class FastWalshHadamardTransform {
 
     public static void dotMul(int[] a, int[] b, int[] c, int l, int r, int mod) {
         for (int i = l; i <= r; i++) {
-            c[i] = (int) ((long)a[i] * b[i] % mod);
+            c[i] = (int) ((long) a[i] * b[i] % mod);
         }
     }
 

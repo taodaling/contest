@@ -43,7 +43,7 @@ public class LongGomoryHuTree {
     }
 
 
-    public void dac(IntegerArrayList set, List<LongFlowEdge>[] g, LongMaximumFlow mf, boolean[] visited) {
+    private void dac(IntegerArrayList set, List<LongFlowEdge>[] g, LongMaximumFlow mf, boolean[] visited) {
         if (set.size() <= 1) {
             return;
         }

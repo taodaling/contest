@@ -1,7 +1,6 @@
 package contest;
 
 import structures.KdTreePointQuery;
-import template.datastructure.KdTree3D;
 import template.datastructure.LongKDTree;
 import template.io.FastInput;
 import template.io.FastOutput;

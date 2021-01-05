@@ -43,7 +43,7 @@ public class TaskTestCase {
             builder.append('\n');
     }
 
-    RandomWrapper random = new RandomWrapper(new Random(0));
+    RandomWrapper random = new RandomWrapper(0);
     public Test create(int testNum){
         File dir = new File("C:\\Users\\dalt\\Downloads");
         return new Test(FileUtils.readFile(dir, "dgraph_hack1.in"), null);

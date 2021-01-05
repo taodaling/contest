@@ -33,27 +33,23 @@ public class MultiSet<T> {
     }
 
     public T pollFirst() {
-        size--;
         Map.Entry<T, Integer> first = map.firstEntry();
-        update(first.getKey(), first.getValue() - 1);
+        update(first.getKey(), first.getValue(), -1);
         return first.getKey();
     }
 
     public T pollLast() {
-        size--;
         Map.Entry<T, Integer> last = map.lastEntry();
-        update(last.getKey(), last.getValue() - 1);
+        update(last.getKey(), last.getValue(), -1);
         return last.getKey();
     }
 
     public void add(T key) {
-        size++;
-        update(key, map.getOrDefault(key, 0) + 1);
+        update(key, map.getOrDefault(key, 0), +1);
     }
 
     public void remove(T key) {
-        size--;
-        update(key, map.getOrDefault(key, 0) - 1);
+        update(key, map.getOrDefault(key, 0), -1);
     }
 
     public T ceil(T x) {
@@ -64,19 +60,23 @@ public class MultiSet<T> {
         return map.floorKey(x);
     }
 
-    public void update(T key, int cnt) {
+    public void update(T key, int old, int mod) {
+        int cnt = old + mod;
+        size += mod;
         if (cnt == 0) {
             map.remove(key);
-        } else if (cnt > 0) {
-            map.put(key, cnt);
         } else {
-            size++;
+            map.put(key, cnt);
         }
+    }
+
+    public int count(T key) {
+        return map.getOrDefault(key, 0);
     }
 
     public void addAll(MultiSet<T> set) {
         for (Map.Entry<T, Integer> entry : set.map.entrySet()) {
-            update(entry.getKey(), entry.getValue());
+            update(entry.getKey(), set.count(entry.getKey()), entry.getValue());
         }
     }
 

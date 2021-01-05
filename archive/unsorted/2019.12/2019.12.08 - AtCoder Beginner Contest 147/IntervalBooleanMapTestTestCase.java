@@ -22,7 +22,7 @@ public class IntervalBooleanMapTestTestCase {
         return tests;
     }
 
-    RandomWrapper random = new RandomWrapper(new Random(0));
+    RandomWrapper random = new RandomWrapper(0);
 
     public Test create(int testNum) {
         int q = random.nextInt(100, 1000);

@@ -6,7 +6,7 @@ import template.rand.RandomWrapper;
 import java.util.Random;
 
 public class LongModular2305843009213693951Test {
-    RandomWrapper rw = new RandomWrapper(new Random());
+    RandomWrapper rw = new RandomWrapper();
 
     public long next() {
         return rw.nextLong(0, 2305843009213693951L - 1);

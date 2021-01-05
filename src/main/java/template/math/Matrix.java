@@ -37,6 +37,16 @@ public class Matrix extends CloneSupportObject<Matrix> {
         this.m = m;
     }
 
+    public Matrix(double[][] mat) {
+        this.m = mat[0].length;
+        this.mat = new double[mat.length * m];
+        for (int i = 0; i < mat.length; i++) {
+            for (int j = 0; j < m; j++) {
+                this.mat[i * m + j] = mat[i][j];
+            }
+        }
+    }
+
     public Matrix(int n, int m) {
         this.m = m;
         mat = new double[n * m];
@@ -190,7 +200,7 @@ public class Matrix extends CloneSupportObject<Matrix> {
         return r;
     }
 
-    public static Matrix transposition(Matrix x) {
+    public static Matrix transpose(Matrix x) {
         int n = x.getHeight();
         int m = x.getWidth();
         Matrix t = new Matrix(m, n);
@@ -295,7 +305,7 @@ public class Matrix extends CloneSupportObject<Matrix> {
         double ans = 1;
         int n = getWidth();
         for (int i = 0; i < n - 1; i++) {
-            if (Math.abs(mat[i * n + i]) < Math.abs(mat[(i + 1) * n +  i])) {
+            if (Math.abs(mat[i * n + i]) < Math.abs(mat[(i + 1) * n + i])) {
                 swapRow(i, i + 1);
                 ans = -ans;
             }

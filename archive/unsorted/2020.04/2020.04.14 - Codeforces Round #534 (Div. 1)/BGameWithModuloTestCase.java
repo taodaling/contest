@@ -25,7 +25,7 @@ public class BGameWithModuloTestCase {
         builder.append('\n');
     }
 
-    RandomWrapper random = new RandomWrapper(new Random(0));
+    RandomWrapper random = new RandomWrapper(0);
     public Test create(int testNum){
         String in = "1\n" + random.nextInt(1, (int)1e9);
         return new Test(in, "");

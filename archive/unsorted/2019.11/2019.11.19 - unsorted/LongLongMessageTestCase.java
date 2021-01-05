@@ -20,7 +20,7 @@ public class LongLongMessageTestCase {
         return tests;
     }
 
-    RandomWrapper random = new RandomWrapper(new Random(0));
+    RandomWrapper random = new RandomWrapper(0);
     public Test create(int testNum){
         char[] s = new char[random.nextInt(1, 100000)];
         char[] t = new char[random.nextInt(1, 100000)];

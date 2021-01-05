@@ -19,7 +19,7 @@ public class HSelfExplorationTestCase {
         return tests;
     }
 
-    RandomWrapper random = new RandomWrapper(new Random(0));
+    RandomWrapper random = new RandomWrapper(0);
 
     public Test create(int testNum) {
         int l = random.nextInt(16, 31);

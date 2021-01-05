@@ -6,6 +6,10 @@ import java.util.Random;
  * Test whether a number is primes
  */
 public class LongMillerRabin {
+    public static void main(String[] args){
+        System.out.println(LongMillerRabin.mr(1000003, 50));
+    }
+
     static ILongModular modular;
     static LongPower power;
     static Random random = new Random();

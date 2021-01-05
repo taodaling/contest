@@ -32,14 +32,20 @@ public class Factorial {
     }
 
     public Factorial(int limit, int mod) {
-        this(new int[limit + 1], new int[limit + 1], mod);
+        this(new int[Math.min(limit + 1, mod)], new int[Math.min(limit + 1, mod)], mod);
     }
 
     public int fact(int n) {
+        if (n >= mod) {
+            return 0;
+        }
         return fact[n];
     }
 
     public int invFact(int n) {
+        if (n >= mod) {
+            throw new IllegalArgumentException();
+        }
         return inv[n];
     }
 }

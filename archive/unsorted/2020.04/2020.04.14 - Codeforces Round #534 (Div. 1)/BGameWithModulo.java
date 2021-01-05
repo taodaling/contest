@@ -53,7 +53,7 @@ public class BGameWithModulo {
         out.printf("! %d", a).println().flush();
     }
 
-    RandomWrapper rw = new RandomWrapper(new Random(0));
+    RandomWrapper rw = new RandomWrapper(0);
 
     public int nextInt() {
         return rw.nextInt((int) 1, (int) 1e9);

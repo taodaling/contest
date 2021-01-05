@@ -20,7 +20,7 @@ public class TaskCTestCase {
         return tests;
     }
 
-    RandomWrapper random = new RandomWrapper(new Random(0));
+    RandomWrapper random = new RandomWrapper(0);
     public Test create(int testNum){
         int n = random.nextInt(1, 5);
         int a = random.nextInt(1, 10);

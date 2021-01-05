@@ -1,0 +1,55 @@
+{
+  "name" : "455. Sequence analysis",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2 2 9\n",
+    "output" : "4\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "2305843009213693951 1 9223372036854775807\n",
+    "output" : "5\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "-2 1 5\n",
+    "output" : "4\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "0 2 2",
+    "output" : "1",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "0 1 1",
+    "output" : "2",
+    "index" : 4,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx40M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.SequenceAnalysis",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.12.17",
+  "contestName" : "Codeforces - acm.sgu.ru archive",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

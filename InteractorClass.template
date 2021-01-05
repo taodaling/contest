@@ -1,12 +1,13 @@
 package %package%;
 
-import net.egork.chelper.tester.Verdict;
-import net.egork.chelper.tester.State;
 import java.io.InputStream;
 import java.io.OutputStream;
+import net.egork.chelper.tester.Verdict;
+import template.io.FastInput;
+import template.io.FastOutput;
+import chelper.AbstractInteractor;
 
-public class %InteractorClass% {
-    public Verdict interact(InputStream input, InputStream solutionOutput, OutputStream solutionInput, State<Boolean> state) {
-        return Verdict.UNDECIDED;
+public class %InteractorClass% extends AbstractInteractor{
+    public Verdict interact(FastInput input, FastInput solutionOutput, FastOutput solutionInput) throws Throwable{
     }
 }

@@ -1,0 +1,45 @@
+{
+  "name" : "C. Poman Numbers",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2 -1\nba\n",
+    "output" : "Yes\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "3 -7\nabc\n",
+    "output" : "No\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "7 -475391\nqohshra\n",
+    "output" : "Yes\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.CPomanNumbers",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.12.21",
+  "contestName" : "Codeforces - Codeforces Round #692 (Div. 1, based on Technocup 2021 Elimination Round 3)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

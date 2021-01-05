@@ -1,0 +1,35 @@
+{
+  "name" : "E. A Bit Similar",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "7\n4 2\n0110\n4 2\n1001\n9 3\n010001110\n9 3\n101110001\n10 3\n0101110001\n10 10\n1111111111\n11 10\n11111111110\n",
+    "output" : "YES\n11\nYES\n00\nYES\n010\nYES\n101\nNO\nYES\n0000000001\nYES\n0000000010\n",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.EABitSimilar",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.12.29",
+  "contestName" : "Codeforces - Educational Codeforces Round 101 (Rated for Div. 2)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

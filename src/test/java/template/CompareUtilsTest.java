@@ -16,7 +16,7 @@ public class CompareUtilsTest {
 
     @Test
     public void quickSort() {
-        RandomWrapper rw = new RandomWrapper(new Random(0));
+        RandomWrapper rw = new RandomWrapper(0);
         long[] data = new long[n];
         for (int i = 0; i < n; i++) {
             data[i] = rw.nextInt(0, 1000000000);
@@ -28,7 +28,7 @@ public class CompareUtilsTest {
 
     @Test
     public void customQuickSort() {
-        RandomWrapper rw = new RandomWrapper(new Random(0));
+        RandomWrapper rw = new RandomWrapper(0);
         long[] data = new long[n];
         for (int i = 0; i < n; i++) {
             data[i] = rw.nextInt(0, 1000000000);
@@ -41,7 +41,7 @@ public class CompareUtilsTest {
 
     @Test
     public void radixSortTest() {
-        RandomWrapper rw = new RandomWrapper(new Random(0));
+        RandomWrapper rw = new RandomWrapper(0);
         long[] data = new long[n];
         for (int i = 0; i < n; i++) {
             data[i] = rw.nextInt(0, 1000000000);
@@ -56,7 +56,7 @@ public class CompareUtilsTest {
 
     @Test
     public void radixSortIntTest() {
-        RandomWrapper rw = new RandomWrapper(new Random(0));
+        RandomWrapper rw = new RandomWrapper(0);
         int[] data = new int[n];
         for (int i = 0; i < n; i++) {
             data[i] = rw.nextInt(0, 1000000000);
@@ -70,7 +70,7 @@ public class CompareUtilsTest {
 
     @Test
     public void radixSortIntFetchTest() {
-        RandomWrapper rw = new RandomWrapper(new Random(0));
+        RandomWrapper rw = new RandomWrapper(0);
         int[] data = new int[n];
         for (int i = 0; i < n; i++) {
             data[i] = rw.nextInt(0, 1000000000);
@@ -85,7 +85,7 @@ public class CompareUtilsTest {
 
     @Test
     public void radixSortIntFetchRangeTest() {
-        RandomWrapper rw = new RandomWrapper(new Random(0));
+        RandomWrapper rw = new RandomWrapper(0);
         int[] data = new int[n];
         for (int i = 0; i < n; i++) {
             data[i] = rw.nextInt(0, 1000000000);

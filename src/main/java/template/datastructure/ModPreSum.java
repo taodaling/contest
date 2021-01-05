@@ -28,14 +28,14 @@ public class ModPreSum {
     /**
      * get a[l] + a[l + 1] + ... + a[r]
      */
-    public long intervalSum(int l, int r) {
+    public int intervalSum(int l, int r) {
         return DigitUtils.modsub(prefix(r), prefix(l - 1), mod);
     }
 
     /**
      * get a[0] + a[1] + ... + a[i]
      */
-    public long prefix(int i) {
+    public int prefix(int i) {
         i = Math.min(i, n - 1);
         if (i < 0) {
             return 0;
@@ -46,7 +46,7 @@ public class ModPreSum {
     /**
      * get a[i] + a[i + 1] + ... + a[n - 1]
      */
-    public long post(int i) {
+    public int post(int i) {
         return DigitUtils.modsub(prefix(n), prefix(i - 1), mod);
     }
 }

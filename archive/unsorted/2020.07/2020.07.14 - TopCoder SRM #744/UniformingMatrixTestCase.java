@@ -25,7 +25,7 @@ public class UniformingMatrixTestCase {
         builder.append('\n');
     }
 
-    RandomWrapper random = new RandomWrapper(new Random(0));
+    RandomWrapper random = new RandomWrapper(0);
     public NewTopCoderTest create(int testNum){
         char[][] mat = new char[100][100];
         for(int i = 0; i < 100; i++){

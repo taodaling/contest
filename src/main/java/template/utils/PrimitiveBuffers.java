@@ -93,7 +93,7 @@ public class PrimitiveBuffers {
 
     public static double[][] allocDoublePow2Array(int n, int arraySize) {
         double[][] ans = new double[arraySize][];
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < arraySize; i++) {
             ans[i] = allocDoublePow2(n);
         }
         return ans;

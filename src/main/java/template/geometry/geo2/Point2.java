@@ -139,8 +139,13 @@ public class Point2 implements Cloneable {
         return a.x * b.x + a.y * b.y;
     }
 
+
     public static double dot(double x1, double y1, double x2, double y2) {
         return x1 * x2 + y1 * y2;
+    }
+
+    public static double cross(double x1, double y1, double x2, double y2) {
+        return x1 * y2 - y1 * x2;
     }
 
     public static double cross(Point2 a, Point2 b) {
@@ -332,7 +337,7 @@ public class Point2 implements Cloneable {
         for (int i = 0; i < n; i++) {
             sum.add(cross(polygon[i], polygon[(i + 1) % n]));
         }
-        return sum.sum() /2;
+        return sum.sum() / 2;
     }
 
 
@@ -458,12 +463,27 @@ public class Point2 implements Cloneable {
         return ans;
     }
 
-    public static Point2[] asPointPolygon(Line2[] line2s){
+    public static Point2[] asPointPolygon(Line2[] line2s) {
         int n = line2s.length;
         Point2[] ans = new Point2[n];
-        for(int i = 0; i < n; i++){
+        for (int i = 0; i < n; i++) {
             ans[i] = Line2.intersect(line2s[i], line2s[(i + 1) % n]);
         }
         return ans;
+    }
+
+    private static double ang(Point2 l, Point2 mid, Point2 r) {
+        double x = dot(l.x - mid.x, l.y - mid.y, r.x - mid.x, r.y - mid.y);
+        double y = cross(l.x - mid.x, l.y - mid.y, r.x - mid.x, r.y - mid.y);
+        double res = Math.atan2(x, y);
+        return res;
+    }
+
+    public static boolean inCicle(Point2 a, Point2 b, Point2 c, Point2 d) {
+        double kek = ang(a, b, c) + ang(c, d, a) - ang(b, c, d) - ang(d, a, b);
+        if (kek > 1e-8)
+            return true;
+        else
+            return false;
     }
 }

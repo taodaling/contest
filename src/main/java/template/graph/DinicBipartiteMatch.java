@@ -105,6 +105,16 @@ public class DinicBipartiteMatch {
         return new boolean[][]{left, right};
     }
 
+    public boolean[][] maxIndependentSet() {
+        boolean[][] cover = minVertexCover();
+        for (boolean[] arr : cover) {
+            for (int i = 0; i < arr.length; i++) {
+                arr[i] = !arr[i];
+            }
+        }
+        return cover;
+    }
+
     private void dfsRight(int i, boolean[] lVis, boolean[] rVis) {
         if (rVis[i]) {
             return;

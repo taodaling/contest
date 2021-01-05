@@ -15,20 +15,4 @@ public class LongModularDanger implements ILongModular {
     public long mul(long a, long b) {
         return DigitUtils.modmul(a, b, m);
     }
-
-    public long plus(long a, long b) {
-        return valueOf(a + b);
-    }
-
-    public long subtract(long a, long b) {
-        return valueOf(a - b);
-    }
-
-    public long valueOf(long a) {
-        a %= m;
-        if (a < 0) {
-            a += m;
-        }
-        return a;
-    }
 }

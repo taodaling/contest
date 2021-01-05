@@ -1,10 +1,9 @@
 package template.datastructure;
 
-import java.util.Random;
+import template.rand.RandomWrapper;
 
 
 public class Treap implements Cloneable {
-    private static Random random = new Random();
 
     public static final Treap NIL = new Treap();
 
@@ -69,7 +68,7 @@ public class Treap implements Cloneable {
         if (b == NIL) {
             return a;
         }
-        if (random.nextInt(a.size + b.size) < a.size) {
+        if (RandomWrapper.INSTANCE.nextInt(a.size + b.size) < a.size) {
             a.pushDown();
             a.right = merge(a.right, b);
             a.pushUp();

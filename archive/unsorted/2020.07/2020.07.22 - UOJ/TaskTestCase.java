@@ -31,7 +31,7 @@ public class TaskTestCase {
         builder.append('\n');
     }
 
-    RandomWrapper random = new RandomWrapper(new Random(0));
+    RandomWrapper random = new RandomWrapper(0);
     public Test create(int testNum){
         File in = new File("D:\\temporary\\3028\\" + testNum + ".in");
         File out = new File("D:\\temporary\\3028\\" + testNum + ".out");

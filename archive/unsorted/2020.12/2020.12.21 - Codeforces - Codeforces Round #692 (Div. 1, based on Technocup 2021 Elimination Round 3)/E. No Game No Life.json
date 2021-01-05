@@ -1,0 +1,45 @@
+{
+  "name" : "E. No Game No Life",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "1 0\n",
+    "output" : "0\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "2 1\n1 2\n",
+    "output" : "332748118\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "5 5\n1 4\n5 2\n4 3\n1 5\n5 4\n",
+    "output" : "931694730\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.ENoGameNoLife",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.12.21",
+  "contestName" : "Codeforces - Codeforces Round #692 (Div. 1, based on Technocup 2021 Elimination Round 3)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

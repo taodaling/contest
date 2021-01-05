@@ -1,7 +1,6 @@
 package contest;
 
 import template.binary.Bits;
-import template.string.ACAutomaton;
 import template.utils.SequenceUtils;
 
 public class RandomConcat {

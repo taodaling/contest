@@ -1,0 +1,50 @@
+{
+  "name" : "B. Chip 'n Dale Rescue Rangers",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "0 0 5 5\n3 2\n-1 -1\n-1 0\n",
+    "output" : "3.729935587093555327\n",
+    "index" : 0,
+    "active" : false
+  }, {
+    "input" : "0 0 0 1000\n100 1000\n-50 0\n50 0\n",
+    "output" : "11.547005383792516398\n",
+    "index" : 1,
+    "active" : false
+  }, {
+    "input" : "0 0 0 0\n100 1000\n-50 0\n50 0\n",
+    "output" : "0",
+    "index" : 2,
+    "active" : false
+  }, {
+    "input" : "0 0 0 1000\n100 1000\n0 50\n0 50",
+    "output" : "",
+    "index" : 3,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.BChipNDaleRescueRangers",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.12.23",
+  "contestName" : "Codeforces - Codeforces Round #327 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

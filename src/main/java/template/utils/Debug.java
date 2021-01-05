@@ -8,6 +8,7 @@ public class Debug {
     private boolean offline;
     private PrintStream out = System.err;
     private long time = System.currentTimeMillis();
+    private long begin = System.currentTimeMillis();
 
     public Debug(boolean enable) {
         offline = enable && System.getSecurityManager() == null;
@@ -19,12 +20,33 @@ public class Debug {
         }
     }
 
+
+    public void log(String name) {
+        if (offline) {
+            out.println(name);
+        }
+    }
+
     public Debug debugMatrix(String name, int[][] matrix) {
         if (offline) {
             StringBuilder content = new StringBuilder("\n");
             for (int[] row : matrix) {
                 for (int cell : row) {
                     content.append(cell).append(' ');
+                }
+                content.append(System.lineSeparator());
+            }
+            debug(name, content);
+        }
+        return this;
+    }
+
+    public Debug debugMatrix(String name, boolean[][] matrix) {
+        if (offline) {
+            StringBuilder content = new StringBuilder("\n");
+            for (boolean[] row : matrix) {
+                for (boolean cell : row) {
+                    content.append(cell ? 1 : 0).append(' ');
                 }
                 content.append(System.lineSeparator());
             }
@@ -127,7 +149,7 @@ public class Debug {
 
     public Debug summary() {
         if (offline) {
-            elapse("used time");
+            debug("used time", (System.currentTimeMillis() - begin) + "ms");
             debug("used memory", (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) >> 20);
         }
         return this;

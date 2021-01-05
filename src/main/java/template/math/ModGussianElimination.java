@@ -4,21 +4,22 @@ public class ModGussianElimination {
     int[][] mat;
     int[] solutions;
     int rank;
-    Power power;
-    Modular modular;
+    InverseNumber power;
+    int mod;
     int n;
     int m;
+    int start;
 
     public int rank() {
         return rank;
     }
 
-    public ModGussianElimination(int n, int m, Modular modular) {
+    public ModGussianElimination(int n, int m, int modular) {
         this.n = n;
         this.m = m;
         mat = new int[n + 1][m + 1];
         solutions = mat[n];
-        this.modular = modular;
+        this.mod = modular;
         power = new Power(modular);
     }
 
@@ -34,11 +35,11 @@ public class ModGussianElimination {
     }
 
     public void setRight(int row, int val) {
-        mat[row][m] = val;
+        mat[row][m] = DigitUtils.mod(val, mod);
     }
 
     public void setLeft(int row, int col, int val) {
-        mat[row][col] = val;
+        mat[row][col] = DigitUtils.mod(val, mod);
     }
 
     public int getLeft(int row, int col) {
@@ -50,12 +51,12 @@ public class ModGussianElimination {
     }
 
     public void modifyLeft(int row, int col, int val) {
-        mat[row][col] = modular.plus(mat[row][col], val);
+        mat[row][col] = DigitUtils.mod(mat[row][col] + val, mod);
     }
 
 
     public void modifyRight(int row, int val) {
-        mat[row][m] = modular.plus(mat[row][m], val);
+        mat[row][m] = DigitUtils.mod(mat[row][m] + val, mod);
     }
 
     public int[] getSolutions() {
@@ -64,17 +65,13 @@ public class ModGussianElimination {
 
     /**
      * O(nm^2)
+     *
      * @return
      */
     public boolean solve() {
-        for (int i = 0; i <= n; i++) {
-            for (int j = 0; j <= m; j++) {
-                mat[i][j] = modular.valueOf(mat[i][j]);
-            }
-        }
-
         int now = 0;
         for (int i = 0; i < m; i++) {
+            start = i;
             int maxRow = now;
             for (int j = now; j < n; j++) {
                 if (mat[j][i] != 0) {
@@ -114,12 +111,12 @@ public class ModGussianElimination {
                     break;
                 }
             }
-            mat[n][x] = modular.mul(mat[i][m], power.inverse(mat[i][x]));
+            mat[n][x] = (int) ((long) mat[i][m] * power.inverse(mat[i][x]) % mod);
             for (int j = i - 1; j >= 0; j--) {
                 if (mat[j][x] == 0) {
                     continue;
                 }
-                mat[j][m] = modular.plus(mat[j][m], -modular.mul(mat[j][x], mat[n][x]));
+                mat[j][m] = DigitUtils.mod(mat[j][m] - (long) mat[j][x] * mat[n][x], mod);
                 mat[j][x] = 0;
             }
         }
@@ -133,15 +130,15 @@ public class ModGussianElimination {
     }
 
     void subtractRow(int i, int j, int f) {
-        for (int k = 0; k <= m; k++) {
-            mat[i][k] = modular.plus(mat[i][k], -modular.mul(mat[j][k], f));
+        for (int k = start; k <= m; k++) {
+            mat[i][k] = DigitUtils.mod(mat[i][k] - (long) mat[j][k] * f, mod);
         }
     }
 
     void divideRow(int i, int f) {
         int divisor = power.inverse(f);
-        for (int k = 0; k <= m; k++) {
-            mat[i][k] = modular.mul(mat[i][k], divisor);
+        for (int k = start; k <= m; k++) {
+            mat[i][k] = (int) ((long) mat[i][k] * divisor % mod);
         }
     }
 

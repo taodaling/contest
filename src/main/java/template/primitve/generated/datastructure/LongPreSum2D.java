@@ -20,10 +20,20 @@ public class LongPreSum2D {
     }
 
     public long rect(int low, int hi, int l, int r) {
+        low = Math.max(low, 0);
+        l = Math.max(l, 0);
+        hi = Math.min(hi, ps.length - 1);
+        r = Math.min(r, ps[0].length - 1);
+        if (l > r || low > hi) {
+            return 0;
+        }
         return ps[hi + 1][r + 1] - ps[low][r + 1] - ps[hi + 1][l] + ps[low][l];
     }
 
     public long leftTopCorder(int hi, int r) {
+        if (hi < 0 || r < 0) {
+            return 0;
+        }
         return ps[hi + 1][r + 1];
     }
 }

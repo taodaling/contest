@@ -18,7 +18,7 @@ public class RecursiveTournamentTestCase {
         return ans;
     }
 
-    RandomWrapper rw = new RandomWrapper(new Random(0));
+    RandomWrapper rw = new RandomWrapper(0);
 
     public NewTopCoderTest gen() {
         int n = rw.nextInt(3, 3);

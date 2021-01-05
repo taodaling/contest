@@ -1,0 +1,60 @@
+{
+  "name" : "282. Isomorphism",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "1 1 2\n",
+    "output" : "1\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "3 2 97\n",
+    "output" : "4\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "3 4 97\n",
+    "output" : "20\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "2 1 97\n",
+    "output" : "1",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "2 2 1000000007",
+    "output" : "2",
+    "index" : 4,
+    "active" : true
+  }, {
+    "input" : "3 2 1000000007\n",
+    "output" : "",
+    "index" : 5,
+    "active" : false
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx65M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.Isomorphism",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.12.20",
+  "contestName" : "Codeforces - acm.sgu.ru archive",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

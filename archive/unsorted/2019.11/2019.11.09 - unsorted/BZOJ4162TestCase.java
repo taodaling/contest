@@ -20,7 +20,7 @@ public class BZOJ4162TestCase {
         return tests;
     }
 
-    RandomWrapper random = new RandomWrapper(new Random(0));
+    RandomWrapper random = new RandomWrapper(0);
 
     public Test create(int testNum) {
         long n = random.nextLong(0, (long) 1e18);

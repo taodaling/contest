@@ -8,6 +8,7 @@ public class XorGuassianElimination {
     int rank;
     int n;
     int m;
+    int start;
 
     public int rank() {
         return rank;
@@ -73,6 +74,7 @@ public class XorGuassianElimination {
 
         int now = 0;
         for (int i = 0; i < m; i++) {
+            start = i;
             int maxRow = now;
             for (int j = now; j < n; j++) {
                 if (mat[j][i] != 0) {
@@ -131,14 +133,14 @@ public class XorGuassianElimination {
     }
 
     void subtractRow(int i, int j, int f) {
-        for (int k = 0; k <= m; k++) {
+        for (int k = start; k <= m; k++) {
             mat[i][k] = mat[i][k] ^ (mat[j][k] & f);
         }
     }
 
     void divideRow(int i, int f) {
         int divisor = f;
-        for (int k = 0; k <= m; k++) {
+        for (int k = start; k <= m; k++) {
             mat[i][k] = mat[i][k] & divisor;
         }
     }

@@ -70,9 +70,17 @@ public class ModMatrix {
         return mat[i * m + j];
     }
 
+    public void increment(int i, int j, int x, int mod) {
+        int index = i * m + j;
+        mat[index] = DigitUtils.modplus(mat[index], x, mod);
+    }
+
 
     /**
-     * |x| while mod a non-zero number
+     * <pre>
+     * O(n^3)
+     * |x|
+     * </pre>
      */
     public static int determinant(ModMatrix x, int mod) {
         assert x.square();
@@ -98,11 +106,14 @@ public class ModMatrix {
             ans = ans * l.mat[i * n + i] % mod;
         }
 
-        return (int) ans;
+        return DigitUtils.mod(ans, mod);
     }
 
     /**
+     * <pre>
+     * O(n^3)
      * |x| while mod prime
+     * </pre>
      */
     public static int determinant(ModMatrix x, Power power) {
         assert x.square();

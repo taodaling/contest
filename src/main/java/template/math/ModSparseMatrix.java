@@ -84,10 +84,10 @@ public class ModSparseMatrix {
     /**
      * Store v^TA => output
      */
-    public void leftMul(int[] v, int[] output, Modular mod) {
+    public void leftMul(int[] v, int[] output, int mod) {
         Arrays.fill(output, 0);
         for (int j = 0; j < elements.length; j++) {
-            output[y[j]] = mod.plus(output[y[j]], mod.mul(elements[j], v[x[j]]));
+            output[y[j]] = DigitUtils.mod(output[y[j]] + (long)elements[j] * v[x[j]], mod);
         }
     }
 

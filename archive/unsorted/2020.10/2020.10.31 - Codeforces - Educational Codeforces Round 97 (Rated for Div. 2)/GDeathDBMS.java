@@ -5,7 +5,6 @@ import template.io.FastInput;
 import template.io.FastOutput;
 import template.math.DigitUtils;
 import template.primitve.generated.datastructure.IntegerArrayList;
-import template.string.ACAutomaton;
 import template.string.SAIS;
 
 import java.util.HashMap;

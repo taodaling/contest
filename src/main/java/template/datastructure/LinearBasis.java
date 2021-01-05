@@ -1,5 +1,7 @@
 package template.datastructure;
 
+import template.binary.Log2;
+
 import java.util.Arrays;
 
 public class LinearBasis implements Cloneable {
@@ -73,7 +75,7 @@ public class LinearBasis implements Cloneable {
             state ^= source[i];
         }
         if (val != 0) {
-            int log = 63 - Long.numberOfLeadingZeros(val);
+            int log = Log2.floorLog(val);
             map[log] = val;
             source[log] = state | (1L << log);
             set |= 1L << log;
@@ -93,6 +95,12 @@ public class LinearBasis implements Cloneable {
             val ^= map[i];
         }
         return val == 0;
+    }
+
+    public void copy(LinearBasis model){
+        System.arraycopy(model.map, 0, map, 0, map.length);
+        System.arraycopy(model.source, 0, source, 0, source.length);
+        set = model.set;
     }
 
     private long bitAt(long val, int i) {

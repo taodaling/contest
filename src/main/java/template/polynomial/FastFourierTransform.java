@@ -149,7 +149,6 @@ public class FastFourierTransform {
         r[1][i] = i1 / r2;
     }
 
-
     /**
      * return polynomial g while p * g = 1 (mod x^{2^m}).
      * <br>

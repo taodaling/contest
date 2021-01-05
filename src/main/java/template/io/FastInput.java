@@ -232,6 +232,10 @@ public class FastInput {
         return readString(data, offset);
     }
 
+    public int rs(byte[] data, int offset) {
+        return readString(data, offset);
+    }
+
     public int rs(char[] data) {
         return rs(data, 0);
     }

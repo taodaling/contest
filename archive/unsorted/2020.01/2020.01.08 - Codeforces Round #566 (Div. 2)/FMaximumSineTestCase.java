@@ -19,7 +19,7 @@ public class FMaximumSineTestCase {
         return tests;
     }
 
-    RandomWrapper random = new RandomWrapper(new Random(0));
+    RandomWrapper random = new RandomWrapper(0);
 
     public Test create(int testNum) {
         int a = random.nextInt(1, 10);

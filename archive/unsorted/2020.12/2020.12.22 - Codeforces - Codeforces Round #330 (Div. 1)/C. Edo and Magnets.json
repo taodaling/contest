@@ -1,0 +1,60 @@
+{
+  "name" : "C. Edo and Magnets",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 1\n1 1 2 2\n2 2 3 3\n3 3 4 4\n",
+    "output" : "1\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "4 1\n1 1 2 2\n1 9 2 10\n9 9 10 10\n9 1 10 2\n",
+    "output" : "64\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "3 0\n1 1 2 2\n1 1 1000000000 1000000000\n1 3 8 12\n",
+    "output" : "249999999000000001\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "3 2\n1 1 2 2\n1 1 1000000000 1000000000\n1 3 8 12\n",
+    "output" : "1",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "3 1\n1 1 2 2\n1 1 2 10\n1 1 2 3",
+    "output" : "1",
+    "index" : 4,
+    "active" : true
+  }, {
+    "input" : "3 0\n1 1 2 2\n2 9 2 10\n1 1 2 3",
+    "output" : "8",
+    "index" : 5,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.CEdoAndMagnets",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.12.22",
+  "contestName" : "Codeforces - Codeforces Round #330 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

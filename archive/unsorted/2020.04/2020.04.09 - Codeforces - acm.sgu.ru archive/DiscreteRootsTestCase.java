@@ -30,7 +30,7 @@ public class DiscreteRootsTestCase {
     }
 
     EulerSieve sieve = new EulerSieve(100);
-    RandomWrapper random = new RandomWrapper(new Random(0));
+    RandomWrapper random = new RandomWrapper(0);
 
     public Test create(int testNum) {
         int p = sieve.get(random.nextInt(0, sieve.getPrimeCount() - 1));

@@ -33,7 +33,7 @@ public class GridPathsTestCase {
         builder.append('\n');
     }
 
-    RandomWrapper random = new RandomWrapper(new Random(0));
+    RandomWrapper random = new RandomWrapper(0);
     public Test create(int testNum){
         StringBuilder in = new StringBuilder();
         for(int i = 0; i < 48; i++){

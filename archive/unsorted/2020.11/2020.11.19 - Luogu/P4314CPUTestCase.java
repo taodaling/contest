@@ -45,7 +45,7 @@ public class P4314CPUTestCase {
         builder.append('\n');
     }
 
-    RandomWrapper random = new RandomWrapper(new Random(0));
+    RandomWrapper random = new RandomWrapper(0);
 
     public Test create(int testNum) {
         File dir = new File("/home/dalt/下载/3064");

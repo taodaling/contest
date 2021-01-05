@@ -1,0 +1,40 @@
+{
+  "name" : "E. A Museum Robbery",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 10\n30 4\n60 6\n5 1\n9\n3\n1 42 5\n1 20 3\n3\n2 2\n2 4\n3\n1 40 6\n3\n",
+    "output" : "556674384\n168191145\n947033915\n181541912\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "3 1000\n100 42\n100 47\n400 15\n4\n2 2\n2 1\n2 3\n3\n",
+    "output" : "0\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.EAMuseumRobbery",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.12.22",
+  "contestName" : "Codeforces - Codeforces Round #333 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

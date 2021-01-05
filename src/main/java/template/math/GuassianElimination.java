@@ -10,6 +10,7 @@ public class GuassianElimination {
     int m;
     boolean[] independent;
     double[] solutions;
+    int start;
 
     public GuassianElimination(int n, int m, double prec) {
         this.prec = prec;
@@ -41,12 +42,13 @@ public class GuassianElimination {
         mat[row][mat[row].length - 1] = val;
     }
 
-    public void setLeft(int row, int col, double val){
+    public void setLeft(int row, int col, double val) {
         mat[row][col] = val;
     }
 
     /**
      * O(nm^2)
+     *
      * @return
      */
     public boolean solve() {
@@ -55,6 +57,7 @@ public class GuassianElimination {
 
         int now = 0;
         for (int i = 0; i < m; i++) {
+            start = i;
             int maxRow = now;
             for (int j = now; j < n; j++) {
                 if (Math.abs(mat[j][i]) > Math.abs(mat[maxRow][i])) {
@@ -114,14 +117,14 @@ public class GuassianElimination {
 
     void subtractRow(int i, int j, double f) {
         int m = mat[0].length;
-        for (int k = 0; k < m; k++) {
+        for (int k = start; k < m; k++) {
             mat[i][k] -= mat[j][k] * f;
         }
     }
 
     void divideRow(int i, double f) {
         int m = mat[0].length;
-        for (int k = 0; k < m; k++) {
+        for (int k = start; k < m; k++) {
             mat[i][k] /= f;
         }
     }
@@ -130,7 +133,7 @@ public class GuassianElimination {
         return rank;
     }
 
-    public double[] getSolutions(){
+    public double[] getSolutions() {
         return solutions;
     }
 

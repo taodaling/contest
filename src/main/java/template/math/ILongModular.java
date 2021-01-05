@@ -3,11 +3,17 @@ package template.math;
 public interface ILongModular {
     long getMod();
 
-    long plus(long a, long b);
+    default long plus(long a, long b) {
+        return DigitUtils.modplus(a, b, getMod());
+    }
 
-    long subtract(long a, long b);
+    default long subtract(long a, long b){
+        return DigitUtils.modsub(a, b, getMod());
+    }
 
-    long valueOf(long x);
+    default long valueOf(long x) {
+        return DigitUtils.mod(x, getMod());
+    }
 
     long mul(long a, long b);
 
@@ -15,9 +21,7 @@ public interface ILongModular {
         return ILongModular.getInstance(getMod() - 1);
     }
 
-
     static ILongModular getInstance(long mod) {
-        //return new HandyLongModular(mod);
         if (mod <= (1L << 50)) {
             return new LongModularDanger(mod);
         }

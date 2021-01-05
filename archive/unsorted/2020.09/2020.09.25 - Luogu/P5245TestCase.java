@@ -29,7 +29,7 @@ public class P5245TestCase {
         builder.append('\n');
     }
 
-    RandomWrapper random = new RandomWrapper(new Random(0));
+    RandomWrapper random = new RandomWrapper(0);
     public Test create(int testNum){
         File file = new File("/home/dalt/下载");
         return new Test(FileUtils.readFile(new File(file, "P5245_8.in")),

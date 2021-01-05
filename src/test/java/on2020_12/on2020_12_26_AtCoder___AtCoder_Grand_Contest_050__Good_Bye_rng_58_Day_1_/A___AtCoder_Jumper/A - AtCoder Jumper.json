@@ -1,0 +1,44 @@
+{
+  "name" : "A - AtCoder Jumper",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "1\n",
+    "output" : "1 1\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "3\n",
+    "output" : "2 3\n1 3\n1 2\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "500",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2020_12.on2020_12_26_AtCoder___AtCoder_Grand_Contest_050__Good_Bye_rng_58_Day_1_.A___AtCoder_Jumper.AAtCoderJumper",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.12.26",
+  "contestName" : "AtCoder - AtCoder Grand Contest 050 (Good Bye rng_58 Day 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

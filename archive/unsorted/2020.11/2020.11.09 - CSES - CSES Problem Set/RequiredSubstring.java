@@ -4,7 +4,6 @@ import template.io.FastInput;
 import template.io.FastOutput;
 import template.math.DigitUtils;
 import template.math.Power;
-import template.string.ACAutomaton;
 import template.utils.SequenceUtils;
 
 import java.util.Arrays;

@@ -2,7 +2,6 @@ package contest;
 
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.string.ACAutomaton;
 
 public class FWrapAround {
     ACAutomaton.Node end;

@@ -1,16 +1,13 @@
 package template.problem;
 
 import template.datastructure.PermutationNode;
-import template.graph.DirectedEdge;
-import template.graph.KthAncestorOnTreeByLongLink;
-import template.graph.LcaOnTree;
+import template.graph.KthAncestorOnTreeByBinaryLift;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
- * <p>连续段问题，O(n)时间复杂度预处理一个0~n-1的排列。之后O(1)回答如下两类请求：</p>
+ * <p>连续段问题，O(n\log_2n)时空复杂度预处理一个0~n-1的排列。之后O(\log_2n)回答如下两类请求：</p>
  * <ul>
  *     <li>提供l,r,查询区间最小的区间[a,b],满足a<=l<=r<=b，且[a,b]区间是一个连续段</li>
  *     <li>提供l,r,统计有多少连续段[a,b]，满足l<=a<=b<=r</li>
@@ -25,26 +22,22 @@ public class ContinuousIntervalProblem {
         }
         p[n + 1] = n + 1;
 
-        nodes = new ArrayList<>(2 * n);
+        List<Node> list = new ArrayList<>(2 * n);
         Node root = PermutationNode.build(p, () -> {
             Node node = new Node();
-            node.id = nodes.size();
-            nodes.add(node);
+            node.id = list.size();
+            list.add(node);
             return node;
         });
+        nodes = list.toArray(new Node[0]);
         leaf = new Node[n + 2];
 
-        int m = nodes.size();
-        List<DirectedEdge>[] g = new List[m];
-        for (int i = 0; i < m; i++) {
-            Node node = nodes.get(i);
-            g[i] = node.adj.stream().map(x -> new DirectedEdge(((Node) x).id)).collect(Collectors.toList());
-        }
-        kthAncestorOnTreeByLongLink = new KthAncestorOnTreeByLongLink(g, root.id);
-        lcaOnTree = new LcaOnTree(g, root.id);
-
+        int m = list.size();
         dfs(root, null, -1);
         dfs2(root);
+
+        bl = new KthAncestorOnTreeByBinaryLift(m);
+        bl.init(i -> nodes[i].p == null ? -1 : nodes[i].p.id, m);
     }
 
     public int[] findMinContinuousIntervalContains(int lId, int rId) {
@@ -53,13 +46,13 @@ public class ContinuousIntervalProblem {
         if (l == r) {
             return new int[]{l.ll - 1, l.rr - 1};
         }
-        int lcaId = lcaOnTree.lca(l.id, r.id);
-        Node ancestor = nodes.get(lcaId);
+        int lcaId = bl.lca(l.id, l.depth, r.id, r.depth);
+        Node ancestor = nodes[lcaId];
         if (!ancestor.join) {
             return new int[]{ancestor.ll - 1, ancestor.rr - 1};
         } else {
-            l = nodes.get(kthAncestorOnTreeByLongLink.kthAncestor(l.id, l.depth - ancestor.depth - 1));
-            r = nodes.get(kthAncestorOnTreeByLongLink.kthAncestor(r.id, r.depth - ancestor.depth - 1));
+            l = nodes[bl.kthAncestor(l.id, l.depth - ancestor.depth - 1)];
+            r = nodes[bl.kthAncestor(r.id, r.depth - ancestor.depth - 1)];
             return new int[]{l.ll - 1, r.rr - 1};
         }
     }
@@ -74,10 +67,10 @@ public class ContinuousIntervalProblem {
         r += 2;
         Node lNode = leaf[l];
         Node rNode = leaf[r];
-        int lca = lcaOnTree.lca(lNode.id, rNode.id);
-        Node lcaNode = nodes.get(lca);
-        Node lParent = nodes.get(kthAncestorOnTreeByLongLink.kthAncestor(lNode.id, lNode.depth - lcaNode.depth - 1));
-        Node rParent = nodes.get(kthAncestorOnTreeByLongLink.kthAncestor(rNode.id, rNode.depth - lcaNode.depth - 1));
+        int lca = bl.lca(lNode.id, lNode.depth, rNode.id, rNode.depth);
+        Node lcaNode = nodes[lca];
+        Node lParent = nodes[bl.kthAncestor(lNode.id, lNode.depth - lcaNode.depth - 1)];
+        Node rParent = nodes[bl.kthAncestor(rNode.id, rNode.depth - lcaNode.depth - 1)];
         long ans = lNode.psA - lParent.psA;
         ans += rNode.psB - rParent.psB;
         int left = lParent.index + 1;
@@ -91,9 +84,8 @@ public class ContinuousIntervalProblem {
     }
 
     Node[] leaf;
-    List<Node> nodes;
-    KthAncestorOnTreeByLongLink kthAncestorOnTreeByLongLink;
-    LcaOnTree lcaOnTree;
+    Node[] nodes;
+    KthAncestorOnTreeByBinaryLift bl;
 
     private void dfs(Node root, Node p, int index) {
         if (root.length() == 1) {

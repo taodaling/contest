@@ -1,0 +1,45 @@
+{
+  "name" : "ProbC",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4 10\n2\n1\n2\n1",
+    "output" : "1.000000000000000",
+    "index" : 0,
+    "active" : false
+  }, {
+    "input" : "5 5\n1\n2\n3\n4\n5",
+    "output" : "2.7500000000000000",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "3 6\n2\n4\n2",
+    "output" : "1.6799999999999999",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.ProbC",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.12.21",
+  "contestName" : "Codeforces - Codeforces Round #333 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

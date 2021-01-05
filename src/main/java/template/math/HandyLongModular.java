@@ -74,25 +74,6 @@ public class HandyLongModular implements ILongModular {
         return mod;
     }
 
-    @Override
-    public long plus(long a, long b) {
-        return valueOf(a + b);
-    }
-
-    @Override
-    public long subtract(long a, long b) {
-        return valueOf(a - b);
-    }
-
-    @Override
-    public long valueOf(long x) {
-        x %= mod;
-        if (x < 0) {
-            x += mod;
-        }
-        return x;
-    }
-
     private static long mask = (1L << 32) - 1;
 
     private void accumulate(long x) {

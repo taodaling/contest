@@ -36,7 +36,7 @@ public class P5050TestCase {
         builder.append('\n');
     }
 
-    RandomWrapper random = new RandomWrapper(new Random(0));
+    RandomWrapper random = new RandomWrapper(0);
     public Test create(int testNum){
         return new Test(FileUtils.readFile(new File("/home/dalt/下载/P5050_1.in")),
                 FileUtils.readFile(new File("/home/dalt/下载/P5050_1.out")));

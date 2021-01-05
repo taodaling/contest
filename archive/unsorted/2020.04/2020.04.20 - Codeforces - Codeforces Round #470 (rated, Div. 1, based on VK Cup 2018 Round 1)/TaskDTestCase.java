@@ -29,7 +29,7 @@ public class TaskDTestCase {
         builder.append('\n');
     }
 
-    RandomWrapper random = new RandomWrapper(new Random(0));
+    RandomWrapper random = new RandomWrapper(0);
 
     public Test create(int testNum) {
         int n = random.nextInt(1, 100);

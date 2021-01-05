@@ -1,2 +1,2 @@
-48 src/main/java/contest/311. Ice-cream Tycoon.json
+60 src/main/java/contest/C. Alice, Bob, Oranges and Apples.json
 0

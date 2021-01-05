@@ -16,33 +16,14 @@ public class LongModular2305843009213693951 implements ILongModular {
         return mod;
     }
 
-    @Override
-    public long plus(long a, long b) {
-        return valueOf(a + b);
-    }
-
-    @Override
-    public long subtract(long a, long b) {
-        return valueOf(a - b);
-    }
-
-    @Override
-    public long valueOf(long x) {
-        x %= mod;
-        if (x < 0) {
-            x += mod;
-        }
-        return x;
-    }
-
-
     private static long mask = (1L << 32) - 1;
+
     @Override
     public long mul(long a, long b) {
-        long l1 = DigitUtils.lowBit(a) & mask;
-        long h1 = DigitUtils.highBit(a) & mask;
-        long l2 = DigitUtils.lowBit(b) & mask;
-        long h2 = DigitUtils.highBit(b) & mask;
+        long l1 = a & mask;
+        long h1 = (a >> 32) & mask;
+        long l2 = b & mask;
+        long h2 = (b >> 32) & mask;
         long l = l1 * l2;
         long m = l1 * h2 + l2 * h1;
         long h = h1 * h2;

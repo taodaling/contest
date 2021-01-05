@@ -1,0 +1,31 @@
+{
+  "name" : "ChristmasSnake",
+  "signature" : {
+    "name" : "turnAround",
+    "result" : "String",
+    "arguments" : [ "String[]" ],
+    "argumentNames" : [ "game" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "........ф....hg..ф..ab.f..ф...cde..ф........ф........ф........ф........" ],
+    "result" : "WSSSSENNNNESEENNW",
+    "index" : 0,
+    "active" : false
+  }, {
+    "arguments" : [ "........ф........ф..a.....ф........ф........ф........ф........ф........" ],
+    "result" : "WSNNSE",
+    "index" : 1,
+    "active" : false
+  }, {
+    "arguments" : [ "........ф........ф....hg..ф..ab.f..ф...cde..ф........ф........ф........" ],
+    "result" : "",
+    "index" : 2,
+    "active" : true
+  } ],
+  "date" : "2020.12.23",
+  "contestName" : "Single Round Match 796",
+  "testClasses" : [ ],
+  "fqn" : "contest.ChristmasSnake",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

@@ -36,7 +36,7 @@ public class P4043AHOI2014JSOI2014TestCase {
         builder.append('\n');
     }
 
-    RandomWrapper random = new RandomWrapper(new Random(0));
+    RandomWrapper random = new RandomWrapper(0);
     public Test create(int testNum){
         File dir = new File("/home/dalt/下载/3876");
         return new Test(FileUtils.readFile(new File(dir, testNum + ".in")),

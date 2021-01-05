@@ -1,0 +1,40 @@
+{
+  "name" : "C - XOR-omania",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "sample input\n",
+    "output" : "sample output\n",
+    "index" : 0,
+    "active" : false
+  }, {
+    "input" : "6\n30 19 66 13 92 81\n",
+    "output" : "94 64 77 28\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx65M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.CXOROmania",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.12.29",
+  "contestName" : "Virtual Judge - improve contest 14",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

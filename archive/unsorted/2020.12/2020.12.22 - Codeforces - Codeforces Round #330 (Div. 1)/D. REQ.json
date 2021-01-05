@@ -1,0 +1,40 @@
+{
+  "name" : "D. REQ",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "10\n1 2 3 4 5 6 7 8 9 10\n7\n1 1\n3 8\n5 6\n4 8\n8 10\n7 9\n7 10\n",
+    "output" : "1\n4608\n8\n1536\n192\n144\n1152\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "7\n24 63 13 52 6 10 1\n6\n3 5\n4 7\n1 7\n2 4\n3 6\n2 6\n",
+    "output" : "1248\n768\n12939264\n11232\n9984\n539136\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.DREQ",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2020.12.22",
+  "contestName" : "Codeforces - Codeforces Round #330 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

@@ -3,26 +3,35 @@ package template.rand;
 import java.util.Random;
 
 public class RandomWrapper {
-    private Random random;
+    private MersenneTwisterFast random;
 
     public RandomWrapper() {
-        this(new Random());
+        this(new MersenneTwisterFast());
     }
 
-    public RandomWrapper(Random random) {
+    public RandomWrapper(MersenneTwisterFast random) {
         this.random = random;
+    }
+
+    public RandomWrapper(long seed) {
+        this(new MersenneTwisterFast(seed));
     }
 
     public int nextInt(int l, int r) {
         return random.nextInt(r - l + 1) + l;
     }
 
+    public int nextInt(int n) {
+        return random.nextInt(n);
+    }
+
+
     public double nextDouble(double l, double r) {
         return random.nextDouble() * (r - l) + l;
     }
 
     public long nextLong(long l, long r) {
-        return (long) nextDouble(l, r);
+        return random.nextLong(r - l + 1) + l;
     }
 
     public String nextString(char l, char r, int len) {
@@ -33,7 +42,7 @@ public class RandomWrapper {
         return builder.toString();
     }
 
-    public Random getRandom() {
+    public MersenneTwisterFast getRandom() {
         return random;
     }
 
@@ -49,5 +58,5 @@ public class RandomWrapper {
         return x[nextInt(0, x.length - 1)];
     }
 
-    public static final RandomWrapper INSTANCE = new RandomWrapper(new Random());
+    public static final RandomWrapper INSTANCE = new RandomWrapper();
 }
