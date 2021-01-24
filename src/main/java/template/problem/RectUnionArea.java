@@ -20,10 +20,17 @@ public class RectUnionArea {
         LongArrayList list = new LongArrayList(rects.length * 2);
         for (Rect r : rects) {
             list.add(r.l);
-            list.add(r.r + 1);
+            list.add(r.r);
         }
         list.unique();
         int m = list.size();
+        if (m <= 1) {
+            return 0;
+        }
+        for (Rect rect : rects) {
+            rect.l = list.binarySearch(rect.l);
+            rect.r = list.binarySearch(rect.r);
+        }
         Rect[] sortByB = rects.clone();
         Rect[] sortByT = rects.clone();
         Arrays.sort(sortByB, Comparator.comparingLong(x -> x.b));
@@ -32,24 +39,28 @@ public class RectUnionArea {
         Range2DequeAdapter<Rect> dqByT = new Range2DequeAdapter<>(i -> sortByT[i], 0, sortByT.length - 1);
         ActiveSegment as = new ActiveSegment(0, m - 2);
         as.init(0, m - 2, i -> list.get(i + 1) - list.get(i));
-        long sum = as.queryNonActive();
+        long totalWeight = as.queryNonActive();
         long last = 0;
         long ans = 0;
         while (!dqByT.isEmpty()) {
-            long now = dqByT.peekFirst().t + 1;
+            long now = dqByT.peekFirst().t;
             if (!dqByB.isEmpty()) {
                 now = Math.min(now, dqByB.peekFirst().b);
             }
-            ans += (sum - as.queryNonActive()) * (now - last);
+            ans += as.queryActive(totalWeight) * (now - last);
             while (!dqByB.isEmpty() && dqByB.peekFirst().b == now) {
                 Rect head = dqByB.removeFirst();
-                as.update(list.binarySearch(head.l), list.binarySearch(head.r + 1) - 1, 0, m - 2, 1);
+                as.update((int) head.l, (int) head.r - 1, 0, m - 2, 1);
             }
-            while (!dqByT.isEmpty() && dqByT.peekFirst().t + 1 == now) {
+            while (!dqByT.isEmpty() && dqByT.peekFirst().t == now) {
                 Rect head = dqByT.removeFirst();
-                as.update(list.binarySearch(head.l), list.binarySearch(head.r + 1) - 1, 0, m - 2, -1);
+                as.update((int) head.l, (int) head.r - 1, 0, m - 2, -1);
             }
             last = now;
+        }
+        for (Rect rect : rects) {
+            rect.l = list.get((int) rect.l);
+            rect.r = list.get((int) rect.r);
         }
         return ans;
     }
@@ -68,6 +79,36 @@ public class RectUnionArea {
             this.r = r;
             this.b = b;
             this.t = t;
+        }
+
+        public static Rect newInstanceByTwoPoints(long x1, long y1, long x2, long y2) {
+            if (x1 > x2) {
+                long tmp = x1;
+                x1 = x2;
+                x2 = tmp;
+            }
+            if (y1 > y2) {
+                long tmp = y1;
+                y1 = y2;
+                y2 = tmp;
+            }
+            return new Rect(x1, x2, y1, y2);
+        }
+
+        public static Rect intersect(Rect a, Rect b) {
+            Rect ans = new Rect(Math.max(a.l, b.l), Math.min(a.r, b.r), Math.max(a.b, b.b), Math.min(a.t, b.t));
+            if (ans.empty()) {
+                return null;
+            }
+            return ans;
+        }
+
+        public long area() {
+            return empty() ? 0 : (r - l) * (t - b);
+        }
+
+        public boolean empty() {
+            return r < l || t < b;
         }
     }
 }

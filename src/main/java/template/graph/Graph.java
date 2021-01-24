@@ -44,17 +44,20 @@ public class Graph {
         }
     }
 
-    public static void addEdge(List<DirectedEdge>[] g, int s, int t) {
-        g[s].add(new DirectedEdge(t));
+    public static DirectedEdge addEdge(List<DirectedEdge>[] g, int s, int t) {
+        DirectedEdge e = new DirectedEdge(t);
+        g[s].add(e);
+        return e;
     }
 
-    public static void addUndirectedEdge(List<UndirectedEdge>[] g, int s, int t) {
+    public static UndirectedEdge addUndirectedEdge(List<UndirectedEdge>[] g, int s, int t) {
         UndirectedEdge toT = new UndirectedEdge(t);
         UndirectedEdge toS = new UndirectedEdge(s);
         toT.rev = toS;
         toS.rev = toT;
         g[s].add(toT);
         g[t].add(toS);
+        return toT;
     }
 
     public static List[] createGraph(int n) {

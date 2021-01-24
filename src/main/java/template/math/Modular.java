@@ -3,6 +3,7 @@ package template.math;
 /**
  * Mod operations
  */
+@Deprecated
 public class Modular {
 
     int m;
@@ -46,7 +47,7 @@ public class Modular {
         if (x < 0) {
             x += m;
         }
-        return (int)x;
+        return (int) x;
     }
 
     public int mul(int x, int y) {

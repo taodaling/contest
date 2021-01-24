@@ -87,7 +87,7 @@ public class ModSparseMatrix {
     public void leftMul(int[] v, int[] output, int mod) {
         Arrays.fill(output, 0);
         for (int j = 0; j < elements.length; j++) {
-            output[y[j]] = DigitUtils.mod(output[y[j]] + (long)elements[j] * v[x[j]], mod);
+            output[y[j]] = DigitUtils.mod(output[y[j]] + (long) elements[j] * v[x[j]], mod);
         }
     }
 
@@ -186,5 +186,17 @@ public class ModSparseMatrix {
         }
 
         return sum;
+    }
+
+    public ModMatrix toDense(int mod) {
+        ModMatrix ans = new ModMatrix(n, n);
+        for (int i = 0; i < elements.length; i++) {
+            ans.increment(x[i], y[i], elements[i], mod);
+        }
+        return ans;
+    }
+
+    public String toString(int mod) {
+        return toDense(mod).toString();
     }
 }

@@ -10,6 +10,7 @@ import java.util.*;
 public class %TestCaseClass% {
     @TestCase
     public Collection<NewTopCoderTest> createTests() {
+        RandomWrapper.INSTANCE.getRandom().setSeed(0);
         List<NewTopCoderTest> tests = new ArrayList<>();
         for(int i = 1; i <= 100; i++){
             tests.add(create(i));

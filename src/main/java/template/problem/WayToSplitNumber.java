@@ -1,9 +1,8 @@
 package template.problem;
 
-import template.binary.Log2;
 import template.math.DigitUtils;
-import template.math.Modular;
-import template.polynomial.*;
+import template.polynomial.IntPoly;
+import template.polynomial.IntPolyFFT;
 import template.utils.PrimitiveBuffers;
 
 import java.util.Arrays;

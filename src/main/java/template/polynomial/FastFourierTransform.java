@@ -1,11 +1,6 @@
 package template.polynomial;
 
 import template.binary.Log2;
-import template.math.DigitUtils;
-import template.math.Modular;
-import template.math.Power;
-import template.primitve.generated.datastructure.DoubleArrayList;
-import template.utils.Buffer;
 import template.utils.PrimitiveBuffers;
 import template.utils.SequenceUtils;
 
@@ -32,7 +27,7 @@ public class FastFourierTransform {
     /**
      * c[i]=\sum_{j} a[i-j]*b[j]
      */
-    public static double[] mul(double[] a, double[] b) {
+    public static double[] convolution(double[] a, double[] b) {
         int rA = Polynomials.rankOf(a);
         int rB = Polynomials.rankOf(b);
         int rC = rA + rB;
@@ -58,7 +53,7 @@ public class FastFourierTransform {
     /**
      * c[i]=\sum_{j} a[i+j]*b[j]
      */
-    public static double[] deltaFFT(double[] a, double[] b) {
+    public static double[] deltaConvolution(double[] a, double[] b) {
         int rA = Polynomials.rankOf(a);
         int rB = Polynomials.rankOf(b);
         int rC = rA + rB;
@@ -75,7 +70,8 @@ public class FastFourierTransform {
         fft(bb, false);
         double[][] c = PrimitiveBuffers.replace(dotMul(aa, bb), aa, bb);
         fft(c, true);
-        SequenceUtils.reverse(c, 0, rA);
+        SequenceUtils.reverse(c[0], 0, rA);
+        Arrays.fill(c[0], rA + 1, c[0].length, 0);
         PrimitiveBuffers.release(c[1]);
         return c[0];
     }

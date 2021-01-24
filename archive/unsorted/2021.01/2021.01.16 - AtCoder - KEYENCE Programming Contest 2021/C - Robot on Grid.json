@@ -1,0 +1,45 @@
+{
+  "name" : "C - Robot on Grid",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2 2 3\n1 1 X\n2 1 R\n2 2 R\n",
+    "output" : "5\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "3 3 5\n2 3 D\n1 3 D\n2 1 D\n1 2 X\n3 1 R\n",
+    "output" : "150\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "5000 5000 10\n585 1323 R\n2633 3788 X\n1222 4989 D\n1456 4841 X\n2115 3191 R\n2120 4450 X\n4325 2864 X\n222 3205 D\n2134 2388 X\n2262 3565 R\n",
+    "output" : "139923295\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.CRobotOnGrid",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.01.16",
+  "contestName" : "AtCoder - KEYENCE Programming Contest 2021",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

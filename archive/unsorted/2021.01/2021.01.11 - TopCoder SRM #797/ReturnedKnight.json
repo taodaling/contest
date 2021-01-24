@@ -1,0 +1,40 @@
+{
+  "name" : "ReturnedKnight",
+  "signature" : {
+    "name" : "construct",
+    "result" : "String[]",
+    "arguments" : [ "int", "int" ],
+    "argumentNames" : [ "P", "Q" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "2", "1" ],
+    "result" : ".######..ф##N####..ф####.##..",
+    "index" : 0,
+    "active" : false
+  }, {
+    "arguments" : [ "800", "100" ],
+    "result" : "N..ф...ф...",
+    "index" : 1,
+    "active" : false
+  }, {
+    "arguments" : [ "22", "3" ],
+    "result" : "...ф..Nф..#ф...",
+    "index" : 2,
+    "active" : false
+  }, {
+    "arguments" : [ "93", "47" ],
+    "result" : "",
+    "index" : 3,
+    "active" : false
+  }, {
+    "arguments" : [ "9", "4" ],
+    "index" : 4,
+    "active" : true
+  } ],
+  "date" : "2021.01.11",
+  "contestName" : "TopCoder SRM #797",
+  "testClasses" : [ ],
+  "fqn" : "contest.ReturnedKnight",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

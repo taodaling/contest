@@ -1,7 +1,6 @@
 package template.polynomial;
 
 import template.math.DigitUtils;
-import template.math.Modular;
 import template.math.Power;
 import template.primitve.generated.datastructure.IntegerArrayList;
 

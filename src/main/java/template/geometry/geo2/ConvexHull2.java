@@ -6,7 +6,12 @@ import template.utils.SequenceUtils;
 import java.util.*;
 
 public class ConvexHull2 {
-    public static Collection<Point2> grahamScan(List<Point2> pointPolygon) {
+
+    public static Collection<Point2> grahamScan(List<Point2> pointPolygon, boolean includeSameLine) {
+        if (pointPolygon.size() <= 1) {
+            return pointPolygon;
+        }
+
         final Point2[] points = pointPolygon.toArray(new Point2[0]);
         int n = points.length;
         for (int i = 1; i < n; i++) {
@@ -17,29 +22,37 @@ public class ConvexHull2 {
             SequenceUtils.swap(points, 0, i);
         }
 
+        Point2 first = points[0];
+        Comparator<Point2> cmpByPolarAngle = Point2.sortByPolarAngleAround(first);
+        Arrays.sort(points, 1, n, cmpByPolarAngle.thenComparingDouble(x -> Point2.dist2(first, x)));
 
-        Comparator<Point2> cmp = Point2.sortByPolarAngleAround(points[0]);
-        Arrays.sort(points, 1, n, cmp);
-
-        int shrinkSize = 2;
-        for (int i = 2; i < n; i++) {
-            if (cmp.compare(points[i], points[shrinkSize - 1]) == 0) {
-                if (Point2.dist2(points[i], points[0]) > Point2.dist2(points[shrinkSize - 1], points[0])) {
+        if (!includeSameLine) {
+            int shrinkSize = 2;
+            for (int i = 2; i < n; i++) {
+                if (cmpByPolarAngle.compare(points[i], points[shrinkSize - 1]) == 0) {
                     points[shrinkSize - 1] = points[i];
+                } else {
+                    points[shrinkSize++] = points[i];
                 }
-            } else {
-                points[shrinkSize++] = points[i];
             }
+            n = shrinkSize;
+        } else {
+            int r = n - 1;
+            int l = r;
+            while (l - 1 > 0 && cmpByPolarAngle.compare(points[l], points[l - 1]) == 0) {
+                l--;
+            }
+            SequenceUtils.reverse(points, l, r);
         }
 
-        n = shrinkSize;
         Deque<Point2> stack = new ArrayDeque<>(n);
         stack.addLast(points[0]);
         for (int i = 1; i < n; i++) {
             while (stack.size() >= 2) {
                 Point2 last = stack.removeLast();
                 Point2 second = stack.peekLast();
-                if (GeoConstant.sign(Point2.cross(second, points[i], last)) < 0) {
+                int sign = GeoConstant.sign(Point2.cross(second, points[i], last));
+                if (sign < 0 || includeSameLine && sign == 0) {
                     stack.addLast(last);
                     break;
                 }

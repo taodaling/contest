@@ -26,6 +26,10 @@ public class FastOutput implements AutoCloseable, Closeable, Appendable {
     private final Writer os;
     private StringBuilder cache = new StringBuilder(THRESHOLD * 2);
 
+    public StringBuilder getCache() {
+        return cache;
+    }
+
     private void afterWrite() {
         if (cache.length() < THRESHOLD) {
             return;
@@ -83,6 +87,12 @@ public class FastOutput implements AutoCloseable, Closeable, Appendable {
         return this;
     }
 
+    public FastOutput append(char[] c) {
+        cache.append(c);
+        afterWrite();
+        return this;
+    }
+
     public FastOutput printf(String format, Object... args) {
         return append(String.format(format, args));
     }
@@ -112,6 +122,10 @@ public class FastOutput implements AutoCloseable, Closeable, Appendable {
     }
 
     public FastOutput println(Object c) {
+        return append(c).println();
+    }
+
+    public FastOutput println(char[] c) {
         return append(c).println();
     }
 

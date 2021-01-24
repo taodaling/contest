@@ -6,6 +6,10 @@ public class DigitUtils {
     private DigitUtils() {
     }
 
+    public static long toLongBit(int x) {
+        return x & INT_TO_LONG_MASK;
+    }
+
     public static long plus(long a, long b, long inf) {
         if (Long.signum(a) * Long.signum(b) <= 0) {
             return clamp(a + b, -inf, inf);
@@ -166,10 +170,14 @@ public class DigitUtils {
         return c;
     }
 
-    private static long LONG_TO_INT_MASK = (1L << 32) - 1;
+    public static long INT_TO_LONG_MASK = (1L << 32) - 1;
 
     public static long asLong(int high, int low) {
-        return (((long) high) << 32) | (((long) low) & LONG_TO_INT_MASK);
+        return (((long) high) << 32) | (((long) low) & INT_TO_LONG_MASK);
+    }
+
+    public static long asLong(long high, long low) {
+        return ((high) << 32) | ((low) & INT_TO_LONG_MASK);
     }
 
     public static int highBit(long x) {
@@ -250,6 +258,26 @@ public class DigitUtils {
             ans -= mod;
         }
         return ans;
+    }
+
+    public static long modWithoutDivision(long x, long mod) {
+        while (x >= mod) {
+            x -= mod;
+        }
+        while (x < 0) {
+            x += mod;
+        }
+        return x;
+    }
+
+    public static int modWithoutDivision(int x, int mod) {
+        while (x >= mod) {
+            x -= mod;
+        }
+        while (x < 0) {
+            x += mod;
+        }
+        return x;
     }
 
     public static long mod(long x, long mod) {

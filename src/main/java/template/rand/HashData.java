@@ -3,6 +3,7 @@ package template.rand;
 import template.math.DigitUtils;
 import template.math.Modular;
 import template.math.Power;
+import template.utils.Pair;
 
 public class HashData {
     public int mod;
@@ -10,7 +11,7 @@ public class HashData {
     public int[] pow;
     public int x;
 
-    public HashData(int n, int p, int x) {
+    public HashData(int n, int x, int p) {
         this.mod = p;
         this.x = x;
         inv = new int[n + 10];
@@ -24,8 +25,12 @@ public class HashData {
         }
     }
 
+    public HashData(int n, int x) {
+        this(n, x, (int) 1e9 + 7);
+    }
+
     public HashData(int n) {
-        this(n, (int) 1e9 + 7, RandomWrapper.INSTANCE.nextInt(3, (int) 1e9 + 6));
+        this(n, RandomWrapper.INSTANCE.nextInt(3, (int) 1e9 + 6), (int) 1e9 + 7);
     }
 
     public int hash(int x) {
@@ -40,5 +45,10 @@ public class HashData {
 
     public int hash(double x) {
         return hash(Double.doubleToRawLongBits(x));
+    }
+
+    public static HashData[] doubleHashData(int n) {
+        Pair<Integer, Integer> pairs = HashSeed.getSeed2();
+        return new HashData[]{new HashData(n, pairs.a), new HashData(n, pairs.b)};
     }
 }

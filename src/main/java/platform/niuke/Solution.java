@@ -1,8 +1,5 @@
 package platform.niuke;
 
-import java.math.BigInteger;
-import java.util.Arrays;
-
 public class Solution {
     public void solve() {
         try {

@@ -11,7 +11,7 @@ import template.primitve.generated.datastructure.IntegerArrayList;
 
 public class ModMatrixTest {
     Modular mod = new Modular(1e9 + 7);
-    Power pow = new Power(mod);
+    Power pow = new Power((int)1e9 + 7);
 
     @Test
     public void test1() {
@@ -66,7 +66,7 @@ public class ModMatrixTest {
     @Test
     public void test4() {
         Modular mod = new Modular(1e9 + 7);
-        Power pow = new Power(mod);
+        Power pow = new Power((int)1e9 + 7);
 
         ModMatrix matrix = new ModMatrix(new int[]{
                 0, 0, 2,

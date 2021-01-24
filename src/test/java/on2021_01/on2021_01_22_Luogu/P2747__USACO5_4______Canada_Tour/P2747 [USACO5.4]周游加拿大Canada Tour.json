@@ -1,0 +1,35 @@
+{
+  "name" : "P2747 [USACO5.4]周游加拿大Canada Tour",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "8 9\nVancouver\nYellowknife\nEdmonton\nCalgary\nWinnipeg\nToronto\nMontreal\nHalifax\nVancouver Edmonton\nVancouver Calgary\nCalgary Winnipeg\nWinnipeg Toronto\nToronto Halifax\nMontreal Halifax\nEdmonton Montreal\nEdmonton Yellowknife\nEdmonton Calgary\n",
+    "output" : "7\n",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx125M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_01.on2021_01_22_Luogu.P2747__USACO5_4______Canada_Tour.P2747USACO54CanadaTour",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.01.22",
+  "contestName" : "Luogu",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

@@ -23,6 +23,12 @@ public class FastInput {
         }
     }
 
+    public void populate(char[] data) {
+        for (int i = 0; i < data.length; i++) {
+            data[i] = readChar();
+        }
+    }
+
     public void populate(long[] data) {
         for (int i = 0; i < data.length; i++) {
             data[i] = readLong();
@@ -82,6 +88,30 @@ public class FastInput {
 
     public int ri() {
         return readInt();
+    }
+
+    public int[] ri(int n){
+        int[] ans = new int[n];
+        populate(ans);
+        return ans;
+    }
+
+    public long[] rl(int n){
+        long[] ans = new long[n];
+        populate(ans);
+        return ans;
+    }
+
+    public char[] rc(int n){
+        char[] ans = new char[n];
+        populate(ans);
+        return ans;
+    }
+
+    public double[] rd(int n){
+        double[] ans = new double[n];
+        populate(ans);
+        return ans;
     }
 
     public int readInt() {

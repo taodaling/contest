@@ -21,6 +21,9 @@ public class BinarySearch {
                 l = mid;
             }
         }
+        if (predicate.test(l)) {
+            l--;
+        }
         return l;
     }
 
@@ -33,6 +36,9 @@ public class BinarySearch {
             } else {
                 l = mid + 1;
             }
+        }
+        if(!predicate.test(l)){
+            l++;
         }
         return l;
     }
@@ -47,6 +53,9 @@ public class BinarySearch {
                 l = mid;
             }
         }
+        if (predicate.test(l)) {
+            l--;
+        }
         return l;
     }
 
@@ -59,6 +68,9 @@ public class BinarySearch {
             } else {
                 l = mid + 1;
             }
+        }
+        if(!predicate.test(l)){
+            l++;
         }
         return l;
     }

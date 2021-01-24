@@ -12,7 +12,7 @@ public class XorDeltaDSU {
         init();
     }
 
-    public void init(){
+    public void init() {
         init(p.length);
     }
 
@@ -42,6 +42,11 @@ public class XorDeltaDSU {
         return delta[a] ^ delta[b];
     }
 
+    public int deltaRoot(int a) {
+        find(a);
+        return delta[a];
+    }
+
     /**
      * a - b = delta
      */
@@ -54,15 +59,15 @@ public class XorDeltaDSU {
         if (a == b) {
             return;
         }
+        if (rank[a] < rank[b]) {
+            int tmp = a;
+            a = b;
+            b = tmp;
+        }
         if (rank[a] == rank[b]) {
             rank[a]++;
         }
-        if (rank[a] > rank[b]) {
-            p[b] = a;
-            delta[b] = d;
-        } else {
-            p[a] = b;
-            delta[a] = d;
-        }
+        p[b] = a;
+        delta[b] = d;
     }
 }

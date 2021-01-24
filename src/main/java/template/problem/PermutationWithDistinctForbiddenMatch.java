@@ -1,8 +1,6 @@
 package template.problem;
 
-import template.math.Modular;
-
-import java.util.Arrays;
+import template.math.DigitUtils;
 
 /**
  * 带禁止位置的排列数
@@ -11,17 +9,22 @@ public class PermutationWithDistinctForbiddenMatch {
     private int[][] dp;
     private int[][] dp2;
 
-    public PermutationWithDistinctForbiddenMatch(Modular mod, int n) {
+    /**
+     * O(n^2)
+     * @param mod
+     * @param n
+     */
+    public PermutationWithDistinctForbiddenMatch(int mod, int n) {
         this.dp = new int[n + 1][n + 1];
         dp[0][0] = 1;
         for (int i = 1; i <= n; i++) {
             for (int j = 0; j <= i; j++) {
-                dp[i][j] = mod.mul(dp[i - 1][j], j + j);
+                dp[i][j] = (int) ((long)dp[i - 1][j] * (j + j) % mod);
                 if (j + 1 <= n) {
-                    dp[i][j] = mod.plus(dp[i][j], dp[i - 1][j + 1]);
+                    dp[i][j] = DigitUtils.modplus(dp[i][j], dp[i - 1][j + 1], mod);
                 }
                 if (j > 0) {
-                    dp[i][j] = mod.plus(dp[i][j], mod.mul(dp[i - 1][j - 1], mod.mul(j, j)));
+                    dp[i][j] = (int) ((dp[i][j] + (long)dp[i - 1][j - 1] * j % mod * j) % mod);
                 }
             }
         }
@@ -34,10 +37,10 @@ public class PermutationWithDistinctForbiddenMatch {
                     continue;
                 }
                 if (j > 0) {
-                    dp2[i][j] = mod.plus(dp2[i][j], mod.mul(dp2[i][j - 1], j));
+                    dp2[i][j] = (int) ((dp2[i][j] + (long)dp2[i][j - 1] * j) % mod);
                 }
                 if (i > 0) {
-                    dp2[i][j] = mod.plus(dp2[i][j], mod.mul(dp2[i - 1][j], i));
+                    dp2[i][j] = (int) ((dp2[i][j] + (long)dp2[i - 1][j] * i) % mod);
                 }
             }
         }

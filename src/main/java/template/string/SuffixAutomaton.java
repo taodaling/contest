@@ -18,7 +18,7 @@ public class SuffixAutomaton {
     public SANode buildLast;
     public SANode matchLast;
     public int matchLength;
-    public List<SANode> all = new ArrayList<>();
+    public List<SANode> all;
     public boolean sorted = true;
 
     public long realTimeDistinctSubstr = -1;
@@ -28,8 +28,13 @@ public class SuffixAutomaton {
     }
 
     public SuffixAutomaton(int minCharacter, int maxCharacter) {
+        this(minCharacter, maxCharacter, 0);
+    }
+
+    public SuffixAutomaton(int minCharacter, int maxCharacter, int cap) {
         this.minCharacter = minCharacter;
         this.maxCharacter = maxCharacter;
+        all = new ArrayList<>(cap * 2 + 1);
         alphabet = maxCharacter - minCharacter + 1;
         buildLast = root = newNode();
         root.fail = null;
@@ -57,17 +62,17 @@ public class SuffixAutomaton {
         if (matchLast.next[index] != null) {
             matchLast = matchLast.next[index];
             matchLength = matchLength + 1;
-            return;
-        }
-        while (matchLast != null && matchLast.next[index] == null) {
-            matchLast = matchLast.fail;
-        }
-        if (matchLast == null) {
-            matchLast = root;
-            matchLength = 0;
         } else {
-            matchLength = matchLast.maxlen + 1;
-            matchLast = matchLast.next[index];
+            while (matchLast != null && matchLast.next[index] == null) {
+                matchLast = matchLast.fail;
+            }
+            if (matchLast == null) {
+                matchLast = root;
+                matchLength = 0;
+            } else {
+                matchLength = matchLast.maxlen + 1;
+                matchLast = matchLast.next[index];
+            }
         }
     }
 
@@ -165,7 +170,7 @@ public class SuffixAutomaton {
          */
         public int maxlen;
         /**
-         * right表示这个子串在S中出现的右端点位置
+         * right表示这个子串在S中出现的右端点位置数目
          */
         public int right;
         public int indeg;

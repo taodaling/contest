@@ -1,0 +1,45 @@
+{
+  "name" : "Two Stacks Sorting",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5\n2 3 1 5 4\n",
+    "output" : "1 2 1 1 2\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "4\n2 3 4 1",
+    "output" : "IMPOSSIBLE",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "9 \n7 8 5 3 1 4 2 6 9 ",
+    "output" : "2 1 1 2 1 1 1 1 1 ",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx512M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_01.on2021_01_18_CSES___CSES_Problem_Set.Two_Stacks_Sorting.TwoStacksSorting",
+  "checkerClass" : "on2021_01.on2021_01_18_CSES___CSES_Problem_Set.Two_Stacks_Sorting.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "on2021_01.on2021_01_18_CSES___CSES_Problem_Set.Two_Stacks_Sorting.TwoStacksSortingTestCase" ],
+  "date" : "2021.01.18",
+  "contestName" : "CSES - CSES Problem Set",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

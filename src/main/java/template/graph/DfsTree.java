@@ -8,7 +8,7 @@ public class DfsTree {
     public int[] parents;
     public int[] depth;
     public List<? extends DirectedEdge>[] g;
-    public EdgeConsumer consumer;
+    private EdgeConsumer consumer;
 
     public static interface EdgeConsumer {
         void accept(int root, DirectedEdge e);
@@ -19,6 +19,9 @@ public class DfsTree {
         depth = new int[n];
     }
 
+    public void setConsumer(EdgeConsumer consumer) {
+        this.consumer = consumer;
+    }
 
     public void init(List<? extends DirectedEdge>[] g) {
         this.g = g;

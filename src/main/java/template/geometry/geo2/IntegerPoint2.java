@@ -2,7 +2,9 @@ package template.geometry.geo2;
 
 import template.geometry.old.GeoConstant;
 import template.math.DigitUtils;
+import template.utils.CompareUtils;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -133,11 +135,11 @@ public class IntegerPoint2 {
     }
 
     public static int orient(IntegerPoint2 b, IntegerPoint2 c) {
-        return GeoConstant.sign(cross(b, c));
+        return Long.signum(cross(b, c));
     }
 
     public static int orient(IntegerPoint2 a, IntegerPoint2 b, IntegerPoint2 c) {
-        return GeoConstant.sign(cross(b.x - a.x, b.y - a.y, c.x - a.x, c.y - a.y));
+        return Long.signum(cross(b.x - a.x, b.y - a.y, c.x - a.x, c.y - a.y));
     }
 
     public static boolean inAngle(IntegerPoint2 a, IntegerPoint2 b, IntegerPoint2 c,
@@ -185,7 +187,7 @@ public class IntegerPoint2 {
      * 判断c是否落在以a与b为直径两端的圆中（包含边界）
      */
     public static boolean inDisk(IntegerPoint2 a, IntegerPoint2 b, IntegerPoint2 c) {
-        return GeoConstant.sign(dot(a.x - c.x, a.y - c.y, b.x - c.x, b.y - c.y)) <= 0;
+        return Long.signum(dot(a.x - c.x, a.y - c.y, b.x - c.x, b.y - c.y)) <= 0;
     }
 
     /**
@@ -198,33 +200,32 @@ public class IntegerPoint2 {
     /**
      * 获取线段a->b与线段c->d的交点
      */
-    public static IntegerPoint2 properIntersect(IntegerPoint2 a, IntegerPoint2 b, IntegerPoint2 c, IntegerPoint2 d) {
+    public static boolean properIntersect(IntegerPoint2 a, IntegerPoint2 b, IntegerPoint2 c, IntegerPoint2 d) {
         long oa = cross(c, d, a);
         long ob = cross(c, d, b);
         long oc = cross(a, b, c);
         long od = cross(a, b, d);
 
         if (oa * ob < 0 && oc * od < 0) {
-            return plus(mul(a, ob / (ob - oa)), mul(b, -oa / (ob - oa)));
+            return true;
         }
-        return null;
+        return false;
     }
 
-    public static IntegerPoint2 intersect(IntegerPoint2 a, IntegerPoint2 b, IntegerPoint2 c, IntegerPoint2 d) {
-        IntegerPoint2 pt = properIntersect(a, b, c, d);
-        if (pt == null && onSegment(a, b, c)) {
-            pt = c;
+    /**
+     * 计算多边形面积（如果以逆时针给定顶点，则结果符号为正数，否则为负数）
+     */
+    public static long area2(IntegerPoint2[] polygon) {
+        int n = polygon.length;
+        long sum = 0;
+        for (int i = 0; i < n; i++) {
+            sum += cross(polygon[i], polygon[(i + 1) % n]);
         }
-        if (pt == null && onSegment(a, b, d)) {
-            pt = d;
-        }
-        if (pt == null && onSegment(c, d, a)) {
-            pt = a;
-        }
-        if (pt == null && onSegment(c, d, b)) {
-            pt = b;
-        }
-        return pt;
+        return sum;
+    }
+
+    public static boolean intersect(IntegerPoint2 a, IntegerPoint2 b, IntegerPoint2 c, IntegerPoint2 d) {
+        return properIntersect(a, b, c, d) || onSegment(a, b, c) || onSegment(a, b, d) || onSegment(c, d, a) || onSegment(c, d, b);
     }
 
     private static int above(IntegerPoint2 a, IntegerPoint2 b) {
@@ -295,4 +296,87 @@ public class IntegerPoint2 {
         return String.format("(%d, %d)", x, y);
     }
 
+    public static IntegerPoint2[] theNearestPointPair(List<IntegerPoint2> pts) {
+        IntegerPoint2[] ptsSortByX = pts.toArray(new IntegerPoint2[0]);
+        IntegerPoint2[] buf = new IntegerPoint2[ptsSortByX.length];
+        Arrays.sort(ptsSortByX, (a, b) -> Long.compare(a.x, b.x));
+        return findTheNearestPointPair(ptsSortByX, buf, 0, ptsSortByX.length - 1);
+    }
+
+    private static long pow2(long x){
+        return x * x;
+    }
+
+    private static IntegerPoint2[] findTheNearestPointPair(IntegerPoint2[] pts, IntegerPoint2[] buf, int l, int r) {
+        if (l >= r) {
+            return null;
+        }
+        int m = (l + r) / 2;
+        long lMaxX = pts[m].x;
+        long rMinX = pts[m + 1].x;
+
+        IntegerPoint2[] lAns = findTheNearestPointPair(pts, buf, l, m);
+        IntegerPoint2[] rAns = findTheNearestPointPair(pts, buf, m + 1, r);
+        long inf = (long)8e18;
+        long lDist = lAns == null ? inf : IntegerPoint2.dist2(lAns[0], lAns[1]);
+        long rDist = rAns == null ? inf : IntegerPoint2.dist2(rAns[0], rAns[1]);
+        IntegerPoint2[] ans;
+        long farthest;
+
+        if (lDist <= rDist) {
+            ans = lAns;
+            farthest = lDist;
+        } else {
+            ans = rAns;
+            farthest = rDist;
+        }
+        if (ans == null) {
+            ans = new IntegerPoint2[2];
+        }
+
+        //copy to buf
+        int lr = l - 1;
+        int rr = m;
+        for (int i = l; i <= m; i++) {
+            if (pow2(rMinX - pts[i].x) >= farthest) {
+                continue;
+            }
+            buf[++lr] = pts[i];
+        }
+        for (int i = m + 1; i <= r; i++) {
+            if (pow2(pts[i].x - lMaxX) >= farthest) {
+                continue;
+            }
+            buf[++rr] = pts[i];
+        }
+
+        //merge
+        int intervalL = m + 1;
+        int intervalR = m;
+
+        for (int i = l; i <= lr; i++) {
+            while (intervalR + 1 <= rr && (buf[intervalR + 1].y <= buf[i].y || pow2(buf[intervalR + 1].y - buf[i].y) <= farthest)) {
+                intervalR++;
+            }
+            while (intervalL <= rr && buf[i].y >= buf[intervalL].y && pow2(buf[i].y - buf[intervalL].y) >= farthest) {
+                intervalL++;
+            }
+            if (intervalR - intervalL + 1 > 6) {
+                throw new RuntimeException();
+            }
+            for (int j = intervalL; j <= intervalR; j++) {
+                long d2 = dist2(buf[i], buf[j]);
+                if (d2 < farthest) {
+                    farthest = d2;
+                    ans[0] = buf[i];
+                    ans[1] = buf[j];
+                }
+            }
+        }
+
+        //merge sort
+        CompareUtils.<IntegerPoint2>mergeAscending(pts, l, m, pts, m + 1, r, buf, l, (a, b) -> Long.compare(a.y, b.y));
+        System.arraycopy(buf, l, pts, l, r - l + 1);
+        return ans;
+    }
 }

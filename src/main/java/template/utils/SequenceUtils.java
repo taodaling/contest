@@ -481,6 +481,33 @@ public class SequenceUtils {
         return -1;
     }
 
+    public static int lastIndexOf(int[] array, int l, int r, int val) {
+        for (int i = r; i >= l; i--) {
+            if (array[i] == val) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public static int lastIndexOf(char[] array, int l, int r, char val) {
+        for (int i = r; i >= l; i--) {
+            if (array[i] == val) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public static <T> int lastIndexOf(T[] array, int l, int r, T val) {
+        for (int i = r; i >= l; i--) {
+            if (Objects.equals(array[i], val)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     public static boolean equal(char[] a, int al, int ar, char[] b, int bl, int br) {
         if ((ar - al) != (br - bl)) {
             return false;

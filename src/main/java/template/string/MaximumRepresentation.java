@@ -10,7 +10,7 @@ public class MaximumRepresentation {
      * For circular string func[0..n-1],
      * get the start point of maximum representation in O(n)
      */
-    public static int solve(IntToIntFunction func, int n) {
+    public static int maximumRepresentation(IntToIntFunction func, int n) {
         int i = 0;
         int j = i + 1;
         while (j < n) {
@@ -27,5 +27,13 @@ public class MaximumRepresentation {
             }
         }
         return i;
+    }
+
+    /**
+     * For circular string func[0..n-1],
+     * get the start point of maximum representation in O(n)
+     */
+    public static int minimumRepresentation(IntToIntFunction func, int n) {
+        return maximumRepresentation(i -> -func.apply(i), n);
     }
 }

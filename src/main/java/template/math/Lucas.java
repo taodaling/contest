@@ -13,10 +13,6 @@ public class Lucas implements IntCombination, LargeIntCombination {
         this.mod = mod;
     }
 
-    public Lucas(IntCombination primeCombination, Modular mod) {
-        this(primeCombination, mod.getMod());
-    }
-
     @Override
     public int combination(int m, int n) {
         return combination((long) m, (long) n);
@@ -26,8 +22,11 @@ public class Lucas implements IntCombination, LargeIntCombination {
      * O(\log_p \min(n, m))
      */
     public int combination(long m, long n) {
-        if (n == 0) {
-            return 1 % mod;
+        if (n > m) {
+            return 0;
+        }
+        if (m < mod) {
+            return primeCombination.combination((int) m, (int) n);
         }
         return (int) ((long) primeCombination.combination((int) (m % mod), (int) (n % mod)) *
                 combination(m / mod, n / mod) % mod);

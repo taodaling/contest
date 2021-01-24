@@ -1,0 +1,40 @@
+{
+  "name" : "A - Two Sequences 2",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3\n3 2 20\n1 4 1\n",
+    "output" : "3\n12\n20\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "20\n715806713 926832846 890153850 433619693 890169631 501757984 778692206 816865414 50442173 522507343 546693304 851035714 299040991 474850872 133255173 905287070 763360978 327459319 193289538 140803416\n974365976 488724815 821047998 371238977 256373343 218153590 546189624 322430037 131351929 768434809 253508808 935670831 251537597 834352123 337485668 272645651 61421502 439773410 621070911 578006919\n",
+    "output" : "697457706539596888\n697457706539596888\n760974252688942308\n760974252688942308\n760974252688942308\n760974252688942308\n760974252688942308\n760974252688942308\n760974252688942308\n760974252688942308\n760974252688942308\n867210459214915026\n867210459214915026\n867210459214915026\n867210459214915026\n867210459214915026\n867210459214915026\n867210459214915026\n867210459214915026\n867210459214915026\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_01.on2021_01_16_AtCoder___KEYENCE_Programming_Contest_2021.A___Two_Sequences_2.ATwoSequences2",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.01.16",
+  "contestName" : "AtCoder - KEYENCE Programming Contest 2021",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

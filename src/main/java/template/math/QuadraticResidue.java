@@ -5,14 +5,14 @@ import template.binary.Bits;
 import java.util.Random;
 
 public class QuadraticResidue {
-    final Modular modular;
+    final int mod;
     Power power;
     Random random = new Random();
 
 
-    public QuadraticResidue(Modular modular) {
-        this.modular = modular;
-        power = new Power(modular);
+    public QuadraticResidue(int mod) {
+        this.mod = mod;
+        power = new Power(mod);
     }
 
     /**
@@ -20,11 +20,11 @@ public class QuadraticResidue {
      * <p>O(\log_2 p)</p>
      */
     public int square(int n) {
-        n = modular.valueOf(n);
+        n = DigitUtils.mod(n, mod);
         if (n == 0) {
             return 0;
         }
-        int p = modular.getMod();
+        int p = mod;
         if (p == 2) {
             return n;
         }
@@ -33,8 +33,8 @@ public class QuadraticResidue {
             return -1;
         }
         while (true) {
-            int a = random.nextInt(p);
-            int w = modular.plus(modular.mul(a, a), -n);
+            long a = random.nextInt(p);
+            int w = DigitUtils.mod(a * a - n, mod);
             if (power.pow(w, (p - 1) / 2) == 1) {
                 continue;
             }
@@ -42,22 +42,22 @@ public class QuadraticResidue {
 
             int pow = (p + 1) / 2;
             int i = 31 - Integer.numberOfLeadingZeros(pow);
-            int real = 1;
-            int img = 0;
+            long real = 1;
+            long img = 0;
             for (; i >= 0; i--) {
-                int nReal = modular.plus(modular.mul(real, real), modular.mul(modular.mul(img, img), w));
-                int nImg = modular.mul(modular.mul(real, img), 2);
+                long nReal = (real * real + img * img % mod * w) % mod;
+                long nImg = real * img * 2 % mod;
                 real = nReal;
                 img = nImg;
                 if (Bits.get(pow, i) == 1) {
-                    nReal = modular.plus(modular.mul(real, a), modular.mul(img, w));
-                    nImg = modular.plus(modular.mul(img, a), real);
+                    nReal = (real * a + img * w) % mod;
+                    nImg = (img * a + real) % mod;
                     real = nReal;
                     img = nImg;
                 }
             }
 
-            return real;
+            return (int) real;
         }
     }
 }

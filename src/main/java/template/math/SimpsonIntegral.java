@@ -5,10 +5,14 @@ public class SimpsonIntegral {
     private Function function;
     private final double threshold;
 
-    public SimpsonIntegral(double eps, double threshold, Function function) {
+    public SimpsonIntegral(double eps, Function function, double threshold) {
         this.eps = eps;
         this.threshold = threshold;
         this.function = function;
+    }
+
+    public SimpsonIntegral(double eps, Function function) {
+        this(eps, function, 1e50);
     }
 
     public static interface Function {
@@ -21,6 +25,7 @@ public class SimpsonIntegral {
     }
 
     private double integral(double l, double r, double totalArea) {
+        assert !Double.isNaN(totalArea);
         double m = (l + r) / 2;
         double lArea = simpson(l, m);
         double rArea = simpson(m, r);

@@ -179,7 +179,7 @@ public class Debug {
 
     public Debug debug(String name, char x) {
         if (offline) {
-            debug(name, Integer.toString(x));
+            debug(name, "" + x);
         }
         return this;
     }

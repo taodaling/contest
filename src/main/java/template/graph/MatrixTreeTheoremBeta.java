@@ -145,6 +145,7 @@ public class MatrixTreeTheoremBeta {
     }
     /**
      * <pre>
+     * BEST theorem
      * O(V^3+E)
      * 统计有向图欧拉环数目， 使用BEST定理
      * 两个欧拉环不同，当且仅当一者的边序列不能通过旋转得到另外一者，比如123和312是同一个欧拉环。

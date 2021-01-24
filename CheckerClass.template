@@ -1,13 +1,16 @@
 package %package%;
 
+import chelper.AbstractChecker;
 import net.egork.chelper.tester.Verdict;
-import net.egork.chelper.checkers.Checker;
+import template.io.FastInput;
 
-public class %CheckerClass% implements Checker {
+public class %CheckerClass% extends AbstractChecker {
     public %CheckerClass%(String parameters) {
+        super(parameters);
     }
 
-    public Verdict check(String input, String expectedOutput, String actualOutput) {
-        return Verdict.UNDECIDED;
+    @Override
+    public Verdict check(FastInput stdin, FastInput expect, FastInput actual) {
+        return null;
     }
 }

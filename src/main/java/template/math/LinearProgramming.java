@@ -51,10 +51,21 @@ public class LinearProgramming {
         }
     }
 
+    /**
+     * both constraintId and variableId start with 1
+     * @param constraintId
+     * @param noMoreThan
+     */
     public void setConstraintConstant(int constraintId, double noMoreThan) {
         mat[constraintId][0] = noMoreThan;
     }
 
+    /**
+     * both constraintId and variableId start with 1
+     * @param constraintId
+     * @param variableId
+     * @param c
+     */
     public void setConstraintCoefficient(int constraintId, int variableId, double c) {
         mat[constraintId][variableId] = -c;
     }

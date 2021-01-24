@@ -1,0 +1,36 @@
+{
+  "name" : "RollMe",
+  "signature" : {
+    "name" : "solve",
+    "result" : "int",
+    "arguments" : [ "int[]", "String" ],
+    "argumentNames" : [ "die", "goal" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "7 7", "01" ],
+    "result" : "4",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "1 1", "00" ],
+    "result" : "6",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "2 1", "1011" ],
+    "result" : "500000047",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "1 1 1 1 1", "0123401" ],
+    "result" : "78150",
+    "index" : 3,
+    "active" : true
+  } ],
+  "date" : "2021.01.10",
+  "contestName" : "Single Round Match 797",
+  "testClasses" : [ ],
+  "fqn" : "contest.RollMe",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

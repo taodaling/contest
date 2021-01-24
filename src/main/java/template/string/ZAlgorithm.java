@@ -3,6 +3,12 @@ package template.string;
 import java.util.function.IntUnaryOperator;
 
 public class ZAlgorithm {
+    public static int[] generate(IntUnaryOperator s, int n) {
+        int[] ans = new int[n];
+        generate(ans, s, n);
+        return ans;
+    }
+
     /**
      * Provide sequence : s(0), s(1), ... , s(n - 1), calculate their z function.<br>
      * z[i]: The longest substring start at i which is also a prefix of s

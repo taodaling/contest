@@ -1,5 +1,7 @@
 package template.utils;
 
+import java.util.function.Supplier;
+
 public interface Sum<S, U> extends Cloneable {
     void add(S s);
 
@@ -7,6 +9,7 @@ public interface Sum<S, U> extends Cloneable {
 
     /**
      * copy s.data
+     *
      * @param s
      */
     void copy(S s);
@@ -14,7 +17,11 @@ public interface Sum<S, U> extends Cloneable {
     S clone();
 
     static class NilSum<U> implements Sum<NilSum<U>, U> {
-        private static NilSum SINGLETON = new NilSum();
+        public static final NilSum INSTANCE = new NilSum();
+        public static final Supplier<NilSum> SUPPLIER = () -> INSTANCE;
+
+        private NilSum() {
+        }
 
         @Override
         public void add(NilSum<U> uNilSum) {

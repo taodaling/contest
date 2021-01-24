@@ -1,14 +1,13 @@
 package template.utils;
 
 import template.primitve.generated.datastructure.*;
+import template.primitve.generated.datastructure.DoubleFunction;
+import template.primitve.generated.datastructure.IntToLongFunction;
 import template.rand.RandomWrapper;
 
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.function.IntPredicate;
-import java.util.function.LongPredicate;
-import java.util.function.Predicate;
-import java.util.function.ToIntFunction;
+import java.util.function.*;
 
 /**
  * Be careful. the radix sort will regard the number in sequence as unsigned integer, it means -1 > -2 > 2 > 1.
@@ -26,6 +25,111 @@ public class CompareUtils {
             return b;
         }
         return c;
+    }
+
+    public static int argmax(IntegerFunction function, int l, int r) {
+        int ans = l;
+        int best = function.apply(l);
+        for (int i = l + 1; i <= r; i++) {
+            int cand = function.apply(i);
+            if (cand > best) {
+                best = cand;
+                ans = i;
+            }
+        }
+        return ans;
+    }
+
+    public static int argmax(LongFunction function, int l, int r) {
+        int ans = l;
+        long best = function.apply(l);
+        for (int i = l + 1; i <= r; i++) {
+            long cand = function.apply(i);
+            if (cand > best) {
+                best = cand;
+                ans = i;
+            }
+        }
+        return ans;
+    }
+
+    public static int argmax(DoubleFunction function, int l, int r) {
+        int ans = l;
+        double best = function.apply(l);
+        for (int i = l + 1; i <= r; i++) {
+            double cand = function.apply(i);
+            if (cand > best) {
+                best = cand;
+                ans = i;
+            }
+        }
+        return ans;
+    }
+
+    public static <T> int argmax(IntFunction<T> function, int l, int r, Comparator<T> comp) {
+        int ans = l;
+        T best = function.apply(l);
+        for (int i = l + 1; i <= r; i++) {
+            T cand = function.apply(i);
+            if (comp.compare(cand, best) > 0) {
+                best = cand;
+                ans = i;
+            }
+        }
+        return ans;
+    }
+
+
+    public static int argmin(IntegerFunction function, int l, int r) {
+        int ans = l;
+        int best = function.apply(l);
+        for (int i = l + 1; i <= r; i++) {
+            int cand = function.apply(i);
+            if (cand < best) {
+                best = cand;
+                ans = i;
+            }
+        }
+        return ans;
+    }
+
+    public static int argmin(LongFunction function, int l, int r) {
+        int ans = l;
+        long best = function.apply(l);
+        for (int i = l + 1; i <= r; i++) {
+            long cand = function.apply(i);
+            if (cand < best) {
+                best = cand;
+                ans = i;
+            }
+        }
+        return ans;
+    }
+
+    public static int argmin(DoubleFunction function, int l, int r) {
+        int ans = l;
+        double best = function.apply(l);
+        for (int i = l + 1; i <= r; i++) {
+            double cand = function.apply(i);
+            if (cand < best) {
+                best = cand;
+                ans = i;
+            }
+        }
+        return ans;
+    }
+
+    public static <T> int argmin(IntFunction<T> function, int l, int r, Comparator<T> comp) {
+        int ans = l;
+        T best = function.apply(l);
+        for (int i = l + 1; i <= r; i++) {
+            T cand = function.apply(i);
+            if (comp.compare(cand, best) < 0) {
+                best = cand;
+                ans = i;
+            }
+        }
+        return ans;
     }
 
     public static double maxOf(double... a) {
@@ -243,6 +347,35 @@ public class CompareUtils {
         }
     }
 
+    public static long theKthSmallestElement(long[] data, LongComparator cmp, int f, int t, int k) {
+        if (t - f <= THRESHOLD) {
+            insertSort(data, cmp, f, t - 1);
+            return data[f + k - 1];
+        }
+        SequenceUtils.swap(data, f, RandomWrapper.INSTANCE.nextInt(f, t - 1));
+        int l = f;
+        int r = t;
+        int m = l + 1;
+        while (m < r) {
+            int c = cmp.compare(data[m], data[l]);
+            if (c == 0) {
+                m++;
+            } else if (c < 0) {
+                SequenceUtils.swap(data, l, m);
+                l++;
+                m++;
+            } else {
+                SequenceUtils.swap(data, m, --r);
+            }
+        }
+        if (l - f >= k) {
+            return theKthSmallestElement(data, cmp, f, l, k);
+        } else if (m - f >= k) {
+            return data[l];
+        }
+        return theKthSmallestElement(data, cmp, m, t, k - (m - f));
+    }
+
     public static int theKthSmallestElement(int[] data, IntegerComparator cmp, int f, int t, int k) {
         if (t - f <= THRESHOLD) {
             insertSort(data, cmp, f, t - 1);
@@ -374,6 +507,28 @@ public class CompareUtils {
         }
         quickSort(data, cmp, f, l);
         quickSort(data, cmp, m, t);
+    }
+
+    public static <T> void mergeSort(T[] data, Comparator<T> cmp, int f, int t, T[] buf) {
+        if (t - f <= THRESHOLD) {
+            insertSort(data, cmp, f, t - 1);
+            return;
+        }
+        int m = (f + t) / 2;
+        mergeSort(data, cmp, f, m, buf);
+        mergeSort(data, cmp, m, t, buf);
+        int a = f;
+        int b = m;
+        int wpos = 0;
+        while (a < m || b < t) {
+            if (b == t || a < m && cmp.compare(data[a], data[b]) < 0) {
+                buf[wpos++] = data[a++];
+            } else {
+                buf[wpos++] = data[b++];
+            }
+        }
+        assert wpos == t - f;
+        System.arraycopy(buf, 0, data, f, t - f);
     }
 
     public static void quickSort(double[] data, DoubleComparator cmp, int f, int t) {
@@ -701,5 +856,57 @@ public class CompareUtils {
             }
         }
         return true;
+    }
+
+    public static <T> T[] unique(T[] data, int l, int r, Comparator<T> comp) {
+        Arrays.sort(data, l, r + 1, comp);
+        int wpos = l + 1;
+        for (int i = l + 1; i <= r; i++) {
+            if (comp.compare(data[i], data[i - 1]) == 0) {
+                continue;
+            } else {
+                data[wpos++] = data[i];
+            }
+        }
+        return Arrays.copyOfRange(data, l, wpos);
+    }
+
+    public static <T> int[] unique(int[] data, int l, int r, IntegerComparator comp) {
+        quickSort(data, comp, l, r + 1);
+        int wpos = l + 1;
+        for (int i = l + 1; i <= r; i++) {
+            if (comp.compare(data[i], data[i - 1]) == 0) {
+                continue;
+            } else {
+                data[wpos++] = data[i];
+            }
+        }
+        return Arrays.copyOfRange(data, l, wpos);
+    }
+
+    public static <T> long[] unique(long[] data, int l, int r, LongComparator comp) {
+        quickSort(data, comp, l, r + 1);
+        int wpos = l + 1;
+        for (int i = l + 1; i <= r; i++) {
+            if (comp.compare(data[i], data[i - 1]) == 0) {
+                continue;
+            } else {
+                data[wpos++] = data[i];
+            }
+        }
+        return Arrays.copyOfRange(data, l, wpos);
+    }
+
+    public static <T> double[] unique(double[] data, int l, int r, DoubleComparator comp) {
+        quickSort(data, comp, l, r + 1);
+        int wpos = l + 1;
+        for (int i = l + 1; i <= r; i++) {
+            if (comp.compare(data[i], data[i - 1]) == 0) {
+                continue;
+            } else {
+                data[wpos++] = data[i];
+            }
+        }
+        return Arrays.copyOfRange(data, l, wpos);
     }
 }

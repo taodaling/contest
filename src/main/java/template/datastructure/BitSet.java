@@ -1,10 +1,13 @@
 package template.datastructure;
 
 
+import template.utils.CompareUtils;
+import template.utils.SequenceUtils;
+
 import java.io.Serializable;
 import java.util.Arrays;
 
-public final class BitSet implements Serializable, Cloneable {
+public final class BitSet implements Serializable, Cloneable, Comparable<BitSet> {
     private long[] data;
     private long tailAvailable;
     private int capacity;
@@ -257,7 +260,7 @@ public final class BitSet implements Serializable, Cloneable {
         if (offset != MAX_OFFSET) {
             long mask = oneBetween(0, offset);
             if ((data[w] & mask) != 0) {
-                return Long.numberOfLeadingZeros(data[w] & mask) + w * BITS_FOR_EACH;
+                return MAX_OFFSET - Long.numberOfLeadingZeros(data[w] & mask) + w * BITS_FOR_EACH;
             }
             w--;
         }
@@ -268,7 +271,7 @@ public final class BitSet implements Serializable, Cloneable {
         if (w < 0) {
             return -1;
         }
-        return Long.numberOfLeadingZeros(data[w]) + w * BITS_FOR_EACH;
+        return MAX_OFFSET - Long.numberOfLeadingZeros(data[w]) + w * BITS_FOR_EACH;
     }
 
     public int nextClearBit(int start) {
@@ -297,7 +300,7 @@ public final class BitSet implements Serializable, Cloneable {
         if (offset != MAX_OFFSET) {
             long mask = oneBetween(0, offset);
             if ((~data[w] & mask) != mask) {
-                return Long.numberOfLeadingZeros(~data[w] & mask) + w * BITS_FOR_EACH;
+                return MAX_OFFSET - Long.numberOfLeadingZeros(~data[w] & mask) + w * BITS_FOR_EACH;
             }
             w++;
         }
@@ -308,7 +311,7 @@ public final class BitSet implements Serializable, Cloneable {
         if (w < 0) {
             return -1;
         }
-        return Long.numberOfLeadingZeros(~data[w]) + w * BITS_FOR_EACH;
+        return MAX_OFFSET - Long.numberOfLeadingZeros(~data[w]) + w * BITS_FOR_EACH;
     }
 
     public void leftShift(int n) {
@@ -403,5 +406,14 @@ public final class BitSet implements Serializable, Cloneable {
             }
         }
         return true;
+    }
+
+    @Override
+    public int compareTo(BitSet o) {
+        if (capacity != o.capacity) {
+            return Integer.compare(capacity, o.capacity);
+        }
+        return CompareUtils.compareArray(data, 0, m - 1,
+                o.data, 0, m - 1);
     }
 }

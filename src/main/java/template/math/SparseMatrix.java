@@ -108,7 +108,7 @@ public class SparseMatrix {
         }
 
         LinearFeedbackShiftRegister lfsr = new LinearFeedbackShiftRegister(2 * n, 1e-10);
-        KahamSummation summation = new KahamSummation();
+        KahanSummation summation = new KahanSummation();
         for (int i = 0; i < 2 * n; i++) {
             summation.reset();
             for (int j = 0; j < n; j++) {

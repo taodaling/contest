@@ -1,0 +1,45 @@
+{
+  "name" : "E. Strange Permutation",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2\n3 1 9\n1 2 3\n1 1\n2 1\n3 1\n1 2\n2 2\n3 2\n1 3\n2 3\n3 3\n6 4 4\n6 5 4 3 1 2\n1 1\n3 14\n1 59\n2 6\n",
+    "output" : "1\n2\n3\n1\n3\n2\n2\n1\n3\n1\n4\n-1\n5\n",
+    "index" : 0,
+    "active" : false
+  }, {
+    "input" : "1\n12 4 2\n1 2 3 4 5 6 7 8 9 10 11 12\n2 20\n2 21\n",
+    "output" : "2\n2\n",
+    "index" : 1,
+    "active" : false
+  }, {
+    "input" : "1\n6 4 4\n6 5 4 3 1 2\n1 1\n3 14\n1 59\n2 6",
+    "output" : "1\n4\n-1\n5",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.EStrangePermutation",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.01.06",
+  "contestName" : "Codeforces - Codeforces Round #694 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

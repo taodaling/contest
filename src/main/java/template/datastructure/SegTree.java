@@ -49,41 +49,41 @@ public class SegTree<S extends Sum<S, U>, U extends Update<U>> implements Clonea
         }
     }
 
-    private boolean cover(int ll, int rr, int l, int r) {
-        return ll <= l && rr >= r;
+    private boolean cover(int L, int R, int l, int r) {
+        return L <= l && R >= r;
     }
 
-    private boolean leave(int ll, int rr, int l, int r) {
-        return rr < l || ll > r;
+    private boolean leave(int L, int R, int l, int r) {
+        return R < l || L > r;
     }
 
-    public void update(int ll, int rr, int l, int r, U u) {
-        if (leave(ll, rr, l, r)) {
+    public void update(int L, int R, int l, int r, U u) {
+        if (leave(L, R, l, r)) {
             return;
         }
-        if (cover(ll, rr, l, r)) {
+        if (cover(L, R, l, r)) {
             modify(u);
             return;
         }
         int m = DigitUtils.floorAverage(l, r);
         pushDown();
-        left.update(ll, rr, l, m, u);
-        right.update(ll, rr, m + 1, r, u);
+        left.update(L, R, l, m, u);
+        right.update(L, R, m + 1, r, u);
         pushUp();
     }
 
-    public void query(int ll, int rr, int l, int r, S s) {
-        if (leave(ll, rr, l, r)) {
+    public void query(int L, int R, int l, int r, S s) {
+        if (leave(L, R, l, r)) {
             return;
         }
-        if (cover(ll, rr, l, r)) {
+        if (cover(L, R, l, r)) {
             s.add(sum);
             return;
         }
         int m = DigitUtils.floorAverage(l, r);
         pushDown();
-        left.query(ll, rr, l, m, s);
-        right.query(ll, rr, m + 1, r, s);
+        left.query(L, R, l, m, s);
+        right.query(L, R, m + 1, r, s);
     }
 
     public SegTree<S, U> deepClone() {

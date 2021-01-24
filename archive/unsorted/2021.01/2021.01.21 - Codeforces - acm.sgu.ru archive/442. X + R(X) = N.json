@@ -1,0 +1,64 @@
+{
+  "name" : "442. X + R(X) = N",
+  "testType" : "MULTI_EOF",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "1\n2\n11\n13\n14003\n767513456469789456166547987979741366664879441\n0 ",
+    "output" : "0\n1\n1\n0\n60\n0 ",
+    "index" : 0,
+    "active" : false
+  }, {
+    "input" : "1551\n1009\n0",
+    "output" : "9",
+    "index" : 1,
+    "active" : false
+  }, {
+    "input" : "1009\n0",
+    "output" : "9",
+    "index" : 2,
+    "active" : false
+  }, {
+    "input" : "2101\n0",
+    "output" : "1",
+    "index" : 3,
+    "active" : false
+  }, {
+    "input" : "19091\n0",
+    "output" : "10",
+    "index" : 4,
+    "active" : false
+  }, {
+    "input" : "94849\n0",
+    "output" : "25",
+    "index" : 5,
+    "active" : false
+  }, {
+    "input" : "888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888\n0",
+    "index" : 6,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx262M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.XRXN",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "contest.XRXNTestCase" ],
+  "date" : "2021.01.21",
+  "contestName" : "Codeforces - acm.sgu.ru archive",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

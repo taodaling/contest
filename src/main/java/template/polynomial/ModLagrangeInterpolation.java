@@ -1,6 +1,6 @@
 package template.polynomial;
 
-import template.math.Modular;
+import template.math.DigitUtils;
 import template.math.Power;
 
 import java.util.LinkedHashMap;
@@ -8,18 +8,18 @@ import java.util.Map;
 
 public class ModLagrangeInterpolation {
     private Map<Integer, Integer> points = new LinkedHashMap<>();
-    private Modular modular;
+    private int mod;
     private Power power;
 
-    public ModLagrangeInterpolation(Modular modular) {
-        this.modular = modular;
-        this.power = new Power(modular);
+    public ModLagrangeInterpolation(int mod) {
+        this.mod = mod;
+        this.power = new Power(mod);
     }
 
 
     public void addPoint(int x, int y) {
-        x = modular.valueOf(x);
-        y = modular.valueOf(y);
+        x = DigitUtils.mod(x, mod);
+        y = DigitUtils.mod(y, mod);
         if (points.containsKey(x)) {
             int val = points.get(x);
             if (val != y) {
@@ -39,11 +39,11 @@ public class ModLagrangeInterpolation {
                 if (otherPoint.getKey().intValue() == point.getKey()) {
                     continue;
                 }
-                up = modular.mul(up, modular.plus(x, -otherPoint.getKey()));
-                bottom = modular.mul(bottom, modular.plus(point.getKey(), -otherPoint.getKey()));
+                up = DigitUtils.mod((long) up * (x - otherPoint.getKey()), mod);
+                bottom = DigitUtils.mod((long) bottom * (point.getKey() - otherPoint.getKey()), mod);
             }
-            int addition = modular.mul(up, power.inverse(bottom));
-            sum = modular.plus(sum, addition);
+            int addition = (int) ((long)up * power.inverse(bottom) % mod);
+            sum = DigitUtils.modplus(sum, addition, mod);
         }
         return sum;
     }

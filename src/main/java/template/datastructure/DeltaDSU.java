@@ -3,12 +3,12 @@ package template.datastructure;
 public class DeltaDSU {
     int[] p;
     int[] rank;
-    int[] delta;
+    long[] delta;
 
     public DeltaDSU(int n) {
         p = new int[n];
         rank = new int[n];
-        delta = new int[n];
+        delta = new long[n];
         reset();
     }
 
@@ -32,7 +32,7 @@ public class DeltaDSU {
     /**
      * return a - b, you should ensure a and b belong to same set
      */
-    public int delta(int a, int b) {
+    public long delta(int a, int b) {
         if(find(a) != find(b)){
             throw new IllegalArgumentException();
         }
@@ -42,7 +42,7 @@ public class DeltaDSU {
     /**
      * a - b = delta
      */
-    public void merge(int a, int b, int d) {
+    public void merge(int a, int b, long d) {
         find(a);
         find(b);
         d = d - delta[a] + delta[b];
@@ -51,14 +51,14 @@ public class DeltaDSU {
         if (a == b) {
             return;
         }
-        if (rank[a] == rank[b]) {
-            rank[a]++;
-        }
         if (rank[a] < rank[b]) {
             int tmp = a;
             a = b;
             b = tmp;
             d = -d;
+        }
+        if (rank[a] == rank[b]) {
+            rank[a]++;
         }
         p[b] = a;
         delta[b] = -d;

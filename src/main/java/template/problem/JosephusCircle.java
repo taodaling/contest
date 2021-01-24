@@ -2,6 +2,9 @@ package template.problem;
 
 import template.math.DigitUtils;
 
+/**
+ * O(min(n,k ln(n/k)))
+ */
 public class JosephusCircle {
     public static int survivorBF(int n, int k) {
         if (n == 1) {

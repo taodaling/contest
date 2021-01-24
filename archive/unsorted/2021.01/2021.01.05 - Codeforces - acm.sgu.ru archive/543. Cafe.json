@@ -1,0 +1,145 @@
+{
+  "name" : "543. Cafe",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 4\n5 6 7\n",
+    "output" : "5\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "4 4\n3 3 3 3\n",
+    "output" : "4\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "5 5\n3 5 5 5 5",
+    "output" : "5",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "5 4\n3 5 5 5 5",
+    "output" : "7",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "5 5\n3 5 5 5 7",
+    "output" : "5",
+    "index" : 4,
+    "active" : true
+  }, {
+    "input" : "3 6\n5 6 7",
+    "output" : "3",
+    "index" : 5,
+    "active" : true
+  }, {
+    "input" : "3 5\n5 6 7",
+    "output" : "4",
+    "index" : 6,
+    "active" : true
+  }, {
+    "input" : "1 4\n5",
+    "output" : "2",
+    "index" : 7,
+    "active" : true
+  }, {
+    "input" : "1 5\n5",
+    "output" : "1",
+    "index" : 8,
+    "active" : true
+  }, {
+    "input" : "1 4\n2",
+    "output" : "1",
+    "index" : 9,
+    "active" : true
+  }, {
+    "input" : "1 4\n21",
+    "output" : "6",
+    "index" : 10,
+    "active" : true
+  }, {
+    "input" : "2 3\n10 10",
+    "output" : "10",
+    "index" : 11,
+    "active" : true
+  }, {
+    "input" : "6 10\n3 3 3 3 3 3",
+    "output" : "2",
+    "index" : 12,
+    "active" : true
+  }, {
+    "input" : "6 10\n3 3 3 3 3 5",
+    "output" : "3",
+    "index" : 13,
+    "active" : true
+  }, {
+    "input" : "6 10\n3 3 3 3 3 4",
+    "output" : "2",
+    "index" : 14,
+    "active" : true
+  }, {
+    "input" : "6 10\n3 3 3 3 4 4",
+    "output" : "2",
+    "index" : 15,
+    "active" : true
+  }, {
+    "input" : "6 10\n3 3 3 3 2 5",
+    "output" : "2",
+    "index" : 16,
+    "active" : true
+  }, {
+    "input" : "5 7\n3 3 3 3 10",
+    "output" : "4",
+    "index" : 17,
+    "active" : true
+  }, {
+    "input" : "5 9\n3 2 2 2",
+    "output" : "1",
+    "index" : 18,
+    "active" : true
+  }, {
+    "input" : "5 7\n3 3  3 3 2",
+    "output" : "3",
+    "index" : 19,
+    "active" : true
+  }, {
+    "input" : "2 3\n4 4",
+    "output" : "4",
+    "index" : 20,
+    "active" : true
+  }, {
+    "input" : "4 6\n3 3 3 3",
+    "output" : "2",
+    "index" : 21,
+    "active" : true
+  }, {
+    "input" : "7 7\n3 3 3 3 3 3 2",
+    "output" : "4",
+    "index" : 22,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx262M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.Cafe",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "contest.CafeTestCase" ],
+  "date" : "2021.01.05",
+  "contestName" : "Codeforces - acm.sgu.ru archive",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

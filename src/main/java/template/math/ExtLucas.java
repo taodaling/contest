@@ -66,9 +66,8 @@ public class ExtLucas implements LargeIntCombination, Iterable<Map.Entry<Integer
         int fact;
         int p;
         int pc;
-        Modular modular;
+        int mod;
         Power power;
-        IntExtGCDObject extGCD = new IntExtGCDObject();
         int[] g;
 
         /**
@@ -81,15 +80,15 @@ public class ExtLucas implements LargeIntCombination, Iterable<Map.Entry<Integer
             this.p = p;
             this.pc = pc;
             this.g = new int[(int) (Math.min(pc, m) + 1)];
-            modular = new Modular(pc);
-            power = new Power(modular);
+            mod = pc;
+            power = new Power(pc);
             g[0] = 1;
             g[1] = 1;
             for (int i = 2; i < g.length; i++) {
                 if (i % p == 0) {
                     g[i] = g[i - 1];
                 } else {
-                    g[i] = modular.mul(g[i - 1], i);
+                    g[i] = (int) (((long) g[i - 1] * i) % mod);
                 }
             }
         }
@@ -105,9 +104,9 @@ public class ExtLucas implements LargeIntCombination, Iterable<Map.Entry<Integer
                 exp += m / p;
                 if (m >= pc) {
                     //There can be optimize to O(1), so this method provide O(\log_p m) time complexity.
-                    fact = modular.mul(fact, power.pow(g[pc], m / pc));
+                    fact = (int) ((long) fact * power.pow(g[pc], m / pc) % mod);
                 }
-                fact = modular.mul(fact, g[(int) (m % pc)]);
+                fact = (int) ((long) fact * g[(int) (m % pc)] % mod);
                 m /= p;
             }
             return fact;
@@ -122,16 +121,14 @@ public class ExtLucas implements LargeIntCombination, Iterable<Map.Entry<Integer
             if (m < n) {
                 return 0;
             }
-            int v = fact(m);
+            long v = fact(m);
             int e = exp;
-            extGCD.extgcd(fact(n), pc);
-            v = modular.mul(v, modular.valueOf(extGCD.getX()));
+            v = v * power.inverseExtGCD(fact(n)) % mod;
             e -= exp;
-            extGCD.extgcd(fact(m - n), pc);
-            v = modular.mul(v, modular.valueOf(extGCD.getX()));
+            v = v * power.inverse(fact(m - n)) % mod;
             e -= exp;
-            v = modular.mul(v, power.pow(p, e));
-            return v;
+            v = v * power.pow(p, e) % mod;
+            return DigitUtils.mod(v, mod);
         }
     }
 }

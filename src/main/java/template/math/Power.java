@@ -14,12 +14,8 @@ public class Power implements InverseNumber {
 
     int mod;
 
-    public Power(Modular modular) {
-        this.mod = modular.getMod();
-    }
-
     public Power(int mod) {
-        this(new Modular(mod));
+        this.mod = mod;
     }
 
     public int pow(int x, long n) {

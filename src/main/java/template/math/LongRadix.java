@@ -43,6 +43,9 @@ public class LongRadix {
     }
 
     public int get(long x, int i) {
+        if (i >= pow.length) {
+            return 0;
+        }
         return (int) (x / pow[i] % base);
     }
 

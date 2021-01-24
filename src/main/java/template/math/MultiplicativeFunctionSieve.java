@@ -11,6 +11,25 @@ public class MultiplicativeFunctionSieve {
     public int[] expOfSmallestPrimeFactor;
     int limit;
 
+    public int[] pow(int k, Power pow) {
+        int mod = pow.getMod();
+        int[] ans = new int[limit + 1];
+        if (k == 0) {
+            ans[0] = 1;
+        }
+        if (limit >= 1) {
+            ans[1] = 1;
+        }
+        for (int i = 2; i <= limit; i++) {
+            if (!isComp[i]) {
+                ans[i] = pow.pow(i, k);
+            } else {
+                ans[i] = (int) ((long)ans[i / smallestPrimeFactor[i]] * ans[smallestPrimeFactor[i]] % mod);
+            }
+        }
+        return ans;
+    }
+
     public int[] getMobius() {
         int[] mobius = new int[limit + 1];
         mobius[1] = 1;

@@ -1,23 +1,12 @@
 package platform.pe;
 
-import framework.io.FileUtils;
-import net.egork.chelper.tester.StringInputStream;
-import template.algo.IntBinarySearch;
 import template.binary.Bits;
-import template.io.FastInput;
-import template.math.*;
-import template.primitve.generated.datastructure.IntToLongFunction;
-import template.primitve.generated.datastructure.IntegerArrayList;
-import template.primitve.generated.datastructure.LongHashSet;
-import template.primitve.generated.datastructure.LongIterator;
+import template.math.BigCombination;
 import template.utils.Debug;
+import template.utils.SequenceUtils;
 
-import java.io.File;
-import java.io.StringReader;
 import java.math.BigInteger;
 import java.util.*;
-import java.util.function.LongUnaryOperator;
-import java.util.stream.IntStream;
 
 public class Solution {
     Debug debug = new Debug(true);
@@ -50,24 +39,37 @@ public class Solution {
         return ans;
     }
 
+    int[][] comb;
+    int limit = (int) 1e8;
+
+    public int comb(int n, int m) {
+        if (n < m) {
+            return 0;
+        }
+        if (comb[n][m] == -1) {
+            if (m == 0) {
+                return comb[n][m] = 1;
+            }
+            comb[n][m] = comb(n - 1, m - 1) + comb(n - 1, m);
+            comb[n][m] = Math.min(comb[n][m], limit);
+        }
+        return comb[n][m];
+    }
+
     public void solve() {
         //String s = FileUtils.readFile(new File("C:\\Users\\dalt\\Downloads"), "p042_words.txt");
         //FastInput in = new FastInput(new StringInputStream(s.replaceAll("[^A-Z]", " ")));
-
-        int threshold = (int) 1e7;
-        for (int i = 1; i <= threshold; i++) {
-            int[] sig = decompose(i);
-            boolean valid = true;
-            for (int j = 2; j <= 6 && valid; j++) {
-                if (!Arrays.equals(sig, decompose(j * i))) {
-                   valid = false;
+        int ans = 0;
+        comb = new int[101][101];
+        SequenceUtils.deepFill(comb, -1);
+        for (int i = 1; i <= 100; i++) {
+            for (int j = 0; j <= i; j++) {
+                if (comb(i, j) > 1e6) {
+                    ans++;
                 }
             }
-            if(valid){
-                debug.debug("ans", i);
-                return;
-            }
         }
+        System.out.println(ans);
     }
 
     public static void main(String[] args) {

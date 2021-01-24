@@ -1,0 +1,43 @@
+{
+  "name" : "Filling Trominos",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2\n4 6\n4 7\n",
+    "output" : "YES\nAADDBB\nACCDEB\nBCAEEC\nBBAACC\nNO\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "1\n5 6",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "2\n9 5\n7 15",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx512M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_01.on2021_01_17_CSES___CSES_Problem_Set.Filling_Trominos.FillingTrominos",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.01.17",
+  "contestName" : "CSES - CSES Problem Set",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

@@ -26,40 +26,40 @@ public class Segment implements Cloneable {
         }
     }
 
-    private boolean enter(int ll, int rr, int l, int r) {
-        return ll <= l && rr >= r;
+    private boolean enter(int L, int R, int l, int r) {
+        return L <= l && R >= r;
     }
 
-    private boolean leave(int ll, int rr, int l, int r) {
-        return ll > r || rr < l;
+    private boolean leave(int L, int R, int l, int r) {
+        return L > r || R < l;
     }
 
-    public void update(int ll, int rr, int l, int r) {
-        if (leave(ll, rr, l, r)) {
+    public void update(int L, int R, int l, int r) {
+        if (leave(L, R, l, r)) {
             return;
         }
-        if (enter(ll, rr, l, r)) {
+        if (enter(L, R, l, r)) {
             modify();
             return;
         }
         pushDown();
         int m = DigitUtils.floorAverage(l, r);
-        left.update(ll, rr, l, m);
-        right.update(ll, rr, m + 1, r);
+        left.update(L, R, l, m);
+        right.update(L, R, m + 1, r);
         pushUp();
     }
 
-    public void query(int ll, int rr, int l, int r) {
-        if (leave(ll, rr, l, r)) {
+    public void query(int L, int R, int l, int r) {
+        if (leave(L, R, l, r)) {
             return;
         }
-        if (enter(ll, rr, l, r)) {
+        if (enter(L, R, l, r)) {
             return;
         }
         pushDown();
         int m = DigitUtils.floorAverage(l, r);
-        left.query(ll, rr, l, m);
-        right.query(ll, rr, m + 1, r);
+        left.query(L, R, l, m);
+        right.query(L, R, m + 1, r);
     }
 
     private Segment deepClone() {
@@ -102,3 +102,4 @@ public class Segment implements Cloneable {
         return builder.toString();
     }
 }
+

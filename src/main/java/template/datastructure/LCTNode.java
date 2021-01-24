@@ -196,4 +196,18 @@ public class LCTNode {
         }
         treeSize = left.treeSize + right.treeSize + vtreeSize + treeWeight;
     }
+
+    public static LCTNode lca(LCTNode a, LCTNode b) {
+        access(a);
+        access(b);
+        splay(a);
+        if (a.treeFather != NIL) {
+            return a.treeFather;
+        }
+        return NIL;
+    }
+
+    public static boolean connected(LCTNode a, LCTNode b) {
+        return lca(a, b) != NIL;
+    }
 }
