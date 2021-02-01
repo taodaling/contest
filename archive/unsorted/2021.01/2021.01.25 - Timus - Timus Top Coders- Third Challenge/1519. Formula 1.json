@@ -1,0 +1,64 @@
+{
+  "name" : "1519. Formula 1",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4 4\n**..\n....\n....\n....\n",
+    "output" : "2\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "4 4\n....\n....\n....\n....\n",
+    "output" : "6\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "3 2\n..\n..\n**",
+    "output" : "1",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "4 4\n....\n....\n##..\n##..",
+    "output" : "1",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "12 12\n............\n............\n............\n............\n............\n............\n............\n............\n............\n............\n............\n............\n",
+    "index" : 4,
+    "active" : true
+  }, {
+    "input" : "3 3\n...\n...\n**.",
+    "output" : "0",
+    "index" : 5,
+    "active" : true
+  }, {
+    "input" : "2 3\n*..\n*..",
+    "output" : "1",
+    "index" : 6,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx64M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.Formula1",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.01.25",
+  "contestName" : "Timus - Timus Top Coders: Third Challenge",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

@@ -6,7 +6,6 @@ import java.util.List;
 
 public class HashOnTree2 {
     long[] subtree;
-    int[] size;
     MultiSetHasher hasher;
     private List<? extends DirectedEdge>[] g;
     private int n;
@@ -14,7 +13,6 @@ public class HashOnTree2 {
 
     public HashOnTree2(int n, MultiSetHasher hasher) {
         subtree = new long[n];
-        size = new int[n];
         this.hasher = hasher;
     }
 
@@ -37,32 +35,25 @@ public class HashOnTree2 {
         return treeHash;
     }
 
-    private void dfs0(int root, int p) {
-        size[root] = 1;
+    private long dfs0(int root, int p) {
         subtree[root] = 0;
         for (DirectedEdge e : g[root]) {
             if (e.to == p) {
                 continue;
             }
-            dfs0(e.to, root);
-            size[root] += size[e.to];
-            subtree[root] = hasher.merge(subtree[root], hasher.hash(subtree[e.to]));
+            subtree[root] = hasher.merge(subtree[root], dfs0(e.to, root));
         }
-        subtree[root] = hasher.merge(subtree[root], size[root]);
+        return hasher.hash(subtree[root]);
     }
 
     private void dfs1(int root, int p, long top) {
         subtree[root] = hasher.merge(subtree[root], top);
-        subtree[root] = hasher.remove(subtree[root], size[root]);
         for (DirectedEdge e : g[root]) {
             if (e.to == p) {
                 continue;
             }
-            long contrib = subtree[root];
-            contrib = hasher.remove(contrib, hasher.hash(subtree[e.to]));
-            contrib = hasher.merge(contrib, n - size[e.to]);
+            long contrib = hasher.remove(subtree[root], hasher.hash(subtree[e.to]));
             dfs1(e.to, root, hasher.hash(contrib));
         }
-        subtree[root] = hasher.merge(subtree[root], n);
     }
 }

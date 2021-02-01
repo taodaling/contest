@@ -1,0 +1,26 @@
+{
+  "name" : "SuperSubset",
+  "signature" : {
+    "name" : "solve",
+    "result" : "int",
+    "arguments" : [ "int[]", "int" ],
+    "argumentNames" : [ "A", "Y" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "1 2 3", "3" ],
+    "result" : "6",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "1 1 1 1 1", "4" ],
+    "result" : "10",
+    "index" : 1,
+    "active" : true
+  } ],
+  "date" : "2021.01.25",
+  "contestName" : "TopCoder SRM #798",
+  "testClasses" : [ ],
+  "fqn" : "contest.SuperSubset",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

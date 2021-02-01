@@ -1,0 +1,39 @@
+{
+  "name" : "Task",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 6 \n0 2 \n2 2 \n1 2 \n0 1 \n0 1 \n0 1 ",
+    "output" : "",
+    "index" : 0,
+    "active" : false
+  }, {
+    "input" : "5 15 \n3 3 \n2 3 \n3 4 \n0 1 \n0 4 \n0 3 \n0 2 \n2 0 \n4 4 \n0 2 \n1 3 \n1 4 \n0 1 \n1 2 \n0 1 ",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1g -Xss32m",
+  "mainClass" : "Main",
+  "taskClass" : "contest.Task",
+  "checkerClass" : "contest.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "contest.TaskTestCase" ],
+  "date" : "2021.01.25",
+  "contestName" : "",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

@@ -1,0 +1,36 @@
+{
+  "name" : "ExpectedValue",
+  "signature" : {
+    "name" : "solve",
+    "result" : "int",
+    "arguments" : [ "int" ],
+    "argumentNames" : [ "N" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "2" ],
+    "result" : "1",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "3" ],
+    "result" : "2",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "4" ],
+    "result" : "666666674",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "111" ],
+    "result" : "112631362",
+    "index" : 3,
+    "active" : true
+  } ],
+  "date" : "2021.01.25",
+  "contestName" : "TopCoder SRM #798",
+  "testClasses" : [ ],
+  "fqn" : "contest.ExpectedValue",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

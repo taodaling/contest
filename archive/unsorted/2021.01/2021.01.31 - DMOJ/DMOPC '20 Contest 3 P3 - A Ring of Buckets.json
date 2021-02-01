@@ -1,0 +1,45 @@
+{
+  "name" : "DMOPC '20 Contest 3 P3 - A Ring of Buckets",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "1\n4 4 1 100\n",
+    "output" : "-1\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "1\n3 4 2 7\n",
+    "output" : "57\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "1\n999999 999999 5 8\n",
+    "output" : "35952588\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.DMOPC20Contest3P3ARingOfBuckets",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.01.31",
+  "contestName" : "DMOJ",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

@@ -3,7 +3,7 @@ package template.geometry.old;
 import template.geometry.geo2.Point2;
 
 public class GeoConstant {
-    public static final double PREC = 1e-12;
+    public static final double PREC = 1e-10;
 
     public static final double INF = 1e50;
 

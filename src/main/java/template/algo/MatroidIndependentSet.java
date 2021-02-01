@@ -218,7 +218,7 @@ public interface MatroidIndependentSet {
             }
 
             /**
-             * O(rn)
+             * O(r+n)
              */
             @Override
             public void prepare(boolean[] added) {

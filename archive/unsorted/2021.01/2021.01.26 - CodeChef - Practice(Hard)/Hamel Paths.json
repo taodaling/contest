@@ -1,0 +1,35 @@
+{
+  "name" : "Hamel Paths",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2\n8 16\n1 2\n1 5\n1 4\n1 4\n2 3\n2 3\n2 6\n3 7\n3 4\n4 8\n5 6\n5 6\n5 8\n6 7\n7 8\n7 8\n\n8 16\n1 2\n1 5\n1 4\n1 4\n2 3\n2 3\n2 6\n3 7\n3 4\n4 8\n5 6\n5 6\n5 8\n6 7\n7 8\n7 8\n",
+    "output" : "9 2 11 12 13 15 16 10 9 5\n",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.HamelPaths",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.01.26",
+  "contestName" : "CodeChef - Practice(Hard)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

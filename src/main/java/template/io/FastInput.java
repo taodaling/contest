@@ -167,7 +167,9 @@ public class FastInput {
 
         return val;
     }
-
+    public double rd(){
+        return readDouble();
+    }
     public double readDouble() {
         boolean sign = true;
         skipBlank();

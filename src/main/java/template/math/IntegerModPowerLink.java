@@ -6,15 +6,15 @@ import template.primitve.generated.datastructure.IntToIntFunction;
  * Calculate x1 ^ x2 ^ x3 ^ x4 ^ x5 ^ ... ^ xn while xi >= 1
  */
 public class IntegerModPowerLink {
-    private IntToIntFunction f;
+    private int[] f;
     // private static int limit = 1 << 16;
 
-    public IntegerModPowerLink(IntToIntFunction f) {
+    public IntegerModPowerLink(int[] f) {
         this.f = f;
     }
 
     private int test(int l, int r, int limit) {
-        int val = f.apply(l);
+        int val = f[l];
         if (l == r) {
             return val;
         }
@@ -25,8 +25,15 @@ public class IntegerModPowerLink {
         return prev < limit ? (int) DigitUtils.limitPow(val, prev, limit) : limit;
     }
 
+    /**
+     * O(\log_2m)
+     * @param l
+     * @param r
+     * @param m
+     * @return
+     */
     public int query(int l, int r, int m) {
-        int val = f.apply(l);
+        int val = f[l];
         if (l == r) {
             return DigitUtils.mod(val, m);
         }

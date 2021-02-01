@@ -486,4 +486,15 @@ public class Point2 implements Cloneable {
         else
             return false;
     }
+
+    @Override
+    public int hashCode() {
+        return Double.hashCode(x) * 31 + Double.hashCode(y);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        Point2 other = (Point2) obj;
+        return x == other.x && y == other.y;
+    }
 }

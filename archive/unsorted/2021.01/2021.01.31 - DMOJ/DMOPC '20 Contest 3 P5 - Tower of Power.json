@@ -1,0 +1,45 @@
+{
+  "name" : "DMOPC '20 Contest 3 P5 - Tower of Power",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 5\n2 3 2\n",
+    "output" : "2\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "3 17\n3 5 7\n",
+    "output" : "12\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "12 35929738\n62525611 69201951 54844075 40933790 64603110 102648769 67604167 54424854 69048209 51968609 55767140 95916210\n",
+    "output" : "9996111\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.DMOPC20Contest3P5TowerOfPower",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.01.31",
+  "contestName" : "DMOJ",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

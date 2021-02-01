@@ -11,7 +11,7 @@ public class UndoDSU {
         p = new int[n];
     }
 
-    public void init(){
+    public void init() {
         Arrays.fill(rank, 1);
         Arrays.fill(p, -1);
     }

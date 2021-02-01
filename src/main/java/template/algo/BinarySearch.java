@@ -11,17 +11,17 @@ public class BinarySearch {
     private BinarySearch() {
     }
 
-    public static long lastFalse(LongPredicate predicate, long l, long r) {
+    public static long lastTrue(LongPredicate predicate, long l, long r) {
         assert l <= r;
         while (l != r) {
             long mid = DigitUtils.ceilAverage(l, r);
             if (predicate.test(mid)) {
-                r = mid - 1;
-            } else {
                 l = mid;
+            } else {
+                r = mid - 1;
             }
         }
-        if (predicate.test(l)) {
+        if (!predicate.test(l)) {
             l--;
         }
         return l;
@@ -43,14 +43,14 @@ public class BinarySearch {
         return l;
     }
 
-    public static int lastFalse(IntPredicate predicate, int l, int r) {
+    public static int lastTrue(IntPredicate predicate, int l, int r) {
         assert l <= r;
         while (l != r) {
             int mid = DigitUtils.ceilAverage(l, r);
             if (predicate.test(mid)) {
-                r = mid - 1;
-            } else {
                 l = mid;
+            } else {
+                r = mid - 1;
             }
         }
         if (predicate.test(l)) {
@@ -93,7 +93,7 @@ public class BinarySearch {
         return (l + r) / 2;
     }
 
-    public static double lastFalse(DoublePredicate predicate, double l, double r, double absError, double relativeError) {
+    public static double lastTrue(DoublePredicate predicate, double l, double r, double absError, double relativeError) {
         return firstTrue(predicate, l, r, absError, relativeError);
     }
 

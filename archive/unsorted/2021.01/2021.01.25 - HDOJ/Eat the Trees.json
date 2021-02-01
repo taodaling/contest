@@ -1,0 +1,40 @@
+{
+  "name" : "Eat the Trees",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2\n6 3\n1 1 1\n1 0 1\n1 1 1\n1 1 1\n1 0 1\n1 1 1\n2 4\n1 1 1 1\n1 1 1 1\n",
+    "output" : "Case 1: There are 3 ways to eat the trees.\nCase 2: There are 2 ways to eat the trees.\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "1\n2 2\n1 1\n1 1",
+    "output" : "Case 1: There are 1 ways to eat the trees.",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx32M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.EatTheTrees",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.01.25",
+  "contestName" : "HDOJ",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

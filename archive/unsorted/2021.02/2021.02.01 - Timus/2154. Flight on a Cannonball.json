@@ -1,0 +1,40 @@
+{
+  "name" : "2154. Flight on a Cannonball",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4\n1 0\n0 1\n-1 0\n0 -1\n",
+    "output" : "0.0000000000\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "5\n0 3\n1 2\n1 3\n1 4\n2 3\n",
+    "output" : "0.7071067812\n",
+    "index" : 1,
+    "active" : false
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.FlightOnACannonball",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "contest.FlightOnACannonballTestCase" ],
+  "date" : "2021.02.01",
+  "contestName" : "Timus",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

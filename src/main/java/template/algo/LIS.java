@@ -1,16 +1,19 @@
 package template.algo;
 
+import template.datastructure.MultiSet;
+
 import java.util.Comparator;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.function.Function;
 import java.util.function.IntFunction;
 
 /**
  * longest strictly increment subsequence
  */
 public class LIS {
-    public static <T> int[] lis(IntFunction<T> func, int n, Comparator<T> comp) {
+    public static <T> int[] strictLIS(IntFunction<T> func, int n, Comparator<T> comp) {
         if (n == 0) {
             return new int[0];
         }
@@ -37,11 +40,24 @@ public class LIS {
         return ans;
     }
 
-    public static <T> int lisLength(IntFunction<T> func, int n, Comparator<T> comp) {
+    public static <T> int strictLISLength(IntFunction<T> func, int n, Comparator<T> comp) {
         TreeSet<T> set = new TreeSet<>(comp);
         for (int i = 0; i < n; i++) {
             T e = func.apply(i);
             T ceil = set.ceiling(e);
+            if (ceil != null) {
+                set.remove(ceil);
+            }
+            set.add(e);
+        }
+        return set.size();
+    }
+
+    public static <T> int nonStrictLISLength(IntFunction<T> func, Function<T, T> greater, int n, Comparator<T> comp) {
+        MultiSet<T> set = new MultiSet<>(comp);
+        for (int i = 0; i < n; i++) {
+            T e = func.apply(i);
+            T ceil = set.ceil(greater.apply(e));
             if (ceil != null) {
                 set.remove(ceil);
             }

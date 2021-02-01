@@ -2,15 +2,19 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Map;
 import java.io.OutputStreamWriter;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.Iterator;
+import java.util.Collection;
 import java.io.IOException;
-import java.io.Serializable;
 import java.io.UncheckedIOException;
 import java.util.Objects;
+import java.util.TreeMap;
 import java.io.Closeable;
 import java.io.Writer;
+import java.util.Map.Entry;
 import java.util.Comparator;
 import java.io.InputStream;
 
@@ -32,194 +36,275 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            P1578 solver = new P1578();
+            EGeraldAndPath solver = new EGeraldAndPath();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class P1578 {
-        Debug debug = new Debug(false);
+    static class EGeraldAndPath {
+        Debug debug = new Debug(true);
 
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            int L = in.ri();
-            int W = in.ri();
             int n = in.ri();
             long[] x = new long[n];
-            long[] y = new long[n];
+            long[] l = new long[n];
             for (int i = 0; i < n; i++) {
                 x[i] = in.ri();
-                y[i] = in.ri();
+                l[i] = in.ri();
             }
-            Pair<long[], Long> pair = MaximumArea.rectCover(0, L, 0, W, x, y);
-            out.println(pair.b);
-            debug.debug("x", pair.a);
+            Pair<int[], Long> res = StickFallProblem.solve(x, l);
+            long ans = res.b;
+            debug.debug("res.a", res.a);
+            debug.debug("res.b", res.b);
+            out.println(ans);
+            LongIntervalMap map = new LongIntervalMap();
+            for (int i = 0; i < n; i++) {
+                if (res.a[i] == -1) {
+                    map.add(x[i] - l[i], x[i]);
+                } else {
+                    map.add(x[i], x[i] + l[i]);
+                }
+            }
+            if (map.total() != res.b) {
+                throw new RuntimeException();
+            }
         }
 
     }
 
-    static strictfp class MersenneTwisterFast implements Serializable, Cloneable {
-        private static final int N = 624;
-        private static final int M = 397;
-        private static final int MATRIX_A = 0x9908b0df;
-        private static final int UPPER_MASK = 0x80000000;
-        private static final int LOWER_MASK = 0x7fffffff;
-        private static final int TEMPERING_MASK_B = 0x9d2c5680;
-        private static final int TEMPERING_MASK_C = 0xefc60000;
-        private int[] mt;
-        private int mti;
-        private int[] mag01;
-        private boolean __haveNextNextGaussian;
+    static class StickFallProblem {
+        static long inf = (long) 2e18;
 
-        public Object clone() {
-            try {
-                MersenneTwisterFast f = (MersenneTwisterFast) (super.clone());
-                f.mt = (int[]) (mt.clone());
-                f.mag01 = (int[]) (mag01.clone());
-                return f;
-            } catch (CloneNotSupportedException e) {
-                throw new InternalError();
-            } // should never happen
-        }
-
-        public MersenneTwisterFast() {
-            this(System.currentTimeMillis());
-        }
-
-        public MersenneTwisterFast(long seed) {
-            setSeed(seed);
-        }
-
-        public MersenneTwisterFast(int[] array) {
-            setSeed(array);
-        }
-
-        public void setSeed(long seed) {
-            // Due to a bug in java.util.Random clear up to 1.2, we're
-            // doing our own Gaussian variable.
-            __haveNextNextGaussian = false;
-
-            mt = new int[N];
-
-            mag01 = new int[2];
-            mag01[0] = 0x0;
-            mag01[1] = MATRIX_A;
-
-            mt[0] = (int) (seed & 0xffffffff);
-            for (mti = 1; mti < N; mti++) {
-                mt[mti] =
-                        (1812433253 * (mt[mti - 1] ^ (mt[mti - 1] >>> 30)) + mti);
-                /* See Knuth TAOCP Vol2. 3rd Ed. P.106 for multiplier. */
-                /* In the previous versions, MSBs of the seed affect   */
-                /* only MSBs of the array mt[].                        */
-                /* 2002/01/09 modified by Makoto Matsumoto             */
-                // mt[mti] &= 0xffffffff;
-                /* for >32 bit machines */
+        public static Pair<int[], Long> solve(long[] x, long[] l) {
+            int n = x.length;
+            StickFallProblem.Stick[] light = new StickFallProblem.Stick[n + 1];
+            for (int i = 0; i < n; i++) {
+                light[i] = new StickFallProblem.Stick();
+                light[i].id = i;
+                light[i].x = x[i];
+                light[i].l = l[i];
             }
-        }
-
-        public void setSeed(int[] array) {
-            if (array.length == 0)
-                throw new IllegalArgumentException("Array length must be greater than zero");
-            int i, j, k;
-            setSeed(19650218);
-            i = 1;
-            j = 0;
-            k = (N > array.length ? N : array.length);
-            for (; k != 0; k--) {
-                mt[i] = (mt[i] ^ ((mt[i - 1] ^ (mt[i - 1] >>> 30)) * 1664525)) + array[j] + j; /* non linear */
-                // mt[i] &= 0xffffffff; /* for WORDSIZE > 32 machines */
-                i++;
-                j++;
-                if (i >= N) {
-                    mt[0] = mt[N - 1];
-                    i = 1;
-                }
-                if (j >= array.length) j = 0;
-            }
-            for (k = N - 1; k != 0; k--) {
-                mt[i] = (mt[i] ^ ((mt[i - 1] ^ (mt[i - 1] >>> 30)) * 1566083941)) - i; /* non linear */
-                // mt[i] &= 0xffffffff; /* for WORDSIZE > 32 machines */
-                i++;
-                if (i >= N) {
-                    mt[0] = mt[N - 1];
-                    i = 1;
-                }
-            }
-            mt[0] = 0x80000000; /* MSB is 1; assuring non-zero initial array */
-        }
-
-        public int nextInt(int n) {
-            if (n <= 0)
-                throw new IllegalArgumentException("n must be positive, got: " + n);
-
-            if ((n & -n) == n)  // i.e., n is a power of 2
-            {
-                int y;
-
-                if (mti >= N)   // generate N words at one time
-                {
-                    int kk;
-                    final int[] mt = this.mt; // locals are slightly faster
-                    final int[] mag01 = this.mag01; // locals are slightly faster
-
-                    for (kk = 0; kk < N - M; kk++) {
-                        y = (mt[kk] & UPPER_MASK) | (mt[kk + 1] & LOWER_MASK);
-                        mt[kk] = mt[kk + M] ^ (y >>> 1) ^ mag01[y & 0x1];
+            light[n] = new StickFallProblem.Stick();
+            light[n].x = -inf;
+            light[n].l = 0;
+            Arrays.sort(light, Comparator.comparingLong(t -> t.x));
+            long[][][] dp = new long[2][n + 1][n + 1];
+            SequenceUtils.deepFill(dp, -inf);
+            dp[0][0][0] = 0;
+            for (int i = 1; i <= n; i++) {
+                for (int k = 0; k <= i; k++) {
+                    for (int t = 0; t < 2; t++) {
+                        //skip
+                        dp[t][i][k] = dp[t][i - 1][k];
                     }
-                    for (; kk < N - 1; kk++) {
-                        y = (mt[kk] & UPPER_MASK) | (mt[kk + 1] & LOWER_MASK);
-                        mt[kk] = mt[kk + (M - N)] ^ (y >>> 1) ^ mag01[y & 0x1];
+                }
+                for (int k = 0; k < i; k++) {
+                    for (int t = 0; t < 2; t++) {
+                        long r = light[k].x + t * light[k].l;
+                        if (r <= light[i].x) {
+                            long cand = Math.min(light[i].x - r, light[i].l) + dp[t][i - 1][k];
+                            if (cand > dp[0][i][i]) {
+                                dp[0][i][i] = cand;
+                            }
+                        }
+                        if (r <= light[i].x + light[i].l) {
+                            long cand = Math.min(light[i].x + light[i].l - r, light[i].l) + dp[t][i - 1][k];
+                            if (cand > dp[1][i][i]) {
+                                dp[1][i][i] = cand;
+                            }
+                        }
                     }
-                    y = (mt[N - 1] & UPPER_MASK) | (mt[0] & LOWER_MASK);
-                    mt[N - 1] = mt[M - 1] ^ (y >>> 1) ^ mag01[y & 0x1];
-
-                    mti = 0;
                 }
 
-                y = mt[mti++];
-                y ^= y >>> 11;                          // TEMPERING_SHIFT_U(y)
-                y ^= (y << 7) & TEMPERING_MASK_B;       // TEMPERING_SHIFT_S(y)
-                y ^= (y << 15) & TEMPERING_MASK_C;      // TEMPERING_SHIFT_T(y)
-                y ^= (y >>> 18);                        // TEMPERING_SHIFT_L(y)
-
-                return (int) ((n * (long) (y >>> 1)) >> 31);
+                long left = light[i].x - light[i].l;
+                //cross
+                for (int j = 0; j < i - 1; j++) {
+                    for (int t = 0; t <= j; t++) {
+                        for (int d = 0; d < 2; d++) {
+                            long r = light[t].x + light[t].l * d;
+                            if (r >= light[j + 1].x) {
+                                continue;
+                            }
+                            long rr = light[j + 1].x + light[j + 1].l;
+                            if (rr < light[i].x || left >= light[j + 1].x) {
+                                continue;
+                            }
+                            long cand = dp[d][j][t] + light[j + 1].x - Math.max(left, r) +
+                                    light[j + 1].l;
+                            if (cand > dp[1][i][j + 1]) {
+                                dp[1][i][j + 1] = cand;
+                            }
+                        }
+                    }
+                }
             }
-
-            int bits, val;
-            do {
-                int y;
-
-                if (mti >= N)   // generate N words at one time
-                {
-                    int kk;
-                    final int[] mt = this.mt; // locals are slightly faster
-                    final int[] mag01 = this.mag01; // locals are slightly faster
-
-                    for (kk = 0; kk < N - M; kk++) {
-                        y = (mt[kk] & UPPER_MASK) | (mt[kk + 1] & LOWER_MASK);
-                        mt[kk] = mt[kk + M] ^ (y >>> 1) ^ mag01[y & 0x1];
+            long ans = -1;
+            int fi = -1;
+            int fj = -1;
+            int fk = -1;
+            for (int i = 0; i <= n; i++) {
+                for (int j = 0; j <= n; j++) {
+                    for (int k = 0; k < 2; k++) {
+                        if (dp[k][i][j] > ans) {
+                            ans = dp[k][i][j];
+                            fi = i;
+                            fj = j;
+                            fk = k;
+                        }
                     }
-                    for (; kk < N - 1; kk++) {
-                        y = (mt[kk] & UPPER_MASK) | (mt[kk + 1] & LOWER_MASK);
-                        mt[kk] = mt[kk + (M - N)] ^ (y >>> 1) ^ mag01[y & 0x1];
+                }
+            }
+            int[] sol = new int[n];
+            Arrays.fill(sol, -1);
+            while (fi > 0) {
+                boolean find = false;
+                if (dp[fk][fi][fj] == dp[fk][fi - 1][fj]) {
+                    //skip
+                    fi--;
+                    find = true;
+                }
+                if (fj == fi && !find) {
+                    for (int k = 0; k < fi && !find; k++) {
+                        for (int t = 0; t < 2 && !find; t++) {
+                            long r = light[k].x + t * light[k].l;
+                            if (r <= light[fi].x && fk == 0) {
+                                long cand = Math.min(light[fi].x - r, light[fi].l) + dp[t][fi - 1][k];
+                                if (cand == dp[fk][fi][fj]) {
+                                    sol[light[fi].id] = -1;
+                                    fi = fi - 1;
+                                    fk = t;
+                                    fj = k;
+                                    find = true;
+                                    break;
+                                }
+                            }
+                            if (r <= light[fi].x + light[fi].l && fk == 1) {
+                                long cand = Math.min(light[fi].x + light[fi].l - r, light[fi].l) + dp[t][fi - 1][k];
+                                if (cand == dp[fk][fi][fj]) {
+                                    sol[light[fi].id] = 1;
+                                    fi = fi - 1;
+                                    fk = t;
+                                    fj = k;
+                                    find = true;
+                                    break;
+                                }
+                            }
+                        }
                     }
-                    y = (mt[N - 1] & UPPER_MASK) | (mt[0] & LOWER_MASK);
-                    mt[N - 1] = mt[M - 1] ^ (y >>> 1) ^ mag01[y & 0x1];
-
-                    mti = 0;
                 }
 
-                y = mt[mti++];
-                y ^= y >>> 11;                          // TEMPERING_SHIFT_U(y)
-                y ^= (y << 7) & TEMPERING_MASK_B;       // TEMPERING_SHIFT_S(y)
-                y ^= (y << 15) & TEMPERING_MASK_C;      // TEMPERING_SHIFT_T(y)
-                y ^= (y >>> 18);                        // TEMPERING_SHIFT_L(y)
+                if (!find && fk == 1) {
+                    long left = light[fi].x - light[fi].l;
+                    //cross
+                    int j = fj - 1;
+                    for (int t = 0; t <= j && !find; t++) {
+                        for (int d = 0; d < 2 && !find; d++) {
+                            long r = light[t].x + light[t].l * d;
+                            if (r >= light[j + 1].x) {
+                                continue;
+                            }
+                            long rr = light[j + 1].x + light[j + 1].l;
+                            if (rr < light[fi].x || left >= light[j + 1].x) {
+                                continue;
+                            }
+                            long cand = dp[d][j][t] + light[j + 1].x - Math.max(left, r) +
+                                    light[j + 1].l;
+                            if (cand == dp[fk][fi][fj]) {
+                                sol[light[fi].id] = -1;
+                                sol[light[fj].id] = 1;
+                                fk = d;
+                                fi = j;
+                                fj = t;
+                                find = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            return new Pair<>(sol, ans);
+        }
 
-                bits = (y >>> 1);
-                val = bits % n;
-            } while (bits - val + (n - 1) < 0);
-            return val;
+        static class Stick {
+            long x;
+            long l;
+            int id;
+
+        }
+
+    }
+
+    static class LongIntervalMap implements Iterable<LongIntervalMap.Interval> {
+        private long total = 0;
+        private TreeMap<Long, LongIntervalMap.Interval> map = new TreeMap<>();
+
+        private void add(LongIntervalMap.Interval interval) {
+            if (interval.length() <= 0) {
+                return;
+            }
+            map.put(interval.l, interval);
+            total += interval.length();
+        }
+
+        private void remove(LongIntervalMap.Interval interval) {
+            map.remove(interval.l);
+            total -= interval.length();
+        }
+
+        public long total() {
+            return total;
+        }
+
+        public Iterator<LongIntervalMap.Interval> iterator() {
+            return map.values().iterator();
+        }
+
+        public void add(long l, long r) {
+            if (l >= r) {
+                return;
+            }
+            LongIntervalMap.Interval interval = new LongIntervalMap.Interval();
+            interval.l = l;
+            interval.r = r;
+            while (true) {
+                Map.Entry<Long, LongIntervalMap.Interval> ceilEntry = map.ceilingEntry(interval.l);
+                if (ceilEntry == null || ceilEntry.getValue().l > interval.r) {
+                    break;
+                }
+                LongIntervalMap.Interval ceil = ceilEntry.getValue();
+                remove(ceil);
+                interval.r = Math.max(interval.r, ceil.r);
+            }
+            while (true) {
+                Map.Entry<Long, LongIntervalMap.Interval> floorEntry = map.floorEntry(interval.l);
+                if (floorEntry == null || floorEntry.getValue().r < interval.l) {
+                    break;
+                }
+                LongIntervalMap.Interval floor = floorEntry.getValue();
+                remove(floor);
+                interval.l = Math.min(interval.l, floor.l);
+                interval.r = Math.max(interval.r, floor.r);
+            }
+            add(interval);
+        }
+
+        public String toString() {
+            return map.values().toString();
+        }
+
+        public static class Interval {
+            public long l;
+            public long r;
+
+            public long length() {
+                return r - l;
+            }
+
+            public String toString() {
+                return "[" + l + "," + r + ")";
+            }
+
         }
 
     }
@@ -260,19 +345,19 @@ public class Main {
             return this;
         }
 
+        public FastOutput append(long c) {
+            cache.append(c);
+            afterWrite();
+            return this;
+        }
+
         public FastOutput append(String c) {
             cache.append(c);
             afterWrite();
             return this;
         }
 
-        public FastOutput append(Object c) {
-            cache.append(c);
-            afterWrite();
-            return this;
-        }
-
-        public FastOutput println(Object c) {
+        public FastOutput println(long c) {
             return append(c).println();
         }
 
@@ -302,95 +387,6 @@ public class Main {
 
         public String toString() {
             return cache.toString();
-        }
-
-    }
-
-    static class MaximumArea {
-        public static Pair<long[], Long> rectCover(long l, long r, long b, long t,
-                                                   long[] xs, long[] ys) {
-            int n = xs.length;
-            for (int i = 0; i < n; i++) {
-                xs[i] = Math.max(xs[i], l);
-                xs[i] = Math.min(xs[i], r);
-                ys[i] = Math.max(ys[i], b);
-                ys[i] = Math.min(ys[i], t);
-            }
-            long[][] pts = new long[n + 2][2];
-            LongArrayList allX = new LongArrayList(n + 2);
-            allX.add(l);
-            allX.add(r);
-            allX.addAll(xs);
-            allX.unique();
-            long[] allXArray = allX.getData();
-            for (int i = 0; i < n; i++) {
-                pts[i][0] = allX.binarySearch(xs[i]);
-                pts[i][1] = ys[i];
-            }
-            pts[n][0] = 0;
-            pts[n][1] = b;
-            pts[n + 1][0] = 0;
-            pts[n + 1][1] = t;
-            n += 2;
-
-            Arrays.sort(pts, Comparator.comparingLong(x -> x[1]));
-            int m = allX.size();
-            int[] L = new int[m];
-            int[] R = new int[m];
-            int[] cnt = new int[m];
-            long bestArea = 0;
-            long[] ans = new long[4];
-            for (int i = 0; i < n; i++) {
-                int to = i;
-                while (to + 1 < n && pts[to + 1][1] == pts[i][1]) {
-                    to++;
-                }
-                i = to;
-                for (int j = i + 1; j < n; j++) {
-                    cnt[(int) pts[j][0]]++;
-                }
-                long ll = l;
-                long rr = l;
-                {
-                    int left = 0;
-                    for (int j = 1; j < m; j++) {
-                        if (cnt[j] > 0 || j == m - 1) {
-                            long cand = allXArray[j] - allXArray[left];
-                            if (rr - ll < cand) {
-                                rr = allXArray[j];
-                                ll = allXArray[left];
-                            }
-                            L[j] = left;
-                            R[left] = j;
-                            left = j;
-                        }
-                    }
-                }
-                for (int j = n - 1; j > i; j--) {
-                    int x = (int) pts[j][0];
-                    cnt[x]--;
-                    if (cnt[x] == 0) {
-                        //merge
-                        L[R[x]] = L[x];
-                        R[L[x]] = R[x];
-                        long cand = allXArray[R[x]] - allXArray[L[x]];
-                        if (rr - ll < cand) {
-                            ll = allXArray[L[x]];
-                            rr = allXArray[R[x]];
-                        }
-                    }
-                    long cand = (rr - ll) * (pts[j][1] - pts[i][1]);
-                    if (cand > bestArea) {
-                        bestArea = cand;
-                        ans[0] = ll;
-                        ans[1] = rr;
-                        ans[2] = pts[i][1];
-                        ans[3] = pts[j][1];
-                    }
-                }
-            }
-
-            return new Pair<>(ans, bestArea);
         }
 
     }
@@ -458,19 +454,20 @@ public class Main {
 
     }
 
-    static class Randomized {
-        public static void shuffle(long[] data, int from, int to) {
-            to--;
-            for (int i = from; i <= to; i++) {
-                int s = nextInt(i, to);
-                long tmp = data[i];
-                data[i] = data[s];
-                data[s] = tmp;
+    static class SequenceUtils {
+        public static void deepFill(Object array, long val) {
+            if (!array.getClass().isArray()) {
+                throw new IllegalArgumentException();
             }
-        }
-
-        public static int nextInt(int l, int r) {
-            return RandomWrapper.INSTANCE.nextInt(l, r);
+            if (array instanceof long[]) {
+                long[] longArray = (long[]) array;
+                Arrays.fill(longArray, val);
+            } else {
+                Object[] objArray = (Object[]) array;
+                for (Object obj : objArray) {
+                    deepFill(obj, val);
+                }
+            }
         }
 
     }
@@ -503,153 +500,6 @@ public class Main {
             } catch (CloneNotSupportedException e) {
                 throw new RuntimeException(e);
             }
-        }
-
-    }
-
-    static class RandomWrapper {
-        private MersenneTwisterFast random;
-        public static final RandomWrapper INSTANCE = new RandomWrapper();
-
-        public RandomWrapper() {
-            this(new MersenneTwisterFast());
-        }
-
-        public RandomWrapper(MersenneTwisterFast random) {
-            this.random = random;
-        }
-
-        public RandomWrapper(long seed) {
-            this(new MersenneTwisterFast(seed));
-        }
-
-        public int nextInt(int l, int r) {
-            return random.nextInt(r - l + 1) + l;
-        }
-
-    }
-
-    static class LongArrayList implements Cloneable {
-        private int size;
-        private int cap;
-        private long[] data;
-        private static final long[] EMPTY = new long[0];
-
-        public long[] getData() {
-            return data;
-        }
-
-        public LongArrayList(int cap) {
-            this.cap = cap;
-            if (cap == 0) {
-                data = EMPTY;
-            } else {
-                data = new long[cap];
-            }
-        }
-
-        public LongArrayList(long[] data) {
-            this(0);
-            addAll(data);
-        }
-
-        public LongArrayList(LongArrayList list) {
-            this.size = list.size;
-            this.cap = list.cap;
-            this.data = Arrays.copyOf(list.data, size);
-        }
-
-        public LongArrayList() {
-            this(0);
-        }
-
-        public void ensureSpace(int req) {
-            if (req > cap) {
-                while (cap < req) {
-                    cap = Math.max(cap + 10, 2 * cap);
-                }
-                data = Arrays.copyOf(data, cap);
-            }
-        }
-
-        public void add(long x) {
-            ensureSpace(size + 1);
-            data[size++] = x;
-        }
-
-        public void addAll(long[] x) {
-            addAll(x, 0, x.length);
-        }
-
-        public void addAll(long[] x, int offset, int len) {
-            ensureSpace(size + len);
-            System.arraycopy(x, offset, data, size, len);
-            size += len;
-        }
-
-        public void addAll(LongArrayList list) {
-            addAll(list.data, 0, list.size);
-        }
-
-        public void sort() {
-            if (size <= 1) {
-                return;
-            }
-            Randomized.shuffle(data, 0, size);
-            Arrays.sort(data, 0, size);
-        }
-
-        public void unique() {
-            if (size <= 1) {
-                return;
-            }
-
-            sort();
-            int wpos = 1;
-            for (int i = 1; i < size; i++) {
-                if (data[i] != data[wpos - 1]) {
-                    data[wpos++] = data[i];
-                }
-            }
-            size = wpos;
-        }
-
-        public int binarySearch(long x) {
-            return Arrays.binarySearch(data, 0, size, x);
-        }
-
-        public int size() {
-            return size;
-        }
-
-        public long[] toArray() {
-            return Arrays.copyOf(data, size);
-        }
-
-        public String toString() {
-            return Arrays.toString(toArray());
-        }
-
-        public boolean equals(Object obj) {
-            if (!(obj instanceof LongArrayList)) {
-                return false;
-            }
-            LongArrayList other = (LongArrayList) obj;
-            return SequenceUtils.equal(data, 0, size - 1, other.data, 0, other.size - 1);
-        }
-
-        public int hashCode() {
-            int h = 1;
-            for (int i = 0; i < size; i++) {
-                h = h * 31 + Long.hashCode(data[i]);
-            }
-            return h;
-        }
-
-        public LongArrayList clone() {
-            LongArrayList ans = new LongArrayList();
-            ans.addAll(this);
-            return ans;
         }
 
     }
@@ -736,21 +586,6 @@ public class Main {
                 }
             }
             return this;
-        }
-
-    }
-
-    static class SequenceUtils {
-        public static boolean equal(long[] a, int al, int ar, long[] b, int bl, int br) {
-            if ((ar - al) != (br - bl)) {
-                return false;
-            }
-            for (int i = al, j = bl; i <= ar; i++, j++) {
-                if (a[i] != b[j]) {
-                    return false;
-                }
-            }
-            return true;
         }
 
     }
