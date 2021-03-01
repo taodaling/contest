@@ -1,0 +1,35 @@
+{
+  "name" : "Sum of Floor of Linear",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5\n4 10 6 3\n6 5 4 3\n1 1 0 0\n31415 92653 58979 32384\n1000000000 1000000000 999999999 999999999\n",
+    "output" : "3\n13\n0\n314095480\n499999999500000000\n",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.SumOfFloorOfLinear",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.02.22",
+  "contestName" : "Library Checker",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

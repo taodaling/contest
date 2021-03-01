@@ -14,8 +14,8 @@ public class DoubleMaximumCloseSubGraphAdapter implements DoubleMaximumCloseSubG
     }
 
     @Override
-    public double maximumCloseSubGraph(List<DirectedEdge>[] g, double[] weights, boolean[] picked) {
-        int n = g.length;
+    public double maximumCloseSubGraph(List<DoubleWeightDirectedEdge>[] g, double[] weights, boolean[] picked) {
+        int n = weights.length;
         int s = n;
         int t = n + 1;
         List<DoubleFlowEdge>[] net = Graph.createGraph(n + 2);
@@ -30,8 +30,9 @@ public class DoubleMaximumCloseSubGraphAdapter implements DoubleMaximumCloseSubG
             }
         }
         for (int i = 0; i < n; i++) {
-            for (DirectedEdge e : g[i]) {
-                DoubleFlow.addFlowEdge(net, i, e.to, INF);
+            for(DoubleWeightDirectedEdge e : g[i]) {
+                assert e.weight >= 0;
+                DoubleFlow.addFlowEdge(net, i, e.to, e.weight);
             }
         }
         double minCut = mf.apply(net, s, t, INF);

@@ -1,0 +1,40 @@
+{
+  "name" : "C. Prefix Product Sequence",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "7\n",
+    "output" : "YES\n1\n4\n3\n6\n5\n2\n7\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "6\n",
+    "output" : "NO\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.CPrefixProductSequence",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.02.27",
+  "contestName" : "Codeforces - Codeforces Round #278 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

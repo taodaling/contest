@@ -17,9 +17,11 @@ public class PalindromeAutomaton {
 
     char[] data;
     int size;
-    Node buildLast;
+    public Node buildLast;
 
-    List<Node> all;
+    public List<Node> all;
+
+    long palindromeSubstringCnt = 0;
 
     private Node newNode() {
         Node ans = new Node(range);
@@ -38,10 +40,12 @@ public class PalindromeAutomaton {
 
         odd = newNode();
         odd.len = -1;
+        odd.depth = 0;
 
         even = newNode();
         even.fail = odd;
         even.len = 0;
+        even.depth = 0;
 
         all.clear();
         buildLast = odd;
@@ -78,10 +82,11 @@ public class PalindromeAutomaton {
                 }
                 now.fail = trace.next[index];
             }
-
+            now.depth = now.fail.depth + 1;
             buildLast = now;
         }
         buildLast.occurTime++;
+        palindromeSubstringCnt += buildLast.depth;
     }
 
     public void endBuild() {
@@ -100,6 +105,10 @@ public class PalindromeAutomaton {
         }
     }
 
+    public long getPalindromeSubstringCnt() {
+        return palindromeSubstringCnt;
+    }
+
     public int distinctPalindromeSubstring() {
         return all.size();
     }
@@ -114,5 +123,6 @@ public class PalindromeAutomaton {
         public int len;
         public int occurTime;
         public int firstOccurRightIndex;
+        public int depth;
     }
 }

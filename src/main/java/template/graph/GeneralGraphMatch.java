@@ -89,14 +89,21 @@ public class GeneralGraphMatch {
         return false;
     }
 
-    public int maxMatch() {
+    /**
+     * 通过增广路匹配，因此编号较小的优先会被匹配
+     * 如果允许贪心，则不能保证上面所说的成立。
+     * @return
+     */
+    public int maxMatch(boolean greedy) {
         int total = 0;
-        for (int i = 1; i <= n; i++) {
-            for (int j = i + 1; j <= n; j++) {
-                if (edges[i][j] && mate[i] == 0 && mate[j] == 0) {
-                    mate[i] = j;
-                    mate[j] = i;
-                    total++;
+        if (greedy) {
+            for (int i = 1; i <= n; i++) {
+                for (int j = i + 1; j <= n; j++) {
+                    if (edges[i][j] && mate[i] == 0 && mate[j] == 0) {
+                        mate[i] = j;
+                        mate[j] = i;
+                        total++;
+                    }
                 }
             }
         }

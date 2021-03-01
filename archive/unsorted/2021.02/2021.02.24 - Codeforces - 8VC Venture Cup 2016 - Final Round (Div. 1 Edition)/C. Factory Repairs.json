@@ -1,0 +1,40 @@
+{
+  "name" : "C. Factory Repairs",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5 2 2 1 8\n1 1 2\n1 5 3\n1 2 1\n2 2\n1 4 2\n1 3 2\n2 1\n2 3\n",
+    "output" : "3\n6\n4\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "5 4 10 1 6\n1 1 5\n1 5 5\n1 3 2\n1 5 2\n2 1\n2 2\n",
+    "output" : "7\n1\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.CFactoryRepairs",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.02.24",
+  "contestName" : "Codeforces - 8VC Venture Cup 2016 - Final Round (Div. 1 Edition)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

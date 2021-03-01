@@ -14,8 +14,8 @@ public class IntegerMaximumCloseSubGraphAdapter implements IntegerMaximumCloseSu
     }
 
     @Override
-    public int maximumCloseSubGraph(List<DirectedEdge>[] g, int[] weights, boolean[] picked) {
-        int n = g.length;
+    public int maximumCloseSubGraph(List<IntegerWeightDirectedEdge>[] g, int[] weights, boolean[] picked) {
+        int n = weights.length;
         int s = n;
         int t = n + 1;
         List<IntegerFlowEdge>[] net = Graph.createGraph(n + 2);
@@ -30,8 +30,9 @@ public class IntegerMaximumCloseSubGraphAdapter implements IntegerMaximumCloseSu
             }
         }
         for (int i = 0; i < n; i++) {
-            for (DirectedEdge e : g[i]) {
-                IntegerFlow.addFlowEdge(net, i, e.to, INF);
+            for(IntegerWeightDirectedEdge e : g[i]) {
+                assert e.weight >= 0;
+                IntegerFlow.addFlowEdge(net, i, e.to, e.weight);
             }
         }
         int minCut = mf.apply(net, s, t, INF);

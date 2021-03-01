@@ -1,0 +1,36 @@
+{
+  "name" : "PolylineCover",
+  "signature" : {
+    "name" : "cover",
+    "result" : "double[]",
+    "arguments" : [ "int[]", "int[]", "int[]" ],
+    "argumentNames" : [ "L", "X", "Y" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "2", "10 200010", "10 10" ],
+    "result" : "0.0 0.0 0.0 100.0 1.23456789E8 100.0",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "2 2", "10 200010 10 10", "10 10 200010 10" ],
+    "result" : "0.0 0.0 0.0 100.0 1.23456789E8 100.0 90.0 10.0 -10.0 10.0 -10.0 1.23456799E8",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "2 2 4", "10 200010 10 10 0 30000 60000 90000", "10 10 200010 10 0 30000 0 30000" ],
+    "result" : "0.0 0.0 0.0 30000.0 300000.0 30000.0 30000.0 0.0 0.0 0.0 0.0 300000.0 0.0 0.0 0.0 30000.0 300000.0 30000.0",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "2 2 3", "1 1 1 1 1 1 1", "1 1 1 1 1 1 1" ],
+    "result" : "0.0 -85.0 -85.0 0.0 0.0 85.0 0.0 -85.0 -85.0 0.0 0.0 85.0 0.0 -80.0 -85.0 5.0 0.0 90.0",
+    "index" : 3,
+    "active" : true
+  } ],
+  "date" : "2021.02.24",
+  "contestName" : "TopCoder SRM #801",
+  "testClasses" : [ ],
+  "fqn" : "contest.PolylineCover",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

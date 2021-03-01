@@ -1,0 +1,45 @@
+{
+  "name" : "A. Checking the Calendar",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "monday\ntuesday\n",
+    "output" : "NO\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "sunday\nsunday\n",
+    "output" : "YES\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "saturday\ntuesday\n",
+    "output" : "YES\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.ACheckingTheCalendar",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.02.03",
+  "contestName" : "Codeforces - Intel Code Challenge Final Round (Div. 1 + Div. 2, Combined)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

@@ -1,0 +1,35 @@
+{
+  "name" : "BZOJ4999",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5 6\n10 20 30 40 50\n1 2\n1 3\n3 4\n3 5\nQ 2 3 40\nC 1 40\nQ 2 3 40\nQ 4 5 30\nC 3 10\nQ 4 5 30",
+    "output" : "0\n1\n1\n0",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx512M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.BZOJ4999",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "contest.BZOJ4999TestCase" ],
+  "date" : "2021.02.25",
+  "contestName" : "LibreOJ",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

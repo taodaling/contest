@@ -1,7 +1,7 @@
 package template.problem;
 
 import template.algo.DoubleBinarySearch;
-import template.geometry.old.GeoConstant;
+import template.utils.GeoConstant;
 import template.geometry.geo2.Circle2;
 import template.geometry.geo2.Point2;
 import template.primitve.generated.datastructure.DoubleArrayList;

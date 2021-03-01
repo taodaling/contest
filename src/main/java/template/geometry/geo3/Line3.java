@@ -1,6 +1,6 @@
 package template.geometry.geo3;
 
-import template.geometry.old.GeoConstant;
+import template.utils.GeoConstant;
 
 import java.util.Comparator;
 

@@ -9,6 +9,11 @@ public class DoubleGomoryHuTree {
     private double[][] minCuts;
     private static final double INF = Double.MAX_VALUE / 4;
 
+    /**
+     * O(n^2) and mf will be applied for n times
+     * @param g
+     * @param mf
+     */
     public DoubleGomoryHuTree(List<DoubleFlowEdge>[] g, DoubleMaximumFlow mf) {
         int n = g.length;
         ug = DoubleWeightGraph.createUndirectedGraph(n);

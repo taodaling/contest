@@ -1,5 +1,7 @@
 package template.math;
 
+import template.rand.RandomWrapper;
+
 import java.util.Random;
 
 /**
@@ -8,7 +10,6 @@ import java.util.Random;
 public class MillerRabin {
     static int mod;
     static Power power;
-    static Random random = new Random();
 
     /**
      * Check whether n is a prime s times, O(slog n)
@@ -30,7 +31,7 @@ public class MillerRabin {
         mod = n;
         power = new Power(mod);
         for (int i = 0; i < s; i++) {
-            int x = random.nextInt(n - 2) + 2;
+            int x = RandomWrapper.INSTANCE.nextInt(n - 2) + 2;
             if (!mr0(x, n, m)) {
                 return false;
             }

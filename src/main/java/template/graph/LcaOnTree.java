@@ -3,6 +3,7 @@ package template.graph;
 import template.binary.Log2;
 
 import java.util.List;
+import java.util.function.IntPredicate;
 
 // Answering LCA queries in O(1) with O(n) preprocessing
 public class LcaOnTree {
@@ -36,10 +37,14 @@ public class LcaOnTree {
         }
     }
 
-    public void init(List<? extends DirectedEdge>[] tree, int root) {
+    public void init(List<? extends DirectedEdge>[] tree, IntPredicate isRoot) {
         time = 0;
-        dfs1(tree, root, -1);
-        dfs2(tree, root, -1, 0);
+        for (int i = 0; i < tree.length; i++) {
+            if (isRoot.test(i)) {
+                dfs1(tree, i, -1);
+                dfs2(tree, i, -1, 0);
+            }
+        }
     }
 
     public LcaOnTree(int n) {
@@ -50,9 +55,13 @@ public class LcaOnTree {
         parent = new int[n];
     }
 
-    public LcaOnTree(List<? extends DirectedEdge>[] tree, int root) {
+    public LcaOnTree(List<? extends DirectedEdge>[] tree, IntPredicate isRoot) {
         this(tree.length);
-        init(tree, root);
+        init(tree, isRoot);
+    }
+
+    public LcaOnTree(List<? extends DirectedEdge>[] tree, int root) {
+        this(tree, i -> i == root);
     }
 
     private int enterIntoStrip(int x, int hz) {

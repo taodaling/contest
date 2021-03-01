@@ -46,8 +46,8 @@ public class NumberTheoryTransform {
                     int a = i + j;
                     int b = a + s;
                     int t = (int) ((long) ws[j * right] * p[b] % mod);
-                    p[b] = DigitUtils.modsub(p[a], t, mod);
-                    p[a] = DigitUtils.modplus(p[a], t, mod);
+                    p[b] = p[a] < t ? p[a] + mod - t : p[a] - t;
+                    p[a] = p[a] + t >= mod ? p[a] + t - mod : p[a] + t;
                     //w = g^{j (mod-1)/2^{1+d}}
                     //unit = g^{(mod-1)/n}
                     //w = unit^{j n/2^{1+d}}

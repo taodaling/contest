@@ -1,6 +1,6 @@
 package template.geometry.geo2;
 
-import template.geometry.old.GeoConstant;
+import template.utils.GeoConstant;
 import template.math.DigitUtils;
 import template.math.KahanSummation;
 import template.utils.CompareUtils;
@@ -41,7 +41,7 @@ public class Point2 implements Cloneable {
 
     public static final Point2 ORIGIN = new Point2(0, 0);
 
-    public final double x, y;
+    public double x, y;
 
     public Point2(double x, double y) {
         this.x = x;
@@ -126,6 +126,19 @@ public class Point2 implements Cloneable {
         double c = Math.cos(angle);
         double s = Math.sin(angle);
         return new Point2(a.x * c - a.y * s, a.x * s + a.y * c);
+    }
+
+    public static void rotate(Point2 a, double cos, double sin, Point2 res) {
+        res.x = a.x * cos - a.y * sin;
+        res.y = a.x * sin + a.y * cos;
+    }
+
+    /**
+     * a绕origin逆时针旋转angle角度
+     */
+    public static void rotate(Point2 origin, Point2 a, double cos, double sin, Point2 res) {
+        res.x = (a.x - origin.x) * cos - (a.y - origin.y) * sin + origin.x;
+        res.y = (a.x - origin.x) * sin + (a.y - origin.y) * cos + origin.y;
     }
 
     /**

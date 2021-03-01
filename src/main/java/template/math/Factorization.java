@@ -6,7 +6,7 @@ import template.primitve.generated.datastructure.LongArrayList;
 import template.problem.MaximumFactorMinimumNumber;
 
 public class Factorization {
-    public static void main(String[] args){
+    public static void main(String[] args) {
         System.out.println(new PollardRho().findAllFactors(985661440));
     }
 
@@ -117,11 +117,14 @@ public class Factorization {
         }
     }
 
+    public static IntegerArrayList factorizeNumberPrime(int x) {
+        return factorizeNumberPrime(x, new IntegerArrayList());
+    }
+
     /**
      * Find all prime factors of x, and return them ordered.
      */
-    public static IntegerArrayList factorizeNumberPrime(int x) {
-        IntegerArrayList ans = new IntegerArrayList();
+    public static IntegerArrayList factorizeNumberPrime(int x, IntegerArrayList ans) {
         for (int i = 2; i * i <= x; i++) {
             if (x % i != 0) {
                 continue;

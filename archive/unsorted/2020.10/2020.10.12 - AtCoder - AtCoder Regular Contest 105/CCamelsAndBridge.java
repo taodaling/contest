@@ -1,6 +1,5 @@
 package contest;
 
-import template.datastructure.MonotoneOrder;
 import template.io.FastInput;
 import template.math.PermutationUtils;
 import template.primitve.generated.datastructure.IntegerPreSum;

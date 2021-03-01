@@ -1,0 +1,45 @@
+{
+  "name" : "G. Xor-matic Number of the Graph",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4 4\n1 2 1\n1 3 2\n2 3 3\n3 4 1\n",
+    "output" : "12\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "4 4\n1 2 1\n2 3 2\n3 4 4\n4 1 8\n",
+    "output" : "90\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "8 6\n1 2 2\n2 3 1\n2 4 4\n4 5 5\n4 6 3\n7 8 5\n",
+    "output" : "62\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.GXorMaticNumberOfTheGraph",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "contest.GXorMaticNumberOfTheGraphTestCase" ],
+  "date" : "2021.02.03",
+  "contestName" : "Codeforces - Intel Code Challenge Final Round (Div. 1 + Div. 2, Combined)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

@@ -1,0 +1,55 @@
+{
+  "name" : "C. Ray Tracing",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 3 4\n1 1\n1 2\n2 1\n2 2\n",
+    "output" : "1\n-1\n-1\n2\n",
+    "index" : 0,
+    "active" : false
+  }, {
+    "input" : "3 4 6\n1 1\n2 1\n1 2\n2 2\n1 3\n2 3\n",
+    "output" : "1\n-1\n-1\n2\n5\n-1\n",
+    "index" : 1,
+    "active" : false
+  }, {
+    "input" : "7 4 5\n1 3\n2 2\n5 1\n5 3\n4 3\n",
+    "output" : "13\n2\n9\n5\n-1\n",
+    "index" : 2,
+    "active" : false
+  }, {
+    "input" : "3 4 1\n2 3",
+    "output" : "-1",
+    "index" : 3,
+    "active" : false
+  }, {
+    "input" : "2 2 1\n1 1",
+    "output" : "1",
+    "index" : 4,
+    "active" : false
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.CRayTracing",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.02.03",
+  "contestName" : "Codeforces - Intel Code Challenge Final Round (Div. 1 + Div. 2, Combined)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

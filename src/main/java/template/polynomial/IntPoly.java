@@ -4,11 +4,10 @@ import template.binary.Log2;
 import template.datastructure.BitSet;
 import template.math.CachedPow;
 import template.math.DigitUtils;
+import template.math.GCDs;
 import template.math.Power;
 import template.utils.PrimitiveBuffers;
 import template.utils.SequenceUtils;
-
-import java.util.PrimitiveIterator;
 
 public class IntPoly {
     protected int mod;
@@ -129,13 +128,30 @@ public class IntPoly {
         return ans;
     }
 
+    /**
+     * right shift and module x^n
+     *
+     * @param p
+     * @param step
+     * @param n
+     * @return
+     */
+    public int[] rightShift(int[] p, int step, int n) {
+        int r = rankOf(p);
+        int[] ans = PrimitiveBuffers.allocIntPow2(Math.min(r + step + 1, n));
+        for (int i = 0; i <= r && i + step < n; i++) {
+            ans[i + step] = p[i];
+        }
+        return ans;
+    }
+
     public int[] leftShift(int[] p, int step) {
         int r = rankOf(p);
         if (r - step < 0) {
             return PrimitiveBuffers.allocIntPow2(1);
         }
         int[] ans = PrimitiveBuffers.allocIntPow2(r - step + 1);
-        for (int i = 0; i < ans.length; i++) {
+        for (int i = 0; i + step <= r; i++) {
             ans[i] = p[i + step];
         }
         return ans;
@@ -251,7 +267,8 @@ public class IntPoly {
         int[] ln = ln(ans, n);
         ln = PrimitiveBuffers.resize(ln, n);
         for (int i = 0; i < n; i++) {
-            ln[i] = DigitUtils.modsub(a[i], ln[i], mod);
+            int ai = i < a.length ? a[i] : 0;
+            ln[i] = DigitUtils.modsub(ai, ln[i], mod);
         }
         ln[0] = DigitUtils.modplus(ln[0], 1, mod);
         return PrimitiveBuffers.replace(modmul(ans, ln, n), ans, ln);
@@ -480,20 +497,62 @@ public class IntPoly {
      */
     public int[] modpowByLnExp(int[] p, long k, int n) {
         int[] ln = ln(p, n);
-        k %= mod;
-        for (int i = 0; i < ln.length; i++) {
-            ln[i] = DigitUtils.mod(k * ln[i], mod);
-        }
+        mul(ln, (int) (k % mod));
         return PrimitiveBuffers.replace(exp(ln, n), ln);
     }
 
     public int[] modpow(int[] p, long k, int n) {
+        return modpow(p, k, k, n);
+    }
+
+    public int[] modpow(int[] p, long k, long kModPhi, int n) {
         if (k == 0) {
             int[] ans = PrimitiveBuffers.allocIntPow2(1);
             ans[0] = 1;
             return ans;
         }
-        int[] ans = modpow(p, k >> 1, n);
+        if (k == 1) {
+            return module(p, n);
+        }
+        int t = 0;
+        while (t < p.length && p[t] == 0) {
+            t++;
+        }
+        if (t == p.length || t >= DigitUtils.ceilDiv(n, k)) {
+            return PrimitiveBuffers.allocIntPow2(1);
+        }
+        if (GCDs.gcd(p[t], mod) != 1) {
+            return modpowBF(p, k, n);
+        }
+        p = leftShift(p, t);
+        int p0 = p[0];
+        long pow = DigitUtils.modPow(p0, kModPhi, mod);
+        long inverse = (int) DigitUtils.modInverse(p[0], mod);
+        if (inverse != 1) {
+            for (int i = 0; i < p.length; i++) {
+                p[i] = (int) (p[i] * inverse % mod);
+            }
+        }
+        int[] ln = ln(p, n);
+        mul(ln, (int) (k % mod));
+        int[] ans = PrimitiveBuffers.replace(exp(ln, n), ln);
+        PrimitiveBuffers.release(p);
+        if (pow != 1) {
+            for (int i = 0; i < ans.length; i++) {
+                ans[i] = (int) (ans[i] * pow % mod);
+            }
+        }
+        ans = PrimitiveBuffers.replace(rightShift(ans, (int) (t * k), n), ans);
+        return ans;
+    }
+
+    public int[] modpowBF(int[] p, long k, int n) {
+        if (k == 0) {
+            int[] ans = PrimitiveBuffers.allocIntPow2(1);
+            ans[0] = 1;
+            return ans;
+        }
+        int[] ans = modpowBF(p, k >> 1, n);
         ans = PrimitiveBuffers.replace(modmul(ans, ans, n), ans);
         if ((k & 1) == 1) {
             ans = PrimitiveBuffers.replace(modmul(ans, p, n), ans);

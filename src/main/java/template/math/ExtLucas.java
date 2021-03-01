@@ -3,6 +3,7 @@ package template.math;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Extend lucas algorithm
@@ -28,16 +29,20 @@ public class ExtLucas implements LargeIntCombination, Iterable<Map.Entry<Integer
      */
     public ExtLucas(int p, long m) {
         this.p = p;
-        Map<Integer, Integer> factors = pr.findAllFactors(p);
-        for (Map.Entry<Integer, Integer> entry : factors.entrySet()) {
-            LargeIntCombination combination;
-            if (entry.getKey().equals(entry.getValue())) {
-                combination = new Lucas(new Combination((int) Math.min(m, entry.getKey() - 1), entry.getKey()),
-                        entry.getKey());
-            } else {
-                combination = new ExtLucasFactorial(entry.getKey(), entry.getValue(), m);
+        Set<Integer> factors = pr.findAllFactors(p);
+        for (int factor : factors) {
+            int exp = 1;
+            while (p / exp % factor == 0) {
+                exp *= factor;
             }
-            factorialMap.put(entry.getValue(), combination);
+            LargeIntCombination combination;
+            if (p / factor % factor != 0) {
+                combination = new Lucas(new Combination((int) Math.min(m, factor - 1), factor),
+                        factor);
+            } else {
+                combination = new ExtLucasFactorial(factor, exp, m);
+            }
+            factorialMap.put(exp, combination);
         }
     }
 

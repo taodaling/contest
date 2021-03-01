@@ -1,0 +1,45 @@
+{
+  "name" : "D - Sky Reflector",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2 2 2\n",
+    "output" : "7\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "1 1 100\n",
+    "output" : "100\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "31415 92653 58979\n",
+    "output" : "469486242\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.DSkyReflector",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.02.22",
+  "contestName" : "AtCoder - AtCoder Regular Contest 113",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

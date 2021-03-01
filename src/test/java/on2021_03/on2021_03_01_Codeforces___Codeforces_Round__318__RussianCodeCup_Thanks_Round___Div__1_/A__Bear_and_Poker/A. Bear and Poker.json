@@ -1,0 +1,40 @@
+{
+  "name" : "A. Bear and Poker",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4\n75 150 75 50\n",
+    "output" : "Yes\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "3\n100 150 250\n",
+    "output" : "No\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_03.on2021_03_01_Codeforces___Codeforces_Round__318__RussianCodeCup_Thanks_Round___Div__1_.A__Bear_and_Poker.ABearAndPoker",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.03.01",
+  "contestName" : "Codeforces - Codeforces Round #318 [RussianCodeCup Thanks-Round] (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

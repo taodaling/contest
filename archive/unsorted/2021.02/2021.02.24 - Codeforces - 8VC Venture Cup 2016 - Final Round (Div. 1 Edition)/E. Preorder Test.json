@@ -1,0 +1,40 @@
+{
+  "name" : "E. Preorder Test",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5 3\n3 6 1 4 2\n1 2\n2 4\n2 5\n1 3\n",
+    "output" : "3\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "4 2\n1 5 5 5\n1 2\n1 3\n1 4\n",
+    "output" : "1\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.EPreorderTest",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.02.24",
+  "contestName" : "Codeforces - 8VC Venture Cup 2016 - Final Round (Div. 1 Edition)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

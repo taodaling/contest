@@ -1,0 +1,65 @@
+{
+  "name" : "E - Rvom and Rsrev",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "20\nabbaa\nbabbb\naabbabaa\naaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\nbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\nbbabaaaaabbaababaaabbabbbbbaaaaa\nbabbbaaaabaababbbabaabaaaaababaa\nbbaababababbbaaabaabababaabbabab\nabaabbabaabaaaaabaaaabbaabaaaaab\naabababbabbabbabbaaaabbabbbabaab\naabababbabbbbaaaabbaaaaabbaaaabb\nabbbbaabaaabababaaaababababbaabb\naaaaaaaaaaaaaaaaaaaaaaabbbbbbbbb\naaaaaaaaaabbbbbbbbbbbbbbbbbbbbbb\nabababaaababaaabbbbbaaaaaaabbbbb\naabbaaaaababaabbbbbbbbbaabaaabbb\nbabababbababbbababbbbbababbbabbb\nbbbbababbababbbabababbabbabbbbbb\naaaaaaaaaaaaaaaaababababbbabbbbb\naabababbabbabababababababbbbabbb\n",
+    "output" : "bba\nbba\nbbba\naaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\nbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\nbbbbbbbbbbbbbbaaaaaaaa\nbbbbbbbbbbbbbaaaaaaa\nbbbbbbbbbbbbbbbb\nbbbbbbbbbb\nbbbbbbbbbbbbbbbbab\nbbbbbbbbbbbbbb\nbbbbbbbbbbbbbabb\nabbbbbbbbb\nbbbbbbbbbbbbbbbbbbbbbb\nbbbbbbbbbbbbbaaaaaaaaa\nbbbbbbbbbbbbbbbaaaaa\nbbbbbbbbbbbbbbbbbbbbbb\nbbbbbbbbbbbbbbbbbbbbba\nbbbbbbbbbaaaaaaaaaaaaaaa\nbbbbbbbbbbbbbbbbba\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "1\nbbabaaaaabbaababaaabbabbbbbaaaaa",
+    "output" : "bbbbbbbbbbbbbbaaaaaaaa",
+    "index" : 1,
+    "active" : false
+  }, {
+    "input" : "1\nbabbb",
+    "output" : "bba",
+    "index" : 2,
+    "active" : false
+  }, {
+    "input" : "1\nbabbbaaaabaababbbabaabaaaaababaa",
+    "output" : "bbbbbbbbbbbbbaaaaaaa",
+    "index" : 3,
+    "active" : false
+  }, {
+    "input" : "1\naabababbabbabbabbaaaabbabbbabaab",
+    "output" : "bbbbbbbbbbbbbbbbab",
+    "index" : 4,
+    "active" : false
+  }, {
+    "input" : "1\naaaaaaaaaaaaaaaaaaaaaaabbbbbbbbb",
+    "output" : "aaaaaaaaaaaaaaaaaaaaaaabbbbbbbbb",
+    "index" : 5,
+    "active" : false
+  }, {
+    "input" : "1\naaaaaaaaaaaaaaaaababababbbabbbbb",
+    "output" : "bbbbbbbbbaaaaaaaaaaaaaaa",
+    "index" : 6,
+    "active" : false
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.ERvomAndRsrev",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.02.22",
+  "contestName" : "AtCoder - AtCoder Regular Contest 113",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

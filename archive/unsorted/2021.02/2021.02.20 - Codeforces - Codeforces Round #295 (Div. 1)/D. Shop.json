@@ -1,0 +1,44 @@
+{
+  "name" : "D. Shop",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2 4 1\n1 2\n1 1 6\n2 1 4\n2 2 1\n2 2 1 ",
+    "index" : 0,
+    "active" : false
+  }, {
+    "input" : "2 4 2\n10 10\n1 1 1\n1 1 2\n1 2 1\n1 2 2",
+    "output" : "",
+    "index" : 1,
+    "active" : false
+  }, {
+    "input" : "1 5 3 \n69539 \n3 1 551801 \n2 1 369746 \n3 1 906114 \n1 1 578471 \n3 1 857035 ",
+    "output" : "3\n5 3 1 ",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.DShop",
+  "checkerClass" : "contest.DTokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "contest.DShopTestCase" ],
+  "date" : "2021.02.20",
+  "contestName" : "Codeforces - Codeforces Round #295 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

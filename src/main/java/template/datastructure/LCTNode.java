@@ -10,18 +10,25 @@ public class LCTNode {
         NIL.treeFather = NIL;
     }
 
-    LCTNode left = NIL;
-    LCTNode right = NIL;
-    LCTNode father = NIL;
-    LCTNode treeFather = NIL;
-    boolean reverse;
-    int id;
+    public LCTNode left = NIL;
+    public LCTNode right = NIL;
+    public LCTNode father = NIL;
+    public LCTNode treeFather = NIL;
+    public boolean reverse;
+    public int id;
     /**
      * 所在连通块中的treeWeight之和
      */
-    int treeSize;
-    int vtreeSize;
-    byte treeWeight;
+    public int treeSize;
+    public int vtreeSize;
+    public byte treeWeight;
+
+    public void init() {
+        left = right = father = treeFather = NIL;
+        reverse = false;
+        treeSize = vtreeSize = 0;
+        pushUp();
+    }
 
     public static void access(LCTNode x) {
         LCTNode last = NIL;
@@ -60,6 +67,7 @@ public class LCTNode {
         makeRoot(y);
         x.treeFather = y;
         y.vtreeSize += x.treeSize;
+        y.pushUp();
     }
 
     public static void findRoute(LCTNode x, LCTNode y) {

@@ -1,0 +1,40 @@
+{
+  "name" : "BZOJ2401",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "7\n1\n10\n100\n1000\n10000\n100000\n1000000",
+    "output" : "1\n2127\n18446224\n183011304660\n1827127167830060\n18269345553999897648\n182690854273058293758232",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "1\n2",
+    "output" : "7",
+    "index" : 1,
+    "active" : false
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx500M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.BZOJ2401",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "contest.BZOJ2401TestCase" ],
+  "date" : "2021.02.25",
+  "contestName" : "bzoj",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

@@ -1,0 +1,40 @@
+{
+  "name" : "E. Bear and Bowling",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5\n-2 -8 0 5 -3\n",
+    "output" : "13\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "6\n-10 20 -30 40 -50 60\n",
+    "output" : "400\n",
+    "index" : 1,
+    "active" : false
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.EBearAndBowling",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.03.01",
+  "contestName" : "Codeforces - Codeforces Round #318 [RussianCodeCup Thanks-Round] (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

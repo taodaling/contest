@@ -1,0 +1,45 @@
+{
+  "name" : "A. Broken Clock",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "24\n17:30\n",
+    "output" : "17:30\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "12\n17:30\n",
+    "output" : "07:30\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "24\n99:99\n",
+    "output" : "09:09\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.ABrokenClock",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.02.04",
+  "contestName" : "Codeforces - Intel Code Challenge Elimination Round (Div. 1 + Div. 2, combined)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

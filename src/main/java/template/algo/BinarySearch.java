@@ -53,7 +53,7 @@ public class BinarySearch {
                 r = mid - 1;
             }
         }
-        if (predicate.test(l)) {
+        if (!predicate.test(l)) {
             l--;
         }
         return l;

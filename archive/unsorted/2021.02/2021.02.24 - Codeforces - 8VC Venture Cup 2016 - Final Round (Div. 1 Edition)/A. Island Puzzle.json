@@ -1,0 +1,45 @@
+{
+  "name" : "A. Island Puzzle",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3\n1 0 2\n2 0 1\n",
+    "output" : "YES\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "2\n1 0\n0 1\n",
+    "output" : "YES\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "4\n1 2 3 0\n0 3 2 1\n",
+    "output" : "NO\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.AIslandPuzzle",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.02.24",
+  "contestName" : "Codeforces - 8VC Venture Cup 2016 - Final Round (Div. 1 Edition)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

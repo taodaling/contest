@@ -3,24 +3,23 @@ package template.datastructure;
 import template.math.DigitUtils;
 import template.primitve.generated.datastructure.IntToIntegerFunction;
 
-public class RangeAffineRangeSum implements Cloneable {
+public class RangeAffineRangeSum implements Cloneable{
     private RangeAffineRangeSum left;
     private RangeAffineRangeSum right;
-    public static int mod;
     private long sum;
     private int size;
     private long da;
     private long db;
 
     private void modify(long a, long b) {
-        sum = (sum * a + b * size) % mod;
-        da = (da * a) % mod;
-        db = (db * a + b) % mod;
+        sum = (sum * a + b * size);
+        da = (da * a) ;
+        db = (db * a + b) ;
     }
 
     public void pushUp() {
         size = left.size + right.size;
-        sum = DigitUtils.mod(left.sum + right.sum, mod);
+        sum = left.sum + right.sum;
     }
 
     public void pushDown() {
@@ -37,7 +36,6 @@ public class RangeAffineRangeSum implements Cloneable {
             int m = DigitUtils.floorAverage(l, r);
             left = new RangeAffineRangeSum(l, m);
             right = new RangeAffineRangeSum(m + 1, r);
-            pushUp();
         }
     }
 
@@ -78,17 +76,17 @@ public class RangeAffineRangeSum implements Cloneable {
         pushUp();
     }
 
-    public int query(int ll, int rr, int l, int r) {
+    public long query(int ll, int rr, int l, int r) {
         if (noIntersection(ll, rr, l, r)) {
             return 0;
         }
         if (covered(ll, rr, l, r)) {
-            return (int)sum;
+            return sum;
         }
         pushDown();
         int m = DigitUtils.floorAverage(l, r);
-        return DigitUtils.modplus(left.query(ll, rr, l, m),
-                right.query(ll, rr, m + 1, r), mod);
+        return left.query(ll, rr, l, m) +
+                right.query(ll, rr, m + 1, r);
     }
 
     private RangeAffineRangeSum deepClone() {
@@ -112,7 +110,7 @@ public class RangeAffineRangeSum implements Cloneable {
 
     private void toString(StringBuilder builder) {
         if (left == null && right == null) {
-            builder.append("val").append(",");
+            builder.append(sum).append(",");
             return;
         }
         pushDown();
@@ -128,5 +126,4 @@ public class RangeAffineRangeSum implements Cloneable {
         }
         return builder.toString();
     }
-
 }

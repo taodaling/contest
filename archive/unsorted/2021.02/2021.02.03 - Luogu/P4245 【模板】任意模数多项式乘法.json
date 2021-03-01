@@ -1,0 +1,35 @@
+{
+  "name" : "P4245 【模板】任意模数多项式乘法",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5 8 28\n19 32 0 182 99 95\n77 54 15 3 98 66 21 20 38\n",
+    "output" : "7 18 25 19 5 13 12 2 9 22 5 27 6 26\n",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx500M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.P4245",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.02.03",
+  "contestName" : "Luogu",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

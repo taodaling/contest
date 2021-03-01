@@ -1,0 +1,40 @@
+{
+  "name" : "C. Case of Chocolate",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "6 5\n3 4 U\n6 1 L\n2 5 L\n1 6 U\n4 3 U\n",
+    "output" : "4\n3\n2\n1\n2\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "10 6\n2 9 U\n10 1 U\n1 10 U\n8 3 L\n10 1 L\n6 5 U\n",
+    "output" : "9\n1\n10\n6\n0\n2\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.CCaseOfChocolate",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.02.16",
+  "contestName" : "Codeforces - Codeforces Round #310 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

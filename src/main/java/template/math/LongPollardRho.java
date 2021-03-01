@@ -1,9 +1,10 @@
 package template.math;
 
+import template.rand.RandomWrapper;
+
 import java.util.*;
 
 public class LongPollardRho {
-    static Random random = new Random();
     static long[] smallPrimes = new long[]{2, 3, 5, 7, 11, 13, 17, 19};
 
     public static long findFactor(long n) {
@@ -67,7 +68,7 @@ public class LongPollardRho {
             return 3;
         }
         ILongModular modular = ILongModular.getInstance(n);
-        long x = 0, y = x, t, q = 1, c = (long) (random.nextDouble() * (n - 1)) + 1;
+        long x = 0, y = x, t, q = 1, c = RandomWrapper.INSTANCE.nextLong(n - 1);
         for (int k = 2; ; k <<= 1, y = x, q = 1) {
             for (int i = 1; i <= k; ++i) {
                 x = modular.plus(modular.mul(x, x), c);

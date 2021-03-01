@@ -9,7 +9,6 @@ public class IntExtCRT {
      * modulus
      */
     int m;
-    boolean valid = true;
     static final IntExtGCDObject gcd = new IntExtGCDObject();
 
     public IntExtCRT() {
@@ -25,9 +24,6 @@ public class IntExtCRT {
         return m;
     }
 
-    public boolean isValid() {
-        return valid;
-    }
 
     /**
      * Add a new condition: x % m = r
@@ -40,7 +36,7 @@ public class IntExtCRT {
         int g = gcd.extgcd(m1, m2);
         int a = (gcd.getX() % m2);
         if ((x2 - x1) % g != 0) {
-            return valid = false;
+            return false;
         }
         this.m = m1 / g * m2;
         this.r = DigitUtils.mod((long) a * ((x2 - x1) / g) % this.m * m1 % this.m + x1, this.m);

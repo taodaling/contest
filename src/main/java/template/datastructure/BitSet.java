@@ -24,6 +24,7 @@ public final class BitSet implements Serializable, Cloneable, Comparable<BitSet>
     private static final BitSet EMPTY = new BitSet(0);
     private static long[] EMPTY_ARRAY = new long[0];
 
+
     public BitSet(int n) {
         capacity = n;
         this.m = (capacity + 64 - 1) / 64;
@@ -177,6 +178,10 @@ public final class BitSet implements Serializable, Cloneable, Comparable<BitSet>
 
     public int capacity() {
         return capacity;
+    }
+
+    public boolean isEmpty() {
+        return nextSetBit(0) >= capacity();
     }
 
     public int size() {

@@ -1,6 +1,6 @@
 package template.geometry.geo2;
 
-import template.geometry.old.GeoConstant;
+import template.utils.GeoConstant;
 import template.utils.SequenceUtils;
 
 import java.util.*;

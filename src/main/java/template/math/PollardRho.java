@@ -1,22 +1,19 @@
 package template.math;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import template.rand.RandomWrapper;
+
+import java.util.*;
 
 /**
  * Find all factors of a number
  */
 public class PollardRho {
-    MillerRabin mr = new MillerRabin();
-    Random random = new Random(1);
 
     public int findFactor(int n) {
         if (n == 1) {
             return n;
         }
-        if (mr.mr(n, 5)) {
+        if (MillerRabin.mr(n, 5)) {
             return n;
         }
         while (true) {
@@ -41,27 +38,23 @@ public class PollardRho {
      * ... <br>
      * pk => pk^ck
      */
-    public Map<Integer, Integer> findAllFactors(int n) {
+    public Set<Integer> findAllFactors(int n) {
         if (n == 1) {
-            return Collections.emptyMap();
+            return Collections.emptySet();
         }
-        Map<Integer, Integer> map = new HashMap<>();
-        findAllFactors(map, n);
-        return map;
+        Set<Integer> set = new HashSet<>();
+        findAllFactors(set, n);
+        return set;
     }
 
-    private void findAllFactors(Map<Integer, Integer> map, int n) {
+    private void findAllFactors(Set<Integer> set, int n) {
         int f = findFactor(n);
         if (f == n) {
-            Integer value = map.get(f);
-            if (value == null) {
-                value = 1;
-            }
-            map.put(f, value * f);
+            set.add(f);
             return;
         }
-        findAllFactors(map, f);
-        findAllFactors(map, n / f);
+        findAllFactors(set, f);
+        findAllFactors(set, n / f);
     }
 
     private int rho(int n) {
@@ -74,7 +67,7 @@ public class PollardRho {
         if (n % 3 == 0) {
             return 3;
         }
-        int x = 0, y = x, t, q = 1, c = random.nextInt(n - 1) + 1;
+        int x = 0, y = x, t, q = 1, c = RandomWrapper.INSTANCE.nextInt(n - 1) + 1;
         for (int k = 2; ; k <<= 1, y = x, q = 1) {
             for (int i = 1; i <= k; ++i) {
                 x = DigitUtils.mod((long) x * x + c, n);

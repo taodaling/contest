@@ -1,7 +1,5 @@
 package template.rand;
 
-import java.util.Random;
-
 public class RandomWrapper {
     private MersenneTwisterFast random;
 
@@ -30,8 +28,20 @@ public class RandomWrapper {
         return random.nextDouble() * (r - l) + l;
     }
 
+    public double nextDouble() {
+        return random.nextDouble();
+    }
+
     public long nextLong(long l, long r) {
         return random.nextLong(r - l + 1) + l;
+    }
+
+    public long nextLong(long n) {
+        return random.nextLong(n);
+    }
+
+    public long nextLong() {
+        return random.nextLong();
     }
 
     public String nextString(char l, char r, int len) {

@@ -4,6 +4,7 @@ import template.primitve.generated.datastructure.IntegerArrayList;
 import template.primitve.generated.datastructure.IntegerDequeImpl;
 
 import java.util.List;
+import java.util.function.IntPredicate;
 
 public class VirtualTree {
     int[] dfn;
@@ -19,22 +20,25 @@ public class VirtualTree {
     IntegerDequeImpl dq;
     private List<Integer>[] adj;
 
-    public VirtualTree(List<? extends DirectedEdge>[] g, int top) {
+    public VirtualTree(List<? extends DirectedEdge>[] g, IntPredicate top) {
         this(g, top, new LcaOnTree(g, top));
     }
 
-    public VirtualTree(List<? extends DirectedEdge>[] g, int top, LcaOnTree lca) {
+    public VirtualTree(List<? extends DirectedEdge>[] g, IntPredicate top, LcaOnTree lca) {
         this.g = g;
         int n = g.length;
         dfn = new int[n];
         pend = new IntegerArrayList(n);
         version = new int[n];
-        this.top = top;
         dq = new IntegerDequeImpl(n);
         dfnClose = new int[n];
         adj = Graph.createGraph(n);
         this.lca = lca;
-        dfsForDfn(top, -1);
+        for (int i = 0; i < g.length; i++) {
+            if (top.test(i)) {
+                dfsForDfn(i, -1);
+            }
+        }
     }
 
 

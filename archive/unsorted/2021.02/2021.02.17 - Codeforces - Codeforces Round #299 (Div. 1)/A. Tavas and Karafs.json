@@ -1,0 +1,40 @@
+{
+  "name" : "A. Tavas and Karafs",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2 1 4\n1 5 3\n3 3 10\n7 10 2\n6 4 8\n",
+    "output" : "4\n-1\n8\n-1\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "1 5 2\n1 5 10\n2 7 4\n",
+    "output" : "1\n2\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.ATavasAndKarafs",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.02.17",
+  "contestName" : "Codeforces - Codeforces Round #299 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

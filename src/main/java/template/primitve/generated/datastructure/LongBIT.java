@@ -24,6 +24,7 @@ public class LongBIT {
      * 查询A[1]+A[2]+...+A[i]
      */
     public long query(int i) {
+        i = Math.min(i, data.length - 1);
         long sum = 0;
         for (; i > 0; i -= i & -i) {
             sum += data[i];
@@ -47,6 +48,10 @@ public class LongBIT {
         }
     }
 
+    public int size() {
+        return n;
+    }
+
     /**
      * 将A[i]更新为x
      */
@@ -57,8 +62,26 @@ public class LongBIT {
     /**
      * 将A全部清0
      */
+    public void clear(int n) {
+        this.n = n;
+        Arrays.fill(data, 1, n + 1, 0);
+    }
+
     public void clear() {
-        Arrays.fill(data, 0);
+        clear(n);
+    }
+
+    public void clear(IntToLongFunction function, int n) {
+        this.n = n;
+        for (int i = 1; i <= n; i++) {
+            data[i] = function.apply(i);
+        }
+        for (int i = 1; i <= n; i++) {
+            int to = i + (i & -i);
+            if (to <= n) {
+                data[to] += data[i];
+            }
+        }
     }
 
     @Override

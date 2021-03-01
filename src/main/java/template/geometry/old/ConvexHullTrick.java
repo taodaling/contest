@@ -81,6 +81,16 @@ public class ConvexHullTrick implements Iterable<ConvexHullTrick.Line> {
         return setSortedByL.floor(qBody);
     }
 
+    public Line floorLine(double a) {
+        qBody.a = a;
+        return setSortedByA.floor(qBody);
+    }
+
+    public Line ceilLine(double a) {
+        qBody.a = a;
+        return setSortedByA.ceiling(qBody);
+    }
+
     //y.a > x.a
     private double intersect(Line x, Line y) {
         return (x.b - y.b) / (y.a - x.a);

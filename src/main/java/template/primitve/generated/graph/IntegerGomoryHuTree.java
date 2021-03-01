@@ -9,6 +9,11 @@ public class IntegerGomoryHuTree {
     private int[][] minCuts;
     private static final int INF = Integer.MAX_VALUE / 4;
 
+    /**
+     * O(n^2) and mf will be applied for n times
+     * @param g
+     * @param mf
+     */
     public IntegerGomoryHuTree(List<IntegerFlowEdge>[] g, IntegerMaximumFlow mf) {
         int n = g.length;
         ug = IntegerWeightGraph.createUndirectedGraph(n);

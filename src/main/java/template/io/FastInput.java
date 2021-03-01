@@ -82,6 +82,18 @@ public class FastInput {
         return ans;
     }
 
+    public long[] readModInt(long mod1, long mod2) {
+        skipBlank();
+        long ans1 = 0;
+        long ans2 = 0;
+        while (next >= '0' && next <= '9') {
+            ans1 = (ans1 * 10 + next - '0') % mod1;
+            ans2 = (ans2 * 10 + next - '0') % mod2;
+            next = read();
+        }
+        return new long[]{ans1, ans2};
+    }
+
     public long rmi(long mod) {
         return readModInt(mod);
     }
@@ -90,25 +102,25 @@ public class FastInput {
         return readInt();
     }
 
-    public int[] ri(int n){
+    public int[] ri(int n) {
         int[] ans = new int[n];
         populate(ans);
         return ans;
     }
 
-    public long[] rl(int n){
+    public long[] rl(int n) {
         long[] ans = new long[n];
         populate(ans);
         return ans;
     }
 
-    public char[] rc(int n){
+    public char[] rc(int n) {
         char[] ans = new char[n];
         populate(ans);
         return ans;
     }
 
-    public double[] rd(int n){
+    public double[] rd(int n) {
         double[] ans = new double[n];
         populate(ans);
         return ans;
@@ -167,9 +179,11 @@ public class FastInput {
 
         return val;
     }
-    public double rd(){
+
+    public double rd() {
         return readDouble();
     }
+
     public double readDouble() {
         boolean sign = true;
         skipBlank();

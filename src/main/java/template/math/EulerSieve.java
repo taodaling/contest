@@ -32,23 +32,23 @@ public class EulerSieve {
         return isComp.get(x);
     }
 
-    private static int[] pi = new int[]{
+    private static int[] phi = new int[]{
             4, 25, 168, 1229, 9592, 78498, 664579, 5761455, 50847534, 455052511
     };
 
-    private int estimatePi(int n) {
+    private int estimatePhi(int n) {
         long x = 10;
         int i = 0;
         while (x < n) {
             x *= 10;
             i++;
         }
-        return pi[i];
+        return phi[i];
     }
 
     public EulerSieve(int limit) {
         isComp = new BitSet(limit + 1);
-        primes = new int[estimatePi(limit)];
+        primes = new int[estimatePhi(limit)];
         primeLength = 0;
         for (int i = 2; i <= limit; i++) {
             if (!isComp.get(i)) {

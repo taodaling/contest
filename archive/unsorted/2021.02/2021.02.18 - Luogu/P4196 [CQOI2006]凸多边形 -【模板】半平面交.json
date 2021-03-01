@@ -1,0 +1,40 @@
+{
+  "name" : "P4196 [CQOI2006]凸多边形 /【模板】半平面交",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2\n6\n-2 0\n-1 -2\n1 -2\n2 0\n1 2\n-1 2\n4\n0 -3\n1 -1\n2 2\n-1 0\n",
+    "output" : "5.233\n",
+    "index" : 0,
+    "active" : false
+  }, {
+    "input" : "2\n27\n870 996 \n832 998 \n65 999 \n-375 999 \n-477 999 \n-952 997 \n-989 975 \n-999 858 \n-1000 422 \n-1000 153 \n-999 -812 \n-997 -860 \n-989 -942 \n-944 -985 \n-769 -996 \n-673 -999 \n-196 -1000 \n837 -999 \n980 -985 \n988 -919 \n996 -809 \n998 -506 \n997 333 \n996 834 \n991 943 \n988 971 \n969 980\n50\n499 31 \n491 93 \n475 154 \n452 212 \n422 267 \n385 318 \n342 364 \n293 404 \n240 438 \n184 464 \n124 484 \n62 496 \n0 500 \n-62 496 \n-124 484 \n-184 464 \n-240 438 \n-293 404 \n-342 364 \n-385 318 \n-422 267 \n-452 212 \n-475 154 \n-491 93 \n-499 31 \n-499 -31 \n-491 -93 \n-475 -154 \n-452 -212 \n-422 -267 \n-385 -318 \n-342 -364 \n-293 -404 \n-240 -438 \n-184 -464 \n-124 -484 \n-62 -496 \n0 -500 \n62 -496 \n124 -484 \n184 -464 \n240 -438 \n293 -404 \n342 -364 \n385 -318 \n422 -267 \n452 -212 \n475 -154 \n491 -93 \n499 -31",
+    "output" : "781730.000\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx125M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.P4196CQOI2006",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.02.18",
+  "contestName" : "Luogu",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

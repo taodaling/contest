@@ -2,20 +2,16 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
-import java.util.Map;
+import java.util.Deque;
+import java.util.ArrayList;
 import java.io.OutputStreamWriter;
 import java.io.OutputStream;
-import java.io.PrintStream;
-import java.util.Iterator;
-import java.util.Collection;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.util.Objects;
-import java.util.TreeMap;
+import java.util.List;
 import java.io.Closeable;
 import java.io.Writer;
-import java.util.Map.Entry;
-import java.util.Comparator;
+import java.util.ArrayDeque;
 import java.io.InputStream;
 
 /**
@@ -36,281 +32,128 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            EGeraldAndPath solver = new EGeraldAndPath();
+            GSwitchAndFlip solver = new GSwitchAndFlip();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class EGeraldAndPath {
-        Debug debug = new Debug(true);
+    static class GSwitchAndFlip {
+        int[] a;
+        int[] inv;
+        List<int[]> ops = new ArrayList<>();
+
+        public void swap(int i, int j) {
+            i = inv[i];
+            j = inv[j];
+            int tmp = a[i];
+            a[i] = -a[j];
+            a[j] = -tmp;
+            inv[Math.abs(a[i])] = i;
+            inv[Math.abs(a[j])] = j;
+            ops.add(new int[]{i, j});
+        }
+
+        boolean check(IntegerArrayList list) {
+            for (int x : list.toArray()) {
+                if (a[x] != x) {
+                    return false;
+                }
+            }
+            return true;
+        }
 
         public void solve(int testNumber, FastInput in, FastOutput out) {
+            Deque<int[]> sol = new ArrayDeque<>();
+
             int n = in.ri();
-            long[] x = new long[n];
-            long[] l = new long[n];
-            for (int i = 0; i < n; i++) {
-                x[i] = in.ri();
-                l[i] = in.ri();
-            }
-            Pair<int[], Long> res = StickFallProblem.solve(x, l);
-            long ans = res.b;
-            debug.debug("res.a", res.a);
-            debug.debug("res.b", res.b);
-            out.println(ans);
-            LongIntervalMap map = new LongIntervalMap();
-            for (int i = 0; i < n; i++) {
-                if (res.a[i] == -1) {
-                    map.add(x[i] - l[i], x[i]);
-                } else {
-                    map.add(x[i], x[i] + l[i]);
-                }
-            }
-            if (map.total() != res.b) {
-                throw new RuntimeException();
-            }
-        }
-
-    }
-
-    static class StickFallProblem {
-        static long inf = (long) 2e18;
-
-        public static Pair<int[], Long> solve(long[] x, long[] l) {
-            int n = x.length;
-            StickFallProblem.Stick[] light = new StickFallProblem.Stick[n + 1];
-            for (int i = 0; i < n; i++) {
-                light[i] = new StickFallProblem.Stick();
-                light[i].id = i;
-                light[i].x = x[i];
-                light[i].l = l[i];
-            }
-            light[n] = new StickFallProblem.Stick();
-            light[n].x = -inf;
-            light[n].l = 0;
-            Arrays.sort(light, Comparator.comparingLong(t -> t.x));
-            long[][][] dp = new long[2][n + 1][n + 1];
-            SequenceUtils.deepFill(dp, -inf);
-            dp[0][0][0] = 0;
+            a = new int[n + 1];
+            inv = new int[n + 1];
             for (int i = 1; i <= n; i++) {
-                for (int k = 0; k <= i; k++) {
-                    for (int t = 0; t < 2; t++) {
-                        //skip
-                        dp[t][i][k] = dp[t][i - 1][k];
-                    }
-                }
-                for (int k = 0; k < i; k++) {
-                    for (int t = 0; t < 2; t++) {
-                        long r = light[k].x + t * light[k].l;
-                        if (r <= light[i].x) {
-                            long cand = Math.min(light[i].x - r, light[i].l) + dp[t][i - 1][k];
-                            if (cand > dp[0][i][i]) {
-                                dp[0][i][i] = cand;
-                            }
-                        }
-                        if (r <= light[i].x + light[i].l) {
-                            long cand = Math.min(light[i].x + light[i].l - r, light[i].l) + dp[t][i - 1][k];
-                            if (cand > dp[1][i][i]) {
-                                dp[1][i][i] = cand;
-                            }
-                        }
-                    }
-                }
-
-                long left = light[i].x - light[i].l;
-                //cross
-                for (int j = 0; j < i - 1; j++) {
-                    for (int t = 0; t <= j; t++) {
-                        for (int d = 0; d < 2; d++) {
-                            long r = light[t].x + light[t].l * d;
-                            if (r >= light[j + 1].x) {
-                                continue;
-                            }
-                            long rr = light[j + 1].x + light[j + 1].l;
-                            if (rr < light[i].x || left >= light[j + 1].x) {
-                                continue;
-                            }
-                            long cand = dp[d][j][t] + light[j + 1].x - Math.max(left, r) +
-                                    light[j + 1].l;
-                            if (cand > dp[1][i][j + 1]) {
-                                dp[1][i][j + 1] = cand;
-                            }
-                        }
-                    }
-                }
+                a[i] = in.ri();
+                inv[a[i]] = i;
             }
-            long ans = -1;
-            int fi = -1;
-            int fj = -1;
-            int fk = -1;
-            for (int i = 0; i <= n; i++) {
-                for (int j = 0; j <= n; j++) {
-                    for (int k = 0; k < 2; k++) {
-                        if (dp[k][i][j] > ans) {
-                            ans = dp[k][i][j];
-                            fi = i;
-                            fj = j;
-                            fk = k;
-                        }
-                    }
+            Permutation permutation = new Permutation(a);
+            List<IntegerArrayList> circles = permutation.extractCircles(2);
+            while (circles.size() >= 2) {
+                IntegerArrayList a = CollectionUtils.pop(circles);
+                IntegerArrayList b = CollectionUtils.pop(circles);
+                swap(a.first(), b.first());
+                for (int i = 1; i < a.size(); i++) {
+                    swap(a.get(i - 1), a.get(i));
                 }
+                for (int i = 1; i < b.size(); i++) {
+                    swap(b.get(i - 1), b.get(i));
+                }
+                swap(a.tail(), b.tail());
+                assert check(a);
+                assert check(b);
             }
-            int[] sol = new int[n];
-            Arrays.fill(sol, -1);
-            while (fi > 0) {
-                boolean find = false;
-                if (dp[fk][fi][fj] == dp[fk][fi - 1][fj]) {
-                    //skip
-                    fi--;
-                    find = true;
-                }
-                if (fj == fi && !find) {
-                    for (int k = 0; k < fi && !find; k++) {
-                        for (int t = 0; t < 2 && !find; t++) {
-                            long r = light[k].x + t * light[k].l;
-                            if (r <= light[fi].x && fk == 0) {
-                                long cand = Math.min(light[fi].x - r, light[fi].l) + dp[t][fi - 1][k];
-                                if (cand == dp[fk][fi][fj]) {
-                                    sol[light[fi].id] = -1;
-                                    fi = fi - 1;
-                                    fk = t;
-                                    fj = k;
-                                    find = true;
-                                    break;
-                                }
-                            }
-                            if (r <= light[fi].x + light[fi].l && fk == 1) {
-                                long cand = Math.min(light[fi].x + light[fi].l - r, light[fi].l) + dp[t][fi - 1][k];
-                                if (cand == dp[fk][fi][fj]) {
-                                    sol[light[fi].id] = 1;
-                                    fi = fi - 1;
-                                    fk = t;
-                                    fj = k;
-                                    find = true;
-                                    break;
-                                }
-                            }
+            if (circles.size() == 1) {
+                IntegerArrayList only = CollectionUtils.pop(circles);
+                if (only.size() == 2) {
+                    int proper = -1;
+                    for (int i = 1; i <= n; i++) {
+                        if (a[i] == i) {
+                            proper = i;
+                            break;
                         }
                     }
-                }
+                    assert proper != -1;
+                    swap(proper, only.first());
+                    swap(only.first(), only.tail());
+                    swap(only.tail(), proper);
+                } else {
+                    swap(only.get(0), only.get(1));
+                    for (int i = 2; i + 1 < only.size(); i++) {
+                        swap(only.get(i - 1), only.get(i));
+                    }
 
-                if (!find && fk == 1) {
-                    long left = light[fi].x - light[fi].l;
-                    //cross
-                    int j = fj - 1;
-                    for (int t = 0; t <= j && !find; t++) {
-                        for (int d = 0; d < 2 && !find; d++) {
-                            long r = light[t].x + light[t].l * d;
-                            if (r >= light[j + 1].x) {
-                                continue;
-                            }
-                            long rr = light[j + 1].x + light[j + 1].l;
-                            if (rr < light[fi].x || left >= light[j + 1].x) {
-                                continue;
-                            }
-                            long cand = dp[d][j][t] + light[j + 1].x - Math.max(left, r) +
-                                    light[j + 1].l;
-                            if (cand == dp[fk][fi][fj]) {
-                                sol[light[fi].id] = -1;
-                                sol[light[fj].id] = 1;
-                                fk = d;
-                                fi = j;
-                                fj = t;
-                                find = true;
-                                break;
-                            }
-                        }
-                    }
+                    //cool
+                    int a2 = only.get(0);
+                    int a3 = only.get(only.size() - 2);
+                    int a1 = only.get(only.size() - 1);
+                    swap(a1, a2);
+                    swap(a2, a3);
+                    swap(a1, a2);
                 }
+                assert check(only);
             }
-            return new Pair<>(sol, ans);
-        }
-
-        static class Stick {
-            long x;
-            long l;
-            int id;
-
+            for (int i = 1; i <= n; i++) {
+                assert a[i] == i;
+            }
+            out.println(ops.size());
+            for (int[] x : ops) {
+                out.append(x[0]).append(' ').append(x[1]).println();
+            }
         }
 
     }
 
-    static class LongIntervalMap implements Iterable<LongIntervalMap.Interval> {
-        private long total = 0;
-        private TreeMap<Long, LongIntervalMap.Interval> map = new TreeMap<>();
+    static class CollectionUtils {
+        public static <T> T pop(List<T> list) {
+            return list.remove(list.size() - 1);
+        }
 
-        private void add(LongIntervalMap.Interval interval) {
-            if (interval.length() <= 0) {
-                return;
+    }
+
+    static class SequenceUtils {
+        public static boolean equal(int[] a, int al, int ar, int[] b, int bl, int br) {
+            if ((ar - al) != (br - bl)) {
+                return false;
             }
-            map.put(interval.l, interval);
-            total += interval.length();
-        }
-
-        private void remove(LongIntervalMap.Interval interval) {
-            map.remove(interval.l);
-            total -= interval.length();
-        }
-
-        public long total() {
-            return total;
-        }
-
-        public Iterator<LongIntervalMap.Interval> iterator() {
-            return map.values().iterator();
-        }
-
-        public void add(long l, long r) {
-            if (l >= r) {
-                return;
-            }
-            LongIntervalMap.Interval interval = new LongIntervalMap.Interval();
-            interval.l = l;
-            interval.r = r;
-            while (true) {
-                Map.Entry<Long, LongIntervalMap.Interval> ceilEntry = map.ceilingEntry(interval.l);
-                if (ceilEntry == null || ceilEntry.getValue().l > interval.r) {
-                    break;
+            for (int i = al, j = bl; i <= ar; i++, j++) {
+                if (a[i] != b[j]) {
+                    return false;
                 }
-                LongIntervalMap.Interval ceil = ceilEntry.getValue();
-                remove(ceil);
-                interval.r = Math.max(interval.r, ceil.r);
             }
-            while (true) {
-                Map.Entry<Long, LongIntervalMap.Interval> floorEntry = map.floorEntry(interval.l);
-                if (floorEntry == null || floorEntry.getValue().r < interval.l) {
-                    break;
-                }
-                LongIntervalMap.Interval floor = floorEntry.getValue();
-                remove(floor);
-                interval.l = Math.min(interval.l, floor.l);
-                interval.r = Math.max(interval.r, floor.r);
-            }
-            add(interval);
-        }
-
-        public String toString() {
-            return map.values().toString();
-        }
-
-        public static class Interval {
-            public long l;
-            public long r;
-
-            public long length() {
-                return r - l;
-            }
-
-            public String toString() {
-                return "[" + l + "," + r + ")";
-            }
-
+            return true;
         }
 
     }
 
     static class FastOutput implements AutoCloseable, Closeable, Appendable {
-        private static final int THRESHOLD = 1 << 13;
+        private static final int THRESHOLD = 32 << 10;
         private final Writer os;
         private StringBuilder cache = new StringBuilder(THRESHOLD * 2);
 
@@ -345,7 +188,7 @@ public class Main {
             return this;
         }
 
-        public FastOutput append(long c) {
+        public FastOutput append(int c) {
             cache.append(c);
             afterWrite();
             return this;
@@ -357,7 +200,7 @@ public class Main {
             return this;
         }
 
-        public FastOutput println(long c) {
+        public FastOutput println(int c) {
             return append(c).println();
         }
 
@@ -367,7 +210,18 @@ public class Main {
 
         public FastOutput flush() {
             try {
+//            boolean success = false;
+//            if (stringBuilderValueField != null) {
+//                try {
+//                    char[] value = (char[]) stringBuilderValueField.get(cache);
+//                    os.write(value, 0, cache.length());
+//                    success = true;
+//                } catch (Exception e) {
+//                }
+//            }
+//            if (!success) {
                 os.append(cache);
+//            }
                 os.flush();
                 cache.setLength(0);
             } catch (IOException e) {
@@ -387,6 +241,215 @@ public class Main {
 
         public String toString() {
             return cache.toString();
+        }
+
+    }
+
+    static class IntegerArrayList implements Cloneable {
+        private int size;
+        private int cap;
+        private int[] data;
+        private static final int[] EMPTY = new int[0];
+
+        public IntegerArrayList(int cap) {
+            this.cap = cap;
+            if (cap == 0) {
+                data = EMPTY;
+            } else {
+                data = new int[cap];
+            }
+        }
+
+        public IntegerArrayList(int[] data) {
+            this(0);
+            addAll(data);
+        }
+
+        public IntegerArrayList(IntegerArrayList list) {
+            this.size = list.size;
+            this.cap = list.cap;
+            this.data = Arrays.copyOf(list.data, size);
+        }
+
+        public IntegerArrayList() {
+            this(0);
+        }
+
+        public void ensureSpace(int req) {
+            if (req > cap) {
+                while (cap < req) {
+                    cap = Math.max(cap + 10, 2 * cap);
+                }
+                data = Arrays.copyOf(data, cap);
+            }
+        }
+
+        private void checkRange(int i) {
+            if (i < 0 || i >= size) {
+                throw new ArrayIndexOutOfBoundsException("Access [" + i + "]");
+            }
+        }
+
+        public int get(int i) {
+            checkRange(i);
+            return data[i];
+        }
+
+        public void add(int x) {
+            ensureSpace(size + 1);
+            data[size++] = x;
+        }
+
+        public void addAll(int[] x) {
+            addAll(x, 0, x.length);
+        }
+
+        public void addAll(int[] x, int offset, int len) {
+            ensureSpace(size + len);
+            System.arraycopy(x, offset, data, size, len);
+            size += len;
+        }
+
+        public void addAll(IntegerArrayList list) {
+            addAll(list.data, 0, list.size);
+        }
+
+        public int first() {
+            checkRange(0);
+            return data[0];
+        }
+
+        public int tail() {
+            checkRange(0);
+            return data[size - 1];
+        }
+
+        public int size() {
+            return size;
+        }
+
+        public int[] toArray() {
+            return Arrays.copyOf(data, size);
+        }
+
+        public String toString() {
+            return Arrays.toString(toArray());
+        }
+
+        public boolean equals(Object obj) {
+            if (!(obj instanceof IntegerArrayList)) {
+                return false;
+            }
+            IntegerArrayList other = (IntegerArrayList) obj;
+            return SequenceUtils.equal(data, 0, size - 1, other.data, 0, other.size - 1);
+        }
+
+        public int hashCode() {
+            int h = 1;
+            for (int i = 0; i < size; i++) {
+                h = h * 31 + Integer.hashCode(data[i]);
+            }
+            return h;
+        }
+
+        public IntegerArrayList clone() {
+            IntegerArrayList ans = new IntegerArrayList();
+            ans.addAll(this);
+            return ans;
+        }
+
+    }
+
+    static class DigitUtils {
+        private DigitUtils() {
+        }
+
+        public static int mod(int x, int mod) {
+            if (x < -mod || x >= mod) {
+                x %= mod;
+            }
+            if (x < 0) {
+                x += mod;
+            }
+            return x;
+        }
+
+    }
+
+    static class Permutation {
+        int[] g;
+        int[] idx;
+        int[] l;
+        int[] r;
+        int n;
+
+        public List<IntegerArrayList> extractCircles(int threshold) {
+            List<IntegerArrayList> ans = new ArrayList<>(n);
+            for (int i = 0; i < n; i = r[i] + 1) {
+                int size = r[i] - l[i] + 1;
+                if (size < threshold) {
+                    continue;
+                }
+                IntegerArrayList list = new IntegerArrayList(r[i] - l[i] + 1);
+                for (int j = l[i]; j <= r[i]; j++) {
+                    list.add(g[j]);
+                }
+                ans.add(list);
+            }
+            return ans;
+        }
+
+        public Permutation(int[] p) {
+            this(p, p.length);
+        }
+
+        public Permutation(int[] p, int len) {
+            n = len;
+            boolean[] visit = new boolean[n];
+            g = new int[n];
+            l = new int[n];
+            r = new int[n];
+            idx = new int[n];
+            int wpos = 0;
+            for (int i = 0; i < n; i++) {
+                int val = p[i];
+                if (visit[val]) {
+                    continue;
+                }
+                visit[val] = true;
+                g[wpos] = val;
+                l[wpos] = wpos;
+                idx[val] = wpos;
+                wpos++;
+                while (true) {
+                    int x = p[g[wpos - 1]];
+                    if (visit[x]) {
+                        break;
+                    }
+                    visit[x] = true;
+                    g[wpos] = x;
+                    l[wpos] = l[wpos - 1];
+                    idx[x] = wpos;
+                    wpos++;
+                }
+                for (int j = l[wpos - 1]; j < wpos; j++) {
+                    r[j] = wpos - 1;
+                }
+            }
+        }
+
+        public int apply(int x, int p) {
+            int i = idx[x];
+            int dist = DigitUtils.mod((i - l[i]) + p, r[i] - l[i] + 1);
+            return g[dist + l[i]];
+        }
+
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < n; i++) {
+                builder.append(apply(i, 1)).append(' ');
+            }
+            return builder.toString();
         }
 
     }
@@ -450,142 +513,6 @@ public class Main {
             }
 
             return val;
-        }
-
-    }
-
-    static class SequenceUtils {
-        public static void deepFill(Object array, long val) {
-            if (!array.getClass().isArray()) {
-                throw new IllegalArgumentException();
-            }
-            if (array instanceof long[]) {
-                long[] longArray = (long[]) array;
-                Arrays.fill(longArray, val);
-            } else {
-                Object[] objArray = (Object[]) array;
-                for (Object obj : objArray) {
-                    deepFill(obj, val);
-                }
-            }
-        }
-
-    }
-
-    static class Pair<A, B> implements Cloneable {
-        public A a;
-        public B b;
-
-        public Pair(A a, B b) {
-            this.a = a;
-            this.b = b;
-        }
-
-        public String toString() {
-            return "a=" + a + ",b=" + b;
-        }
-
-        public int hashCode() {
-            return a.hashCode() * 31 + b.hashCode();
-        }
-
-        public boolean equals(Object obj) {
-            Pair<A, B> casted = (Pair<A, B>) obj;
-            return Objects.equals(casted.a, a) && Objects.equals(casted.b, b);
-        }
-
-        public Pair<A, B> clone() {
-            try {
-                return (Pair<A, B>) super.clone();
-            } catch (CloneNotSupportedException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-    }
-
-    static class Debug {
-        private boolean offline;
-        private PrintStream out = System.err;
-        static int[] empty = new int[0];
-
-        public Debug(boolean enable) {
-            offline = enable && System.getSecurityManager() == null;
-        }
-
-        public Debug debug(String name, Object x) {
-            return debug(name, x, empty);
-        }
-
-        public Debug debug(String name, Object x, int... indexes) {
-            if (offline) {
-                if (x == null || !x.getClass().isArray()) {
-                    out.append(name);
-                    for (int i : indexes) {
-                        out.printf("[%d]", i);
-                    }
-                    out.append("=").append("" + x);
-                    out.println();
-                } else {
-                    indexes = Arrays.copyOf(indexes, indexes.length + 1);
-                    if (x instanceof byte[]) {
-                        byte[] arr = (byte[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof short[]) {
-                        short[] arr = (short[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof boolean[]) {
-                        boolean[] arr = (boolean[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof char[]) {
-                        char[] arr = (char[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof int[]) {
-                        int[] arr = (int[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof float[]) {
-                        float[] arr = (float[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof double[]) {
-                        double[] arr = (double[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else if (x instanceof long[]) {
-                        long[] arr = (long[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    } else {
-                        Object[] arr = (Object[]) x;
-                        for (int i = 0; i < arr.length; i++) {
-                            indexes[indexes.length - 1] = i;
-                            debug(name, arr[i], indexes);
-                        }
-                    }
-                }
-            }
-            return this;
         }
 
     }

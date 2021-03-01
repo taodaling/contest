@@ -1,0 +1,50 @@
+{
+  "name" : "D - Skate",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 9\n.........\n.........\n.........\n",
+    "output" : "1\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "10 10\n..........\n#...#.....\n..........\n..........\n..........\n....#.....\n.#......#.\n..........\n..........\n..........\n",
+    "output" : "6\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "4 5\n.#...\n..#..\n..#..\n.....\n",
+    "output" : "1",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "4 4\n..#.\n..#.\n..#.\n....\n",
+    "output" : "0",
+    "index" : 3,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.DSkate",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.02.14",
+  "contestName" : "AtCoder - AtCoder Regular Contest 112",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

@@ -1,0 +1,55 @@
+{
+  "name" : "Riolku's Mock CCC S2 - Keen Keener Sequence",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4\n1 2 4 8\n",
+    "output" : "8\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "4\n5 5 5 5\n",
+    "output" : "24\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "10\n1 4 8 6 2 9 4 2 5 3\n",
+    "output" : "160\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "2\n1 2",
+    "output" : "0",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "1\n1",
+    "output" : "0",
+    "index" : 4,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx512M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.RiolkusMockCCCS2KeenKeenerSequence",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.02.14",
+  "contestName" : "DMOJ",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

@@ -1,0 +1,50 @@
+{
+  "name" : "B. Fox And Jumping",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3\n100 99 9900\n1 1 1\n",
+    "output" : "2\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "5\n10 20 30 40 50\n1 1 1 1 1\n",
+    "output" : "-1\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "7\n15015 10010 6006 4290 2730 2310 1\n1 1 1 1 1 1 10\n",
+    "output" : "6\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "8\n4264 4921 6321 6984 2316 8432 6120 1026\n4264 4921 6321 6984 2316 8432 6120 1026\n",
+    "output" : "7237\n",
+    "index" : 3,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.BFoxAndJumping",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.02.21",
+  "contestName" : "Codeforces - Codeforces Round #290 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

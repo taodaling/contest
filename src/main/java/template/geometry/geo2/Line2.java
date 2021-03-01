@@ -1,6 +1,6 @@
 package template.geometry.geo2;
 
-import template.geometry.old.GeoConstant;
+import template.utils.GeoConstant;
 
 import java.util.Comparator;
 
@@ -35,6 +35,12 @@ public class Line2 {
 
     public Line2(Point2 a, Point2 b) {
         this.vec = Point2.minus(b, a);
+        this.c = Point2.cross(vec, a);
+    }
+
+    public void init(Point2 a, Point2 b){
+        vec.x = b.x - a.x;
+        vec.y = b.y - a.y;
         this.c = Point2.cross(vec, a);
     }
 

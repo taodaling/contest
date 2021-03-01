@@ -82,6 +82,31 @@ public class DoubleHashMap {
         put(x, y, true);
     }
 
+    public void modify(double x, double dy) {
+        int h = hash(x);
+        int s = h & mask;
+        access(s);
+        if (slot[s] == 0) {
+            alloc();
+            slot[s] = alloc;
+            keys[alloc] = x;
+            values[alloc] = dy;
+        } else {
+            int index = findIndexOrLastEntry(s, x);
+            if (keys[index] != x) {
+                alloc();
+                next[index] = alloc;
+                keys[alloc] = x;
+                values[alloc] = dy;
+            } else {
+                values[index] += dy;
+            }
+        }
+        if (rehash && size >= slot.length) {
+            rehash();
+        }
+    }
+
     public void putIfNotExist(double x, double y) {
         put(x, y, false);
     }

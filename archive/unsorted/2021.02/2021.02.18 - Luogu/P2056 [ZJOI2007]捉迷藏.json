@@ -1,0 +1,35 @@
+{
+  "name" : "P2056 [ZJOI2007]捉迷藏",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "8\n1 2\n2 3\n3 4\n3 5\n3 6\n6 7\n6 8\n7\nG\nC 1\nG\nC 2\nG\nC 1\nG\n",
+    "output" : "4\n3\n3\n4\n",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx250M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.P2056ZJOI2007",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.02.18",
+  "contestName" : "Luogu",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

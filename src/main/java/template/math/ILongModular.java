@@ -7,7 +7,7 @@ public interface ILongModular {
         return DigitUtils.modplus(a, b, getMod());
     }
 
-    default long subtract(long a, long b){
+    default long subtract(long a, long b) {
         return DigitUtils.modsub(a, b, getMod());
     }
 
@@ -22,6 +22,9 @@ public interface ILongModular {
     }
 
     static ILongModular getInstance(long mod) {
+        if (mod <= Integer.MAX_VALUE) {
+            return new SmallLongModular(mod);
+        }
         if (mod <= (1L << 50)) {
             return new LongModularDanger(mod);
         }

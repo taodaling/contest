@@ -1,0 +1,36 @@
+{
+  "name" : "SecondDiameters",
+  "signature" : {
+    "name" : "getSecondDiameters",
+    "result" : "long",
+    "arguments" : [ "int[]", "int[]" ],
+    "argumentNames" : [ "X", "Y" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "0 1 1", "0 0 1" ],
+    "result" : "0",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "0 0 1 1", "0 1 0 1" ],
+    "result" : "4",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "0 0 1 2 2", "0 10 5 0 10" ],
+    "result" : "500",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "1 2 3 4 5", "1 3 6 10 15" ],
+    "result" : "534",
+    "index" : 3,
+    "active" : true
+  } ],
+  "date" : "2021.02.24",
+  "contestName" : "Single Round Match 801",
+  "testClasses" : [ ],
+  "fqn" : "contest.SecondDiameters",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

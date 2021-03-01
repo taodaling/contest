@@ -1,7 +1,6 @@
 package contest;
 
 import template.algo.IntBinarySearch;
-import template.datastructure.MonotoneOrder;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.primitve.generated.datastructure.IntegerPreSum;

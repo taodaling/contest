@@ -4,6 +4,15 @@ package template.math;
  * Euler sieve for multiplicative function
  */
 public class MultiplicativeFunctionSieve {
+    static MultiplicativeFunctionSieve instance = new MultiplicativeFunctionSieve(1 << 16);
+
+    public static MultiplicativeFunctionSieve getInstance(int n) {
+        if (n <= (1 << 16)) {
+            return instance;
+        }
+        return new MultiplicativeFunctionSieve(n);
+    }
+
     public int[] primes;
     public boolean[] isComp;
     public int primeLength;
@@ -24,7 +33,7 @@ public class MultiplicativeFunctionSieve {
             if (!isComp[i]) {
                 ans[i] = pow.pow(i, k);
             } else {
-                ans[i] = (int) ((long)ans[i / smallestPrimeFactor[i]] * ans[smallestPrimeFactor[i]] % mod);
+                ans[i] = (int) ((long) ans[i / smallestPrimeFactor[i]] * ans[smallestPrimeFactor[i]] % mod);
             }
         }
         return ans;

@@ -24,7 +24,7 @@ public class MoOnTree {
         begin = new int[edges.length];
         end = new int[edges.length];
         dfs(0, -1);
-        lcaOnTree = new LcaOnTree(edges, 0);
+        lcaOnTree = new LcaOnTree(edges, i -> i == 0);
     }
 
     private void dfs(int root, int p) {

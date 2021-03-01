@@ -1,7 +1,6 @@
 package contest;
 
 import template.datastructure.BitSet;
-import template.datastructure.GenericLinearBasis;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.math.Modular;

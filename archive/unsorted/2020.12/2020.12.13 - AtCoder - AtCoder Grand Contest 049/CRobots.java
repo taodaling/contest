@@ -3,7 +3,6 @@ package contest;
 import template.algo.IntBinarySearch;
 import template.datastructure.BinaryTree;
 import template.datastructure.LinkedListBeta;
-import template.datastructure.MonotoneOrder;
 import template.datastructure.Treap;
 import template.io.FastInput;
 import template.io.FastOutput;

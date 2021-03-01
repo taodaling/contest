@@ -1,0 +1,45 @@
+{
+  "name" : "A. Lengthening Sticks",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "1 1 1 2\n",
+    "output" : "4\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "1 2 3 1\n",
+    "output" : "2\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "10 2 1 7\n",
+    "output" : "0\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.ALengtheningSticks",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.02.03",
+  "contestName" : "Codeforces - Codeforces Round #317 [AimFund Thanks-Round] (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

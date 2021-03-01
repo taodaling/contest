@@ -1,0 +1,40 @@
+{
+  "name" : "D. Hamiltonian Spanning Tree",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5 2 3\n1 2\n1 3\n3 4\n5 3\n",
+    "output" : "9\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "5 3 2\n1 2\n1 3\n3 4\n5 3\n",
+    "output" : "8\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.DHamiltonianSpanningTree",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.02.17",
+  "contestName" : "Codeforces - Wunder Fund Round 2016 (Div. 1 + Div. 2 combined)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

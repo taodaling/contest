@@ -1,0 +1,40 @@
+{
+  "name" : "D. Birthday",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5\n1 2 1\n4 3 1\n3 5 1\n1 3 1\n5\n1 1\n1 5\n2 4\n2 1\n3 5\n",
+    "output" : "10\n1000000005\n1000000002\n23\n1000000002\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "8\n1 2 100\n1 3 20\n2 4 2\n2 5 1\n3 6 1\n3 7 2\n6 8 5\n6\n1 8\n2 3\n5 8\n2 6\n4 7\n6 1\n",
+    "output" : "999968753\n49796\n999961271\n999991235\n999958569\n45130\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.DBirthday",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.02.26",
+  "contestName" : "Codeforces - Codeforces Round #282 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

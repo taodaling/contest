@@ -1,13 +1,7 @@
 package template.io;
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.UncheckedIOException;
-import java.io.Writer;
+import java.io.*;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 public class FastOutput implements AutoCloseable, Closeable, Appendable {
     @Override
@@ -22,9 +16,19 @@ public class FastOutput implements AutoCloseable, Closeable, Appendable {
         return this;
     }
 
-    private static final int THRESHOLD = 1 << 13;
+    private static final int THRESHOLD = 32 << 10;
     private final Writer os;
     private StringBuilder cache = new StringBuilder(THRESHOLD * 2);
+//    private static Field stringBuilderValueField;
+
+//    static {
+//        try {
+//            stringBuilderValueField = StringBuilder.class.getSuperclass().getDeclaredField("value");
+//            stringBuilderValueField.setAccessible(true);
+//        } catch (Exception e) {
+//            stringBuilderValueField = null;
+//        }
+//    }
 
     public StringBuilder getCache() {
         return cache;
@@ -140,7 +144,18 @@ public class FastOutput implements AutoCloseable, Closeable, Appendable {
 
     public FastOutput flush() {
         try {
-            os.append(cache);
+//            boolean success = false;
+//            if (stringBuilderValueField != null) {
+//                try {
+//                    char[] value = (char[]) stringBuilderValueField.get(cache);
+//                    os.write(value, 0, cache.length());
+//                    success = true;
+//                } catch (Exception e) {
+//                }
+//            }
+//            if (!success) {
+                os.append(cache);
+//            }
             os.flush();
             cache.setLength(0);
         } catch (IOException e) {

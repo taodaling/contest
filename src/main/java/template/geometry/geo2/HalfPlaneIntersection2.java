@@ -24,7 +24,7 @@ public class HalfPlaneIntersection2 {
             Line2 line = lines[i];
             while (i + 1 < n && Point2.SORT_BY_POLAR_ANGLE.compare(line.vec, lines[i + 1].vec) == 0) {
                 i++;
-                if (line.side(lines[i]) == 1) {
+                if (line.side(lines[i]) > 0) {
                     line = lines[i];
                 }
             }

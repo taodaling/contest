@@ -2,6 +2,7 @@ package template.datastructure;
 
 import template.utils.CompareUtils;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -11,6 +12,14 @@ public class FixedMinHeap<T> implements Iterable<T> {
     private static Object[] buf = new Object[1 << 8];
     private Comparator<T> comparator;
     private int size;
+
+    public T[] toArray(T[] data) {
+        if (data.length < size) {
+            data = (T[]) Array.newInstance(data.getClass().getComponentType(), size);
+        }
+        System.arraycopy(buf, 0, data, 0, size);
+        return data;
+    }
 
     public FixedMinHeap(int cap, Comparator<T> comparator) {
         if (cap <= 0 || cap * 2 > buf.length) {
@@ -47,7 +56,7 @@ public class FixedMinHeap<T> implements Iterable<T> {
     /**
      * start with 0
      */
-    public T getKthSmallest(int k) {
+    public T get(int k) {
         return (T) data[k];
     }
 

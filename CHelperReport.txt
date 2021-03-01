@@ -1,2 +1,2 @@
-45 src/main/java/contest/E. Gerald and Path.json
+45 src/main/java/contest/G. Switch and Flip.json
 0

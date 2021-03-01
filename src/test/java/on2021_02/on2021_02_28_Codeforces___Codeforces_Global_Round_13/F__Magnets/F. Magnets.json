@@ -1,0 +1,38 @@
+{
+  "name" : "F. Magnets",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2\n4\n1 1 -1 -1\n3\n0 1 -1\n10\n0 0 -1 1 0 -1 0 0 -1 1\n8\n0 0 0 1 0 0 0 -1",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "\n1 \n8 \n0 0 0 -1 1 0 -1 0 ",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_02.on2021_02_28_Codeforces___Codeforces_Global_Round_13.F__Magnets.FMagnets",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "on2021_02.on2021_02_28_Codeforces___Codeforces_Global_Round_13.F__Magnets.FMagnetsTestCase" ],
+  "date" : "2021.02.28",
+  "contestName" : "Codeforces - Codeforces Global Round 13",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : true,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

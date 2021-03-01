@@ -29,3 +29,4 @@ _*
 *.iml
 .idea/*
 out/*
+testcase/*

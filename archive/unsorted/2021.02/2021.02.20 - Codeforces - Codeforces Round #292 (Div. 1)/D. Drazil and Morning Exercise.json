@@ -1,0 +1,40 @@
+{
+  "name" : "D. Drazil and Morning Exercise",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5\n1 2 3\n2 3 4\n4 5 3\n3 4 2\n5\n1 2 3 4 5\n",
+    "output" : "1\n3\n3\n3\n5\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "12\n5 9 3\n2 1 7\n11 7 2\n6 5 5\n2 5 3\n6 7 2\n1 4 4\n8 5 7\n1 3 8\n11 12 3\n10 8 2\n10\n13 14 14 13 13 4 6 7 2 1\n",
+    "output" : "10\n10\n10\n10\n10\n3\n3\n5\n2\n1\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.DDrazilAndMorningExercise",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.02.20",
+  "contestName" : "Codeforces - Codeforces Round #292 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

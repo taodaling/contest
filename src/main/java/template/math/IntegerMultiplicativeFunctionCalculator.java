@@ -1,6 +1,7 @@
 package template.math;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.function.ToIntBiFunction;
 
 public class IntegerMultiplicativeFunctionCalculator {
@@ -17,10 +18,14 @@ public class IntegerMultiplicativeFunctionCalculator {
     }
 
     public int find(int x) {
-        Map<Integer, Integer> map = rho.findAllFactors(x);
+        Set<Integer> set = rho.findAllFactors(x);
         int ans = 1;
-        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
-            ans *= function.applyAsInt(entry.getKey(), entry.getValue());
+        for (int factor : set) {
+            int exp = 1;
+            while (x / exp % factor == 0) {
+                exp *= factor;
+            }
+            ans *= function.applyAsInt(factor, exp);
         }
         return ans;
     }

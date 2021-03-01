@@ -1,0 +1,31 @@
+{
+  "name" : "EquivalentStrings",
+  "signature" : {
+    "name" : "count",
+    "result" : "int",
+    "arguments" : [ "String[]" ],
+    "argumentNames" : [ "seeds" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "017040" ],
+    "result" : "4",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "474ф474ф744ф474" ],
+    "result" : "1",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "0123456789ф02468" ],
+    "result" : "11",
+    "index" : 2,
+    "active" : true
+  } ],
+  "date" : "2021.02.24",
+  "contestName" : "TopCoder SRM #801",
+  "testClasses" : [ ],
+  "fqn" : "contest.EquivalentStrings",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

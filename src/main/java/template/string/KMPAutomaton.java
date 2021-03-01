@@ -4,7 +4,7 @@ public class KMPAutomaton {
     int[] data;
     int[] fail;
     int buildLast;
-    int matchLast = 0;
+    public int matchLast = 0;
     int length;
 
     public KMPAutomaton(int cap) {

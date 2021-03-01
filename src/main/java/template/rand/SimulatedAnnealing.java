@@ -3,14 +3,10 @@ package template.rand;
 import java.util.Random;
 
 public abstract class SimulatedAnnealing<S> {
-    public SimulatedAnnealing(double threshold, double k, double reduce){
-        this(threshold, k, reduce, new Random());
-    }
-    public SimulatedAnnealing(double threshold, double k, double reduce, Random random) {
+    public SimulatedAnnealing(double threshold, double k, double reduce) {
         this.threshold = threshold;
         this.k = k;
         this.reduce = reduce;
-        this.random = random;
     }
 
     public abstract S next(S old, double temperature);
@@ -27,7 +23,7 @@ public abstract class SimulatedAnnealing<S> {
         while (t > threshold) {
             S next = next(now, t);
             double nextWeight = eval(next);
-            if (nextWeight > weight || random.nextDouble() < Math.exp((nextWeight - weight) / (k * t))) {
+            if (nextWeight > weight || RandomWrapper.INSTANCE.nextDouble() < Math.exp((nextWeight - weight) / (k * t))) {
                 abandon(now);
                 now = next;
                 weight = nextWeight;
@@ -51,7 +47,6 @@ public abstract class SimulatedAnnealing<S> {
 
     private S best;
     private double bestWeight = -1e100;
-    private Random random;
     private double threshold;
     /**
      * The larger k is, the more possible to challenge

@@ -82,6 +82,31 @@ public class LongHashMap {
         put(x, y, true);
     }
 
+    public void modify(long x, long dy) {
+        int h = hash(x);
+        int s = h & mask;
+        access(s);
+        if (slot[s] == 0) {
+            alloc();
+            slot[s] = alloc;
+            keys[alloc] = x;
+            values[alloc] = dy;
+        } else {
+            int index = findIndexOrLastEntry(s, x);
+            if (keys[index] != x) {
+                alloc();
+                next[index] = alloc;
+                keys[alloc] = x;
+                values[alloc] = dy;
+            } else {
+                values[index] += dy;
+            }
+        }
+        if (rehash && size >= slot.length) {
+            rehash();
+        }
+    }
+
     public void putIfNotExist(long x, long y) {
         put(x, y, false);
     }

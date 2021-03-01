@@ -1,0 +1,40 @@
+{
+  "name" : "C. Levels and Regions",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4 2\n100 3 5 7\n",
+    "output" : "5.7428571429\n",
+    "index" : 0,
+    "active" : false
+  }, {
+    "input" : "6 2\n1 2 4 8 16 32\n",
+    "output" : "8.5000000000\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.CLevelsAndRegions",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.02.06",
+  "contestName" : "Codeforces - Codeforces Round #351 (VK Cup 2016 Round 3, Div. 1 Edition)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

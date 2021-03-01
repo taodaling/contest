@@ -9,6 +9,11 @@ public class LongGomoryHuTree {
     private long[][] minCuts;
     private static final long INF = Long.MAX_VALUE / 4;
 
+    /**
+     * O(n^2) and mf will be applied for n times
+     * @param g
+     * @param mf
+     */
     public LongGomoryHuTree(List<LongFlowEdge>[] g, LongMaximumFlow mf) {
         int n = g.length;
         ug = LongWeightGraph.createUndirectedGraph(n);

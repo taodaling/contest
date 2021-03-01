@@ -7,12 +7,11 @@ public class ExtCRT {
     /**
      * remainder
      */
-    long r;
+    public long r;
     /**
      * modulus
      */
-    long m;
-    boolean valid = true;
+    public long m;
     static final LongExtGCDObject gcd = new LongExtGCDObject();
 
 
@@ -21,12 +20,17 @@ public class ExtCRT {
         m = 1;
     }
 
-    public long getValue() {
-        return r;
+    public void set(long r, long m) {
+        this.r = r;
+        this.m = m;
     }
 
-    public boolean isValid() {
-        return valid;
+    public void clear(){
+        set(0, 1);
+    }
+
+    public long getValue() {
+        return r;
     }
 
     /**
@@ -36,11 +40,11 @@ public class ExtCRT {
         long m1 = this.m;
         long x1 = this.r;
         long m2 = m;
-        long x2 = ((r % m) + m) % m;
+        long x2 = DigitUtils.mod(r, m);
         long g = gcd.extgcd(m1, m2);
         long a = gcd.getX();
         if ((x2 - x1) % g != 0) {
-            return valid = false;
+            return false;
         }
         this.m = m1 / g * m2;
         ILongModular modular = ILongModular.getInstance(this.m);

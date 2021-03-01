@@ -27,6 +27,10 @@ public class SuffixAutomaton {
         realTimeDistinctSubstr = 0;
     }
 
+    public void prepareBuild() {
+        buildLast = root;
+    }
+
     public SuffixAutomaton(int minCharacter, int maxCharacter) {
         this(minCharacter, maxCharacter, 0);
     }

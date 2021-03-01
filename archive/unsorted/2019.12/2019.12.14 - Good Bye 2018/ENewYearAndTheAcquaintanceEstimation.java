@@ -4,7 +4,6 @@ import template.algo.IntBinarySearch;
 import template.algo.LongBinarySearch;
 import template.algo.LongTernarySearch;
 import template.algo.PreSum;
-import template.datastructure.PrefixIncrementOnePriorityQueue;
 import template.graph.ErdosGallaiTheorem;
 import template.io.FastInput;
 import template.io.FastOutput;

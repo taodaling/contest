@@ -14,8 +14,8 @@ public class LongMaximumCloseSubGraphAdapter implements LongMaximumCloseSubGraph
     }
 
     @Override
-    public long maximumCloseSubGraph(List<DirectedEdge>[] g, long[] weights, boolean[] picked) {
-        int n = g.length;
+    public long maximumCloseSubGraph(List<LongWeightDirectedEdge>[] g, long[] weights, boolean[] picked) {
+        int n = weights.length;
         int s = n;
         int t = n + 1;
         List<LongFlowEdge>[] net = Graph.createGraph(n + 2);
@@ -30,8 +30,9 @@ public class LongMaximumCloseSubGraphAdapter implements LongMaximumCloseSubGraph
             }
         }
         for (int i = 0; i < n; i++) {
-            for (DirectedEdge e : g[i]) {
-                LongFlow.addFlowEdge(net, i, e.to, INF);
+            for(LongWeightDirectedEdge e : g[i]) {
+                assert e.weight >= 0;
+                LongFlow.addFlowEdge(net, i, e.to, e.weight);
             }
         }
         long minCut = mf.apply(net, s, t, INF);

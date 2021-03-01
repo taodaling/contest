@@ -1,0 +1,45 @@
+{
+  "name" : "B. Case of Fugitive",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4 4\n1 4\n7 8\n9 10\n12 14\n4 5 3 8\n",
+    "output" : "Yes\n2 3 1 \n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "2 2\n11 14\n17 18\n2 9\n",
+    "output" : "No\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "2 1\n1 1\n1000000000000000000 1000000000000000000\n999999999999999999\n",
+    "output" : "Yes\n1 \n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.BCaseOfFugitive",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.02.16",
+  "contestName" : "Codeforces - Codeforces Round #310 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

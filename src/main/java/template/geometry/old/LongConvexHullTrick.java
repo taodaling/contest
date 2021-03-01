@@ -69,6 +69,17 @@ public class LongConvexHullTrick implements Iterable<LongConvexHullTrick.Line> {
         return setSortedByL.floor(qBody);
     }
 
+    public Line floorLine(long a) {
+        qBody.a = a;
+        return setSortedByA.floor(qBody);
+    }
+
+    public Line ceilLine(long a) {
+        qBody.a = a;
+        return setSortedByA.ceiling(qBody);
+    }
+
+
     public long query(long x) {
         return queryLine(x).y(x);
     }

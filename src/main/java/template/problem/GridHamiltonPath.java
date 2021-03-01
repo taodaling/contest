@@ -8,6 +8,7 @@ import template.primitve.generated.graph.IntegerDinic;
 import template.primitve.generated.graph.IntegerFlow;
 import template.primitve.generated.graph.IntegerFlowEdge;
 import template.primitve.generated.graph.IntegerMaximumFlow;
+import template.utils.Debug;
 import template.utils.SequenceUtils;
 
 import java.util.List;
@@ -197,22 +198,24 @@ public class GridHamiltonPath {
             }
         }
 
-//        debug.run(() -> {
-//            setted = new boolean[n][m];
-//            color = new char[n][m];
-//            char c = 'a';
-//            for (int i = 0; i < n; i++) {
-//                for (int j = 0; j < m; j++) {
-//                    if (setted[i][j]) {
-//                        continue;
-//                    }
-//                    paint(i, j, c++);
-//                }
-//            }
-//            debug.debugMatrix("mat", color);
-//        });
+        int finalN1 = n;
+        int finalM1 = m;
+        debug.run(() -> {
+            setted = new boolean[finalN1][finalM1];
+            color = new char[finalN1][finalM1];
+            char c = 'a';
+            for (int i = 0; i < finalN1; i++) {
+                for (int j = 0; j < finalM1; j++) {
+                    if (setted[i][j]) {
+                        continue;
+                    }
+                    paint(i, j, c++);
+                }
+            }
+            debug.debugMatrix("mat", color);
+        });
 
-        collect(0, 0);
+        collect(src[0], src[1]);
         while (!dq.isEmpty()) {
             long head = dq.removeFirst();
             int x = DigitUtils.highBit(head);
@@ -239,22 +242,24 @@ public class GridHamiltonPath {
                         ok = true;
                     }
                 }
-//                if (ok) {
-//                    debug.run(() -> {
-//                        setted = new boolean[n][m];
-//                        color = new char[n][m];
-//                        char c = 'a';
-//                        for (int i = 0; i < n; i++) {
-//                            for (int j = 0; j < m; j++) {
-//                                if (setted[i][j]) {
-//                                    continue;
-//                                }
-//                                paint(i, j, c++);
-//                            }
-//                        }
-//                        debug.debugMatrix("mat", color);
-//                    });
-//                }
+                if (ok) {
+                    int finalN = n;
+                    int finalM = m;
+                    debug.run(() -> {
+                        setted = new boolean[finalN][finalM];
+                        color = new char[finalN][finalM];
+                        char c = 'a';
+                        for (int i = 0; i < finalN; i++) {
+                            for (int j = 0; j < finalM; j++) {
+                                if (setted[i][j]) {
+                                    continue;
+                                }
+                                paint(i, j, c++);
+                            }
+                        }
+                        debug.debugMatrix("mat", color);
+                    });
+                }
             }
         }
 
@@ -402,4 +407,6 @@ public class GridHamiltonPath {
             collect(x, y);
         }
     }
+
+    Debug debug = new Debug(true);
 }
