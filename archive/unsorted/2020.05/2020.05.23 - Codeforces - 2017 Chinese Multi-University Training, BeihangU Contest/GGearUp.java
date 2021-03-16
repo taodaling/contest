@@ -52,7 +52,7 @@ public class GGearUp {
             int a = in.readInt();
             Node x = nodes[in.readInt() - 1];
             int y = Log2.floorLog(in.readInt());
-            int cur = seg.query(x.levelL, x.levelL, 1, order);
+            int cur = seg.queryL(x.levelL, x.levelL, 1, order);
             if (a == 1) {
                 //replace
                 if (x.special) {
@@ -68,7 +68,7 @@ public class GGearUp {
                 //query
                 Node root = x.top;
                 int rootVelocity = y - cur;
-                int max = seg.query(root.levelL, root.levelR, 1, order);
+                int max = seg.queryL(root.levelL, root.levelR, 1, order);
                 max += rootVelocity;
                 out.printf("%.3f", max * ln2).println();
             }
@@ -198,8 +198,8 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = DigitUtils.floorAverage(l, r);
-        return Math.max(left.query(ll, rr, l, m),
-                right.query(ll, rr, m + 1, r));
+        return Math.max(left.queryL(ll, rr, l, m),
+                right.queryL(ll, rr, m + 1, r));
     }
 
     private Segment deepClone() {

@@ -117,8 +117,8 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = DigitUtils.floorAverage(l, r);
-        return Math.min(left.query(ll, rr, l, m),
-                right.query(ll, rr, m + 1, r));
+        return Math.min(left.queryL(ll, rr, l, m),
+                right.queryL(ll, rr, m + 1, r));
     }
 }
 
@@ -181,7 +181,7 @@ class SuffixTree {
     }
 
     public int find(Node node) {
-        return segment.query(node.l, node.r, 1, n);
+        return segment.queryL(node.l, node.r, 1, n);
     }
 
     public int search(IntUnaryOperator x, int m, int r) {

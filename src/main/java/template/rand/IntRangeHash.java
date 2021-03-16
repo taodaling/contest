@@ -41,8 +41,7 @@ public class IntRangeHash implements RangeHash {
         }
         int ans1 = h1[r];
         if (l > 0) {
-            ans1 = DigitUtils.modsub(ans1, h1[l - 1], hd1.mod);
-            ans1 = (int) ((long) ans1 * hd1.inv[l] % hd1.mod);
+            ans1 = (int) (((long)ans1 - h1[l - 1] + hd1.mod) * hd1.inv[l] % hd1.mod);
         }
         return ans1;
     }
@@ -65,10 +64,14 @@ public class IntRangeHash implements RangeHash {
         }
         int ans2 = h2[r];
         if (l > 0) {
-            ans2 = DigitUtils.modsub(ans2, h2[l - 1], hd2.mod);
-            ans2 = (int) ((long) ans2 * hd2.inv[l] % hd2.mod);
+            ans2 = (int) (((long)ans2 - h2[l - 1] + hd2.mod) * hd2.inv[l] % hd2.mod);
         }
         return ans2;
+    }
+
+    public static boolean equal(IntRangeHash rh1, int l, int r, IntRangeHash rh2, int L, int R) {
+        return (r - l) == (R - L) && rh1.hash1(l, r) == rh2.hash1(L, R) &&
+                rh1.hash2(l, r) == rh2.hash2(L, R);
     }
 
     public long hash(int l, int r) {

@@ -29,8 +29,8 @@ public class MaximizeLetterBeauty {
             int x = in.readInt();
             int y = in.readInt();
             if (c == 'Q') {
-                long lDiscard = Math.min(0, left.query(1, x - 1, 1, n));
-                long rDiscard = Math.min(0, right.query(y + 1, n, 1, n));
+                long lDiscard = Math.min(0, left.queryL(1, x - 1, 1, n));
+                long rDiscard = Math.min(0, right.queryL(y + 1, n, 1, n));
                 debug.debug("l", lDiscard);
                 debug.debug("r", rDiscard);
                 long ans = sum - lDiscard - rDiscard;
@@ -117,8 +117,8 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = DigitUtils.floorAverage(l, r);
-        return Math.min(left.query(ll, rr, l, m),
-                right.query(ll, rr, m + 1, r));
+        return Math.min(left.queryL(ll, rr, l, m),
+                right.queryL(ll, rr, m + 1, r));
     }
 
     private Segment deepClone() {

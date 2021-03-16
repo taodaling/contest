@@ -1,7 +1,7 @@
 package template.algo;
 
 /**
- * Consumer all subset of m in descending order
+ * Iterate all subset of m in descending order
  */
 public class SubsetGenerator {
     private int m;

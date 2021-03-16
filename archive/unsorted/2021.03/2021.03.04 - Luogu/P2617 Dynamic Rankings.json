@@ -1,0 +1,40 @@
+{
+  "name" : "P2617 Dynamic Rankings",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5 3\n3 2 1 4 7\nQ 1 4 3\nC 2 6\nQ 2 5 3\n",
+    "output" : "3\n6\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "10 10 \n54 33 94 24 90 56 40 71 63 28 \nQ 7 9 2 \nC 10 72 \nC 10 81 \nC 8 17 \nC 9 39 \nQ 3 7 3 \nC 3 67 \nC 3 21 \nQ 1 8 2 \nC 5 96 \n",
+    "output" : "63\n\n56\n\n21\n\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx512M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.P2617DynamicRankings",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.03.04",
+  "contestName" : "Luogu",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

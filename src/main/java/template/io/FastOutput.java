@@ -134,7 +134,7 @@ public class FastOutput implements AutoCloseable, Closeable, Appendable {
     }
 
     public FastOutput println() {
-        return append(System.lineSeparator());
+        return append('\n');
     }
 
     public FastOutput clear() {

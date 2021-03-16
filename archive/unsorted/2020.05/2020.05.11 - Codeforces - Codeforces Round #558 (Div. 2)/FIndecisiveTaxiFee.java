@@ -97,7 +97,7 @@ public class FIndecisiveTaxiFee {
             if (e.tag == -1) {
                 ans = Math.min(ans, dst.distToSrc);
             } else {
-                long val = seg.query(e.tag, e.tag, 1, curTag);
+                long val = seg.queryL(e.tag, e.tag, 1, curTag);
                 ans = Math.min(ans, val);
             }
             out.println(ans);
@@ -240,8 +240,8 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = DigitUtils.floorAverage(l, r);
-        return Math.min(left.query(ll, rr, l, m),
-                right.query(ll, rr, m + 1, r));
+        return Math.min(left.queryL(ll, rr, l, m),
+                right.queryL(ll, rr, m + 1, r));
     }
 
     private Segment deepClone() {

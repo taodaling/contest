@@ -1,6 +1,7 @@
 package template.algo;
 
 import java.util.Arrays;
+import java.util.Comparator;
 
 public class MoOnArray {
     public static <Q extends Query> void solve(int rangeL, int rangeR, State<Q> state, Q[] qs) {
@@ -43,6 +44,132 @@ public class MoOnArray {
                 r--;
             }
             state.answer(q);
+        }
+    }
+
+    /**
+     * O(qk+n^2/k+q\log_2q)
+     * @param rangeL
+     * @param rangeR
+     * @param state
+     * @param qs
+     * @param k
+     * @param <Q>
+     */
+    public static <Q extends Query> void addOnlySolve(int rangeL, int rangeR, AddOnlyState<Q> state, Q[] qs, int k) {
+        Arrays.sort(qs, Comparator.<Q>comparingInt(x -> x.left() / k).thenComparingInt(Q::right));
+
+        //empty state
+        state.save();
+
+        //handle query in single block
+        for (Q q : qs) {
+            int L = q.left();
+            int R = q.right();
+            int Lb = L / k;
+            int Rb = R / k;
+            if (Rb != Lb) {
+                continue;
+            }
+            for (int i = L; i <= R; i++) {
+                state.add(i);
+            }
+            state.answer(q);
+            for (int i = L; i <= R; i++) {
+                state.remove(i);
+            }
+            state.rollback();
+            state.save();
+        }
+        int l = Math.min(k - 1, rangeR);
+        int r = l - 1;
+        for (Q q : qs) {
+            int L = q.left();
+            int R = q.right();
+            int Lb = L / k;
+            int Rb = R / k;
+            if (Rb == Lb) {
+                continue;
+            }
+            int to = Math.min((Lb + 1) * k - 1, rangeR);
+            if (l != to) {
+                while (l <= r) {
+                    state.remove(l++);
+                }
+                state.rollback();
+                state.save();
+                l = to;
+                r = l - 1;
+            }
+            while (r < R) {
+                r++;
+                state.add(r);
+            }
+            state.save();
+            while (l > L) {
+                l--;
+                state.add(l);
+            }
+            state.answer(q);
+
+            while (l < to) {
+                state.remove(l);
+                l++;
+            }
+            state.rollback();
+        }
+    }
+
+    /**
+     * O(qk+n^2/k+q\log_2q)
+     * @param rangeL
+     * @param rangeR
+     * @param state
+     * @param qs
+     * @param k
+     * @param <Q>
+     */
+    public static <Q extends Query> void removeOnlySolve(int rangeL, int rangeR, RemoveOnlyState<Q> state, Q[] qs, int k) {
+        Arrays.sort(qs, Comparator.<Q>comparingInt(x -> x.left() / k).thenComparingInt(x -> -x.right()));
+
+        //empty state
+        state.save();
+
+        //handle query in single block
+        int l = rangeL;
+        int r = rangeR;
+        for (Q q : qs) {
+            int L = q.left();
+            int R = q.right();
+            int Lb = L / k;
+            int to = Math.max(Lb * k, rangeL);
+            if (l != to) {
+                while(r < rangeR){
+                    ++r;
+                    state.add(r);
+                }
+                state.rollback();
+                while(l < to){
+                    state.remove(l);
+                    l++;
+                }
+                state.save();
+            }
+            while (r > R) {
+                state.remove(r);
+                r--;
+            }
+            state.save();
+            while (l < L) {
+                state.remove(l);
+                l++;
+            }
+            state.answer(q);
+            while (l > to) {
+                l--;
+                state.add(l);
+            }
+            state.rollback();
         }
     }
 
@@ -116,6 +243,7 @@ public class MoOnArray {
         }
     }
 
+
     private static boolean include(int l, int r, int index) {
         return l <= index && index <= r;
     }
@@ -140,6 +268,20 @@ public class MoOnArray {
         public void add(int i);
 
         public void remove(int i);
+    }
+
+    public static interface AddOnlyState<Q extends Query> extends State<Q> {
+        public void save();
+
+        public void rollback();
+
+    }
+
+    public static interface RemoveOnlyState<Q extends Query> extends State<Q> {
+        public void save();
+
+        public void rollback();
+
     }
 
     public static interface ModifiableState<Q extends VersionQuery, M extends Modify> extends State<Q> {

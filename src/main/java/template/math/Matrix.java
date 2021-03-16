@@ -47,6 +47,17 @@ public class Matrix extends CloneSupportObject<Matrix> {
         }
     }
 
+    public double[][] toArray() {
+        int n = mat.length / m;
+        double[][] ans = new double[n][m];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                ans[i][j] = mat[i * m + j];
+            }
+        }
+        return ans;
+    }
+
     public Matrix(int n, int m) {
         this.m = m;
         mat = new double[n * m];
@@ -234,7 +245,7 @@ public class Matrix extends CloneSupportObject<Matrix> {
     }
 
     public String toString() {
-        StringBuilder builder = new StringBuilder();
+        StringBuilder builder = new StringBuilder("\n");
         int h = getHeight();
         int w = getWidth();
         for (int i = 0; i < h; i++) {

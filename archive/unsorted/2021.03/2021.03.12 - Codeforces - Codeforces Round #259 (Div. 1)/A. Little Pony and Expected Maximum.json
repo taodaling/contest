@@ -1,0 +1,45 @@
+{
+  "name" : "A. Little Pony and Expected Maximum",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "6 1\n",
+    "output" : "3.500000000000\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "6 3\n",
+    "output" : "4.958333333333\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "2 2\n",
+    "output" : "1.750000000000\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.ALittlePonyAndExpectedMaximum",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.03.12",
+  "contestName" : "Codeforces - Codeforces Round #259 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

@@ -1,0 +1,40 @@
+{
+  "name" : "P6097 【模板】子集卷积",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2\n1 0 2 1\n2 0 2 1\n",
+    "output" : "2 0 6 3\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "5\n633942077 688018 73537814 459074649 424285234 543554433 607086849 354261678 331703304 410680720 629502262 517315944 467354154 161243159 625621782 919667449 125203988 388201136 205199779 389774609 24118174 581360504 114218942 62422737 717356114 838579410 691906295 551154238 533233537 828027803 148108198 19691975\n828715822 74162382 331282994 105517417 617716815 938369844 459779096 949420119 349050555 89281349 319252424 816404709 103040878 944874206 588588519 228244866 185591704 793788299 618019475 62226248 227665164 584754787 124648985 945021279 275850558 669071650 348691878 809084095 497099444 496800077 681292441 178331627\n",
+    "output" : "713221878 454504785 829626062 637186256 466820063 838417452 224461986 312036344 583688178 687442001 984434067 925486457 739716981 478551808 966013372 718811967 148111118 397876888 797526778 19917672 687429036 898764686 102498124 204852142 400174242 911598898 923716123 674467426 731585953 776279682 842355136 395306023\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx500M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.P6097",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "contest.P6097TestCase" ],
+  "date" : "2021.03.12",
+  "contestName" : "Luogu",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

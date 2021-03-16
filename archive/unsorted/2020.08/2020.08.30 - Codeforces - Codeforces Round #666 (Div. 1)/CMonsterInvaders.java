@@ -32,10 +32,10 @@ public class CMonsterInvaders {
             long costMin = Math.min(cost3, Math.min(cost1, cost2));
 
             if (i < n) {
-                long cur = seg.query(i, i, 1, n);
+                long cur = seg.queryL(i, i, 1, n);
                 long next = inf;
                 //go back now
-                long pref = seg.query(1, i - 1, 1, n);
+                long pref = seg.queryL(1, i - 1, 1, n);
                 next = Math.min(next, pref + costMin + d);
 
                 seg.updatePlus(1, i, 1, n, d * 2 + costMin + d);
@@ -46,7 +46,7 @@ public class CMonsterInvaders {
                 seg.updateSet(i + 1, i + 1, 1, n, next);
             } else {
                 for (int j = 1; j < i; j++) {
-                    long pref = seg.query(j, j, 1, n);
+                    long pref = seg.queryL(j, j, 1, n);
                     long best = costMin + pref;
                     ans = Math.min(ans, best);
                 }
@@ -54,7 +54,7 @@ public class CMonsterInvaders {
                 cost2 += 2 * d;
                 costMin = Math.min(cost3, Math.min(cost1, cost2));
                 for (int j = 1; j <= i; j++) {
-                    long pref = seg.query(j, j, 1, n);
+                    long pref = seg.queryL(j, j, 1, n);
                     long best = costMin + pref - (i - j) * d;
                     ans = Math.min(ans, best);
                 }
@@ -157,8 +157,8 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = DigitUtils.floorAverage(l, r);
-        return Math.min(left.query(ll, rr, l, m),
-                right.query(ll, rr, m + 1, r));
+        return Math.min(left.queryL(ll, rr, l, m),
+                right.queryL(ll, rr, m + 1, r));
     }
 
     private Segment deepClone() {

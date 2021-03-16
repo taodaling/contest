@@ -1,0 +1,40 @@
+{
+  "name" : "D. Little Pony and Elements of Harmony",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2 2 10000\n4 1 2 3\n0 1 0\n",
+    "output" : "14\n6\n6\n14\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "2 2 3214567\n924291651 695281986 805864137 717959750\n593107561 907665628 699571698",
+    "output" : "1083779\n2748017\n2009978\n254090",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.DLittlePonyAndElementsOfHarmony",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.03.12",
+  "contestName" : "Codeforces - Codeforces Round #259 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

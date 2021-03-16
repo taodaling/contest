@@ -3,54 +3,66 @@ package template.primitve.generated.datastructure;
 import java.util.Arrays;
 
 public class DoubleBITExt {
-    DoubleBIT delta;
-    DoubleBIT idelta;
+    double[] delta;
+    double[] idelta;
+    int n;
 
     public DoubleBITExt(int n) {
-        delta = new DoubleBIT(n + 1);
-        idelta = new DoubleBIT(n + 1);
+        this.n = n;
+        delta = new double[n + 1];
+        idelta = new double[n + 1];
     }
 
     public void clear(int n) {
-        delta.clear(n);
-        idelta.clear(n);
+        this.n = n;
+        Arrays.fill(delta, 1, n + 1, 0);
+        Arrays.fill(idelta, 1, n + 1, 0);
     }
 
     public void clear() {
-        delta.clear();
-        idelta.clear();
+        clear(n);
     }
 
     public void clear(IntToDoubleFunction func, int n) {
-        delta.clear(i -> {
-            double ans = func.apply(i);
-            if (i > 1) {
-                ans -= func.apply(i - 1);
+        this.n = n;
+        for (int i = 1; i <= n; i++) {
+            delta[i] = func.apply(i);
+        }
+        for (int i = n; i > 0; i--) {
+            delta[i] = delta[i] - delta[i - 1];
+            idelta[i] = delta[i] * i;
+        }
+        for (int i = 1; i <= n; i++) {
+            int to = i + (i & -i);
+            if (to <= n) {
+                delta[to] += delta[i];
+                idelta[to] += idelta[i];
             }
-            return ans;
-        }, n);
-        idelta.clear(i -> {
-            double ans = func.apply(i);
-            if (i > 1) {
-                ans -= func.apply(i - 1);
-            }
-            return ans * i;
-        }, n);
+        }
+    }
+
+    private void update(int i, double x) {
+        double x1 = x;
+        double x2 = x * i;
+        for (; i <= n; i += i & -i) {
+            delta[i] += x1;
+            idelta[i] += x2;
+        }
     }
 
     public void update(int l, int r, double x) {
-        delta.update(l, x);
-        delta.update(r + 1, -x);
-        idelta.update(l, l * x);
-        idelta.update(r + 1, (r + 1) * -x);
+        update(l, x);
+        update(r + 1, -x);
     }
 
-    public double query(int i) {
-        if (i <= 0) {
-            return 0;
+    public double query(int x) {
+        double ans1 = 0;
+        double ans2 = 0;
+        for (int i = x; i > 0; i -= (i & -i)) {
+            ans1 += delta[i];
+            ans2 += idelta[i];
         }
-        double x = delta.query(i);
-        return x * (i + 1) - idelta.query(i);
+        return (x + 1) * ans1 - ans2;
     }
 
     public double query(int l, int r) {
@@ -60,7 +72,7 @@ public class DoubleBITExt {
     @Override
     public String toString() {
         StringBuilder ans = new StringBuilder("[");
-        for (int i = 1; i <= delta.size(); i++) {
+        for (int i = 1; i <= n; i++) {
             ans.append(query(i, i)).append(',');
         }
         if (ans.length() > 1) {

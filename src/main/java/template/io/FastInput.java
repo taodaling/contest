@@ -286,6 +286,14 @@ public class FastInput {
         return rs(data, 0);
     }
 
+    public int rs(int[] data) {
+        return rs(data, 0);
+    }
+
+    public int rs(int[] data, int offset) {
+        return readString(data, offset);
+    }
+
     public int readString(char[] data, int offset) {
         skipBlank();
 

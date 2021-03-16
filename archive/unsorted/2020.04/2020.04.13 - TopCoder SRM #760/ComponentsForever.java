@@ -90,8 +90,8 @@ public class ComponentsForever {
         int ans = 0;
         for (Point pt : points) {
             int yR = dm.rankOf(pt.y);
-            long topC = top.query(yR, dm.maxRank(), dm.minRank(), dm.maxRank()) - pt.y + pt.x;
-            long botC = bot.query(0, yR, dm.minRank(), dm.maxRank()) + pt.y + pt.x;
+            long topC = top.queryL(yR, dm.maxRank(), dm.minRank(), dm.maxRank()) - pt.y + pt.x;
+            long botC = bot.queryL(0, yR, dm.minRank(), dm.maxRank()) + pt.y + pt.x;
             long atLeast = DigitUtils.ceilDiv(Math.min(topC, botC), 2);
             debug.debug("atLeast", atLeast + " for " + pt);
             if (atLeast > r) {
@@ -188,8 +188,8 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = DigitUtils.floorAverage(l, r);
-        return Math.min(left.query(ll, rr, l, m),
-                right.query(ll, rr, m + 1, r));
+        return Math.min(left.queryL(ll, rr, l, m),
+                right.queryL(ll, rr, m + 1, r));
     }
 
     private Segment deepClone() {

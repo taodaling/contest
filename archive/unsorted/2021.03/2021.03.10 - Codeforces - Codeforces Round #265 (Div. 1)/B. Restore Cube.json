@@ -1,0 +1,44 @@
+{
+  "name" : "B. Restore Cube",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "0 0 0\n0 0 1\n0 0 1\n0 0 1\n0 1 1\n0 1 1\n0 1 1\n1 1 1\n",
+    "output" : "YES\n0 0 0\n0 0 1\n0 1 0\n1 0 0\n0 1 1\n1 0 1\n1 1 0\n1 1 1\n",
+    "index" : 0,
+    "active" : false
+  }, {
+    "input" : "0 0 0\n0 0 0\n0 0 0\n0 0 0\n1 1 1\n1 1 1\n1 1 1\n1 1 1\n",
+    "output" : "NO\n",
+    "index" : 1,
+    "active" : false
+  }, {
+    "input" : "-5 -3 -8\n-8 8 -5\n-3 3 6\n6 3 8\n-8 6 -3\n8 -8 6\n-3 -5 3\n-5 3 8",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.BRestoreCube",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.03.10",
+  "contestName" : "Codeforces - Codeforces Round #265 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

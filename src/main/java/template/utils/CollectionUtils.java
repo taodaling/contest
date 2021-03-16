@@ -1,11 +1,6 @@
 package template.utils;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.BiFunction;
 
 public class CollectionUtils {
@@ -69,5 +64,13 @@ public class CollectionUtils {
     }
     public static <T> T peek(List<T> list) {
         return list.get(list.size() - 1);
+    }
+    public static <K, V> V floorValue(NavigableMap<K, V> map, K key){
+        Map.Entry<K, V> entry = map.floorEntry(key);
+        return entry == null ? null : entry.getValue();
+    }
+    public static <K, V> V ceilValue(NavigableMap<K, V> map, K key){
+        Map.Entry<K, V> entry = map.ceilingEntry(key);
+        return entry == null ? null : entry.getValue();
     }
 }

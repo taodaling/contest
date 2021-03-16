@@ -2,6 +2,8 @@ package template.datastructure;
 
 import template.rand.RandomWrapper;
 
+import java.util.function.IntFunction;
+
 
 public class Treap implements Cloneable {
 
@@ -16,6 +18,18 @@ public class Treap implements Cloneable {
     public Treap right = NIL;
     public int size = 1;
     public int key;
+
+    public static Treap build(IntFunction<Treap> func, int l, int r) {
+        if (l > r) {
+            return Treap.NIL;
+        }
+        int mid = (l + r) / 2;
+        Treap root = func.apply(mid);
+        root.left = build(func, l, mid - 1);
+        root.right = build(func, mid + 1, r);
+        root.pushUp();
+        return root;
+    }
 
     @Override
     public Treap clone() {

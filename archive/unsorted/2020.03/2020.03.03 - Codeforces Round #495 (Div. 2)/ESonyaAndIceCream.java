@@ -79,11 +79,11 @@ public class ESonyaAndIceCream {
             segment.update(i, i, 0, seq.length, seq[i].dist + total);
         }
 
-        int ans = segment.query(0, seq.length, 0, seq.length);
+        int ans = segment.queryL(0, seq.length, 0, seq.length);
         for (int i = 1; i + k - 1 < seq.length; i++) {
             segment.update(0, i - 1, 0, seq.length, dist[i - 1]);
             segment.update(i + k - 1, seq.length, 0, seq.length, -dist[i + k - 2]);
-            ans = Math.min(ans, segment.query(0, seq.length, 0, seq.length));
+            ans = Math.min(ans, segment.queryL(0, seq.length, 0, seq.length));
         }
         out.println(ans);
     }
@@ -218,8 +218,8 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = DigitUtils.floorAverage(l, r);
-        return Math.max(left.query(ll, rr, l, m),
-                right.query(ll, rr, m + 1, r));
+        return Math.max(left.queryL(ll, rr, l, m),
+                right.queryL(ll, rr, m + 1, r));
     }
 
     private Segment deepClone() {

@@ -1,0 +1,50 @@
+{
+  "name" : "C. Substitutes in Number",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "123123\n1\n2->00\n",
+    "output" : "10031003\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "123123\n1\n3->\n",
+    "output" : "1212\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "222\n2\n2->0\n0->7\n",
+    "output" : "777\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "1000000008\n0\n",
+    "output" : "1\n",
+    "index" : 3,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.CSubstitutesInNumber",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.03.10",
+  "contestName" : "Codeforces - Codeforces Round #265 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

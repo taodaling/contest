@@ -22,4 +22,8 @@ public class CircularLinkedNode<T extends CircularLinkedNode<T>> {
         this.next.prev = prev;
         this.next = this.prev = (T) this;
     }
+
+    public boolean singleton() {
+        return next == this;
+    }
 }

@@ -1,12 +1,13 @@
 package template.graph;
 
+import template.primitve.generated.datastructure.IntegerArrayList;
 import template.primitve.generated.datastructure.IntegerDequeImpl;
 import template.primitve.generated.datastructure.IntegerIterator;
 import template.primitve.generated.datastructure.IntegerMultiWayStack;
 
 import java.util.Arrays;
 
-public class TwoSatBeta {
+public class TwoSatBeta extends TwoSat {
     private IntegerMultiWayStack edges;
     private boolean[] values;
     private int[] sets;
@@ -31,11 +32,7 @@ public class TwoSatBeta {
         edges.clear();
     }
 
-    public boolean valueOf(int x) {
-        return values[sets[elementId(x)]];
-    }
-
-    public boolean solve(boolean fetchValue) {
+    public boolean[] solve() {
         Arrays.fill(values, false);
         Arrays.fill(dfns, 0);
         deque.clear();
@@ -46,19 +43,16 @@ public class TwoSatBeta {
         }
         for (int i = 0; i < n; i++) {
             if (sets[elementId(i)] == sets[negateElementId(i)]) {
-                return false;
+                return null;
             }
-        }
-
-        if (!fetchValue) {
-            return true;
         }
 
         Arrays.fill(dfns, 0);
         for (int i = 0; i < sets.length; i++) {
             assign(i);
+            values[i] = values[sets[i]];
         }
-        return true;
+        return values;
     }
 
     private void assign(int root) {
@@ -101,63 +95,51 @@ public class TwoSatBeta {
         }
     }
 
-    public int elementId(int x) {
-        return x << 1;
-    }
-
-    public int negateElementId(int x) {
-        return (x << 1) | 1;
-    }
-
-    private int negate(int x) {
-        return x ^ 1;
-    }
-
-    public void deduce(int a, int b) {
+    protected void addRely(int a, int b) {
         edges.addLast(a, b);
-        edges.addLast(negate(b), negate(a));
-    }
-
-    public void or(int a, int b) {
-        deduce(negate(a), b);
-    }
-
-    public void isTrue(int a) {
-        edges.addLast(negate(a), a);
-    }
-
-    public void isFalse(int a) {
-        edges.addLast(a, negate(a));
-    }
-
-    public void same(int a, int b) {
-        deduce(a, b);
-        deduce(b, a);
-    }
-
-    public void xor(int a, int b) {
-        same(a, negate(b));
-    }
-
-    public void atLeastOneIsFalse(int a, int b) {
-        deduce(a, negate(b));
-    }
-
-    public void atLeastOneIsTrue(int a, int b) {
-        or(a, b);
     }
 
     @Override
     public String toString() {
         StringBuilder ans = new StringBuilder();
         for (int i = 0; i < n; i++) {
-            ans.append(valueOf(i)).append(',');
+            ans.append(values[elementId(i)]).append(',');
         }
         if (ans.length() > 0) {
             ans.setLength(ans.length() - 1);
         }
         ans.append('\n');
-        ans.append(edges);
+        IntegerArrayList list = new IntegerArrayList();
+        for (int i = 0; i < n; i++) {
+            list.clear();
+            list.addAll(edges.iterator(elementId(i)));
+            ans.append(i).append(": ");
+            for (int x : list.toArray()) {
+                int v = x / 2;
+                if (x % 2 == 1) {
+                    ans.append("~");
+                }
+                ans.append(v).append(",");
+            }
+            if (ans.charAt(ans.length() - 1) == ',') {
+                ans.setLength(ans.length() - 1);
+            }
+            ans.append("\n");
+            list.clear();
+            list.addAll(edges.iterator(negateElementId(i)));
+            ans.append("~").append(i).append(": ");
+            for (int x : list.toArray()) {
+                int v = x / 2;
+                if (x % 2 == 1) {
+                    ans.append("~");
+                }
+                ans.append(v).append(",");
+            }
+            if (ans.charAt(ans.length() - 1) == ',') {
+                ans.setLength(ans.length() - 1);
+            }
+            ans.append("\n");
+        }
         return ans.toString();
     }
 }

@@ -1,0 +1,40 @@
+{
+  "name" : "C. Little Artem and Random Variable",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2\n0.25 0.75\n0.75 0.25\n",
+    "output" : "0.5 0.5 \n0.5 0.5 \n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "3\n0.125 0.25 0.625\n0.625 0.25 0.125\n",
+    "output" : "0.25 0.25 0.5 \n0.5 0.25 0.25 \n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.CLittleArtemAndRandomVariable",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.03.15",
+  "contestName" : "Codeforces - Codeforces Round #348 (VK Cup 2016 Round 2, Div. 1 Edition)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

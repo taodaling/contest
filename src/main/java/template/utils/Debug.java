@@ -14,6 +14,10 @@ public class Debug {
         offline = enable && System.getSecurityManager() == null;
     }
 
+    public boolean enable() {
+        return offline;
+    }
+
     public void run(Runnable task) {
         if (offline) {
             task.run();

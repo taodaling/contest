@@ -22,8 +22,8 @@ public class EShuffleWindow {
             if (i >= k) {
                 segment.update(1, n, 1, n, alive);
             }
-            long pre = segment.query(1, p[i], 1, n);
-            long post = segment.query(p[i], n, 1, n);
+            long pre = segment.queryL(1, p[i], 1, n);
+            long post = segment.queryL(p[i], n, 1, n);
             exp += half * pre % mod;
             exp -= half * post % mod;
 
@@ -132,8 +132,8 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = DigitUtils.floorAverage(l, r);
-        return (left.query(ll, rr, l, m) +
-                right.query(ll, rr, m + 1, r)) % mod;
+        return (left.queryL(ll, rr, l, m) +
+                right.queryL(ll, rr, m + 1, r)) % mod;
     }
 
     public int querySize(int ll, int rr, int l, int r) {

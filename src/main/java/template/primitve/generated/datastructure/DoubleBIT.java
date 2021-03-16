@@ -72,9 +72,11 @@ public class DoubleBIT {
     }
 
     public void clear(IntToDoubleFunction function, int n) {
-        clear(n);
+        this.n = n;
         for (int i = 1; i <= n; i++) {
-            data[i] += function.apply(i);
+            data[i] = function.apply(i);
+        }
+        for (int i = 1; i <= n; i++) {
             int to = i + (i & -i);
             if (to <= n) {
                 data[to] += data[i];

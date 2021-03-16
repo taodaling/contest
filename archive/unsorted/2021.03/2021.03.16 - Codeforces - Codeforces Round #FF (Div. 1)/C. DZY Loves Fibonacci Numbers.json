@@ -1,0 +1,40 @@
+{
+  "name" : "C. DZY Loves Fibonacci Numbers",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4 4\n1 2 3 4\n1 1 4\n2 1 4\n1 2 4\n2 1 3\n",
+    "output" : "17\n12\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "",
+    "output" : "",
+    "index" : 1,
+    "active" : false
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.CDZYLovesFibonacciNumbers",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "contest.CDZYLovesFibonacciNumbersTestCase" ],
+  "date" : "2021.03.16",
+  "contestName" : "Codeforces - Codeforces Round #FF (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

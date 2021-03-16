@@ -1,0 +1,45 @@
+{
+  "name" : "#129. Lyndon 分解",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "ababa\n",
+    "output" : "2 4 5\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "bbababaabaaabaaaab\n",
+    "output" : "1 2 4 6 9 13 18\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "azAZ0129\n",
+    "output" : "2 4 8\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx233M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.Lyndon",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.03.11",
+  "contestName" : "LibreOJ",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

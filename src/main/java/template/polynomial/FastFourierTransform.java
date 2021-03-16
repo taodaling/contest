@@ -85,6 +85,13 @@ public class FastFourierTransform {
         return ans;
     }
 
+    public static void dotMulFast(double[][] a, double[][] b) {
+        int n = a[0].length;
+        for (int i = 0; i < n; i++) {
+            mul(a[0][i], a[1][i], b[0][i], b[1][i], a, i);
+        }
+    }
+
     public static void fft(double[][] p, boolean inv) {
         int m = Log2.ceilLog(p[0].length);
         int n = 1 << m;

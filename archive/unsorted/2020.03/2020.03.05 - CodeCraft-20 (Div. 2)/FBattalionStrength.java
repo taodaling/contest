@@ -174,8 +174,8 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = DigitUtils.floorAverage(l, r);
-        left.query(ll, rr, l, m);
-        right.query(ll, rr, m + 1, r);
+        left.queryL(ll, rr, l, m);
+        right.queryL(ll, rr, m + 1, r);
     }
 
     private Segment deepClone() {

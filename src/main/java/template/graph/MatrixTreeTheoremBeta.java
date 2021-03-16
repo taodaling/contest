@@ -123,7 +123,7 @@ public class MatrixTreeTheoremBeta {
     }
 
     /**
-     * 有向图指定根版本，O(V^3)
+     * 有向图指定叶版本，O(V^3)
      */
     public int countLeafMST(int root) {
         if (V == 1) {

@@ -2,12 +2,12 @@ package template.datastructure;
 
 public class DeltaDSU {
     int[] p;
-    int[] rank;
+    int[] size;
     long[] delta;
 
     public DeltaDSU(int n) {
         p = new int[n];
-        rank = new int[n];
+        size = new int[n];
         delta = new long[n];
         reset();
     }
@@ -15,7 +15,7 @@ public class DeltaDSU {
     public void reset() {
         for (int i = 0; i < p.length; i++) {
             p[i] = i;
-            rank[i] = 0;
+            size[i] = 1;
             delta[i] = 0;
         }
     }
@@ -51,15 +51,13 @@ public class DeltaDSU {
         if (a == b) {
             return;
         }
-        if (rank[a] < rank[b]) {
+        if (size[a] < size[b]) {
             int tmp = a;
             a = b;
             b = tmp;
             d = -d;
         }
-        if (rank[a] == rank[b]) {
-            rank[a]++;
-        }
+        size[a] += size[b];
         p[b] = a;
         delta[b] = -d;
     }

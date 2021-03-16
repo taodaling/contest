@@ -4,10 +4,7 @@ import framework.io.FileUtils;
 import net.egork.chelper.task.Test;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ExternalTestLoader {
     static File root = new File("F:\\sourcecode\\contest\\testcase");
@@ -21,8 +18,8 @@ public class ExternalTestLoader {
     }
 
     public static List<Test> load() {
-        Map<String, String> input = new HashMap<>();
-        Map<String, String> output = new HashMap<>();
+        Map<String, String> input = new TreeMap<>();
+        Map<String, String> output = new TreeMap<>();
         for (File file : root.listFiles()) {
             if (file.getName().endsWith(".in")) {
                 input.put(getFileName(file.getName()),

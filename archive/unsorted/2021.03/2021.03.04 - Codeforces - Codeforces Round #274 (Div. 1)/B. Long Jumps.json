@@ -1,0 +1,55 @@
+{
+  "name" : "B. Long Jumps",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 250 185 230\n0 185 250\n",
+    "output" : "1\n230\n",
+    "index" : 0,
+    "active" : false
+  }, {
+    "input" : "4 250 185 230\n0 20 185 250\n",
+    "output" : "0\n",
+    "index" : 1,
+    "active" : false
+  }, {
+    "input" : "2 300 185 230\n0 300\n",
+    "output" : "2\n185 230\n",
+    "index" : 2,
+    "active" : false
+  }, {
+    "input" : "2 2 1 2\n0 2",
+    "output" : "1\n1",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "",
+    "output" : "",
+    "index" : 4,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.BLongJumps",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.03.04",
+  "contestName" : "Codeforces - Codeforces Round #274 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

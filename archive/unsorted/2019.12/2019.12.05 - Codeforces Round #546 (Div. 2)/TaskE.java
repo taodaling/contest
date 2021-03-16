@@ -34,13 +34,13 @@ public class TaskE {
             if (cmd == '+') {
                 int index = in.readInt() - 1;
                 int x = in.readInt();
-                long val = seg.query(index, index, 0, n) + x;
+                long val = seg.queryL(index, index, 0, n) + x;
                 int until = seg.queryFloorIndex(val, 0, n);
                 seg.updatePlus(index, until, 0, n, val);
             } else {
                 int l = in.readInt() - 1;
                 int r = in.readInt() - 1;
-                long sum = seg.query(l, r, 0, n) +
+                long sum = seg.queryL(l, r, 0, n) +
                         psB.intervalSum(l, r);
                 out.println(sum);
             }
@@ -122,8 +122,8 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = DigitUtils.floorAverage(l, r);
-        return left.query(ll, rr, l, m) +
-                right.query(ll, rr, m + 1, r);
+        return left.queryL(ll, rr, l, m) +
+                right.queryL(ll, rr, m + 1, r);
     }
 
     public int queryFloorIndex(long x, int l, int r) {

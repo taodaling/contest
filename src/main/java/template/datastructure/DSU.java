@@ -4,12 +4,12 @@ import java.util.Arrays;
 
 public class DSU {
     protected int[] p;
-    protected int[] rank;
+    public int[] size;
     protected int n;
 
     public DSU(int n) {
         p = new int[n];
-        rank = new int[n];
+        size = new int[n];
     }
 
     public void init() {
@@ -20,7 +20,7 @@ public class DSU {
         this.n = n;
         for (int i = 0; i < n; i++) {
             p[i] = i;
-            rank[i] = 0;
+            size[i] = 1;
         }
     }
 
@@ -45,7 +45,7 @@ public class DSU {
      * before setting p[b] = a
      */
     protected void preMerge(int a, int b) {
-
+        size[a] += size[b];
     }
 
     public final void merge(int a, int b) {
@@ -54,16 +54,12 @@ public class DSU {
         if (a == b) {
             return;
         }
-        if (rank[a] == rank[b]) {
-            rank[a]++;
-        }
 
-        if (rank[a] < rank[b]) {
+        if (size[a] < size[b]) {
             int tmp = a;
             a = b;
             b = tmp;
         }
-
         preMerge(a, b);
         p[b] = a;
     }

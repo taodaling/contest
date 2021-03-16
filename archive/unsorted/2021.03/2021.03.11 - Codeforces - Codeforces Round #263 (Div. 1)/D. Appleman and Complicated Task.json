@@ -1,0 +1,44 @@
+{
+  "name" : "D. Appleman and Complicated Task",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 2\n1 1 x\n2 2 o\n",
+    "output" : "2\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "4 3\n2 4 x\n3 4 x\n3 2 x\n",
+    "output" : "2\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "100 50\n52 5 o\n63 15 o\n82 5 x\n44 53 o\n91 85 o\n5 55 o\n44 98 o\n88 77 x\n50 90 x\n17 93 o\n59 85 x\n17 39 o\n47 96 o\n67 92 o\n76 86 o\n93 34 o\n36 82 o\n56 28 x\n63 68 x\n29 89 o\n75 75 x\n30 83 o\n6 41 o\n33 100 o\n73 17 o\n86 44 x\n93 62 o\n14 36 x\n88 94 o\n7 66 o\n27 94 o\n7 81 o\n94 41 x\n9 69 x\n64 17 o\n53 51 x\n100 22 o\n97 17 x\n44 63 x\n7 38 o\n79 24 x\n29 71 x\n36 96 o\n35 78 x\n30 45 o\n51 12 x\n70 45 o\n21 56 o\n50 80 x\n59 59 o",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.DApplemanAndComplicatedTask",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.03.11",
+  "contestName" : "Codeforces - Codeforces Round #263 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

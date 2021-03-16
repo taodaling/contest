@@ -284,7 +284,7 @@ public final class BitSet implements Serializable, Cloneable, Comparable<BitSet>
         int w = word(start);
         if (offset != 0) {
             long mask = oneBetween(offset, MAX_OFFSET);
-            if ((~data[w] & mask) != mask) {
+            if ((~data[w] & mask) != 0) {
                 return Long.numberOfTrailingZeros(~data[w] & mask) + w * BITS_FOR_EACH;
             }
             w++;

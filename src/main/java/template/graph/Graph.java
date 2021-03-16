@@ -63,4 +63,40 @@ public class Graph {
     public static List[] createGraph(int n) {
         return IntStream.range(0, n).mapToObj(i -> new ArrayList<>()).toArray(i -> new List[i]);
     }
+
+    public int[][] createGraph(int n, int m, int[] u, int[] v) {
+        int[] degs = new int[n];
+        for (int i = 0; i < m; i++) {
+            degs[u[i]]++;
+        }
+        int[][] g = new int[n][];
+        for (int i = 0; i < n; i++) {
+            g[i] = new int[degs[i]];
+        }
+        for (int i = 0; i < m; i++) {
+            int a = u[i];
+            int b = v[i];
+            g[a][--degs[a]] = b;
+        }
+        return g;
+    }
+
+    public int[][] createUndirectedGraph(int n, int m, int[] u, int[] v) {
+        int[] degs = new int[n];
+        for (int i = 0; i < m; i++) {
+            degs[u[i]]++;
+            degs[v[i]]++;
+        }
+        int[][] g = new int[n][];
+        for (int i = 0; i < n; i++) {
+            g[i] = new int[degs[i]];
+        }
+        for (int i = 0; i < m; i++) {
+            int a = u[i];
+            int b = v[i];
+            g[a][--degs[a]] = b;
+            g[b][--degs[b]] = a;
+        }
+        return g;
+    }
 }

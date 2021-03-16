@@ -74,7 +74,7 @@ public class DRoadsAndRamen {
                 v = tmp;
             }
             seg.update(u.l, u.r, 1, n);
-            q.ans = Math.max(q.ans, seg.query(1, n, 1, n));
+            q.ans = Math.max(q.ans, seg.queryL(1, n, 1, n));
         }
     }
 
@@ -199,8 +199,8 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = DigitUtils.floorAverage(l, r);
-        return Math.max(left.query(ll, rr, l, m),
-                right.query(ll, rr, m + 1, r));
+        return Math.max(left.queryL(ll, rr, l, m),
+                right.queryL(ll, rr, m + 1, r));
     }
 
     private Segment deepClone() {

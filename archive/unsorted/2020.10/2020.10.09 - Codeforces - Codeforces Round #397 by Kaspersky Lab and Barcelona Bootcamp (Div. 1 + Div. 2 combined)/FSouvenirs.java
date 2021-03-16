@@ -75,7 +75,7 @@ public class FSouvenirs {
                 segtree.update(0, j, 0, n - 1, a[j] - a[i]);
             }
             while (l < qs.length && qs[l].r == i) {
-                qs[l].ans = Math.min(qs[l].ans, segtree.query(qs[l].l, qs[l].l, 0, n - 1));
+                qs[l].ans = Math.min(qs[l].ans, segtree.queryL(qs[l].l, qs[l].l, 0, n - 1));
                 l++;
             }
         }
@@ -268,8 +268,8 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = DigitUtils.floorAverage(l, r);
-        return Math.min(left.query(ll, rr, l, m),
-                right.query(ll, rr, m + 1, r));
+        return Math.min(left.queryL(ll, rr, l, m),
+                right.queryL(ll, rr, m + 1, r));
     }
 
     private Segment deepClone() {

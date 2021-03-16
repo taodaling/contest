@@ -1,0 +1,35 @@
+{
+  "name" : "A. Almost Pattern Matching II",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5\nabbabaabbaababbabaababbaa abbab 0\nabbabaabbaababbabaababbaa abbab 1\nabbabaabbaababbabaababbaa abbab 2\nabbabaabbaababbabaababbaa abbab 3\nabbabaabbaababbabaababbaa abbab 4\n",
+    "output" : "Case 1: 2\nCase 2: 8\nCase 3: 11\nCase 4: 14\nCase 5: 19\n",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1500M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.AAlmostPatternMatchingII",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.03.08",
+  "contestName" : "CodeMarshal - ICPC Dhaka Regional Preliminary Contest, 2019 Hosted by Southeast University",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

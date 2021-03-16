@@ -59,7 +59,7 @@ public class EConcatenationWithIntersection {
             if(pre[i] == 0){
                 continue;
             }
-            sum += segtree.query(1, pre[i], 0, m);
+            sum += segtree.queryL(1, pre[i], 0, m);
         }
         out.println(sum);
     }
@@ -133,8 +133,8 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = DigitUtils.floorAverage(l, r);
-        return left.query(ll, rr, l, m) +
-                right.query(ll, rr, m + 1, r);
+        return left.queryL(ll, rr, l, m) +
+                right.queryL(ll, rr, m + 1, r);
     }
 
     private Segment deepClone() {

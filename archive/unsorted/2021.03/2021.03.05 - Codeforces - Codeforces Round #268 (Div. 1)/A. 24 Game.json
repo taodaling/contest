@@ -1,0 +1,45 @@
+{
+  "name" : "A. 24 Game",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "1\n",
+    "output" : "NO\n",
+    "index" : 0,
+    "active" : false
+  }, {
+    "input" : "8\n",
+    "output" : "YES\n8 * 7 = 56\n6 * 5 = 30\n3 - 4 = -1\n1 - 2 = -1\n30 - -1 = 31\n56 - 31 = 25\n25 + -1 = 24\n",
+    "index" : 1,
+    "active" : false
+  }, {
+    "input" : "7",
+    "output" : "",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.A24Game",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.03.05",
+  "contestName" : "Codeforces - Codeforces Round #268 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

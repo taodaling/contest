@@ -1,7 +1,5 @@
 package template.math;
 
-import java.math.BigInteger;
-
 public class FractionComparator {
     static LongProduct p1 = new LongProduct();
     static LongProduct p2 = new LongProduct();

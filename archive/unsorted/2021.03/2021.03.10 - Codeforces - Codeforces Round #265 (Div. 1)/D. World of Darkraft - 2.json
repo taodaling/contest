@@ -1,0 +1,59 @@
+{
+  "name" : "D. World of Darkraft - 2",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "1 3\n",
+    "output" : "1.0000000000\n",
+    "index" : 0,
+    "active" : false
+  }, {
+    "input" : "2 1\n",
+    "output" : "2.3333333333\n",
+    "index" : 1,
+    "active" : false
+  }, {
+    "input" : "10 2\n",
+    "output" : "15.9380768924\n",
+    "index" : 2,
+    "active" : false
+  }, {
+    "input" : "1 2",
+    "output" : "0.5",
+    "index" : 3,
+    "active" : false
+  }, {
+    "input" : "100000 100",
+    "index" : 4,
+    "active" : false
+  }, {
+    "input" : "100000 1",
+    "output" : "",
+    "index" : 5,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.DWorldOfDarkraft2",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.03.10",
+  "contestName" : "Codeforces - Codeforces Round #265 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

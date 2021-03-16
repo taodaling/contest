@@ -37,6 +37,10 @@ public class LcaOnTree {
         }
     }
 
+    public void init(List<? extends DirectedEdge>[] tree, int root) {
+        init(tree, i -> i == root);
+    }
+
     public void init(List<? extends DirectedEdge>[] tree, IntPredicate isRoot) {
         time = 0;
         for (int i = 0; i < tree.length; i++) {

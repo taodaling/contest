@@ -45,12 +45,12 @@ public class FPuttingBoxesTogether {
             } else {
                 int l = x;
                 int r = y;
-                long leftWeight = segment.query(1, l - 1, 1, n);
-                long wholeWeight = segment.query(l, r, 1, n);
+                long leftWeight = segment.queryL(1, l - 1, 1, n);
+                long wholeWeight = segment.queryL(l, r, 1, n);
                 int center = segment.binarySearch(1, n, leftWeight + (wholeWeight + 1) / 2);
 
-                int leftSum = mod.valueOf(segment.query(l, center - 1, 1, n));
-                int rightSum = mod.valueOf(segment.query(center + 1, r, 1, n));
+                int leftSum = mod.valueOf(segment.queryL(l, center - 1, 1, n));
+                int rightSum = mod.valueOf(segment.queryL(center + 1, r, 1, n));
                 int leftContrib1 = mod.subtract(mod.mul(as[center], leftSum),
                         bit.interval(l, center - 1));
                 int rightContrib1 = mod.subtract(bit.interval(center + 1, r),
@@ -129,8 +129,8 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = DigitUtils.floorAverage(l, r);
-        return left.query(ll, rr, l, m) +
-                right.query(ll, rr, m + 1, r);
+        return left.queryL(ll, rr, l, m) +
+                right.queryL(ll, rr, m + 1, r);
     }
 
     public int binarySearch(int l, int r, long limit) {

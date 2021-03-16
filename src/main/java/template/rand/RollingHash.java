@@ -7,8 +7,8 @@ public class RollingHash {
     HashData hd1;
     HashData hd2;
     IntegerDequeImpl dq;
-    int h1;
-    int h2;
+    long h1;
+    long h2;
 
     public RollingHash(HashData hd1, HashData hd2, int n) {
         this.hd1 = hd1;
@@ -21,25 +21,42 @@ public class RollingHash {
         dq.clear();
     }
 
+    public int size(){
+        return dq.size();
+    }
+
     public void addLast(int x) {
-        h1 = DigitUtils.mod((h1 + (long) hd1.pow[dq.size()] * x), hd1.mod);
-        h2 = DigitUtils.mod((h2 + (long) hd2.pow[dq.size()] * x), hd2.mod);
+        h1 = (h1 + (long) hd1.pow[dq.size()] * x) % hd1.mod;
+        h2 = (h2 + (long) hd2.pow[dq.size()] * x) % hd2.mod;
         dq.addLast(x);
+    }
+
+    public void addFirst(int x){
+        h1 = (h1 * hd1.pow[1] + x) % hd1.mod;
+        h2 = (h2 * hd2.pow[1] + x) % hd2.mod;
+        dq.addFirst(x);
+    }
+
+    public void removeLast(){
+        int x = dq.removeLast();
+        h1 = (h1 + (long) hd1.pow[dq.size()] * (hd1.mod - x)) % hd1.mod;
+        h2 = (h2 + (long) hd2.pow[dq.size()] * (hd2.mod - x)) % hd2.mod;
     }
 
     public void removeFirst() {
         int x = dq.removeFirst();
-        h1 = DigitUtils.mod((long) (h1 - x) * hd1.inv[1], hd1.mod);
-        h2 = DigitUtils.mod((long) (h2 - x) * hd2.inv[1], hd2.mod);
+        h1 = (h1 - x + hd1.mod) * hd1.inv[1] % hd1.mod;
+        h2 = (h2 - x + hd2.mod) * hd2.inv[1] % hd2.mod;
     }
+
 
     public long hash() {
         return DigitUtils.asLong(h1, h2);
     }
 
     public long hashV() {
-        int ans1 = DigitUtils.modplus(h1, hd1.pow[dq.size() + 1], hd1.mod);
-        int ans2 = DigitUtils.modplus(h2, hd2.pow[dq.size() + 1], hd2.mod);
+        long ans1 = (h1 + hd1.pow[dq.size() + 1]) % hd1.mod;
+        long ans2 = (h2 + hd2.pow[dq.size() + 1]) % hd2.mod;
         return DigitUtils.asLong(ans1, ans2);
     }
 }

@@ -21,8 +21,7 @@ import java.util.PriorityQueue;
 public class MaxGeneralWeightedMatchingEVlogV {
 
     static final int kSeparated = -2, kInner = -1, kFree = 0, kOuter = 1;
-    static int Inf = 1 << 30;
-
+    static long Inf = 1L << 61;
     static class BinaryHeap<T extends Comparable<T>> {
         static class Node<V extends Comparable<V>> implements Comparable<Node<V>> {
             V value;
@@ -352,9 +351,9 @@ public class MaxGeneralWeightedMatchingEVlogV {
 
     public static class InputEdge {
         int from, to;
-        int cost;
+        long cost;
 
-        public InputEdge(int from, int to, int cost) {
+        public InputEdge(int from, int to, long cost) {
             this.from = from;
             this.to = to;
             this.cost = cost;
@@ -367,9 +366,9 @@ public class MaxGeneralWeightedMatchingEVlogV {
 
     static class Edge {
         int to;
-        int cost;
+        long cost;
 
-        public Edge(int to, int cost) {
+        public Edge(int to, long cost) {
             this.to = to;
             this.cost = cost;
         }
@@ -427,13 +426,13 @@ public class MaxGeneralWeightedMatchingEVlogV {
     }
 
     static class Event {
-        int time;
+        long time;
         int id;
 
         Event() {
         }
 
-        Event(int time, int id) {
+        Event(long time, int id) {
             this.time = time;
             this.id = id;
         }
@@ -442,13 +441,13 @@ public class MaxGeneralWeightedMatchingEVlogV {
     }
 
     static class EdgeEvent implements Comparable<EdgeEvent> {
-        int time;
+        long time;
         int from, to;
 
         EdgeEvent() {
         }
 
-        EdgeEvent(int time, int from, int to) {
+        EdgeEvent(long time, int from, int to) {
             this.time = time;
             this.from = from;
             this.to = to;
@@ -456,7 +455,7 @@ public class MaxGeneralWeightedMatchingEVlogV {
 
         @Override
         public int compareTo(EdgeEvent o) {
-            return Integer.compare(time, o.time);
+            return Long.compare(time, o.time);
         }
 
 //        bool operator>(const EdgeEvent &rhs) const { return time > rhs.time; }
@@ -471,7 +470,7 @@ public class MaxGeneralWeightedMatchingEVlogV {
     int[] mate, surface, base;
     Link[] link;
     int[] label;
-    int[] potential;
+    long[] potential;
 
     int[] unused_bid;
     int unused_bid_idx_;
@@ -479,15 +478,15 @@ public class MaxGeneralWeightedMatchingEVlogV {
 
     // for O(nm log n) implementation
     int[] heavy, group;
-    int[] time_created, lazy, slack;
+    long[] time_created, lazy, slack;
     int[] best_from;
 
-    int time_current_;
+    long time_current_;
     Event event1;
     BinaryHeap<EdgeEvent> heap2;
     PairingHeaps<EdgeEvent> heap2s;
     PriorityQueue<EdgeEvent> heap3;
-    BinaryHeap<Integer> heap4;
+    BinaryHeap<Long> heap4;
 
 
     public MaxGeneralWeightedMatchingEVlogV(int N, InputEdge[] in) {
@@ -531,7 +530,7 @@ public class MaxGeneralWeightedMatchingEVlogV {
         long ret = 0;
         for (int u = 1; u <= N; ++u)
             if (mate[u] > u) {
-                int max_c = 0;
+                long max_c = 0;
                 for (int eid = ofs[u]; eid < ofs[u + 1]; ++eid) {
                     if (edges[eid].to == mate[u]) max_c = Math.max(max_c, edges[eid].cost);
                 }
@@ -629,13 +628,13 @@ public class MaxGeneralWeightedMatchingEVlogV {
         reset_all();
     }
 
-    int fix_blossom_potential(int b, int Lab) {
+    long fix_blossom_potential(int b, int Lab) {
         // Return the amount.
         // (If v is an atom, the potential[v] will not be changed.)
-        int d = lazy[b];
+        long d = lazy[b];
         lazy[b] = 0;
         if (Lab == kInner) {
-            int dt = time_current_ - time_created[b];
+            long dt = time_current_ - time_created[b];
             if (b > N) potential[b] -= dt << 1;
             d += dt;
         }
@@ -689,6 +688,12 @@ public class MaxGeneralWeightedMatchingEVlogV {
 
     static void swap(int[] a, int i, int j) {
         int t = a[i];
+        a[i] = a[j];
+        a[j] = t;
+    }
+
+    static void swap(long[] a, int i, int j) {
+        long t = a[i];
         a[i] = a[j];
         a[j] = t;
     }
@@ -801,7 +806,7 @@ public class MaxGeneralWeightedMatchingEVlogV {
         }
     }
 
-    void push_outer_and_fix_potentials(int v, int d) {
+    void push_outer_and_fix_potentials(int v, long d) {
         label[v] = kOuter;
         if (v > N) {
             for (int b = base[v]; label[b] != kOuter; b = node[b].next_b()) {
@@ -880,7 +885,7 @@ public class MaxGeneralWeightedMatchingEVlogV {
 
     void move_to_largest_blossom(int bid) {
         final int h = heavy[bid];
-        int d = (time_current_ - time_created[bid]) + lazy[bid];
+        long d = (time_current_ - time_created[bid]) + lazy[bid];
         lazy[bid] = 0;
         for (int beta = base[bid], b = beta; ; ) {
             time_created[b] = time_current_;
@@ -966,14 +971,14 @@ public class MaxGeneralWeightedMatchingEVlogV {
 
     boolean adjust_dual_variables(int root) {
         // delta1 : rematch
-        int time1 = event1.time;
+        long time1 = event1.time;
 
         // delta2 : grow
-        int time2 = Inf;
+        long time2 = Inf;
         if (!heap2.empty()) time2 = heap2.min().time;
 
         // delta3 : contract : O(m log n) time / Edmonds search [ bottleneck (?) ]
-        int time3 = Inf;
+        long time3 = Inf;
         while (!heap3.isEmpty()) {
             EdgeEvent e = heap3.peek();
             int x = e.from, y = edges[e.to].to; // e.to is some edge id.
@@ -984,11 +989,11 @@ public class MaxGeneralWeightedMatchingEVlogV {
         }
 
         // delta4 : expand
-        int time4 = Inf;
+        long time4 = Inf;
         if (!heap4.empty()) time4 = heap4.min();
 
         // -- events --
-        int time_next = Math.min(Math.min(time1, time2), Math.min(time3, time4));
+        long time_next = Math.min(Math.min(time1, time2), Math.min(time3, time4));
         assert (time_current_ <= time_next && time_next < Inf);
         time_current_ = time_next;
 
@@ -1030,7 +1035,7 @@ public class MaxGeneralWeightedMatchingEVlogV {
         surface = new int[S];
         for (int u = 1; u < S; ++u) surface[u] = u;
 
-        potential = new int[S];
+        potential = new long[S];
         node = new Node[S];
         for (int b = 1; b < S; ++b) node[b] = new Node(b);
 
@@ -1040,19 +1045,19 @@ public class MaxGeneralWeightedMatchingEVlogV {
 
         // for O(nm log n) implementation
         reset_time();
-        time_created = new int[S];
-        slack = new int[S];
+        time_created = new long[S];
+        slack = new long[S];
         for (int i = 0; i < S; ++i) slack[i] = Inf;
         best_from = new int[S];
         heavy = new int[S];
-        lazy = new int[S];
+        lazy = new long[S];
         group = new int[S];
         for (int i = 0; i < S; ++i) group[i] = i;
     }
 
     void set_potential() {
         for (int u = 1; u <= N; ++u) {
-            int max_c = 0;
+            long max_c = 0;
             for (int eid = ofs[u]; eid < ofs[u + 1]; ++eid) {
                 max_c = Math.max(max_c, edges[eid].cost);
             }

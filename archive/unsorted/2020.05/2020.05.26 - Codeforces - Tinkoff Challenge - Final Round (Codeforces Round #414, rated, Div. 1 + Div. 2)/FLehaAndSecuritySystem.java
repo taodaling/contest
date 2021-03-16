@@ -35,7 +35,7 @@ public class FLehaAndSecuritySystem {
             } else {
                 int l = in.readInt();
                 int r = in.readInt();
-                long sum = seg.query(l, r, 1, n);
+                long sum = seg.queryL(l, r, 1, n);
                 out.println(sum);
             }
         }
@@ -141,8 +141,8 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = DigitUtils.floorAverage(l, r);
-        return left.query(ll, rr, l, m) +
-                right.query(ll, rr, m + 1, r);
+        return left.queryL(ll, rr, l, m) +
+                right.queryL(ll, rr, m + 1, r);
     }
 
     private Segment deepClone() {

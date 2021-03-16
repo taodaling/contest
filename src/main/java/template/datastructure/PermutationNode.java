@@ -53,7 +53,7 @@ public class PermutationNode {
             index[perm[i]] = i;
         }
         RMQ rangeMax = new RMQ(n);
-        rangeMax.reset(0, n - 1, (a, b) -> -Integer.compare(index[a], index[b]));
+        rangeMax.init(0, n - 1, (a, b) -> -Integer.compare(index[a], index[b]));
 
         Deque<PermutationNode> dq = new ArrayDeque<>(n);
         for (int k = 0; k < n; k++) {

@@ -2,12 +2,17 @@ package template.datastructure;
 
 public class XorDeltaDSU {
     int[] p;
-    int[] rank;
+    int[] size;
     int[] delta;
+    boolean valid;
+
+    public boolean valid(){
+        return valid;
+    }
 
     public XorDeltaDSU(int n) {
         p = new int[n];
-        rank = new int[n];
+        size = new int[n];
         delta = new int[n];
         init();
     }
@@ -19,9 +24,10 @@ public class XorDeltaDSU {
     public void init(int n) {
         for (int i = 0; i < n; i++) {
             p[i] = i;
-            rank[i] = 0;
+            size[i] = 0;
             delta[i] = 0;
         }
+        valid = true;
     }
 
     public int find(int a) {
@@ -57,16 +63,15 @@ public class XorDeltaDSU {
         a = find(a);
         b = find(b);
         if (a == b) {
+            valid = valid && d == 0;
             return;
         }
-        if (rank[a] < rank[b]) {
+        if (size[a] < size[b]) {
             int tmp = a;
             a = b;
             b = tmp;
         }
-        if (rank[a] == rank[b]) {
-            rank[a]++;
-        }
+        size[a] += size[b];
         p[b] = a;
         delta[b] = d;
     }

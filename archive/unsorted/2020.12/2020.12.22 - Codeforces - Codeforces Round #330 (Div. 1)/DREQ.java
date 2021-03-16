@@ -66,16 +66,16 @@ public class DREQ {
             }
             while (!dql.isEmpty() && dql.peekFirst().l - 1 == time) {
                 Query head = dql.removeFirst();
-                head.inv = (int) moveSeg.query(-1, head.l - 1, -1, n);
+                head.inv = (int) moveSeg.queryL(-1, head.l - 1, -1, n);
             }
             while (!dqr.isEmpty() && dqr.peekFirst().r == time) {
                 Query head = dqr.removeFirst();
-                head.ans = (int) moveSeg.query(-1, head.l - 1, -1, n);
+                head.ans = (int) moveSeg.queryL(-1, head.l - 1, -1, n);
             }
         }
         for (Query query : qs) {
             long ans = (long)query.ans * power.inverse(query.inv) % mod *
-                    prodSeg.query(query.l, query.r, 0, n - 1) % mod;
+                    prodSeg.queryL(query.l, query.r, 0, n - 1) % mod;
             out.println(ans);
         }
     }
@@ -165,8 +165,8 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = DigitUtils.floorAverage(l, r);
-        return left.query(ll, rr, l, m) *
-                right.query(ll, rr, m + 1, r) % mod;
+        return left.queryL(ll, rr, l, m) *
+                right.queryL(ll, rr, m + 1, r) % mod;
     }
 
     private Segment deepClone() {

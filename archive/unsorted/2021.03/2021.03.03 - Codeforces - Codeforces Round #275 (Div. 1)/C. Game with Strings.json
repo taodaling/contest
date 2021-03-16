@@ -1,0 +1,50 @@
+{
+  "name" : "C. Game with Strings",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2\naab\naac\n",
+    "output" : "2.000000000000000\n",
+    "index" : 0,
+    "active" : false
+  }, {
+    "input" : "3\naaA\naBa\nCaa\n",
+    "output" : "1.666666666666667\n",
+    "index" : 1,
+    "active" : false
+  }, {
+    "input" : "3\naca\nvac\nwqq\n",
+    "output" : "1.000000000000000\n",
+    "index" : 2,
+    "active" : false
+  }, {
+    "input" : "1\naa",
+    "output" : "0",
+    "index" : 3,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.CGameWithStrings",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.03.03",
+  "contestName" : "Codeforces - Codeforces Round #275 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

@@ -1,6 +1,7 @@
 package template.polynomial;
 
 import template.math.DigitUtils;
+import template.math.ILongModular;
 
 public class FastWalshHadamardTransform {
     /**
@@ -55,6 +56,28 @@ public class FastWalshHadamardTransform {
     }
 
     /**
+     * res[i] is how many subsets of i occur in p
+     */
+    public static void orFWT(int[] p, int l, int r, int mod) {
+        if (l == r) {
+            return;
+        }
+        int m = DigitUtils.floorAverage(l, r);
+        orFWT(p, l, m, mod);
+        orFWT(p, m + 1, r, mod);
+        for (int i = 0, until = m - l; i <= until; i++) {
+            int i1 = l + i;
+            int i2 = m + 1 + i;
+            int a = p[i1];
+            int b = p[i2];
+            p[i2] = a + b;
+            if(p[i2] >= mod){
+                p[i2] -= mod;
+            }
+        }
+    }
+
+    /**
      * p[i] is the number of subset of i, ret[i] is the occurrence number of number i
      */
     public static void orIFWT(int[] p, int l, int r) {
@@ -69,6 +92,25 @@ public class FastWalshHadamardTransform {
         }
         orIFWT(p, l, m);
         orIFWT(p, m + 1, r);
+    }
+
+    public static void orIFWT(int[] p, int l, int r, int mod) {
+        if (l == r) {
+            return;
+        }
+        int m = DigitUtils.floorAverage(l, r);
+        for (int i = 0, until = m - l; i <= until; i++) {
+            int i1 = l + i;
+            int i2 = m + 1 + i;
+            int a = p[i1];
+            int b = p[i2];
+            p[i2] = b - a;
+            if(p[i2] < 0){
+                p[i2] += mod;
+            }
+        }
+        orIFWT(p, l, m, mod);
+        orIFWT(p, m + 1, r, mod);
     }
 
     /**
@@ -257,6 +299,7 @@ public class FastWalshHadamardTransform {
         for (int i = 0, until = m - l; i <= until; i++) {
             long a = p[l + i];
             long b = p[m + 1 + i];
+            assert (a & 1) == (b & 1);
             p[l + i] = (int) ((a + b) * inv2 % mod);
             p[m + 1 + i] = (int) ((a - b + mod) * inv2 % mod);
         }
@@ -276,9 +319,49 @@ public class FastWalshHadamardTransform {
         }
     }
 
+    public static void dotMulPlus(int[] a, int[] b, int[] c, int l, int r, int mod) {
+        for (int i = l; i <= r; i++) {
+            c[i] = (int) (((long) a[i] * b[i] + c[i]) % mod);
+        }
+    }
+
     public static void dotMul(long[] a, long[] b, long[] c, int l, int r) {
         for (int i = l; i <= r; i++) {
             c[i] = a[i] * b[i];
         }
+    }
+
+    public static void dotMul(long[] a, long[] b, long[] c, int l, int r, ILongModular mod) {
+        for (int i = l; i <= r; i++) {
+            c[i] = mod.mul(a[i], b[i]);
+        }
+    }
+
+    /**
+     * copied from https://www.luogu.com.cn/blog/cqbzllsw/cf453dlittle-pony-and-elements-of-harmony
+     *
+     * @param f
+     * @param N
+     * @param mod
+     * @param rev
+     */
+    public static void xorFWT(long[] f, int N, long mod, boolean rev) {
+        long t1, t2;
+        for (int s = 2; s <= N; s <<= 1)
+            for (int i = 0, t = s >> 1; i < N; i += s)
+                for (int j = i; j < i + t; j++) {
+                    t1 = f[j];
+                    t2 = f[j + t];
+                    f[j] = (t1 + t2);
+                    f[j + t] = (t1 - t2);
+                    if (f[j] >= mod) {
+                        f[j] -= mod;
+                    }
+                    if (f[j + t] < 0) {
+                        f[j + t] += mod;
+                    }
+                }
+        if (!rev) return;
+        for (int i = 0; i < N; i++) f[i] /= N;
     }
 }

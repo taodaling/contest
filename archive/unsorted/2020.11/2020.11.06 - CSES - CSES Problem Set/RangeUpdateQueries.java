@@ -21,7 +21,7 @@ public class RangeUpdateQueries {
                 seg.update(l, r, 0, n - 1, x);
             }else{
                 int k = in.readInt() - 1;
-                long ans = seg.query(k, k, 0, n - 1);
+                long ans = seg.queryL(k, k, 0, n - 1);
                 out.println(ans);
             }
         }
@@ -93,8 +93,8 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = DigitUtils.floorAverage(l, r);
-        return Math.max(left.query(ll, rr, l, m),
-        right.query(ll, rr, m + 1, r));
+        return Math.max(left.queryL(ll, rr, l, m),
+        right.queryL(ll, rr, m + 1, r));
     }
 
     private Segment deepClone() {

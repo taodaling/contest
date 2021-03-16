@@ -31,7 +31,7 @@ public class FStrangeFunction {
         seg.updatePlus(0, 0, 0, m, -Segment.inf);
         for (int i = 0; i < n; i++) {
             int occur = map.getOrDefault(a[i], -1);
-            long contrib = seg.query(occur - 1, occur - 1, 0, m);
+            long contrib = seg.queryL(occur - 1, occur - 1, 0, m);
             int right = SequenceUtils.upperBound(b, a[i], 1, m);
             debug.debug("a[i]", a[i]);
             debug.debug("right", right);
@@ -41,7 +41,7 @@ public class FStrangeFunction {
                 seg.updatePlus(0, right - 1, 0, m, p[i]);
             }
             if (occur != -1) {
-                long cur = seg.query(occur, occur, 0, m);
+                long cur = seg.queryL(occur, occur, 0, m);
                 if (cur > contrib) {
                     seg.updatePlus(occur, occur, 0, m, contrib - cur);
                 }
@@ -50,7 +50,7 @@ public class FStrangeFunction {
             debug.debug("seg", seg);
         }
 
-        long ans = seg.query(m, m, 0, m);
+        long ans = seg.queryL(m, m, 0, m);
         if(ans > (long)1e15){
             out.println("NO");
             return;
@@ -126,8 +126,8 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = DigitUtils.floorAverage(l, r);
-        return Math.max(left.query(ll, rr, l, m),
-                right.query(ll, rr, m + 1, r));
+        return Math.max(left.queryL(ll, rr, l, m),
+                right.queryL(ll, rr, m + 1, r));
     }
 
     private Segment deepClone() {

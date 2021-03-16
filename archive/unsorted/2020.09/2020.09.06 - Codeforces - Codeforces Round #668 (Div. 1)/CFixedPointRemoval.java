@@ -64,7 +64,7 @@ public class CFixedPointRemoval {
             seg.update(l, r, 0, n - 1, -1);
         }
         while (true) {
-            int first = seg.query(0, n - 1, 0, n - 1);
+            int first = seg.queryL(0, n - 1, 0, n - 1);
             if (first == -1) {
                 break;
             }
@@ -167,9 +167,9 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = DigitUtils.floorAverage(l, r);
-        int ans = left.query(ll, rr, l, m);
+        int ans = left.queryL(ll, rr, l, m);
         if (ans == -1) {
-            ans = right.query(ll, rr, m + 1, r);
+            ans = right.queryL(ll, rr, m + 1, r);
         }
         return ans;
     }

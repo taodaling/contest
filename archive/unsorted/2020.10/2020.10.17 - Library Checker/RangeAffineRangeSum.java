@@ -22,7 +22,7 @@ public class RangeAffineRangeSum {
                 int c = in.readInt();
                 tree.update(l, r, 0, n - 1, b, c);
             } else {
-                long sum = tree.query(l, r, 0, n - 1) % 998244353;
+                long sum = tree.queryL(l, r, 0, n - 1) % 998244353;
                 out.println(sum);
             }
         }
@@ -102,8 +102,8 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = DigitUtils.floorAverage(l, r);
-        return left.query(ll, rr, l, m) +
-        right.query(ll, rr, m + 1, r);
+        return left.queryL(ll, rr, l, m) +
+        right.queryL(ll, rr, m + 1, r);
     }
 
     private Segment deepClone() {

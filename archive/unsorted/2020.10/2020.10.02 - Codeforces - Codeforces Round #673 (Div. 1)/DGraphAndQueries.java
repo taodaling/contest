@@ -85,7 +85,7 @@ public class DGraphAndQueries {
                 l = r;
                 r = tmp;
             }
-            int ans = seg.query(l, r, 0, n - 1);
+            int ans = seg.queryL(l, r, 0, n - 1);
             seg.pop(l, r, 0, n - 1, ans);
             out.println(ans);
 
@@ -198,8 +198,8 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = DigitUtils.floorAverage(l, r);
-        return Math.max(left.query(ll, rr, l, m),
-                right.query(ll, rr, m + 1, r));
+        return Math.max(left.queryL(ll, rr, l, m),
+                right.queryL(ll, rr, m + 1, r));
     }
 
     private Segment deepClone() {

@@ -1,2 +1,3 @@
-45 src/main/java/contest/G. Switch and Flip.json
-0
+45 src/main/java/contest/D. DZY Loves Games.json
+1
+1

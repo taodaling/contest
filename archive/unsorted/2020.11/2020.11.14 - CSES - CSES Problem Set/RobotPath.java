@@ -134,7 +134,7 @@ public class RobotPath {
 
             while (!dqV.isEmpty() && dqV.peekFirst().left == x) {
                 Line line = dqV.removeFirst();
-                int id = seg.query((int)line.bot, (int)line.top, 0, m);
+                int id = seg.queryL((int)line.bot, (int)line.top, 0, m);
                 if (id < n) {
                     //find
                     Line cand = lines[id];
@@ -339,8 +339,8 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = DigitUtils.floorAverage(l, r);
-        return Math.min(left.query(ll, rr, l, m),
-                right.query(ll, rr, m + 1, r));
+        return Math.min(left.queryL(ll, rr, l, m),
+                right.queryL(ll, rr, m + 1, r));
     }
 
     private Segment deepClone() {

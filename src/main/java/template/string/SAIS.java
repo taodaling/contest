@@ -57,6 +57,15 @@ public class SAIS {
         process();
     }
 
+    public SAIS(IntSequence seq) {
+        int n = seq.length();
+        data = new int[n];
+        for (int i = 0; i < n; i++) {
+            data[i] = seq.get(i);
+        }
+        process();
+    }
+
     private void process() {
         int n = data.length;
         rank2Index = new int[n];

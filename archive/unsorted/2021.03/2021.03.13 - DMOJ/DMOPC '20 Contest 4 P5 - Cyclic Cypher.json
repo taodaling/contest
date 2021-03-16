@@ -1,0 +1,45 @@
+{
+  "name" : "DMOPC '20 Contest 4 P5 - Cyclic Cypher",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "8 3\n",
+    "output" : "-1 -1 1 1 -1 1 -1 1\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "8 8",
+    "output" : "0",
+    "index" : 1,
+    "active" : false
+  }, {
+    "input" : "7 3",
+    "output" : "0",
+    "index" : 2,
+    "active" : false
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx64M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.DMOPC20Contest4P5CyclicCypher",
+  "checkerClass" : "contest.DTokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "contest.DMOPC20Contest4P5CyclicCypherTestCase" ],
+  "date" : "2021.03.13",
+  "contestName" : "DMOJ",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

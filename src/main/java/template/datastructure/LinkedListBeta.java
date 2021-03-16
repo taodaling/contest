@@ -2,12 +2,19 @@ package template.datastructure;
 
 import template.utils.RevokeIterator;
 
+import java.util.Objects;
+
 public class LinkedListBeta<E> implements Iterable<E> {
     public static class Node<E> extends CircularLinkedNode<Node<E>> {
         public E val;
 
         public Node(E val) {
             this.val = val;
+        }
+
+        @Override
+        public String toString() {
+            return Objects.toString(val);
         }
     }
 
@@ -46,7 +53,7 @@ public class LinkedListBeta<E> implements Iterable<E> {
         return addAfter(node, new Node<>(e));
     }
 
-    public Node<E> addAfter(Node<E> node, Node<E> follow){
+    public Node<E> addAfter(Node<E> node, Node<E> follow) {
         follow.attach(node);
         size++;
         return follow;
@@ -57,8 +64,19 @@ public class LinkedListBeta<E> implements Iterable<E> {
     }
 
     public void remove(Node<E> node) {
+        assert contain(node);
         node.detach();
         size--;
+        assert size >= 0;
+    }
+
+    public boolean contain(Node<E> node) {
+        for (Node<E> head = begin(); head != end(); head = head.next) {
+            if (head == node) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public int size() {
@@ -88,5 +106,18 @@ public class LinkedListBeta<E> implements Iterable<E> {
                 return (trace = trace.next).val;
             }
         };
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder ans = new StringBuilder("[");
+        for (E e : this) {
+            ans.append(e).append(',');
+        }
+        if (ans.length() > 1) {
+            ans.setLength(ans.length() - 1);
+        }
+        ans.append(']');
+        return ans.toString();
     }
 }

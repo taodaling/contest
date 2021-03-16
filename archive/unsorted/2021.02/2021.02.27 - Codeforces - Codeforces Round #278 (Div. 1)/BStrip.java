@@ -32,10 +32,10 @@ public class BStrip {
             }
             int L = i - maxQueue.size();
             int R = i - l;
-            int best = st.query(L, R, 0, n) + 1;
+            int best = st.queryL(L, R, 0, n) + 1;
             st.update(i, i, 0, n, best);
         }
-        int ans = st.query(n, n, 0, n);
+        int ans = st.queryL(n, n, 0, n);
         out.println(ans >= inf ? -1 : ans);
     }
 }
@@ -100,8 +100,8 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = DigitUtils.floorAverage(l, r);
-        return Math.min(left.query(L, R, l, m),
-                right.query(L, R, m + 1, r));
+        return Math.min(left.queryL(L, R, l, m),
+                right.queryL(L, R, m + 1, r));
     }
 
     private Segment deepClone() {

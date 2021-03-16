@@ -16,7 +16,7 @@ public class KMPAutomaton {
     }
 
     /**
-     * Get the border of s[0...i - 1]
+     * Get the border of s[0...i]
      */
     public int maxBorder(int i) {
         return fail[i + 1];

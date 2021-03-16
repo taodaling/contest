@@ -11,15 +11,15 @@ public class B1PaintingTheArrayI {
         Segment st = new Segment(0, n);
         st.updateSet(0, 0, 0, n, 1);
         for (int i = 0; i < n - 1; i++) {
-            int cand = st.query(a[i + 1], a[i + 1], 0, n);
-            cand = Math.max(cand, st.query(0, a[i + 1] - 1, 0, n) + 1);
-            cand = Math.max(cand, st.query(a[i + 1] + 1, n, 0, n) + 1);
+            int cand = st.queryL(a[i + 1], a[i + 1], 0, n);
+            cand = Math.max(cand, st.queryL(0, a[i + 1] - 1, 0, n) + 1);
+            cand = Math.max(cand, st.queryL(a[i + 1] + 1, n, 0, n) + 1);
             if (a[i] != a[i + 1]) {
                 st.update(0, n, 0, n, 1);
             }
             st.updateSet(a[i], a[i], 0, n, cand);
         }
-        int ans = st.query(0, n, 0, n);
+        int ans = st.queryL(0, n, 0, n);
         out.println(ans);
     }
 }
@@ -105,8 +105,8 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = DigitUtils.floorAverage(l, r);
-        return Math.max(left.query(L, R, l, m),
-                right.query(L, R, m + 1, r));
+        return Math.max(left.queryL(L, R, l, m),
+                right.queryL(L, R, m + 1, r));
     }
 
     private Segment deepClone() {

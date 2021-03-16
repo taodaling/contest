@@ -1,0 +1,35 @@
+{
+  "name" : "#81. 一般图最大权匹配",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "7 20\n5 7 9\n3 7 4\n3 6 6\n2 5 8\n5 1 9\n1 3 6\n6 5 1\n2 7 4\n2 3 5\n6 4 2\n7 1 5\n5 4 4\n4 1 3\n5 3 9\n7 6 4\n2 1 3\n4 3 9\n6 2 7\n4 2 8\n6 1 10\n",
+    "output" : "28\n6 0 4 3 7 1 5\n",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "contest.Task",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.03.09",
+  "contestName" : "UOJ",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

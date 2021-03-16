@@ -8,30 +8,31 @@ public class LongBITExt {
     int n;
 
     public LongBITExt(int n) {
-        this.n = n + 1;
-        delta = new long[n + 2];
-        idelta = new long[n + 2];
+        this.n = n;
+        delta = new long[n + 1];
+        idelta = new long[n + 1];
     }
 
     public void clear(int n) {
-        this.n = n + 1;
-        Arrays.fill(delta, 1, n + 2, 0);
-        Arrays.fill(idelta, 1, n + 2, 0);
+        this.n = n;
+        Arrays.fill(delta, 1, n + 1, 0);
+        Arrays.fill(idelta, 1, n + 1, 0);
     }
 
     public void clear() {
         clear(n);
     }
 
-    public void clear(IntToLongFunction func, int m) {
-        clear(m);
-        long last = 0;
-        for (int i = 1; i < n; i++) {
-            long x = func.apply(i);
-            long d = x - last;
-            last = x;
-            delta[i] += d;
-            idelta[i] += d * i;
+    public void clear(IntToLongFunction func, int n) {
+        this.n = n;
+        for (int i = 1; i <= n; i++) {
+            delta[i] = func.apply(i);
+        }
+        for (int i = n; i > 0; i--) {
+            delta[i] = delta[i] - delta[i - 1];
+            idelta[i] = delta[i] * i;
+        }
+        for (int i = 1; i <= n; i++) {
             int to = i + (i & -i);
             if (to <= n) {
                 delta[to] += delta[i];
@@ -40,28 +41,28 @@ public class LongBITExt {
         }
     }
 
-    public void update(int l, int r, long x) {
+    private void update(int i, long x) {
         long x1 = x;
-        long x2 = l * x;
-        for (int i = l; i <= n; i += (i & -i)) {
-            delta[i] += x1;
-            idelta[i] += x2;
-        }
-        x1 = -x;
-        x2 = (r + 1) * -x;
-        for (int i = r; i <= n; i += (i & -i)) {
+        long x2 = x * i;
+        for (; i <= n; i += i & -i) {
             delta[i] += x1;
             idelta[i] += x2;
         }
     }
 
-    public long query(int i) {
-        long factor = i + 1;
-        long ans = 0;
-        for (; i > 0; i -= (i & -i)) {
-            ans += factor * delta[i] - idelta[i];
+    public void update(int l, int r, long x) {
+        update(l, x);
+        update(r + 1, -x);
+    }
+
+    public long query(int x) {
+        long ans1 = 0;
+        long ans2 = 0;
+        for (int i = x; i > 0; i -= (i & -i)) {
+            ans1 += delta[i];
+            ans2 += idelta[i];
         }
-        return ans;
+        return (x + 1) * ans1 - ans2;
     }
 
     public long query(int l, int r) {
@@ -71,7 +72,7 @@ public class LongBITExt {
     @Override
     public String toString() {
         StringBuilder ans = new StringBuilder("[");
-        for (int i = 1; i < n; i++) {
+        for (int i = 1; i <= n; i++) {
             ans.append(query(i, i)).append(',');
         }
         if (ans.length() > 1) {

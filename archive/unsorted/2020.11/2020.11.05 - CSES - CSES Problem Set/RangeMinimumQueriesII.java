@@ -21,7 +21,7 @@ public class RangeMinimumQueriesII {
             }else {
                 int l = in.readInt() - 1;
                 int r = in.readInt() - 1;
-                out.println(seg.query(l, r, 0, n - 1));
+                out.println(seg.queryL(l, r, 0, n - 1));
             }
         }
     }
@@ -86,8 +86,8 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = DigitUtils.floorAverage(l, r);
-        return Math.min(left.query(ll, rr, l, m),
-        right.query(ll, rr, m + 1, r));
+        return Math.min(left.queryL(ll, rr, l, m),
+        right.queryL(ll, rr, m + 1, r));
     }
 
     private Segment deepClone() {

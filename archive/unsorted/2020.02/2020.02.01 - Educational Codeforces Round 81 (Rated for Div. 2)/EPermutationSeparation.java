@@ -26,7 +26,7 @@ public class EPermutationSeparation {
         for(int i = 0; i < n - 1; i++){
             segment.updatePlus(perm[i], n, 1, n, -a[i]);
             segment.updatePlus(1, perm[i] - 1, 1, n, a[i]);
-            ans = Math.min(ans, segment.query(1, n, 1, n));
+            ans = Math.min(ans, segment.queryL(1, n, 1, n));
         }
 
         out.println(ans);
@@ -97,7 +97,7 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = DigitUtils.floorAverage(l, r);
-        return Math.min(left.query(ll, rr, l, m),
-        right.query(ll, rr, m + 1, r));
+        return Math.min(left.queryL(ll, rr, l, m),
+        right.queryL(ll, rr, m + 1, r));
     }
 }

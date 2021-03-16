@@ -102,7 +102,7 @@ public class CBipartiteSegments {
             seg.updatePlus(i, right[i], 0, n, 1);
             while (!dq.isEmpty() && dq.peekFirst().l == i) {
                 Query head = dq.removeFirst();
-                head.ans = seg.query(head.l, head.r, 0, n);
+                head.ans = seg.queryL(head.l, head.r, 0, n);
             }
         }
 
@@ -242,8 +242,8 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = DigitUtils.floorAverage(l, r);
-        return left.query(ll, rr, l, m) +
-                right.query(ll, rr, m + 1, r);
+        return left.queryL(ll, rr, l, m) +
+                right.queryL(ll, rr, m + 1, r);
     }
 
     private Segment deepClone() {

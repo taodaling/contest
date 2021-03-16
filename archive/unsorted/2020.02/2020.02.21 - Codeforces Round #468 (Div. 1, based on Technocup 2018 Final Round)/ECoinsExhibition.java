@@ -59,8 +59,8 @@ public class ECoinsExhibition {
         segs[1].updateVal(0, 0, 0, k, 1);
         for (int i = 1; i <= k; i++) {
             if (i > 1) {
-                int sum0 = segs[0].query(0, i - 1, 0, k);
-                int sum1 = segs[1].query(0, i - 1, 0, k);
+                int sum0 = segs[0].queryL(0, i - 1, 0, k);
+                int sum1 = segs[1].queryL(0, i - 1, 0, k);
                 int diff = dm.iThElement(i) - dm.iThElement(i - 1);
                 if (diff == 1) {
                     segs[0].updateVal(i - 1, i - 1, 0, k, sum1);
@@ -83,8 +83,8 @@ public class ECoinsExhibition {
             }
         }
 
-        int ans0 = segs[0].query(0, k, 0, k);
-        int ans1 = segs[1].query(0, k, 0, k);
+        int ans0 = segs[0].queryL(0, k, 0, k);
+        int ans1 = segs[1].queryL(0, k, 0, k);
         int ans = modular.plus(ans0, ans1);
         out.println(ans);
     }
@@ -180,8 +180,8 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = DigitUtils.floorAverage(l, r);
-        return modular.plus(left.query(ll, rr, l, m),
-                right.query(ll, rr, m + 1, r));
+        return modular.plus(left.queryL(ll, rr, l, m),
+                right.queryL(ll, rr, m + 1, r));
     }
 
     private Segment deepClone() {

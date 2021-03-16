@@ -32,7 +32,7 @@ public class TaskE {
             int b = q[i];
             bomb.update(b, 1);
             segment.update(1, b, 1, n, 1);
-            while (segment.query(1, n, 1, n) >= 0) {
+            while (segment.queryL(1, n, 1, n) >= 0) {
                 cur--;
                 people.update(invIndex[cur], 1);
                 int val = bomb.query(invIndex[cur], n) - people.query(invIndex[cur], n);
@@ -135,8 +135,8 @@ class Segment implements Cloneable {
         }
         pushDown();
         int m = DigitUtils.floorAverage(l, r);
-        return Math.min(left.query(ll, rr, l, m),
-                right.query(ll, rr, m + 1, r));
+        return Math.min(left.queryL(ll, rr, l, m),
+                right.queryL(ll, rr, m + 1, r));
     }
 
     private Segment deepClone() {

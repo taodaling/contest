@@ -56,10 +56,41 @@ public class DoubleBIT2D {
     /**
      * 将A全部清0
      */
-    public void clear() {
+    public void clear(int n, int m) {
+        this.n = n;
+        this.m = m;
         for (int i = 1; i <= n; i++) {
             for (int j = 1; j <= m; j++) {
                 data[i][j] = 0;
+            }
+        }
+    }
+
+    public void clear() {
+        clear(n, m);
+    }
+
+    public void clear(Int2ToDoubleFunction func, int n, int m) {
+        this.n = n;
+        this.m = m;
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= m; j++) {
+                data[i][j] = func.apply(i, j);
+            }
+        }
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= m; j++) {
+                int ni = i + (i & -i);
+                int nj = j + (j & -j);
+                if (ni <= n) {
+                    data[ni][j] += data[i][j];
+                }
+                if (nj <= m) {
+                    data[i][nj] += data[i][j];
+                }
+                if (ni <= n && nj <= m) {
+                    data[ni][nj] -= data[i][j];
+                }
             }
         }
     }
