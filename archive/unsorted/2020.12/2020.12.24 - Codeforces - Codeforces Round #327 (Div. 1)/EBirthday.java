@@ -5,7 +5,7 @@ import template.datastructure.BitSet;
 import template.graph.DinicBipartiteMatch;
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 import template.utils.Debug;
 
 import java.util.*;
@@ -60,7 +60,7 @@ public class EBirthday {
 
         debug.elapse("match");
         int[] order = IntStream.range(0, n).toArray();
-        CompareUtils.quickSort(order, (i, j) -> -(s[i].length - s[j].length), 0, order.length);
+        SortUtils.quickSort(order, (i, j) -> -(s[i].length - s[j].length), 0, order.length);
         for (int i : order) {
             if (ac.terminals[terminals[i]] != 0) {
                 ac.input[ac.terminals[terminals[i]]].or(ac.input[terminals[i]]);

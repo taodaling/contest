@@ -9,7 +9,7 @@ import template.io.FastOutput;
 import template.math.DigitUtils;
 import template.primitve.generated.datastructure.IntToLongFunction;
 import template.utils.CloneSupportObject;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 import template.utils.Debug;
 
 import java.util.Arrays;

@@ -3,7 +3,7 @@ package contest;
 import com.sun.xml.internal.fastinfoset.util.PrefixArray;
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 import template.utils.SequenceUtils;
 
 import java.lang.reflect.Array;
@@ -51,7 +51,7 @@ public class Bolero {
             if (l < discounts[i]) {
                 //need more
                 int k = discounts[i] - l;
-                CompareUtils.theKthSmallestElement(goods, (a, b) -> -Integer.compare(a.profit, b.profit), l, n, k);
+                SortUtils.theKthSmallestElement(goods, (a, b) -> -Integer.compare(a.profit, b.profit), l, n, k);
                 l += k;
             }
 

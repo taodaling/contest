@@ -3,7 +3,7 @@ package contest;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.math.DigitUtils;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 
 public class ADungeon {
     public void solve(int testNumber, FastInput in, FastOutput out) {
@@ -17,7 +17,7 @@ public class ADungeon {
             return;
         }
         int round = (a + b + c) / 9;
-        int min = CompareUtils.minOf(a, b, c);
+        int min = SortUtils.minOf(a, b, c);
         if (min < round) {
             out.println(no);
             return;

@@ -1,6 +1,5 @@
 package template.string;
 
-import graphs.spanningtree.Prim;
 import template.polynomial.FastFourierTransform;
 import template.utils.PrimitiveBuffers;
 import template.utils.SequenceUtils;

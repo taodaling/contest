@@ -4,7 +4,7 @@ import template.graph.MatrixTreeTheoremBeta;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.math.Factorial;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 
 public class DC4 {
     int mod = 998244353;
@@ -15,7 +15,7 @@ public class DC4 {
         int b = in.ri();
         int c = in.ri();
         int d = in.ri();
-        int min = CompareUtils.minOf(a, b, c, d);
+        int min = SortUtils.minOf(a, b, c, d);
         int[] e = new int[]{a, b, c, d};
         long ans = 0;
         MatrixTreeTheoremBeta beta = new MatrixTreeTheoremBeta(5, mod, true);

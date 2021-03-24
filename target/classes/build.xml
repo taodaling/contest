@@ -1,9 +1,0 @@
-<project default="compile">
-    <target name="compile">
-        <mkdir dir="bin"/>
-        <javac srcdir="." destdir="bin"/>
-    </target>
-
-    <target name="test" depends="compile">
-    </target>
-</project>

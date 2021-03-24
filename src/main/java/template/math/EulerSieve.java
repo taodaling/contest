@@ -7,7 +7,7 @@ import template.datastructure.BitSet;
  */
 public class EulerSieve {
     private int[] primes;
-    private BitSet isComp;
+    private boolean[] isComp;
     private int primeLength;
 
     public int getPrimeCount() {
@@ -22,14 +22,14 @@ public class EulerSieve {
         if (x <= 1) {
             return false;
         }
-        return !isComp.get(x);
+        return !isComp[x];
     }
 
     public boolean isComp(int x) {
         if (x <= 1) {
             return false;
         }
-        return isComp.get(x);
+        return isComp[x];
     }
 
     private static int[] phi = new int[]{
@@ -47,16 +47,16 @@ public class EulerSieve {
     }
 
     public EulerSieve(int limit) {
-        isComp = new BitSet(limit + 1);
+        isComp = new boolean[limit + 1];
         primes = new int[estimatePhi(limit)];
         primeLength = 0;
         for (int i = 2; i <= limit; i++) {
-            if (!isComp.get(i)) {
+            if (!isComp[i]) {
                 primes[primeLength++] = i;
             }
             for (int j = 0, until = limit / i; j < primeLength && primes[j] <= until; j++) {
                 int pi = primes[j] * i;
-                isComp.set(pi);
+                isComp[pi] = true;
                 if (i % primes[j] == 0) {
                     break;
                 }

@@ -2,7 +2,7 @@ package contest;
 
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 import template.utils.Debug;
 
 import java.util.stream.IntStream;
@@ -15,7 +15,7 @@ public class StringTransform {
         int n = in.readString(s, 0);
         int base = (int) 1e7;
         int[] indices = IntStream.range(0, n).toArray();
-        CompareUtils.radixSort(indices, 0, n - 1, i -> s[i] * base + i);
+        SortUtils.radixSort(indices, 0, n - 1, i -> s[i] * base + i);
         int start = indices[0];
         debug.debug("indices", indices);
         for (int i = 0; i < n - 1; i++) {

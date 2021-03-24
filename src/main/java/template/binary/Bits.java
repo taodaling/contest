@@ -124,4 +124,29 @@ public class Bits {
     public static int highestBit(int x) {
         return 1 << Log2.floorLog(x);
     }
+
+    public static int highestOneBitOffset(long x) {
+        if (x < 0) {
+            return 63;
+        }
+        return 63 - Long.numberOfLeadingZeros(x);
+    }
+
+    public static int lowestOneBitOffset(long x) {
+        return highestOneBitOffset(x & -x);
+    }
+
+    public static long tailMask(int n) {
+        if (n == 0) {
+            return 0;
+        }
+        return -1L << (64 - n);
+    }
+
+    public static long headMask(int n) {
+        if (n == 0) {
+            return 0;
+        }
+        return -1L >>> (64 - n);
+    }
 }

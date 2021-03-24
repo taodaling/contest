@@ -2,7 +2,7 @@ package contest;
 
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 
 public class BNiceShopping {
     public void solve(int testNumber, FastInput in, FastOutput out) {
@@ -17,7 +17,7 @@ public class BNiceShopping {
         for (int i = 1; i <= B; i++) {
             b[i] = in.readInt();
         }
-        long ans = CompareUtils.minOf(a, 1, A) + CompareUtils.minOf(b, 1, B);
+        long ans = SortUtils.minOf(a, 1, A) + SortUtils.minOf(b, 1, B);
         for (int i = 0; i < M; i++) {
             int x = in.readInt();
             int y = in.readInt();

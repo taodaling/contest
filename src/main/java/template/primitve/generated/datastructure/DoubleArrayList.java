@@ -2,8 +2,8 @@ package template.primitve.generated.datastructure;
 
 import template.algo.BinarySearch;
 import template.rand.Randomized;
-import template.utils.CompareUtils;
 import template.utils.SequenceUtils;
+import template.utils.SortUtils;
 
 import java.util.Arrays;
 
@@ -155,7 +155,7 @@ public class DoubleArrayList implements Cloneable {
     }
 
     public void sort(DoubleComparator comparator) {
-        CompareUtils.quickSort(data, comparator, 0, size);
+        SortUtils.quickSort(data, comparator, 0, size);
     }
 
     public double first() {

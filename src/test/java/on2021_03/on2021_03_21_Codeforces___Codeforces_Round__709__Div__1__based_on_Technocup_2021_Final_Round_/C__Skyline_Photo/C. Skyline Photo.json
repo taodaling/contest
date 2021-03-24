@@ -1,0 +1,50 @@
+{
+  "name" : "C. Skyline Photo",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5\n1 2 3 5 4\n1 5 3 2 4\n",
+    "output" : "15\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "5\n1 4 3 2 5\n-3 4 -10 2 7\n",
+    "output" : "10\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "2\n2 1\n-2 -3\n",
+    "output" : "-3\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "10\n4 7 3 2 5 1 9 10 6 8\n-4 40 -46 -8 -16 4 -10 41 12 3\n",
+    "output" : "96\n",
+    "index" : 3,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_03.on2021_03_21_Codeforces___Codeforces_Round__709__Div__1__based_on_Technocup_2021_Final_Round_.C__Skyline_Photo.CSkylinePhoto",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.03.21",
+  "contestName" : "Codeforces - Codeforces Round #709 (Div. 1, based on Technocup 2021 Final Round)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

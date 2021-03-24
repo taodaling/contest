@@ -2,7 +2,7 @@ package contest;
 
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 
 public class TaskA {
     public void solve(int testNumber, FastInput in, FastOutput out) {
@@ -11,7 +11,7 @@ public class TaskA {
         for (int i = 0; i < n; i++) {
             a[i] = in.readInt();
         }
-        int mx = CompareUtils.maxOf(a, 0, n - 1);
+        int mx = SortUtils.maxOf(a, 0, n - 1);
         int ans = 0;
         int length = 0;
         for (int i = 0; i < n; i++) {

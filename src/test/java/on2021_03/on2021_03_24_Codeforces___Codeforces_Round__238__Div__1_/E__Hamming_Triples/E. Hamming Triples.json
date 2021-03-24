@@ -1,0 +1,40 @@
+{
+  "name" : "E. Hamming Triples",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5 4\n0 3\n0 5\n1 4\n1 5\n",
+    "output" : "3\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "10 4\n1 5\n0 5\n0 5\n1 5\n",
+    "output" : "4\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_03.on2021_03_24_Codeforces___Codeforces_Round__238__Div__1_.E__Hamming_Triples.EHammingTriples",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "on2021_03.on2021_03_24_Codeforces___Codeforces_Round__238__Div__1_.E__Hamming_Triples.EHammingTriplesTestCase" ],
+  "date" : "2021.03.24",
+  "contestName" : "Codeforces - Codeforces Round #238 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

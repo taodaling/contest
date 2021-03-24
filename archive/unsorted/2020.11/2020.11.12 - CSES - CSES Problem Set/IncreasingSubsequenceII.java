@@ -4,7 +4,7 @@ import template.datastructure.ModBIT;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.math.DigitUtils;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 
 import java.util.stream.IntStream;
 
@@ -16,7 +16,7 @@ public class IncreasingSubsequenceII {
         int[] a = new int[n];
         in.populate(a);
         int[] indices = IntStream.range(0, n).toArray();
-        CompareUtils.quickSort(indices, (i, j) -> a[i] == a[j] ? -Integer.compare(i, j) :
+        SortUtils.quickSort(indices, (i, j) -> a[i] == a[j] ? -Integer.compare(i, j) :
                 Integer.compare(a[i], a[j]), 0, n);
         ModBIT bit = new ModBIT(n, mod);
         for (int i : indices) {

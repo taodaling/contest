@@ -9,7 +9,7 @@ import template.primitve.generated.datastructure.IntegerIterator;
 import template.primitve.generated.datastructure.IntegerList;
 import template.primitve.generated.datastructure.IntegerMultiWayStack;
 import template.primitve.generated.datastructure.IntegerVersionArray;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 import template.utils.Debug;
 
 import java.util.List;

@@ -4,7 +4,7 @@ import template.datastructure.Range2DequeAdapter;
 import template.datastructure.SimplifiedDeque;
 import template.io.FastInput;
 import template.primitve.generated.datastructure.IntegerDequeImpl;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 
 import java.io.PrintWriter;
 import java.util.ArrayDeque;
@@ -22,8 +22,8 @@ public class RoomAllocation {
         }
         Customer[] enter = customers.clone();
         Customer[] leave = customers.clone();
-        CompareUtils.radixSortIntObject(enter, 0, n - 1, x -> x.l);
-        CompareUtils.radixSortIntObject(leave, 0, n - 1, x -> x.r);
+        SortUtils.radixSortIntObject(enter, 0, n - 1, x -> x.l);
+        SortUtils.radixSortIntObject(leave, 0, n - 1, x -> x.r);
         SimplifiedDeque<Customer> enterDq = new Range2DequeAdapter<>(i -> enter[i], 0, n - 1);
         SimplifiedDeque<Customer> leaveDq = new Range2DequeAdapter<>(i -> leave[i], 0, n - 1);
         IntegerDequeImpl dq = new IntegerDequeImpl(n);

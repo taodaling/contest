@@ -1,12 +1,9 @@
 package template.graph;
 
-import combinatorics.Arrangements;
 import template.primitve.generated.utils.IntegerBinaryConsumer;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Stream;
 
 //copied from https://github.com/indy256/codelibrary/blob/master/java/combinatorics/PruferCode.java
 // https://en.wikipedia.org/wiki/Pr%C3%BCfer_sequence

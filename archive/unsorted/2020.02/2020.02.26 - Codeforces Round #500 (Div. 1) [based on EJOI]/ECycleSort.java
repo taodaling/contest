@@ -7,7 +7,7 @@ import template.math.PermutationUtils;
 import template.primitve.generated.datastructure.IntegerList;
 import template.primitve.generated.datastructure.IntegerPreSum;
 import template.rand.Randomized;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 import template.utils.SequenceUtils;
 
 import java.lang.reflect.Array;
@@ -48,7 +48,7 @@ public class ECycleSort {
 //            }
 //        }
 //        int[] perm = permList.toArray();
-//        CompareUtils.quickSort(perm, (x, y) -> Integer.compare(a[x], a[y]), 0, perm.length);
+//        SortUtils.quickSort(perm, (x, y) -> Integer.compare(a[x], a[y]), 0, perm.length);
 //        DSU dsu = new DSU(n);
 //        for (int i = 0; i < perm.length; i++) {
 //            int from = perm[i];
@@ -120,7 +120,7 @@ public class ECycleSort {
             }
         }
         int[] perm = permList.toArray();
-        CompareUtils.quickSort(perm, (x, y) -> Integer.compare(a[x], a[y]), 0, perm.length);
+        SortUtils.quickSort(perm, (x, y) -> Integer.compare(a[x], a[y]), 0, perm.length);
         DSU dsu = new DSU(n);
         for (int i = 0; i < perm.length; i++) {
             int from = perm[i];
@@ -192,7 +192,7 @@ public class ECycleSort {
             }
         }
         int[] perm = permList.toArray();
-        CompareUtils.quickSort(perm, (x, y) -> Integer.compare(a[x], a[y]), 0, perm.length);
+        SortUtils.quickSort(perm, (x, y) -> Integer.compare(a[x], a[y]), 0, perm.length);
         DSU dsu = new DSU(n);
         for (int i = 0; i < perm.length; i++) {
             int from = perm[i];

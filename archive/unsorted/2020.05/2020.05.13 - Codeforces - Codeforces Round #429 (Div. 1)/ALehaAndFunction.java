@@ -3,7 +3,7 @@ package contest;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.rand.Randomized;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 import template.utils.Debug;
 import template.utils.SequenceUtils;
 
@@ -25,7 +25,7 @@ public class ALehaAndFunction {
         for (int i = 0; i < m; i++) {
             indices[i] = i;
         }
-        CompareUtils.quickSort(indices, (x, y) -> Integer.compare(b[x], b[y]), 0, m);
+        SortUtils.quickSort(indices, (x, y) -> Integer.compare(b[x], b[y]), 0, m);
         Randomized.shuffle(a);
         Arrays.sort(a);
         SequenceUtils.reverse(a);

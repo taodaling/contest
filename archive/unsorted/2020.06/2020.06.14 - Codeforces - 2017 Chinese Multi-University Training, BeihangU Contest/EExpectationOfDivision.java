@@ -4,7 +4,7 @@ import template.io.FastInput;
 import template.io.FastOutput;
 import template.math.*;
 import template.primitve.generated.datastructure.IntegerComparator;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 
 import java.math.BigInteger;
 import java.util.*;
@@ -124,7 +124,7 @@ class Seq {
     int dp = -1;
 
     public Seq(int[] seq) {
-        CompareUtils.insertSort(seq, IntegerComparator.REVERSE_ORDER, 0, seq.length - 1);
+        SortUtils.insertSort(seq, IntegerComparator.REVERSE_ORDER, 0, seq.length - 1);
         int suffix = seq.length;
         while (suffix > 0 && seq[suffix - 1] == 0) {
             suffix--;

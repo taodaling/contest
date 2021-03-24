@@ -2,7 +2,7 @@ package template.primitve.generated.datastructure;
 
 import template.algo.BinarySearch;
 import template.rand.Randomized;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 import template.utils.SequenceUtils;
 
 import java.util.Arrays;
@@ -155,7 +155,7 @@ public class LongArrayList implements Cloneable {
     }
 
     public void sort(LongComparator comparator) {
-        CompareUtils.quickSort(data, comparator, 0, size);
+        SortUtils.quickSort(data, comparator, 0, size);
     }
 
     public long first() {

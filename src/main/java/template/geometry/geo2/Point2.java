@@ -3,7 +3,7 @@ package template.geometry.geo2;
 import template.utils.GeoConstant;
 import template.math.DigitUtils;
 import template.math.KahanSummation;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -471,7 +471,7 @@ public class Point2 implements Cloneable {
         }
 
         //merge sort
-        CompareUtils.<Point2>mergeAscending(pts, l, m, pts, m + 1, r, buf, l, (a, b) -> Double.compare(a.y, b.y));
+        SortUtils.<Point2>mergeAscending(pts, l, m, pts, m + 1, r, buf, l, (a, b) -> Double.compare(a.y, b.y));
         System.arraycopy(buf, l, pts, l, r - l + 1);
         return ans;
     }

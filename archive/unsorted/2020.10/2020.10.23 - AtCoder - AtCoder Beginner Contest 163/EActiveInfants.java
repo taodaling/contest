@@ -1,7 +1,7 @@
 package contest;
 
 import template.io.FastInput;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 import template.utils.SequenceUtils;
 
 import java.io.PrintWriter;
@@ -30,7 +30,7 @@ public class EActiveInfants {
         a = new long[n];
         in.populate(a);
         order = IntStream.range(0, n).toArray();
-        CompareUtils.quickSort(order, (i, j) -> Long.compare(a[i], a[j]), 0, n);
+        SortUtils.quickSort(order, (i, j) -> Long.compare(a[i], a[j]), 0, n);
         dp = new long[n][n];
         SequenceUtils.deepFill(dp, -1L);
         long ans = dp(0, n - 1);

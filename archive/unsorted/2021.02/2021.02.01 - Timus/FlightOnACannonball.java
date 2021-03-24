@@ -9,7 +9,7 @@ import template.io.FastInput;
 import template.io.FastOutput;
 import template.primitve.generated.datastructure.DoubleArrayList;
 import template.primitve.generated.datastructure.IntegerBIT;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 
 import java.util.*;
 
@@ -75,7 +75,7 @@ class KthNearestLineToPoint {
                 if(wpos == 0){
                     return false;
                 }
-                CompareUtils.radixSortLongObject(outter, 0, wpos - 1, x -> x.t1);
+                SortUtils.radixSortLongObject(outter, 0, wpos - 1, x -> x.t1);
                 Item last = null;
                 for(int i = 0; i < wpos; i++){
                     Item pt = outter[i];

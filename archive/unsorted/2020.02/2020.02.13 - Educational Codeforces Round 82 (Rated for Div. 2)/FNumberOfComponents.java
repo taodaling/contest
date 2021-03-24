@@ -4,7 +4,7 @@ import template.datastructure.Range2DequeAdapter;
 import template.graph.ConnectionChecker;
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -110,8 +110,8 @@ public class FNumberOfComponents {
             edgeSortByBirthIndex[i] = i;
         }
         int[] edgesOrderByDieIndex = edgeSortByBirthIndex.clone();
-        CompareUtils.radixSort(edgeSortByBirthIndex, 0, edgeSortByBirthIndex.length - 1, i -> edgeSortByBirth[i].birth);
-        CompareUtils.radixSort(edgesOrderByDieIndex, 0, edgesOrderByDieIndex.length - 1, i -> edgeSortByBirth[i].die);
+        SortUtils.radixSort(edgeSortByBirthIndex, 0, edgeSortByBirthIndex.length - 1, i -> edgeSortByBirth[i].birth);
+        SortUtils.radixSort(edgesOrderByDieIndex, 0, edgesOrderByDieIndex.length - 1, i -> edgeSortByBirth[i].die);
 
 
         Range2DequeAdapter<Edge> d1 = new Range2DequeAdapter<>(i -> edgeSortByBirth[edgeSortByBirthIndex[i]], 0, edgeSortByBirthIndex.length - 1);

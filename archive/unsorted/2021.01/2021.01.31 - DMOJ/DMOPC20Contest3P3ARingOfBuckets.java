@@ -4,7 +4,7 @@ import template.io.FastInput;
 import template.io.FastOutput;
 import template.math.DigitUtils;
 import template.math.Power;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -74,7 +74,7 @@ public class DMOPC20Contest3P3ARingOfBuckets {
             }
         }
 
-        list.sort((x, y) -> CompareUtils.compareArray(x.seq, 0, 5, y.seq, 0, 5));
+        list.sort((x, y) -> SortUtils.compareArray(x.seq, 0, 5, y.seq, 0, 5));
         if(list.isEmpty()){
             out.println(-1);
             return;

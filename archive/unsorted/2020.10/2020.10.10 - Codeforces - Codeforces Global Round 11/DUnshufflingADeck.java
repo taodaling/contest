@@ -1,7 +1,7 @@
 package contest;
 
 import template.io.FastInput;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -43,7 +43,7 @@ public class DUnshufflingADeck {
             head = !head;
         }
 
-        assert CompareUtils.notStrictAscending(c, 0, n - 1);
+        assert SortUtils.notStrictAscending(c, 0, n - 1);
         out.println(op.size());
         for (int[] x : op) {
             out.print(x.length);

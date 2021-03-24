@@ -5,7 +5,7 @@ import template.algo.WQSBinarySearch;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.math.KahamSummation;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 
 import java.util.Comparator;
 
@@ -42,7 +42,7 @@ public class ProgrammersAndArtists {
                     item.vb = item.b - Math.max(item.va, 0);
                 }
                 if (b > 0) {
-                    CompareUtils.theKthSmallestElement(items, Comparator.comparingDouble(x -> -x.vb), 0, n, b);
+                    SortUtils.theKthSmallestElement(items, Comparator.comparingDouble(x -> -x.vb), 0, n, b);
                 }
                 best = 0;
                 KahamSummation sum = new KahamSummation();

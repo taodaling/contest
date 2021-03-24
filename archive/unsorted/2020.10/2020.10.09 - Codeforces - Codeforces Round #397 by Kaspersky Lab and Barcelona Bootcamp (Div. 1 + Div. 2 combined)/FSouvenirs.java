@@ -3,7 +3,7 @@ package contest;
 import template.io.FastInput;
 import template.math.DigitUtils;
 import template.primitve.generated.datastructure.IntegerArrayList;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 import template.utils.Debug;
 
 import java.io.PrintWriter;
@@ -47,7 +47,7 @@ public class FSouvenirs {
             ceil[i] = new IntegerArrayList();
         }
         int[] indices = IntStream.range(0, n).toArray();
-        CompareUtils.quickSort(indices, (i, j) -> a[i] == a[j] ? Integer.compare(i, j) : -Integer.compare(a[i], a[j]), 0, n);
+        SortUtils.quickSort(indices, (i, j) -> a[i] == a[j] ? Integer.compare(i, j) : -Integer.compare(a[i], a[j]), 0, n);
 
         int inf = (int) 2e9;
         SegmentBS segBS = new SegmentBS(0, n - 1);

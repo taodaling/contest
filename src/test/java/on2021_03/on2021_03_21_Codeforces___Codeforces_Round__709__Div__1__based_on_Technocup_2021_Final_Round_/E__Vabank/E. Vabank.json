@@ -1,0 +1,35 @@
+{
+  "name" : "E. Vabank",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2\n\nLucky!\n\nLucky!\n\nLucky!\n\nLucky!\n\nLucky!\n\nFraudster!\n",
+    "output" : "? 1\n\n? 2\n\n? 3\n\n? 4\n\n? 5\n\n? 6\n\n! 5\n",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_03.on2021_03_21_Codeforces___Codeforces_Round__709__Div__1__based_on_Technocup_2021_Final_Round_.E__Vabank.EVabank",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.03.21",
+  "contestName" : "Codeforces - Codeforces Round #709 (Div. 1, based on Technocup 2021 Final Round)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : true,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

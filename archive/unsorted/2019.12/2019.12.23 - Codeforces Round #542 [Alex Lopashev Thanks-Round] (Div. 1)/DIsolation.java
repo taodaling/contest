@@ -7,7 +7,7 @@ import template.math.DigitUtils;
 import template.math.Modular;
 import template.primitve.generated.IntegerHashMap;
 import template.primitve.generated.LongHashMap;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 import template.utils.SequenceUtils;
 
 import java.util.Comparator;

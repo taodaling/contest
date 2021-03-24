@@ -3,7 +3,7 @@ package contest;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.rand.RandomWrapper;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 import template.utils.SequenceUtils;
 
 import java.util.ArrayList;
@@ -49,7 +49,7 @@ public class FEsoswap {
         for (int i = 0; i < n - 1; i++) {
             apply(0);
         }
-        assert CompareUtils.strictAscending(p, 0, p.length - 1);
+        assert SortUtils.strictAscending(p, 0, p.length - 1);
         out.println(op.size());
         for(int x : op){
             out.println(x);

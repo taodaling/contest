@@ -3,7 +3,7 @@ package contest;
 import java.util.Arrays;
 
 import template.BIT;
-import template.CompareUtils;
+import template.SortUtils;
 import template.DoubleBinarySearch;
 import template.FastInput;
 import template.FastOutput;
@@ -59,7 +59,7 @@ public class TaskE {
                 for (int i = 0; i < n; i++) {
                     int l = i;
                     int r = i;
-                    while (r + 1 < n && CompareUtils.compare(lines[r].intersect, lines[r + 1].intersect, prec) == 0) {
+                    while (r + 1 < n && SortUtils.compare(lines[r].intersect, lines[r + 1].intersect, prec) == 0) {
                         r++;
                     }
                     i = r;
@@ -91,7 +91,7 @@ public class TaskE {
                 for (int i = 0; i < n; i++) {
                     int l = i;
                     int r = i;
-                    while (r + 1 < n && CompareUtils.compare(lines[r].intersect, lines[r + 1].intersect, prec) == 0) {
+                    while (r + 1 < n && SortUtils.compare(lines[r].intersect, lines[r + 1].intersect, prec) == 0) {
                         r++;
                     }
                     i = r;

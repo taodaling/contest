@@ -1,6 +1,6 @@
 package contest;
 
-import template.CompareUtils;
+import template.SortUtils;
 import template.FastInput;
 import template.FastOutput;
 

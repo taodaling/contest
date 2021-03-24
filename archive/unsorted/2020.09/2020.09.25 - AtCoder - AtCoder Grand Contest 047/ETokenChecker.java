@@ -4,7 +4,7 @@ import chelper.AbstractChecker;
 import net.egork.chelper.tester.Verdict;
 import net.egork.chelper.checkers.Checker;
 import template.io.FastInput;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 import template.utils.Debug;
 
 public class ETokenChecker extends AbstractChecker {
@@ -39,8 +39,8 @@ public class ETokenChecker extends AbstractChecker {
             int r = actual.readInt();
             int to = actual.readInt();
 
-            if (CompareUtils.minOf(l, r, to) < 0 ||
-                    CompareUtils.maxOf(l, r, to) >= 2e5) {
+            if (SortUtils.minOf(l, r, to) < 0 ||
+                    SortUtils.maxOf(l, r, to) >= 2e5) {
                 return Verdict.WA;
             }
 

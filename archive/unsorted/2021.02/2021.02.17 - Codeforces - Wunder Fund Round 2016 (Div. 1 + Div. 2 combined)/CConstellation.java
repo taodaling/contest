@@ -3,7 +3,7 @@ package contest;
 import template.geometry.geo2.IntegerPoint2;
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -16,7 +16,7 @@ public class CConstellation {
             pts[i] = new IntegerPoint2Ext(in.ri(), in.ri());
             pts[i].id = i;
         }
-        pts = CompareUtils.<IntegerPoint2Ext>unique(pts, 0, n - 1, Comparator.<IntegerPoint2Ext>comparingLong(x -> x.x)
+        pts = SortUtils.<IntegerPoint2Ext>unique(pts, 0, n - 1, Comparator.<IntegerPoint2Ext>comparingLong(x -> x.x)
                 .thenComparingLong(x -> x.y));
         IntegerPoint2[] pair = IntegerPoint2.theNearestPointPair(Arrays.asList(pts));
         IntegerPoint2Ext a = (IntegerPoint2Ext) pair[0];

@@ -8,7 +8,7 @@ import template.io.FastOutput;
 import template.math.DigitUtils;
 import template.primitve.generated.datastructure.LongHashMap;
 import template.primitve.generated.datastructure.LongHashSet;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 import template.utils.Debug;
 
 import java.util.ArrayList;
@@ -78,7 +78,7 @@ public class FSymmetricProjections {
             }
         }
 
-        CompareUtils.quickSort(vecs, Point2.SORT_BY_XY, 0, vecs.length);
+        SortUtils.quickSort(vecs, Point2.SORT_BY_XY, 0, vecs.length);
         List<Line2> candidates = new ArrayList<>(n);
         for (int i = 0, size = vecs.length; i < size; i++) {
             int r = i;
@@ -104,7 +104,7 @@ public class FSymmetricProjections {
             for (int i = 0; i < n; i++) {
                 projections[i] = line.projection(pts[i]);
             }
-            CompareUtils.quickSort(projections, line.sortPointAlongLine(), 0, projections.length);
+            SortUtils.quickSort(projections, line.sortPointAlongLine(), 0, projections.length);
             Point2 proj = line.projection(center);
             int l = 0;
             int r = n - 1;

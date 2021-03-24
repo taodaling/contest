@@ -2,7 +2,7 @@ package contest;
 
 import template.primitve.generated.datastructure.IntegerArrayList;
 import template.primitve.generated.datastructure.IntegerHashMap;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 import template.utils.Debug;
 
 import java.util.Arrays;
@@ -101,7 +101,7 @@ public class RaceCircuit {
         map.clear();
         collect(m, 0, 0);
         int[] all = collector.toArray();
-        assert CompareUtils.strictAscending(all, 0, all.length - 1);
+        assert SortUtils.strictAscending(all, 0, all.length - 1);
         for (int i = 0; i < all.length; i++) {
             map.put(all[i], i);
         }

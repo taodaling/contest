@@ -2,7 +2,7 @@ package contest;
 
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 
 public class COptimalPolygonPerimeter {
     public void solve(int testNumber, FastInput in, FastOutput out) {
@@ -24,19 +24,19 @@ public class COptimalPolygonPerimeter {
         }
 
         //lt
-        Point lt = CompareUtils.maxOf(points, 0, n - 1, (a, b) -> {
+        Point lt = SortUtils.maxOf(points, 0, n - 1, (a, b) -> {
             return Integer.compare(a.y - a.x, b.y - b.x);
         });
         //lb
-        Point lb = CompareUtils.maxOf(points, 0, n - 1, (a, b) -> {
+        Point lb = SortUtils.maxOf(points, 0, n - 1, (a, b) -> {
             return Integer.compare(-a.y - a.x, -b.y - b.x);
         });
         //rt
-        Point rt = CompareUtils.maxOf(points, 0, n - 1, (a, b) -> {
+        Point rt = SortUtils.maxOf(points, 0, n - 1, (a, b) -> {
             return Integer.compare(a.y + a.x, b.y + b.x);
         });
         //rt
-        Point rb = CompareUtils.maxOf(points, 0, n - 1, (a, b) -> {
+        Point rb = SortUtils.maxOf(points, 0, n - 1, (a, b) -> {
             return Integer.compare(-a.y + a.x, -b.y + b.x);
         });
 

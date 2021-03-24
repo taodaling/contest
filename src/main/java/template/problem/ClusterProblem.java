@@ -2,7 +2,7 @@ package template.problem;
 
 import template.datastructure.DSU;
 import template.primitve.generated.datastructure.IntegerComparator;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 
 import java.util.Arrays;
 import java.util.stream.IntStream;
@@ -24,7 +24,7 @@ public class ClusterProblem {
 
     public static boolean[] cluster(int n, IntegerComparator comp) {
         int[] indices = IntStream.range(0, n * n).toArray();
-        CompareUtils.quickSort(indices, comp,
+        SortUtils.quickSort(indices, comp,
                 0, indices.length);
         DSUExt dsu = new DSUExt(n);
         dsu.init();

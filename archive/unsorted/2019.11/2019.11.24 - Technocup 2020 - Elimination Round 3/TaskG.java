@@ -3,7 +3,7 @@ package contest;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.rand.Randomized;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 import template.utils.SequenceUtils;
 
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ public class TaskG {
             index[i] = i;
         }
         Randomized.randomizedArray(index, 0, n);
-        CompareUtils.quickSort(index, (x, y) -> -(a[x] - a[y]), 0, n);
+        SortUtils.quickSort(index, (x, y) -> -(a[x] - a[y]), 0, n);
         int[] invIndex = new int[n];
         for (int i = 0; i < n; i++) {
             invIndex[index[i]] = i;

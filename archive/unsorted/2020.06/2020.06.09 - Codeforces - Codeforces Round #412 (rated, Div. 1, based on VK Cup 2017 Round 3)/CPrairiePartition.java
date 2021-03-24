@@ -5,7 +5,7 @@ import template.binary.Log2;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.primitve.generated.datastructure.LongList;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 
 public class CPrairiePartition {
     public void solve(int testNumber, FastInput in, FastOutput out) {

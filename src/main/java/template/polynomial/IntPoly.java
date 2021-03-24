@@ -136,11 +136,15 @@ public class IntPoly {
      * @param n
      * @return
      */
-    public int[] rightShift(int[] p, int step, int n) {
+    public int[] rightShift(int[] p, long step, int n) {
+        if(step >= n){
+            return PrimitiveBuffers.allocIntPow2(1);
+        }
         int r = rankOf(p);
-        int[] ans = PrimitiveBuffers.allocIntPow2(Math.min(r + step + 1, n));
-        for (int i = 0; i <= r && i + step < n; i++) {
-            ans[i + step] = p[i];
+        int[] ans = PrimitiveBuffers.allocIntPow2((int)Math.min(r + step + 1, n));
+        int shift = (int) step;
+        for (int i = 0; i <= r && i + shift < n; i++) {
+            ans[i + shift] = p[i];
         }
         return ans;
     }
@@ -502,14 +506,17 @@ public class IntPoly {
     }
 
     public int[] modpow(int[] p, long k, int n) {
-        return modpow(p, k, k, n);
+        return modpow(p, k, k, k, n);
     }
 
-    public int[] modpow(int[] p, long k, long kModPhi, int n) {
+    public int[] modpow(int[] p, long k, long kModPhi, long rawK, int n) {
         if (k == 0) {
             int[] ans = PrimitiveBuffers.allocIntPow2(1);
             ans[0] = 1;
             return ans;
+        }
+        if (p[0] == 1) {
+            return modpowByLnExp(p, k, n);
         }
         if (k == 1) {
             return module(p, n);
@@ -518,7 +525,8 @@ public class IntPoly {
         while (t < p.length && p[t] == 0) {
             t++;
         }
-        if (t == p.length || t >= DigitUtils.ceilDiv(n, k)) {
+        long move = DigitUtils.mul(rawK, t, Long.MAX_VALUE);
+        if (t == p.length || move >= n) {
             return PrimitiveBuffers.allocIntPow2(1);
         }
         if (GCDs.gcd(p[t], mod) != 1) {
@@ -542,7 +550,7 @@ public class IntPoly {
                 ans[i] = (int) (ans[i] * pow % mod);
             }
         }
-        ans = PrimitiveBuffers.replace(rightShift(ans, (int) (t * k), n), ans);
+        ans = PrimitiveBuffers.replace(rightShift(ans, move, n), ans);
         return ans;
     }
 

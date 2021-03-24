@@ -2,7 +2,7 @@ package contest;
 
 import template.io.FastInput;
 import template.rand.Randomized;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 
 import java.io.PrintWriter;
 import java.util.Arrays;
@@ -15,7 +15,7 @@ public class SumOfThreeValues {
         int[] p = new int[n];
         int[] indices = IntStream.range(0, n).toArray();
         in.populate(p);
-        CompareUtils.radixSort(indices, 0, n - 1, i -> p[i]);
+        SortUtils.radixSort(indices, 0, n - 1, i -> p[i]);
         for (int i = 0; i < n; i++) {
             int target = x - p[indices[i]];
             int l = i + 1;

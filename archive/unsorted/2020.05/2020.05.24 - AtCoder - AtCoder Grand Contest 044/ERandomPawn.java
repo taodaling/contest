@@ -8,7 +8,7 @@ import template.primitve.generated.datastructure.IntegerDequeImpl;
 import template.primitve.generated.datastructure.IntegerList;
 import template.problem.ConvexHullAssignProblem;
 import template.utils.ArrayIndex;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 import template.utils.Debug;
 import template.utils.SequenceUtils;
 

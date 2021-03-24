@@ -1,7 +1,7 @@
 package template.primitve.generated.datastructure;
 
 import template.datastructure.FixedMinHeap;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -46,7 +46,7 @@ public class IntegerFixedMinHeap {
 
     public void addAll(IntegerFixedMinHeap other) {
         int newLen = Math.min(size + other.size, data.length - 1);
-        CompareUtils.mergeAscending(data, 0, size - 1, other.data, 0, other.size - 1,
+        SortUtils.mergeAscending(data, 0, size - 1, other.data, 0, other.size - 1,
                 buf, 0, comparator);
         System.arraycopy(buf, 0, data, 0, newLen);
     }

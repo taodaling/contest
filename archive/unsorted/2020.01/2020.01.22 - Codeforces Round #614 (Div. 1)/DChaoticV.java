@@ -8,7 +8,7 @@ import template.primitve.generated.IntegerPreSum;
 import template.primitve.generated.IntegerMultiWayStack;
 import template.primitve.generated.MultiWayLongDeque;
 import template.primitve.generated.MultiWayLongStack;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 
 import javax.xml.bind.annotation.XmlElementDecl;
 import java.math.BigInteger;

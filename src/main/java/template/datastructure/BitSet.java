@@ -1,8 +1,7 @@
 package template.datastructure;
 
 
-import template.utils.CompareUtils;
-import template.utils.SequenceUtils;
+import template.utils.SortUtils;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -418,7 +417,7 @@ public final class BitSet implements Serializable, Cloneable, Comparable<BitSet>
         if (capacity != o.capacity) {
             return Integer.compare(capacity, o.capacity);
         }
-        return CompareUtils.compareArray(data, 0, m - 1,
+        return SortUtils.compareArray(data, 0, m - 1,
                 o.data, 0, m - 1);
     }
 }

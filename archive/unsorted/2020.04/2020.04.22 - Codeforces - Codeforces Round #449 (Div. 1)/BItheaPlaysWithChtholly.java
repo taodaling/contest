@@ -2,7 +2,7 @@ package contest;
 
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 import template.utils.SequenceUtils;
 
 import java.util.Arrays;
@@ -18,7 +18,7 @@ public class BItheaPlaysWithChtholly {
         Arrays.fill(data, -1);
 
         for (int i = 0; i < m; i++) {
-            if (SequenceUtils.indexOf(data, 0, n - 1, -1) == -1 && CompareUtils.notStrictAscending(data, 0, n - 1)) {
+            if (SequenceUtils.indexOf(data, 0, n - 1, -1) == -1 && SortUtils.notStrictAscending(data, 0, n - 1)) {
                 return;
             }
             int val = in.readInt();

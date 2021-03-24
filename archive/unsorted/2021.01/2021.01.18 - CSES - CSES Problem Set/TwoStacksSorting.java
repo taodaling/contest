@@ -3,7 +3,7 @@ package contest;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.math.DigitUtils;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 import template.utils.Debug;
 import template.utils.SequenceUtils;
 
@@ -18,7 +18,7 @@ public class TwoStacksSorting {
         int[] a = in.ri(n);
         int[] die = new int[n];
         int[] indices = IntStream.range(0, n).toArray();
-        CompareUtils.quickSort(indices, (i, j) -> Integer.compare(a[i], a[j]), 0, n);
+        SortUtils.quickSort(indices, (i, j) -> Integer.compare(a[i], a[j]), 0, n);
         int preMax = 0;
         for (int i : indices) {
             preMax = Math.max(preMax, i);

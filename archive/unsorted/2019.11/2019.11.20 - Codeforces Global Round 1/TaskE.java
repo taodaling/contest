@@ -31,7 +31,7 @@ public class TaskE {
         Randomized.randomizedArray(dt, 0, n);
         Arrays.sort(dc);
         Arrays.sort(dt);
-        if (CompareUtils.compareArray(dc, 0, n - 1, dt, 0, n - 1) == 0) {
+        if (SortUtils.compareArray(dc, 0, n - 1, dt, 0, n - 1) == 0) {
             out.println("Yes");
         } else {
             out.println("No");

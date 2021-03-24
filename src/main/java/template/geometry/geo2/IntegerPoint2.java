@@ -2,7 +2,7 @@ package template.geometry.geo2;
 
 import template.utils.GeoConstant;
 import template.math.DigitUtils;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -138,6 +138,13 @@ public class IntegerPoint2 {
         return Long.signum(cross(b, c));
     }
 
+    /**
+     * 查询c在向量ab的什么方向，1表示逆时针，-1表示顺时针，0表示向量上
+     * @param a
+     * @param b
+     * @param c
+     * @return
+     */
     public static int orient(IntegerPoint2 a, IntegerPoint2 b, IntegerPoint2 c) {
         return Long.signum(cross(b.x - a.x, b.y - a.y, c.x - a.x, c.y - a.y));
     }
@@ -375,7 +382,7 @@ public class IntegerPoint2 {
         }
 
         //merge sort
-        CompareUtils.<IntegerPoint2>mergeAscending(pts, l, m, pts, m + 1, r, buf, l, (a, b) -> Long.compare(a.y, b.y));
+        SortUtils.<IntegerPoint2>mergeAscending(pts, l, m, pts, m + 1, r, buf, l, (a, b) -> Long.compare(a.y, b.y));
         System.arraycopy(buf, l, pts, l, r - l + 1);
         return ans;
     }

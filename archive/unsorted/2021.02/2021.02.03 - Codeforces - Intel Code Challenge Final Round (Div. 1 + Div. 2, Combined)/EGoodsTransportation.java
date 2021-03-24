@@ -5,7 +5,7 @@ import template.io.FastOutput;
 import template.math.DigitUtils;
 import template.primitve.generated.datastructure.IntegerComparator;
 import template.primitve.generated.datastructure.LongComparator;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 import template.utils.Debug;
 
 public class EGoodsTransportation {

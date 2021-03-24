@@ -7,7 +7,7 @@ import template.io.FastInput;
 import template.io.FastOutput;
 import template.math.DigitUtils;
 import template.math.Power;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -139,7 +139,7 @@ public class CGraphTranspositions {
             }
         }
 
-        Vertex ans = CompareUtils.min(vs[0][n - 1], vs[1][n - 1], comparator);
+        Vertex ans = SortUtils.min(vs[0][n - 1], vs[1][n - 1], comparator);
 
         int mod = 998244353;
         Power pow = new Power(mod);

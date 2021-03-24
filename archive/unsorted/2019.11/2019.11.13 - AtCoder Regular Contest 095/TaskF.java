@@ -3,7 +3,7 @@ package contest;
 import java.util.ArrayList;
 import java.util.List;
 
-import template.CompareUtils;
+import template.SortUtils;
 import template.FastInput;
 import template.FastOutput;
 import template.IntegerList;
@@ -83,7 +83,7 @@ public class TaskF {
         SequenceUtils.reverse(trace, 0, trace.size() - 1);
         genPerm(trace, p2);
 
-        if (CompareUtils.compareArray(p1.getData(), p2.getData(), 0, p1.size() - 1, 0, p2.size() - 1) > 0) {
+        if (SortUtils.compareArray(p1.getData(), p2.getData(), 0, p1.size() - 1, 0, p2.size() - 1) > 0) {
             IntegerList tmp = p1;
             p1 = p2;
             p2 = tmp;

@@ -1,7 +1,7 @@
 package template.problem;
 
 import template.primitve.generated.datastructure.LongComparator;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 
 public class CandyAssignProblemSimple {
     /**
@@ -25,7 +25,7 @@ public class CandyAssignProblemSimple {
             kthB[i] = -kthB[i];
         }
         int half = (n + 1) / 2;
-        long x = CompareUtils.theKthSmallestElement(kthB, LongComparator.NATURE_ORDER,
+        long x = SortUtils.theKthSmallestElement(kthB, LongComparator.NATURE_ORDER,
                 0, n, half);
         for (int i = 0; i < n; i++) {
             b[i] += x;

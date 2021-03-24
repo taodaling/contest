@@ -6,7 +6,7 @@ import template.io.FastInput;
 import template.io.FastOutput;
 import template.math.DigitUtils;
 import template.rand.Randomized;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 import template.utils.SequenceUtils;
 
 import java.util.Arrays;
@@ -44,7 +44,7 @@ public class ENewYearAndTheAcquaintanceEstimation {
                 data[i]--;
             }
             int[] newData = buf2.getData();
-            CompareUtils.mergeDescending(data, 0, (int)mid - 1, data, (int)mid, n - 1, newData, 0);
+            SortUtils.mergeDescending(data, 0, (int)mid - 1, data, (int)mid, n - 1, newData, 0);
             return ErdosGallaiTheorem.maxOnAllK(newData);
         };
 

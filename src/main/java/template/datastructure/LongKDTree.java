@@ -1,6 +1,6 @@
 package template.datastructure;
 
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 import template.utils.ToLongFunction;
 
 import java.util.Arrays;
@@ -223,7 +223,7 @@ public class LongKDTree {
         }
         int k = ((r - l) >>> 1) + 1;
 
-        CompareUtils.theKthSmallestElement(buf, comparators[depth % dimension],
+        SortUtils.theKthSmallestElement(buf, comparators[depth % dimension],
                 l, r + 1, k);
         Node root = buf[l + k - 1];
         root.left = refactorDfs(l, l + k - 2, depth + 1);

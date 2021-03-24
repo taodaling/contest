@@ -4,7 +4,7 @@ import template.io.FastInput;
 import template.io.FastOutput;
 import template.math.DigitUtils;
 import template.primitve.generated.datastructure.IntegerVersionArray;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,7 +30,7 @@ public class DDividingKingdomII {
         List<Edge> collect = new ArrayList<>();
         Edge[] special = new Edge[m];
         Segment seg = new Segment(0, m - 1, i -> edges[i]);
-        CompareUtils.ensureObjectSpace(m);
+        SortUtils.ensureObjectSpace(m);
         for (int i = 0; i < q; i++) {
             int l = in.readInt() - 1;
             int r = in.readInt() - 1;
@@ -38,7 +38,7 @@ public class DDividingKingdomII {
             seg.query(l, r, 0, m - 1, collect);
             int k = collect.size();
             collect.toArray(special);
-            CompareUtils.radixSortIntObject(special, 0, k - 1, x -> x.w);
+            SortUtils.radixSortIntObject(special, 0, k - 1, x -> x.w);
             int ans = -1;
             dsu.reset();
             for (int j = k - 1; j >= 0; j--) {

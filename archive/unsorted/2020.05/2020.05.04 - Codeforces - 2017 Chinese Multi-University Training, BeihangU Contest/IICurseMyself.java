@@ -8,7 +8,7 @@ import template.primitve.generated.graph.IntegerWeightGraph;
 import template.primitve.generated.graph.IntegerWeightUndirectedEdge;
 import template.problem.KthSmallestCardGroup;
 import template.rand.Randomized;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 import template.utils.Debug;
 import template.utils.SequenceUtils;
 

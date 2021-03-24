@@ -356,7 +356,8 @@ public class DigitUtils {
     }
 
     public static long modInverse(long x, long mod) {
-        assert longExtGCDObject.extgcd(x, mod) == 1;
+        long g = longExtGCDObject.extgcd(x, mod);
+        assert g == 1;
         long a = longExtGCDObject.getX();
         return DigitUtils.mod(a, mod);
     }

@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import template.CollectionUtils;
-import template.CompareUtils;
+import template.SortUtils;
 import template.FastInput;
 import template.FastOutput;
 
@@ -33,7 +33,7 @@ public class TaskD {
             nodes[i].colorCnts.put(nodes[i].c, 1);
         }
 
-        Node min = CompareUtils.minOf(nodes, 0, n - 1, (a, b) -> Integer.compare(a.w, b.w));
+        Node min = SortUtils.minOf(nodes, 0, n - 1, (a, b) -> Integer.compare(a.w, b.w));
         Node second = Arrays.stream(nodes).filter((a) -> a.c != min.c).min((a, b) -> Integer.compare(a.w, b.w))
                         .orElse(min);
 

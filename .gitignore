@@ -30,3 +30,7 @@ _*
 .idea/*
 out/*
 testcase/*
+archive/**
+
+#executable file
+*.exe

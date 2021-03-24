@@ -1,0 +1,65 @@
+{
+  "name" : "A. Mashmokh and Numbers",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5 2\n",
+    "output" : "1 2 3 4 5\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "5 3\n",
+    "output" : "2 4 3 7 1\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "7 2\n",
+    "output" : "-1\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "1 0",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "2 0",
+    "index" : 4,
+    "active" : true
+  }, {
+    "input" : "2 1000",
+    "index" : 5,
+    "active" : true
+  }, {
+    "input" : "4 1000",
+    "index" : 6,
+    "active" : true
+  }, {
+    "input" : "1 3",
+    "index" : 7,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_03.on2021_03_20_Codeforces___Codeforces_Round__240__Div__1_.A__Mashmokh_and_Numbers.AMashmokhAndNumbers",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.03.20",
+  "contestName" : "Codeforces - Codeforces Round #240 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

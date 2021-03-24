@@ -2,7 +2,7 @@ package contest;
 
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 import template.utils.SequenceUtils;
 
 public class FSpeedDial {
@@ -19,7 +19,7 @@ public class FSpeedDial {
         }
 
         int[] dp = dfsTrie(trie);
-        int ans = CompareUtils.minOf(dp, 0, k);
+        int ans = SortUtils.minOf(dp, 0, k);
         out.println(ans);
     }
 

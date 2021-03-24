@@ -6,7 +6,7 @@ import template.graph.UndirectedEdge;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.primitve.generated.datastructure.IntegerFixedMinHeap;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 
 import java.util.List;
 
@@ -60,7 +60,7 @@ public class CreatingOffices {
             }
             buf[wpos++] = highest[e.to];
         }
-        CompareUtils.quickSort(buf, (a, b) -> Integer.compare(depth[a], depth[b]), 0, wpos);
+        SortUtils.quickSort(buf, (a, b) -> Integer.compare(depth[a], depth[b]), 0, wpos);
         int begin = 0;
         while (begin + 1 < wpos && depth[buf[begin]] + depth[buf[begin + 1]] - depth[root] * 2 < d) {
             added[buf[begin]] = false;

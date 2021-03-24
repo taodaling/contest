@@ -1,7 +1,7 @@
 package contest;
 
 import template.rand.Randomized;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 
 import java.util.Arrays;
 
@@ -62,7 +62,7 @@ public class MaxPoints {
         for (int i = 0; i < n; i++) {
             index[i] = i;
         }
-        CompareUtils.quickSort(index, (a, b) -> Integer.compare(x[a], x[b]), 0, n);
+        SortUtils.quickSort(index, (a, b) -> Integer.compare(x[a], x[b]), 0, n);
         long pSum = 0;
         long sSum = 0;
         long[] dist = new long[n];

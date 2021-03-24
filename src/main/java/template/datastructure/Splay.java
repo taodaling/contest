@@ -253,6 +253,8 @@ public class Splay implements Cloneable {
         if (b == NIL) {
             return a;
         }
+        splay(a);
+        splay(b);
         a = selectMaxAsRoot(a);
         a.setRight(b);
         a.pushUp();
@@ -340,6 +342,12 @@ public class Splay implements Cloneable {
             a = add(a, kickedOut);
         }
         return merge(a, b);
+    }
+
+    public static int rank(Splay root) {
+        assert root != NIL;
+        splay(root);
+        return root.left.size + 1;
     }
 
     /**

@@ -3,7 +3,7 @@ package contest;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.math.DigitUtils;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 import template.utils.SequenceUtils;
 
 import java.util.Arrays;
@@ -75,7 +75,7 @@ class Block {
         this.buf = buf;
         this.l = l;
         this.r = r;
-        CompareUtils.radixSort(indexes, l, r, k -> data[k]);
+        SortUtils.radixSort(indexes, l, r, k -> data[k]);
     }
 
     public void update(int ll, int rr, int x) {
@@ -92,7 +92,7 @@ class Block {
             data[i] = Math.min(inf, data[i] + x);
         }
 
-        CompareUtils.radixSort(indexes, l, r, k -> data[k]);
+        SortUtils.radixSort(indexes, l, r, k -> data[k]);
     }
 
     public boolean queryLeft(int x) {

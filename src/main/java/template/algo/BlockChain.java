@@ -25,8 +25,17 @@ public class BlockChain<S, U, E, B extends BlockChain.Block<S, U, E, B>> {
         LinkedNode<B> node = new LinkedNode<>();
         node.data = block;
         node.size = 0;
+        this.B = B;
         LinkedNode.link(tail.prev, node);
         LinkedNode.link(node, tail);
+    }
+
+    private BlockChain(int B, LinkedNode<B> begin, LinkedNode<B> end) {
+        //add an empty node
+        this.B = B;
+        LinkedNode.link(head, begin);
+        LinkedNode.link(end, tail);
+        maintain();
     }
 
     public BlockChain(int n, int B, Int2ToObjectFunction<B> supplier) {
@@ -46,6 +55,7 @@ public class BlockChain<S, U, E, B extends BlockChain.Block<S, U, E, B>> {
             LinkedNode.link(node, tail);
         }
     }
+
 
     void split(LinkedNode<B> node, int n) {
         //split if necessary
@@ -72,7 +82,9 @@ public class BlockChain<S, U, E, B extends BlockChain.Block<S, U, E, B>> {
     }
 
     void maintain() {
+        size = 0;
         for (LinkedNode<B> node = head.next; node != tail; node = node.next) {
+            size += node.size;
             if (node.size >= 2 * B) {
                 split(node, B);
             } else if (node.prev != head && node.size + node.prev.size <= B) {
@@ -120,6 +132,27 @@ public class BlockChain<S, U, E, B extends BlockChain.Block<S, U, E, B>> {
     }
 
     /**
+     * k-th in res.b
+     *
+     * @param k
+     * @return
+     */
+    public Pair<BlockChain<S, U, E, B>, BlockChain<S, U, E, B>> split(int k, Supplier<B> supplier) {
+        if (k == 1) {
+            return new Pair<>(new BlockChain<>(B, supplier), this);
+        }
+        if (k > size) {
+            return new Pair<>(this, new BlockChain<>(B, supplier));
+        }
+        LinkedNode<B> head = splitKth(k);
+        LinkedNode<B> end = tail.prev;
+        LinkedNode.link(head.prev, tail);
+        BlockChain<S, U, E, B> b = new BlockChain<>(B, head, end);
+        maintain();
+        return new Pair<>(this, b);
+    }
+
+    /**
      * insert after the index-th elements, 0 means first
      *
      * @param index
@@ -133,7 +166,6 @@ public class BlockChain<S, U, E, B extends BlockChain.Block<S, U, E, B>> {
             }
             node.data.insert(index, e);
             node.size++;
-            size++;
             break;
         }
         maintain();
@@ -147,8 +179,6 @@ public class BlockChain<S, U, E, B extends BlockChain.Block<S, U, E, B>> {
             }
             node.data.delete(index);
             node.size--;
-            size--;
-
             break;
         }
         maintain();

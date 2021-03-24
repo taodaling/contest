@@ -6,7 +6,7 @@ import template.geometry.LineConvexHull;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.primitve.generated.IntegerBIT;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;

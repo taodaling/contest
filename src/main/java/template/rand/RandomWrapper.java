@@ -1,18 +1,20 @@
 package template.rand;
 
+import java.util.Random;
+
 public class RandomWrapper {
-    private MersenneTwisterFast random;
+    private Random random;
 
     public RandomWrapper() {
-        this(new MersenneTwisterFast());
+        this(new Random());
     }
 
-    public RandomWrapper(MersenneTwisterFast random) {
+    public RandomWrapper(Random random) {
         this.random = random;
     }
 
     public RandomWrapper(long seed) {
-        this(new MersenneTwisterFast(seed));
+        this(new Random(seed));
     }
 
     public int nextInt(int l, int r) {
@@ -33,11 +35,11 @@ public class RandomWrapper {
     }
 
     public long nextLong(long l, long r) {
-        return random.nextLong(r - l + 1) + l;
+        return nextLong(r - l + 1) + l;
     }
 
     public long nextLong(long n) {
-        return random.nextLong(n);
+        return Math.round(random.nextDouble() * (n - 1));
     }
 
     public long nextLong() {
@@ -52,7 +54,7 @@ public class RandomWrapper {
         return builder.toString();
     }
 
-    public MersenneTwisterFast getRandom() {
+    public Random getRandom() {
         return random;
     }
 

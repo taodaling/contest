@@ -1,0 +1,36 @@
+{
+  "name" : "DisjointDiceValues",
+  "signature" : {
+    "name" : "getProbability",
+    "result" : "double",
+    "arguments" : [ "int", "int" ],
+    "argumentNames" : [ "A", "B" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "1", "1" ],
+    "result" : "0.16666666666666663",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "4", "1" ],
+    "result" : "0.5177469135802468",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "1", "4" ],
+    "result" : "0.5177469135802468",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "3", "3" ],
+    "result" : "0.7910236625514401",
+    "index" : 3,
+    "active" : true
+  } ],
+  "date" : "2021.03.19",
+  "contestName" : "Single Round Match 802",
+  "testClasses" : [ ],
+  "fqn" : "on2021_03.on2021_03_19_Single_Round_Match_802.DisjointDiceValues.DisjointDiceValues",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

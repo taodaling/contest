@@ -5,7 +5,7 @@ import template.io.FastOutput;
 import template.math.InverseNumber;
 import template.math.Modular;
 import template.math.Power;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 import template.utils.Debug;
 
 import java.util.Arrays;

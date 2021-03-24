@@ -2,7 +2,7 @@ package template.rand;
 
 import template.graph.DirectedEdge;
 import template.graph.UndirectedEdge;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -80,7 +80,7 @@ public class HashOnTree {
                 children[i] = sub[e.to];
             }
         }
-        assert CompareUtils.notStrictAscending(children, 0, children.length - 1);
+        assert SortUtils.notStrictAscending(children, 0, children.length - 1);
         rh.populate(i -> HashUtils.hash(children[i]), children.length);
         hash[root] = rh.hashV(0, children.length - 1);
         for (int i = 0; i < g[root].size(); i++) {

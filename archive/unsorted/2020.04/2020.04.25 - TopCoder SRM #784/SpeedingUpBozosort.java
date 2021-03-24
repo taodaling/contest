@@ -5,7 +5,7 @@ import template.math.Matrix;
 import template.math.Radix;
 import template.primitve.generated.datastructure.IntegerHashMap;
 import template.primitve.generated.datastructure.IntegerList;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 import template.utils.Debug;
 import template.utils.SequenceUtils;
 
@@ -64,7 +64,7 @@ public class SpeedingUpBozosort {
         }
         for (int i = 0; i < m; i++) {
             int[] B = apply(A, perms[i], n);
-            if (!CompareUtils.notStrictAscending(B, 0, B.length - 1)) {
+            if (!SortUtils.notStrictAscending(B, 0, B.length - 1)) {
                 for (int j = 0; j < m; j++) {
                     int k = permToIndex[apply(perms[j], perms[i], n)];
                     matData[i][k] -= transfer[numSwaps][j];

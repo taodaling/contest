@@ -6,7 +6,7 @@ import template.math.DigitBase;
 import template.primitve.generated.IntegerList;
 import template.rand.RandomWrapper;
 import template.rand.Randomized;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 
 import java.util.Arrays;
 
@@ -46,7 +46,7 @@ public class FLostRoot {
 
         int end = leafA;
         Randomized.randomizedArray(nodes, 0, n);
-        CompareUtils.quickSort(nodes, (a, b) -> query(end, a, b) ? -1 : 1, 0, nodes.length);
+        SortUtils.quickSort(nodes, (a, b) -> query(end, a, b) ? -1 : 1, 0, nodes.length);
         int root = nodes[h];
         out.printf("! %d", root);
         out.flush();

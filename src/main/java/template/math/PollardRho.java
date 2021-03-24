@@ -13,7 +13,7 @@ public class PollardRho {
         if (n == 1) {
             return n;
         }
-        if (MillerRabin.mr(n, 5)) {
+        if (MillerRabin.mr(n, 10)) {
             return n;
         }
         while (true) {

@@ -1,16 +1,11 @@
 package template.problem;
 
-import com.fasterxml.jackson.databind.util.LinkedNode;
 import template.datastructure.LinkedListBeta;
-import template.primitve.generated.datastructure.Int2ToIntegerFunction;
-import template.primitve.generated.datastructure.IntegerArrayList;
-import template.primitve.generated.datastructure.IntegerComparator;
-import template.primitve.generated.datastructure.IntegerDequeImpl;
-import template.utils.CompareUtils;
+import template.primitve.generated.datastructure.*;
+import template.utils.Pair;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 
@@ -24,10 +19,10 @@ public class RectOnGridProblem {
      * return area, l, r, b, t
      * </pre>
      * <pre>
-     * 时间复杂度为O(n)，n为mat单元格数
+     * 时间复杂度为O(nm)
      * </pre>
      */
-    public static int[] maximumRectArea(Int2ToIntegerFunction mat, int n, int m) {
+    public static int[] maximumAllZeroRectArea(Int2ToIntegerFunction mat, int n, int m) {
         int[] low = new int[m];
         int[] lb = new int[m];
         int[] rb = new int[m];
@@ -84,7 +79,7 @@ public class RectOnGridProblem {
      * 时间复杂度O(nm)
      * </pre>
      */
-    public static long[][] countAvailableRect(Int2ToIntegerFunction mat, int n, int m) {
+    public static long[][] countAllZeroRect(Int2ToIntegerFunction mat, int n, int m) {
         long[][] tag = new long[n + 1][m + 1];
         int[] low = new int[m];
         boolean[] active = new boolean[m];
@@ -322,203 +317,6 @@ public class RectOnGridProblem {
         return maxSquareSize;
     }
 
-    /**
-     * 对所有左上角，找到最大方形，其中包含最多k个不同值。
-     * O(knm+nm\log_2nm)
-     *
-     * @return
-     */
-    public static int[][] maxSquareContainsAtMostKDistinctNumber(int[][] mat, int k) {
-        int n = mat.length;
-        int m = mat[0].length;
-        if (k == 0) {
-            return new int[n][m];
-        }
-        IntegerArrayList list = new IntegerArrayList(n * m);
-        for (int i = 0; i < n; i++) {
-            list.addAll(mat[i]);
-        }
-        list.unique();
-        DistinctCounter dc = new DistinctCounter(new int[list.size()], 0);
-        int[][] maxSquare = new int[n][m];
-        Point[][] pts = new Point[n][m];
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                pts[i][j] = new Point(i, j, list.binarySearch(mat[i][j]));
-                pts[i][j].node = new LinkedListBeta.Node<>(pts[i][j]);
-            }
-        }
-        LinkedListBeta.Node<Point>[] registry = new LinkedListBeta.Node[list.size()];
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                pts[i][j].rep = registry[pts[i][j].v];
-                registry[pts[i][j].v] = pts[i][j].node;
-            }
-            for (int j = 0; j < m; j++) {
-                registry[pts[i][j].v] = null;
-            }
-        }
-        for (int j = 0; j < m; j++) {
-            for (int i = n - 1; i >= 0; i--) {
-                pts[i][j].next = registry[pts[i][j].v];
-                registry[pts[i][j].v] = pts[i][j].node;
-            }
-            for (int i = 0; i < n; i++) {
-                registry[pts[i][j].v] = null;
-            }
-        }
-        LinkedListBeta<Point>[] rows = new LinkedListBeta[n];
-        for (int i = 0; i < n; i++) {
-            rows[i] = new LinkedListBeta<>();
-        }
-        List<LinkedListBeta.Node<Point>>[] cols = new List[m];
-        for (int i = 0; i < m; i++) {
-            cols[i] = new ArrayList<>(k + 1);
-        }
-        for (int i = n - 1; i >= 0; i--) {
-            assert dc.distinct == 0;
-            assert Arrays.stream(rows).mapToInt(LinkedListBeta::size).sum() == 0;
-            for (int j = 0; j < m; j++) {
-                Point cur = pts[i][j];
-                cols[j].remove(cur.next);
-                cols[j].add(cur.node);
-                if (cols[j].size() > k + 1) {
-                    cols[j].remove(0);
-                }
-                assert isDistinct(cols[j]);
-            }
-            for (int j = 0, r = -1; j < m; j++) {
-                int lo = i + (r - j);
-                assert dc.distinct <= k;
-                while (dc.distinct <= k && lo + 1 < n && r + 1 < m) {
-                    for (Point pt : rows[lo + 1]) {
-                        dc.modify(pt.v, 1);
-                    }
-                    for (LinkedListBeta.Node<Point> node : cols[r + 1]) {
-                        Point pt = node.val;
-                        if (pt.x <= lo + 1) {
-                            dc.modify(pt.v, 1);
-                        }
-                    }
-                    if (dc.distinct > k) {
-                        //revoke
-                        for (Point pt : rows[lo + 1]) {
-                            dc.modify(pt.v, -1);
-                        }
-                        for (LinkedListBeta.Node<Point> node : cols[r + 1]) {
-                            Point pt = node.val;
-                            if (pt.x <= lo + 1) {
-                                dc.modify(pt.v, -1);
-                            }
-                        }
-                        break;
-                    }
-                    r++;
-                    lo++;
-                    //apply
-                    for (LinkedListBeta.Node<Point> node : cols[r]) {
-                        Point pt = node.val;
-                        if (pt.rep != null && !pt.rep.singleton()) {
-                            rows[pt.x].remove(pt.rep);
-                            assert pt.rep.val.v == pt.v;
-                            assert pt.rep.val.x == pt.x;
-                            if (pt.x <= lo) {
-                                dc.modify(pt.v, -1);
-                            }
-                        }
-                        rows[pt.x].addLast(pt.node);
-                        if (rows[pt.x].size() > k + 1) {
-                            assert rows[pt.x].begin().val != pt;
-                            if (pt.x <= lo) {
-                                dc.modify(rows[pt.x].begin().val.v, -1);
-                            }
-                            rows[pt.x].remove(rows[pt.x].begin());
-                        }
-                        assert rows[pt.x].size() <= k + 1;
-                    }
-                    assert match(pts, j, r, i, lo, dc.distinct);
-                }
-
-                assert match(pts, j, r, i, lo, dc.distinct);
-
-                assert dc.distinct <= k;
-                maxSquare[i][j] = r - j + 1;
-                assert maxSquare[i][j] >= 1;
-
-                assert checkAll(rows, j);
-                //delete item
-                for (LinkedListBeta.Node<Point> node : cols[j]) {
-                    Point pt = node.val;
-                    if (pt.node.singleton()) {
-                        continue;
-                    }
-                    assert !pt.node.singleton();
-                    assert rows[pt.x].begin() == pt.node;
-                    rows[pt.x].remove(pt.node);
-                    if (pt.x <= lo) {
-                        dc.modify(pt.v, -1);
-                    }
-                }
-                assert lo >= i;
-                for (Point pt : rows[lo]) {
-                    dc.modify(pt.v, -1);
-                }
-                assert checkAll(rows, j + 1);
-                assert match(pts, j + 1, r, i, lo - 1, dc.distinct);
-            }
-        }
-
-
-        assert dc.distinct == 0;
-        assert Arrays.stream(rows).mapToInt(LinkedListBeta::size).sum() == 0;
-        return maxSquare;
-    }
-
-    private static boolean isDistinct(List<LinkedListBeta.Node<Point>> pts) {
-        return pts.size() == pts.stream().mapToInt(x -> x.val.v).distinct().count();
-    }
-
-    private static boolean match(Point[][] mat, int l, int r, int b, int t, int distinct) {
-        DistinctCounter dc = new DistinctCounter(new int[mat.length * mat[0].length], 0);
-        for (int i = b; i <= t; i++) {
-            for (int j = l; j <= r; j++) {
-                dc.modify(mat[i][j].v, 1);
-            }
-        }
-        if (dc.distinct != distinct) {
-            return false;
-        }
-        return true;
-    }
-
-    private static boolean checkAll(LinkedListBeta<Point>[] lists, int y) {
-        for (LinkedListBeta<Point> list : lists) {
-            if (!check(list, y)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private static boolean check(LinkedListBeta<Point> list, int y) {
-        Point last = null;
-        for (Point pt : list) {
-            if (pt.y < y) {
-                return false;
-            }
-            if (last != null) {
-                if (last.x != pt.x) {
-                    return false;
-                }
-                if (last.y >= pt.y) {
-                    return false;
-                }
-            }
-            last = pt;
-        }
-        return true;
-    }
-
     private static class Point2 {
         int x;
         int y;
@@ -537,26 +335,6 @@ public class RectOnGridProblem {
             return String.format("(%d, %d, %d)", x, y, v);
         }
 
-    }
-
-    private static class Point {
-        int x;
-        int y;
-        int v;
-        LinkedListBeta.Node<Point> rep;
-        LinkedListBeta.Node<Point> node;
-        LinkedListBeta.Node<Point> next;
-
-        public Point(int x, int y, int v) {
-            this.x = x;
-            this.y = y;
-            this.v = v;
-        }
-
-        @Override
-        public String toString() {
-            return String.format("(%d, %d, %d)", x, y, v);
-        }
     }
 
     private static class DistinctCounter {
@@ -592,5 +370,95 @@ public class RectOnGridProblem {
             }
             return ans.toString();
         }
+    }
+
+    /**
+     * 给定一个矩阵，找到其中最大的一个子矩阵，矩阵中没有元素都互不相同，时间复杂度为$O(n^2m+nm\log_2n)$。
+     *
+     * @return
+     */
+    public static Pair<Integer, int[]> maxAreaDistinctRect(int[][] mat) {
+        int best = 1;
+        int rectL = 0;
+        int rectR = 0;
+        int rectB = 0;
+        int rectU = 0;
+
+        int n = mat.length;
+        int m = mat[0].length;
+        int[][] left = new int[n][m];
+        int[][] right = new int[n][m];
+        IntegerArrayList all = new IntegerArrayList(n * m);
+        for (int i = 0; i < n; i++) {
+            all.addAll(mat[i]);
+        }
+        all.unique();
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                mat[i][j] = all.binarySearch(mat[i][j]);
+            }
+        }
+
+        int k = all.size();
+        int[] leftReg = new int[k];
+        Arrays.fill(leftReg, -1);
+        int[] rightReg = new int[k];
+        Arrays.fill(rightReg, m);
+        int[] size = new int[m];
+        IntegerMinQueue dq = new IntegerMinQueue(m, IntegerComparator.REVERSE_ORDER);
+        for (int u = n - 1; u >= 0; u--) {
+            //update left and right
+            for (int j = 0; j < m; j++) {
+                left[u][j] = leftReg[mat[u][j]];
+                leftReg[mat[u][j]] = j;
+                for (int r = u + 1; r < n; r++) {
+                    left[r][j] = Math.max(left[r][j], leftReg[mat[r][j]]);
+                }
+            }
+            for (int j = 0; j < m; j++) {
+                leftReg[mat[u][j]] = -1;
+            }
+            for (int j = m - 1; j >= 0; j--) {
+                right[u][j] = rightReg[mat[u][j]];
+                rightReg[mat[u][j]] = j;
+                for (int r = u + 1; r < n; r++) {
+                    right[r][j] = Math.min(right[r][j], rightReg[mat[r][j]]);
+                }
+            }
+            for (int j = 0; j < m; j++) {
+                rightReg[mat[u][j]] = m;
+            }
+            for (int j = 0; j < m; j++) {
+                size[j] = m - j;
+            }
+            //consider top to bot
+            for (int b = u; b < n; b++) {
+                dq.clear();
+                for (int j = m - 1; j >= 0; j--) {
+                    dq.addLast(left[b][j]);
+                    if (j + 1 < m) {
+                        size[j] = Math.min(size[j], size[j + 1] + 1);
+                    }
+                    size[j] = Math.min(size[j], right[b][j] - j);
+                    while (dq.size() > size[j]) {
+                        dq.removeFirst();
+                    }
+                    while (!dq.isEmpty() && dq.min() >= j) {
+                        dq.removeFirst();
+                    }
+                    size[j] = dq.size();
+                    int area = size[j] * (b - u + 1);
+                    if (area > best) {
+                        best = area;
+                        rectL = j;
+                        rectR = rectL + size[j] - 1;
+                        rectU = u;
+                        rectB = b;
+                    }
+                }
+            }
+        }
+
+        return new Pair<>(best, new int[]{rectL, rectR, rectU, rectB});
     }
 }

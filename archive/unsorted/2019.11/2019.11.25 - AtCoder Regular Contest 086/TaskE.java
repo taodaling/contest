@@ -8,7 +8,7 @@ import template.io.FastInput;
 import template.io.FastOutput;
 import template.math.Modular;
 import template.math.Power;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 
 import java.util.*;
 

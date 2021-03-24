@@ -4,7 +4,7 @@ package template.string;
 import template.primitve.generated.datastructure.IntToIntFunction;
 import template.primitve.generated.datastructure.IntegerArrayList;
 import template.primitve.generated.datastructure.IntegerMultiWayDeque;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 
 /**
  * SAIS is an O(n) algorithm to get SA of an array
@@ -74,7 +74,7 @@ public class SAIS {
         for (int i = 0; i < n; i++) {
             rank2Index[i] = i;
         }
-        CompareUtils.radixSort(rank2Index, 0, n - 1, x -> data[x] ^ Integer.MIN_VALUE);
+        SortUtils.radixSort(rank2Index, 0, n - 1, x -> data[x] ^ Integer.MIN_VALUE);
         int rank = 0;
         index2Rank[rank2Index[0]] = 0;
         for (int i = 1; i < data.length; i++) {

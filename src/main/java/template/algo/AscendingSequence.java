@@ -1,7 +1,7 @@
 package template.algo;
 
 import template.primitve.generated.datastructure.IntegerComparator;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 
 import java.util.Arrays;
 
@@ -14,7 +14,7 @@ public final class AscendingSequence {
 
     public AscendingSequence(int[] data, boolean sorted) {
         if (!sorted) {
-            CompareUtils.insertSort(data, IntegerComparator.NATURE_ORDER, 0, data.length - 1);
+            SortUtils.insertSort(data, IntegerComparator.NATURE_ORDER, 0, data.length - 1);
         }
         this.data = data;
     }

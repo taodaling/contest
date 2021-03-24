@@ -1,0 +1,35 @@
+{
+  "name" : "A. Xor-tree",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "10\n2 1\n3 1\n4 2\n5 1\n6 2\n7 5\n8 6\n9 8\n10 5\n1 0 1 1 0 1 0 1 0 1\n1 0 1 0 0 1 1 1 0 1\n",
+    "output" : "2\n4\n7\n",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_03.on2021_03_19_Codeforces___Codeforces_Round__245__Div__1_.A__Xor_tree.AXorTree",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.03.19",
+  "contestName" : "Codeforces - Codeforces Round #245 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

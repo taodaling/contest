@@ -4,7 +4,7 @@ import net.egork.chelper.tester.StringInputStream;
 import net.egork.chelper.tester.Verdict;
 import net.egork.chelper.checkers.Checker;
 import template.io.FastInput;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 
 public class TokenCheckerE implements Checker {
     public TokenCheckerE(String parameters) {
@@ -33,7 +33,7 @@ public class TokenCheckerE implements Checker {
             apply(a, q);
         }
 
-        boolean ans = CompareUtils.notStrictAscending(a, 0, a.length - 1);
+        boolean ans = SortUtils.notStrictAscending(a, 0, a.length - 1);
         return ans ? Verdict.OK : Verdict.WA;
     }
 

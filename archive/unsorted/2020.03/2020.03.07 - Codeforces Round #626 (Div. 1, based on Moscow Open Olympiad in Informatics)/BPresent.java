@@ -6,7 +6,7 @@ import template.io.FastOutput;
 import template.primitve.generated.datastructure.IntegerList;
 import template.rand.RandomWrapper;
 import template.rand.Randomized;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 import template.utils.Debug;
 
 import java.util.Arrays;
@@ -40,7 +40,7 @@ public class BPresent {
                 list[Bits.bitAt(x, i)].add(x & mask);
             }
             for (int j = 0; j < 2; j++) {
-                CompareUtils.radixSort(list[j].getData(), 0, list[j].size() - 1);
+                SortUtils.radixSort(list[j].getData(), 0, list[j].size() - 1);
             }
             debug.debug("list", list);
             long total = checkExceed(list[0], mask) + checkExceed(list[1], mask);

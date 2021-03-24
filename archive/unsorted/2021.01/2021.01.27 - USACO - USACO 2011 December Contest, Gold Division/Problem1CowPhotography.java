@@ -4,7 +4,7 @@ import template.io.FastInput;
 import template.io.FastOutput;
 import template.primitve.generated.datastructure.IntegerArrayList;
 import template.rand.Randomized;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 
 import java.util.Arrays;
 
@@ -33,7 +33,7 @@ public class Problem1CowPhotography {
 
         int[] elements = order[0].clone();
         Randomized.shuffle(elements);
-        CompareUtils.quickSort(elements, this::compare, 0, n);
+        SortUtils.quickSort(elements, this::compare, 0, n);
         for (int e : elements) {
             out.println(list.get(e));
         }

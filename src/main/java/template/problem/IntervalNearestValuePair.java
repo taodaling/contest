@@ -2,7 +2,7 @@ package template.problem;
 
 import template.math.DigitUtils;
 import template.primitve.generated.datastructure.IntegerArrayList;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 
 import java.util.Arrays;
 import java.util.stream.IntStream;
@@ -45,7 +45,7 @@ public class IntervalNearestValuePair {
             ceil[i] = new IntegerArrayList();
         }
         int[] indices = IntStream.range(0, n).toArray();
-        CompareUtils.quickSort(indices, (i, j) -> a[i] == a[j] ? Integer.compare(i, j) : -Long.compare(a[i], a[j]), 0, n);
+        SortUtils.quickSort(indices, (i, j) -> a[i] == a[j] ? Integer.compare(i, j) : -Long.compare(a[i], a[j]), 0, n);
 
         SegmentBS segBS = new SegmentBS(0, n - 1);
         segBS.reset(0, n - 1, inf);

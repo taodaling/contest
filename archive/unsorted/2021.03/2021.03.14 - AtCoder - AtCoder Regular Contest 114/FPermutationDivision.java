@@ -5,7 +5,7 @@ import template.io.FastInput;
 import template.io.FastOutput;
 import template.string.IntArrayIntSequenceAdapter;
 import template.string.IntSequence;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 import template.utils.SequenceUtils;
 
 import java.util.ArrayList;
@@ -62,7 +62,7 @@ public class FPermutationDivision {
         }
         list.add(new IntArrayIntSequenceAdapter(p, lastCut, n - 1));
         IntSequence[] data = list.toArray(new IntSequence[0]);
-        CompareUtils.mergeSort(data, Comparator.naturalOrder(), 0, data.length, new IntSequence[data.length]);
+        SortUtils.mergeSort(data, Comparator.naturalOrder(), 0, data.length, new IntSequence[data.length]);
         SequenceUtils.reverse(data);
         for (IntSequence seq : data) {
             for (int i = 0; i < seq.length(); i++) {

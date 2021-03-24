@@ -11,7 +11,7 @@ import framework.io.FileUtils;
 import net.egork.chelper.task.Test;
 import net.egork.chelper.tester.TestCase;
 import template.rand.RandomWrapper;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 
 public class P4314CPUTestCase {
     @TestCase
@@ -102,9 +102,9 @@ public class P4314CPUTestCase {
             int l = x[1] - 1;
             int r = x[2] - 1;
             if (c == 'Q') {
-                collect.add(CompareUtils.maxOf(a, l, r));
+                collect.add(SortUtils.maxOf(a, l, r));
             } else if (c == 'A') {
-                collect.add(CompareUtils.maxOf(b, l, r));
+                collect.add(SortUtils.maxOf(b, l, r));
             } else if (c == 'P') {
                 int z = x[3];
                 for (int i = l; i <= r; i++) {

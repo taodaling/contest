@@ -51,4 +51,9 @@ public class DoubleMinQueue {
     public boolean isEmpty() {
         return data.isEmpty();
     }
+
+    @Override
+    public String toString() {
+        return data.toString();
+    }
 }

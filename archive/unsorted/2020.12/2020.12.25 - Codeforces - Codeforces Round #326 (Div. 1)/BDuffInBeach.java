@@ -4,7 +4,7 @@ import template.io.FastInput;
 import template.io.FastOutput;
 import template.math.DigitUtils;
 import template.rand.Randomized;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 import template.utils.Debug;
 
 import java.util.Arrays;
@@ -21,7 +21,7 @@ public class BDuffInBeach {
         int[] a = new int[n];
         in.populate(a);
         int[] indices = IntStream.range(0, n).toArray();
-        CompareUtils.quickSort(indices, (i, j) -> Integer.compare(a[i], a[j]),
+        SortUtils.quickSort(indices, (i, j) -> Integer.compare(a[i], a[j]),
                 0, n);
         int[] inv = new int[n];
         for (int i = 0; i < n; i++) {

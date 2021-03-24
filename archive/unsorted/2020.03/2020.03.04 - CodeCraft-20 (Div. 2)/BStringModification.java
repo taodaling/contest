@@ -3,7 +3,7 @@ package contest;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.rand.Randomized;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 import template.utils.SequenceUtils;
 
 import java.util.Arrays;
@@ -18,7 +18,7 @@ public class BStringModification {
         char[] reorder = new char[s.length];
         for (int i = 2; i <= n; i++) {
             apply(s, i, reorder);
-            if (CompareUtils.compareArray(best, 0, n - 1, reorder, 0, n - 1) > 0) {
+            if (SortUtils.compareArray(best, 0, n - 1, reorder, 0, n - 1) > 0) {
                 System.arraycopy(reorder, 0, best, 0, n);
                 need = i;
             }

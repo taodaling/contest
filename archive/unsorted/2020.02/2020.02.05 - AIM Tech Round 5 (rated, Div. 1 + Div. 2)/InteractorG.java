@@ -5,7 +5,7 @@ import net.egork.chelper.tester.Verdict;
 import net.egork.chelper.tester.State;
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 import template.utils.SequenceUtils;
 
 import java.io.InputStream;
@@ -26,7 +26,7 @@ public class InteractorG extends AbstractInteractor {
                 interval[j] = solutionOutput.readLong();
             }
             boolean valid = interval[0] >= 1 && interval[k - 1] <= M &&
-                    CompareUtils.strictAscending(interval, 0, interval.length - 1);
+                    SortUtils.strictAscending(interval, 0, interval.length - 1);
             if (!valid) {
                 return Verdict.WA;
             }

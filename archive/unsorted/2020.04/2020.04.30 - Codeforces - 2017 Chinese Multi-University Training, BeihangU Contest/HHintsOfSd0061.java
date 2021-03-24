@@ -2,7 +2,7 @@ package contest;
 
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 
 public class HHintsOfSd0061 {
     int[] ratings = new int[10000000];
@@ -21,7 +21,7 @@ public class HHintsOfSd0061 {
     }
 
     {
-        CompareUtils.ensureIntSpace(10000000);
+        SortUtils.ensureIntSpace(10000000);
     }
 
     public void solve(int testNumber, FastInput in, FastOutput out) {
@@ -38,7 +38,7 @@ public class HHintsOfSd0061 {
         for (int i = 0; i < n; i++) {
             ratings[i] = rng61();
         }
-        CompareUtils.radixSort(ratings, 0, n - 1);
+        SortUtils.radixSort(ratings, 0, n - 1);
         for (int i = 0; i < m; i++) {
             int x = in.readInt();
             long val = (long) ratings[x] & ((1L << 32) - 1);

@@ -3,7 +3,7 @@ package contest;
 import template.datastructure.BitSet;
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 
 import java.util.Comparator;
 import java.util.HashSet;
@@ -23,7 +23,7 @@ public class Grants {
                 sets[in.ri() - 1].set(i);
             }
         }
-        BitSet[] unique = CompareUtils.unique(sets, 0, n - 1, Comparator.naturalOrder());
+        BitSet[] unique = SortUtils.unique(sets, 0, n - 1, Comparator.naturalOrder());
         int ans = unique.length;
         for (BitSet x : unique) {
             if (x.size() == 0) {

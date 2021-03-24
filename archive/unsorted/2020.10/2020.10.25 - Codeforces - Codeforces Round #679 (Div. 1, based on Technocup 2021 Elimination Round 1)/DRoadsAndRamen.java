@@ -4,7 +4,7 @@ import template.io.FastInput;
 import template.io.FastOutput;
 import template.math.DigitUtils;
 import template.primitve.generated.datastructure.IntToIntegerFunction;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 import template.utils.SequenceUtils;
 
 import java.util.ArrayList;
@@ -46,9 +46,9 @@ public class DRoadsAndRamen {
         }
 
         dfsForDepth(nodes[0], null);
-        Node a = CompareUtils.maxOf(nodes, 0, n - 1, Node.sortByDepth);
+        Node a = SortUtils.maxOf(nodes, 0, n - 1, Node.sortByDepth);
         dfsForDepth(a, null);
-        Node b = CompareUtils.maxOf(nodes, 0, n - 1, Node.sortByDepth);
+        Node b = SortUtils.maxOf(nodes, 0, n - 1, Node.sortByDepth);
         solve(a, nodes, allQuery);
         solve(b, nodes, allQuery);
         for (Query q : qs) {

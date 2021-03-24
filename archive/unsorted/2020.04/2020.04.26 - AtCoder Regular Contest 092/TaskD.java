@@ -3,7 +3,7 @@ package contest;
 import template.binary.Bits;
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 import template.utils.Debug;
 
 public class TaskD {
@@ -21,8 +21,8 @@ public class TaskD {
         long ans = 0;
         for (int i = 0; i < 29; i++) {
             int mask = (1 << (i + 1)) - 1;
-            CompareUtils.radixSort(A, 0, n - 1, a -> a & mask);
-            CompareUtils.radixSort(B, 0, n - 1, b -> b & mask);
+            SortUtils.radixSort(A, 0, n - 1, a -> a & mask);
+            SortUtils.radixSort(B, 0, n - 1, b -> b & mask);
             int am = separate(A, 0, n - 1, 1 << i);
             int bm = separate(B, 0, n - 1, 1 << i);
 

@@ -36,7 +36,31 @@ public class IntMath {
         return p < 0 ? p + mod : p;
     }
 
-    public static long pow2(long x){
+    public static long pow2(long x) {
         return x * x;
+    }
+
+    public static int ceilSqrt(long x){
+        int ans = floorSqrt(x);
+        if((long)ans * ans < x){
+            ans++;
+        }
+        return ans;
+    }
+
+    public static int floorSqrt(long x) {
+        int lo = 0;
+        int hi = (int) 2e9;
+
+        while (lo < hi) {
+            int mid = (lo + hi + 1) >> 1;
+            if ((long)mid * mid <= x) {
+                lo = mid;
+            } else {
+                hi = mid - 1;
+            }
+        }
+
+        return lo;
     }
 }

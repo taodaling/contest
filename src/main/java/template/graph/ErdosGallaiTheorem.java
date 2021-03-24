@@ -4,7 +4,7 @@ import template.primitve.generated.datastructure.IntegerArrayList;
 import template.primitve.generated.datastructure.IntegerPreSum;
 import template.primitve.generated.datastructure.IntegerPriorityQueue;
 import template.primitve.generated.utils.IntegerBinaryConsumer;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 import template.utils.SequenceUtils;
 
 /**
@@ -58,7 +58,7 @@ public class ErdosGallaiTheorem {
         if (sum % 2 == 1 || min < 0) {
             return Long.MAX_VALUE;
         }
-        CompareUtils.radixSort(degs, 0, degs.length - 1);
+        SortUtils.radixSort(degs, 0, degs.length - 1);
         SequenceUtils.reverse(degs, 0, degs.length - 1);
         int n = degs.length;
         IntegerPreSum ps = new IntegerPreSum(i -> degs[i], degs.length);

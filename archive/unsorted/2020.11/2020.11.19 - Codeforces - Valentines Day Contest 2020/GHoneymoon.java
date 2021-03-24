@@ -6,7 +6,7 @@ import template.primitve.generated.datastructure.IntegerBIT;
 import template.primitve.generated.datastructure.IntegerRange2DequeAdapter;
 import template.primitve.generated.datastructure.LongBIT;
 import template.primitve.generated.datastructure.LongPreSum;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 import template.utils.Debug;
 
 import java.util.Arrays;
@@ -46,7 +46,7 @@ public class GHoneymoon {
         IntegerBIT occurBIT = new IntegerBIT(n);
         LongBIT sumBIT = new LongBIT(n);
         int[] indices = IntStream.range(0, n).toArray();
-        CompareUtils.quickSort(indices, (i, j) -> -Long.compare(C[i], C[j]), 0, n);
+        SortUtils.quickSort(indices, (i, j) -> -Long.compare(C[i], C[j]), 0, n);
         Query[] queriesSortByLow = queries.clone();
         Arrays.sort(queriesSortByLow, (x, y) -> -Long.compare(x.low, y.low));
         IntegerRange2DequeAdapter dq = new IntegerRange2DequeAdapter(i -> indices[i], 0, n - 1);

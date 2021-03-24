@@ -5,7 +5,7 @@ import template.io.FastOutput;
 import template.primitve.generated.datastructure.IntegerArrayList;
 import template.primitve.generated.datastructure.LongArrayList;
 import template.rand.Randomized;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 import template.utils.SequenceUtils;
 
 import java.util.Arrays;
@@ -19,7 +19,7 @@ public class AKnapsack {
         in.populate(vs);
         IntegerArrayList list = new IntegerArrayList(n);
         int[] indices = IntStream.range(0, n).toArray();
-        CompareUtils.quickSort(indices, (i, j) -> -Long.compare(vs[i], vs[j]), 0, n);
+        SortUtils.quickSort(indices, (i, j) -> -Long.compare(vs[i], vs[j]), 0, n);
         long sum = 0;
         for (int i : indices) {
             if (vs[i] + sum <= w) {

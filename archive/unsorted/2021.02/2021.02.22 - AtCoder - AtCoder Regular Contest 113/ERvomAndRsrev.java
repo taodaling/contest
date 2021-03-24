@@ -2,7 +2,7 @@ package contest;
 
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 import template.utils.Debug;
 
 import java.util.ArrayList;
@@ -51,7 +51,7 @@ public class ERvomAndRsrev {
                 }
                 sum = Math.max(sum, interval.cnt);
             }
-            zero = CompareUtils.maxOf(zero, zero + sum - 2);
+            zero = SortUtils.maxOf(zero, zero + sum - 2);
             if (zero % 2 != zeroCnt % 2) {
                 zero--;
             }

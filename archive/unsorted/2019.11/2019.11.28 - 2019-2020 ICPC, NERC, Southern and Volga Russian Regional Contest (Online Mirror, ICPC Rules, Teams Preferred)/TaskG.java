@@ -2,7 +2,7 @@ package contest;
 
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 import template.utils.SequenceUtils;
 
 import java.util.Map;
@@ -67,7 +67,7 @@ public class TaskG {
             map.put(Math.min(preA, preB), i);
         }
 
-        int minWinCost = CompareUtils.minOf(winReq, 0, n - 1);
+        int minWinCost = SortUtils.minOf(winReq, 0, n - 1);
         if (minWinCost >= n) {
             out.println(-1);
             return;

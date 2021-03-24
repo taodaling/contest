@@ -3,7 +3,7 @@ package contest;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.primitve.generated.datastructure.IntegerBIT;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 import template.utils.SequenceUtils;
 
 import java.util.stream.IntStream;
@@ -14,7 +14,7 @@ public class PyramidArray {
         int[] a = new int[n];
         in.populate(a);
         int[] indices = IntStream.range(0, n).toArray();
-        CompareUtils.radixSort(indices, 0, n - 1, i -> a[i]);
+        SortUtils.radixSort(indices, 0, n - 1, i -> a[i]);
         SequenceUtils.reverse(indices);
         int[] before = new int[n];
         int[] after = new int[n];
@@ -32,7 +32,7 @@ public class PyramidArray {
         }
 
         bit.clear();
-        CompareUtils.radixSort(indices, 0, n - 1, i -> a[i]);
+        SortUtils.radixSort(indices, 0, n - 1, i -> a[i]);
         long ans = 0;
         for (int i : indices) {
             ans += bit.query(i + 1, n);

@@ -3,7 +3,7 @@ package contest;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.math.Modular;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 import template.utils.SequenceUtils;
 
 public class BBalalaPower {
@@ -75,7 +75,7 @@ public class BBalalaPower {
         for (int i = 0; i < charset; i++) {
             indices[i] = i;
         }
-        CompareUtils.quickSort(indices, this::compare, 0, indices.length);
+        SortUtils.quickSort(indices, this::compare, 0, indices.length);
 
         int sum = 0;
         boolean[] used = new boolean[charset];

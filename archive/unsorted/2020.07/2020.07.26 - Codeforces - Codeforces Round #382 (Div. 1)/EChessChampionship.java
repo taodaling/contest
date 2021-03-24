@@ -2,7 +2,7 @@ package contest;
 
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.utils.CompareUtils;
+import template.utils.SortUtils;
 import template.utils.Debug;
 
 import java.util.ArrayList;
@@ -68,7 +68,7 @@ public class EChessChampionship {
             indices[i] = i;
         }
         for (int i = 0; i < m; i++) {
-            CompareUtils.radixSort(indices, 0, m - 1, x -> indeg[x]);
+            SortUtils.radixSort(indices, 0, m - 1, x -> indeg[x]);
             for (int j = 1; j <= outdeg[i]; j++) {
                 int use = indices[m - j];
                 if (indeg[use] <= 0) {
