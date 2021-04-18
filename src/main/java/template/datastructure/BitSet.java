@@ -214,7 +214,6 @@ public final class BitSet implements Serializable, Cloneable, Comparable<BitSet>
     public void copy(BitSet bs) {
         int n = Math.min(this.m, bs.m);
         System.arraycopy(bs.data, 0, data, 0, n);
-        Arrays.fill(data, n, n, 0);
     }
 
     public void or(BitSet bs) {
@@ -303,10 +302,10 @@ public final class BitSet implements Serializable, Cloneable, Comparable<BitSet>
         int w = word(start);
         if (offset != MAX_OFFSET) {
             long mask = oneBetween(0, offset);
-            if ((~data[w] & mask) != mask) {
+            if ((~data[w] & mask) != 0) {
                 return MAX_OFFSET - Long.numberOfLeadingZeros(~data[w] & mask) + w * BITS_FOR_EACH;
             }
-            w++;
+            w--;
         }
 
         while (w >= 0 && data[w] == ALL_ONE) {

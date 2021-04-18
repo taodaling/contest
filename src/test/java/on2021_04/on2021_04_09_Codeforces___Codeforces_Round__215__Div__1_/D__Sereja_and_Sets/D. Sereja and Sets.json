@@ -1,0 +1,55 @@
+{
+  "name" : "D. Sereja and Sets",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 2 2\n1 2\n2 1 3\n",
+    "output" : "1\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "5 1 1\n5 4 5 3 2 1\n",
+    "output" : "1\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "7 3 1\n4 1 3 5 7\n2 2 6\n1 4\n",
+    "output" : "3\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "7 3 4\n4 1 3 5 7\n2 2 6\n1 4",
+    "output" : "1",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "7 3 3\n4 1 3 5 7\n2 2 6\n1 4",
+    "output" : "1",
+    "index" : 4,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_04.on2021_04_09_Codeforces___Codeforces_Round__215__Div__1_.D__Sereja_and_Sets.DSerejaAndSets",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.04.09",
+  "contestName" : "Codeforces - Codeforces Round #215 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

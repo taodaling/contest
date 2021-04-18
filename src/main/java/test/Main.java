@@ -1,6 +1,5 @@
 package test;
 
-import com.sun.org.apache.bcel.internal.generic.FSUB;
 import template.binary.Bits;
 import template.math.Matrix;
 

@@ -9,7 +9,7 @@ import java.util.function.Supplier;
 /**
  * 笛卡尔树，中序遍历为下标递增，根元素为最小元素（如果有多个，下标较小的作为根）
  */
-public class DescartesNode<T> {
+public class DescartesNode<T extends DescartesNode<T>> {
 
     public int index;
     public T left;

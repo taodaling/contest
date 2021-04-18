@@ -1,7 +1,0 @@
-C:\Users\DALT\IdeaProjects\contest\cpp\database\Codeforces___acm_sgu_ru_archive___221__Big_Bishops\main.cpp: In function 'void solve(int, std::istream&, std::ostream&)':
-C:\Users\DALT\IdeaProjects\contest\cpp\database\Codeforces___acm_sgu_ru_archive___221__Big_Bishops\main.cpp:40:50: warning: statement has no effect [-Wunused-value]
-   dbg(len, vector<vector<int>>{rows[0], rows[1]});
-                                                  ^
-C:\Users\DALT\IdeaProjects\contest\cpp\database\Codeforces___acm_sgu_ru_archive___221__Big_Bishops\main.cpp:45:18: warning: statement has no effect [-Wunused-value]
-   dbg(sum1, sum2);
-                  ^

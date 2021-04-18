@@ -1,0 +1,43 @@
+{
+  "name" : "Median Sort",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "8\n4 2 3 1 5 7 8 6",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "4\n1 3 4 2",
+    "output" : "",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "4 \n2 1 0 3 ",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Solution",
+  "taskClass" : "on2021_03.on2021_03_26_Google_Coding_Competitions___Qualification_Round_2021___Code_Jam_2021.Median_Sort.MedianSort",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "on2021_03.on2021_03_26_Google_Coding_Competitions___Qualification_Round_2021___Code_Jam_2021.Median_Sort.MedianSortTestCase" ],
+  "date" : "2021.03.26",
+  "contestName" : "Google Coding Competitions - Qualification Round 2021 - Code Jam 2021",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : true,
+  "interactor" : "on2021_03.on2021_03_26_Google_Coding_Competitions___Qualification_Round_2021___Code_Jam_2021.Median_Sort.BaseInteractor",
+  "newThread" : true
+}

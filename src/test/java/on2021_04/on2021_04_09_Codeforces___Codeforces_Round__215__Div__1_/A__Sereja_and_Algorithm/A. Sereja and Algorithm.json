@@ -1,0 +1,35 @@
+{
+  "name" : "A. Sereja and Algorithm",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "zyxxxxxxyyz\n5\n5 5\n1 3\n1 11\n1 4\n3 6\n",
+    "output" : "YES\nYES\nNO\nYES\nNO\n",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_04.on2021_04_09_Codeforces___Codeforces_Round__215__Div__1_.A__Sereja_and_Algorithm.ASerejaAndAlgorithm",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.04.09",
+  "contestName" : "Codeforces - Codeforces Round #215 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

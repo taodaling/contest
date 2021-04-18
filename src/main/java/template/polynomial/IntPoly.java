@@ -2,20 +2,19 @@ package template.polynomial;
 
 import template.binary.Log2;
 import template.datastructure.BitSet;
-import template.math.CachedPow;
-import template.math.DigitUtils;
-import template.math.GCDs;
-import template.math.Power;
+import template.math.*;
 import template.utils.PrimitiveBuffers;
 import template.utils.SequenceUtils;
 
 public class IntPoly {
     protected int mod;
     protected Power power;
+    QuadraticResidue qr;
 
     public IntPoly(int mod) {
         this.mod = mod;
         this.power = new Power(mod);
+        qr = new QuadraticResidue(mod);
     }
 
     public int[] convolution(int[] a, int[] b) {
@@ -137,11 +136,11 @@ public class IntPoly {
      * @return
      */
     public int[] rightShift(int[] p, long step, int n) {
-        if(step >= n){
+        if (step >= n) {
             return PrimitiveBuffers.allocIntPow2(1);
         }
         int r = rankOf(p);
-        int[] ans = PrimitiveBuffers.allocIntPow2((int)Math.min(r + step + 1, n));
+        int[] ans = PrimitiveBuffers.allocIntPow2((int) Math.min(r + step + 1, n));
         int shift = (int) step;
         for (int i = 0; i <= r && i + shift < n; i++) {
             ans[i + shift] = p[i];
@@ -592,10 +591,13 @@ public class IntPoly {
      * <p>
      * 给定多项式p，要求计算p(c^0),p(c^1),\ldots,p(c^m).
      * </p>
+     * <p>
+     * O((n+m)\log_2 (n+m)
+     * </p>
      *
      * @return
      */
-    public void chripZ(int[] p, int c, int m, CachedPow cpc, int[] ans) {
+    public void chripZ(int[] p, int c, int m, CachedPow2 cpc, int[] ans) {
         int n = rankOf(p);
         int[] A = PrimitiveBuffers.allocIntPow2(n + m + 1);
         for (int i = 0; i < n + m + 1; i++) {
@@ -661,4 +663,50 @@ public class IntPoly {
         int[] b = dacPointMul(c, m + 1, r);
         return PrimitiveBuffers.replace(convolution(a, b), a, b);
     }
+
+    public int[] sqrt(int[] g, int m) {
+        int zero = 0;
+        while (zero < g.length && g[zero] == 0) {
+            zero++;
+        }
+        if (zero == g.length) {
+            return PrimitiveBuffers.allocIntPow2(1);
+        }
+        if (zero % 2 != 0) {
+            return null;
+        }
+        if (qr.square(g[zero]) == -1) {
+            return null;
+        }
+        int[] shift = zero == 0 ? g : leftShift(g, zero);
+        int[] ans = sqrt0(shift, m - zero / 2);
+        if (zero != 0) {
+            ans = PrimitiveBuffers.replace(rightShift(ans, zero / 2, m), ans);
+        }
+        if (shift != g) {
+            PrimitiveBuffers.release(shift);
+        }
+        return ans;
+    }
+
+    private int[] sqrt0(int[] g, int m) {
+        if (m == 1) {
+            int[] f = PrimitiveBuffers.allocIntPow2(1);
+            f[0] = qr.square(g[0]);
+            assert f[0] != -1;
+            return f;
+        }
+        int[] f = sqrt0(g, (m + 1) / 2);
+        int[] invF = inverse(f, m);
+        int[] prefG = PrimitiveBuffers.allocIntPow2(g, m);
+        int[] gDivF = PrimitiveBuffers.replace(convolution(invF, prefG), invF, prefG);
+        int[] sum = PrimitiveBuffers.replace(plus(f, gDivF), f, gDivF);
+        assert mod % 2 == 1;
+        int inv2 = (mod + 1) / 2;
+        for (int i = 0; i < sum.length; i++) {
+            sum[i] = (int) ((long) sum[i] * inv2 % mod);
+        }
+        return sum;
+    }
+
 }

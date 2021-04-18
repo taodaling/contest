@@ -1,5 +1,0 @@
-In file included from C:/Users/daltao/IdeaProjects/contest/cpp/libs/common.h:12,
-                 from C:\Users\daltao\IdeaProjects\contest\cpp\database\Codeforces___acm_sgu_ru_archive___113__Nearly_prime_numbers\main.cpp:1:
-C:/Users/daltao/IdeaProjects/contest/cpp/libs/compiler_macro.h:6:30: warning: '-std=c++14' is not an option that controls warnings [-Wpragmas]
- #pragma GCC diagnostic error "-std=c++14"
-                              ^~~~~~~~~~~~

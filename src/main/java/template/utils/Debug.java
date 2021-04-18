@@ -108,6 +108,13 @@ public class Debug {
         return this;
     }
 
+    public Debug debugArray(String name, boolean[] matrix) {
+        if (offline) {
+            debug(name, Arrays.toString(matrix));
+        }
+        return this;
+    }
+
     public Debug debugArray(String name, Object[] matrix) {
         if (offline) {
             debug(name, Arrays.toString(matrix));

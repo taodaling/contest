@@ -1,14 +1,13 @@
 package template.math;
 
 import template.binary.Bits;
+import template.rand.RandomWrapper;
 
 import java.util.Random;
 
 public class QuadraticResidue {
     final int mod;
     Power power;
-    Random random = new Random();
-
 
     public QuadraticResidue(int mod) {
         this.mod = mod;
@@ -33,7 +32,7 @@ public class QuadraticResidue {
             return -1;
         }
         while (true) {
-            long a = random.nextInt(p);
+            long a = RandomWrapper.INSTANCE.nextInt(p);
             int w = DigitUtils.mod(a * a - n, mod);
             if (power.pow(w, (p - 1) / 2) == 1) {
                 continue;

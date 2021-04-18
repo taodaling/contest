@@ -1,0 +1,50 @@
+{
+  "name" : "D. Sereja and Cinema",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "11\n0 0 0 0 0 0 0 0 0 0 0\n",
+    "output" : "1024\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "6\n0 3 1 0 0 0\n",
+    "output" : "3\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "6\n0 3 1 0 2 0\n",
+    "output" : "0",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "5\n0 0 1 0 3",
+    "output" : "1",
+    "index" : 3,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_03.on2021_03_29_Codeforces___Codeforces_Round__223__Div__1_.D__Sereja_and_Cinema.DSerejaAndCinema",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.03.29",
+  "contestName" : "Codeforces - Codeforces Round #223 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

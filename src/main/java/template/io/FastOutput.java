@@ -4,6 +4,11 @@ import java.io.*;
 import java.math.BigDecimal;
 
 public class FastOutput implements AutoCloseable, Closeable, Appendable {
+
+    public Writer getOs() {
+        return os;
+    }
+
     @Override
     public FastOutput append(CharSequence csq) {
         cache.append(csq);

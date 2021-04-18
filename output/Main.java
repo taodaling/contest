@@ -1,9 +1,7 @@
 import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.stream.IntStream;
 import java.io.OutputStream;
-import java.util.Arrays;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.io.Closeable;
@@ -29,142 +27,52 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            BToySum solver = new BToySum();
+            MatrixProduct solver = new MatrixProduct();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class BToySum {
-        int mirror(int x) {
-            return (int) 1e6 - x - 1;
-        }
+    static class MatrixProduct {
+        int mod = 998244353;
 
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.ri();
-            int[] used = new int[(int) 1e6];
+            int m = in.ri();
+            int k = in.ri();
+            int[][] A = new int[n][m];
+            int[][] B = new int[m][k];
+//        ModMatrix A = new ModMatrix(n, m);
             for (int i = 0; i < n; i++) {
-                used[in.ri() - 1] = -1;
-            }
-            int need = 0;
-            for (int i = 0; i < used.length; i++) {
-                int mi = mirror(i);
-                if (i >= mi) {
-                    continue;
-                }
-                if (used[i] == -1 && used[mi] == -1) {
-                    need++;
-                } else if (used[i] == -1) {
-                    used[mi] = 1;
-                } else if (used[mi] == -1) {
-                    used[i] = 1;
+                for (int j = 0; j < m; j++) {
+                    A[i][j] = in.ri();
+//                A.set(i, j, in.ri());
                 }
             }
-            for (int i = 0; i < used.length && need > 0; i++) {
-                int mi = mirror(i);
-                if (i >= mi) {
-                    continue;
-                }
-                if (used[i] == 0 && used[mi] == 0) {
-                    need--;
-                    used[i] = 1;
-                    used[mi] = 1;
+//        ModMatrix B = new ModMatrix(m, k);
+            for (int i = 0; i < m; i++) {
+                for (int j = 0; j < k; j++) {
+                    B[i][j] = in.ri();
+//                B.set(i, j, in.ri());
                 }
             }
-            int cnt = (int) Arrays.stream(used).filter(x -> x == 1).count();
-            out.println(cnt);
-            for (int i = 0; i < used.length; i++) {
-                if (used[i] == 1) {
-                    out.append(i + 1).append(' ');
+
+            long[][] ans = new long[n][k];
+            for (int i = 0; i < n; i++) {
+                for (int t = 0; t < m; t++) {
+                    for (int j = 0; j < k; j++) {
+                        ans[i][j] += (long) A[i][t] * B[t][j] % mod;
+                    }
                 }
             }
-        }
 
-    }
-
-    static class FastOutput implements AutoCloseable, Closeable, Appendable {
-        private static final int THRESHOLD = 32 << 10;
-        private final Writer os;
-        private StringBuilder cache = new StringBuilder(THRESHOLD * 2);
-
-        public FastOutput append(CharSequence csq) {
-            cache.append(csq);
-            return this;
-        }
-
-        public FastOutput append(CharSequence csq, int start, int end) {
-            cache.append(csq, start, end);
-            return this;
-        }
-
-        private void afterWrite() {
-            if (cache.length() < THRESHOLD) {
-                return;
+//        ModMatrix ans = ModMatrix.mul(A, B, mod);
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < k; j++) {
+                    out.append(ans[i][j] % mod).append(' ');
+                }
+                out.println();
             }
-            flush();
-        }
-
-        public FastOutput(Writer os) {
-            this.os = os;
-        }
-
-        public FastOutput(OutputStream os) {
-            this(new OutputStreamWriter(os));
-        }
-
-        public FastOutput append(char c) {
-            cache.append(c);
-            afterWrite();
-            return this;
-        }
-
-        public FastOutput append(int c) {
-            cache.append(c);
-            afterWrite();
-            return this;
-        }
-
-        public FastOutput println(int c) {
-            return append(c).println();
-        }
-
-        public FastOutput println() {
-            return append('\n');
-        }
-
-        public FastOutput flush() {
-            try {
-//            boolean success = false;
-//            if (stringBuilderValueField != null) {
-//                try {
-//                    char[] value = (char[]) stringBuilderValueField.get(cache);
-//                    os.write(value, 0, cache.length());
-//                    success = true;
-//                } catch (Exception e) {
-//                }
-//            }
-//            if (!success) {
-                os.append(cache);
-//            }
-                os.flush();
-                cache.setLength(0);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-            return this;
-        }
-
-        public void close() {
-            flush();
-            try {
-                os.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        }
-
-        public String toString() {
-            return cache.toString();
         }
 
     }
@@ -228,6 +136,89 @@ public class Main {
             }
 
             return val;
+        }
+
+    }
+
+    static class FastOutput implements AutoCloseable, Closeable, Appendable {
+        private static final int THRESHOLD = 32 << 10;
+        private final Writer os;
+        private StringBuilder cache = new StringBuilder(THRESHOLD * 2);
+
+        public FastOutput append(CharSequence csq) {
+            cache.append(csq);
+            return this;
+        }
+
+        public FastOutput append(CharSequence csq, int start, int end) {
+            cache.append(csq, start, end);
+            return this;
+        }
+
+        private void afterWrite() {
+            if (cache.length() < THRESHOLD) {
+                return;
+            }
+            flush();
+        }
+
+        public FastOutput(Writer os) {
+            this.os = os;
+        }
+
+        public FastOutput(OutputStream os) {
+            this(new OutputStreamWriter(os));
+        }
+
+        public FastOutput append(char c) {
+            cache.append(c);
+            afterWrite();
+            return this;
+        }
+
+        public FastOutput append(long c) {
+            cache.append(c);
+            afterWrite();
+            return this;
+        }
+
+        public FastOutput println() {
+            return append('\n');
+        }
+
+        public FastOutput flush() {
+            try {
+//            boolean success = false;
+//            if (stringBuilderValueField != null) {
+//                try {
+//                    char[] value = (char[]) stringBuilderValueField.get(cache);
+//                    os.write(value, 0, cache.length());
+//                    success = true;
+//                } catch (Exception e) {
+//                }
+//            }
+//            if (!success) {
+                os.append(cache);
+//            }
+                os.flush();
+                cache.setLength(0);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            return this;
+        }
+
+        public void close() {
+            flush();
+            try {
+                os.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+
+        public String toString() {
+            return cache.toString();
         }
 
     }

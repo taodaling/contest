@@ -11,7 +11,13 @@ public class IntMath {
         if (l > r) {
             return 0;
         }
-        return (r + l) * (r - l + 1) / 2;
+        long a = r + l;
+        long b = r - l + 1;
+        if ((a & 1) == 0) {
+            return (a >> 1) * b;
+        } else {
+            return a * (b >> 1);
+        }
     }
 
     /**
@@ -40,9 +46,9 @@ public class IntMath {
         return x * x;
     }
 
-    public static int ceilSqrt(long x){
+    public static int ceilSqrt(long x) {
         int ans = floorSqrt(x);
-        if((long)ans * ans < x){
+        if ((long) ans * ans < x) {
             ans++;
         }
         return ans;
@@ -54,7 +60,7 @@ public class IntMath {
 
         while (lo < hi) {
             int mid = (lo + hi + 1) >> 1;
-            if ((long)mid * mid <= x) {
+            if ((long) mid * mid <= x) {
                 lo = mid;
             } else {
                 hi = mid - 1;

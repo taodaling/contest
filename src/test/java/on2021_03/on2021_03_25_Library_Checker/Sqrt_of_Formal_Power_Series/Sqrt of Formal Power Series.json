@@ -1,0 +1,40 @@
+{
+  "name" : "Sqrt of Formal Power Series",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4\n0 0 9 12\n",
+    "output" : "0 3 2 332748117\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "4\n0 0 10 12\n",
+    "output" : "-1\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_03.on2021_03_25_Library_Checker.Sqrt_of_Formal_Power_Series.SqrtOfFormalPowerSeries",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.03.25",
+  "contestName" : "Library Checker",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

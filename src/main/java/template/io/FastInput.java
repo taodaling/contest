@@ -12,6 +12,9 @@ public class FastInput {
     private int bufOffset;
     private int next;
 
+    public InputStream getIs() {
+        return is;
+    }
 
     public FastInput(InputStream is) {
         this.is = is;

@@ -1,0 +1,45 @@
+{
+  "name" : "C. Sereja and the Arrangement of Numbers",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5 2\n1 2\n2 3\n",
+    "output" : "5\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "100 3\n1 2\n2 1\n3 1\n",
+    "output" : "4\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "1 2\n1 1\n2 100\n",
+    "output" : "100\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_04.on2021_04_09_Codeforces___Codeforces_Round__215__Div__1_.C__Sereja_and_the_Arrangement_of_Numbers.CSerejaAndTheArrangementOfNumbers",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.04.09",
+  "contestName" : "Codeforces - Codeforces Round #215 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

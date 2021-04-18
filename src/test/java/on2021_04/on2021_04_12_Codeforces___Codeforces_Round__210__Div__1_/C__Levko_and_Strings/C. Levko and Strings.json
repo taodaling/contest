@@ -1,0 +1,45 @@
+{
+  "name" : "C. Levko and Strings",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2 2\nyz\n",
+    "output" : "26\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "2 3\nyx\n",
+    "output" : "2\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "4 7\nabcd\n",
+    "output" : "21962\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_04.on2021_04_12_Codeforces___Codeforces_Round__210__Div__1_.C__Levko_and_Strings.CLevkoAndStrings",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.04.12",
+  "contestName" : "Codeforces - Codeforces Round #210 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

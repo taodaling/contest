@@ -1,6 +1,7 @@
 package template.algo;
 
 import template.math.Factorization;
+import template.math.LongFactorization;
 import template.primitve.generated.datastructure.LongArrayList;
 
 import java.util.function.LongPredicate;
@@ -23,4 +24,19 @@ public class DivisionDescending {
         return n;
     }
 
+    /**
+     * @see #find(long, LongPredicate)
+     * @param factorization
+     * @param predicate
+     * @return
+     */
+    public static long find(LongFactorization factorization, LongPredicate predicate) {
+        long n = factorization.g;
+        for (long x : factorization.primes) {
+            while (n % x == 0 && predicate.test(n / x)) {
+                n /= x;
+            }
+        }
+        return n;
+    }
 }

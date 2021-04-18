@@ -1,0 +1,55 @@
+{
+  "name" : "B. Online Meeting",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5 4\n+ 1\n+ 2\n- 2\n- 1\n",
+    "output" : "4\n1 3 4 5\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "3 2\n+ 1\n- 2\n",
+    "output" : "1\n3\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "2 4\n+ 1\n- 1\n+ 2\n- 2\n",
+    "output" : "0\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "5 6\n+ 1\n- 1\n- 3\n+ 3\n+ 4\n- 4\n",
+    "output" : "3\n2 3 5\n",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "2 4\n+ 1\n- 2\n+ 2\n- 1\n",
+    "output" : "0\n",
+    "index" : 4,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_03.on2021_03_25_Codeforces___Coder_Strike_2014___Finals__online_edition__Div__1_.B__Online_Meeting.BOnlineMeeting",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.03.25",
+  "contestName" : "Codeforces - Coder-Strike 2014 - Finals (online edition, Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

@@ -1,0 +1,31 @@
+{
+  "name" : "MarriageAndGamingChallenge",
+  "signature" : {
+    "name" : "solve",
+    "result" : "long",
+    "arguments" : [ "int", "int", "int", "int", "int", "int" ],
+    "argumentNames" : [ "N", "D", "state", "B", "P", "Q" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "7", "2", "47474747", "2", "50", "9" ],
+    "result" : "10",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "7", "2", "47474747", "1", "0", "9" ],
+    "result" : "23",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "1000", "10", "47", "5", "1", "3000" ],
+    "result" : "800879",
+    "index" : 2,
+    "active" : true
+  } ],
+  "date" : "2021.03.31",
+  "contestName" : "Single Round Match 803",
+  "testClasses" : [ ],
+  "fqn" : "on2021_03.on2021_03_31_Single_Round_Match_803.MarriageAndGamingChallenge.MarriageAndGamingChallenge",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

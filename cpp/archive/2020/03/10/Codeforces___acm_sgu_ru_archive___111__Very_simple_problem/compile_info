@@ -1,9 +1,0 @@
-In file included from C:/Users/daltao/IdeaProjects/contest/cpp/libs/common.h:12,
-                 from C:\Users\daltao\IdeaProjects\contest\cpp\database\Codeforces___acm_sgu_ru_archive___111__Very_simple_problem\main.cpp:1:
-C:/Users/daltao/IdeaProjects/contest/cpp/libs/compiler_macro.h:6:30: warning: '-std=c++14' is not an option that controls warnings [-Wpragmas]
- #pragma GCC diagnostic error "-std=c++14"
-                              ^~~~~~~~~~~~
-C:\Users\daltao\IdeaProjects\contest\cpp\database\Codeforces___acm_sgu_ru_archive___111__Very_simple_problem\main.cpp: In function 'void solve(int, std::istream&, std::ostream&)':
-C:\Users\daltao\IdeaProjects\contest\cpp\database\Codeforces___acm_sgu_ru_archive___111__Very_simple_problem\main.cpp:33:21: warning: comparison of integer expressions of different signedness: 'int' and 'std::__cxx11::basic_string<char>::size_type' {aka 'long long unsigned int'} [-Wsign-compare]
-   for (int i = 0; i < s.length(); i++) {
-                   ~~^~~~~~~~~~~~

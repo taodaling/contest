@@ -1,0 +1,40 @@
+{
+  "name" : "D. Choosing Subtree is Fun",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "10 6\n4 10\n10 6\n2 9\n9 6\n8 5\n7 1\n4 7\n7 3\n1 8\n",
+    "output" : "3\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "16 7\n13 11\n12 11\n2 14\n8 6\n9 15\n16 11\n5 14\n6 15\n4 3\n11 15\n15 14\n10 1\n3 14\n14 7\n1 7\n",
+    "output" : "6\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_04.on2021_04_09_Codeforces___Codeforces_Round__219__Div__1_.D__Choosing_Subtree_is_Fun.DChoosingSubtreeIsFun",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.04.09",
+  "contestName" : "Codeforces - Codeforces Round #219 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

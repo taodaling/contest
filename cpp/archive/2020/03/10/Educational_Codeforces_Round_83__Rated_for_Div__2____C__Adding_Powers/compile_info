@@ -1,9 +1,0 @@
-In file included from C:\Users\DALT\IdeaProjects\contest\cpp\database\Educational_Codeforces_Round_83__Rated_for_Div__2____C__Adding_Powers\main.cpp:1:
-C:/Users/DALT/IdeaProjects/contest/cpp/libs/common.h:82:53: warning: backslash-newline at end of file
- #define RUN_MULTI                                   \
-                                                      
-In file included from C:/Users/DALT/IdeaProjects/contest/cpp/libs/common.h:12,
-                 from C:\Users\DALT\IdeaProjects\contest\cpp\database\Educational_Codeforces_Round_83__Rated_for_Div__2____C__Adding_Powers\main.cpp:1:
-C:/Users/DALT/IdeaProjects/contest/cpp/libs/compiler_macro.h:6:30: warning: '-std=c++14' is not an option that controls warnings [-Wpragmas]
- #pragma GCC diagnostic error "-std=c++14"
-                              ^~~~~~~~~~~~

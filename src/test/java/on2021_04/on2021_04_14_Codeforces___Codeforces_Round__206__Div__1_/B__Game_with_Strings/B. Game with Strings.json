@@ -1,0 +1,70 @@
+{
+  "name" : "B. Game with Strings",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2\nab\ncd\n",
+    "output" : "DRAW\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "2\nxa\nay\n",
+    "output" : "FIRST\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "3\naab\nbcb\nbac\n",
+    "output" : "DRAW\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "1\na",
+    "output" : "FIRST",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "1\nb",
+    "output" : "SECOND",
+    "index" : 4,
+    "active" : true
+  }, {
+    "input" : "1\nc",
+    "output" : "DRAW",
+    "index" : 5,
+    "active" : true
+  }, {
+    "input" : "2\naa\naa",
+    "output" : "FIRST",
+    "index" : 6,
+    "active" : true
+  }, {
+    "input" : "2\naa\nbb",
+    "output" : "SECOND",
+    "index" : 7,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx512M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_04.on2021_04_14_Codeforces___Codeforces_Round__206__Div__1_.B__Game_with_Strings.BGameWithStrings",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.04.14",
+  "contestName" : "Codeforces - Codeforces Round #206 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

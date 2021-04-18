@@ -1,4 +1,0 @@
-C:\Users\daltao\IdeaProjects\contest\cpp\database\Educational_Codeforces_Round_82__Rated_for_Div__2____E__Erase_Subsequences\main.cpp: In function 'void solve(int, std::istream&, std::ostream&)':
-C:\Users\daltao\IdeaProjects\contest\cpp\database\Educational_Codeforces_Round_82__Rated_for_Div__2____E__Erase_Subsequences\main.cpp:36:22: warning: comparison of integer expressions of different signedness: 'int' and 'std::__cxx11::basic_string<char>::size_type' {aka 'long long unsigned int'} [-Wsign-compare]
-     for(int i = 0; i < t.size(); i++){
-                    ~~^~~~~~~~~~

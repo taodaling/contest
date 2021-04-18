@@ -1,0 +1,40 @@
+{
+  "name" : "Bob's Tree",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5\n2 2 3 1 1\n2 1\n3 1\n4 3\n5 3\n3\n2 1\n1 4 2\n2 2\n",
+    "output" : "2\n3\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "6\n2 2 2 2 2 3\n2 1\n3 1\n4 1\n5 2\n6 3\n4\n1 6 1\n1 1 2\n1 3 2\n2 2\n",
+    "output" : "3\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx512M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_03.on2021_03_31_CS_Academy___Virtual_FII_Code_Round__3.Bob_s_Tree.BobsTree",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.03.31",
+  "contestName" : "CS Academy - Virtual FII Code Round #3",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

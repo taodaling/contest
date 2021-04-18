@@ -71,7 +71,6 @@ public class RangeTree {
     }
 
 
-
     private int lastSet(int i, int x) {
         assert i < 0 || data[i][x] != 0;
         for (; i >= 0; i--) {
@@ -110,6 +109,9 @@ public class RangeTree {
 
 
     public int floor(int x) {
+        if (x < 0) {
+            return -1;
+        }
         if (contains(x)) {
             return x;
         }
@@ -124,7 +126,14 @@ public class RangeTree {
         return -1;
     }
 
+    private boolean check(int i) {
+        return i >= 0 && i < n;
+    }
+
     public int ceil(int x) {
+        if(x >= n){
+            return -1;
+        }
         if (contains(x)) {
             return x;
         }

@@ -1,4 +1,0 @@
-C:\Users\DALT\IdeaProjects\contest\cpp\database\Codeforces___acm_sgu_ru_archive___263__Towers\main.cpp: In function 'void solve(int, std::istream&, std::ostream&)':
-C:\Users\DALT\IdeaProjects\contest\cpp\database\Codeforces___acm_sgu_ru_archive___263__Towers\main.cpp:270:14: warning: statement has no effect [-Wunused-value]
-     dbg(root);
-              ^

@@ -1,0 +1,35 @@
+{
+  "name" : "E. Two Rooted Trees",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "10\n10 1 5 10 8 1 1 7 8\n6 1 1 1 5 1 4 6 7\n4",
+    "output" : "Blue\n4\nRed\n3 4 5 7\nBlue\n1 3 5 7 8 9\nRed\n1 8 9",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx512M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_03.on2021_03_25_Codeforces___Codeforces_Round__236__Div__1_.E__Two_Rooted_Trees.ETwoRootedTrees",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "on2021_03.on2021_03_25_Codeforces___Codeforces_Round__236__Div__1_.E__Two_Rooted_Trees.ETwoRootedTreesTestCase" ],
+  "date" : "2021.03.25",
+  "contestName" : "Codeforces - Codeforces Round #236 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

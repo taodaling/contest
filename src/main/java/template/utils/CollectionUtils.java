@@ -62,14 +62,17 @@ public class CollectionUtils {
     public static <T> T pop(List<T> list) {
         return list.remove(list.size() - 1);
     }
+
     public static <T> T peek(List<T> list) {
         return list.get(list.size() - 1);
     }
-    public static <K, V> V floorValue(NavigableMap<K, V> map, K key){
+
+    public static <K, V> V floorValue(NavigableMap<K, V> map, K key) {
         Map.Entry<K, V> entry = map.floorEntry(key);
         return entry == null ? null : entry.getValue();
     }
-    public static <K, V> V ceilValue(NavigableMap<K, V> map, K key){
+
+    public static <K, V> V ceilValue(NavigableMap<K, V> map, K key) {
         Map.Entry<K, V> entry = map.ceilingEntry(key);
         return entry == null ? null : entry.getValue();
     }

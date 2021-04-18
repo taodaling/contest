@@ -2,6 +2,7 @@ package template.problem;
 
 import template.datastructure.LinkedListBeta;
 import template.primitve.generated.datastructure.*;
+import template.primitve.generated.utils.IntegerBinaryConsumer;
 import template.utils.Pair;
 
 import java.util.ArrayList;
@@ -69,6 +70,163 @@ public class RectOnGridProblem {
         }
 
         return new int[]{best, left, right, bottom, up};
+    }
+
+    public static long countExactlyKOneRect(int[][] mat, int k) {
+        return new ExactlyKOneRectSovler().count(mat, k);
+    }
+
+    private static class ExactlyKOneRectSovler {
+        int[] left;
+        int[] right;
+        int[] matchSize;
+        long matchPair;
+        int[] size;
+        void add(int x, int sign) {
+            assert size[x] > 0;
+            matchPair += sign * (right[x] - left[x] + 1) * matchSize[x];
+            assert matchPair >= 0;
+        }
+
+        /**
+         * O(max(1,k^2)nm)
+         *
+         * @param mat
+         * @param k
+         * @return
+         */
+        public long count(int[][] mat, int k) {
+            int n = mat.length;
+            int m = mat[0].length;
+
+            if (k == 0) {
+                long[][] res = countAllZeroRect((i, j) -> mat[i][j], n, m);
+                long ans = 0;
+                for (int i = 1; i <= n; i++) {
+                    for (int j = 1; j <= m; j++) {
+                        ans += res[i][j];
+                    }
+                }
+
+                return ans;
+            }
+
+            int[][] next = new int[n + 1][m];
+            Arrays.fill(next[n], n);
+            for (int i = n - 1; i >= 0; i--) {
+                for (int j = 0; j < m; j++) {
+                    next[i][j] = next[i + 1][j];
+                    if (mat[i][j] == 1) {
+                        next[i][j] = i;
+                    }
+                }
+            }
+
+            IntegerMultiWayStack stack = new IntegerMultiWayStack(n, (m + 1) * k);
+            size = new int[m + 1];
+            left = new int[m + 1];
+            right = new int[m + 1];
+            matchSize = new int[m + 1];
+
+            long ans = 0;
+            for (int i = 0; i < n; i++) {
+                stack.clear();
+                Arrays.fill(size, 0);
+                size[m] = k + 1;
+                for (int j = 0; j < m; j++) {
+                    int h = i;
+                    while (size[j] <= k) {
+                        h = next[h][j];
+                        if (h >= n) {
+                            break;
+                        }
+                        size[j]++;
+                        stack.addLast(h, j);
+                        h++;
+                    }
+                }
+                int last = 0;
+                for (int j = 0; j <= m; j++) {
+                    if (size[j] != 0) {
+                        left[last] = left[j] = last;
+                        right[last] = right[j] = j;
+                        last = j + 1;
+                    }
+                }
+                Arrays.fill(matchSize, 0);
+                int sum = 0;
+                int consider = right[0];
+                matchPair = 0;
+                for (int j = right[0]; j < m; j = right[j + 1]) {
+                    if (consider < j) {
+                        consider = j;
+                        sum = 0;
+                    }
+                    while (sum + size[consider] <= k) {
+                        sum += size[consider];
+                        consider = right[consider + 1];
+                    }
+                    if (sum == k) {
+                        matchSize[j] = right[consider] - left[consider] + 1;
+                    } else {
+                        matchSize[j] = 0;
+                    }
+                    add(j, 1);
+                    sum -= size[j];
+                }
+
+                long contrib = 0;
+                for (int j = n - 1; j >= i; j--) {
+                    contrib += matchPair;
+                    while (!stack.isEmpty(j)) {
+                        int head = stack.removeLast(j);
+                        add(head, -1);
+                        size[head]--;
+
+                        int end = head;
+                        if (size[head] == 0) {
+                            int leftPart = left[head];
+                            int rightPart = right[head + 1];
+                            add(rightPart, -1);
+                            end = rightPart;
+                            left[leftPart] = left[rightPart] = leftPart;
+                            right[leftPart] = right[rightPart] = rightPart;
+                        }
+                        //from last k
+                        int begin = end;
+                        for (int step = 0; left[begin] > 0 && step < k; step++) {
+                            begin = left[begin] - 1;
+                            assert size[begin] > 0;
+                            add(begin, -1);
+                        }
+
+                        sum = 0;
+                        consider = -1;
+                        while (begin < m && begin <= end) {
+                            if (consider < begin) {
+                                consider = begin;
+                                sum = 0;
+                            }
+                            while (sum + size[consider] <= k) {
+                                sum += size[consider];
+                                consider = right[consider + 1];
+                            }
+                            if (sum == k) {
+                                matchSize[begin] = right[consider] - left[consider] + 1;
+                            } else {
+                                matchSize[begin] = 0;
+                            }
+                            add(begin, 1);
+                            sum -= size[begin];
+                            begin = right[begin + 1];
+                        }
+                    }
+                }
+                ans += contrib;
+            }
+
+            return ans;
+        }
     }
 
     /**

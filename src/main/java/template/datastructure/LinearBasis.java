@@ -1,5 +1,6 @@
 package template.datastructure;
 
+import template.binary.Bits;
 import template.binary.Log2;
 
 import java.util.Arrays;
@@ -59,6 +60,39 @@ public class LinearBasis implements Cloneable {
         return ans;
     }
 
+    private void upward(int row) {
+        assert 1L << row == Long.highestOneBit(map[row]);
+        for (int i = row + 1; i < 64; i++) {
+            if (Bits.get(map[i], row) == 1) {
+                map[i] ^= map[row];
+                source[i] ^= source[row];
+            }
+        }
+    }
+
+    private boolean check() {
+        for (int i = 0; i < 64; i++) {
+            if ((map[i] == 0) != (Bits.get(set, i) == 0)) {
+                return false;
+            }
+            if (map[i] != 0) {
+                for (int j = 0; j < 64; j++) {
+                    int res = Bits.get(map[i], j);
+                    if (i == j) {
+                        if (res != 1) {
+                            return false;
+                        }
+                    } else {
+                        if (res == 1 && Bits.get(set, j) == 1) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
     /**
      * return the index of  added element ([0,64)), -1 means can't add val
      *
@@ -79,6 +113,9 @@ public class LinearBasis implements Cloneable {
             map[log] = val;
             source[log] = state | (1L << log);
             set |= 1L << log;
+            upward(log);
+
+            assert check();
             return log;
         }
         return -1;
@@ -97,7 +134,7 @@ public class LinearBasis implements Cloneable {
         return val == 0;
     }
 
-    public void copy(LinearBasis model){
+    public void copy(LinearBasis model) {
         System.arraycopy(model.map, 0, map, 0, map.length);
         System.arraycopy(model.source, 0, source, 0, source.length);
         set = model.set;

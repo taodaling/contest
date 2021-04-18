@@ -66,6 +66,10 @@ public class RandomWrapper {
         return x[nextInt(0, x.length - 1)];
     }
 
+    public long range(long... x) {
+        return x[nextInt(0, x.length - 1)];
+    }
+
     public <T> T rangeT(T... x) {
         return x[nextInt(0, x.length - 1)];
     }

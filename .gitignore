@@ -31,6 +31,7 @@ _*
 out/*
 testcase/*
 archive/**
+target/**
 
 #executable file
 *.exe

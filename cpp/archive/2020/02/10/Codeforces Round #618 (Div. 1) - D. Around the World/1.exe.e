@@ -1,1 +1,0 @@
-allSubgroup.size() = 374

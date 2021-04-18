@@ -9,7 +9,7 @@ import java.util.*;
  */
 public class PollardRho {
 
-    public int findFactor(int n) {
+    public static int findFactor(int n) {
         if (n == 1) {
             return n;
         }
@@ -24,7 +24,7 @@ public class PollardRho {
         }
     }
 
-    public int findPrimeFactor(int n) {
+    public static int findPrimeFactor(int n) {
         if (n == 1) {
             return n;
         }
@@ -33,12 +33,10 @@ public class PollardRho {
     }
 
     /**
-     * Find all prime factor of n <br>
-     * p1 => p1^c1 <br>
-     * ... <br>
-     * pk => pk^ck
+     * Find all prime factor of n
+     * O(n^{1/4}(\log_2n)^2)
      */
-    public Set<Integer> findAllFactors(int n) {
+    public static Set<Integer> findAllFactors(int n) {
         if (n == 1) {
             return Collections.emptySet();
         }
@@ -47,7 +45,7 @@ public class PollardRho {
         return set;
     }
 
-    private void findAllFactors(Set<Integer> set, int n) {
+    private static void findAllFactors(Set<Integer> set, int n) {
         int f = findFactor(n);
         if (f == n) {
             set.add(f);
@@ -57,7 +55,12 @@ public class PollardRho {
         findAllFactors(set, n / f);
     }
 
-    private int rho(int n) {
+    /**
+     * O(n^{1/4}\log_2n)
+     * @param n
+     * @return
+     */
+    private static int rho(int n) {
         if (n == 1) {
             return 1;
         }

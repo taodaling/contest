@@ -8,19 +8,19 @@ import java.util.Random;
  */
 public class Randomized {
     public static void shuffle(int[] data) {
-        shuffle(data, 0, data.length - 1);
+        shuffle(data, 0, data.length);
     }
 
     public static void shuffle(long[] data) {
-        shuffle(data, 0, data.length - 1);
+        shuffle(data, 0, data.length);
     }
 
     public static void shuffle(double[] data) {
-        shuffle(data, 0, data.length - 1);
+        shuffle(data, 0, data.length);
     }
 
     public static <T> void shuffle(T[] data) {
-        shuffle(data, 0, data.length - 1);
+        shuffle(data, 0, data.length);
     }
 
     public static void shuffle(int[] data, int from, int to) {
@@ -98,7 +98,7 @@ public class Randomized {
     }
 
     public static void shuffle(char[] data) {
-        shuffle(data, 0, data.length - 1);
+        shuffle(data, 0, data.length);
     }
 
     public static <T> void shuffle(List<T> list) {

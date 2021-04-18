@@ -1,0 +1,51 @@
+{
+  "name" : "MarriageAndSelectionChallenge",
+  "signature" : {
+    "name" : "solve",
+    "result" : "String",
+    "arguments" : [ "String" ],
+    "argumentNames" : [ "S" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "kick" ],
+    "result" : "ick",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "cccaaccc" ],
+    "result" : "cccccc",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "ccaaccc" ],
+    "result" : "aaccc",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "ll" ],
+    "result" : "ll",
+    "index" : 3,
+    "active" : true
+  }, {
+    "arguments" : [ "llabca" ],
+    "result" : "llabc",
+    "index" : 4,
+    "active" : true
+  }, {
+    "arguments" : [ "aabbaaaaccaa" ],
+    "result" : "aaaaaaaa",
+    "index" : 5,
+    "active" : true
+  }, {
+    "arguments" : [ "abbaa" ],
+    "result" : "bbaa",
+    "index" : 6,
+    "active" : true
+  } ],
+  "date" : "2021.03.31",
+  "contestName" : "Single Round Match 803",
+  "testClasses" : [ ],
+  "fqn" : "on2021_03.on2021_03_31_Single_Round_Match_803.MarriageAndSelectionChallenge.MarriageAndSelectionChallenge",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

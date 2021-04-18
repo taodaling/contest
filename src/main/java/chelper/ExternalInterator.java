@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 public class ExternalInterator {
     Process process;
 
-    public ExternalInterator(String[] cmds) throws IOException {
+    public ExternalInterator(String... cmds) throws IOException {
         process = new ProcessBuilder(cmds).redirectError(ProcessBuilder.Redirect.INHERIT)
                 .start();
     }

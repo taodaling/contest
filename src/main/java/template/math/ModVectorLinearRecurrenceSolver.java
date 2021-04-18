@@ -37,7 +37,7 @@ public class ModVectorLinearRecurrenceSolver {
     }
 
     /**
-     * O(n^2log_2k) get A^k vec
+     * O(n\log_2n log_2k) get A^k vec
      */
     public int[] solve(long k) {
         int[] remainder = poly.module(k, p);
@@ -47,7 +47,7 @@ public class ModVectorLinearRecurrenceSolver {
     }
 
     /**
-     * O(n^2log_2k) get A^k vec
+     * O(n\log_2n log_2k) get A^k vec
      */
     public int[] solve(BitSet k) {
         int[] remainder = poly.module(k, p);
