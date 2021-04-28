@@ -1,0 +1,45 @@
+{
+  "name" : "D. Explorer Space",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 3 10\n1 1\n1 1\n1 1\n1 1 1\n1 1 1\n",
+    "output" : "10 10 10\n10 10 10\n10 10 10\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "2 2 4\n1\n3\n4 2\n",
+    "output" : "4 4\n10 6\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "2 2 3\n1\n2\n3 4\n",
+    "output" : "-1 -1\n-1 -1\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_04.on2021_04_23_Codeforces___Contest_2050_and_Codeforces_Round__718__Div__1___Div__2_.D__Explorer_Space.DExplorerSpace",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.04.23",
+  "contestName" : "Codeforces - Contest 2050 and Codeforces Round #718 (Div. 1 + Div. 2)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

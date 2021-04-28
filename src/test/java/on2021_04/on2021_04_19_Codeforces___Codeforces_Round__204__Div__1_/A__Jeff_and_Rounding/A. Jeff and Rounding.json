@@ -1,0 +1,40 @@
+{
+  "name" : "A. Jeff and Rounding",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3\n0.000 0.500 0.750 1.000 2.000 3.000\n",
+    "output" : "0.250\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "3\n4469.000 6526.000 4864.000 9356.383 7490.000 995.896\n",
+    "output" : "0.279\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_04.on2021_04_19_Codeforces___Codeforces_Round__204__Div__1_.A__Jeff_and_Rounding.AJeffAndRounding",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.04.19",
+  "contestName" : "Codeforces - Codeforces Round #204 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

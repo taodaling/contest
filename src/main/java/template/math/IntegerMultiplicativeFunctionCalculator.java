@@ -6,7 +6,6 @@ import java.util.function.ToIntBiFunction;
 
 public class IntegerMultiplicativeFunctionCalculator {
     private final ToIntBiFunction<Integer, Integer> function;
-    private PollardRho rho = new PollardRho();
 
     /**
      * A simple function used to
@@ -18,7 +17,7 @@ public class IntegerMultiplicativeFunctionCalculator {
     }
 
     public int find(int x) {
-        Set<Integer> set = rho.findAllFactors(x);
+        Set<Integer> set = PollardRho.findAllFactors(x);
         int ans = 1;
         for (int factor : set) {
             int exp = 1;

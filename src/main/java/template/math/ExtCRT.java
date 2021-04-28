@@ -13,19 +13,23 @@ public class ExtCRT {
      */
     public long m;
     static final LongExtGCDObject gcd = new LongExtGCDObject();
-
+    private boolean valid = true;
 
     public ExtCRT() {
-        r = 0;
-        m = 1;
+        clear();
+    }
+
+    public boolean valid() {
+        return valid;
     }
 
     public void set(long r, long m) {
         this.r = r;
         this.m = m;
+        valid = true;
     }
 
-    public void clear(){
+    public void clear() {
         set(0, 1);
     }
 
@@ -37,6 +41,9 @@ public class ExtCRT {
      * Add a new condition: x % m = r
      */
     public boolean add(long r, long m) {
+        if (!valid) {
+            return false;
+        }
         long m1 = this.m;
         long x1 = this.r;
         long m2 = m;
@@ -44,7 +51,7 @@ public class ExtCRT {
         long g = gcd.extgcd(m1, m2);
         long a = gcd.getX();
         if ((x2 - x1) % g != 0) {
-            return false;
+            return valid = false;
         }
         this.m = m1 / g * m2;
         ILongModular modular = ILongModular.getInstance(this.m);

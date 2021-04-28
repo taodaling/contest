@@ -10,10 +10,24 @@ public class IntExtCRT {
      */
     int m;
     static final IntExtGCDObject gcd = new IntExtGCDObject();
+    boolean valid;
+
+    boolean valid() {
+        return valid;
+    }
+
+    public void set(int r, int m) {
+        this.r = r;
+        this.m = m;
+        valid = true;
+    }
+
+    public void clear() {
+        set(0, 1);
+    }
 
     public IntExtCRT() {
-        r = 0;
-        m = 1;
+        clear();
     }
 
     public int getValue() {

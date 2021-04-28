@@ -11,6 +11,7 @@ public class IntegerGomoryHuTree {
 
     /**
      * O(n^2) and mf will be applied for n times
+     *
      * @param g
      * @param mf
      */
@@ -26,6 +27,10 @@ public class IntegerGomoryHuTree {
         for (int i = 0; i < n; i++) {
             dfs(i, -1, INF, minCuts[i]);
         }
+    }
+
+    public List<IntegerWeightUndirectedEdge>[] tree() {
+        return ug;
     }
 
     private void addEdge(int s, int t, int f) {
@@ -48,7 +53,7 @@ public class IntegerGomoryHuTree {
     }
 
 
-    public void dac(IntegerArrayList set, List<IntegerFlowEdge>[] g, IntegerMaximumFlow mf, boolean[] visited) {
+    private void dac(IntegerArrayList set, List<IntegerFlowEdge>[] g, IntegerMaximumFlow mf, boolean[] visited) {
         if (set.size() <= 1) {
             return;
         }

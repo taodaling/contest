@@ -9,7 +9,6 @@ import java.util.Set;
  * Extend lucas algorithm
  */
 public class ExtLucas implements LargeIntCombination, Iterable<Map.Entry<Integer, LargeIntCombination>> {
-    PollardRho pr = new PollardRho();
     Map<Integer, LargeIntCombination> factorialMap = new HashMap();
     int p;
 
@@ -29,7 +28,7 @@ public class ExtLucas implements LargeIntCombination, Iterable<Map.Entry<Integer
      */
     public ExtLucas(int p, long m) {
         this.p = p;
-        Set<Integer> factors = pr.findAllFactors(p);
+        Set<Integer> factors = PollardRho.findAllFactors(p);
         for (int factor : factors) {
             int exp = 1;
             while (p / exp % factor == 0) {
@@ -46,16 +45,18 @@ public class ExtLucas implements LargeIntCombination, Iterable<Map.Entry<Integer
         }
     }
 
+    IntExtCRT extCRT = new IntExtCRT();
+
     /**
      * Get C(m, n) % p
      * <br>
-     * O(\sum_i \log_{p_i} m \log_2 m)
+     * O(\sum_i \log_{p_i} m)
      */
     public int combination(long m, long n) {
         if (m < n) {
             return 0;
         }
-        IntExtCRT extCRT = new IntExtCRT();
+        extCRT.clear();
         for (Map.Entry<Integer, LargeIntCombination> entry : factorialMap.entrySet()) {
             extCRT.add(entry.getValue().combination(m, n), entry.getKey());
         }
@@ -73,6 +74,7 @@ public class ExtLucas implements LargeIntCombination, Iterable<Map.Entry<Integer
         int pc;
         int mod;
         Power power;
+        CachedPow2 cp;
         int[] g;
 
         /**
@@ -96,11 +98,13 @@ public class ExtLucas implements LargeIntCombination, Iterable<Map.Entry<Integer
                     g[i] = (int) (((long) g[i - 1] * i) % mod);
                 }
             }
+
+            cp = new CachedPow2(g[pc], pc);
         }
 
         /**
          * return m! (mod pc) without any factor which is multiple of p. <br>
-         * O(\log_p m \log_2 m)
+         * O(\log_p m)
          */
         private int fact(long m) {
             fact = 1;
@@ -109,7 +113,7 @@ public class ExtLucas implements LargeIntCombination, Iterable<Map.Entry<Integer
                 exp += m / p;
                 if (m >= pc) {
                     //There can be optimize to O(1), so this method provide O(\log_p m) time complexity.
-                    fact = (int) ((long) fact * power.pow(g[pc], m / pc) % mod);
+                    fact = (int) ((long) fact * cp.pow(m / pc) % mod);
                 }
                 fact = (int) ((long) fact * g[(int) (m % pc)] % mod);
                 m /= p;
@@ -120,7 +124,7 @@ public class ExtLucas implements LargeIntCombination, Iterable<Map.Entry<Integer
 
         /**
          * Find C(m,n), it means choose n elements from a set whose size is m. <br>
-         * O(\log_p m \log_2 m)
+         * O(\log_p m)
          */
         public int combination(long m, long n) {
             if (m < n) {

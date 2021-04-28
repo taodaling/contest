@@ -1,0 +1,55 @@
+{
+  "name" : "C - Tricolor Pyramid",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3\nBWR\n",
+    "output" : "W\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "4\nRRBB\n",
+    "output" : "W\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "6\nBWWRBW\n",
+    "output" : "B\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "8\nWWBRBBWB\n",
+    "output" : "R\n",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "21\nBWBRRBBRWBRBBBRRBWWWR\n",
+    "output" : "B\n",
+    "index" : 4,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_04.on2021_04_18_AtCoder___AtCoder_Regular_Contest_117.C___Tricolor_Pyramid.CTricolorPyramid",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.04.18",
+  "contestName" : "AtCoder - AtCoder Regular Contest 117",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

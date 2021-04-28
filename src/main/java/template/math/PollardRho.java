@@ -9,6 +9,8 @@ import java.util.*;
  */
 public class PollardRho {
 
+    private PollardRho(){}
+
     public static int findFactor(int n) {
         if (n == 1) {
             return n;

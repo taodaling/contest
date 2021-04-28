@@ -7,7 +7,6 @@ public class PrimitiveRoot {
     private int mod;
     private Power pow;
     private int phi;
-    private static PollardRho rho = new PollardRho();
     private static HashMap<Integer, Integer> root = new HashMap<>();
 
     public static int findAnyRoot(int x) {

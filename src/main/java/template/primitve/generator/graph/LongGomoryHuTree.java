@@ -11,6 +11,7 @@ public class LongGomoryHuTree {
 
     /**
      * O(n^2) and mf will be applied for n times
+     *
      * @param g
      * @param mf
      */
@@ -26,6 +27,10 @@ public class LongGomoryHuTree {
         for (int i = 0; i < n; i++) {
             dfs(i, -1, INF, minCuts[i]);
         }
+    }
+
+    public List<LongWeightUndirectedEdge>[] tree() {
+        return ug;
     }
 
     private void addEdge(int s, int t, long f) {
@@ -48,7 +53,7 @@ public class LongGomoryHuTree {
     }
 
 
-    public void dac(IntegerArrayList set, List<LongFlowEdge>[] g, LongMaximumFlow mf, boolean[] visited) {
+    private void dac(IntegerArrayList set, List<LongFlowEdge>[] g, LongMaximumFlow mf, boolean[] visited) {
         if (set.size() <= 1) {
             return;
         }

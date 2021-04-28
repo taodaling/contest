@@ -228,11 +228,14 @@ public class ModMatrix {
         int w = b.getWidth();
         ModMatrix c = new ModMatrix(h, w);
 
+        SumOfModMul sm = new SumOfModMul(mod);
         for (int i = 0; i < h; i++) {
-            for (int k = 0; k < mid; k++) {
-                for (int j = 0; j < w; j++) {
-                    c.mat[i * w + j] = DigitUtils.modplus(c.mat[i * w + j], (int) ((long) a.mat[i * mid + k] * b.mat[k * w + j] % mod), mod);
+            for (int j = 0; j < w; j++) {
+                sm.clear();
+                for (int k = 0; k < mid; k++) {
+                    sm.add(a.mat[i * mid + k], b.mat[k * w + j]);
                 }
+                c.mat[i * w + j] = sm.sum();
             }
         }
         return c;

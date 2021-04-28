@@ -25,7 +25,9 @@ public class Factorial {
             fact[i] = i;
             fact[i] = (int) ((long) fact[i] * fact[i - 1] % mod);
         }
-        inv[n - 1] = BigInteger.valueOf(fact[n - 1]).modInverse(BigInteger.valueOf(mod)).intValue();
+        if (n - 1 >= 0) {
+            inv[n - 1] = BigInteger.valueOf(fact[n - 1]).modInverse(BigInteger.valueOf(mod)).intValue();
+        }
         for (int i = n - 2; i >= 1; i--) {
             inv[i] = (int) ((long) inv[i + 1] * (i + 1) % mod);
         }

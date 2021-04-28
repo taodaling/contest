@@ -130,28 +130,21 @@ public class FastInput {
     }
 
     public int readInt() {
-        int sign = 1;
+        boolean rev = false;
 
         skipBlank();
         if (next == '+' || next == '-') {
-            sign = next == '+' ? 1 : -1;
+            rev = next == '-';
             next = read();
         }
 
         int val = 0;
-        if (sign == 1) {
-            while (next >= '0' && next <= '9') {
-                val = val * 10 + next - '0';
-                next = read();
-            }
-        } else {
-            while (next >= '0' && next <= '9') {
-                val = val * 10 - next + '0';
-                next = read();
-            }
+        while (next >= '0' && next <= '9') {
+            val = val * 10 - next + '0';
+            next = read();
         }
 
-        return val;
+        return rev ? val : -val;
     }
 
     public long rl() {
@@ -159,28 +152,21 @@ public class FastInput {
     }
 
     public long readLong() {
-        int sign = 1;
+        boolean rev = false;
 
         skipBlank();
         if (next == '+' || next == '-') {
-            sign = next == '+' ? 1 : -1;
+            rev = next == '-';
             next = read();
         }
 
         long val = 0;
-        if (sign == 1) {
-            while (next >= '0' && next <= '9') {
-                val = val * 10 + next - '0';
-                next = read();
-            }
-        } else {
-            while (next >= '0' && next <= '9') {
-                val = val * 10 - next + '0';
-                next = read();
-            }
+        while (next >= '0' && next <= '9') {
+            val = val * 10 - next + '0';
+            next = read();
         }
 
-        return val;
+        return rev ? val : -val;
     }
 
     public double rd() {

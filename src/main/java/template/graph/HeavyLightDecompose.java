@@ -156,6 +156,11 @@ public class HeavyLightDecompose {
         segment.update(node.dfsOrderFrom, node.dfsOrderFrom, 1, n, val);
     }
 
+    public void updateSubtree(int nodeId, long  val){
+        HLDNode node = nodes[nodeId];
+        segment.update(node.dfsOrderFrom, node.dfsOrderTo, 1, n, val);
+    }
+
     public void finish() {
         dfs(root, null);
         dfs2(root, root);
@@ -169,7 +174,7 @@ public class HeavyLightDecompose {
     public long processPath(int uId, int vId) {
         HLDNode u = nodes[uId];
         HLDNode v = nodes[vId];
-        long sum = 1;
+        long sum = 0;
         while (u != v) {
             if (u.link == v.link) {
                 if (u.size > v.size) {
@@ -191,6 +196,31 @@ public class HeavyLightDecompose {
         }
         sum = op.applyAsLong(sum, segment.query(u.dfsOrderFrom, u.dfsOrderFrom, 1, n, op));
         return sum;
+    }
+
+    public void updatePath(int uId, int vId, long x) {
+        HLDNode u = nodes[uId];
+        HLDNode v = nodes[vId];
+        while (u != v) {
+            if (u.link == v.link) {
+                if (u.size > v.size) {
+                    HLDNode tmp = u;
+                    u = v;
+                    v = tmp;
+                }
+                segment.update(v.dfsOrderFrom + 1, u.dfsOrderFrom, 1, n, x);
+                u = v;
+            } else {
+                if (u.link.size > v.link.size) {
+                    HLDNode tmp = u;
+                    u = v;
+                    v = tmp;
+                }
+                segment.update(u.link.dfsOrderFrom, u.dfsOrderFrom, 1, n, x);
+                u = u.link.father;
+            }
+        }
+        segment.update(u.dfsOrderFrom, u.dfsOrderFrom, 1, n, x);
     }
 
     private static void dfs(HLDNode root, HLDNode father) {

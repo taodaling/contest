@@ -2,8 +2,8 @@ package template.primitve.generated.datastructure;
 
 import template.algo.BinarySearch;
 import template.rand.Randomized;
-import template.utils.SequenceUtils;
 import template.utils.SortUtils;
+import template.utils.SequenceUtils;
 
 import java.util.Arrays;
 

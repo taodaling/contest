@@ -1,0 +1,55 @@
+{
+  "name" : "F - Gateau",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3\n2 5 7 4 2 1\n",
+    "output" : "8\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "3\n8 0 6 0 9 0\n",
+    "output" : "12\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "5\n3 1 5 7 0 8 4 6 4 9\n",
+    "output" : "12\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "1\n267503 601617\n",
+    "output" : "869120\n",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "8\n418940906 38034755 396064111 43044067 356084286 61548818 15301658 35906016 20933120 211233791 30314875 25149642 42550552 104690843 81256233 63578117\n",
+    "output" : "513119404\n",
+    "index" : 4,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_04.on2021_04_22_AtCoder___AtCoder_Regular_Contest_117.F___Gateau.FGateau",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.04.22",
+  "contestName" : "AtCoder - AtCoder Regular Contest 117",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

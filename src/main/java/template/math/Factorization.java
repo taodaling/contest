@@ -7,7 +7,7 @@ import template.problem.MaximumFactorMinimumNumber;
 
 public class Factorization {
     public static void main(String[] args) {
-        System.out.println(new PollardRho().findAllFactors(985661440));
+        System.out.println(PollardRho.findAllFactors(985661440));
     }
 
     /**

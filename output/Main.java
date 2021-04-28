@@ -27,115 +27,17 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            MatrixProduct solver = new MatrixProduct();
-            solver.solve(1, in, out);
+            ManyAB solver = new ManyAB();
+            int testCount = Integer.parseInt(in.next());
+            for (int i = 1; i <= testCount; i++)
+                solver.solve(i, in, out);
             out.close();
         }
     }
 
-    static class MatrixProduct {
-        int mod = 998244353;
-
+    static class ManyAB {
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            int n = in.ri();
-            int m = in.ri();
-            int k = in.ri();
-            int[][] A = new int[n][m];
-            int[][] B = new int[m][k];
-//        ModMatrix A = new ModMatrix(n, m);
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < m; j++) {
-                    A[i][j] = in.ri();
-//                A.set(i, j, in.ri());
-                }
-            }
-//        ModMatrix B = new ModMatrix(m, k);
-            for (int i = 0; i < m; i++) {
-                for (int j = 0; j < k; j++) {
-                    B[i][j] = in.ri();
-//                B.set(i, j, in.ri());
-                }
-            }
-
-            long[][] ans = new long[n][k];
-            for (int i = 0; i < n; i++) {
-                for (int t = 0; t < m; t++) {
-                    for (int j = 0; j < k; j++) {
-                        ans[i][j] += (long) A[i][t] * B[t][j] % mod;
-                    }
-                }
-            }
-
-//        ModMatrix ans = ModMatrix.mul(A, B, mod);
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < k; j++) {
-                    out.append(ans[i][j] % mod).append(' ');
-                }
-                out.println();
-            }
-        }
-
-    }
-
-    static class FastInput {
-        private final InputStream is;
-        private byte[] buf = new byte[1 << 13];
-        private int bufLen;
-        private int bufOffset;
-        private int next;
-
-        public FastInput(InputStream is) {
-            this.is = is;
-        }
-
-        private int read() {
-            while (bufLen == bufOffset) {
-                bufOffset = 0;
-                try {
-                    bufLen = is.read(buf);
-                } catch (IOException e) {
-                    bufLen = -1;
-                }
-                if (bufLen == -1) {
-                    return -1;
-                }
-            }
-            return buf[bufOffset++];
-        }
-
-        public void skipBlank() {
-            while (next >= 0 && next <= 32) {
-                next = read();
-            }
-        }
-
-        public int ri() {
-            return readInt();
-        }
-
-        public int readInt() {
-            int sign = 1;
-
-            skipBlank();
-            if (next == '+' || next == '-') {
-                sign = next == '+' ? 1 : -1;
-                next = read();
-            }
-
-            int val = 0;
-            if (sign == 1) {
-                while (next >= '0' && next <= '9') {
-                    val = val * 10 + next - '0';
-                    next = read();
-                }
-            } else {
-                while (next >= '0' && next <= '9') {
-                    val = val * 10 - next + '0';
-                    next = read();
-                }
-            }
-
-            return val;
+            out.println(in.rl() + in.rl());
         }
 
     }
@@ -182,6 +84,10 @@ public class Main {
             return this;
         }
 
+        public FastOutput println(long c) {
+            return append(c).println();
+        }
+
         public FastOutput println() {
             return append('\n');
         }
@@ -219,6 +125,83 @@ public class Main {
 
         public String toString() {
             return cache.toString();
+        }
+
+    }
+
+    static class FastInput {
+        private final InputStream is;
+        private StringBuilder defaultStringBuf = new StringBuilder(1 << 13);
+        private byte[] buf = new byte[1 << 13];
+        private int bufLen;
+        private int bufOffset;
+        private int next;
+
+        public FastInput(InputStream is) {
+            this.is = is;
+        }
+
+        private int read() {
+            while (bufLen == bufOffset) {
+                bufOffset = 0;
+                try {
+                    bufLen = is.read(buf);
+                } catch (IOException e) {
+                    bufLen = -1;
+                }
+                if (bufLen == -1) {
+                    return -1;
+                }
+            }
+            return buf[bufOffset++];
+        }
+
+        public void skipBlank() {
+            while (next >= 0 && next <= 32) {
+                next = read();
+            }
+        }
+
+        public String next() {
+            return readString();
+        }
+
+        public long rl() {
+            return readLong();
+        }
+
+        public long readLong() {
+            boolean rev = false;
+
+            skipBlank();
+            if (next == '+' || next == '-') {
+                rev = next == '-';
+                next = read();
+            }
+
+            long val = 0;
+            while (next >= '0' && next <= '9') {
+                val = val * 10 - next + '0';
+                next = read();
+            }
+
+            return rev ? val : -val;
+        }
+
+        public String readString(StringBuilder builder) {
+            skipBlank();
+
+            while (next > 32) {
+                builder.append((char) next);
+                next = read();
+            }
+
+            return builder.toString();
+        }
+
+        public String readString() {
+            defaultStringBuf.setLength(0);
+            return readString(defaultStringBuf);
         }
 
     }

@@ -1,0 +1,45 @@
+{
+  "name" : "Matrix Product",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2 2 2\n1 1\n1 0\n5 2\n3 1\n",
+    "output" : "8 3\n5 2\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "1 2 3\n1 2\n3 4 5\n6 7 8\n",
+    "output" : "15 18 21\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "1 1 1\n123456\n789012\n",
+    "output" : "578563231\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_04.on2021_04_19_Library_Checker.Matrix_Product.MatrixProduct",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.04.19",
+  "contestName" : "Library Checker",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}
