@@ -38,7 +38,7 @@ public class CachedPow2 {
             second[i] = (int) (second[i - 1] * step % mod);
         }
 
-        xphi = pow(phi);
+        xphi = DigitUtils.modPow(x, phi, mod);
     }
 
     public int pow(int exp) {

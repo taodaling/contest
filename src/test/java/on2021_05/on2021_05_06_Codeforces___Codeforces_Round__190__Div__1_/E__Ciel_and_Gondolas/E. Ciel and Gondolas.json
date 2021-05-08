@@ -1,0 +1,45 @@
+{
+  "name" : "E. Ciel and Gondolas",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5 2\n0 0 1 1 1\n0 0 1 1 1\n1 1 0 0 0\n1 1 0 0 0\n1 1 0 0 0\n",
+    "output" : "0\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "8 3\n0 1 1 1 1 1 1 1\n1 0 1 1 1 1 1 1\n1 1 0 1 1 1 1 1\n1 1 1 0 1 1 1 1\n1 1 1 1 0 1 1 1\n1 1 1 1 1 0 1 1\n1 1 1 1 1 1 0 1\n1 1 1 1 1 1 1 0\n",
+    "output" : "7\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "3 2\n0 2 0\n2 0 3\n0 3 0\n",
+    "output" : "2\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx512M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_05.on2021_05_06_Codeforces___Codeforces_Round__190__Div__1_.E__Ciel_and_Gondolas.ECielAndGondolas",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.05.06",
+  "contestName" : "Codeforces - Codeforces Round #190 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

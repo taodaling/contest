@@ -1,5 +1,7 @@
 package template.math;
 
+import template.utils.SequenceUtils;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -18,21 +20,23 @@ public class PermutationUtils {
     }
 
     /**
-     * find next permutation (strict increasing order)
+     * <p>find next permutation (strict increasing order)</p>
+     * <p>O(e) average for s contains only distinct values</p>
+     * <p>O(n) worse case without restraints on s</p>
+     * @param s
+     * @return
      */
-    public static boolean nextPermutation(int[] p) {
-        for (int a = p.length - 2; a >= 0; --a) {
-            if (p[a] < p[a + 1]) {
-                for (int b = p.length - 1; ; --b) {
-                    if (p[b] > p[a]) {
-                        int t = p[a];
-                        p[a] = p[b];
-                        p[b] = t;
-                        for (++a, b = p.length - 1; a < b; ++a, --b) {
-                            t = p[a];
-                            p[a] = p[b];
-                            p[b] = t;
-                        }
+    public static boolean nextPermutation(int[] s) {
+        int n = s.length;
+        for (int i = n - 2; i >= 0; i--) {
+            if (s[i] < s[i + 1]) {
+                SequenceUtils.reverse(s, i + 1, n - 1);
+                //find
+                for (int j = i + 1; ; j++) {
+                    if (s[j] > s[i]) {
+                        int tmp = s[j];
+                        s[j] = s[i];
+                        s[i] = tmp;
                         return true;
                     }
                 }
@@ -40,27 +44,31 @@ public class PermutationUtils {
         }
         return false;
     }
-
-    public static List<int[]> generateAllPermutations(int n) {
-        List<int[]> list = new ArrayList<>((int) PERMUTATION_CNT[n]);
-        traceAllPermutations(new boolean[n], new int[n], list, 0);
-        return list;
-    }
-
-    private static void traceAllPermutations(boolean[] used, int[] perm, List<int[]> recorders, int i) {
-        if (i == perm.length) {
-            recorders.add(perm.clone());
-            return;
-        }
-        for (int j = 0; j < used.length; j++) {
-            if (used[j]) {
-                continue;
+    /**
+     * <p>find prev permutation (strict increasing order)</p>
+     * <p>O(e) average for s contains only distinct values</p>
+     * <p>O(n) worse case without restraints on s</p>
+     * @param s
+     * @return
+     */
+    public static boolean prevPermutation(int[] s){
+        int n = s.length;
+        for (int i = n - 2; i >= 0; i--) {
+            if (s[i] > s[i + 1]) {
+                //find
+                for (int j = n - 1; ; j--) {
+                    if (s[j] < s[i]) {
+                        int tmp = s[j];
+                        s[j] = s[i];
+                        s[i] = tmp;
+                        break;
+                    }
+                }
+                SequenceUtils.reverse(s, i + 1, n - 1);
+                return true;
             }
-            used[j] = true;
-            perm[i] = j;
-            traceAllPermutations(used, perm, recorders, i + 1);
-            used[j] = false;
         }
+        return false;
     }
 
     /**

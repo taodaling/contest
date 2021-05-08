@@ -38,6 +38,10 @@ public class LinkedListBeta<E> implements Iterable<E> {
         return dummy;
     }
 
+    public Node<E> rend() {
+        return dummy;
+    }
+
     public Node<E> addFirst(Node<E> node) {
         node.attach(dummy);
         size++;
@@ -68,6 +72,20 @@ public class LinkedListBeta<E> implements Iterable<E> {
         node.detach();
         size--;
         assert size >= 0;
+    }
+
+    public E removeFirst() {
+        assert !isEmpty();
+        E ans = dummy.next.val;
+        remove(dummy.next);
+        return ans;
+    }
+
+    public E removeLast() {
+        assert !isEmpty();
+        E ans = dummy.prev.val;
+        remove(dummy.prev);
+        return ans;
     }
 
     public boolean contain(Node<E> node) {
@@ -119,5 +137,31 @@ public class LinkedListBeta<E> implements Iterable<E> {
         }
         ans.append(']');
         return ans.toString();
+    }
+
+    /**
+     * add all elements in list to this, and clear list
+     * O(1)
+     */
+    public void migrate(LinkedListBeta<E> list) {
+        if (list.isEmpty()) {
+            return;
+        }
+        size += list.size;
+        Node<E> head = list.dummy.next;
+        Node<E> end = list.dummy.prev;
+        concat(dummy.prev, head);
+        concat(end, dummy);
+        list.clear();
+    }
+
+    public void clear() {
+        dummy.prev = dummy.next = dummy;
+        size = 0;
+    }
+
+    private void concat(Node<E> a, Node<E> b) {
+        a.next = b;
+        b.prev = a;
     }
 }

@@ -1,0 +1,40 @@
+{
+  "name" : "C. Kalila and Dimna in the Logging Industry",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5\n1 2 3 4 5\n5 4 3 2 0\n",
+    "output" : "25\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "6\n1 2 3 10 20 30\n6 5 4 3 2 0\n",
+    "output" : "138\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_05.on2021_05_07_Codeforces___Codeforces_Round__189__Div__1_.C__Kalila_and_Dimna_in_the_Logging_Industry.CKalilaAndDimnaInTheLoggingIndustry",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.05.07",
+  "contestName" : "Codeforces - Codeforces Round #189 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

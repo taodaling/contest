@@ -1,0 +1,45 @@
+{
+  "name" : "A. Purification",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3\n.E.\nE.E\n.E.\n",
+    "output" : "1 1\n2 2\n3 3\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "3\nEEE\nE..\nE.E\n",
+    "output" : "-1\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "5\nEE.EE\nE.EE.\nE...E\n.EE.E\nEE.EE\n",
+    "output" : "3 3\n1 3\n2 2\n4 4\n5 3\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_04.on2021_04_29_Codeforces___Codeforces_Round__192__Div__1_.A__Purification.APurification",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.04.29",
+  "contestName" : "Codeforces - Codeforces Round #192 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

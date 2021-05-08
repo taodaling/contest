@@ -23,7 +23,7 @@ public class EulerSieve {
         return ans <= 1 ? -1 : ans;
     }
 
-    public int nextPrime(int x){
+    public int nextPrime(int x) {
         int ans = isComp.nextClearBit(x);
         return ans >= isComp.capacity() ? -1 : ans;
     }
@@ -64,8 +64,8 @@ public class EulerSieve {
             if (!isComp.get(i)) {
                 primes[primeLength++] = i;
             }
-            for (int j = 0, until = limit / i; j < primeLength && primes[j] <= until; j++) {
-                int pi = primes[j] * i;
+            int pi;
+            for (int j = 0; j < primeLength && (pi = primes[j] * i) <= limit; j++) {
                 isComp.set(pi);
                 if (i % primes[j] == 0) {
                     break;

@@ -1,0 +1,40 @@
+{
+  "name" : "Double or NOTing",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "6\n10001 111\n1011 111\n1010 1011\n0 1\n0 101\n1101011 1101011\n",
+    "output" : "Case #1: 4\nCase #2: 3\nCase #3: 2\nCase #4: 1\nCase #5: IMPOSSIBLE\nCase #6: 0\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "2\n111 0\n0 0",
+    "output" : "Case #1: 1\nCase #2: 0",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Solution",
+  "taskClass" : "on2021_05.on2021_05_01_Google_Coding_Competitions___Round_1C_2021___Code_Jam_2021.Double_or_NOTing.DoubleOrNOTing",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.05.01",
+  "contestName" : "Google Coding Competitions - Round 1C 2021 - Code Jam 2021",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

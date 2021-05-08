@@ -37,16 +37,18 @@ public class RollingHash {
         dq.addFirst(x);
     }
 
-    public void removeLast(){
+    public int removeLast(){
         int x = dq.removeLast();
         h1 = (h1 + (long) hd1.pow[dq.size()] * (hd1.mod - x)) % hd1.mod;
         h2 = (h2 + (long) hd2.pow[dq.size()] * (hd2.mod - x)) % hd2.mod;
+        return x;
     }
 
-    public void removeFirst() {
+    public int removeFirst() {
         int x = dq.removeFirst();
         h1 = (h1 - x + hd1.mod) * hd1.inv[1] % hd1.mod;
         h2 = (h2 - x + hd2.mod) * hd2.inv[1] % hd2.mod;
+        return x;
     }
 
 

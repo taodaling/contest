@@ -14,7 +14,7 @@ public class CollectionUtils {
         }
     }
 
-    public static <K, V, T extends Map<K, V>> Map<K, V> mergeMapHeuristically(T a, T b, V def, BiFunction<V, V, V> bf) {
+    public static <K, V, T extends Map<K, V>> T mergeMapHeuristically(T a, T b, V def, BiFunction<V, V, V> bf) {
         if (a.size() < b.size()) {
             T tmp = a;
             a = b;
@@ -26,7 +26,17 @@ public class CollectionUtils {
         return a;
     }
 
-    public static <K, T extends Map<K, Integer>> Map<K, Integer> mergeCountMapHeuristically(T a, T b) {
+    public static <K, V, T extends Map<K, V>> T mergeMapHeuristically(T a, T b) {
+        if (a.size() < b.size()) {
+            T tmp = a;
+            a = b;
+            b = tmp;
+        }
+        a.putAll(b);
+        return a;
+    }
+
+    public static <K, T extends Map<K, Integer>> T mergeCountMapHeuristically(T a, T b) {
         return mergeMapHeuristically(a, b, 0, (x, y) -> x + y);
     }
 
