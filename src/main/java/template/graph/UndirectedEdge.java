@@ -9,6 +9,6 @@ public class UndirectedEdge extends DirectedEdge {
 
     @Override
     public String toString() {
-        return String.format("%d<->%d", Math.min(rev.to, to), Math.max(rev.to, to));
+        return String.format("%d<->%d", rev.to, to);
     }
 }

@@ -26,6 +26,34 @@ public class IntegerFlow {
         return visited;
     }
 
+    public static int[] costFlowSummary(List<IntegerCostFlowEdge>[] g, int s){
+        int cost = 0;
+        for(List<IntegerCostFlowEdge> adj : g){
+            for(IntegerCostFlowEdge e : adj){
+                if(e.real){
+                    cost += e.flow * e.cost;
+                }
+            }
+        }
+        int flow = 0;
+        for(IntegerCostFlowEdge e : g[s]){
+            if(e.real){
+                flow += e.flow;
+            }
+        }
+        return new int[]{flow, cost};
+    }
+
+    public static int flowSummary(List<IntegerFlowEdge>[] g, int s){
+        int flow = 0;
+        for(IntegerFlowEdge e : g[s]){
+            if(e.real){
+                flow += e.flow;
+            }
+        }
+        return flow;
+    }
+
     private static void dfs(List<IntegerFlowEdge>[] g, boolean[] visited, int root) {
         if (visited[root]) {
             return;
@@ -172,6 +200,8 @@ public class IntegerFlow {
 
     /**
      * find feasible flow with specified source and sink point or return false when it doesn't exist
+     *
+     * Minimize the cost of the feasible flow instead of maximize the flow
      */
     public static <T extends IntegerCostFlowEdge & IntegerLowBound> boolean feasibleMinCostFlow(List<T>[] g, int s, int t, IntegerMinimumCostFlow mf) {
         addLRCostFlowEdge(g, t, s, Integer.MAX_VALUE / 4, 0, 0);
@@ -183,6 +213,8 @@ public class IntegerFlow {
 
     /**
      * find feasible flow without source and sink point or return false when it doesn't exist
+     *
+     * Minimize the cost of the feasible flow instead of maximize the flow
      *
      * @param g
      * @return

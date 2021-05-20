@@ -26,6 +26,34 @@ public class LongFlow {
         return visited;
     }
 
+    public static long[] costFlowSummary(List<LongCostFlowEdge>[] g, int s){
+        long cost = 0;
+        for(List<LongCostFlowEdge> adj : g){
+            for(LongCostFlowEdge e : adj){
+                if(e.real){
+                    cost += e.flow * e.cost;
+                }
+            }
+        }
+        long flow = 0;
+        for(LongCostFlowEdge e : g[s]){
+            if(e.real){
+                flow += e.flow;
+            }
+        }
+        return new long[]{flow, cost};
+    }
+
+    public static long flowSummary(List<LongFlowEdge>[] g, int s){
+        long flow = 0;
+        for(LongFlowEdge e : g[s]){
+            if(e.real){
+                flow += e.flow;
+            }
+        }
+        return flow;
+    }
+
     private static void dfs(List<LongFlowEdge>[] g, boolean[] visited, int root) {
         if (visited[root]) {
             return;
@@ -172,6 +200,8 @@ public class LongFlow {
 
     /**
      * find feasible flow with specified source and sink point or return false when it doesn't exist
+     *
+     * Minimize the cost of the feasible flow instead of maximize the flow
      */
     public static <T extends LongCostFlowEdge & LongLowBound> boolean feasibleMinCostFlow(List<T>[] g, int s, int t, LongMinimumCostFlow mf) {
         addLRCostFlowEdge(g, t, s, Long.MAX_VALUE / 4, 0, 0);
@@ -183,6 +213,8 @@ public class LongFlow {
 
     /**
      * find feasible flow without source and sink point or return false when it doesn't exist
+     *
+     * Minimize the cost of the feasible flow instead of maximize the flow
      *
      * @param g
      * @return

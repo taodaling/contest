@@ -36,7 +36,6 @@ public class SegmentBeatExt implements Cloneable {
 
         if (firstSmallest >= x) {
             firstSmallest = x;
-            firstSmallestCnt = size;
         }
         secondSmallest = Math.min(secondSmallest, x);
         if (secondSmallest == firstSmallest) {
@@ -53,7 +52,6 @@ public class SegmentBeatExt implements Cloneable {
 
         if (firstLargest <= x) {
             firstLargest = x;
-            firstLargestCnt = size;
         }
         secondLargest = Math.max(secondLargest, x);
         if (secondLargest == firstLargest) {

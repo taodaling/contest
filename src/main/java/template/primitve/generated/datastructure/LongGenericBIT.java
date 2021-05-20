@@ -11,7 +11,7 @@ public class LongGenericBIT {
     /**
      * 创建大小A[1...n]
      */
-    public LongGenericBIT(int n, LongBinaryFunction merger, int unit) {
+    public LongGenericBIT(int n, LongBinaryFunction merger, long unit) {
         this.n = n;
         data = new long[n + 1];
         this.merger = merger;
@@ -39,6 +39,15 @@ public class LongGenericBIT {
         }
         for (; i <= n; i += i & -i) {
             data[i] = merger.apply(data[i], mod);
+        }
+    }
+
+    public void undo(int i) {
+        if (i <= 0) {
+            return;
+        }
+        for (; i <= n; i += i & -i) {
+            data[i] = unit;
         }
     }
 

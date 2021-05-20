@@ -4,7 +4,7 @@ package template;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
-import template.math.Modular;
+import template.math.Barrett;
 import template.math.Power;
 import template.polynomial.*;
 import template.utils.PrimitiveBuffers;
@@ -19,8 +19,8 @@ import template.utils.SequenceUtils;
  */
 public class PolynomialsTest {
 
-    public Modular getMod() {
-        return new Modular(998244353);
+    public Barrett getMod() {
+        return new Barrett(998244353);
     }
 
     public IntPoly getPoly() {

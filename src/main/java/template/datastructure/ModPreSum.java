@@ -1,7 +1,6 @@
 package template.datastructure;
 
 import template.math.DigitUtils;
-import template.math.Modular;
 import template.primitve.generated.datastructure.IntToIntegerFunction;
 
 public class ModPreSum {

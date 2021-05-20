@@ -6,9 +6,7 @@ import template.rand.Hasher;
 import java.util.Arrays;
 
 public class IntegerHashMap {
-    private int now;
     private int[] slot;
-    private int[] version;
     private int[] next;
     private int[] keys;
     private int[] values;
@@ -20,10 +18,8 @@ public class IntegerHashMap {
     private Hasher hasher = new Hasher();
 
     public IntegerHashMap(int cap, boolean rehash) {
-        now = 1;
         this.mask = (1 << (32 - Integer.numberOfLeadingZeros(cap - 1))) - 1;
         slot = new int[mask + 1];
-        version = new int[slot.length];
         next = new int[cap + 1];
         keys = new int[cap + 1];
         values = new int[cap + 1];
@@ -51,10 +47,8 @@ public class IntegerHashMap {
 
     private void rehash() {
         int[] newSlots = new int[Math.max(16, slot.length * 2)];
-        int[] newVersions = new int[newSlots.length];
         int newMask = newSlots.length - 1;
         for (int i = 0; i < slot.length; i++) {
-            access(i);
             if (slot[i] == 0) {
                 continue;
             }
@@ -68,8 +62,6 @@ public class IntegerHashMap {
             }
         }
         this.slot = newSlots;
-        this.version = newVersions;
-        now = 0;
         this.mask = newMask;
     }
 
@@ -85,7 +77,6 @@ public class IntegerHashMap {
     public void modify(int x, int dy) {
         int h = hash(x);
         int s = h & mask;
-        access(s);
         if (slot[s] == 0) {
             alloc();
             slot[s] = alloc;
@@ -114,7 +105,6 @@ public class IntegerHashMap {
     public void put(int x, int y, boolean cover) {
         int h = hash(x);
         int s = h & mask;
-        access(s);
         if (slot[s] == 0) {
             alloc();
             slot[s] = alloc;
@@ -139,7 +129,6 @@ public class IntegerHashMap {
     public boolean containKey(int x) {
         int h = hash(x);
         int s = h & mask;
-        access(s);
         if (slot[s] == 0) {
             return false;
         }
@@ -149,7 +138,6 @@ public class IntegerHashMap {
     public int getOrDefault(int x, int def) {
         int h = hash(x);
         int s = h & mask;
-        access(s);
         if (slot[s] == 0) {
             return def;
         }
@@ -164,7 +152,6 @@ public class IntegerHashMap {
     public void remove(int x) {
         int h = hash(x);
         int s = h & mask;
-        access(s);
         if (slot[s] == 0) {
             return;
         }
@@ -203,16 +190,12 @@ public class IntegerHashMap {
     }
 
     public void clear() {
-        alloc = 0;
-        size = 0;
-        now++;
-    }
-
-    private void access(int i) {
-        if (version[i] != now) {
-            version[i] = now;
-            slot[i] = 0;
+        while(alloc > 0){
+            int h = hash(keys[alloc]);
+            slot[h & mask] = 0;
+            alloc--;
         }
+        size = 0;
     }
 
     public IntegerEntryIterator iterator() {

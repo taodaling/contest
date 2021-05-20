@@ -126,6 +126,7 @@ public class LinkedListBeta<E> implements Iterable<E> {
         };
     }
 
+
     @Override
     public String toString() {
         StringBuilder ans = new StringBuilder("[");

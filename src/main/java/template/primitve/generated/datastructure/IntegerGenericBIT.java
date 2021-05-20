@@ -42,6 +42,15 @@ public class IntegerGenericBIT {
         }
     }
 
+    public void undo(int i) {
+        if (i <= 0) {
+            return;
+        }
+        for (; i <= n; i += i & -i) {
+            data[i] = unit;
+        }
+    }
+
     /**
      * 将A全部清0
      */

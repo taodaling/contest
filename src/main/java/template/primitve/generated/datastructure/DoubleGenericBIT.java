@@ -11,7 +11,7 @@ public class DoubleGenericBIT {
     /**
      * 创建大小A[1...n]
      */
-    public DoubleGenericBIT(int n, DoubleBinaryFunction merger, int unit) {
+    public DoubleGenericBIT(int n, DoubleBinaryFunction merger, double unit) {
         this.n = n;
         data = new double[n + 1];
         this.merger = merger;
@@ -39,6 +39,15 @@ public class DoubleGenericBIT {
         }
         for (; i <= n; i += i & -i) {
             data[i] = merger.apply(data[i], mod);
+        }
+    }
+
+    public void undo(int i) {
+        if (i <= 0) {
+            return;
+        }
+        for (; i <= n; i += i & -i) {
+            data[i] = unit;
         }
     }
 

@@ -26,6 +26,34 @@ public class DoubleFlow {
         return visited;
     }
 
+    public static double[] costFlowSummary(List<DoubleCostFlowEdge>[] g, int s){
+        double cost = 0;
+        for(List<DoubleCostFlowEdge> adj : g){
+            for(DoubleCostFlowEdge e : adj){
+                if(e.real){
+                    cost += e.flow * e.cost;
+                }
+            }
+        }
+        double flow = 0;
+        for(DoubleCostFlowEdge e : g[s]){
+            if(e.real){
+                flow += e.flow;
+            }
+        }
+        return new double[]{flow, cost};
+    }
+
+    public static double flowSummary(List<DoubleFlowEdge>[] g, int s){
+        double flow = 0;
+        for(DoubleFlowEdge e : g[s]){
+            if(e.real){
+                flow += e.flow;
+            }
+        }
+        return flow;
+    }
+
     private static void dfs(List<DoubleFlowEdge>[] g, boolean[] visited, int root) {
         if (visited[root]) {
             return;
@@ -172,6 +200,8 @@ public class DoubleFlow {
 
     /**
      * find feasible flow with specified source and sink point or return false when it doesn't exist
+     *
+     * Minimize the cost of the feasible flow instead of maximize the flow
      */
     public static <T extends DoubleCostFlowEdge & DoubleLowBound> boolean feasibleMinCostFlow(List<T>[] g, int s, int t, DoubleMinimumCostFlow mf) {
         addLRCostFlowEdge(g, t, s, Double.MAX_VALUE / 4, 0, 0);
@@ -183,6 +213,8 @@ public class DoubleFlow {
 
     /**
      * find feasible flow without source and sink point or return false when it doesn't exist
+     *
+     * Minimize the cost of the feasible flow instead of maximize the flow
      *
      * @param g
      * @return

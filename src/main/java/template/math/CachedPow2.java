@@ -10,6 +10,7 @@ public class CachedPow2 {
     private int mask;
     private int phi;
     private int xphi;
+    private int x;
 
     public CachedPow2(int x, int mod) {
         this(x, mod, CachedEulerFunction.get(mod));
@@ -20,6 +21,7 @@ public class CachedPow2 {
     }
 
     public CachedPow2(int x, int mod, int limit, int phi) {
+        this.x = x;
         this.phi = phi;
         limit = Math.min(limit, mod);
         this.mod = mod;
@@ -41,18 +43,19 @@ public class CachedPow2 {
         xphi = DigitUtils.modPow(x, phi, mod);
     }
 
-    public int pow(int exp) {
+    private int pow0(int exp) {
         return (int) ((long) first[exp & mask] * second[exp >> low] % mod);
     }
 
     public int pow(long exp) {
-        exp = DigitUtils.mod(exp, phi);
-        if (xphi == 1) {
-            return pow(exp);
+        long fix = DigitUtils.mod(exp, phi);
+        long ans;
+        if (xphi == 1 || fix == exp) {
+            ans = pow0((int) fix);
         } else {
-            long ans = pow(exp) * (long) xphi % mod;
-            return (int) ans;
+            ans = pow0((int) fix) * (long) xphi % mod;
         }
+        return (int) ans;
     }
 
     /**

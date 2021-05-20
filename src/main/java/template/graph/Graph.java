@@ -50,18 +50,27 @@ public class Graph {
         return e;
     }
 
-    public static UndirectedEdge addUndirectedEdge(List<UndirectedEdge>[] g, int s, int t) {
+    public static UndirectedEdge makeUndirectedEdge(int s, int t) {
         UndirectedEdge toT = new UndirectedEdge(t);
         UndirectedEdge toS = new UndirectedEdge(s);
         toT.rev = toS;
         toS.rev = toT;
+        return toT;
+    }
+
+    public static UndirectedEdge addUndirectedEdge(List<UndirectedEdge>[] g, int s, int t) {
+        UndirectedEdge toT = makeUndirectedEdge(s, t);
         g[s].add(toT);
-        g[t].add(toS);
+        g[t].add(toT.rev);
         return toT;
     }
 
     public static List[] createGraph(int n) {
         return IntStream.range(0, n).mapToObj(i -> new ArrayList<>()).toArray(i -> new List[i]);
+    }
+
+    public static int[][] createGraph(int n, int[] u, int[] v) {
+        return createGraph(n, u.length, u, v);
     }
 
     public static int[][] createGraph(int n, int m, int[] u, int[] v) {
@@ -79,6 +88,10 @@ public class Graph {
             g[a][--degs[a]] = b;
         }
         return g;
+    }
+
+    public static int[][] createUndirectedGraph(int n, int[] u, int[] v) {
+        return createUndirectedGraph(n, u.length, u, v);
     }
 
     public static int[][] createUndirectedGraph(int n, int m, int[] u, int[] v) {

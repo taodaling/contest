@@ -1,6 +1,7 @@
 package template.datastructure;
 
 import template.binary.Bits;
+import template.binary.Log2;
 
 public class BinaryTreeBeta implements Cloneable {
     int[][] child;
@@ -24,9 +25,9 @@ public class BinaryTreeBeta implements Cloneable {
         return size[root];
     }
 
-    public BinaryTreeBeta(int highestBit, int opNum) {
-        height = highestBit;
-        int cap = (opNum + 10) * (highestBit + 2) + 1;
+    public BinaryTreeBeta(int largest, int opNum) {
+        height = Log2.floorLog(largest);
+        int cap = (opNum + 10) * (height + 2) + 1;
         child = new int[2][cap];
         size = new int[cap];
         clear();

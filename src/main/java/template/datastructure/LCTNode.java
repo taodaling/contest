@@ -206,16 +206,28 @@ public class LCTNode {
     }
 
     public static LCTNode lca(LCTNode a, LCTNode b) {
+        if (a == b) {
+            return a;
+        }
         access(a);
-        access(b);
         splay(a);
+        access(b);
+        splay(b);
         if (a.treeFather != NIL) {
             return a.treeFather;
+        }
+        if (a.father != NIL) {
+            //in same splay
+            return a;
         }
         return NIL;
     }
 
     public static boolean connected(LCTNode a, LCTNode b) {
         return lca(a, b) != NIL;
+//        makeRoot(a);
+//        access(b);
+//        splay(b);
+//        return findRoot(b) == a;
     }
 }

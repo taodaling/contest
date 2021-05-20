@@ -132,7 +132,7 @@ public class ExtLucas implements LargeIntCombination, Iterable<Map.Entry<Integer
             }
             long v = fact(m);
             int e = exp;
-            v = v * power.inverseExtGCD(fact(n)) % mod;
+            v = v * power.inverse(fact(n)) % mod;
             e -= exp;
             v = v * power.inverse(fact(m - n)) % mod;
             e -= exp;

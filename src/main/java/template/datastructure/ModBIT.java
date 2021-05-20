@@ -1,5 +1,6 @@
 package template.datastructure;
 
+import template.math.Barrett;
 import template.math.DigitUtils;
 
 import java.util.Arrays;
@@ -11,6 +12,7 @@ public class ModBIT {
     private long[] data;
     private int n;
     private int mod;
+    Barrett barrett;
 
     /**
      * 创建大小A[1...n]
@@ -19,6 +21,7 @@ public class ModBIT {
         this.n = n;
         data = new long[n + 1];
         this.mod = mod;
+        barrett = new Barrett(mod);
     }
 
     /**
@@ -29,7 +32,7 @@ public class ModBIT {
         for (; i > 0; i -= i & -i) {
             sum += data[i];
         }
-        return (int) (sum % mod);
+        return barrett.reduce(sum);
     }
 
     /**
@@ -41,14 +44,20 @@ public class ModBIT {
         }
         x = DigitUtils.mod(x, mod);
         for (; i <= n; i += i & -i) {
-            data[i] = (data[i] + x) % mod;
+            data[i] += x;
+            if(data[i] >= mod){
+                data[i] -= mod;
+            }
         }
     }
 
     public int query(int l, int r) {
         int sum = query(r);
         if (l > 1) {
-            sum = DigitUtils.mod(sum - query(l - 1), mod);
+            sum -= query(l - 1);
+            if(sum < 0){
+                sum += mod;
+            }
         }
         return sum;
     }

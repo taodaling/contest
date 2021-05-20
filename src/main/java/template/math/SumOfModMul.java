@@ -5,9 +5,11 @@ public class SumOfModMul {
     int mod;
     long limit;
     long sub;
+    Barrett barrett;
 
     public SumOfModMul(int mod) {
         this.mod = mod;
+        barrett = new Barrett(mod);
         limit = Long.MAX_VALUE - (long) (mod - 1) * (mod - 1);
         sub = limit - limit % mod;
     }
@@ -39,7 +41,7 @@ public class SumOfModMul {
 
     public int sum() {
         if (sum >= mod) {
-            sum %= mod;
+            sum = barrett.reduce(sum);
         }
         return (int) sum;
     }

@@ -1,21 +1,28 @@
 package template.datastructure;
 
+import template.math.Barrett;
 import template.math.DigitUtils;
 import template.primitve.generated.datastructure.IntToIntegerFunction;
 
 public class ModRangeAffineRangeSum implements Cloneable {
     private ModRangeAffineRangeSum left;
     private ModRangeAffineRangeSum right;
-    public static long mod;
+    private static int mod;
+    private static Barrett barrett;
     private long sum;
     private int size;
     private long da;
     private long db;
 
+    public static void setMod(int x){
+        mod = x;
+        barrett = new Barrett(mod);
+    }
+
     private void modify(long a, long b) {
-        sum = (sum * a + b * size) % mod;
-        da = (da * a) % mod;
-        db = (db * a + b) % mod;
+        sum = barrett.reduce(sum * a + b * size);
+        da = barrett.reduce(da * a);
+        db = barrett.reduce(db * a + b);
     }
 
     public void pushUp() {
