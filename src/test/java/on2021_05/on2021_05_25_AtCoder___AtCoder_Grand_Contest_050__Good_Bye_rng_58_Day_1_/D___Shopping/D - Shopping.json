@@ -1,0 +1,49 @@
+{
+  "name" : "D - Shopping",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 2\n",
+    "output" : "1\n249561089\n748683265\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "4 3\n",
+    "output" : "1\n314262112\n767169272\n915057324\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "40 10\n",
+    "output" : "1\n868517173\n27621563\n837064957\n222682471\n512462123\n662169358\n927654899\n421237429\n47896491\n462367772\n888812171\n300869511\n63754652\n144548024\n358216674\n895724239\n274552277\n722622637\n946769993\n579325471\n777654313\n142897955\n607284898\n8038340\n863909530\n63295741\n862961672\n335905745\n944425523\n358698956\n299986928\n847582651\n197657467\n180361665\n412489246\n762713624\n410322243\n646538576\n79047758\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "4 2",
+    "index" : 3,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_05.on2021_05_25_AtCoder___AtCoder_Grand_Contest_050__Good_Bye_rng_58_Day_1_.D___Shopping.DShopping",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.05.25",
+  "contestName" : "AtCoder - AtCoder Grand Contest 050 (Good Bye rng_58 Day 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

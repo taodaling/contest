@@ -1,7 +1,7 @@
 package template.polynomial;
 
 import template.binary.Log2;
-import template.math.Barrett;
+import template.math.Modular;
 import template.math.Power;
 import template.utils.PrimitiveBuffers;
 
@@ -10,7 +10,7 @@ public class NumberTheoryTransform {
      * Normal but correct ntt
      */
     public static void ntt(int[] p, boolean inv, int mod, int g, Power power) {
-        Barrett barret = new Barrett(mod);
+        Modular barret = new Modular(mod);
         int m = Log2.ceilLog(p.length);
         int n = 1 << m;
 

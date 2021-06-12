@@ -31,7 +31,7 @@ public class ModContinuousInterpolation {
     /**
      * O(n)
      */
-    public int interpolate(int x0, int[] y,  int n, int x) {
+    public int interpolate(int x0, int[] y, int n, int x) {
         x = DigitUtils.modsub(x, x0, mod);
         if (x < n) {
             return y[x];
@@ -47,19 +47,19 @@ public class ModContinuousInterpolation {
 
         long sum = 0;
         for (int i = 0; i < n; i++) {
-            int local = (int) ((long) y[i] * fact.invFact(i) % mod * fact.invFact(n - 1 - i) % mod);
+            long local = (long) y[i] * fact.invFact(i) % mod * fact.invFact(n - 1 - i) % mod;
             if (i > 0) {
-                local = (int) ((long) local * pre[i - 1] % mod);
+                local = local * pre[i - 1] % mod;
             }
             if (i + 1 < n) {
-                local = (int) ((long) local * post[i + 1] % mod);
+                local = local * post[i + 1] % mod;
             }
             if (((n - 1 - i) & 1) == 1) {
-                local = DigitUtils.negate(local, mod);
+                local = -local;
             }
             sum += local;
         }
 
-        return (int) (sum % mod);
+        return DigitUtils.mod(sum, mod);
     }
 }

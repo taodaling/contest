@@ -10,8 +10,6 @@ public class Power implements InverseNumber {
         return mod;
     }
 
-    static IntExtGCDObject extGCD = new IntExtGCDObject();
-
     int mod;
 
     public Power(int mod) {
@@ -77,10 +75,7 @@ public class Power implements InverseNumber {
     }
 
     public int inverseExtGCD(int x) {
-        if (extGCD.extgcd(x, mod) != 1) {
-            throw new IllegalArgumentException();
-        }
-        return DigitUtils.mod(extGCD.getX(), mod);
+        return (int)DigitUtils.modInverse(x, mod);
     }
 
 }

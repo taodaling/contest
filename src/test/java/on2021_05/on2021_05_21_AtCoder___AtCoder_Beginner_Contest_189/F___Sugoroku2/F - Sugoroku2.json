@@ -1,0 +1,50 @@
+{
+  "name" : "F - Sugoroku2",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2 2 0\n",
+    "output" : "1.5000\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "2 2 1\n1\n",
+    "output" : "2.0000\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "100 6 10\n11 12 13 14 15 16 17 18 19 20\n",
+    "output" : "-1\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "100000 2 2\n2997 92458\n",
+    "output" : "201932.2222\n",
+    "index" : 3,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_05.on2021_05_21_AtCoder___AtCoder_Beginner_Contest_189.F___Sugoroku2.FSugoroku2",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.05.21",
+  "contestName" : "AtCoder - AtCoder Beginner Contest 189",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

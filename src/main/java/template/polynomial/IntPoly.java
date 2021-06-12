@@ -10,12 +10,12 @@ public class IntPoly {
     protected int mod;
     protected Power power;
     QuadraticResidue qr;
-    Barrett barrett;
+    Modular barrett;
     public IntPoly(int mod) {
         this.mod = mod;
         this.power = new Power(mod);
         qr = new QuadraticResidue(mod);
-        barrett = new Barrett(mod);
+        barrett = new Modular(mod);
     }
 
     public int[] convolution(int[] a, int[] b) {
@@ -406,36 +406,34 @@ public class IntPoly {
      * @return
      */
     public int[] inverse(int[] p, int m) {
-        int[] ans = inverse0(p, Log2.ceilLog(m));
-        return PrimitiveBuffers.replace(module(ans, m), ans);
+        if(m == 0){
+            return PrimitiveBuffers.allocIntPow2(1);
+        }
+        int[] ans = inverse0(p, m);
+        return ans;
     }
 
     /**
-     * <p>
-     * return polynomial g while p * g = 1 (mod x^(2^m)).
-     * </p>
-     * <p>
-     * You are supposed to guarantee the lengths of all arrays are greater than or equal to 2^{m + 1}.
-     * </p>
+     * return polynomial g while p * g = 1 (mod x^m).
      */
     protected int[] inverse0(int[] p, int m) {
-        if (m == 0) {
-            int[] ans = PrimitiveBuffers.allocIntPow2(2);
+        if (m == 1) {
+            int[] ans = PrimitiveBuffers.allocIntPow2(1);
             ans[0] = power.inverse(p[0]);
             return ans;
         }
-        int[] C = inverse0(p, m - 1);
-        int n = 1 << (m + 1);
-        C = PrimitiveBuffers.resize(C, n);
-        int[] A = PrimitiveBuffers.allocIntPow2(p, 1 << m, n);
+        int prevMod = (m + 1) / 2;
+        int[] C = inverse0(p, prevMod);
+        C = PrimitiveBuffers.resize(C, m);
+        int[] A = PrimitiveBuffers.allocIntPow2(p, m);
 
         //B = C(2-AC)
-        int[] AC = PrimitiveBuffers.replace(modmul(A, C, 1 << m), A);
+        int[] AC = PrimitiveBuffers.replace(modmul(A, C, m), A);
         for (int i = 0; i < AC.length; i++) {
             AC[i] = DigitUtils.negate(AC[i], mod);
         }
         AC[0] = DigitUtils.modplus(AC[0], 2, mod);
-        int[] B = PrimitiveBuffers.replace(modmul(C, AC, 1 << m), AC, C);
+        int[] B = PrimitiveBuffers.replace(modmul(C, AC, m), AC, C);
         return B;
     }
 

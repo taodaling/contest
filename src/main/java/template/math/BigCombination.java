@@ -13,7 +13,7 @@ public class BigCombination {
         if (m < 256 && cache[(int) m][(int) n] != null) {
             return cache[(int) m][(int) n];
         }
-        BigInteger ans = null;
+        BigInteger ans;
         if (n == 0) {
             ans = BigInteger.ONE;
         } else {

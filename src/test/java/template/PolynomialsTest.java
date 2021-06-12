@@ -4,7 +4,7 @@ package template;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
-import template.math.Barrett;
+import template.math.Modular;
 import template.math.Power;
 import template.polynomial.*;
 import template.utils.PrimitiveBuffers;
@@ -19,8 +19,8 @@ import template.utils.SequenceUtils;
  */
 public class PolynomialsTest {
 
-    public Barrett getMod() {
-        return new Barrett(998244353);
+    public Modular getMod() {
+        return new Modular(998244353);
     }
 
     public IntPoly getPoly() {
@@ -189,6 +189,16 @@ public class PolynomialsTest {
         int[] p = new int[]{1, 2, 3, 4, 5, 6, 7, 8};
         int[] inv = getPoly().inverse(p, 8);
         int[] c = getPoly().modmul(p, inv, 8);
+        Assert.assertTrue(equal(SequenceUtils.wrapArray(1), c));
+        PrimitiveBuffers.release(inv);
+        PrimitiveBuffers.release(c);
+    }
+
+    @Test
+    public void test15() {
+        int[] p = new int[]{1, 2, 3};
+        int[] inv = getPoly().inverse(p, 3);
+        int[] c = getPoly().modmul(p, inv, 3);
         Assert.assertTrue(equal(SequenceUtils.wrapArray(1), c));
         PrimitiveBuffers.release(inv);
         PrimitiveBuffers.release(c);

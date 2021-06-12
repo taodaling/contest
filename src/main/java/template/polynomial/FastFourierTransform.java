@@ -23,6 +23,25 @@ public class FastFourierTransform {
         }
     }
 
+    public static double[] pow2(double[] a) {
+        int rank = Polynomials.rankOf(a);
+        double[][] da = PrimitiveBuffers.allocDoublePow2Array(rank * 2 + 1, 2);
+        for (int i = 0; i <= rank; i++) {
+            da[0][i] = a[i];
+        }
+        fft(da, false);
+        dotMulInplace(da, da);
+        fft(da, true);
+        PrimitiveBuffers.release(da[1]);
+        return da[0];
+    }
+
+    public static double[] mod(double[] a, int m) {
+        for (int i = m; i < a.length; i++) {
+            a[i] = 0;
+        }
+        return Polynomials.normalizeAndReplace(a);
+    }
 
     /**
      * c[i]=\sum_{j} a[i-j]*b[j]
@@ -85,7 +104,7 @@ public class FastFourierTransform {
         return ans;
     }
 
-    public static void dotMulFast(double[][] a, double[][] b) {
+    public static void dotMulInplace(double[][] a, double[][] b) {
         int n = a[0].length;
         for (int i = 0; i < n; i++) {
             mul(a[0][i], a[1][i], b[0][i], b[1][i], a, i);
@@ -153,39 +172,67 @@ public class FastFourierTransform {
     }
 
     /**
-     * return polynomial g while p * g = 1 (mod x^{2^m}).
-     * <br>
-     * You are supposed to guarantee the lengths of all arrays are greater than or equal to 2^{m + 1)}
+     * return a * b % x^m
+     *
+     * @param a
+     * @param b
+     * @param m
+     * @return
      */
-    public static double[][] inverse(double[][] p, int m) {
+    public static double[] modmul(double[] a, double[] b, int m) {
+        double[] ans = convolution(a, b);
+        for (int i = m; i < ans.length; i++) {
+            ans[i] = 0;
+        }
+        return Polynomials.normalizeAndReplace(ans);
+    }
+
+    public static double[] inverse(double[] p, int m) {
         if (m == 0) {
-            double[][] ans = PrimitiveBuffers.allocDoublePow2Array(1, 2);
-            div(1, 0, p[0][0], ans, 0);
+            return PrimitiveBuffers.allocDoublePow2(1);
+        }
+        return inverse0(p, m);
+    }
+
+    /**
+     * find g where g * p = 1 \mod x^m
+     * O(m\log_2m)
+     *
+     * @param p
+     * @param m
+     * @return
+     */
+    private static double[] inverse0(double[] p, int m) {
+        if (m == 1) {
+            double[] ans = PrimitiveBuffers.allocDoublePow2(1);
+            ans[0] = 1 / p[0];
             return ans;
         }
-        double[][] ans = inverse(p, m - 1);
-        int n = 1 << (m + 1);
-        ans = PrimitiveBuffers.replace(PrimitiveBuffers.allocDoublePow2Array(ans, n), ans);
-
-        double[][] prefix = PrimitiveBuffers.allocDoublePow2Array(n, 2);
-        for (int i = 0, until = 1 << m; i < until; i++) {
-            prefix[0][i] = p[0][i];
-            prefix[1][i] = p[1][i];
+        int prevMod = (m + 1) / 2;
+        double[] ans = inverse0(p, prevMod);
+        int maxRank = (prevMod - 1) * 2 + m - 1;
+        double[][] a = new double[][]{
+                PrimitiveBuffers.allocDoublePow2(ans, prevMod, maxRank + 1),
+                PrimitiveBuffers.allocDoublePow2(maxRank + 1),
+        };
+        double[][] b = new double[][]{
+                PrimitiveBuffers.allocDoublePow2(p, m, maxRank + 1),
+                PrimitiveBuffers.allocDoublePow2(maxRank + 1)
+        };
+        PrimitiveBuffers.release(ans);
+        fft(a, false);
+        fft(b, false);
+        int len = a[0].length;
+        for (int i = 0; i < len; i++) {
+            mul(a[0][i], a[1][i], b[0][i], b[1][i], b, i);
+            mul(a[0][i], a[1][i], b[0][i], b[1][i], b, i);
+            sub(a[0][i] * 2, a[1][i] * 2, b[0][i], b[1][i], a, i);
         }
-        fft(prefix, false);
-        fft(ans, false);
-        for (int i = 0; i < n; i++) {
-            mul(prefix[0][i], prefix[1][i], ans[0][i], ans[1][i], prefix, i);
-            sub(2, 0, prefix[0][i], prefix[1][i], prefix, i);
-            mul(ans[0][i], ans[1][i], prefix[0][i], prefix[1][i], ans, i);
-        }
-        fft(ans, true);
-        for (int i = 1 << m; i < n; i++) {
-            ans[0][i] = ans[1][i] = 0;
-        }
-
-        PrimitiveBuffers.release(prefix);
-        return ans;
+        fft(a, true);
+        double[] res = PrimitiveBuffers.allocDoublePow2(a[0], m);
+        PrimitiveBuffers.release(a);
+        PrimitiveBuffers.release(b);
+        return res;
     }
 
 }

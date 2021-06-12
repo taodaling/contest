@@ -1,6 +1,6 @@
 package template.datastructure;
 
-import template.math.Barrett;
+import template.math.Modular;
 import template.math.DigitUtils;
 import template.primitve.generated.datastructure.IntToIntegerFunction;
 
@@ -8,7 +8,7 @@ public class ModRangeAffineRangeSum implements Cloneable {
     private ModRangeAffineRangeSum left;
     private ModRangeAffineRangeSum right;
     private static int mod;
-    private static Barrett barrett;
+    private static Modular barrett;
     private long sum;
     private int size;
     private long da;
@@ -16,7 +16,7 @@ public class ModRangeAffineRangeSum implements Cloneable {
 
     public static void setMod(int x){
         mod = x;
-        barrett = new Barrett(mod);
+        barrett = new Modular(mod);
     }
 
     private void modify(long a, long b) {

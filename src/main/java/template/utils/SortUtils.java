@@ -40,6 +40,63 @@ public class SortUtils {
         return ans;
     }
 
+    public static int argmax(int[] a, int l, int r) {
+        int ans = l;
+        for (int i = l + 1; i <= r; i++) {
+            if (a[ans] < a[i]) {
+                ans = i;
+            }
+        }
+        return ans;
+    }
+    public static int argmin(int[] a, int l, int r) {
+        int ans = l;
+        for (int i = l + 1; i <= r; i++) {
+            if (a[ans] > a[i]) {
+                ans = i;
+            }
+        }
+        return ans;
+    }
+
+    public static int argmax(long[] a, int l, int r) {
+        int ans = l;
+        for (int i = l + 1; i <= r; i++) {
+            if (a[ans] < a[i]) {
+                ans = i;
+            }
+        }
+        return ans;
+    }
+    public static int argmin(long[] a, int l, int r) {
+        int ans = l;
+        for (int i = l + 1; i <= r; i++) {
+            if (a[ans] > a[i]) {
+                ans = i;
+            }
+        }
+        return ans;
+    }
+
+    public static int argmax(double[] a, int l, int r) {
+        int ans = l;
+        for (int i = l + 1; i <= r; i++) {
+            if (a[ans] < a[i]) {
+                ans = i;
+            }
+        }
+        return ans;
+    }
+    public static int argmin(double[] a, int l, int r) {
+        int ans = l;
+        for (int i = l + 1; i <= r; i++) {
+            if (a[ans] > a[i]) {
+                ans = i;
+            }
+        }
+        return ans;
+    }
+
     public static int argmax(LongFunction function, int l, int r) {
         int ans = l;
         long best = function.apply(l);

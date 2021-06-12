@@ -1,0 +1,48 @@
+{
+  "name" : "P5577 [CmdOI2019]算力训练",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 5 1\n1 2 3\n",
+    "output" : "2\n2\n1\n2\n1\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "5 6 1\n1 1 4 5 1 4\n",
+    "output" : "8\n7\n4\n2\n4\n7\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "75 5 3\n131 332 314 0 134 344 43 413 322 324 31 4 111 32 321 431 44 232 32 221 31 44 12 13 132 12 141 331 333 4 242 41 41 123 434 122 132 144 12 34 33 221 242 313 143 124 31 321 3 433 142 34 122 12 122 414 343 431 14 13 231 12 23 332 123 411 13 232 24 43 241 21 3 44 44",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "80 6 3\n443 512 232 222 224 305 55 523 542 432 524 1 234 112 251 130 134 24 443 542 335 141 252 251 232 500 45 415 141 30 415 322 42 330 320 341 253 142 221 512 303 230 520 12 404 103 351 134 30 125 215 14 110 214 414 441 304 221 153 0 54 44 11 530 552 422 32 102 143 253 315 131 301 50 220 430 222 24 435 223 ",
+    "index" : 3,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx125M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_06.on2021_06_12_Luogu.P5577__CmdOI2019_____.P5577CmdOI2019",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "on2021_06.on2021_06_12_Luogu.P5577__CmdOI2019_____.P5577CmdOI2019TestCase" ],
+  "date" : "2021.06.12",
+  "contestName" : "Luogu",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

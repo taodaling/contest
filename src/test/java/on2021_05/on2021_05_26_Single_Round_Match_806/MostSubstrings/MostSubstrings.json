@@ -1,0 +1,36 @@
+{
+  "name" : "MostSubstrings",
+  "signature" : {
+    "name" : "count",
+    "result" : "int",
+    "arguments" : [ "String", "int" ],
+    "argumentNames" : [ "S", "L" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "helloworld", "7" ],
+    "result" : "31810120",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "aaaa", "13" ],
+    "result" : "1",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "dogecoin", "17" ],
+    "result" : "78",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "decode", "11" ],
+    "result" : "52",
+    "index" : 3,
+    "active" : true
+  } ],
+  "date" : "2021.05.26",
+  "contestName" : "Single Round Match 806",
+  "testClasses" : [ ],
+  "fqn" : "on2021_05.on2021_05_26_Single_Round_Match_806.MostSubstrings.MostSubstrings",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

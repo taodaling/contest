@@ -1,0 +1,45 @@
+{
+  "name" : "F - Graph Smoothing",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 2 1\n3 1 5\n1 2\n1 3\n",
+    "output" : "3\n500000005\n500000008\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "3 2 2\n12 48 36\n1 2\n1 3\n",
+    "output" : "750000036\n36\n250000031\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "4 5 1000\n578 173 489 910\n1 2\n2 3\n3 4\n4 1\n1 3\n",
+    "output" : "201113830\n45921509\n67803140\n685163678\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_05.on2021_05_20_AtCoder___AtCoder_Beginner_Contest_199_Sponsored_by_Panasonic_.F___Graph_Smoothing.FGraphSmoothing",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.05.20",
+  "contestName" : "AtCoder - AtCoder Beginner Contest 199（Sponsored by Panasonic）",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

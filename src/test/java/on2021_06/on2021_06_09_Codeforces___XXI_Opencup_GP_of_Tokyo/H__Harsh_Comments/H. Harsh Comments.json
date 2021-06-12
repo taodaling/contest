@@ -1,0 +1,45 @@
+{
+  "name" : "H. Harsh Comments",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "1 2\n1\n1 1\n",
+    "output" : "2\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "1 1\n2\n1\n",
+    "output" : "332748119\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "3 3\n2 3 5\n7 11 900000000\n",
+    "output" : "636512475\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_06.on2021_06_09_Codeforces___XXI_Opencup_GP_of_Tokyo.H__Harsh_Comments.HHarshComments",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.06.09",
+  "contestName" : "Codeforces - XXI Opencup GP of Tokyo",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : false
+}

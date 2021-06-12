@@ -2,7 +2,6 @@ package contest;
 
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.math.NatureBigInt;
 
 public class P1919ABProblemFFT {
     public void solve(int testNumber, FastInput in, FastOutput out) {

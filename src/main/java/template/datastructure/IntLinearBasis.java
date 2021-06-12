@@ -35,6 +35,10 @@ public class IntLinearBasis {
         return ans;
     }
 
+    public int getBitValue(int i) {
+        return map[i];
+    }
+
     public int representationOriginal(int x) {
         int ans = 0;
         for (int i = 29; i >= 0 && x != 0; i--) {
@@ -157,7 +161,7 @@ public class IntLinearBasis {
         return x;
     }
 
-    public void copy(IntLinearBasis model){
+    public void copy(IntLinearBasis model) {
         System.arraycopy(model.map, 0, map, 0, map.length);
         System.arraycopy(model.source, 0, source, 0, source.length);
         set = model.set;

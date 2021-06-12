@@ -4,7 +4,6 @@ import template.math.DigitUtils;
 import template.math.Factorial;
 import template.math.ModMatrix;
 import template.math.Power;
-import template.utils.Debug;
 import template.utils.SequenceUtils;
 
 import java.util.Arrays;
@@ -83,7 +82,7 @@ public class MatrixTreeTheoremBeta {
     /**
      * 无向图版本，O(V^3)
      */
-    public int countMST() {
+    public int countSpanningTree() {
         if (V == 1) {
             return 1 % mod;
         }
@@ -103,7 +102,7 @@ public class MatrixTreeTheoremBeta {
     /**
      * 有向图指定根版本，O(V^3)
      */
-    public int countRootMST(int root) {
+    public int countRootSpanningTree(int root) {
         if (V == 1) {
             return 1 % mod;
         }
@@ -153,7 +152,7 @@ public class MatrixTreeTheoremBeta {
      * </pre>
      */
     public int countEulerTrace(Factorial fact) {
-        long t = countRootMST(0);
+        long t = countRootSpanningTree(0);
         for (int i = 0; i < V; i++) {
             if (deg[i] - 1 >= mod) {
                 return 0;

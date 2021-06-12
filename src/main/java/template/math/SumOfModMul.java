@@ -5,11 +5,11 @@ public class SumOfModMul {
     int mod;
     long limit;
     long sub;
-    Barrett barrett;
+    Modular barrett;
 
     public SumOfModMul(int mod) {
         this.mod = mod;
-        barrett = new Barrett(mod);
+        barrett = new Modular(mod);
         limit = Long.MAX_VALUE - (long) (mod - 1) * (mod - 1);
         sub = limit - limit % mod;
     }

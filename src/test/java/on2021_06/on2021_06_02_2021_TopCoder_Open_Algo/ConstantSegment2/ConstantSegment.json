@@ -1,0 +1,41 @@
+{
+  "name" : "ConstantSegment",
+  "signature" : {
+    "name" : "sendSomeHome",
+    "result" : "int",
+    "arguments" : [ "int", "int", "int", "int[]", "int" ],
+    "argumentNames" : [ "N", "K", "M", "Pprefix", "seed" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "10", "3", "10", "1 4 3 3 3 3 2 0 3 9", "0" ],
+    "result" : "0",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "10", "5", "10", "1 4 3 3 3 3 2 0 3 9", "0" ],
+    "result" : "2",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "10", "6", "10", "1 4 3 3 3 3 2 0 3 9", "0" ],
+    "result" : "-1",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "10", "2", "47", "1 4 5 2 1 2 3 7 8 3", "4747" ],
+    "result" : "1",
+    "index" : 3,
+    "active" : true
+  }, {
+    "arguments" : [ "20", "3", "10", "0 1 2 3 4", "123456789" ],
+    "result" : "9",
+    "index" : 4,
+    "active" : true
+  } ],
+  "date" : "2021.06.02",
+  "contestName" : "2021 TopCoder Open Algo",
+  "testClasses" : [ "on2021_06.on2021_06_02_2021_TopCoder_Open_Algo.ConstantSegment2.ConstantSegmentTestCase" ],
+  "fqn" : "on2021_06.on2021_06_02_2021_TopCoder_Open_Algo.ConstantSegment2.ConstantSegment",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

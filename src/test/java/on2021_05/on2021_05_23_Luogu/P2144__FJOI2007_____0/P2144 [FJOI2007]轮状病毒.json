@@ -1,0 +1,58 @@
+{
+  "name" : "P2144 [FJOI2007]轮状病毒",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "1",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "2",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "4",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "5",
+    "index" : 4,
+    "active" : true
+  }, {
+    "input" : "6",
+    "index" : 5,
+    "active" : true
+  }, {
+    "input" : "7",
+    "index" : 6,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx125M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_05.on2021_05_23_Luogu.P2144__FJOI2007_____0.P2144FJOI2007",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.05.23",
+  "contestName" : "Luogu",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

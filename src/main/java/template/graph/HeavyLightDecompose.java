@@ -156,6 +156,10 @@ public class HeavyLightDecompose {
         segment.update(node.dfsOrderFrom, node.dfsOrderFrom, 1, n, val);
     }
 
+    public long querySubtree(int uId){
+        return segment.query(nodes[uId].dfsOrderFrom, nodes[uId].dfsOrderTo, 1, n, op);
+    }
+
     public void updateSubtree(int nodeId, long  val){
         HLDNode node = nodes[nodeId];
         segment.update(node.dfsOrderFrom, node.dfsOrderTo, 1, n, val);

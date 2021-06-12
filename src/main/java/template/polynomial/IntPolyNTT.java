@@ -1,10 +1,7 @@
 package template.polynomial;
 
-import template.math.DigitUtils;
 import template.math.PrimitiveRoot;
 import template.utils.PrimitiveBuffers;
-
-import java.util.Arrays;
 
 public class IntPolyNTT extends IntPoly {
     protected int g;
@@ -15,7 +12,6 @@ public class IntPolyNTT extends IntPoly {
         super(mod);
         g = PrimitiveRoot.findAnyRoot(mod);
     }
-
 
     @Override
     public int[] convolution(int[] a, int[] b) {
@@ -43,34 +39,26 @@ public class IntPolyNTT extends IntPoly {
     }
 
 
-    /**
-     * <p>
-     * return polynomial g while p * g = 1 (mod x^(2^m)).
-     * </p>
-     * <p>
-     * You are supposed to guarantee the lengths of all arrays are greater than or equal to 2^{m + 1}.
-     * </p>
-     */
     @Override
     protected int[] inverse0(int[] p, int m) {
-        if (m == 0) {
-            int[] ans = PrimitiveBuffers.allocIntPow2(2);
+        if (m == 1) {
+            int[] ans = PrimitiveBuffers.allocIntPow2(1);
             ans[0] = power.inverse(p[0]);
             return ans;
         }
-        int[] ans = inverse0(p, m - 1);
-        int n = 1 << (m + 1);
+        int prevLen = (m + 1) / 2;
+        int[] ans = inverse0(p, prevLen);
+        int n = (prevLen - 1) * 2 + m - 1 + 1;
         ans = PrimitiveBuffers.resize(ans, n);
-        int[] prefix = PrimitiveBuffers.allocIntPow2(p, 1 << m, n);
+        int[] prefix = PrimitiveBuffers.allocIntPow2(p, m, n);
         NumberTheoryTransform.ntt(prefix, false, mod, g, power);
         NumberTheoryTransform.ntt(ans, false, mod, g, power);
-        for (int i = 0; i < n; i++) {
-            ans[i] = DigitUtils.mod(ans[i] * (2 - (long) prefix[i] * ans[i] % mod), mod);
+        for (int i = 0; i < ans.length; i++) {
+            ans[i] = barrett.valueOf(ans[i] * (2L - barrett.mul(prefix[i], ans[i])));
         }
         NumberTheoryTransform.ntt(ans, true, mod, g, power);
-        Arrays.fill(ans, 1 << m, n, 0);
         PrimitiveBuffers.release(prefix);
-        return ans;
+        return PrimitiveBuffers.replace(module(ans, m), ans);
     }
 
 

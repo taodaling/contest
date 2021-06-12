@@ -4,7 +4,6 @@ package on2021_05.on2021_05_20_Library_Checker.Convolution__mod_1_000_000_007_;
 
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.math.Barrett;
 import template.polynomial.IntPoly;
 import template.polynomial.IntPolyMTT;
 

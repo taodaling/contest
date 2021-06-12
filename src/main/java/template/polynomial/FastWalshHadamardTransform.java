@@ -299,7 +299,7 @@ public class FastWalshHadamardTransform {
         for (int i = 0, until = m - l; i <= until; i++) {
             long a = p[l + i];
             long b = p[m + 1 + i];
-            assert (a & 1) == (b & 1);
+//            assert (a & 1) == (b & 1);
             p[l + i] = (int) ((a + b) * inv2 % mod);
             p[m + 1 + i] = (int) ((a - b + mod) * inv2 % mod);
         }

@@ -65,6 +65,12 @@ public class PrimitiveBuffers {
         return ans;
     }
 
+    public static double[] allocDoublePow2(double[] data, int prefix, int newLen) {
+        double[] ans = allocDoublePow2(newLen);
+        System.arraycopy(data, 0, ans, 0, Math.min(data.length, prefix));
+        return ans;
+    }
+
     public static void release(int[] data) {
         intPow2Bufs[Log2.ceilLog(data.length)].release(data);
     }

@@ -408,5 +408,5 @@ public class GridHamiltonPath {
         }
     }
 
-    Debug debug = new Debug(true);
+    Debug debug = new Debug(false);
 }

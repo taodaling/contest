@@ -1,7 +1,7 @@
 package template.rand;
 
 public class Hasher {
-    private long time = System.nanoTime() + System.currentTimeMillis() * 31L;
+    private final long time = System.nanoTime() + System.currentTimeMillis() * 31L;
 
     /**
      * Returns the 32 high bits of Stafford variant 4 mix64 function as int.

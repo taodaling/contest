@@ -1,0 +1,39 @@
+{
+  "name" : "C. Compression and Expansion",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2\n4\n1\n1\n2\n3\n9\n1\n1\n1\n2\n2\n1\n2\n1\n2\n",
+    "output" : "1\n1.1\n1.2\n1.3\n1\n1.1\n1.1.1\n1.1.2\n1.2\n1.2.1\n2\n2.1\n2.2\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "1\n3\n1\n2\n3",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_05.on2021_05_30_Codeforces___Deltix_Round__Spring_2021__open_for_everyone__rated__Div__1___Div__2_.C__Compression_and_Expansion.CCompressionAndExpansion",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.05.30",
+  "contestName" : "Codeforces - Deltix Round, Spring 2021 (open for everyone, rated, Div. 1 + Div. 2)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

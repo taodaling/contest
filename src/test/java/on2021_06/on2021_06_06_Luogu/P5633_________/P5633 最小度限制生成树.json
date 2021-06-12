@@ -1,0 +1,70 @@
+{
+  "name" : "P5633 最小度限制生成树",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5 7 1 1\n1 3 1\n2 1 5\n4 2 3\n2 5 4\n5 1 2\n3 5 7\n4 1 6\n",
+    "output" : "15\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "8 20 1 3\n1 3 8\n7 3 8\n4 2 3\n8 2 4\n7 5 3\n1 8 4\n8 8 3\n6 7 8\n2 5 3\n5 3 7\n7 8 6\n1 4 7\n2 4 2\n1 5 8\n4 6 2\n8 4 2\n7 2 8\n8 8 1\n6 5 4\n1 3 4",
+    "output" : "25",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "3 2 1 1\n1 2 1\n1 3 1",
+    "output" : "Impossible",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "4 6 2 2\n1 2 55\n1 4 81\n1 3 25\n2 3 45\n2 4 46\n3 4 25",
+    "output" : "116",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "2 2 1 2\n1 2 10\n1 2 20",
+    "output" : "Impossible",
+    "index" : 4,
+    "active" : true
+  }, {
+    "input" : "2 2 1 1\n1 2 10\n1 2 20",
+    "output" : "10",
+    "index" : 5,
+    "active" : true
+  }, {
+    "input" : "1 1 1 0\n1 1 100",
+    "output" : "0",
+    "index" : 6,
+    "active" : true
+  }, {
+    "input" : "1 1 1 1\n1 1 100",
+    "output" : "Impossible",
+    "index" : 7,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1g",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_06.on2021_06_06_Luogu.P5633_________.P5633",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "on2021_06.on2021_06_06_Luogu.P5633_________.P5633TestCase" ],
+  "date" : "2021.06.06",
+  "contestName" : "Luogu",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

@@ -1,0 +1,55 @@
+{
+  "name" : "F - Digits Paradise in Hexadecimal",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "10 1\n",
+    "output" : "15\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "FF 2\n",
+    "output" : "225\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "100 2\n",
+    "output" : "226\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "1A8FD02 4\n",
+    "output" : "3784674\n",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "DEADBEEFDEADBEEEEEEEEF 16\n",
+    "output" : "153954073\n",
+    "index" : 4,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_05.on2021_05_20_AtCoder___AtCoder_Beginner_Contest_194.F___Digits_Paradise_in_Hexadecimal.FDigitsParadiseInHexadecimal",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.05.20",
+  "contestName" : "AtCoder - AtCoder Beginner Contest 194",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

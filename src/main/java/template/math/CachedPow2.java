@@ -11,6 +11,7 @@ public class CachedPow2 {
     private int phi;
     private int xphi;
     private int x;
+    private Modular barrett;
 
     public CachedPow2(int x, int mod) {
         this(x, mod, CachedEulerFunction.get(mod));
@@ -21,6 +22,7 @@ public class CachedPow2 {
     }
 
     public CachedPow2(int x, int mod, int limit, int phi) {
+        barrett = new Modular(mod);
         this.x = x;
         this.phi = phi;
         limit = Math.min(limit, mod);
@@ -32,19 +34,19 @@ public class CachedPow2 {
         second = new int[1 << log - low];
         first[0] = 1;
         for (int i = 1; i < first.length; i++) {
-            first[i] = (int) ((long) x * first[i - 1] % mod);
+            first[i] = barrett.mul(x, first[i - 1]);
         }
         second[0] = 1;
         long step = (long) x * first[first.length - 1] % mod;
         for (int i = 1; i < second.length; i++) {
-            second[i] = (int) (second[i - 1] * step % mod);
+            second[i] = barrett.mul(second[i - 1], step);
         }
 
         xphi = DigitUtils.modPow(x, phi, mod);
     }
 
     private int pow0(int exp) {
-        return (int) ((long) first[exp & mask] * second[exp >> low] % mod);
+        return barrett.mul(first[exp & mask], second[exp >> low]);
     }
 
     public int pow(long exp) {
@@ -53,7 +55,7 @@ public class CachedPow2 {
         if (xphi == 1 || fix == exp) {
             ans = pow0((int) fix);
         } else {
-            ans = pow0((int) fix) * (long) xphi % mod;
+            ans = barrett.mul(pow0((int) fix), xphi);
         }
         return (int) ans;
     }

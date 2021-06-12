@@ -1,0 +1,61 @@
+{
+  "name" : "IncorrectCancellation",
+  "signature" : {
+    "name" : "find",
+    "result" : "int",
+    "arguments" : [ "int" ],
+    "argumentNames" : [ "D" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "64" ],
+    "result" : "16",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "98" ],
+    "result" : "49",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "470" ],
+    "result" : "10",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "1057" ],
+    "result" : "-1",
+    "index" : 3,
+    "active" : true
+  }, {
+    "arguments" : [ "15436" ],
+    "result" : "454",
+    "index" : 4,
+    "active" : true
+  }, {
+    "arguments" : [ "15425" ],
+    "result" : "13574",
+    "index" : 5,
+    "active" : true
+  }, {
+    "arguments" : [ "6665" ],
+    "result" : "2666",
+    "index" : 6,
+    "active" : true
+  }, {
+    "arguments" : [ "1221" ],
+    "result" : "222",
+    "index" : 7,
+    "active" : true
+  }, {
+    "arguments" : [ "7" ],
+    "result" : "-1",
+    "index" : 8,
+    "active" : true
+  } ],
+  "date" : "2021.06.02",
+  "contestName" : "2021 TopCoder Open Algo",
+  "testClasses" : [ ],
+  "fqn" : "on2021_06.on2021_06_02_2021_TopCoder_Open_Algo.IncorrectCancellation0.IncorrectCancellation",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

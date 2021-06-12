@@ -4,13 +4,13 @@ package on2021_05.on2021_05_20_Library_Checker.Convolution;
 
 import template.io.FastInput;
 import template.io.FastOutput;
-import template.math.Barrett;
+import template.math.Modular;
 import template.polynomial.IntPoly;
 import template.polynomial.IntPolyNTT;
 
 public class Convolution {
     int mod = 998244353;
-    Barrett modular = new Barrett(mod);
+    Modular modular = new Modular(mod);
     public void solve(int testNumber, FastInput in, FastOutput out) {
         int n = in.ri();
         int m = in.ri();

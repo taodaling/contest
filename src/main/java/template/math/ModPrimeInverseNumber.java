@@ -8,7 +8,9 @@ public class ModPrimeInverseNumber implements InverseNumber {
 
     public ModPrimeInverseNumber(int[] inv, int limit, int mod) {
         this.inv = inv;
-        inv[1] = 1;
+        if(inv.length > 1) {
+            inv[1] = 1;
+        }
         int p = mod;
         for (int i = 2; i <= limit; i++) {
             int k = p / i;

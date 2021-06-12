@@ -9,10 +9,10 @@ public class DeltaDSU {
         p = new int[n];
         size = new int[n];
         delta = new long[n];
-        reset();
+        init();
     }
 
-    public void reset() {
+    public void init() {
         for (int i = 0; i < p.length; i++) {
             p[i] = i;
             size[i] = 1;

@@ -149,4 +149,13 @@ public class Bits {
         }
         return -1L >>> (64 - n);
     }
+
+    public static long leftShift(long x, int bit){
+        return x << (bit & 63);
+    }
+
+
+    public static long rightShift(long x, int bit){
+        return x >>> (bit & 63);
+    }
 }

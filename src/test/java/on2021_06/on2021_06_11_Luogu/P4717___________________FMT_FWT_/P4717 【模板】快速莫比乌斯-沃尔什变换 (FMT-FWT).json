@@ -1,0 +1,40 @@
+{
+  "name" : "P4717 【模板】快速莫比乌斯/沃尔什变换 (FMT/FWT)",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2\n2 4 6 8\n1 3 5 7\n",
+    "output" : "2 22 46 250\n88 64 112 56\n100 92 68 60\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "1\n1 2\n1 2",
+    "output" : "1 8\n5 4\n5 4",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx250M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_06.on2021_06_11_Luogu.P4717___________________FMT_FWT_.P4717FMTFWT",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.06.11",
+  "contestName" : "Luogu",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

@@ -1,0 +1,45 @@
+{
+  "name" : "D. It's a bird! No, it's a plane! No, it's AaParsa!",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 4\n0 1 1\n0 2 3\n1 0 1\n2 0 1\n",
+    "output" : "0 1 2\n1 0 2\n1 2 0\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "6 6\n0 0 1\n1 1 1\n2 2 1\n3 3 1\n4 4 1\n5 5 1\n",
+    "output" : "0 2 3 3 4 4\n4 0 2 3 3 4\n4 4 0 2 3 3\n3 4 4 0 2 3\n3 3 4 4 0 2\n2 3 3 4 4 0\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "4 5\n0 1 1\n1 3 2\n2 2 10\n3 0 1\n0 0 2\n",
+    "output" : "0 1 2 3\n3 0 3 2\n12 13 0 11\n1 2 2 0\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_05.on2021_05_24_Codeforces___Codeforces_Round__722__Div__1_.D__It_s_a_bird__No__it_s_a_plane__No__it_s_AaParsa_.DItsABirdNoItsAPlaneNoItsAaParsa",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.05.24",
+  "contestName" : "Codeforces - Codeforces Round #722 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

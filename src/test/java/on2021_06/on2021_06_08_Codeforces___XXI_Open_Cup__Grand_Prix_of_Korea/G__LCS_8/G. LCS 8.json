@@ -1,0 +1,50 @@
+{
+  "name" : "G. LCS 8",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "ACAYKP\n0\n",
+    "output" : "1\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "CAPCAK\n1\n",
+    "output" : "896\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "WEDONTNEEDNOEDUCATION\n2\n",
+    "output" : "24651976\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "WEDONTNEEDNOTHOUGHTCONTROL\n3\n",
+    "output" : "224129308\n",
+    "index" : 3,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_06.on2021_06_08_Codeforces___XXI_Open_Cup__Grand_Prix_of_Korea.G__LCS_8.GLCS8",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.06.08",
+  "contestName" : "Codeforces - XXI Open Cup. Grand Prix of Korea",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

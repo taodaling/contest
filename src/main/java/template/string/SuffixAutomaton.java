@@ -56,7 +56,7 @@ public class SuffixAutomaton {
         return ans;
     }
 
-    public void beginMatch() {
+    public void prepareMatch() {
         matchLast = root;
         matchLength = 0;
     }
@@ -150,7 +150,10 @@ public class SuffixAutomaton {
 
     public void calcRight(IntToIntegerFunction func, int n) {
         topoSort();
-        beginMatch();
+        prepareMatch();
+        for(SANode node : all){
+            node.right = 0;
+        }
         for (int i = 0; i < n; i++) {
             match(func.apply(i));
             matchLast.right++;

@@ -46,7 +46,7 @@ public class ContinuousIntervalProblem {
         if (l == r) {
             return new int[]{l.ll - 1, l.rr - 1};
         }
-        int lcaId = bl.lca(l.id, l.depth, r.id, r.depth);
+        int lcaId = bl.lca(l.id, r.id);
         Node ancestor = nodes[lcaId];
         if (!ancestor.join) {
             return new int[]{ancestor.ll - 1, ancestor.rr - 1};
@@ -67,7 +67,7 @@ public class ContinuousIntervalProblem {
         r += 2;
         Node lNode = leaf[l];
         Node rNode = leaf[r];
-        int lca = bl.lca(lNode.id, lNode.depth, rNode.id, rNode.depth);
+        int lca = bl.lca(lNode.id, rNode.id);
         Node lcaNode = nodes[lca];
         Node lParent = nodes[bl.kthAncestor(lNode.id, lNode.depth - lcaNode.depth - 1)];
         Node rParent = nodes[bl.kthAncestor(rNode.id, rNode.depth - lcaNode.depth - 1)];

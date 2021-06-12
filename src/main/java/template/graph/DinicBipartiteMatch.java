@@ -1,5 +1,8 @@
 package template.graph;
 
+import template.primitve.generated.datastructure.IntToIntegerFunction;
+import template.primitve.generated.datastructure.IntToLongFunction;
+import template.primitve.generated.datastructure.IntegerFunction;
 import template.primitve.generated.graph.IntegerDinic;
 import template.primitve.generated.graph.IntegerFlow;
 import template.primitve.generated.graph.IntegerFlowEdge;
@@ -14,6 +17,7 @@ public class DinicBipartiteMatch {
     private int[] rMates;
     int l;
     int r;
+    int edgeCnt;
 
     private int idOfL(int i) {
         return i;
@@ -31,7 +35,11 @@ public class DinicBipartiteMatch {
         return idOfSrc() + 1;
     }
 
-    public DinicBipartiteMatch(int l, int r) {
+    public DinicBipartiteMatch(int l, int r){
+        this(l, r, i -> 1, i -> 1);
+    }
+
+    public DinicBipartiteMatch(int l, int r, IntToIntegerFunction leftCap, IntToIntegerFunction rightCap) {
         this.l = l;
         this.r = r;
         lMates = new int[l];
@@ -39,10 +47,10 @@ public class DinicBipartiteMatch {
         g = Graph.createGraph(idOfDst() + 1);
         dinic = new IntegerDinic();
         for (int i = 0; i < l; i++) {
-            IntegerFlow.addFlowEdge(g, idOfSrc(), idOfL(i), 1);
+            IntegerFlow.addFlowEdge(g, idOfSrc(), idOfL(i), leftCap.apply(i));
         }
         for (int i = 0; i < r; i++) {
-            IntegerFlow.addFlowEdge(g, idOfR(i), idOfDst(), 1);
+            IntegerFlow.addFlowEdge(g, idOfR(i), idOfDst(), rightCap.apply(i));
         }
     }
 
@@ -53,7 +61,7 @@ public class DinicBipartiteMatch {
     public int solve() {
         Arrays.fill(lMates, -1);
         Arrays.fill(rMates, -1);
-        dinic.apply(g, idOfSrc(), idOfDst(), l);
+        dinic.apply(g, idOfSrc(), idOfDst(), (int)1e9);
         int ans = 0;
         for (int i = 0; i < l; i++) {
             for (IntegerFlowEdge e : g[idOfL(i)]) {

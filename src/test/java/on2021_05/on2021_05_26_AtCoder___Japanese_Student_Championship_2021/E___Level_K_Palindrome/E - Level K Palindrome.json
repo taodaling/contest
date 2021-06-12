@@ -1,0 +1,69 @@
+{
+  "name" : "E - Level K Palindrome",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4\naabaaaabaa\n",
+    "output" : "0\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "2\naabaaaabaa\n",
+    "output" : "4\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "3\naabaaaabaa\n",
+    "output" : "impossible\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "5\naabaaaabaa\n",
+    "output" : "impossible\n",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "2\nacaabcbababaaac\n",
+    "output" : "6\n",
+    "index" : 4,
+    "active" : true
+  }, {
+    "input" : "1\n",
+    "output" : "",
+    "index" : 5,
+    "active" : true
+  }, {
+    "input" : "1\naaabbb",
+    "output" : "3",
+    "index" : 6,
+    "active" : true
+  }, {
+    "input" : "1\naabb",
+    "index" : 7,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_05.on2021_05_26_AtCoder___Japanese_Student_Championship_2021.E___Level_K_Palindrome.ELevelKPalindrome",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.05.26",
+  "contestName" : "AtCoder - Japanese Student Championship 2021",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

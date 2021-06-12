@@ -1,0 +1,45 @@
+{
+  "name" : "F - Construct a Palindrome",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "8 8\n1 2 a\n2 3 b\n1 3 c\n3 4 b\n4 5 a\n5 6 c\n6 7 b\n7 8 a\n",
+    "output" : "10\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "4 5\n1 1 a\n1 2 a\n2 3 a\n3 4 b\n4 4 a\n",
+    "output" : "5\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "3 4\n1 1 a\n1 2 a\n2 3 b\n3 3 b\n",
+    "output" : "-1\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_05.on2021_05_30_AtCoder___AtCoder_Beginner_Contest_197_Sponsored_by_Panasonic_.F___Construct_a_Palindrome.FConstructAPalindrome",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.05.30",
+  "contestName" : "AtCoder - AtCoder Beginner Contest 197（Sponsored by Panasonic）",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

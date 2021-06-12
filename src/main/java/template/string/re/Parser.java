@@ -8,11 +8,11 @@ import java.util.List;
 public class Parser {
     static boolean[] forbiddenNothing = new boolean[128];
 
-    public static RegularExpression parse(CharSequence cs) {
+    public static NFARegularExpression parse(CharSequence cs) {
         return parse(cs, forbiddenNothing);
     }
 
-    public static RegularExpression parse(CharSequence cs, boolean[] forbidden) {
+    public static NFARegularExpression parse(CharSequence cs, boolean[] forbidden) {
         assert forbidden.length >= 128;
         return new ParserHelper(cs, forbidden).parse();
     }
@@ -141,7 +141,7 @@ public class Parser {
             return tail;
         }
 
-        public RegularExpression parse() {
+        public NFARegularExpression parse() {
             dq = new ArrayDeque<>(n + 2);
             dq.addLast(bracket);
             int nc;
@@ -225,7 +225,7 @@ public class Parser {
 
             Subgraph g = assertRemoveLast();
             g.outbound.set(accept);
-            return new RegularExpression(all.toArray(new State[0]), g.head);
+            return new NFARegularExpression(all.toArray(new State[0]), g.head);
         }
     }
 }

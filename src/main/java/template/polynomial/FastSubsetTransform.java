@@ -8,7 +8,7 @@ public class FastSubsetTransform {
     /**
      * res[k] = \sum_{i&j=0 and i|j=k} a[i]b[j]
      *
-     * O((log_2n)^2 n)
+     * O(n (log_2n)^2)
      * @param a
      * @param b
      * @return

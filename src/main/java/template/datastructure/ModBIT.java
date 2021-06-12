@@ -1,6 +1,6 @@
 package template.datastructure;
 
-import template.math.Barrett;
+import template.math.Modular;
 import template.math.DigitUtils;
 
 import java.util.Arrays;
@@ -12,7 +12,7 @@ public class ModBIT {
     private long[] data;
     private int n;
     private int mod;
-    Barrett barrett;
+    Modular barrett;
 
     /**
      * 创建大小A[1...n]
@@ -21,7 +21,7 @@ public class ModBIT {
         this.n = n;
         data = new long[n + 1];
         this.mod = mod;
-        barrett = new Barrett(mod);
+        barrett = new Modular(mod);
     }
 
     /**
@@ -32,7 +32,7 @@ public class ModBIT {
         for (; i > 0; i -= i & -i) {
             sum += data[i];
         }
-        return barrett.reduce(sum);
+        return barrett.valueOf(sum);
     }
 
     /**

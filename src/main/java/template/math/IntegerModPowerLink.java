@@ -1,27 +1,25 @@
 package template.math;
 
-import template.primitve.generated.datastructure.IntToIntFunction;
-
 /**
  * Calculate x1 ^ x2 ^ x3 ^ x4 ^ x5 ^ ... ^ xn while xi >= 1
  */
 public class IntegerModPowerLink {
-    private int[] f;
+    private long[] f;
     // private static int limit = 1 << 16;
 
-    public IntegerModPowerLink(int[] f) {
+    public IntegerModPowerLink(long[] f) {
         this.f = f;
     }
 
-    private int test(int l, int r, int limit) {
-        int val = f[l];
+    private long test(int l, int r, int limit) {
+        long val = f[l];
         if (l == r) {
             return val;
         }
         if (val == 1) {
             return val;
         }
-        int prev = test(l + 1, r, limit);
+        long prev = test(l + 1, r, limit);
         return prev < limit ? (int) DigitUtils.limitPow(val, prev, limit) : limit;
     }
 
@@ -33,7 +31,7 @@ public class IntegerModPowerLink {
      * @return
      */
     public int query(int l, int r, int m) {
-        int val = f[l];
+        long val = f[l];
         if (l == r) {
             return DigitUtils.mod(val, m);
         }
@@ -41,13 +39,13 @@ public class IntegerModPowerLink {
             return 0;
         }
         int expMod = CachedEulerFunction.get(m);
-        int t = test(l + 1, Math.min(l + 5, r), expMod);
+        long t = test(l + 1, Math.min(l + 5, r), expMod);
         if (t < expMod) {
-            return DigitUtils.modPow(val, t, m);
+            return DigitUtils.modPow((int) (val % m), t, m);
         }
         int exp = query(l + 1, r, expMod);
         exp += expMod;
-        return DigitUtils.modPow(val, exp, m);
+        return DigitUtils.modPow((int) (val % m), exp, m);
     }
 
 //    private int test(int l, int r) {

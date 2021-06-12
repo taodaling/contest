@@ -1,0 +1,40 @@
+{
+  "name" : "F - Integer Convex Hull",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4\n0 0\n1 2\n0 1\n1 0\n",
+    "output" : "2\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "23\n-5255 7890\n5823 7526\n5485 -113\n7302 5708\n9149 2722\n4904 -3918\n8566 -3267\n-3759 2474\n-7286 -1043\n-1230 1780\n3377 -7044\n-2596 -6003\n5813 -9452\n-9889 -7423\n2377 1811\n5351 4551\n-1354 -9611\n4244 1958\n8864 -9889\n507 -8923\n6948 -5016\n-6139 2769\n4103 9241\n",
+    "output" : "4060436\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_05.on2021_05_25_AtCoder___AISing_Programming_Contest_2021_AtCoder_Beginner_Contest_202_.F___Integer_Convex_Hull.FIntegerConvexHull",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.05.25",
+  "contestName" : "AtCoder - AISing Programming Contest 2021（AtCoder Beginner Contest 202）",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

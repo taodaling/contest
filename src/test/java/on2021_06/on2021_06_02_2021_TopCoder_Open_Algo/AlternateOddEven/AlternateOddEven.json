@@ -1,0 +1,50 @@
+{
+  "name" : "AlternateOddEven",
+  "signature" : {
+    "name" : "kth",
+    "result" : "long",
+    "arguments" : [ "long" ],
+    "argumentNames" : [ "K" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "9" ],
+    "result" : "9",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "15" ],
+    "result" : "21",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "62" ],
+    "result" : "125",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "100" ],
+    "result" : "290",
+    "index" : 3,
+    "active" : true
+  }, {
+    "arguments" : [ "100000000000" ],
+    "index" : 4,
+    "active" : true
+  }, {
+    "arguments" : [ "1" ],
+    "result" : "1",
+    "index" : 5,
+    "active" : true
+  }, {
+    "arguments" : [ "10" ],
+    "result" : "10",
+    "index" : 6,
+    "active" : true
+  } ],
+  "date" : "2021.06.02",
+  "contestName" : "2021 TopCoder Open Algo",
+  "testClasses" : [ ],
+  "fqn" : "on2021_06.on2021_06_02_2021_TopCoder_Open_Algo.AlternateOddEven.AlternateOddEven",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

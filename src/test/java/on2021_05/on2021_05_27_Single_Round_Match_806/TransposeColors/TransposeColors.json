@@ -1,0 +1,31 @@
+{
+  "name" : "TransposeColors",
+  "signature" : {
+    "name" : "move",
+    "result" : "int[]",
+    "arguments" : [ "int" ],
+    "argumentNames" : [ "N" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "1" ],
+    "result" : "",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "2" ],
+    "result" : "2 1 4",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "3" ],
+    "result" : "1 5 6 2 7 3 9",
+    "index" : 2,
+    "active" : true
+  } ],
+  "date" : "2021.05.27",
+  "contestName" : "Single Round Match 806",
+  "testClasses" : [ ],
+  "fqn" : "on2021_05.on2021_05_27_Single_Round_Match_806.TransposeColors.TransposeColors",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}
