@@ -1,2 +1,2 @@
-56 src/main/java/contest/P5577 [CmdOI2019]算力训练.json
+66 src/main/java/contest/DMOPC '20 Contest 7 P3 - Senpai and Art.json
 0

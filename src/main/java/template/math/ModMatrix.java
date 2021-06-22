@@ -172,7 +172,7 @@ public class ModMatrix {
             }
 
             if (l.mat[maxRow * n + i] == 0) {
-                throw new RuntimeException("Can't inverse singular matrix");
+                return null;
             }
             r.swapRow(i, maxRow);
             l.swapRow(i, maxRow);
@@ -339,7 +339,7 @@ public class ModMatrix {
                 swapRow(maxRow, i + 1);
                 swapCol(maxRow, i + 1);
             }
-            long inv = pow.inverse(mat[maxRow * n + i]);
+            long inv = pow.inverse(mat[(i + 1) * n + i]);
             for (int j = i + 2; j < n; j++) {
                 if (mat[j * n + i] == 0) {
                     continue;
@@ -357,7 +357,7 @@ public class ModMatrix {
         long ans = 1 % mod;
         int n = m;
 
-        for (int i = 0; i < n - 1; i++) {
+        for (int i = 0; i < n - 1 && ans != 0; i++) {
             if (mat[i * n + i] == 0 && mat[(i + 1) * n + i] != 0) {
                 swapRow(i, i + 1);
                 ans = -ans;
@@ -391,7 +391,7 @@ public class ModMatrix {
             }
             int y = copy.topHeisenbergModMatrixDeterminant(pow);
             if (m % 2 == 1) {
-                y = DigitUtils.modsub(0, y, mod);
+                y = DigitUtils.negate(y, mod);
             }
             gli.addPoint(i, y);
         }

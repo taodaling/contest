@@ -14,17 +14,17 @@ public class VirtualTree {
     IntegerArrayList pend;
     int[] version;
     int round = 1;
-    private LcaOnTree lca;
+    private LcaOnTreeBySchieberVishkin lca;
     int top;
     int virtualTop;
     IntegerDequeImpl dq;
     private List<Integer>[] adj;
 
     public VirtualTree(List<? extends DirectedEdge>[] g, IntPredicate top) {
-        this(g, top, new LcaOnTree(g, top));
+        this(g, top, new LcaOnTreeBySchieberVishkin(g, top));
     }
 
-    public VirtualTree(List<? extends DirectedEdge>[] g, IntPredicate top, LcaOnTree lca) {
+    public VirtualTree(List<? extends DirectedEdge>[] g, IntPredicate top, LcaOnTreeBySchieberVishkin lca) {
         this.g = g;
         int n = g.length;
         dfn = new int[n];
@@ -46,7 +46,7 @@ public class VirtualTree {
         adj[i].add(x);
     }
 
-    public LcaOnTree getLca() {
+    public LcaOnTreeBySchieberVishkin getLca() {
         return lca;
     }
 

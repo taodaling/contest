@@ -2,13 +2,14 @@ package template.primitve;
 
 import java.io.*;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
 public class Generator {
     public static void main(String[] args) {
-        String srcPath = "F:\\sourcecode\\contest/src/main/java/template/primitve/generator";
+        String srcPath = "F:\\sourcecode\\contest\\generator";
         String dstPath = "F:\\sourcecode\\contest/src/main/java/template/primitve/generated";
         String packagePrefix = "package template.primitve.generated";
 
@@ -36,7 +37,7 @@ public class Generator {
     }
 
 
-    Charset charset = Charset.forName("utf-8");
+    static Charset charset = StandardCharsets.UTF_8;
 
     private static class Transformer implements Function<FileItem, FileItem> {
         final String big;

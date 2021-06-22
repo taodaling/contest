@@ -27,10 +27,10 @@ public class WaveletTrees {
     /**
      * Find the index of k-th smallest element in [l, r]
      *
-     * @param l
-     * @param r
-     * @param k
-     * @return
+     * <p>
+     * O(log_2M)
+     * </p>
+     *
      */
     public int kthSmallestIndex(int l, int r, int k) {
         return root.kthSmallestElement(indices, 0, indices.length - 1, l, r, k);
@@ -39,10 +39,10 @@ public class WaveletTrees {
     /**
      * count how many number in range [l, r] less or equal to k
      *
-     * @param l
-     * @param r
-     * @param k
-     * @return
+     * <p>
+     * O(log_2M)
+     * </p>
+     *
      */
     public int leq(int l, int r, long k) {
         if (k < L) {
@@ -57,11 +57,6 @@ public class WaveletTrees {
     /**
      * count how many number in range [l, r] greater or equal to L and less or equal to R
      *
-     * @param l
-     * @param r
-     * @param L
-     * @param R
-     * @return
      */
     public int range(int l, int r, int L, int R) {
         return leq(l, r, R) - leq(l, r, L - 1);
@@ -75,14 +70,6 @@ public class WaveletTrees {
         /**
          * O(log_2M)
          *
-         * @param l
-         * @param r
-         * @param rangeL
-         * @param rangeR
-         * @param L
-         * @param R
-         * @param key
-         * @return
          */
         public int leq(int l, int r, int rangeL, int rangeR, long L, long R, long key) {
             if (ps == null) {

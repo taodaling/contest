@@ -1,5 +1,7 @@
 package template.datastructure;
 
+import template.primitve.generated.datastructure.IntToLongFunction;
+
 public class PreXor {
     private long[] pre;
     private int n;
@@ -8,30 +10,19 @@ public class PreXor {
         pre = new long[n];
     }
 
-    public void populate(long[] a, int n) {
+    public void populate(IntToLongFunction a, int n) {
         this.n = n;
-        pre[0] = a[0];
+        if (n > 0) {
+            pre[0] = a.apply(0);
+        }
         for (int i = 1; i < n; i++) {
-            pre[i] = pre[i - 1] ^ a[i];
+            pre[i] = pre[i - 1] ^ a.apply(i);
         }
     }
 
-    public void populate(int[] a, int n) {
-        this.n = a.length;
-        pre[0] = a[0];
-        for (int i = 1; i < n; i++) {
-            pre[i] = pre[i - 1] ^ a[i];
-        }
-    }
-
-    public PreXor(long[] a) {
-        this(a.length);
-        populate(a, a.length);
-    }
-
-    public PreXor(int[] a) {
-        this(a.length);
-        populate(a, a.length);
+    public PreXor(IntToLongFunction a, int n) {
+        this(n);
+        populate(a, n);
     }
 
     /**

@@ -6,11 +6,13 @@ import template.binary.Log2;
 import java.util.Arrays;
 
 public class LinearBasis implements Cloneable {
-    private long[] map = new long[64];
+    private static final int BITS = 64;
+    
+    private long[] map = new long[BITS];
     /**
      * map[i] = xor of source[i]
      */
-    private long[] source = new long[64];
+    private long[] source = new long[BITS];
     private long set;
 
     public int size() {
@@ -25,7 +27,7 @@ public class LinearBasis implements Cloneable {
 
     public long representation(long x) {
         long ans = 0;
-        for (int i = 63; i >= 0 && x != 0; i--) {
+        for (int i = BITS - 1; i >= 0 && x != 0; i--) {
             if (bitAt(x, i) == 0 || map[i] == 0) {
                 continue;
             }
@@ -38,7 +40,7 @@ public class LinearBasis implements Cloneable {
 
     public long representationOriginal(long x) {
         long ans = 0;
-        for (int i = 63; i >= 0 && x != 0; i--) {
+        for (int i = BITS - 1; i >= 0 && x != 0; i--) {
             if (bitAt(x, i) == 0 || map[i] == 0) {
                 continue;
             }
@@ -52,7 +54,7 @@ public class LinearBasis implements Cloneable {
     public long[] toArray() {
         long[] ans = new long[size()];
         int tail = 0;
-        for (int i = 63; i >= 0; i--) {
+        for (int i = BITS - 1; i >= 0; i--) {
             if (map[i] != 0) {
                 ans[tail++] = map[i];
             }
@@ -62,7 +64,7 @@ public class LinearBasis implements Cloneable {
 
     private void upward(int row) {
         assert 1L << row == Long.highestOneBit(map[row]);
-        for (int i = row + 1; i < 64; i++) {
+        for (int i = row + 1; i < BITS; i++) {
             if (Bits.get(map[i], row) == 1) {
                 map[i] ^= map[row];
                 source[i] ^= source[row];
@@ -71,12 +73,12 @@ public class LinearBasis implements Cloneable {
     }
 
     private boolean check() {
-        for (int i = 0; i < 64; i++) {
+        for (int i = 0; i < BITS; i++) {
             if ((map[i] == 0) != (Bits.get(set, i) == 0)) {
                 return false;
             }
             if (map[i] != 0) {
-                for (int j = 0; j < 64; j++) {
+                for (int j = 0; j < BITS; j++) {
                     int res = Bits.get(map[i], j);
                     if (i == j) {
                         if (res != 1) {
@@ -94,14 +96,14 @@ public class LinearBasis implements Cloneable {
     }
 
     /**
-     * return the index of  added element ([0,64)), -1 means can't add val
+     * return the index of  added element ([0,BITS)), -1 means can't add val
      *
      * @param val
      * @return
      */
     public int add(long val) {
         long state = 0;
-        for (int i = 63; i >= 0 && val != 0; i--) {
+        for (int i = BITS - 1; i >= 0 && val != 0; i--) {
             if (bitAt(val, i) == 0 || map[i] == 0) {
                 continue;
             }
@@ -125,7 +127,7 @@ public class LinearBasis implements Cloneable {
      * Check whether val can be get by xor the numbers in basis
      */
     public boolean contain(long val) {
-        for (int i = 63; i >= 0 && val != 0; i--) {
+        for (int i = BITS - 1; i >= 0 && val != 0; i--) {
             if (bitAt(val, i) == 0) {
                 continue;
             }
@@ -154,7 +156,7 @@ public class LinearBasis implements Cloneable {
     public long theKthSmallestNumber(long k) {
         int id = 0;
         long num = 0;
-        for (int i = 0; i < 64; i++) {
+        for (int i = 0; i < BITS; i++) {
             if (map[i] == 0) {
                 continue;
             }
@@ -172,7 +174,7 @@ public class LinearBasis implements Cloneable {
     public long theRankOfNumber(long n) {
         int index = size() - 1;
         long rank = 0;
-        for (int i = 63; i >= 0; i--) {
+        for (int i = BITS - 1; i >= 0; i--) {
             if (map[i] == 0) {
                 continue;
             }
@@ -189,7 +191,7 @@ public class LinearBasis implements Cloneable {
      * Find the maximum value x ^ v where v is generated
      */
     public long theMaximumNumberXor(long x) {
-        for (int i = 63; i >= 0; i--) {
+        for (int i = BITS - 1; i >= 0; i--) {
             if (map[i] == 0) {
                 continue;
             }
@@ -200,6 +202,21 @@ public class LinearBasis implements Cloneable {
         return x;
     }
 
+    /**
+     * Find the minimum value x ^ v where v belong to spanning space of this
+     */
+    public int theMinimumNumberXor(int x) {
+        for (int i = BITS - 1; i >= 0; i--) {
+            if (map[i] == 0) {
+                continue;
+            }
+            if (bitAt(x, i) == 1) {
+                x ^= map[i];
+            }
+        }
+        return x;
+    }
+    
     @Override
     public LinearBasis clone() {
         try {

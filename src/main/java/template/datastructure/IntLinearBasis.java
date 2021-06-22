@@ -5,15 +5,17 @@ import template.binary.Log2;
 import java.util.Arrays;
 
 public class IntLinearBasis {
-    private int[] map = new int[30];
+    static final int BITS = 32;
+
+    private int[] map = new int[BITS];
     /**
      * map[i] = xor of source[i]
      */
-    private int[] source = new int[30];
+    private int[] source = new int[BITS];
     private int set;
 
     public int size() {
-        return Long.bitCount(set);
+        return Integer.bitCount(set);
     }
 
     public void clear() {
@@ -24,7 +26,7 @@ public class IntLinearBasis {
 
     public int representation(int x) {
         int ans = 0;
-        for (int i = 29; i >= 0 && x != 0; i--) {
+        for (int i = BITS - 1; i >= 0 && x != 0; i--) {
             if (bitAt(x, i) == 0 || map[i] == 0) {
                 continue;
             }
@@ -41,7 +43,7 @@ public class IntLinearBasis {
 
     public int representationOriginal(int x) {
         int ans = 0;
-        for (int i = 29; i >= 0 && x != 0; i--) {
+        for (int i = BITS - 1; i >= 0 && x != 0; i--) {
             if (bitAt(x, i) == 0 || map[i] == 0) {
                 continue;
             }
@@ -55,7 +57,7 @@ public class IntLinearBasis {
     public int[] toArray() {
         int[] ans = new int[size()];
         int tail = 0;
-        for (int i = 29; i >= 0; i--) {
+        for (int i = BITS - 1; i >= 0; i--) {
             if (map[i] != 0) {
                 ans[tail++] = map[i];
             }
@@ -71,7 +73,7 @@ public class IntLinearBasis {
      */
     public int add(int val) {
         int state = 0;
-        for (int i = 29; i >= 0 && val != 0; i--) {
+        for (int i = BITS - 1; i >= 0 && val != 0; i--) {
             if (bitAt(val, i) == 0 || map[i] == 0) {
                 continue;
             }
@@ -92,7 +94,7 @@ public class IntLinearBasis {
      * Check whether val can be get by xor the numbers in basis
      */
     public boolean contain(int val) {
-        for (int i = 29; i >= 0 && val != 0; i--) {
+        for (int i = BITS - 1; i >= 0 && val != 0; i--) {
             if (bitAt(val, i) == 0) {
                 continue;
             }
@@ -115,7 +117,7 @@ public class IntLinearBasis {
     public int theKthSmallestNumber(int k) {
         int id = 0;
         int num = 0;
-        for (int i = 0; i < 30; i++) {
+        for (int i = 0; i < BITS; i++) {
             if (map[i] == 0) {
                 continue;
             }
@@ -133,7 +135,7 @@ public class IntLinearBasis {
     public int theRankOfNumber(int n) {
         int index = size() - 1;
         int rank = 0;
-        for (int i = 29; i >= 0; i--) {
+        for (int i = BITS - 1; i >= 0; i--) {
             if (map[i] == 0) {
                 continue;
             }
@@ -147,14 +149,29 @@ public class IntLinearBasis {
     }
 
     /**
-     * Find the maximum value x ^ v where v is generated
+     * Find the maximum value x ^ v where v belong to spanning space of this
      */
     public int theMaximumNumberXor(int x) {
-        for (int i = 29; i >= 0; i--) {
+        for (int i = BITS - 1; i >= 0; i--) {
             if (map[i] == 0) {
                 continue;
             }
             if (bitAt(x, i) == 0) {
+                x ^= map[i];
+            }
+        }
+        return x;
+    }
+
+    /**
+     * Find the minimum value x ^ v where v belong to spanning space of this
+     */
+    public int theMinimumNumberXor(int x) {
+        for (int i = BITS - 1; i >= 0; i--) {
+            if (map[i] == 0) {
+                continue;
+            }
+            if (bitAt(x, i) == 1) {
                 x ^= map[i];
             }
         }

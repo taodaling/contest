@@ -16,7 +16,7 @@ import java.util.TreeSet;
 public class MinSpanningGraphOnTree {
     private List<? extends DirectedEdge>[] g;
     private int[] depth;
-    private LcaOnTree lca;
+    private LcaOnTreeBySchieberVishkin lca;
     private int[] index2dfn;
     private int[] dfn2index;
     private int order;
@@ -44,7 +44,7 @@ public class MinSpanningGraphOnTree {
         depth = new int[n];
         index2dfn = new int[n];
         dfn2index = new int[n];
-        lca = new LcaOnTree(n);
+        lca = new LcaOnTreeBySchieberVishkin(n);
     }
 
     public void init(List<? extends DirectedEdge>[] g) {

@@ -1,0 +1,55 @@
+{
+  "name" : "Biological Software Utilities",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "1",
+    "output" : "0",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "2",
+    "output" : "1",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "3",
+    "output" : "0",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "4",
+    "output" : "12\n",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "7788",
+    "output" : "178152092",
+    "index" : 4,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx512M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_06.on2021_06_20_Codeforces___Codeforces_LATOKEN_Round_1__Div__1___Div__2_.Biological_Software_Utilities.BiologicalSoftwareUtilities",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.06.20",
+  "contestName" : "Codeforces - Codeforces LATOKEN Round 1 (Div. 1 + Div. 2)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

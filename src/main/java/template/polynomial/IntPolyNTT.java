@@ -1,7 +1,9 @@
 package template.polynomial;
 
+import template.math.DigitUtils;
 import template.math.PrimitiveRoot;
 import template.utils.PrimitiveBuffers;
+import template.utils.SequenceUtils;
 
 public class IntPolyNTT extends IntPoly {
     protected int g;
@@ -94,4 +96,33 @@ public class IntPolyNTT extends IntPoly {
         remainder = Polynomials.normalizeAndReplace(remainder);
         return new int[][]{quotient, remainder};
     }
+
+    @Override
+    public int[] module(long k, int[] p) {
+        int rankOfP = rankOf(p);
+        if (rankOfP == 0) {
+            return PrimitiveBuffers.allocIntPow2(1);
+        }
+        FastDivision fd = new FastDivision(p, (rankOfP - 1) * 2 + 1);
+        int[] ans = module(k, fd);
+        fd.release();
+        return Polynomials.normalizeAndReplace(ans);
+    }
+
+
+    protected int[] module(long k, FastDivision fd) {
+        if (k < fd.rb) {
+            int[] ans = PrimitiveBuffers.allocIntPow2((int) k + 1);
+            ans[(int) k] = DigitUtils.mod(1, mod);
+            return ans;
+        }
+        int[] ans = module(k / 2, fd);
+        ans = PrimitiveBuffers.replace(pow2(ans), ans);
+        if ((k & 1) == 1) {
+            ans = PrimitiveBuffers.replace(rightShift(ans, 1), ans);
+        }
+        int[][] qd = fd.divideAndRemainder(ans);
+        return PrimitiveBuffers.replace(qd[1], qd[0], ans);
+    }
+
 }

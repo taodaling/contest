@@ -235,7 +235,7 @@ public class BigInt10 extends Number implements Cloneable, Comparable<BigInt10> 
     }
 
     /**
-     * There are some precision issues, so it's buggy and never invoke it
+     * There are some precision issues, so it's buggy and don't invoke it
      */
     public static BigInt10 div(BigInt10 a, BigInt10 b) {
         a.assertValid();

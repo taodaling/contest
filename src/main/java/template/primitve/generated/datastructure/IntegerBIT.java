@@ -24,7 +24,7 @@ public class IntegerBIT {
      * 查询A[1]+A[2]+...+A[i]
      */
     public int query(int i) {
-        i = Math.min(i, data.length - 1);
+        i = Math.min(i, n);
         int sum = 0;
         for (; i > 0; i -= i & -i) {
             sum += data[i];

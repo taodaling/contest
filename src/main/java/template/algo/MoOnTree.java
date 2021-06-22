@@ -1,9 +1,7 @@
 package template.algo;
 
-import template.graph.LcaOnTree;
+import template.graph.LcaOnTreeBySchieberVishkin;
 import template.graph.UndirectedEdge;
-import template.primitve.generated.datastructure.IntegerIterator;
-import template.primitve.generated.datastructure.IntegerMultiWayStack;
 
 import java.util.Arrays;
 import java.util.List;
@@ -15,7 +13,7 @@ public class MoOnTree {
     private int eulerTourTail = 0;
     private int[] begin;
     private int[] end;
-    private LcaOnTree lcaOnTree;
+    private LcaOnTreeBySchieberVishkin schieberVishkin;
 
     public MoOnTree(List<UndirectedEdge>[] edges) {
         this.edges = edges;
@@ -24,7 +22,7 @@ public class MoOnTree {
         begin = new int[edges.length];
         end = new int[edges.length];
         dfs(0, -1);
-        lcaOnTree = new LcaOnTree(edges, i -> i == 0);
+        schieberVishkin = new LcaOnTreeBySchieberVishkin(edges, i -> i == 0);
     }
 
     private void dfs(int root, int p) {
@@ -78,7 +76,7 @@ public class MoOnTree {
             if (ur < vl) {
                 wrappers[i].l = ur;
                 wrappers[i].r = vl;
-                wrappers[i].extra = end[lcaOnTree.lca(u, v)];
+                wrappers[i].extra = end[schieberVishkin.lca(u, v)];
             } else {
                 wrappers[i].l = ur;
                 wrappers[i].r = vr - 1;
@@ -157,7 +155,7 @@ public class MoOnTree {
             if (ur < vl) {
                 wrappers[i].l = ur;
                 wrappers[i].r = vl;
-                wrappers[i].extra = end[lcaOnTree.lca(u, v)];
+                wrappers[i].extra = end[schieberVishkin.lca(u, v)];
             } else {
                 wrappers[i].l = ur;
                 wrappers[i].r = vr - 1;
@@ -254,7 +252,7 @@ public class MoOnTree {
             if (ur < vl) {
                 wrappers[i].l = ur;
                 wrappers[i].r = vl;
-                wrappers[i].extra = end[lcaOnTree.lca(u, v)];
+                wrappers[i].extra = end[schieberVishkin.lca(u, v)];
             } else {
                 wrappers[i].l = ur;
                 wrappers[i].r = vr - 1;
@@ -347,7 +345,7 @@ public class MoOnTree {
             if (ur < vl) {
                 wrappers[i].l = ur;
                 wrappers[i].r = vl;
-                wrappers[i].extra = end[lcaOnTree.lca(u, v)];
+                wrappers[i].extra = end[schieberVishkin.lca(u, v)];
             } else {
                 wrappers[i].l = ur;
                 wrappers[i].r = vr - 1;

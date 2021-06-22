@@ -2,53 +2,92 @@ package platform.leetcode;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 class Solution {
     public static void main(String[] args){
-        new Solution().numSimilarGroups(new String[]{"omv","ovm"});
+        new Solution().earliestAndLatest(11, 2, 4);
     }
+        int[][][] max;
+        int[][][] min;
 
-    public int numSimilarGroups(String[] strings){
-        int n = strings.length;
-        DSU dsu = new DSU(n);
-        for(int i = 0; i < n; i++){
-            for(int j = i + 1; j < n; j++){
-                if(similar(strings[i], strings[j])){
-                    dsu.merge(i, j);
+        int max(int a, int b, int c){
+            if(a < c){
+                return max(c, b, a);
+            }
+            if(max[a][b][c] == -1){
+                max[a][b][c] = (int)0;
+                if(a == c){
+                    return max[a][b][c] = 1;
+                }
+                int n = a + b + c + 2;
+                int nextRound = (n + 1) / 2;
+                if(a >= b + c + 1){
+                    for(int i = 0; i <= c; i++){
+                        for(int j = 0; j <= b; j++){
+                            int k = nextRound - i - j - 2;
+                            max[a][b][c] = Math.max(max[a][b][c], max(k, j, i));
+                        }
+                    }
+                }else{
+                    for(int i = 0; i <= c; i++){
+                        for(int j = 0; j <= a - c - 1; j++){
+                            int k = nextRound - c - j - 2;
+                            max[a][b][c] = Math.max(max[a][b][c], max(c - i + j, k, i));
+                        }
+                    }
                 }
             }
+            return max[a][b][c];
         }
-        int ans = 0;
-        for(int i = 0; i < n; i++){
-            if(dsu.find(i) == i){
-                ans++;
+
+        int min(int a, int b, int c){
+            if(a < c){
+                return min(c, b, a);
             }
-        }
-        return ans;
-    }
-
-    public boolean similar(String a, String b){
-        if(a.length() != b.length()){
-            return false;
-        }
-
-        List<Integer> diffIndices = new ArrayList(3);
-        for(int i = 0; i < a.length() && diffIndices.size() < 3; i++){
-            if(a.charAt(i) != b.charAt(i)){
-                diffIndices.add(i);
+            if(min[a][b][c] == -1){
+                min[a][b][c] = (int)1e9;
+                if(a == c){
+                    return min[a][b][c] = 1;
+                }
+                int n = a + b + c + 2;
+                int nextRound = (n + 1) / 2;
+                if(a >= b + c + 1){
+                    for(int i = 0; i <= c; i++){
+                        for(int j = 0; j <= b; j++){
+                            int k = nextRound - i - j - 2;
+                            min[a][b][c] = Math.min(min[a][b][c], min(k, j, i));
+                        }
+                    }
+                }else{
+                    for(int i = 0; i <= c; i++){
+                        for(int j = 0; j <= a - c - 1; j++){
+                            int k = nextRound - c - j - 2;
+                            min[a][b][c] = Math.min(min[a][b][c], min(c - i + j, k, i));
+                        }
+                    }
+                }
             }
+            return min[a][b][c];
         }
 
-        if(diffIndices.size() > 2 || diffIndices.size() == 1){
-            return false;
-        }
-        if(diffIndices.size() == 0){
-            return true;
-        }
-        int first = diffIndices.get(0);
-        int second = diffIndices.get(1);
-        return a.charAt(first) == b.charAt(second) && a.charAt(second) == b.charAt(first);
+        public int[] earliestAndLatest(int n, int firstPlayer, int secondPlayer) {
+            max = new int[n + 1][n + 1][n + 1];
+            min = new int[n + 1][n + 1][n + 1];
+            for(int i = 0; i <= n; i++){
+                for(int j = 0; j <= n; j++){
+                    for(int k = 0; k <= n; k++){
+                        max[i][j][k] = min[i][j][k] = -1;
+                    }
+                }
+            }
+
+            int a = max(firstPlayer - 1, secondPlayer - firstPlayer - 1, n - secondPlayer);
+            int b = min(firstPlayer - 1, secondPlayer - firstPlayer - 1, n - secondPlayer);
+            System.out.println(Arrays.deepToString(max));
+            System.out.println(Arrays.deepToString(min));
+            return new int[]{a, b};
     }
 }
 

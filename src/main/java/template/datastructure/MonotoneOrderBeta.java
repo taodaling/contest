@@ -1,7 +1,5 @@
 package template.datastructure;
 
-import template.graph.KthSmallestSumOnTree;
-
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Map;

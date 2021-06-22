@@ -44,7 +44,7 @@ public class IntPoly {
         }
 
         int[] cc = PrimitiveBuffers.replace(inverse(bb, rankC + 1), bb);
-        cc = PrimitiveBuffers.replace(PrimitiveBuffers.allocIntPow2(cc, rankC + rankC + 1), cc);
+        //cc = PrimitiveBuffers.replace(PrimitiveBuffers.allocIntPow2(cc, rankC + rankC + 1), cc);
         int[] dm = PrimitiveBuffers.replace(convolution(aa, cc), aa, cc);
 
         for (int i = rankC + 1; i < dm.length; i++) {
@@ -711,4 +711,84 @@ public class IntPoly {
         return sum;
     }
 
+
+    public FastDivision newFastDivision(int[] p, int maxRankOfDividend){
+        return new FastDivision(p, maxRankOfDividend);
+    }
+
+    public class FastDivision {
+        int[] invb;
+        int[] b;
+        int rb;
+
+        FastDivision(int[] b, int maxRankOfDividend) {
+            rb = Polynomials.rankOf(b);
+            this.b = PrimitiveBuffers.allocIntPow2(b, rb + 1);
+            int maxRankOfC = maxRankOfDividend - rb;
+            if(maxRankOfC < 0){
+                return;
+            }
+            int[] rev = PrimitiveBuffers.allocIntPow2(maxRankOfC + 1);
+            for (int i = 0; i < rev.length && i <= rb; i++) {
+                rev[i] = b[rb - i];
+            }
+            invb = inverse(rev, maxRankOfC + 1);
+            PrimitiveBuffers.release(rev);
+        }
+
+        public void release() {
+            PrimitiveBuffers.release(invb);
+            PrimitiveBuffers.release(b);
+        }
+
+        protected int[] divide(int[] a) {
+            int rankA = rankOf(a);
+            int rankB = rb;
+            int rankC = rankA - rankB;
+            if (rankC < 0) {
+                return PrimitiveBuffers.allocIntPow2(1);
+            }
+
+            //mod x^{rankC+1}
+            int[] aa = PrimitiveBuffers.allocIntPow2(rankC + rankC + 1);
+            int[] cc = PrimitiveBuffers.allocIntPow2(invb, rankC + 1);
+            for (int i = 0; i <= rankA && i < aa.length; i++) {
+                aa[i] = a[rankA - i];
+            }
+
+            int[] dm = PrimitiveBuffers.replace(convolution(aa, cc), aa, cc);
+            for (int i = rankC + 1; i < dm.length; i++) {
+                dm[i] = 0;
+            }
+
+            SequenceUtils.reverse(dm, 0, rankC);
+            return Polynomials.normalizeAndReplace(dm);
+        }
+
+        static final int FAST_DIVIDE_THRESHOLD = 50;
+
+        public int[][] divideAndRemainder(int[] a) {
+            int rankA = rankOf(a);
+            int rankB = rb;
+            int rankC = rankA - rankB;
+
+            if (rankC < 0) {
+                int[][] ans = new int[2][];
+                ans[0] = PrimitiveBuffers.allocIntPow2(1);
+                ans[1] = PrimitiveBuffers.allocIntPow2(a, rankA + 1);
+                return ans;
+            }
+
+            if (rankA < FAST_DIVIDE_THRESHOLD || rankB < FAST_DIVIDE_THRESHOLD) {
+                return IntPoly.this.divideAndRemainder(a, b);
+            }
+
+            int[] quotient = divide(a);
+            int[] prod = convolution(b, quotient);
+            int[] remainder = PrimitiveBuffers.replace(subtract(a, prod), prod);
+            remainder = PrimitiveBuffers.replace(module(remainder, rankB), remainder);
+            remainder = Polynomials.normalizeAndReplace(remainder);
+            return new int[][]{quotient, remainder};
+        }
+    }
 }
