@@ -8,21 +8,19 @@ public class ModRangeAffineRangeSum implements Cloneable {
     private ModRangeAffineRangeSum left;
     private ModRangeAffineRangeSum right;
     private static int mod;
-    private static Modular barrett;
     private long sum;
     private int size;
     private long da;
     private long db;
 
-    public static void setMod(int x){
+    public static void setMod(int x) {
         mod = x;
-        barrett = new Modular(mod);
     }
 
     private void modify(long a, long b) {
-        sum = barrett.reduce(sum * a + b * size);
-        da = barrett.reduce(da * a);
-        db = barrett.reduce(db * a + b);
+        sum = (sum * a + b * size) % mod;
+        da = (da * a) % mod;
+        db = (db * a + b) % mod;
     }
 
     public void pushUp() {
@@ -90,7 +88,7 @@ public class ModRangeAffineRangeSum implements Cloneable {
             return 0;
         }
         if (covered(ll, rr, l, r)) {
-            return (int)sum;
+            return (int) sum;
         }
         pushDown();
         int m = DigitUtils.floorAverage(l, r);

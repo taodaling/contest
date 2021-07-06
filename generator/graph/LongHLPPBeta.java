@@ -2,7 +2,10 @@ package template.primitve.generated.graph;
 
 import java.util.List;
 import java.util.ListIterator;
-
+/**
+ * It contains some bugs
+ */
+@Deprecated
 public class LongHLPPBeta implements LongMaximumFlow {
     private List<LongFlowEdge>[] g;
     private ListIterator<LongFlowEdge>[] iterators;

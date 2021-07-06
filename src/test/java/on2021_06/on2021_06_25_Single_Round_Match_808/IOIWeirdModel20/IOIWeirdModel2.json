@@ -1,0 +1,21 @@
+{
+  "name" : "IOIWeirdModel2",
+  "signature" : {
+    "name" : "program",
+    "result" : "int[]",
+    "arguments" : [ "int" ],
+    "argumentNames" : [ "L" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "2" ],
+    "result" : "625 252 25 84 25 126 5 42 1 2 1 3 1 7",
+    "index" : 0,
+    "active" : true
+  } ],
+  "date" : "2021.06.25",
+  "contestName" : "Single Round Match 808",
+  "testClasses" : [ ],
+  "fqn" : "on2021_06.on2021_06_25_Single_Round_Match_808.IOIWeirdModel20.IOIWeirdModel2",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

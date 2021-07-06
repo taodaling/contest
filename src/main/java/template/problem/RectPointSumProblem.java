@@ -6,36 +6,60 @@ import template.primitve.generated.datastructure.LongBIT;
 import template.utils.SequenceUtils;
 
 import java.util.Arrays;
+import java.util.Comparator;
 
 public class RectPointSumProblem {
     private static int sign(int x) {
         return (Integer.bitCount(x) & 1) == 0 ? 1 : -1;
     }
 
+    private static long interval(LongBIT bit, int l, int r) {
+        if (l > r) {
+            return 0;
+        }
+        return bit.query(r) - bit.query(l - 1);
+    }
+
     public static long[] solve(Point2D[] pts, Query2D[] qs) {
-        int m = qs.length;
-        Point2D[][] sub = new Point2D[4][m];
-        long[] ans = new long[m];
-        long[] xs = new long[2];
-        long[] ys = new long[2];
-        for (int i = 0; i < m; i++) {
-            xs[0] = qs[i].xr;
-            xs[1] = qs[i].xl - 1;
-            ys[0] = qs[i].yr;
-            ys[1] = qs[i].yl - 1;
-            for (int j = 0; j < 2; j++) {
-                for (int k = 0; k < 2; k++) {
-                    sub[(j << 1) | k][i] = new Point2D(xs[j], ys[k], 0);
-                }
+        LongArrayList list = new LongArrayList(pts.length);
+        for (Point2D pt : pts) {
+            list.add(pt.y);
+        }
+        list.unique();
+        Query2D[] sortByXl = qs.clone();
+        Query2D[] sortByXr = qs.clone();
+        Arrays.sort(sortByXl, Comparator.comparingLong(x -> x.xl));
+        Arrays.sort(sortByXr, Comparator.comparingLong(x -> x.xr));
+        Arrays.sort(pts, Comparator.comparingLong(x -> x.x));
+        int xlIter = 0;
+        int xrIter = 0;
+        int ptIter = 0;
+        int m = list.size();
+        LongBIT bit = new LongBIT(m);
+        while (xlIter < qs.length || xrIter < qs.length) {
+            long min = Long.MAX_VALUE;
+            if (xrIter < qs.length) {
+                min = Math.min(sortByXr[xrIter].xr, min);
+            }
+            if (xlIter < qs.length) {
+                min = Math.min(sortByXl[xlIter].xl - 1, min);
+            }
+            while (ptIter < pts.length && pts[ptIter].x <= min) {
+                Point2D head = pts[ptIter++];
+                bit.update(list.binarySearch(head.y) + 1, head.w);
+            }
+            while (xlIter < sortByXl.length && sortByXl[xlIter].xl - 1 == min) {
+                Query2D head = sortByXl[xlIter++];
+                head.ans -= interval(bit, list.lowerBound(head.yl) + 1,
+                        list.upperBound(head.yr));
+            }
+            while (xrIter < sortByXr.length && sortByXr[xrIter].xr == min) {
+                Query2D head = sortByXr[xrIter++];
+                head.ans += interval(bit, list.lowerBound(head.yl) + 1,
+                        list.upperBound(head.yr));
             }
         }
-        prefixSum(SequenceUtils.pack(i -> new Point2D[i], sub[0], sub[1], sub[2], sub[3], pts));
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < 4; j++) {
-                ans[i] += sign(j) * sub[j][i].sum;
-            }
-        }
-        return ans;
+        return Arrays.stream(qs).mapToLong(x -> x.ans).toArray();
     }
 
     public static void prefixSum(Point2D[] pts) {
@@ -54,29 +78,25 @@ public class RectPointSumProblem {
 
     public static long[] solve(Point3D[] pts, Query3D[] qs) {
         int m = qs.length;
-        Point3D[][] sub = new Point3D[8][m];
+        Point3D[][] sub = new Point3D[4][m];
         long[] ans = new long[m];
         long[] xs = new long[2];
         long[] ys = new long[2];
-        long[] zs = new long[2];
         for (int i = 0; i < m; i++) {
             xs[0] = qs[i].xr;
             xs[1] = qs[i].xl - 1;
             ys[0] = qs[i].yr;
             ys[1] = qs[i].yl - 1;
-            zs[0] = qs[i].zr;
-            zs[1] = qs[i].zl - 1;
             for (int j = 0; j < 2; j++) {
                 for (int k = 0; k < 2; k++) {
-                    for (int t = 0; t < 2; t++) {
-                        sub[(j << 2) | (k << 1) | t][i] = new Point3D(xs[j], ys[k], zs[t], 0);
-                    }
+                    sub[(j << 1) | k][i] = new Point3D(xs[j], ys[k], qs[i].zr, 0);
+                    sub[(j << 1) | k][i].zl = qs[i].zl - 1;
                 }
             }
         }
-        prefixSum(SequenceUtils.pack(i -> new Point3D[i], sub[0], sub[1], sub[2], sub[3], sub[4], sub[5], sub[6], sub[7], pts));
+        prefixSum(SequenceUtils.pack(i -> new Point3D[i], sub[0], sub[1], sub[2], sub[3], pts));
         for (int i = 0; i < m; i++) {
-            for (int j = 0; j < 8; j++) {
+            for (int j = 0; j < 4; j++) {
                 ans[i] += sign(j) * sub[j][i].sum;
             }
         }
@@ -97,15 +117,21 @@ public class RectPointSumProblem {
             }
             return cmp;
         });
-        LongArrayList list = new LongArrayList(pts.length);
+        LongArrayList list = new LongArrayList(pts.length * 2);
         for (Point3D pt : pts) {
             list.add(pt.z);
+            list.add(pt.zl);
         }
         list.unique();
         for (Point3D pt : pts) {
             pt.z = list.binarySearch(pt.z) + 1;
+            pt.zl = list.binarySearch(pt.zl) + 1;
         }
         dac(pts, 0, pts.length - 1, new Point3D[pts.length], new LongBIT(list.size()));
+        for (Point3D pt : pts) {
+            pt.z = list.get((int) (pt.z - 1));
+            pt.zl = list.get((int) (pt.zl - 1));
+        }
     }
 
     private static void dac(Point3D[] pts, int l, int r, Point3D[] buf, LongBIT bit) {
@@ -125,7 +151,7 @@ public class RectPointSumProblem {
                 buf[wpos++] = pts[i];
                 i++;
             } else {
-                pts[j].sum += bit.query((int) pts[j].z);
+                pts[j].sum += bit.query((int) pts[j].z) - bit.query((int) pts[j].zl);
                 buf[wpos++] = pts[j];
                 j++;
             }
@@ -180,6 +206,7 @@ public class RectPointSumProblem {
 
     public static class Point3D extends Point2D {
         public long z;
+        private long zl = Long.MIN_VALUE;
 
         public Point3D(long x, long y, long z, long w) {
             super(x, y, w);
@@ -192,6 +219,7 @@ public class RectPointSumProblem {
         public long xr;
         public long yl;
         public long yr;
+        private long ans;
 
         public Query2D(long xl, long xr, long yl, long yr) {
             assert xl <= xr && yl <= yr;
@@ -219,8 +247,5 @@ public class RectPointSumProblem {
             this.zl = zl;
             this.zr = zr;
         }
-
-        public long ans;
-        private Point3D[] sub;
     }
 }

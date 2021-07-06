@@ -64,7 +64,7 @@ public class DivisionPrefixSum {
         long ans = ps.getOrDefault(x, Long.MIN_VALUE);
         if (ans == Long.MIN_VALUE) {
             int head = (int) (x >>> 60);
-            long body = x & ~Bits.tailMask(4);
+            long body = x & ~Bits.tailLongMask(4);
             ans = identity;
             if (head >= primes.length) {
                 ans = values.getOrDefault(body, identity);

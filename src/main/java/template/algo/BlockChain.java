@@ -131,6 +131,20 @@ public class BlockChain<S, U, E, B extends BlockChain.Block<S, U, E, B>> {
         throw new IndexOutOfBoundsException();
     }
 
+    public int prefixSize(B block, boolean include) {
+        int ans = 0;
+        for (LinkedNode<B> node = head.next; node != tail; node = node.next) {
+            if (node.data == block) {
+                if (include) {
+                    ans += node.size;
+                }
+                break;
+            }
+            ans += node.size;
+        }
+        return ans;
+    }
+
     /**
      * k-th in res.b
      *
@@ -286,16 +300,23 @@ public class BlockChain<S, U, E, B extends BlockChain.Block<S, U, E, B>> {
 
     public static interface Block<S, U, E, B extends Block<S, U, E, B>> {
         /**
-         * insert after the index-th elements, 0 means first
+         * insert after the index-th elements, 0 means first.
+         *
+         * factor 1
          */
         default void insert(int index, E e) {
             throw new UnsupportedOperationException();
         }
 
+        /**
+         * factor 1
+         */
         default void delete(int index) {
             throw new UnsupportedOperationException();
         }
-
+        /**
+         * factor 1
+         */
         default E get(int index) {
             throw new UnsupportedOperationException();
         }
@@ -303,32 +324,52 @@ public class BlockChain<S, U, E, B extends BlockChain.Block<S, U, E, B>> {
         /**
          * res.a contain first n elements, and res.b contains others
          * after split, you can release this as you like
+         *
+         * factor 1
          */
         Pair<B, B> split(int n);
 
         /**
          * after merge, you can release block as you like
          *
+         * factor 1
          * @param block
          * @return
          */
         B merge(B block);
 
+        /**
+         * factor 1
+         */
         default void reverse() {
+            throw new UnsupportedOperationException();
         }
 
+        /**
+         * factor n/B
+         */
         void fullyQuery(S sum);
-
+        /**
+         * factor B
+         */
         void partialQuery(int index, S sum);
-
+        /**
+         * factor n/B
+         */
         void fullyUpdate(U upd);
-
+        /**
+         * factor B
+         */
         void partialUpdate(int index, U upd);
-
+        /**
+         * factor 1
+         */
         default void afterPartialUpdate() {
 
         }
-
+        /**
+         * factor 1
+         */
         default void beforePartialQuery() {
 
         }

@@ -46,7 +46,7 @@ public class Polynomials {
         for (int i = ra; i >= rb; i--) {
             assert a[i] % b[rb] == 0;
             int d = a[i] / b[rb];
-            if(d == 0){
+            if (d == 0) {
                 continue;
             }
             for (int j = rb; j >= 0; j--) {
@@ -68,7 +68,7 @@ public class Polynomials {
             assert op[i] % b[rb] == 0;
             int d = op[i] / b[rb];
             div[i - rb] = d;
-            if(d == 0){
+            if (d == 0) {
                 continue;
             }
             for (int j = rb; j >= 0; j--) {
@@ -91,4 +91,5 @@ public class Polynomials {
         }
         return ans;
     }
+
 }

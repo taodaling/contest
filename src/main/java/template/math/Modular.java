@@ -1,5 +1,9 @@
 package template.math;
 
+/**
+ * There are some bugs
+ */
+@Deprecated
 public class Modular {
     private final int mod;
     private final long h, l;
@@ -36,7 +40,9 @@ public class Modular {
         z = xl * h + xh * l + (z >>> 31);
         z = xh * h + (z >>> 31);
         final int ret = (int) (x - z * mod);
-        return ret >= mod ? ret - mod : ret;
+        int ans = ret >= mod ? ret - mod : ret;
+        assert ans == x % mod;
+        return ans;
     }
 
     public int mul(long a, long b) {

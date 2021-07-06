@@ -121,41 +121,59 @@ public class Bits {
         return x & -x;
     }
 
+
     public static int highestBit(int x) {
         return 1 << Log2.floorLog(x);
     }
 
     public static int highestOneBitOffset(long x) {
-        if (x < 0) {
-            return 63;
-        }
         return 63 - Long.numberOfLeadingZeros(x);
     }
 
     public static int lowestOneBitOffset(long x) {
-        return highestOneBitOffset(x & -x);
+        return Long.numberOfTrailingZeros(x & -x);
     }
 
-    public static long tailMask(int n) {
+    public static int highestOneBitOffset(int x) {
+        return 31 - Integer.numberOfLeadingZeros(x);
+    }
+
+    public static int lowestOneBitOffset(int x) {
+        return Integer.numberOfTrailingZeros(x);
+    }
+    public static int tailIntMask(int n) {
+        if (n == 0) {
+            return 0;
+        }
+        return -1 << (32 - n);
+    }
+
+    public static int headIntMask(int n) {
+        if (n == 0) {
+            return 0;
+        }
+        return -1 >>> (32 - n);
+    }
+    public static long tailLongMask(int n) {
         if (n == 0) {
             return 0;
         }
         return -1L << (64 - n);
     }
 
-    public static long headMask(int n) {
+    public static long headLongMask(int n) {
         if (n == 0) {
             return 0;
         }
         return -1L >>> (64 - n);
     }
 
-    public static long leftShift(long x, int bit){
+    public static long leftShift(long x, int bit) {
         return x << (bit & 63);
     }
 
 
-    public static long rightShift(long x, int bit){
+    public static long rightShift(long x, int bit) {
         return x >>> (bit & 63);
     }
 }

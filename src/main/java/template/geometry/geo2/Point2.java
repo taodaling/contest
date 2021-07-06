@@ -2,7 +2,7 @@ package template.geometry.geo2;
 
 import template.utils.GeoConstant;
 import template.math.DigitUtils;
-import template.math.KahanSummation;
+import template.math.SumOfFloat;
 import template.utils.SortUtils;
 
 import java.util.Arrays;
@@ -345,7 +345,7 @@ public class Point2 implements Cloneable {
      * 计算多边形面积（如果以逆时针给定顶点，则结果符号为正数，否则为负数）
      */
     public static double area(Point2[] polygon) {
-        KahanSummation sum = new KahanSummation();
+        SumOfFloat sum = new SumOfFloat();
         int n = polygon.length;
         for (int i = 0; i < n; i++) {
             sum.add(cross(polygon[i], polygon[(i + 1) % n]));

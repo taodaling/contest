@@ -1,0 +1,40 @@
+{
+  "name" : "C1. Converging Array (Easy Version)",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3\n2 3 4\n2 1\n1\n-1\n",
+    "output" : "56\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "2\n9 59\n22\n1\n9",
+    "output" : "29",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_06.on2021_06_26_Codeforces___Codeforces_Round__728__Div__1_.C1__Converging_Array__Easy_Version_.C1ConvergingArrayEasyVersion",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.06.26",
+  "contestName" : "Codeforces - Codeforces Round #728 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

@@ -58,7 +58,7 @@ public class BitPreSum {
         }
         int head = m >> 6;
         int tail = m & 63;
-        return (head == 0 ? 0 : ps[head - 1]) + Long.bitCount(bits[head] & Bits.headMask(tail + 1));
+        return (head == 0 ? 0 : ps[head - 1]) + Long.bitCount(bits[head] & Bits.headLongMask(tail + 1));
     }
 
     public int interval(int l, int r) {

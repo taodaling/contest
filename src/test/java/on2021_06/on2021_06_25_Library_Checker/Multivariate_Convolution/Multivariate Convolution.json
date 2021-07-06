@@ -1,0 +1,45 @@
+{
+  "name" : "Multivariate Convolution",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "1\n5\n1 2 3 4 5\n6 7 8 9 10\n",
+    "output" : "6 19 40 70 110\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "2\n2 3\n1 2 3 4 5 6\n7 8 9 10 11 12\n",
+    "output" : "7 22 30 80 73 182\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "0\n\n123\n456\n",
+    "output" : "56088\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_06.on2021_06_25_Library_Checker.Multivariate_Convolution.MultivariateConvolution",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.06.25",
+  "contestName" : "Library Checker",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

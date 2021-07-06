@@ -3,7 +3,6 @@ package contest;
 import dp.Lis;
 import graphs.lca.Lca;
 import template.datastructure.PermutationNode;
-import template.datastructure.RMQ;
 import template.graph.DirectedEdge;
 import template.graph.KthAncestorOnTree;
 import template.graph.LcaOnTree;

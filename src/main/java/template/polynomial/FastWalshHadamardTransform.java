@@ -1,5 +1,6 @@
 package template.polynomial;
 
+import com.sun.java.accessibility.util.TopLevelWindowListener;
 import template.math.DigitUtils;
 import template.math.ILongModular;
 
@@ -11,12 +12,26 @@ public class FastWalshHadamardTransform {
         if (l == r) {
             return;
         }
-        int m = DigitUtils.floorAverage(l, r);
+        int m = (l + r) / 2;
         orFWT(p, l, m);
         orFWT(p, m + 1, r);
         for (int i = 0, until = m - l; i <= until; i++) {
             long a = p[l + i];
             long b = p[m + 1 + i];
+            p[m + 1 + i] = a + b;
+        }
+    }
+
+    public static void orFWT(double[] p, int l, int r) {
+        if (l == r) {
+            return;
+        }
+        int m = (l + r) / 2;
+        orFWT(p, l, m);
+        orFWT(p, m + 1, r);
+        for (int i = 0, until = m - l; i <= until; i++) {
+            double a = p[l + i];
+            double b = p[m + 1 + i];
             p[m + 1 + i] = a + b;
         }
     }
@@ -28,10 +43,24 @@ public class FastWalshHadamardTransform {
         if (l == r) {
             return;
         }
-        int m = DigitUtils.floorAverage(l, r);
+        int m = (l + r) / 2;
         for (int i = 0, until = m - l; i <= until; i++) {
             long a = p[l + i];
             long b = p[m + 1 + i];
+            p[m + 1 + i] = b - a;
+        }
+        orIFWT(p, l, m);
+        orIFWT(p, m + 1, r);
+    }
+
+    public static void orIFWT(double[] p, int l, int r) {
+        if (l == r) {
+            return;
+        }
+        int m = (l + r) / 2;
+        for (int i = 0, until = m - l; i <= until; i++) {
+            double a = p[l + i];
+            double b = p[m + 1 + i];
             p[m + 1 + i] = b - a;
         }
         orIFWT(p, l, m);
@@ -45,7 +74,7 @@ public class FastWalshHadamardTransform {
         if (l == r) {
             return;
         }
-        int m = DigitUtils.floorAverage(l, r);
+        int m = (l + r) / 2;
         orFWT(p, l, m);
         orFWT(p, m + 1, r);
         for (int i = 0, until = m - l; i <= until; i++) {
@@ -62,7 +91,7 @@ public class FastWalshHadamardTransform {
         if (l == r) {
             return;
         }
-        int m = DigitUtils.floorAverage(l, r);
+        int m = (l + r) / 2;
         orFWT(p, l, m, mod);
         orFWT(p, m + 1, r, mod);
         for (int i = 0, until = m - l; i <= until; i++) {
@@ -71,7 +100,7 @@ public class FastWalshHadamardTransform {
             int a = p[i1];
             int b = p[i2];
             p[i2] = a + b;
-            if(p[i2] >= mod){
+            if (p[i2] >= mod) {
                 p[i2] -= mod;
             }
         }
@@ -84,7 +113,7 @@ public class FastWalshHadamardTransform {
         if (l == r) {
             return;
         }
-        int m = DigitUtils.floorAverage(l, r);
+        int m = (l + r) / 2;
         for (int i = 0, until = m - l; i <= until; i++) {
             int a = p[l + i];
             int b = p[m + 1 + i];
@@ -98,14 +127,14 @@ public class FastWalshHadamardTransform {
         if (l == r) {
             return;
         }
-        int m = DigitUtils.floorAverage(l, r);
+        int m = (l + r) / 2;
         for (int i = 0, until = m - l; i <= until; i++) {
             int i1 = l + i;
             int i2 = m + 1 + i;
             int a = p[i1];
             int b = p[i2];
             p[i2] = b - a;
-            if(p[i2] < 0){
+            if (p[i2] < 0) {
                 p[i2] += mod;
             }
         }
@@ -120,7 +149,7 @@ public class FastWalshHadamardTransform {
         if (l == r) {
             return;
         }
-        int m = DigitUtils.floorAverage(l, r);
+        int m = (l + r) / 2;
         andFWT(p, l, m);
         andFWT(p, m + 1, r);
         for (int i = 0, until = m - l; i <= until; i++) {
@@ -137,7 +166,7 @@ public class FastWalshHadamardTransform {
         if (l == r) {
             return;
         }
-        int m = DigitUtils.floorAverage(l, r);
+        int m = (l + r) / 2;
         for (int i = 0, until = m - l; i <= until; i++) {
             long a = p[l + i];
             long b = p[m + 1 + i];
@@ -154,7 +183,7 @@ public class FastWalshHadamardTransform {
         if (l == r) {
             return;
         }
-        int m = DigitUtils.floorAverage(l, r);
+        int m = (l + r) / 2;
         andFWT(p, l, m);
         andFWT(p, m + 1, r);
         for (int i = 0, until = m - l; i <= until; i++) {
@@ -171,7 +200,7 @@ public class FastWalshHadamardTransform {
         if (l == r) {
             return;
         }
-        int m = DigitUtils.floorAverage(l, r);
+        int m = (l + r) / 2;
         andFWT(p, l, m, mod);
         andFWT(p, m + 1, r, mod);
         for (int i = 0, until = m - l; i <= until; i++) {
@@ -188,7 +217,7 @@ public class FastWalshHadamardTransform {
         if (l == r) {
             return;
         }
-        int m = DigitUtils.floorAverage(l, r);
+        int m = (l + r) / 2;
         for (int i = 0, until = m - l; i <= until; i++) {
             int a = p[l + i];
             int b = p[m + 1 + i];
@@ -205,7 +234,7 @@ public class FastWalshHadamardTransform {
         if (l == r) {
             return;
         }
-        int m = DigitUtils.floorAverage(l, r);
+        int m = (l + r) / 2;
         for (int i = 0, until = m - l; i <= until; i++) {
             int a = p[l + i];
             int b = p[m + 1 + i];
@@ -219,7 +248,7 @@ public class FastWalshHadamardTransform {
         if (l == r) {
             return;
         }
-        int m = DigitUtils.floorAverage(l, r);
+        int m = (l + r) / 2;
         xorFWT(p, l, m);
         xorFWT(p, m + 1, r);
         for (int i = 0, until = m - l; i <= until; i++) {
@@ -234,7 +263,7 @@ public class FastWalshHadamardTransform {
         if (l == r) {
             return;
         }
-        int m = DigitUtils.floorAverage(l, r);
+        int m = (l + r) / 2;
         for (int i = 0, until = m - l; i <= until; i++) {
             long a = p[l + i];
             long b = p[m + 1 + i];
@@ -249,7 +278,7 @@ public class FastWalshHadamardTransform {
         if (l == r) {
             return;
         }
-        int m = DigitUtils.floorAverage(l, r);
+        int m = (l + r) / 2;
         xorFWT(p, l, m);
         xorFWT(p, m + 1, r);
         for (int i = 0, until = m - l; i <= until; i++) {
@@ -264,7 +293,7 @@ public class FastWalshHadamardTransform {
         if (l == r) {
             return;
         }
-        int m = DigitUtils.floorAverage(l, r);
+        int m = (l + r) / 2;
         for (int i = 0, until = m - l; i <= until; i++) {
             int a = p[l + i];
             int b = p[m + 1 + i];
@@ -279,7 +308,7 @@ public class FastWalshHadamardTransform {
         if (l == r) {
             return;
         }
-        int m = DigitUtils.floorAverage(l, r);
+        int m = (l + r) / 2;
         xorFWT(p, l, m, mod);
         xorFWT(p, m + 1, r, mod);
         for (int i = 0, until = m - l; i <= until; i++) {
@@ -295,7 +324,7 @@ public class FastWalshHadamardTransform {
             return;
         }
         int inv2 = (mod + 1) / 2;
-        int m = DigitUtils.floorAverage(l, r);
+        int m = (l + r) / 2;
         for (int i = 0, until = m - l; i <= until; i++) {
             long a = p[l + i];
             long b = p[m + 1 + i];
@@ -364,4 +393,5 @@ public class FastWalshHadamardTransform {
         if (!rev) return;
         for (int i = 0; i < N; i++) f[i] /= N;
     }
+
 }

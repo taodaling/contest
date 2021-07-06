@@ -7,6 +7,7 @@ import java.util.List;
 
 /**
  * permutation start from 0
+ * The permutation item is index, p(i) means which the value of p_i (which value the i-th slot contain)
  */
 public class Permutation {
     int[] g;
@@ -81,7 +82,7 @@ public class Permutation {
         int n = a.n;
         int[] p = new int[n];
         for (int i = 0; i < n; i++) {
-            p[i] = a.apply(b.apply(i, bp), ap);
+            p[i] = b.apply(a.apply(i, ap), bp);
         }
         return new Permutation(p, n);
     }

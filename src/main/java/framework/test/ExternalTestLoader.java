@@ -17,7 +17,7 @@ public class ExternalTestLoader {
         return whole;
     }
 
-    public static List<Test> load() {
+    public static List<Test> loadLocalTests() {
         Map<String, String> input = new TreeMap<>();
         Map<String, String> output = new TreeMap<>();
         for (File file : root.listFiles()) {

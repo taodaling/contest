@@ -6,16 +6,17 @@ import template.math.*;
 import template.utils.PrimitiveBuffers;
 import template.utils.SequenceUtils;
 
+import java.util.Arrays;
+
 public class IntPoly {
     protected int mod;
     protected Power power;
     QuadraticResidue qr;
-    Modular barrett;
+
     public IntPoly(int mod) {
         this.mod = mod;
         this.power = new Power(mod);
         qr = new QuadraticResidue(mod);
-        barrett = new Modular(mod);
     }
 
     public int[] convolution(int[] a, int[] b) {
@@ -73,7 +74,7 @@ public class IntPoly {
         assert a.length == b.length;
         int[] c = PrimitiveBuffers.allocIntPow2(a.length);
         for (int i = 0; i < a.length; i++) {
-            c[i] = barrett.mul(a[i], b[i]);
+            c[i] = (int) (((long) a[i] * b[i]) % mod);
         }
         return c;
     }
@@ -83,7 +84,7 @@ public class IntPoly {
         int rp = rankOf(p);
         int[] ans = PrimitiveBuffers.allocIntPow2(rp);
         for (int i = 1; i <= rp; i++) {
-            ans[i - 1] = barrett.mul(p[i], i);
+            ans[i - 1] = (int) (((long) p[i] * i) % mod);
         }
         return ans;
     }
@@ -94,7 +95,7 @@ public class IntPoly {
         int[] buf = PrimitiveBuffers.allocIntPow2(rp + 2);
         InverseNumber inv = new ModPrimeInverseNumber(buf, buf.length - 1, mod);
         for (int i = 0; i <= rp; i++) {
-            ans[i + 1] = barrett.mul(inv.inverse(i + 1), p[i]);
+            ans[i + 1] = (int) (((long)inv.inverse(i + 1) * p[i]) % mod);
         }
         PrimitiveBuffers.release(buf);
         return ans;
@@ -182,7 +183,7 @@ public class IntPoly {
         int[] c = PrimitiveBuffers.allocIntPow2(rA + rB + 1);
         for (int i = 0; i <= rA; i++) {
             for (int j = 0; j <= rB; j++) {
-                c[i + j] = barrett.reduce(c[i + j] + (long) a[i] * b[j]);
+                c[i + j] = (int) ((c[i + j] + (long) a[i] * b[j]) % mod);
             }
         }
         return c;
@@ -219,7 +220,7 @@ public class IntPoly {
 
     public void mul(int[] a, int k) {
         for (int i = a.length - 1; i >= 0; i--) {
-            a[i] = barrett.mul(a[i], k);
+            a[i] = (int) (((long)a[i] * k) % mod);
         }
     }
 
@@ -406,7 +407,7 @@ public class IntPoly {
      * @return
      */
     public int[] inverse(int[] p, int m) {
-        if(m == 0){
+        if (m == 0) {
             return PrimitiveBuffers.allocIntPow2(1);
         }
         int[] ans = inverse0(p, m);
@@ -539,7 +540,7 @@ public class IntPoly {
         long inverse = (int) DigitUtils.modInverse(p[0], mod);
         if (inverse != 1) {
             for (int i = 0; i < p.length; i++) {
-                p[i] = barrett.mul(p[i], inverse);
+                p[i] = (int) (((long)p[i] * inverse) % mod);
             }
         }
         int[] ln = ln(p, n);
@@ -548,7 +549,7 @@ public class IntPoly {
         PrimitiveBuffers.release(p);
         if (pow != 1) {
             for (int i = 0; i < ans.length; i++) {
-                ans[i] = barrett.mul(ans[i], pow);
+                ans[i] = (int) (((long)ans[i] * pow) % mod);
             }
         }
         ans = PrimitiveBuffers.replace(rightShift(ans, move, n), ans);
@@ -712,7 +713,7 @@ public class IntPoly {
     }
 
 
-    public FastDivision newFastDivision(int[] p, int maxRankOfDividend){
+    public FastDivision newFastDivision(int[] p, int maxRankOfDividend) {
         return new FastDivision(p, maxRankOfDividend);
     }
 
@@ -725,7 +726,7 @@ public class IntPoly {
             rb = Polynomials.rankOf(b);
             this.b = PrimitiveBuffers.allocIntPow2(b, rb + 1);
             int maxRankOfC = maxRankOfDividend - rb;
-            if(maxRankOfC < 0){
+            if (maxRankOfC < 0) {
                 return;
             }
             int[] rev = PrimitiveBuffers.allocIntPow2(maxRankOfC + 1);

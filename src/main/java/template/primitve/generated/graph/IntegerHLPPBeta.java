@@ -2,7 +2,10 @@ package template.primitve.generated.graph;
 
 import java.util.List;
 import java.util.ListIterator;
-
+/**
+ * It contains some bugs
+ */
+@Deprecated
 public class IntegerHLPPBeta implements IntegerMaximumFlow {
     private List<IntegerFlowEdge>[] g;
     private ListIterator<IntegerFlowEdge>[] iterators;

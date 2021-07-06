@@ -1,0 +1,45 @@
+{
+  "name" : "F. Border Similarity Undertaking",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 5\nzzzzz\nzxzxz\nzzzzz\n",
+    "output" : "3\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "4 4\nabbc\nbcca\nbabc\nacbb\n",
+    "output" : "0\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "12 12\nabbabaaaaabb\nababaaaaaabb\naaabbbbbabbb\naabababaaaba\nabbbaaabaaba\nbaaababbbaba\naaaaababbaaa\nbbabbbbbabaa\nbbbabbaabaaa\naabbbaaaabba\nbabaabababaa\nbababaabaaba\n",
+    "output" : "25\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx512M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_06.on2021_06_28_Codeforces___2020_2021_Winter_Petrozavodsk_Camp__Belarusian_SU_Contest__XXI_Open_Cup__Grand_Prix_of_Belarus_.F__Border_Similarity_Undertaking.FBorderSimilarityUndertaking",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "on2021_06.on2021_06_28_Codeforces___2020_2021_Winter_Petrozavodsk_Camp__Belarusian_SU_Contest__XXI_Open_Cup__Grand_Prix_of_Belarus_.F__Border_Similarity_Undertaking.FBorderSimilarityUndertakingTestCase" ],
+  "date" : "2021.06.28",
+  "contestName" : "Codeforces - 2020-2021 Winter Petrozavodsk Camp, Belarusian SU Contest (XXI Open Cup, Grand Prix of Belarus)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

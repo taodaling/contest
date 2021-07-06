@@ -28,6 +28,10 @@ public class IntegerRect2 {
         return area() == 0;
     }
 
+    public boolean valid() {
+        return lb[0] <= rt[0] && lb[1] <= rt[1];
+    }
+
     public static IntegerRect2 intersect(IntegerRect2 a, IntegerRect2 b) {
         IntegerRect2 ans = new IntegerRect2();
         for (int i = 0; i < 2; i++) {

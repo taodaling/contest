@@ -10,6 +10,10 @@ import java.util.List;
 /**
  * Very fast, but the flow on each edge is wrong, the maximum flow is right.
  */
+/**
+ * It contains some bugs
+ */
+@Deprecated
 public class LongHLPP implements LongMaximumFlow {
     private long inf;
     private int vertexNum;

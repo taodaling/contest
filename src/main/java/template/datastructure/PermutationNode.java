@@ -8,13 +8,16 @@ import java.util.Deque;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class PermutationNode {
-    public List<PermutationNode> adj = new ArrayList<>();
+public class PermutationNode<T extends PermutationNode<T>> {
+    public List<T> adj = new ArrayList<>();
     /**
      * it's a permutation of [l,r]
      */
     public int l;
     public int r;
+    /**
+     * 合点（join node）
+     */
     public boolean join;
 
     /**
@@ -27,8 +30,8 @@ public class PermutationNode {
     private int failMin;
     private int failMax;
 
-    private boolean increment() {
-        return adj.get(0).l == l;
+    public boolean increment() {
+        return l == r || adj.get(0).l == l;
     }
 
     public int length() {
@@ -46,15 +49,13 @@ public class PermutationNode {
      * @param perm
      * @return
      */
-    public static<T extends PermutationNode> T build(int[] perm, Supplier<T> supplier) {
+    public static <T extends PermutationNode> T build(int[] perm, Supplier<T> supplier) {
         int n = perm.length;
         int[] index = new int[n];
         for (int i = 0; i < n; i++) {
             index[perm[i]] = i;
         }
-        RMQ rangeMax = new RMQ(n);
-        rangeMax.init(0, n - 1, (a, b) -> -Integer.compare(index[a], index[b]));
-
+        RMQBeta rangeMax = new RMQBeta(n, (a, b) -> -Integer.compare(index[a], index[b]));
         Deque<PermutationNode> dq = new ArrayDeque<>(n);
         for (int k = 0; k < n; k++) {
             PermutationNode x = supplier.get();
@@ -151,6 +152,6 @@ public class PermutationNode {
             throw new IllegalStateException();
         }
 
-        return (T)dq.removeFirst();
+        return (T) dq.removeFirst();
     }
 }

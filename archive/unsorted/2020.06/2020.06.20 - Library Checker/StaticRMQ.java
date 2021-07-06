@@ -1,7 +1,5 @@
 package contest;
 
-import template.datastructure.RMQ;
-import template.datastructure.RMQBySegment;
 import template.io.FastInput;
 import template.io.FastOutput;
 

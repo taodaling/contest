@@ -1,6 +1,5 @@
 package contest;
 
-import template.datastructure.RMQ;
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.primitve.generated.datastructure.LongPreSum;

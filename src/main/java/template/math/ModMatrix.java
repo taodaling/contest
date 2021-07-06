@@ -232,10 +232,16 @@ public class ModMatrix {
         for (int i = 0; i < h; i++) {
             for (int j = 0; j < w; j++) {
                 sm.clear();
+//                long sum = 0;
                 for (int k = 0; k < mid; k++) {
+//                    sum  += (long)a.mat[i * mid + k] * b.mat[k * w + j] % mod;
                     sm.add(a.mat[i * mid + k], b.mat[k * w + j]);
                 }
                 c.mat[i * w + j] = sm.sum();
+//                if(sum % mod != sm.sum()){
+//                    throw new RuntimeException();
+//                }
+//                c.mat[i * w + j] = (int) (sum % mod);
             }
         }
         return c;

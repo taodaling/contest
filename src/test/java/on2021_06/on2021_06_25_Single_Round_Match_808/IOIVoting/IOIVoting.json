@@ -1,0 +1,46 @@
+{
+  "name" : "IOIVoting",
+  "signature" : {
+    "name" : "winners",
+    "result" : "int[]",
+    "arguments" : [ "int", "int[]" ],
+    "argumentNames" : [ "N", "votes" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "5", "0 20 26 30 22 25 0 16 33 18 19 29 0 17 24 15 12 28 0 14 23 27 21 31 0" ],
+    "result" : "4",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "4", "0 1 1 1 1 0 1 1 1 1 0 1 1 1 1 0" ],
+    "result" : "0 1 2 3",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "1", "0" ],
+    "result" : "0",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "4", "0 10 11 12 13 0 14 15 97 98 0 99 16 17 18 0" ],
+    "result" : "2",
+    "index" : 3,
+    "active" : true
+  }, {
+    "arguments" : [ "5", "0 0 0 0 0 3 0 3 99 3 0 0 0 0 0 4 99 5 0 6 0 0 0 0 0" ],
+    "result" : "1 3",
+    "index" : 4,
+    "active" : true
+  }, {
+    "arguments" : [ "3", "0 1 0 0 0 1 1 0 0" ],
+    "result" : "0 1 2",
+    "index" : 5,
+    "active" : true
+  } ],
+  "date" : "2021.06.25",
+  "contestName" : "Single Round Match 808",
+  "testClasses" : [ ],
+  "fqn" : "on2021_06.on2021_06_25_Single_Round_Match_808.IOIVoting.IOIVoting",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

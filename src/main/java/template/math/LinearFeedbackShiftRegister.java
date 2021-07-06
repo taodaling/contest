@@ -10,7 +10,7 @@ public class LinearFeedbackShiftRegister {
     private DoubleArrayList buf;
     private DoubleArrayList seq;
     private double prec;
-    private KahanSummation summation = new KahanSummation();
+    private SumOfFloat summation = new SumOfFloat();
 
     public LinearFeedbackShiftRegister(int cap, double prec) {
         this.prec = prec;

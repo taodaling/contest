@@ -1,12 +1,12 @@
 package template.string;
 
-import template.datastructure.RMQ;
+import template.datastructure.RMQBeta;
 
 public class SubstringCompare {
     int[] sa;
     int[] lcp;
     int[] rank;
-    RMQ rmq;
+    RMQBeta rmq;
 
     public int[] lcp() {
         return lcp;
@@ -65,8 +65,7 @@ public class SubstringCompare {
         sa = SuffixArrayDC3.suffixArray(seq);
         rank = SuffixArrayDC3.rank(sa);
         lcp = SuffixArrayDC3.lcp(sa, rank, seq);
-        rmq = new RMQ(lcp.length);
-        rmq.init(0, lcp.length - 1, (i, j) -> Integer.compare(lcp[i], lcp[j]));
+        rmq = new RMQBeta(lcp.length, (i, j) -> Integer.compare(lcp[i], lcp[j]));
     }
 
     public int compare(int l, int r, int L, int R) {

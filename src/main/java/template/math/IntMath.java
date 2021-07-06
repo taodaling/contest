@@ -21,6 +21,26 @@ public class IntMath {
     }
 
     /**
+     * l^2 + (l + 1)^2 + ... + r^2
+     */
+    public static long sumOfInterval2(long l, long r) {
+        if (r < l) {
+            return 0;
+        }
+        return (r * (r + 1) * (2 * r + 1) - (l - 1) * l * (2 * l - 1)) / 6;
+    }
+
+    /**
+     * 1^2 + 2^2 + ... + n^2
+     */
+    public static long sumOfInterval2(long n) {
+        if (n <= 0) {
+            return 0;
+        }
+        return n * (n + 1) * (2 * n + 1) / 6;
+    }
+
+    /**
      * <pre>
      * https://atcoder.jp/contests/practice2/submissions/16564332
      * find b that ab%mod=1

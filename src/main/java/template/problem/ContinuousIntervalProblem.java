@@ -139,13 +139,13 @@ public class ContinuousIntervalProblem {
             root.psA = root.p.psA + root.a;
             root.psB = root.p.psB + root.b;
         }
-        for (PermutationNode node : root.adj) {
-            dfs2((Node) node);
+        for (Node node : root.adj) {
+            dfs2(node);
         }
     }
 
 
-    private static class Node extends PermutationNode {
+    private static class Node extends PermutationNode<Node> {
         Node p;
         int depth;
         long[] ps;

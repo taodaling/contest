@@ -3,23 +3,30 @@ package template.graph;
 import java.util.Arrays;
 
 public class DepthOnTreeByParent implements DepthOnTree {
-    int[] p;
+    ParentOnTree pot;
     int[] depth;
 
-    public DepthOnTreeByParent(int[] p) {
-        this.p = p;
-        depth = new int[p.length];
+    public DepthOnTreeByParent(int n, ParentOnTree pot) {
+        this.pot = pot;
+        depth = new int[n];
         Arrays.fill(depth, -1);
+        for (int i = 0; i < n; i++) {
+            consider(i);
+        }
+    }
+
+    private int consider(int root) {
+        if (root == -1) {
+            return -1;
+        }
+        if (depth[root] == -1) {
+            depth[root] = consider(pot.parent(root)) + 1;
+        }
+        return depth[root];
     }
 
     @Override
     public int depth(int node) {
-        if (depth[node] == -1) {
-            if (p[node] == -1) {
-                return depth[node] = 0;
-            }
-            depth[node] = depth(p[node]) + 1;
-        }
         return depth[node];
     }
 }

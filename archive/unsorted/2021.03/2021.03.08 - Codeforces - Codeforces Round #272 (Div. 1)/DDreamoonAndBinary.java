@@ -1,15 +1,12 @@
 package contest;
 
-import template.datastructure.BitSet;
+
 import template.io.FastInput;
 import template.io.FastOutput;
 import template.math.DigitUtils;
 import template.string.IntFunctionIntSequenceAdapter;
 import template.string.SubstringCompare;
 import template.utils.SequenceUtils;
-
-import java.math.BigInteger;
-import java.util.Arrays;
 
 public class DDreamoonAndBinary {
     int mod = (int) 1e9 + 7;

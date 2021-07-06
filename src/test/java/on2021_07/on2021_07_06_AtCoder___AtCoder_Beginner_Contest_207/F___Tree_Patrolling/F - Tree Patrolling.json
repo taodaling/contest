@@ -1,0 +1,45 @@
+{
+  "name" : "F - Tree Patrolling",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3\n1 3\n1 2\n",
+    "output" : "1\n0\n2\n5\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "5\n1 3\n4 5\n1 5\n2 3\n",
+    "output" : "1\n0\n2\n5\n7\n17\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "10\n6 10\n1 8\n2 7\n5 6\n3 8\n3 4\n7 10\n4 9\n2 8\n",
+    "output" : "1\n0\n3\n8\n15\n32\n68\n110\n196\n266\n325\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_07.on2021_07_06_AtCoder___AtCoder_Beginner_Contest_207.F___Tree_Patrolling.FTreePatrolling",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.07.06",
+  "contestName" : "AtCoder - AtCoder Beginner Contest 207",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

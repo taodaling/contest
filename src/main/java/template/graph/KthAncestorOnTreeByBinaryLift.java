@@ -34,7 +34,7 @@ public class KthAncestorOnTreeByBinaryLift implements LcaOnTree, DistanceOnTree 
             }
         }
         if (dot == null) {
-            this.dot = new DepthOnTreeByParent(jump[0]);
+            this.dot = new DepthOnTreeByParent(n, new ParentOnTreeByGivenArray(jump[0]));
         } else {
             this.dot = dot;
         }

@@ -1,130 +1,201 @@
 package platform.leetcode;
 
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 class Solution {
-    public static void main(String[] args){
-        new Solution().earliestAndLatest(11, 2, 4);
+    public static void main(String[] args) {
+        new Solution().longestCommonSubpath(5,
+                new int[][]{{0, 1, 2, 3, 4}, {4, 3, 2, 1, 0}});
     }
-        int[][][] max;
-        int[][][] min;
 
-        int max(int a, int b, int c){
-            if(a < c){
-                return max(c, b, a);
+    public int mirror(int n, int i) {
+        return n - 1 - i;
+    }
+
+    public int longestCommonSubpath(int m, int[][] paths) {
+        int n = paths.length;
+        Arrays.sort(paths, Comparator.comparingInt(x -> x.length));
+        SparseSuffixAutomaton sa = new SparseSuffixAutomaton();
+        for (int e : paths[0]) {
+            sa.build(e);
+        }
+        sa.topoSort();
+        for (SparseSuffixAutomaton.SANode node : sa.all) {
+            node.min = node.maxlen;
+        }
+        for (int i = 1; i < paths.length; i++) {
+            sa.beginMatch();
+            for (int e : paths[i]) {
+                sa.match(e);
+                sa.matchLast.localMax = Math.max(sa.matchLast.localMax, sa.matchLength);
             }
-            if(max[a][b][c] == -1){
-                max[a][b][c] = (int)0;
-                if(a == c){
-                    return max[a][b][c] = 1;
+            for (SparseSuffixAutomaton.SANode node : sa.all) {
+                if (node.fail != null && node.fail.localMax > 0) {
+                    node.fail.localMax = node.fail.maxlen;
                 }
-                int n = a + b + c + 2;
-                int nextRound = (n + 1) / 2;
-                if(a >= b + c + 1){
-                    for(int i = 0; i <= c; i++){
-                        for(int j = 0; j <= b; j++){
-                            int k = nextRound - i - j - 2;
-                            max[a][b][c] = Math.max(max[a][b][c], max(k, j, i));
-                        }
-                    }
-                }else{
-                    for(int i = 0; i <= c; i++){
-                        for(int j = 0; j <= a - c - 1; j++){
-                            int k = nextRound - c - j - 2;
-                            max[a][b][c] = Math.max(max[a][b][c], max(c - i + j, k, i));
-                        }
-                    }
-                }
+                node.min = Math.min(node.min, node.localMax);
+                node.localMax = 0;
             }
-            return max[a][b][c];
         }
 
-        int min(int a, int b, int c){
-            if(a < c){
-                return min(c, b, a);
-            }
-            if(min[a][b][c] == -1){
-                min[a][b][c] = (int)1e9;
-                if(a == c){
-                    return min[a][b][c] = 1;
-                }
-                int n = a + b + c + 2;
-                int nextRound = (n + 1) / 2;
-                if(a >= b + c + 1){
-                    for(int i = 0; i <= c; i++){
-                        for(int j = 0; j <= b; j++){
-                            int k = nextRound - i - j - 2;
-                            min[a][b][c] = Math.min(min[a][b][c], min(k, j, i));
-                        }
-                    }
-                }else{
-                    for(int i = 0; i <= c; i++){
-                        for(int j = 0; j <= a - c - 1; j++){
-                            int k = nextRound - c - j - 2;
-                            min[a][b][c] = Math.min(min[a][b][c], min(c - i + j, k, i));
-                        }
-                    }
-                }
-            }
-            return min[a][b][c];
+        int best = 0;
+        for (SparseSuffixAutomaton.SANode node : sa.all) {
+            best = Math.max(best, node.min);
         }
 
-        public int[] earliestAndLatest(int n, int firstPlayer, int secondPlayer) {
-            max = new int[n + 1][n + 1][n + 1];
-            min = new int[n + 1][n + 1][n + 1];
-            for(int i = 0; i <= n; i++){
-                for(int j = 0; j <= n; j++){
-                    for(int k = 0; k <= n; k++){
-                        max[i][j][k] = min[i][j][k] = -1;
-                    }
-                }
-            }
-
-            int a = max(firstPlayer - 1, secondPlayer - firstPlayer - 1, n - secondPlayer);
-            int b = min(firstPlayer - 1, secondPlayer - firstPlayer - 1, n - secondPlayer);
-            System.out.println(Arrays.deepToString(max));
-            System.out.println(Arrays.deepToString(min));
-            return new int[]{a, b};
+        return best;
     }
 }
 
-interface IntegerBinaryFunction {
-    int apply(int a, int b);
-}
+class SparseSuffixAutomaton {
+    public SANode root;
+    public SANode buildLast;
+    public SANode matchLast;
+    public int matchLength;
+    public List<SANode> all = new ArrayList<>();
+    public boolean sorted = true;
+    public long distinctSubstr = -1;
 
-
-class DSU{
-    int[] p;
-    int[] size;
-
-    public DSU(int n){
-        p = new int[n];
-        size = new int[n];
-        for(int i = 0; i < n; i++){
-            p[i] = i;
-            size[i] = 1;
-        }
+    public void enableDistinctSubstr() {
+        distinctSubstr = 0;
     }
 
-    public int find(int x){
-        return p[x] == p[p[x]] ? p[x] : (p[x] = find(p[x]));
+    public SparseSuffixAutomaton() {
+        buildLast = root = newNode();
+        root.fail = null;
     }
 
-    public void merge(int a, int b){
-        a = find(a);
-        b = find(b);
-        if(a == b){
+    private SANode newNode() {
+        SANode ans = new SANode();
+        all.add(ans);
+        return ans;
+    }
+
+    private SANode cloneNode(SANode x) {
+        SANode ans = x.clone();
+        all.add(ans);
+        return ans;
+    }
+
+    public void beginMatch() {
+        matchLast = root;
+        matchLength = 0;
+    }
+
+    public void match(int c) {
+        int index = c;
+        if (matchLast.next.containsKey(index)) {
+            matchLast = matchLast.next.get(index);
+            matchLength = matchLength + 1;
             return;
         }
-        if(size[a] < size[b]){
-            int tmp = a;
-            a = b;
-            b = tmp;
+        while (matchLast != null && !matchLast.next.containsKey(index)) {
+            matchLast = matchLast.fail;
         }
-        p[b] = a;
-        size[a] += size[b];
+        if (matchLast == null) {
+            matchLast = root;
+            matchLength = 0;
+        } else {
+            matchLength = matchLast.maxlen + 1;
+            matchLast = matchLast.next.get(index);
+        }
+    }
+
+    public void build(int c) {
+        sorted = false;
+        int index = c;
+        SANode now = newNode();
+        now.maxlen = buildLast.maxlen + 1;
+
+        SANode p = visit(index, buildLast, null, now);
+        if (p == null) {
+            now.fail = root;
+        } else {
+            SANode q = p.next.get(index);
+            if (q.maxlen == p.maxlen + 1) {
+                now.fail = q;
+            } else {
+                SANode clone = cloneNode(q);
+                clone.maxlen = p.maxlen + 1;
+                now.fail = q.fail = clone;
+                if (distinctSubstr != -1) {
+                    distinctSubstr -= q.maxlen - clone.fail.maxlen;
+                    distinctSubstr += q.maxlen - q.fail.maxlen;
+                    distinctSubstr += clone.maxlen - clone.fail.maxlen;
+                }
+                visit(index, p, q, clone);
+            }
+        }
+        if (distinctSubstr != -1) {
+            distinctSubstr += now.maxlen - now.fail.maxlen;
+        }
+        buildLast = now;
+    }
+
+    public SANode visit(int index, SANode trace, SANode target, SANode replacement) {
+        while (trace != null && trace.next.get(index) == target) {
+            trace.next.put(index, replacement);
+            trace = trace.fail;
+        }
+        return trace;
+    }
+
+    public void topoSort() {
+        if (sorted) {
+            return;
+        }
+        sorted = true;
+        Deque<SANode> dq = new ArrayDeque<>(all.size());
+        for (SANode node : all) {
+            if (node.fail != null) {
+                node.fail.indeg++;
+            }
+        }
+        for (SANode node : all) {
+            if (node.indeg == 0) {
+                dq.addLast(node);
+            }
+        }
+        all.clear();
+        while (!dq.isEmpty()) {
+            SANode head = dq.removeFirst();
+            all.add(head);
+            if (head.fail != null) {
+                head.fail.indeg--;
+                if (head.fail.indeg == 0) {
+                    dq.addLast(head.fail);
+                }
+            }
+        }
+    }
+
+
+    public static class SANode implements Cloneable {
+        public TreeMap<Integer, SANode> next = new TreeMap<>();
+        public SANode fail;
+        public int maxlen;
+        public int right;
+        public int indeg;
+        public int localMax;
+        public int min;
+
+        public int minLength() {
+            return fail == null ? 0 : fail.maxlen + 1;
+        }
+
+        public SANode() {
+        }
+
+        @Override
+        public SANode clone() {
+            try {
+                SANode res = (SANode) super.clone();
+                res.next = new TreeMap<>(res.next);
+                return res;
+            } catch (CloneNotSupportedException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 }

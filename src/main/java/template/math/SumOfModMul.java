@@ -5,13 +5,12 @@ public class SumOfModMul {
     int mod;
     long limit;
     long sub;
-    Modular barrett;
 
     public SumOfModMul(int mod) {
         this.mod = mod;
-        barrett = new Modular(mod);
         limit = Long.MAX_VALUE - (long) (mod - 1) * (mod - 1);
         sub = limit - limit % mod;
+        assert sub <= limit;
     }
 
     public void clear() {
@@ -19,10 +18,7 @@ public class SumOfModMul {
     }
 
     public void add(long a, long b) {
-        sum += a * b;
-        if (sum >= limit) {
-            sum -= sub;
-        }
+        add(a * b);
     }
 
     public void add(long x) {
@@ -33,15 +29,12 @@ public class SumOfModMul {
     }
 
     public void add(int a, int b) {
-        sum += (long) a * b;
-        if (sum >= limit) {
-            sum -= sub;
-        }
+        add((long)a * b);
     }
 
     public int sum() {
         if (sum >= mod) {
-            sum = barrett.reduce(sum);
+            sum %= mod;
         }
         return (int) sum;
     }

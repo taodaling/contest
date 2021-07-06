@@ -10,7 +10,6 @@ public class NumberTheoryTransform {
      * Normal but correct ntt
      */
     public static void ntt(int[] p, boolean inv, int mod, int g, Power power) {
-        Modular barret = new Modular(mod);
         int m = Log2.ceilLog(p.length);
         int n = 1 << m;
 
@@ -28,7 +27,7 @@ public class NumberTheoryTransform {
         int unit = power.pow(g, (mod - 1) / n);
         ws[0] = 1;
         for (int i = 1; i < ws.length; i++) {
-            ws[i] = barret.mul(ws[i - 1], unit);
+            ws[i] = (int) (((long) ws[i - 1] * unit) % mod);
         }
 
         for (int d = 0; d < m; d++) {
@@ -43,9 +42,15 @@ public class NumberTheoryTransform {
                 for (int j = 0; j < s; j++) {
                     int a = i + j;
                     int b = a + s;
-                    int t = barret.mul(ws[j * right], p[b]);
-                    p[b] = barret.sub(p[a], t);
-                    p[a] = barret.add(p[a], t);
+                    int t = (int) ((long) ws[j * right] * p[b] % mod);
+                    p[b] = p[a] - t;
+                    if (p[b] < 0) {
+                        p[b] += mod;
+                    }
+                    p[a] = p[a] + t;
+                    if (p[a] >= mod) {
+                        p[a] -= mod;
+                    }
                     //w = g^{j (mod-1)/2^{1+d}}
                     //unit = g^{(mod-1)/n}
                     //w = unit^{j n/2^{1+d}}
@@ -59,9 +64,9 @@ public class NumberTheoryTransform {
             long invN = power.inverse(n);
             for (int i = 0, j = 0; i <= j; i++, j = n - i) {
                 int a = p[j];
-                p[j] = barret.mul(p[i], invN);
+                p[j] = (int) (p[i] * invN % mod);
                 if (i != j) {
-                    p[i] = barret.mul(a, invN);
+                    p[i] = (int) (a * invN % mod);
                 }
             }
         }

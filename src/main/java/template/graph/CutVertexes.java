@@ -3,8 +3,14 @@ package template.graph;
 import java.util.Arrays;
 
 public class CutVertexes {
+    /**
+     * 一个点是否是割点
+     */
     public boolean[] cut;
     public boolean[] visited;
+    /**
+     * 父亲被删除后，这个点所在连通块是否和父亲所在连通块失去连通
+     */
     public boolean[] beCut;
     DfsTree dt;
 

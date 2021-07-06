@@ -182,7 +182,6 @@ public class GenericFastWalshHadamardTransform {
         }
     }
 
-
     public void normalize(long[][] a, int l, int r) {
         for (int i = l; i <= r; i++) {
             moduleInPlace(a, i, phi);

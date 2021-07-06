@@ -3,6 +3,9 @@ package template.polynomial;
 import template.math.DigitUtils;
 import template.math.Factorial;
 
+/**
+ * https://atcoder.jp/contests/abc208/editorial/2219
+ */
 public class ModContinuousInterpolation {
     private int mod;
     private int[] pre;
@@ -29,16 +32,16 @@ public class ModContinuousInterpolation {
     }
 
     /**
-     * O(n)
+     * Let f(x[i])=y[i], find f(x) in O(n)
      */
-    public int interpolate(int x0, int[] y, int n, int x) {
-        x = DigitUtils.modsub(x, x0, mod);
+    public int interpolate(int x0, int[] y, int n, long x) {
+        x = DigitUtils.mod(x - x0, mod);
         if (x < n) {
-            return y[x];
+            return y[(int) x];
         }
 
         for (int i = 0; i < n; i++) {
-            pre[i] = post[i] = DigitUtils.modsub(x, i, mod);
+            pre[i] = post[i] = (int) DigitUtils.modsub(x, i, mod);
         }
         for (int i = 1; i < n; i++) {
             pre[i] = (int) ((long) pre[i - 1] * pre[i] % mod);

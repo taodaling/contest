@@ -1,7 +1,6 @@
 package contest;
 
 import sun.security.provider.Sun;
-import template.datastructure.RMQBySegment;
 import template.io.FastInput;
 import template.math.DigitUtils;
 import template.primitve.generated.datastructure.Int2ToIntegerFunction;

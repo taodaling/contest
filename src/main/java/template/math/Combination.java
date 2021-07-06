@@ -6,12 +6,10 @@ package template.math;
 public class Combination implements IntCombination {
     final Factorial factorial;
     int modVal;
-    Modular modular;
 
     public Combination(Factorial factorial) {
         this.factorial = factorial;
         this.modVal = factorial.getMod();
-        this.modular = new Modular(modVal);
     }
 
 
@@ -23,13 +21,13 @@ public class Combination implements IntCombination {
         if (n > m || n < 0) {
             return 0;
         }
-        return modular.mul(factorial.fact(m), factorial.invFact(n), factorial.invFact(m - n));
+        return (int) ((long) factorial.fact(m) * factorial.invFact(n) % modVal * factorial.invFact(m - n) % modVal);
     }
 
     /**
      * return 1 / composite(m, n)
      */
     public int invCombination(int m, int n) {
-        return modular.mul(factorial.invFact(m), factorial.fact(n), factorial.fact(m - n));
+        return (int) ((long) factorial.invFact(m) * factorial.fact(n) % modVal * factorial.fact(m - n) % modVal);
     }
 }

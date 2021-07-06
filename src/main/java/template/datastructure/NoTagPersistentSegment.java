@@ -13,6 +13,9 @@ public class NoTagPersistentSegment  implements Cloneable{
     private NoTagPersistentSegment right;
 
     public void pushUp() {
+        if (this == NIL) {
+            return;
+        }
     }
 
     public NoTagPersistentSegment() {
