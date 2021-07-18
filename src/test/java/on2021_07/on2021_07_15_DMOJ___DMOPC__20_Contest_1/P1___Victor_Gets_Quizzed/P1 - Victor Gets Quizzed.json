@@ -1,0 +1,35 @@
+{
+  "name" : "P1 - Victor Gets Quizzed",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4\nMXACY\nCZBNP\nPQRST\nPQRMS\n",
+    "output" : "NEGATIVE MARKS\nFAIL\nPASS\nFAIL\n",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_07.on2021_07_15_DMOJ___DMOPC__20_Contest_1.P1___Victor_Gets_Quizzed.P1VictorGetsQuizzed",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.07.15",
+  "contestName" : "DMOJ - DMOPC '20 Contest 1",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

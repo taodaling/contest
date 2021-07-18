@@ -12,10 +12,8 @@ public class LongSparseTable {
     // so st[i][j] equals to merge(st[i][j - 1], st[i + 2^(j - 1)][j - 1])
     private long[][] st;
     private LongBinaryFunction merger;
-
-    public LongSparseTable(IntToLongFunction function, int length, LongBinaryFunction merger) {
-        int m = Log2.floorLog(length);
-        st = new long[m + 1][length];
+    int m;
+    public void init(int length, IntToLongFunction function, LongBinaryFunction merger){
         this.merger = merger;
         for (int i = 0; i < length; i++) {
             st[0][i] = function.apply(i);
@@ -30,6 +28,16 @@ public class LongSparseTable {
                 }
             }
         }
+    }
+
+    public LongSparseTable(int length) {
+        m = Log2.floorLog(length);
+        st = new long[m + 1][length];
+    }
+
+    public LongSparseTable(int length,  IntToLongFunction function, LongBinaryFunction merger) {
+        this(length);
+        init(length, function, merger);
     }
 
     private long merge(long a, long b) {

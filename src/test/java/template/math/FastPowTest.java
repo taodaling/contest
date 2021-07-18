@@ -10,8 +10,8 @@ import java.lang.reflect.InvocationTargetException;
 
 public class FastPowTest {
     static int mod = (int) 1e9 + 7;
-    static CachedPow2 cp = new CachedPow2(10, mod);
-    static FastPow fp = new FastPow(10, mod);
+    static FastPow2 cp = new FastPow2(10, mod);
+    static FastPow4 fp = new FastPow4(10, mod);
     static int round = (int) 1e6;
 
     public static void main(String[] args) throws RunnerException, InvocationTargetException, IllegalAccessException {

@@ -290,13 +290,6 @@ public class DigitUtils {
         return x;
     }
 
-    /**
-     * If mod <= 10^16(2^52), this method is pretty safe
-     */
-    public static long modmul(long a, long b, long mod) {
-        long k = DigitUtils.round((double) a / mod * b);
-        return DigitUtils.mod(a * b - k * mod, mod);
-    }
 
     public static int modmul(int a, int b, int mod) {
         return mod((long) a * b, mod);

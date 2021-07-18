@@ -12,10 +12,8 @@ public class IntegerSparseTable {
     // so st[i][j] equals to merge(st[i][j - 1], st[i + 2^(j - 1)][j - 1])
     private int[][] st;
     private IntegerBinaryFunction merger;
-
-    public IntegerSparseTable(IntToIntegerFunction function, int length, IntegerBinaryFunction merger) {
-        int m = Log2.floorLog(length);
-        st = new int[m + 1][length];
+    int m;
+    public void init(int length, IntToIntegerFunction function, IntegerBinaryFunction merger){
         this.merger = merger;
         for (int i = 0; i < length; i++) {
             st[0][i] = function.apply(i);
@@ -30,6 +28,16 @@ public class IntegerSparseTable {
                 }
             }
         }
+    }
+
+    public IntegerSparseTable(int length) {
+        m = Log2.floorLog(length);
+        st = new int[m + 1][length];
+    }
+
+    public IntegerSparseTable(int length,  IntToIntegerFunction function, IntegerBinaryFunction merger) {
+        this(length);
+        init(length, function, merger);
     }
 
     private int merge(int a, int b) {

@@ -6,6 +6,22 @@ public class IntegerRect2 {
     public long[] lb = new long[2];
     public long[] rt = new long[2];
 
+    public long left() {
+        return lb[0];
+    }
+
+    public long bottom() {
+        return lb[1];
+    }
+
+    public long right() {
+        return rt[0];
+    }
+
+    public long top() {
+        return rt[1];
+    }
+
     public IntegerRect2(long x0, long y0, long x1, long y1) {
         lb[0] = x0;
         lb[1] = y0;

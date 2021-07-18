@@ -11,15 +11,15 @@ public interface Update<U extends Update<U>> extends Cloneable {
 
     U clone();
 
-    static class NilUpdate implements Update<NilUpdate> {
-        public static final NilUpdate INSTANCE = new NilUpdate();
-        public static final Supplier<NilUpdate> SUPPLIER = () -> INSTANCE;
+    static class NIL implements Update<NIL> {
+        public static final NIL INSTANCE = new NIL();
+        public static final Supplier<NIL> SUPPLIER = () -> INSTANCE;
 
-        private NilUpdate() {
+        private NIL() {
         }
 
         @Override
-        public void update(NilUpdate nilUpdate) {
+        public void update(NIL nilUpdate) {
         }
 
         @Override
@@ -32,7 +32,7 @@ public interface Update<U extends Update<U>> extends Cloneable {
         }
 
         @Override
-        public NilUpdate clone() {
+        public NIL clone() {
             return this;
         }
     }

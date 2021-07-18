@@ -86,6 +86,9 @@ public class MaximumNotIntersectIntervals {
         return ans;
     }
 
+    /**
+     * [l, r)
+     */
     public static class Interval {
         public long l;
         public long r;

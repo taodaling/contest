@@ -74,7 +74,7 @@ public class ExtLucas implements LargeIntCombination, Iterable<Map.Entry<Integer
         int pc;
         int mod;
         Power power;
-        CachedPow2 cp;
+        FastPow2 cp;
         int[] g;
 
         /**
@@ -99,7 +99,7 @@ public class ExtLucas implements LargeIntCombination, Iterable<Map.Entry<Integer
                 }
             }
 
-            cp = new CachedPow2(g[pc], pc);
+            cp = new FastPow2(g[pc], pc);
         }
 
         /**

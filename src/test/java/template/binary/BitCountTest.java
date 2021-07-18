@@ -5,7 +5,6 @@ import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
-import template.math.BarrettTest;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -36,7 +35,7 @@ public class BitCountTest {
     public int testBC() {
         int ans = 0;
         for (int i = 0; i < invokeTime; i++) {
-            ans += BitCount.count(i);
+            ans += FastBitCount4.count(i);
         }
         return ans;
     }

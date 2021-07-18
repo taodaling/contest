@@ -1,18 +1,19 @@
 package template.math;
 
 public class LongModularDanger implements ILongModular {
-    final long m;
+    final long mod;
 
     @Override
     public long getMod() {
-        return m;
+        return mod;
     }
 
     public LongModularDanger(long m) {
-        this.m = m;
+        this.mod = m;
     }
 
     public long mul(long a, long b) {
-        return DigitUtils.modmul(a, b, m);
+        long k = DigitUtils.round((double) a / mod * b);
+        return DigitUtils.mod(a * b - k * mod, mod);
     }
 }

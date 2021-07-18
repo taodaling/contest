@@ -15,6 +15,10 @@ public class KMPAutomaton {
         length = cap;
     }
 
+    public void init() {
+        buildLast = 0;
+    }
+
     /**
      * Get the border of s[0...i]
      */

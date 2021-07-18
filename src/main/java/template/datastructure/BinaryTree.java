@@ -3,6 +3,9 @@ package template.datastructure;
 import template.binary.Bits;
 import template.utils.Pair;
 
+/**
+ * @deprecated
+ */
 public class BinaryTree implements Cloneable {
     public BinaryTree left;
     public BinaryTree right;

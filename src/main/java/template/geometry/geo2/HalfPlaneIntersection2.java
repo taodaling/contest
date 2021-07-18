@@ -5,6 +5,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Deque;
 
+/**
+ * 仅保留射线逆时针方向的半平面
+ */
 public class HalfPlaneIntersection2 {
     public static Collection<Line2> halfPlaneIntersection(Line2[] lines, boolean close) {
         return halfPlaneIntersection(lines, close, false);

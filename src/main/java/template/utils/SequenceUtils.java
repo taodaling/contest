@@ -3,7 +3,6 @@ package template.utils;
 import template.primitve.generated.datastructure.IntToIntegerFunction;
 import template.primitve.generated.datastructure.IntegerArrayList;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -11,6 +10,22 @@ import java.util.Objects;
 import java.util.function.IntFunction;
 
 public class SequenceUtils {
+    public static int[][] groupBy(IntToIntegerFunction func, int n, int m) {
+        int[] cnts = new int[m];
+        for(int i = 0; i < n; i++){
+            cnts[func.apply(i)]++;
+        }
+        int[][] ans = new int[m][];
+        for(int i = 0; i < m; i++){
+            ans[i] = new int[cnts[i]];
+        }
+        for(int i = n - 1; i >= 0; i--){
+            int v = func.apply(i);
+            ans[v][--cnts[v]] = i;
+        }
+        return ans;
+    }
+
     public static <T> T[] pack(IntFunction<T[]> func, T[]... arr) {
         int len = Arrays.stream(arr).mapToInt(x -> x.length).sum();
         T[] ans = func.apply(len);

@@ -23,11 +23,17 @@ public class GeqSlopeOptimizer {
         }
     }
 
-    public GeqSlopeOptimizer(){
+    boolean maximizeYForSameX;
+
+    public void setMaximizeYForSameX(boolean x) {
+        this.maximizeYForSameX = x;
+    }
+
+    public GeqSlopeOptimizer() {
         this(0);
     }
 
-    public GeqSlopeOptimizer(int exp){
+    public GeqSlopeOptimizer(int exp) {
         deque = new ArrayDeque<>(exp);
     }
 
@@ -47,6 +53,13 @@ public class GeqSlopeOptimizer {
     }
 
     public Point add(long y, long x, int id) {
+        if (!deque.isEmpty() && deque.peekLast().x == x) {
+            if ((deque.peekLast().y >= y) == maximizeYForSameX) {
+                return null;
+            } else {
+                deque.removeLast();
+            }
+        }
         Point t1 = new Point(x, y, id);
         while (deque.size() >= 2) {
             Point t2 = deque.removeLast();

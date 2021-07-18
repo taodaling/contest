@@ -1,6 +1,5 @@
 package template.datastructure;
 
-import template.math.Modular;
 import template.math.DigitUtils;
 import template.primitve.generated.datastructure.IntToIntegerFunction;
 

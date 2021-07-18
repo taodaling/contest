@@ -9,7 +9,7 @@ public class MoOnArray {
             return;
         }
         int n = Math.max(rangeR - rangeL + 1, qs.length);
-        int k = (int) Math.ceil(Math.sqrt(n));
+        int k = (int) Math.ceil(n / Math.sqrt(qs.length));
         solve(rangeL, rangeR, state, qs, k);
     }
 
@@ -49,6 +49,7 @@ public class MoOnArray {
 
     /**
      * O(qk+n^2/k+q\log_2q)
+     *
      * @param rangeL
      * @param rangeR
      * @param state
@@ -122,6 +123,7 @@ public class MoOnArray {
 
     /**
      * O(qk+n^2/k+q\log_2q)
+     *
      * @param rangeL
      * @param rangeR
      * @param state
@@ -144,12 +146,12 @@ public class MoOnArray {
             int Lb = L / k;
             int to = Math.max(Lb * k, rangeL);
             if (l != to) {
-                while(r < rangeR){
+                while (r < rangeR) {
                     ++r;
                     state.add(r);
                 }
                 state.rollback();
-                while(l < to){
+                while (l < to) {
                     state.remove(l);
                     l++;
                 }

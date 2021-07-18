@@ -1,0 +1,40 @@
+{
+  "name" : "P6 - Unfair Game",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5 1\n3 1 4 2 5\n6\n",
+    "output" : "12\n13\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "10 0\n27 18 28 18 28 45 90 45 23 53\n",
+    "output" : "243\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx512M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_07.on2021_07_14_DMOJ___DMOPC__20_Contest_2.P6___Unfair_Game.P6UnfairGame",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.07.14",
+  "contestName" : "DMOJ - DMOPC '20 Contest 2",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

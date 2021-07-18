@@ -1,0 +1,45 @@
+{
+  "name" : "TruckUnion",
+  "signature" : {
+    "name" : "optimize",
+    "result" : "int",
+    "arguments" : [ "int", "int[]" ],
+    "argumentNames" : [ "N", "C" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "5", "0 1 1 1 1 1 0 9 9 9 1 9 0 9 9 1 9 9 0 9 1 9 9 9 0" ],
+    "result" : "8",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "5", "0 9 9 9 8 8 0 9 9 9 9 9 0 8 9 9 8 9 0 9 9 9 8 9 0" ],
+    "result" : "40",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "2", "0 1000000 1 0" ],
+    "result" : "1000001",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "5", "0 9 9 1 1 1 0 9 9 9 1 9 0 8 9 9 8 9 0 9 9 9 8 9 0" ],
+    "result" : "20",
+    "index" : 3,
+    "active" : true
+  }, {
+    "arguments" : [ "5", "0 1 1 1000000 1 1 0 90000 80000 70000 1 60000 0 1 50000 900000 40000 1 0 1 1 30000 20000 1 0" ],
+    "result" : "30004",
+    "index" : 4,
+    "active" : true
+  }, {
+    "arguments" : [ "7", "0 1 357282 303003 29852 1 11074 470754 0 3 4093 14306 7 4 7470 79201 0 31975 9727 3389 5706 918 2 27297 0 252 3 2381 379709 46581 49655 314 0 346 24291 3989 235819 385483 916560 6 0 158830 87 2 43787 18 2 234300 0" ],
+    "index" : 5,
+    "active" : true
+  } ],
+  "date" : "2021.07.18",
+  "contestName" : "TopCoder SRM #809",
+  "testClasses" : [ ],
+  "fqn" : "on2021_07.on2021_07_18_TopCoder_SRM__809.TruckUnion.TruckUnion",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

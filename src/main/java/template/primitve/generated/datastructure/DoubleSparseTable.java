@@ -12,10 +12,8 @@ public class DoubleSparseTable {
     // so st[i][j] equals to merge(st[i][j - 1], st[i + 2^(j - 1)][j - 1])
     private double[][] st;
     private DoubleBinaryFunction merger;
-
-    public DoubleSparseTable(IntToDoubleFunction function, int length, DoubleBinaryFunction merger) {
-        int m = Log2.floorLog(length);
-        st = new double[m + 1][length];
+    int m;
+    public void init(int length, IntToDoubleFunction function, DoubleBinaryFunction merger){
         this.merger = merger;
         for (int i = 0; i < length; i++) {
             st[0][i] = function.apply(i);
@@ -30,6 +28,16 @@ public class DoubleSparseTable {
                 }
             }
         }
+    }
+
+    public DoubleSparseTable(int length) {
+        m = Log2.floorLog(length);
+        st = new double[m + 1][length];
+    }
+
+    public DoubleSparseTable(int length,  IntToDoubleFunction function, DoubleBinaryFunction merger) {
+        this(length);
+        init(length, function, merger);
     }
 
     private double merge(double a, double b) {

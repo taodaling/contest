@@ -27,11 +27,10 @@ public class RMQBeta {
         return comp.compare(a, b) <= 0 ? a : b;
     }
 
-    public RMQBeta(int n, IntegerComparator comp) {
+    public void init(int n, IntegerComparator comp) {
         this.comp = comp;
-        this.n = n;
-        minIndices = new int[DigitUtils.ceilDiv(n, blockSize)];
-        Arrays.fill(minIndices, -1);
+        int considerPart = ((n - 1) >>> shift) + 1;
+        Arrays.fill(minIndices, 0, considerPart, -1);
         for (int i = 0; i < n; i++) {
             int to = i >>> shift;
             if (minIndices[to] == -1 ||
@@ -39,10 +38,7 @@ public class RMQBeta {
                 minIndices[to] = i;
             }
         }
-        st = new IntegerSparseTable(i -> minIndices[i],
-                minIndices.length,
-                (a, b) -> comp.compare(a, b) <= 0 ? a : b);
-        toLeft = new int[n];
+        st.init(considerPart, i -> minIndices[i], (a, b) -> comp.compare(a, b) <= 0 ? a : b);
         int mask = 0;
         for (int i = 0; i < n; i++) {
             if ((i & andMask) == 0) {
@@ -60,6 +56,18 @@ public class RMQBeta {
             mask = Bits.set(mask, i & andMask);
             toLeft[i] = mask;
         }
+    }
+
+    public RMQBeta(int n, IntegerComparator comp) {
+        this(n);
+        init(n, comp);
+    }
+
+    public RMQBeta(int n) {
+        this.n = n;
+        minIndices = new int[DigitUtils.ceilDiv(n, blockSize)];
+        st = new IntegerSparseTable(minIndices.length);
+        toLeft = new int[n];
     }
 
     public int query(int l, int r) {

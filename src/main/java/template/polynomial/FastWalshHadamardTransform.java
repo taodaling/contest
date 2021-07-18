@@ -1,6 +1,5 @@
 package template.polynomial;
 
-import com.sun.java.accessibility.util.TopLevelWindowListener;
 import template.math.DigitUtils;
 import template.math.ILongModular;
 

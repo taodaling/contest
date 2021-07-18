@@ -202,6 +202,15 @@ public class RectPointSumProblem {
 
         long sum;
         long w;
+
+        @Override
+        public String toString() {
+            return "Point2D{" +
+                    "x=" + x +
+                    ", y=" + y +
+                    ", w=" + w +
+                    '}';
+        }
     }
 
     public static class Point3D extends Point2D {
@@ -211,6 +220,16 @@ public class RectPointSumProblem {
         public Point3D(long x, long y, long z, long w) {
             super(x, y, w);
             this.z = z;
+        }
+
+        @Override
+        public String toString() {
+            return "Point3D{" +
+                    "x=" + x +
+                    ", y=" + y +
+                    ", z=" + z +
+                    ", w=" + w +
+                    '}';
         }
     }
 
@@ -246,6 +265,18 @@ public class RectPointSumProblem {
             this.yr = yr;
             this.zl = zl;
             this.zr = zr;
+        }
+
+        @Override
+        public String toString() {
+            return "Query3D{" +
+                    "xl=" + xl +
+                    ", xr=" + xr +
+                    ", yl=" + yl +
+                    ", yr=" + yr +
+                    ", zl=" + zl +
+                    ", zr=" + zr +
+                    '}';
         }
     }
 }

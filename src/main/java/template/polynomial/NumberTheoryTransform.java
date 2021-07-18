@@ -1,7 +1,6 @@
 package template.polynomial;
 
 import template.binary.Log2;
-import template.math.Modular;
 import template.math.Power;
 import template.utils.PrimitiveBuffers;
 
@@ -10,6 +9,8 @@ public class NumberTheoryTransform {
      * Normal but correct ntt
      */
     public static void ntt(int[] p, boolean inv, int mod, int g, Power power) {
+//        Modular modular = new DoubleModular(mod);
+
         int m = Log2.ceilLog(p.length);
         int n = 1 << m;
 
@@ -28,6 +29,7 @@ public class NumberTheoryTransform {
         ws[0] = 1;
         for (int i = 1; i < ws.length; i++) {
             ws[i] = (int) (((long) ws[i - 1] * unit) % mod);
+//            ws[i] = modular.mul(ws[i - 1], unit);
         }
 
         for (int d = 0; d < m; d++) {
@@ -43,6 +45,7 @@ public class NumberTheoryTransform {
                     int a = i + j;
                     int b = a + s;
                     int t = (int) ((long) ws[j * right] * p[b] % mod);
+//                    int t = modular.mul(ws[j * right], p[b]);
                     p[b] = p[a] - t;
                     if (p[b] < 0) {
                         p[b] += mod;
@@ -65,8 +68,10 @@ public class NumberTheoryTransform {
             for (int i = 0, j = 0; i <= j; i++, j = n - i) {
                 int a = p[j];
                 p[j] = (int) (p[i] * invN % mod);
+//                p[j] = modular.mul(p[i], (int) invN);
                 if (i != j) {
                     p[i] = (int) (a * invN % mod);
+//                    p[i] = modular.mul(a, (int) invN);
                 }
             }
         }

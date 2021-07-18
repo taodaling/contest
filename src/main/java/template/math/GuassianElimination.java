@@ -46,6 +46,10 @@ public class GuassianElimination {
         mat[row][col] = val;
     }
 
+    public void modifyLeft(int row, int col, double val) {
+        mat[row][col] += val;
+    }
+
     /**
      * O(nm^2)
      *

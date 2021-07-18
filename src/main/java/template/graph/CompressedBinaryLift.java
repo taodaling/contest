@@ -8,7 +8,7 @@ import java.util.function.IntPredicate;
  * <p>
  * O(log_2n) for all operation
  */
-public class CompressedBinaryLift implements LcaOnTree {
+public class CompressedBinaryLift implements LcaOnTree, KthAncestor {
     ParentOnTree pot;
     DepthOnTree dot;
     int[] jump;
@@ -43,10 +43,13 @@ public class CompressedBinaryLift implements LcaOnTree {
     }
 
     public int firstTrue(int node, IntPredicate predicate) {
-        while (node >= 0 && !predicate.test(node)) {
+        while (!predicate.test(node)) {
             if (predicate.test(jump[node])) {
                 node = pot.parent(node);
             } else {
+                if (node == jump[node]) {
+                    return -1;
+                }
                 node = jump[node];
             }
         }
@@ -59,6 +62,9 @@ public class CompressedBinaryLift implements LcaOnTree {
         }
         while (true) {
             if (predicate.test(jump[node])) {
+                if (node == jump[node]) {
+                    return node;
+                }
                 node = jump[node];
             } else if (predicate.test(pot.parent(node))) {
                 node = pot.parent(node);
@@ -68,15 +74,16 @@ public class CompressedBinaryLift implements LcaOnTree {
         }
     }
 
-    public int findAncestor(int node, int targetDepth) {
+    public int kthAncestor(int node, int k) {
+        int targetDepth = dot.depth(node) - k;
         return firstTrue(node, i -> dot.depth(i) <= targetDepth);
     }
 
     public int lca(int a, int b) {
         if (dot.depth(a) > dot.depth(b)) {
-            a = findAncestor(a, dot.depth(b));
+            a = kthAncestor(a, dot.depth(a) - dot.depth(b));
         } else if (dot.depth(a) < dot.depth(b)) {
-            b = findAncestor(b, dot.depth(a));
+            b = kthAncestor(b, dot.depth(b) - dot.depth(a));
         }
         while (a != b) {
             if (jump[a] == jump[b]) {
@@ -89,4 +96,5 @@ public class CompressedBinaryLift implements LcaOnTree {
         }
         return a;
     }
+
 }

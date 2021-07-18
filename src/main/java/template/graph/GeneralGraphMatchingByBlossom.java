@@ -131,4 +131,25 @@ public class GeneralGraphMatchingByBlossom {
         que = new int[len];
         ss = new int[len];
     }
+
+    public boolean tryDeleteEdge(int a, int b) {
+        a++;
+        b++;
+        assert edges[a][b];
+        if (mate[a] != b) {
+            edges[a][b] = edges[b][a] = false;
+            return true;
+        }
+        mate[a] = 0;
+        mate[b] = 0;
+        edges[a][b] = edges[b][a] = false;
+        if (match(a) || match(b)) {
+            return true;
+        }
+        //rollback
+        mate[a] = b;
+        mate[b] = a;
+        edges[a][b] = edges[b][a] = true;
+        return false;
+    }
 }

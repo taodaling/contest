@@ -6,7 +6,7 @@ import template.primitve.generated.datastructure.IntToIntegerFunction;
 
 import java.util.Arrays;
 
-public class KthAncestorOnTreeByBinaryLift implements LcaOnTree, DistanceOnTree {
+public class KthAncestorOnTreeByBinaryLift implements LcaOnTree, DistanceOnTree, KthAncestor {
     public int[][] jump;
     public int log;
     DepthOnTree dot;
@@ -75,44 +75,8 @@ public class KthAncestorOnTreeByBinaryLift implements LcaOnTree, DistanceOnTree 
         return jump[0][a];
     }
 
-    public TreePath path(int a, int b) {
-        return path(a, b, lca(a, b));
-    }
-
-    public TreePath path(int a, int b, int c) {
-        return new TreePath(a, b, c);
-    }
-
     @Override
     public int distance(int u, int v) {
         return dot.depth(u) + dot.depth(v) - dot.depth(lca(u, v)) * 2;
-    }
-
-    public class TreePath {
-        int a;
-        int b;
-        int c;
-
-        public TreePath(int a, int b, int c) {
-            this.a = a;
-            this.b = b;
-            this.c = c;
-        }
-
-        public int length() {
-            return dot.depth(a) + dot.depth(b) - 2 * dot.depth(c);
-        }
-
-        /**
-         * a is 0-th, k <= length()
-         * <p>
-         * O(log_2n)
-         */
-        public int kthNodeOnPath(int k) {
-            if (k <= dot.depth(a) - dot.depth(c)) {
-                return kthAncestor(a, k);
-            }
-            return kthAncestor(b, length() - k);
-        }
     }
 }

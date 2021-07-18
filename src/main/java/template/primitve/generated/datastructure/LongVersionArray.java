@@ -4,13 +4,12 @@ public class LongVersionArray {
     long[] data;
     int[] version;
     int now;
-    IntToLongFunction def;
-
+    long[] def;
     public LongVersionArray(int cap) {
-        this(cap, i -> 0);
+        this(cap, null);
     }
 
-    public LongVersionArray(int cap, IntToLongFunction def) {
+    public LongVersionArray(int cap, long[] def) {
         data = new long[cap];
         version = new int[cap];
         now = 0;
@@ -24,7 +23,7 @@ public class LongVersionArray {
     public void visit(int i) {
         if (version[i] < now) {
             version[i] = now;
-            data[i] = def.apply(i);
+            data[i] = def == null ? 0 : def[i];
         }
     }
 

@@ -1,0 +1,80 @@
+{
+  "name" : "A - Arithmetic Sequence",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4 8 10\n",
+    "output" : "2\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "10 3 4\n",
+    "output" : "4\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "1 2 3\n",
+    "output" : "0\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "1000000000000000 1 1000000000000000\n",
+    "output" : "999999999999999\n",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : " 1 10 11",
+    "output" : "8",
+    "index" : 4,
+    "active" : true
+  }, {
+    "input" : "0 1 3",
+    "output" : "1",
+    "index" : 5,
+    "active" : true
+  }, {
+    "input" : "0 1 4",
+    "output" : "1",
+    "index" : 6,
+    "active" : true
+  }, {
+    "input" : "0 2 4",
+    "output" : "0",
+    "index" : 7,
+    "active" : true
+  }, {
+    "input" : "10 1 10",
+    "output" : "9",
+    "index" : 8,
+    "active" : true
+  }, {
+    "input" : "10 20 10",
+    "output" : "20",
+    "index" : 9,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_07.on2021_07_18_AtCoder___AtCoder_Regular_Contest_123.A___Arithmetic_Sequence.AArithmeticSequence",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.07.18",
+  "contestName" : "AtCoder - AtCoder Regular Contest 123",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

@@ -28,6 +28,9 @@ public class LongPreSum {
      * get a[l] + a[l + 1] + ... + a[r]
      */
     public long intervalSum(int l, int r) {
+        if (r < l) {
+            return 0;
+        }
         return prefix(r) - prefix(l - 1);
     }
 

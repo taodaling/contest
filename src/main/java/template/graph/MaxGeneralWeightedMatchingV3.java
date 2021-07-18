@@ -3,6 +3,7 @@ package template.graph;
 import java.util.*;
 
 // Taken from http://uoj.ac/submission/187480
+//Find maximum weighted matching (not necessary the maximum matching)
 public class MaxGeneralWeightedMatchingV3 {
     // N^3 (but fast in practice)
     static final long INF = (long) 2e18;
@@ -351,15 +352,15 @@ public class MaxGeneralWeightedMatchingV3 {
         n = _n;
     }
 
-    // usage example
-    public static void main(String[] args) {
-        int n = 4;
-        MaxGeneralWeightedMatchingV3 mm = new MaxGeneralWeightedMatchingV3(n);
-        mm.init(n);
-        mm.add_edge(1, 2, 3);
-        mm.add_edge(1, 3, 4);
-        mm.add_edge(4, 3, 4);
-        Result res = mm.solve();
-        System.out.println(res.totalWeight + " " + res.matches);
-    }
+//    // usage example
+//    public static void main(String[] args) {
+//        int n = 4;
+//        MaxGeneralWeightedMatchingV3 mm = new MaxGeneralWeightedMatchingV3(n);
+//        mm.init(n);
+//        mm.add_edge(1, 2, 3);
+//        mm.add_edge(1, 3, 4);
+//        mm.add_edge(4, 3, 4);
+//        Result res = mm.solve();
+//        System.out.println(res.totalWeight + " " + res.matches);
+//    }
 }

@@ -1,7 +1,7 @@
 package template.problem;
 
 import template.datastructure.PermutationNode;
-import template.graph.KthAncestorOnTreeByBinaryLift;
+import template.graph.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,8 +36,9 @@ public class ContinuousIntervalProblem {
         dfs(root, null, -1);
         dfs2(root);
 
-        bl = new KthAncestorOnTreeByBinaryLift(m);
-        bl.init(i -> nodes[i].p == null ? -1 : nodes[i].p.id, m);
+        ParentOnTree pot = new ParentOnTreeByFunction(m, i -> nodes[i].p == null ? -1 : nodes[i].p.id);
+        DepthOnTree dot = new DepthOnTreeByParent(m, pot);
+        bl = new CompressedBinaryLift(m, dot, pot);
     }
 
     public int[] findMinContinuousIntervalContains(int lId, int rId) {
@@ -85,7 +86,7 @@ public class ContinuousIntervalProblem {
 
     Node[] leaf;
     Node[] nodes;
-    KthAncestorOnTreeByBinaryLift bl;
+    CompressedBinaryLift bl;
 
     private void dfs(Node root, Node p, int index) {
         if (root.length() == 1) {
@@ -104,7 +105,7 @@ public class ContinuousIntervalProblem {
             if (i > 0) {
                 root.ps[i] = root.ps[i - 1];
             }
-            Node node = (Node) root.adj.get(i);
+            Node node = root.adj.get(i);
             dfs(node, root, i);
             root.c += node.c;
             root.ps[i] += node.c;

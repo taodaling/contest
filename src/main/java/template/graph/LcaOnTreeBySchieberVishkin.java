@@ -5,6 +5,9 @@ import template.binary.Log2;
 import java.util.List;
 import java.util.function.IntPredicate;
 
+/**
+ * https://github.com/indy256/codelibrary/blob/master/java/graphs/lca/LcaSchieberVishkin.java
+ */
 // Answering LCA queries in O(1) with O(n) preprocessing
 public class LcaOnTreeBySchieberVishkin implements LcaOnTree{
     int[] parent;

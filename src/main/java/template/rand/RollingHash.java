@@ -51,6 +51,13 @@ public class RollingHash {
         return x;
     }
 
+    public int peekFirst(){
+        return dq.peekFirst();
+    }
+
+    public int peekLast(){
+        return dq.peekLast();
+    }
 
     public long hash() {
         return DigitUtils.asLong(h1, h2);

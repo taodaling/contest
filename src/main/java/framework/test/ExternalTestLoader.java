@@ -17,9 +17,12 @@ public class ExternalTestLoader {
         return whole;
     }
 
+
+    private static Comparator<String> sortByLenThenByVal = Comparator.<String>comparingInt(x -> x.length())
+            .thenComparing(Comparator.naturalOrder());
     public static List<Test> loadLocalTests() {
-        Map<String, String> input = new TreeMap<>();
-        Map<String, String> output = new TreeMap<>();
+        Map<String, String> input = new TreeMap<>(sortByLenThenByVal);
+        Map<String, String> output = new TreeMap<>(sortByLenThenByVal);
         for (File file : root.listFiles()) {
             if (file.getName().endsWith(".in")) {
                 input.put(getFileName(file.getName()),

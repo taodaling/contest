@@ -2,12 +2,13 @@ package template.datastructure;
 
 import template.math.DigitUtils;
 
-import java.util.Arrays;
 import java.util.function.IntUnaryOperator;
 
 /**
  * Based on
  * https://stackoverflow.com/questions/9452701/ukkonens-suffix-tree-algorithm-in-plain-english/9513423#9513423
+ * <p>
+ * Copied from https://github.com/indy256/codelibrary/blob/master/java/strings/SuffixTree.java
  */
 public class SuffixTree {
     private int minCharacter;
@@ -34,7 +35,7 @@ public class SuffixTree {
         }
     }
 
-    public Node getRoot(){
+    public Node getRoot() {
         return root;
     }
 

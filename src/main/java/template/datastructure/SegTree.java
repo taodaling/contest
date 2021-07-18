@@ -1,14 +1,14 @@
 package template.datastructure;
 
 import template.math.DigitUtils;
-import template.utils.Sum;
+import template.utils.UpdatableSum;
 import template.utils.Update;
 
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
 import java.util.function.Supplier;
 
-public class SegTree<S extends Sum<S, U>, U extends Update<U>> implements Cloneable {
+public class SegTree<S extends UpdatableSum<S, U>, U extends Update<U>> implements Cloneable {
     private SegTree<S, U> left;
     private SegTree<S, U> right;
     public S sum;

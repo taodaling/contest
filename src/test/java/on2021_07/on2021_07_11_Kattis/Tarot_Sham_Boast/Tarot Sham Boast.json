@@ -1,0 +1,40 @@
+{
+  "name" : "Tarot Sham Boast",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 4\nPP\nRR\nPS\nSS\n",
+    "output" : "PS\nPP\nRR\nSS\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "20 3\nPRSPS\nSSSSS\nPPSPP\n",
+    "output" : "PRSPS\nPPSPP\nSSSSS\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_07.on2021_07_11_Kattis.Tarot_Sham_Boast.TarotShamBoast",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.07.11",
+  "contestName" : "Kattis",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

@@ -2,7 +2,7 @@ package template;
 
 import org.junit.Assert;
 import org.junit.Test;
-import template.math.Modular;
+import template.math.Barrett;
 import template.math.ModMatrix;
 import template.math.ModSparseMatrix;
 import template.math.Power;
@@ -10,7 +10,7 @@ import template.polynomial.ModGravityLagrangeInterpolation;
 import template.primitve.generated.datastructure.IntegerArrayList;
 
 public class ModMatrixTest {
-    Modular mod = new Modular((int)1e9 + 7);
+    Barrett mod = new Barrett((int)1e9 + 7);
     Power pow = new Power((int)1e9 + 7);
 
     @Test
@@ -65,7 +65,7 @@ public class ModMatrixTest {
 
     @Test
     public void test4() {
-        Modular mod = new Modular((int)1e9 + 7);
+        Barrett mod = new Barrett((int)1e9 + 7);
         Power pow = new Power((int)1e9 + 7);
 
         ModMatrix matrix = new ModMatrix(new int[]{

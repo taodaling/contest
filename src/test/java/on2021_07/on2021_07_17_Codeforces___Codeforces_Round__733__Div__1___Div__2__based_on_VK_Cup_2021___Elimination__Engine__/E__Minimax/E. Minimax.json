@@ -1,0 +1,75 @@
+{
+  "name" : "E. Minimax",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3\nvkcup\nabababa\nzzzzzz\n",
+    "output" : "ckpuv\naababab\nzzzzzz\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "1\nabababa",
+    "output" : "aababab",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "1\nabbbbbbaaaaaaaaa",
+    "output" : "abbbbbbaaaaaaaaa",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "1\nabbaa",
+    "output" : "aabab",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "1\nabbaaaa",
+    "output" : "abbaaaa",
+    "index" : 4,
+    "active" : true
+  }, {
+    "input" : "1\nabbaaaaaac",
+    "output" : "abaaaaaacb",
+    "index" : 5,
+    "active" : true
+  }, {
+    "input" : "1\nabbaaa",
+    "output" : "aababa",
+    "index" : 6,
+    "active" : true
+  }, {
+    "input" : "1\nabbaaaa",
+    "output" : "abbaaaa",
+    "index" : 7,
+    "active" : true
+  }, {
+    "input" : "1\naaabcbc",
+    "output" : "aababcc",
+    "index" : 8,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx512M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_07.on2021_07_17_Codeforces___Codeforces_Round__733__Div__1___Div__2__based_on_VK_Cup_2021___Elimination__Engine__.E__Minimax.EMinimax",
+  "checkerClass" : "on2021_07.on2021_07_17_Codeforces___Codeforces_Round__733__Div__1___Div__2__based_on_VK_Cup_2021___Elimination__Engine__.E__Minimax.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "on2021_07.on2021_07_17_Codeforces___Codeforces_Round__733__Div__1___Div__2__based_on_VK_Cup_2021___Elimination__Engine__.E__Minimax.EMinimaxTestCase" ],
+  "date" : "2021.07.17",
+  "contestName" : "Codeforces - Codeforces Round #733 (Div. 1 + Div. 2, based on VK Cup 2021 - Elimination (Engine))",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

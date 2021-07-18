@@ -5,6 +5,10 @@ import template.rand.Randomized;
 import java.util.Arrays;
 import java.util.Comparator;
 
+/**
+ * @deprecated
+ * @param <T>
+ */
 public class DiscreteMap<T> {
     T[] val;
     int f;

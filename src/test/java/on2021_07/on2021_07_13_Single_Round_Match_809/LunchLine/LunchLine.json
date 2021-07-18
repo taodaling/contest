@@ -1,0 +1,41 @@
+{
+  "name" : "LunchLine",
+  "signature" : {
+    "name" : "simulate",
+    "result" : "long",
+    "arguments" : [ "int", "int", "int", "int", "int", "int", "int" ],
+    "argumentNames" : [ "N", "M", "A", "B", "C", "D", "E" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "250000", "0", "0", "0", "0", "0", "0" ],
+    "result" : "5208302083375000",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "10", "5", "2", "3", "1", "0", "1" ],
+    "result" : "225",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "10", "5", "2", "4", "1", "0", "2" ],
+    "result" : "210",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "10", "100000", "4", "7", "0", "0", "3" ],
+    "result" : "249",
+    "index" : 3,
+    "active" : true
+  }, {
+    "arguments" : [ "11", "30", "4", "7", "1", "2", "3" ],
+    "result" : "229",
+    "index" : 4,
+    "active" : true
+  } ],
+  "date" : "2021.07.13",
+  "contestName" : "Single Round Match 809",
+  "testClasses" : [ ],
+  "fqn" : "on2021_07.on2021_07_13_Single_Round_Match_809.LunchLine.LunchLine",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

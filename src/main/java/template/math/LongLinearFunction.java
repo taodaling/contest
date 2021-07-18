@@ -1,8 +1,10 @@
 package template.math;
 
-public class LongLinearFunction {
-    public final long a;
-    public final long b;
+import template.utils.CloneSupportObject;
+
+public class LongLinearFunction extends CloneSupportObject<LongLinearFunction> {
+    public long a;
+    public long b;
 
     public LongLinearFunction(long a, long b) {
         this.a = a;

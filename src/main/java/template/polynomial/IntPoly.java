@@ -1,12 +1,9 @@
 package template.polynomial;
 
-import template.binary.Log2;
 import template.datastructure.BitSet;
 import template.math.*;
 import template.utils.PrimitiveBuffers;
 import template.utils.SequenceUtils;
-
-import java.util.Arrays;
 
 public class IntPoly {
     protected int mod;
@@ -600,7 +597,7 @@ public class IntPoly {
      *
      * @return
      */
-    public void chripZ(int[] p, int c, int m, CachedPow2 cpc, int[] ans) {
+    public void chripZ(int[] p, int c, int m, FastPow2 cpc, int[] ans) {
         int n = rankOf(p);
         int[] A = PrimitiveBuffers.allocIntPow2(n + m + 1);
         for (int i = 0; i < n + m + 1; i++) {

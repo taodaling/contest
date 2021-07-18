@@ -24,6 +24,11 @@ public class LeqSlopeOptimizer {
     }
 
     Deque<Point> deque;
+    boolean maximizeYForSameX;
+
+    public void setMaximizeYWhenConflict(boolean x) {
+        this.maximizeYForSameX = x;
+    }
 
     public LeqSlopeOptimizer() {
         deque = new ArrayDeque<>(0);
@@ -48,6 +53,13 @@ public class LeqSlopeOptimizer {
 
     public Point add(long y, long x, int id) {
         Point t1 = new Point(x, y, id);
+        if (!deque.isEmpty() && deque.peekLast().x == x) {
+            if ((deque.peekLast().y >= y) == maximizeYForSameX) {
+                return null;
+            } else {
+                deque.removeLast();
+            }
+        }
         while (deque.size() >= 2) {
             Point t2 = deque.removeLast();
             Point t3 = deque.peekLast();
@@ -76,6 +88,10 @@ public class LeqSlopeOptimizer {
             }
         }
         return deque.peekFirst().id;
+    }
+
+    public boolean isEmpty() {
+        return deque.isEmpty();
     }
 
     public void clear() {

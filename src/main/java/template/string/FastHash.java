@@ -78,4 +78,5 @@ public class FastHash {
         }
         return DigitUtils.asLong(res1, res2);
     }
+
 }

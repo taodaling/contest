@@ -2,11 +2,11 @@ package template;
 
 import org.junit.Assert;
 import org.junit.Test;
-import template.math.Modular;
+import template.math.Barrett;
 import template.math.ModLinearFeedbackShiftRegister;
 
 public class ModLinearFeedbackShiftRegisterTest {
-    Modular mod = new Modular((int)1e9 + 7);
+    Barrett mod = new Barrett((int)1e9 + 7);
 
     private void assertNear(double a, double b){
         Assert.assertTrue(Math.abs(a - b) < 1e-8);

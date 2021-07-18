@@ -21,6 +21,17 @@ public class EuclidLikeFunction {
         return n * m - f(m - 1, c, c - b - 1, a);
     }
 
+    public static long f(long l, long r, long a, long b, long c) {
+        if (l > r) {
+            return 0;
+        }
+        long ans = f(r, a, b, c);
+        if (l > 0) {
+            ans -= f(l - 1, a, b, c);
+        }
+        return ans;
+    }
+
     /**
      * <p>
      * \sum_{i=0}^n \floor((ai+b)/c) i

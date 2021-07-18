@@ -29,7 +29,7 @@ public class BarrettTest {
 
     @Benchmark
     public void barrett() {
-        Modular barrett = new Modular(mod);
+        Barrett barrett = new Barrett(mod);
         for (int i = 0; i < round; i++) {
             long x = (long) i * (mod - i);
             long res = barrett.reduce(x);
@@ -53,7 +53,7 @@ public class BarrettTest {
 
     @Test
     public void testEqual(){
-        Modular bt = new Modular(mod);
+        Barrett bt = new Barrett(mod);
         for(int i = 0; i < 1000000; i++){
             int a = RandomWrapper.INSTANCE.nextInt(0, mod - 1);
             int b = RandomWrapper.INSTANCE.nextInt(0, mod - 1);
