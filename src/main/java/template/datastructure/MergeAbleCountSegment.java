@@ -6,16 +6,17 @@ import template.utils.Buffer;
 public class MergeAbleCountSegment implements Cloneable {
     private static final MergeAbleCountSegment NIL = new MergeAbleCountSegment();
     private static Buffer<MergeAbleCountSegment> allocator = new Buffer<MergeAbleCountSegment>(MergeAbleCountSegment::new, x -> {
-        x.left = x.right = null;
+        x.left = x.right = NIL;
         x.cnt = 0;
     });
 
     public static MergeAbleCountSegment alloc() {
+//        return allocator.alloc();
         return new MergeAbleCountSegment();
     }
 
     public static void destroy(MergeAbleCountSegment segment) {
-        //allocator.addLast(segment);
+        allocator.release(segment);
     }
 
     static {
@@ -23,9 +24,9 @@ public class MergeAbleCountSegment implements Cloneable {
         NIL.right = NIL;
     }
 
-    private MergeAbleCountSegment left;
-    private MergeAbleCountSegment right;
-    private int cnt;
+    public MergeAbleCountSegment left;
+    public MergeAbleCountSegment right;
+    public int cnt;
 
     public void pushUp() {
         cnt = left.cnt + right.cnt;
@@ -46,7 +47,7 @@ public class MergeAbleCountSegment implements Cloneable {
         return ll > r || rr < l;
     }
 
-    public void update(int x, int l, int r, int mod) {
+    public void update(int x, int l, int r, long mod) {
         if (l == r) {
             cnt += mod;
             return;
@@ -67,7 +68,7 @@ public class MergeAbleCountSegment implements Cloneable {
         pushUp();
     }
 
-    public int kth(int l, int r, int k) {
+    public int kth(int l, int r, long k) {
         if (l == r) {
             return l;
         }
@@ -79,7 +80,7 @@ public class MergeAbleCountSegment implements Cloneable {
         }
     }
 
-    public int query(int ll, int rr, int l, int r) {
+    public long query(int ll, int rr, int l, int r) {
         if (noIntersection(ll, rr, l, r)) {
             return 0;
         }

@@ -36,6 +36,14 @@ public class Permutation {
         return ans;
     }
 
+    public int countCircles() {
+        int ans = 0;
+        for (int i = 0; i < n; i = r[i] + 1) {
+            ans++;
+        }
+        return ans;
+    }
+
     public Permutation(int[] p) {
         this(p, p.length);
     }

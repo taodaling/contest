@@ -1,6 +1,7 @@
 package template.datastructure;
 
 import template.binary.Bits;
+import template.utils.Buffer;
 import template.utils.Pair;
 
 /**
@@ -10,19 +11,34 @@ public class BinaryTree implements Cloneable {
     public BinaryTree left;
     public BinaryTree right;
     public int size;
+    static Buffer<BinaryTree> buf = new Buffer<>(BinaryTree::new, t -> {
+        t.left = t.right = null;
+        t.size = 0;
+    });
 
     private BinaryTree get(int i) {
         if (i == 0) {
             if (left == null) {
-                left = new BinaryTree();
+                left = buf.alloc();
             }
             return left;
         } else {
             if (right == null) {
-                right = new BinaryTree();
+                right = buf.alloc();
             }
             return right;
         }
+    }
+
+
+    public void destroy() {
+        if (left != null) {
+            left.destroy();
+        }
+        if (right != null) {
+            right.destroy();
+        }
+        buf.release(this);
     }
 
     public int size(int i) {
@@ -81,6 +97,7 @@ public class BinaryTree implements Cloneable {
         return ans;
     }
 
+
     public void pushUp() {
         size = 0;
         if (left != null) {
@@ -104,9 +121,10 @@ public class BinaryTree implements Cloneable {
         int ans;
         if (size(prefer) > 0) {
             ans = get(prefer).maxXor(x, height - 1);
-            ans = Bits.set(ans, height);
+            ans |= prefer << height;
         } else {
             ans = get(1 ^ prefer).maxXor(x, height - 1);
+            ans |= (1 ^ prefer) << height;
         }
         return ans;
     }
@@ -120,9 +138,10 @@ public class BinaryTree implements Cloneable {
         int ans;
         if (size(prefer) > 0) {
             ans = get(prefer).minXor(x, height - 1);
+            ans |= prefer << height;
         } else {
             ans = get(1 ^ prefer).minXor(x, height - 1);
-            ans = Bits.set(ans, height);
+            ans |= (1 ^ prefer) << height;
         }
         return ans;
     }
@@ -170,7 +189,7 @@ public class BinaryTree implements Cloneable {
         if (b == null) {
             return a;
         }
-        if(height == -1){
+        if (height == -1) {
             a.size += b.size;
             return a;
         }

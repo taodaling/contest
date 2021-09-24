@@ -34,13 +34,13 @@ public class StaticRangeSum {
 class SumImpl implements Sum<SumImpl> {
     long s;
     @Override
-    public void add(SumImpl sum) {
-        s += sum.s;
+    public void add(SumImpl right) {
+        s += right.s;
     }
 
     @Override
-    public void copy(SumImpl sum) {
-        s =  sum.s;
+    public void copy(SumImpl right) {
+        s =  right.s;
     }
 
     @Override

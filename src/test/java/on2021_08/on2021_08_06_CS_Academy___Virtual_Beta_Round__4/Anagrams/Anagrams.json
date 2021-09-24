@@ -1,0 +1,40 @@
+{
+  "name" : "Anagrams",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "6\ncats\ncaller\ndogs\ncellar\nparrots\nrecall\n",
+    "output" : "3\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "8\ndisease\nburned\nviewer\npraised\ndespair\nburden\ndiapers\nreview\n",
+    "output" : "3\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx128M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_08.on2021_08_06_CS_Academy___Virtual_Beta_Round__4.Anagrams.Anagrams",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.08.06",
+  "contestName" : "CS Academy - Virtual Beta Round #4",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

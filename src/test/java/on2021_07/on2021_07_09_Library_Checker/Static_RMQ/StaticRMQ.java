@@ -33,13 +33,13 @@ class SumImpl implements Sum<SumImpl> {
     int min = Integer.MAX_VALUE;
 
     @Override
-    public void add(SumImpl sum) {
-        min = Math.min(min, sum.min);
+    public void add(SumImpl right) {
+        min = Math.min(min, right.min);
     }
 
     @Override
-    public void copy(SumImpl sum) {
-        min = sum.min;
+    public void copy(SumImpl right) {
+        min = right.min;
     }
 
     @Override

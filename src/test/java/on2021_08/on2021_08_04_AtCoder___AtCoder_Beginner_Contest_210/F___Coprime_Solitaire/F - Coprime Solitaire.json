@@ -1,0 +1,45 @@
+{
+  "name" : "F - Coprime Solitaire",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3\n2 5\n10 9\n4 8\n",
+    "output" : "Yes\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "2\n10 100\n1000 10000\n",
+    "output" : "No\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "2\n1 2\n2 4",
+    "output" : "Yes",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_08.on2021_08_04_AtCoder___AtCoder_Beginner_Contest_210.F___Coprime_Solitaire.FCoprimeSolitaire",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "on2021_08.on2021_08_04_AtCoder___AtCoder_Beginner_Contest_210.F___Coprime_Solitaire.FCoprimeSolitaireTestCase" ],
+  "date" : "2021.08.04",
+  "contestName" : "AtCoder - AtCoder Beginner Contest 210",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

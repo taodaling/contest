@@ -1,0 +1,51 @@
+{
+  "name" : "PartialRaceResults",
+  "signature" : {
+    "name" : "reconstruct",
+    "result" : "String",
+    "arguments" : [ "String[]" ],
+    "argumentNames" : [ "memories" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "B:AC" ],
+    "result" : "ABC",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "B:ADф7:BD" ],
+    "result" : "AB7D",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "A:BCфB:ACфC:AB" ],
+    "result" : "",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "A:bcфA:cb" ],
+    "result" : "",
+    "index" : 3,
+    "active" : true
+  }, {
+    "arguments" : [ "0:39ф2:05ф1:37ф2:18ф5:78ф6:29ф5:46" ],
+    "result" : "4310725869",
+    "index" : 4,
+    "active" : true
+  }, {
+    "arguments" : [ "A:AA" ],
+    "result" : "",
+    "index" : 5,
+    "active" : true
+  }, {
+    "arguments" : [ "a:bcф0:12фX:YZ" ],
+    "result" : "1YbX0ac2Z",
+    "index" : 6,
+    "active" : true
+  } ],
+  "date" : "2021.09.17",
+  "contestName" : "Single Round Match 813",
+  "testClasses" : [ ],
+  "fqn" : "on2021_09.on2021_09_17_Single_Round_Match_813.PartialRaceResults.PartialRaceResults",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

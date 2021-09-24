@@ -1,0 +1,36 @@
+{
+  "name" : "GuessForMoney",
+  "signature" : {
+    "name" : "balance",
+    "result" : "double",
+    "arguments" : [ "long" ],
+    "argumentNames" : [ "N" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "2" ],
+    "result" : "1.5",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "7" ],
+    "result" : "2.4285714285714284",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "12" ],
+    "result" : "3.0833333333333335",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "1" ],
+    "result" : "1.0",
+    "index" : 3,
+    "active" : true
+  } ],
+  "date" : "2021.09.02",
+  "contestName" : "Single Round Match 812",
+  "testClasses" : [ ],
+  "fqn" : "on2021_09.on2021_09_02_Single_Round_Match_812.GuessForMoney.GuessForMoney",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

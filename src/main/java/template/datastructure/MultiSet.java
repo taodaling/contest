@@ -62,6 +62,7 @@ public class MultiSet<T> {
 
     public void update(T key, int old, int mod) {
         int cnt = old + mod;
+        assert cnt >= 0;
         size += mod;
         if (cnt == 0) {
             map.remove(key);

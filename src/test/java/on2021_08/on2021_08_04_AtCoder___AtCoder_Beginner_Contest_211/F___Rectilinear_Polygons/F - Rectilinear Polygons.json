@@ -1,0 +1,40 @@
+{
+  "name" : "F - Rectilinear Polygons",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3\n4\n1 2 1 4 3 4 3 2\n4\n2 5 2 3 5 3 5 5\n4\n5 6 5 5 3 5 3 6\n3\n1 4\n2 3\n4 5\n",
+    "output" : "0\n2\n1\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "2\n4\n12 3 12 5 0 5 0 3\n12\n1 1 1 9 10 9 10 0 4 0 4 6 6 6 6 2 8 2 8 7 2 7 2 1\n4\n2 6\n4 4\n6 3\n1 8\n",
+    "output" : "0\n2\n1\n1\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_08.on2021_08_04_AtCoder___AtCoder_Beginner_Contest_211.F___Rectilinear_Polygons.FRectilinearPolygons",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.08.04",
+  "contestName" : "AtCoder - AtCoder Beginner Contest 211",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

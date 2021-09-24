@@ -9,22 +9,19 @@ import template.utils.UpdatableSum;
  */
 public class ActiveSum implements UpdatableSum<ActiveSum, ActiveUpdate> {
     public long minVal;
-    public long total;
     public long minWeight;
 
     @Override
-    public void add(ActiveSum activeSum) {
-        long min = Math.min(minVal, activeSum.minVal);
-        minWeight = (min == minVal ? minWeight : 0) + (min == activeSum.minVal ? activeSum.minWeight : 0);
-        total += activeSum.total;
+    public void add(ActiveSum right) {
+        long min = Math.min(minVal, right.minVal);
+        minWeight = (min == minVal ? minWeight : 0) + (min == right.minVal ? right.minWeight : 0);
         minVal = min;
     }
 
     @Override
-    public void copy(ActiveSum activeSum) {
-        minVal = activeSum.minVal;
-        total = activeSum.total;
-        minWeight = activeSum.minWeight;
+    public void copy(ActiveSum right) {
+        minVal = right.minVal;
+        minWeight = right.minWeight;
     }
 
     @Override
@@ -43,17 +40,14 @@ public class ActiveSum implements UpdatableSum<ActiveSum, ActiveUpdate> {
         return minVal == 0 ? minWeight : 0;
     }
 
-    public long sumOfActiveCell() {
-        return total - sumOfUnactiveCell();
-    }
 
     public void init() {
-        minWeight = minVal = total = 0;
+        minWeight = minVal = 0;
     }
 
     public void asUnactive(long total) {
         minVal = 0;
-        minWeight = this.total = total;
+        minWeight = total;
     }
 
     public static ActiveSum ofUnactive(long total) {

@@ -1,0 +1,35 @@
+{
+  "name" : "Valet Parking",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3\n5 8 11\n3 10 4\n1 0 1\n11 13 5\n",
+    "output" : "24\n",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_07.on2021_07_27_CodeChef___Practice_Medium_.Valet_Parking.ValetParking",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "on2021_07.on2021_07_27_CodeChef___Practice_Medium_.Valet_Parking.ValetParkingTestCase" ],
+  "date" : "2021.07.27",
+  "contestName" : "CodeChef - Practice(Medium)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

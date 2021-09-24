@@ -130,75 +130,75 @@ class SumImpl implements UpdatableSum<SumImpl, UpdateImpl> {
     int rangeBMax = UpdateImpl.NOT_SET;
 
     @Override
-    public void add(SumImpl sum) {
-        rangeAMax = Math.max(rangeAMax, sum.rangeAMax);
-        rangeBMax = Math.max(rangeBMax, sum.rangeBMax);
+    public void add(SumImpl right) {
+        rangeAMax = Math.max(rangeAMax, right.rangeAMax);
+        rangeBMax = Math.max(rangeBMax, right.rangeBMax);
 
-        onlyASize = Math.max(onlyASize, sum.onlyASize);
-        onlyASize = Math.max(onlyASize, onlyASuffixSize + sum.onlyAPrefixSize);
-        onlyBSize = Math.max(onlyBSize, sum.onlyBSize);
-        onlyBSize = Math.max(onlyBSize, onlyBSuffixSize + sum.onlyBPrefixSize);
+        onlyASize = Math.max(onlyASize, right.onlyASize);
+        onlyASize = Math.max(onlyASize, onlyASuffixSize + right.onlyAPrefixSize);
+        onlyBSize = Math.max(onlyBSize, right.onlyBSize);
+        onlyBSize = Math.max(onlyBSize, onlyBSuffixSize + right.onlyBPrefixSize);
 
-        max = Math.max(max, sum.max);
-        max = Math.max(max, maxSuf + sum.maxPref);
-        maxPref = Math.max(maxPref, total + sum.maxPref);
-        maxSuf = Math.max(sum.maxSuf, maxSuf + sum.total);
+        max = Math.max(max, right.max);
+        max = Math.max(max, maxSuf + right.maxPref);
+        maxPref = Math.max(maxPref, total + right.maxPref);
+        maxSuf = Math.max(right.maxSuf, maxSuf + right.total);
 
-        maxA = Math.max(maxA, sum.maxA);
-        maxA = Math.max(maxA, onlyASuffix + sum.onlyAPrefix);
-        maxB = Math.max(maxB, sum.maxB);
-        maxB = Math.max(maxB, onlyBSuffix + sum.onlyBPrefix);
+        maxA = Math.max(maxA, right.maxA);
+        maxA = Math.max(maxA, onlyASuffix + right.onlyAPrefix);
+        maxB = Math.max(maxB, right.maxB);
+        maxB = Math.max(maxB, onlyBSuffix + right.onlyBPrefix);
         if (!containB) {
-            onlyAPrefix = Math.max(onlyAPrefix, total + sum.onlyAPrefix);
-            onlyAPrefixSize = size + sum.onlyAPrefixSize;
+            onlyAPrefix = Math.max(onlyAPrefix, total + right.onlyAPrefix);
+            onlyAPrefixSize = size + right.onlyAPrefixSize;
         }
         if (!containA) {
-            onlyBPrefix = Math.max(onlyBPrefix, total + sum.onlyBPrefix);
-            onlyBPrefixSize = size + sum.onlyBPrefixSize;
+            onlyBPrefix = Math.max(onlyBPrefix, total + right.onlyBPrefix);
+            onlyBPrefixSize = size + right.onlyBPrefixSize;
         }
-        if (!sum.containB) {
-            onlyASuffix = Math.max(sum.onlyASuffix, sum.total + onlyASuffix);
-            onlyASuffixSize = Math.max(sum.onlyASuffixSize, sum.size + onlyASuffixSize);
+        if (!right.containB) {
+            onlyASuffix = Math.max(right.onlyASuffix, right.total + onlyASuffix);
+            onlyASuffixSize = Math.max(right.onlyASuffixSize, right.size + onlyASuffixSize);
         } else {
-            onlyASuffix = sum.onlyASuffix;
-            onlyASuffixSize = sum.onlyASuffixSize;
+            onlyASuffix = right.onlyASuffix;
+            onlyASuffixSize = right.onlyASuffixSize;
         }
-        if (!sum.containA) {
-            onlyBSuffix = Math.max(sum.onlyBSuffix, sum.total + onlyBSuffix);
-            onlyBSuffixSize = Math.max(sum.onlyBSuffixSize, sum.size + onlyBSuffixSize);
+        if (!right.containA) {
+            onlyBSuffix = Math.max(right.onlyBSuffix, right.total + onlyBSuffix);
+            onlyBSuffixSize = Math.max(right.onlyBSuffixSize, right.size + onlyBSuffixSize);
         } else {
-            onlyBSuffix = sum.onlyBSuffix;
-            onlyBSuffixSize = sum.onlyBSuffixSize;
+            onlyBSuffix = right.onlyBSuffix;
+            onlyBSuffixSize = right.onlyBSuffixSize;
         }
-        total += sum.total;
-        size += sum.size;
-        containA = containA || sum.containA;
-        containB = containB || sum.containB;
+        total += right.total;
+        size += right.size;
+        containA = containA || right.containA;
+        containB = containB || right.containB;
     }
 
     @Override
-    public void copy(SumImpl sum) {
-        this.maxPref = sum.maxPref;
-        this.max = sum.max;
-        this.maxSuf = sum.maxSuf;
-        this.onlyASuffix = sum.onlyASuffix;
-        this.onlyAPrefix = sum.onlyAPrefix;
-        this.onlyBPrefix = sum.onlyBPrefix;
-        this.onlyBSuffix = sum.onlyBSuffix;
-        this.containA = sum.containA;
-        this.containB = sum.containB;
-        this.maxA = sum.maxA;
-        this.maxB = sum.maxB;
-        this.total = sum.total;
-        this.size = sum.size;
-        this.onlyASize = sum.onlyASize;
-        this.onlyBSize = sum.onlyBSize;
-        this.onlyAPrefixSize = sum.onlyAPrefixSize;
-        this.onlyASuffixSize = sum.onlyASuffixSize;
-        this.onlyBPrefixSize = sum.onlyBPrefixSize;
-        this.onlyBSuffixSize = sum.onlyBSuffixSize;
-        this.rangeBMax = sum.rangeBMax;
-        this.rangeAMax = sum.rangeAMax;
+    public void copy(SumImpl right) {
+        this.maxPref = right.maxPref;
+        this.max = right.max;
+        this.maxSuf = right.maxSuf;
+        this.onlyASuffix = right.onlyASuffix;
+        this.onlyAPrefix = right.onlyAPrefix;
+        this.onlyBPrefix = right.onlyBPrefix;
+        this.onlyBSuffix = right.onlyBSuffix;
+        this.containA = right.containA;
+        this.containB = right.containB;
+        this.maxA = right.maxA;
+        this.maxB = right.maxB;
+        this.total = right.total;
+        this.size = right.size;
+        this.onlyASize = right.onlyASize;
+        this.onlyBSize = right.onlyBSize;
+        this.onlyAPrefixSize = right.onlyAPrefixSize;
+        this.onlyASuffixSize = right.onlyASuffixSize;
+        this.onlyBPrefixSize = right.onlyBPrefixSize;
+        this.onlyBSuffixSize = right.onlyBSuffixSize;
+        this.rangeBMax = right.rangeBMax;
+        this.rangeAMax = right.rangeAMax;
     }
 
     @Override

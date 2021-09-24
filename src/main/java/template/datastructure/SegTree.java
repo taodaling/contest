@@ -6,6 +6,7 @@ import template.utils.Update;
 
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public class SegTree<S extends UpdatableSum<S, U>, U extends Update<U>> implements Cloneable {
@@ -49,12 +50,82 @@ public class SegTree<S extends UpdatableSum<S, U>, U extends Update<U>> implemen
         }
     }
 
+    public void init(int l, int r, Supplier<S> sSupplier, Supplier<U> uSupplier,
+                     IntFunction<S> func){
+        update.clear();
+        if (l < r) {
+            int m = DigitUtils.floorAverage(l, r);
+            left.init(l, m, sSupplier, uSupplier, func);
+            right.init(m + 1, r, sSupplier, uSupplier, func);
+            pushUp();
+        } else {
+            sum = func.apply(l);
+        }
+    }
+
     private boolean cover(int L, int R, int l, int r) {
         return L <= l && R >= r;
     }
 
     private boolean leave(int L, int R, int l, int r) {
         return R < l || L > r;
+    }
+
+
+    /**
+     * l to r
+     * @param L
+     * @param R
+     * @param l
+     * @param r
+     * @param pred
+     * @return
+     */
+    public int firstTrue(int L, int R, int l, int r, Predicate<S> pred) {
+        if (leave(L, R, l, r)) {
+            return Integer.MAX_VALUE;
+        }
+        if (cover(L, R, l, r) && !pred.test(sum)) {
+            return Integer.MAX_VALUE;
+        }
+        if (l == r) {
+            return l;
+        }
+        int m = DigitUtils.floorAverage(l, r);
+        pushDown();
+        int ans = left.firstTrue(L, R, l, m, pred);
+        if (ans == Integer.MAX_VALUE) {
+            ans = right.firstTrue(L, R, m + 1, r, pred);
+        }
+        return ans;
+    }
+
+    /**
+     * r to l
+     * @param L
+     * @param R
+     * @param l
+     * @param r
+     * @param pred
+     * @return
+     */
+    public int lastTrue(int L, int R, int l, int r, Predicate<S> pred) {
+        if (leave(L, R, l, r)) {
+            return Integer.MIN_VALUE;
+        }
+        if (cover(L, R, l, r) && !pred.test(sum)) {
+            return Integer.MIN_VALUE;
+        }
+        if (l == r) {
+            return l;
+        }
+        int m = DigitUtils.floorAverage(l, r);
+        pushDown();
+        int ans = right.lastTrue(L, R, m + 1, r, pred);
+        if (ans == Integer.MIN_VALUE) {
+            ans = left.lastTrue(L, R, l, m, pred);
+        }
+        return ans;
     }
 
     public void update(int L, int R, int l, int r, U u) {

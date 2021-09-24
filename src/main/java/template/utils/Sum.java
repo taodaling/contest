@@ -1,14 +1,14 @@
 package template.utils;
 
 public interface Sum<S> {
-    void add(S s);
+    void add(S right);
 
     /**
      * copy s.data
      *
-     * @param s
+     * @param right
      */
-    void copy(S s);
+    void copy(S right);
 
     S clone();
 }

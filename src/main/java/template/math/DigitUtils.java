@@ -354,4 +354,25 @@ public class DigitUtils {
         long a = longExtGCDObject.getX();
         return DigitUtils.mod(a, mod);
     }
+
+    public static long modmul(long a, long b, long mod) {
+        assert 0 <= a && a < mod;
+        assert 0 <= b && b < mod;
+        if (b == 0) {
+            return 0;
+        }
+        long ans = modmul(a, b >>> 1, mod);
+        ans = ans + ans;
+        if (ans >= mod) {
+            ans -= mod;
+        }
+        if ((b & 1) == 1) {
+            ans += a;
+            if (ans >= mod) {
+                ans -= mod;
+            }
+        }
+        assert ans < mod;
+        return ans;
+    }
 }

@@ -73,4 +73,8 @@ public class EulerSieve {
             }
         }
     }
+
+    public static void main(String[] args){
+        System.out.println(new EulerSieve((int)1e6).getPrimeCount());
+    }
 }

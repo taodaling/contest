@@ -2,6 +2,8 @@ package template.io;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FastInput {
     private final InputStream is;
@@ -350,5 +352,13 @@ public class FastInput {
 
     public InputStream getInputStream() {
         return is;
+    }
+
+    public String[] readAll() {
+        List<String> res = new ArrayList<>();
+        while (hasMore()) {
+            res.add(rs());
+        }
+        return res.toArray(new String[0]);
     }
 }

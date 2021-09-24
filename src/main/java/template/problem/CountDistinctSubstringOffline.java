@@ -13,6 +13,14 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 public class CountDistinctSubstringOffline {
+    /**
+     * O((n\log_2n+q)\log_2n) time and O(n\log_2n) space
+     * @param s string with length n
+     * @param min min character
+     * @param max max character
+     * @param qs queries
+     * @return
+     */
     public static long[] solve(IntSequence s, int min, int max, int[][] qs) {
         int q = qs.length;
         long[] ans = new long[q];

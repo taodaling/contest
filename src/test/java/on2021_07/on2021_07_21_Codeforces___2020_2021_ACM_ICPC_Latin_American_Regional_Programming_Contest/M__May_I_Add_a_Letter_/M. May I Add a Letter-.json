@@ -1,0 +1,30 @@
+{
+  "name" : "M. May I Add a Letter?",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_07.on2021_07_21_Codeforces___2020_2021_ACM_ICPC_Latin_American_Regional_Programming_Contest.M__May_I_Add_a_Letter_.MMayIAddALetter",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "on2021_07.on2021_07_21_Codeforces___2020_2021_ACM_ICPC_Latin_American_Regional_Programming_Contest.M__May_I_Add_a_Letter_.MMayIAddALetterTestCase" ],
+  "date" : "2021.07.21",
+  "contestName" : "Codeforces - 2020-2021 ACM-ICPC Latin American Regional Programming Contest",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : false
+}

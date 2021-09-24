@@ -1,0 +1,36 @@
+{
+  "name" : "ToddlerToy",
+  "signature" : {
+    "name" : "solve",
+    "result" : "String",
+    "arguments" : [ "String[]", "String[]" ],
+    "argumentNames" : [ "start", "goal" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "000ф123ф213ф312", "000ф123ф213ф312" ],
+    "result" : "",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "000ф123ф213ф312", "000ф123ф313ф212" ],
+    "result" : "G3UG2UG1LI3UI2UI1LH1LG1DG2DF1RG1RH1RI1DI2D",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "000ф123ф213ф312", "210ф003ф213ф312" ],
+    "result" : "C3UC2UC1RD1RE1RF1RG1DC4UC3UC2UC1LE3UE2UE1LD1LC1DC2DC3DE4UE3UE2UE1LD1LC1DC2DB1RC1RD1RE1DE2DE3DG2UG1LF1LE1DE2D",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "300ф011ф122ф233", "000ф111ф222ф333" ],
+    "result" : "C3UC2UC1RD1RE1RF1RG1RH1RI1RE3UE2UE1LD1LC1DC2DG3UG2UG1LF1LE1DE2DI3UI2UI1LH1LG1DG2DJ1LI1DI2D",
+    "index" : 3,
+    "active" : true
+  } ],
+  "date" : "2021.07.25",
+  "contestName" : "Single Round Match 810",
+  "testClasses" : [ ],
+  "fqn" : "on2021_07.on2021_07_25_Single_Round_Match_810.ToddlerToy.ToddlerToy",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

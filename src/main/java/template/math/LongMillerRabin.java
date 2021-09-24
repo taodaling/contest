@@ -7,7 +7,7 @@ import template.rand.RandomWrapper;
  */
 public class LongMillerRabin {
     public static void main(String[] args) {
-        System.out.println(LongMillerRabin.mr(1000003, 50));
+        System.out.println(LongMillerRabin.mr(30011, 50));
     }
 
     static ILongModular mod;

@@ -1,0 +1,55 @@
+{
+  "name" : "E. Election Promises",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4 2\n2 1 1 5\n1 2\n3 4\n",
+    "output" : "WIN\n1 5 1 5\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "4 2\n1 5 1 5\n1 2\n3 4\n",
+    "output" : "LOSE\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "3 3\n314 159 265\n1 2\n1 3\n3 2\n",
+    "output" : "WIN\n0 0 0\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "6 4\n2 2 5 5 6 6\n1 3\n2 4\n3 5\n4 6\n",
+    "output" : "LOSE\n",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "3 2\n1 1 1\n1 2\n2 3",
+    "output" : "WIN\n1 0 1 ",
+    "index" : 4,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_07.on2021_07_27_Codeforces___Codeforces_Round__556__Div__1_.E__Election_Promises.EElectionPromises",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.07.27",
+  "contestName" : "Codeforces - Codeforces Round #556 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

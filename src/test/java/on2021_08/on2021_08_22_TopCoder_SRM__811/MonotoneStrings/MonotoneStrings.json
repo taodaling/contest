@@ -1,0 +1,41 @@
+{
+  "name" : "MonotoneStrings",
+  "signature" : {
+    "name" : "count",
+    "result" : "int",
+    "arguments" : [ "int", "String" ],
+    "argumentNames" : [ "S", "pattern" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "26", "te?th" ],
+    "result" : "0",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "1", "++++++++++" ],
+    "result" : "1",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "4", "++++++++++++++++++++" ],
+    "result" : "952039775",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "370", "?4?" ],
+    "result" : "136531",
+    "index" : 3,
+    "active" : true
+  }, {
+    "arguments" : [ "30", "ll??as" ],
+    "result" : "786",
+    "index" : 4,
+    "active" : true
+  } ],
+  "date" : "2021.08.22",
+  "contestName" : "TopCoder SRM #811",
+  "testClasses" : [ ],
+  "fqn" : "on2021_08.on2021_08_22_TopCoder_SRM__811.MonotoneStrings.MonotoneStrings",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

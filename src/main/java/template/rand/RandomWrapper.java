@@ -54,6 +54,15 @@ public class RandomWrapper {
         return builder.toString();
     }
 
+    public String nextString(char[] s, int len) {
+        StringBuilder builder = new StringBuilder(len);
+        for (int i = 0; i < len; i++) {
+            builder.append(s[nextInt(0, s.length - 1)]);
+        }
+        return builder.toString();
+    }
+
+
     public Random getRandom() {
         return random;
     }

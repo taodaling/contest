@@ -44,6 +44,7 @@ public class MatroidIntersect {
         setCallback(nilCallback);
     }
 
+
     protected boolean adj(int i, int j) {
         if (added[i]) {
             return adj1[i][j];

@@ -1,0 +1,45 @@
+{
+  "name" : "Subarray Removal",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5\n10 -2 3 -10 5\n",
+    "output" : "16\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "7\n-3 2 -1 5 -7 9 -10\n",
+    "output" : "15\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "3\n-1 -1 -1",
+    "output" : "-1",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx128M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_08.on2021_08_13_CS_Academy___Virtual_Beta_Round__7.Subarray_Removal.SubarrayRemoval",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.08.13",
+  "contestName" : "CS Academy - Virtual Beta Round #7",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

@@ -1,0 +1,35 @@
+{
+  "name" : "C. MAX-MEX Cut",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4\n7\n0101000\n1101100\n5\n01100\n10101\n2\n01\n01\n6\n000000\n111111\n",
+    "output" : "8\n8\n2\n12\n",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_09.on2021_09_12_Codeforces___Codeforces_Global_Round_16.C__MAX_MEX_Cut.CMAXMEXCut",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.09.12",
+  "contestName" : "Codeforces - Codeforces Global Round 16",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

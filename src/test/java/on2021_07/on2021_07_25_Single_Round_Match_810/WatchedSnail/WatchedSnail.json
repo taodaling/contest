@@ -1,0 +1,36 @@
+{
+  "name" : "WatchedSnail",
+  "signature" : {
+    "name" : "maxDistance",
+    "result" : "double",
+    "arguments" : [ "int", "int", "int", "int" ],
+    "argumentNames" : [ "raceTime", "observerCount", "observationTime", "observationDistance" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "100", "3", "100", "47" ],
+    "result" : "47.0",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "100", "10", "10", "47" ],
+    "result" : "470.0",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "100", "8", "20", "47" ],
+    "result" : "376.0",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "100", "2", "74", "47" ],
+    "result" : "94.0",
+    "index" : 3,
+    "active" : true
+  } ],
+  "date" : "2021.07.25",
+  "contestName" : "Single Round Match 810",
+  "testClasses" : [ ],
+  "fqn" : "on2021_07.on2021_07_25_Single_Round_Match_810.WatchedSnail.WatchedSnail",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

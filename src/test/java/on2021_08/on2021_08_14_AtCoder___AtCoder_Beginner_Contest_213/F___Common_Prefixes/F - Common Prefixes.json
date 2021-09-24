@@ -1,0 +1,40 @@
+{
+  "name" : "F - Common Prefixes",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3\nabb\n",
+    "output" : "3\n3\n2\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "11\nmississippi\n",
+    "output" : "11\n16\n14\n12\n13\n11\n9\n7\n4\n3\n4\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_08.on2021_08_14_AtCoder___AtCoder_Beginner_Contest_213.F___Common_Prefixes.FCommonPrefixes",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.08.14",
+  "contestName" : "AtCoder - AtCoder Beginner Contest 213",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

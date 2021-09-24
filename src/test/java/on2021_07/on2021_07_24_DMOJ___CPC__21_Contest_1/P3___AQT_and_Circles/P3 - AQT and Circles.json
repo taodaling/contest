@@ -1,0 +1,45 @@
+{
+  "name" : "P3 - AQT and Circles",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2\n2 3 1\n5 10 2\n",
+    "output" : "0.25\n0.375\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "1\n3 3 2",
+    "output" : "",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "1\n1 2 1\n",
+    "output" : "0",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_07.on2021_07_24_DMOJ___CPC__21_Contest_1.P3___AQT_and_Circles.P3AQTAndCircles",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.07.24",
+  "contestName" : "DMOJ - CPC '21 Contest 1",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

@@ -100,6 +100,9 @@ public class EuclidLikeFunction {
      * O(\log_2m)
      * <p>
      * https://codeforces.com/blog/entry/90690
+     * <p>
+     * The code only support 32bit integer, even though the parameter is long type
+     * </p>
      *
      * @return -1 for no satisfied answer
      */
@@ -130,6 +133,9 @@ public class EuclidLikeFunction {
      * O(\log_2m)
      * <p>
      * https://codeforces.com/blog/entry/90690
+     * <p>
+     * The code only support 32bit integer, even though the parameter is long type
+     * </p>
      *
      * @return
      */

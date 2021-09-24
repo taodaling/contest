@@ -48,6 +48,12 @@ public class IntegerBIT {
         }
     }
 
+    public void update(int l, int r, int mod) {
+        l = Math.max(l, 1);
+        update(l, mod);
+        update(r + 1, -mod);
+    }
+
     public int size() {
         return n;
     }

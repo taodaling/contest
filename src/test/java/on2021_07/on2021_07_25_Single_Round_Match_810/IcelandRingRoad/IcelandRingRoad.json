@@ -1,0 +1,35 @@
+{
+  "name" : "IcelandRingRoad",
+  "signature" : {
+    "name" : "solve",
+    "result" : "int",
+    "arguments" : [ "int", "int", "int", "long" ],
+    "argumentNames" : [ "N", "P", "M", "state" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "10", "2", "1000", "474747" ],
+    "result" : "1161",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "3", "47", "1000", "420042" ],
+    "result" : "991",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "100", "12", "1", "12345" ],
+    "result" : "83",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "500000", "100000", "1000", "474447" ],
+    "index" : 3,
+    "active" : true
+  } ],
+  "date" : "2021.07.25",
+  "contestName" : "Single Round Match 810",
+  "testClasses" : [ ],
+  "fqn" : "on2021_07.on2021_07_25_Single_Round_Match_810.IcelandRingRoad.IcelandRingRoad",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

@@ -18,7 +18,7 @@ public interface MatroidIndependentSet {
     void computeAdj(boolean[] added, boolean[][] adj);
 
     /**
-     * set[i] means current independent set still independent after adding i
+     * extendable[i] means current independent set still independent after adding i
      *
      * @param added
      * @param extendable
@@ -26,6 +26,66 @@ public interface MatroidIndependentSet {
     void extend(boolean[] added, boolean[] extendable);
 
     void prepare(boolean[] added);
+
+    /**
+     * The set is independent only when for any i satisfy T[i] <= cap[i],
+     * while T[i] is the number of elements with type i in set
+     *
+     * @param type
+     * @param cap
+     * @return
+     */
+    static MatroidIndependentSet ofColorContainers(int[] type, int[] cap) {
+        int[] size = new int[cap.length];
+        return new MatroidIndependentSet() {
+            /**
+             * O(rn)
+             * @param added
+             * @param adj
+             */
+            @Override
+            public void computeAdj(boolean[] added, boolean[][] adj) {
+                for (int i = 0; i < added.length; i++) {
+                    if (!added[i]) {
+                        continue;
+                    }
+                    for (int j = 0; j < added.length; j++) {
+                        if (added[j]) {
+                            continue;
+                        }
+                        if (size[type[j]] < cap[type[j]] ||
+                                type[i] == type[j]) {
+                            adj[i][j] = true;
+                        }
+                    }
+                }
+            }
+
+            /**
+             * O(n)
+             * @param added
+             * @param extendable
+             */
+            @Override
+            public void extend(boolean[] added, boolean[] extendable) {
+                for (int i = 0; i < added.length; i++) {
+                    if (!added[i] && size[type[i]] < cap[type[i]]) {
+                        extendable[i] = true;
+                    }
+                }
+            }
+
+            @Override
+            public void prepare(boolean[] added) {
+                Arrays.fill(size, 0);
+                for (int i = 0; i < added.length; i++) {
+                    if (added[i]) {
+                        size[type[i]]++;
+                    }
+                }
+            }
+        };
+    }
 
     /**
      * The set is independent only when no duplicate color in set

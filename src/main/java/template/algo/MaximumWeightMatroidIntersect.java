@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 /**
  * O(r) invoke computeAdj and extend. O(r^2n^2)
+ * maximum first, then maximum weight
  */
 public class MaximumWeightMatroidIntersect extends MatroidIntersect {
     protected long[] weight;

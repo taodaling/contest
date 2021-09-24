@@ -90,6 +90,11 @@ class WeightedCircleNode {
     public int parentId() {
         return next[0] == null ? -1 : next[0].id;
     }
+
+    @Override
+    public String toString() {
+        return "" + (id + 1);
+    }
 }
 
 /**
@@ -115,5 +120,10 @@ class WeightedSquareNode {
         long oa = a == next[0] ? 0 : a.offset;
         long ob = b == next[0] ? 0 : b.offset;
         return Math.min(mod(oa - ob), mod(ob - oa));
+    }
+
+    @Override
+    public String toString() {
+        return "" + (id + 1);
     }
 }

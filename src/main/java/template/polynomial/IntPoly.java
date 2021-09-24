@@ -92,7 +92,7 @@ public class IntPoly {
         int[] buf = PrimitiveBuffers.allocIntPow2(rp + 2);
         InverseNumber inv = new ModPrimeInverseNumber(buf, buf.length - 1, mod);
         for (int i = 0; i <= rp; i++) {
-            ans[i + 1] = (int) (((long)inv.inverse(i + 1) * p[i]) % mod);
+            ans[i + 1] = (int) (((long) inv.inverse(i + 1) * p[i]) % mod);
         }
         PrimitiveBuffers.release(buf);
         return ans;
@@ -217,7 +217,7 @@ public class IntPoly {
 
     public void mul(int[] a, int k) {
         for (int i = a.length - 1; i >= 0; i--) {
-            a[i] = (int) (((long)a[i] * k) % mod);
+            a[i] = (int) (((long) a[i] * k) % mod);
         }
     }
 
@@ -537,7 +537,7 @@ public class IntPoly {
         long inverse = (int) DigitUtils.modInverse(p[0], mod);
         if (inverse != 1) {
             for (int i = 0; i < p.length; i++) {
-                p[i] = (int) (((long)p[i] * inverse) % mod);
+                p[i] = (int) (((long) p[i] * inverse) % mod);
             }
         }
         int[] ln = ln(p, n);
@@ -546,7 +546,7 @@ public class IntPoly {
         PrimitiveBuffers.release(p);
         if (pow != 1) {
             for (int i = 0; i < ans.length; i++) {
-                ans[i] = (int) (((long)ans[i] * pow) % mod);
+                ans[i] = (int) (((long) ans[i] * pow) % mod);
             }
         }
         ans = PrimitiveBuffers.replace(rightShift(ans, move, n), ans);
@@ -571,6 +571,7 @@ public class IntPoly {
      * c[i]=\sum_{j} a[i+j]*b[j]
      */
     public int[] deltaConvolution(int[] a, int[] b) {
+        assert a != b;
         int rA = rankOf(a);
         SequenceUtils.reverse(a, 0, rA);
         int[] ans = convolution(a, b);

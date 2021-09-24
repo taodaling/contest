@@ -38,7 +38,7 @@ public class LongDijkstraV2MinimumCostFlow implements LongAugmentMinimumCostFlow
         resize(m);
     }
 
-    private void bf(int s) {
+    protected void bf(int s) {
         int n = g.length;
         dq.clear();
         for (int i = 0; i < n; i++) {

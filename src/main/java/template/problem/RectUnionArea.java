@@ -44,12 +44,13 @@ public class RectUnionArea {
         ActiveUpdate bufUpd = new ActiveUpdate();
         long last = 0;
         long ans = 0;
+        long total = list.get(m - 1) - list.get(0);
         while (!dqByT.isEmpty()) {
             long now = dqByT.peekFirst().rt[1];
             if (!dqByB.isEmpty()) {
                 now = Math.min(now, dqByB.peekFirst().lb[1]);
             }
-            ans += st.sum.sumOfActiveCell() * (now - last);
+            ans += (total - st.sum.sumOfUnactiveCell()) * (now - last);
             while (!dqByB.isEmpty() && dqByB.peekFirst().lb[1] == now) {
                 IntegerRect2 head = dqByB.removeFirst();
                 bufUpd.asUpdate(1);

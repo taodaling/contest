@@ -58,7 +58,7 @@ public class WaveletTrees {
      * count how many number in range [l, r] greater or equal to L and less or equal to R
      *
      */
-    public int range(int l, int r, int L, int R) {
+    public int range(int l, int r, long L, long R) {
         return leq(l, r, R) - leq(l, r, L - 1);
     }
 

@@ -7,7 +7,7 @@ import java.util.Arrays;
 public class IntLinearBasis {
     static final int BITS = 32;
 
-    private int[] map = new int[BITS];
+    public int[] map = new int[BITS];
     /**
      * map[i] = xor of source[i]
      */

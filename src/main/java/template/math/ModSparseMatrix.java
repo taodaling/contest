@@ -191,7 +191,7 @@ public class ModSparseMatrix {
     public ModMatrix toDense(int mod) {
         ModMatrix ans = new ModMatrix(n, n);
         for (int i = 0; i < elements.length; i++) {
-            ans.increment(x[i], y[i], elements[i], mod);
+            ans.increase(x[i], y[i], elements[i], mod);
         }
         return ans;
     }

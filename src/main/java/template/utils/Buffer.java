@@ -30,17 +30,42 @@ public class Buffer<T> {
 
     public T alloc() {
         allocTime++;
-        return deque.isEmpty() ? supplier.get() : deque.removeFirst();
+        T res;
+        if (deque.isEmpty()) {
+            res = supplier.get();
+            cleaner.accept(res);
+        } else {
+            res = deque.removeFirst();
+        }
+        return res;
     }
 
     public void release(T e) {
+        if (e == null) {
+            return;
+        }
         releaseTime++;
         cleaner.accept(e);
         deque.addLast(e);
     }
 
-    public void check(){
-        if(allocTime != releaseTime){
+    public void release(T a, T b) {
+        release(a);
+        release(b);
+    }
+
+    public void release(T a, T b, T c) {
+        release(a, b);
+        release(c);
+    }
+
+    public void release(T a, T b, T c, T d) {
+        release(a, b, c);
+        release(d);
+    }
+
+    public void check() {
+        if (allocTime != releaseTime) {
             throw new IllegalStateException("Buffer alloc " + allocTime + " but release " + releaseTime);
         }
     }

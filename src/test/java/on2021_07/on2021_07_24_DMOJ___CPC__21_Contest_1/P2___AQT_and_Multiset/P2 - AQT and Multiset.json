@@ -1,0 +1,40 @@
+{
+  "name" : "P2 - AQT and Multiset",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3\n84 80 88 84 93 84 86\n5 1 12 7 9 5 5\n",
+    "output" : "81\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "1\n3 1 9\n1 12 123\n",
+    "output" : "-1\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_07.on2021_07_24_DMOJ___CPC__21_Contest_1.P2___AQT_and_Multiset.P2AQTAndMultiset",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.07.24",
+  "contestName" : "DMOJ - CPC '21 Contest 1",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

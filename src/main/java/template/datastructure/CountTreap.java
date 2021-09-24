@@ -21,6 +21,25 @@ public class CountTreap {
         return ans;
     }
 
+    public long size() {
+        return root.sum;
+    }
+
+    public long kth(long kth) {
+        return kth(root, kth);
+    }
+
+    private long kth(Treap root, long kth) {
+        root.pushDown();
+        if (root.left.sum >= kth) {
+            return kth(root.left, kth);
+        } else if (root.left.sum + root.weight >= kth) {
+            return root.key;
+        } else {
+            return kth(root.right, kth - root.left.sum - root.weight);
+        }
+    }
+
     public void update(long pos, long weight) {
         Treap[] split0 = Treap.splitByKey(root, pos - 1);
         Treap[] split1 = Treap.splitByKey(split0[1], pos);

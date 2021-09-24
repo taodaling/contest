@@ -1,8 +1,9 @@
 package template.rand;
 
 import template.math.DigitUtils;
-import template.math.Power;
 import template.utils.Pair;
+
+import java.math.BigInteger;
 
 public class HashData {
     public int mod;
@@ -17,7 +18,7 @@ public class HashData {
         pow = new int[n + 10];
         inv[0] = 1;
         pow[0] = 1;
-        int invX = new Power(p).inverse(x);
+        int invX = BigInteger.valueOf(x).modInverse(BigInteger.valueOf(p)).intValue();
         for (int i = 1; i < n + 10; i++) {
             inv[i] = (int) ((long) inv[i - 1] * invX % mod);
             pow[i] = (int) ((long) pow[i - 1] * x % mod);

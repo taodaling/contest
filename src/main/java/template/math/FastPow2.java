@@ -11,6 +11,7 @@ public class FastPow2 {
     private int phi;
     private int xphi;
     private int x;
+    private int one;
 
     public FastPow2(int x, int mod) {
         this(x, mod, CachedEulerFunction.get(mod));
@@ -21,6 +22,7 @@ public class FastPow2 {
     }
 
     public FastPow2(int x, int mod, int limit, int phi) {
+        one = 1 % mod;
         this.x = x;
         this.phi = phi;
         limit = Math.min(limit, mod);
@@ -30,11 +32,11 @@ public class FastPow2 {
         mask = (1 << low) - 1;
         first = new int[1 << low];
         second = new int[1 << log - low];
-        first[0] = 1;
+        first[0] = one;
         for (int i = 1; i < first.length; i++) {
             first[i] = (int) (((long) x * first[i - 1]) % mod);
         }
-        second[0] = 1;
+        second[0] = one;
         long step = (long) x * first[first.length - 1] % mod;
         for (int i = 1; i < second.length; i++) {
             second[i] = (int) ((second[i - 1] * step) % mod);

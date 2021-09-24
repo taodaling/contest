@@ -1,0 +1,30 @@
+{
+  "name" : "D2. Seating Arrangements (hard version)",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_09.on2021_09_12_Codeforces___Codeforces_Global_Round_16.D2__Seating_Arrangements__hard_version_.D2SeatingArrangementsHardVersion",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "on2021_09.on2021_09_12_Codeforces___Codeforces_Global_Round_16.D2__Seating_Arrangements__hard_version_.D2SeatingArrangementsHardVersionTestCase" ],
+  "date" : "2021.09.12",
+  "contestName" : "Codeforces - Codeforces Global Round 16",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

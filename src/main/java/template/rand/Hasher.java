@@ -27,5 +27,4 @@ public class Hasher {
     public int hash(Object x) {
         return shuffle(x == null ? 0 : x.hashCode());
     }
-
 }

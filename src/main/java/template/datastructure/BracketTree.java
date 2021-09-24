@@ -302,19 +302,19 @@ public class BracketTree {
         long sumRight;
 
         @Override
-        public void add(SumImpl sum) {
-            maxLeft = Math.max(maxLeft, sum.maxLeft);
-            maxRight = Math.max(maxRight, sum.maxRight);
-            sumLeft += sum.sumLeft;
-            sumRight += sum.sumRight;
+        public void add(SumImpl right) {
+            maxLeft = Math.max(maxLeft, right.maxLeft);
+            maxRight = Math.max(maxRight, right.maxRight);
+            sumLeft += right.sumLeft;
+            sumRight += right.sumRight;
         }
 
         @Override
-        public void copy(SumImpl sum) {
-            maxLeft = sum.maxLeft;
-            maxRight = sum.maxRight;
-            sumLeft = sum.sumLeft;
-            sumRight = sum.sumRight;
+        public void copy(SumImpl right) {
+            maxLeft = right.maxLeft;
+            maxRight = right.maxRight;
+            sumLeft = right.sumLeft;
+            sumRight = right.sumRight;
         }
 
         @Override

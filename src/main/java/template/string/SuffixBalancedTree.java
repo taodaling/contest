@@ -4,22 +4,12 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 
 public class SuffixBalancedTree {
-
     private static final double FACTOR = 0.75;
     private static Node[] stk = new Node[0];
     private static int tail;
-    private Node root;
-    private IntHolder intHolder = new IntHolder();
+    public Node root;
     private ObjectHolder<Node> objectHolder = new ObjectHolder<>();
-    private Deque<Node> dq = new ArrayDeque<>();
-
-    private static class IntHolder {
-        public int size;
-
-        public void clear() {
-            size = 0;
-        }
-    }
+    private Deque<Node> dq;
 
     private static class ObjectHolder<V> {
         V data;
@@ -29,9 +19,9 @@ public class SuffixBalancedTree {
         }
     }
 
-    public SuffixBalancedTree() {
+    public SuffixBalancedTree(int cap) {
+        dq = new ArrayDeque<>(cap + 1);
         root = Node.NIL;
-
         Node dummy = new Node(Integer.MIN_VALUE);
         dummy.next = dummy;
         dummy.occur = 0;
@@ -51,17 +41,18 @@ public class SuffixBalancedTree {
             }
         }
         for (int i = 0; i < tail; i++) {
-            if (stk[i].occur < 0) {
+            if (stk[i].occur < 0 || stk[i].occur > 1) {
                 return false;
             }
         }
 
-        if (root.liveSize + 1 != dq.size()) {
+        if (root.aliveSize + 1 != dq.size()) {
             return false;
         }
 
         return true;
     }
+
 
     public Node addPrefix(int x) {
         objectHolder.clear();
@@ -74,11 +65,12 @@ public class SuffixBalancedTree {
 
     public void removePrefix() {
         assert dq.size() > 1;
-        root = delete(root, dq.removeFirst(), 0, 1);
+        Node deleted = dq.removeFirst();
+        delete(root, deleted);
         assert check();
 
         //clean or not
-        if (root.liveSize * 2 < root.size) {
+        if (root.aliveSize * 2 < root.size) {
             collect(root);
             int wpos = 0;
             for (int i = 0; i < tail; i++) {
@@ -92,22 +84,16 @@ public class SuffixBalancedTree {
     }
 
     public int rank(Node node) {
-        intHolder.clear();
-        root = rank(root, node, intHolder, 0, 1);
-        return intHolder.size;
+        return rank(root, node);
     }
 
     public int leq(IntSequence seq) {
-        intHolder.clear();
-        root = rank(root, seq, intHolder, 0, 1);
-        return intHolder.size;
+        return rank(root, seq);
     }
 
     public Node sa(int k) {
         k++;
-        objectHolder.clear();
-        root = sa(root, k, objectHolder, 0, 1);
-        return objectHolder.data;
+        return kth(root, k);
     }
 
     public int[] sa() {
@@ -124,7 +110,7 @@ public class SuffixBalancedTree {
     }
 
     public int size() {
-        return root.liveSize;
+        return root.aliveSize;
     }
 
     private static void ensureSpace(int n) {
@@ -164,73 +150,78 @@ public class SuffixBalancedTree {
         return 0;
     }
 
-    private static Node rank(Node root, IntSequence seq, IntHolder count, double L, double R) {
+    private static Node kth(Node root, int k) {
         if (root == Node.NIL) {
             return root;
         }
+        root.pushDown();
+        Node ans;
+        if (root.left.aliveSize >= k) {
+            ans = kth(root.left, k);
+        } else if (root.left.aliveSize + root.occur >= k) {
+            ans = root;
+        } else {
+            ans = kth(root.right, k - root.left.aliveSize - root.occur);
+        }
+        //push up for calc purpose
+        root.pushUp();
+        return ans;
+    }
 
-        root = refactor(root, L, R);
+    private static int rank(Node root, IntSequence seq) {
+        if (root == Node.NIL) {
+            return 0;
+        }
+
+        int ans = 0;
+//        root = refactor(root, L, R);
         root.pushDown();
         int compRes = compare(root, seq);
         if (compRes > 0) {
-            root.left = rank(root.left, seq, count, L, root.weight);
+            ans += rank(root.left, seq);
         } else {
-            count.size += root.liveSize - root.right.liveSize;
-            root.right = rank(root.right, seq, count, root.weight, R);
+            ans += root.aliveSize - root.right.aliveSize;
+            ans += rank(root.right, seq);
         }
-        root.pushUp();
-        return root;
+//        root.pushUp();
+        return ans;
     }
 
-    private static Node rank(Node root, Node node, IntHolder count, double L, double R) {
+    private static int rank(Node root, Node node) {
         if (root == Node.NIL) {
-            return root;
+            return 0;
         }
-        root = refactor(root, L, R);
+//        root = refactor(root, L, R);
         root.pushDown();
+        int ans = 0;
         if (root == node) {
-            count.size += root.liveSize - root.right.liveSize;
+            ans += root.aliveSize - root.right.aliveSize;
         } else {
             int compRes = root.compareTo(node);
             if (compRes > 0) {
-                root.left = rank(root.left, node, count, L, root.weight);
+                ans += rank(root.left, node);
             } else {
-                count.size += root.liveSize - root.right.liveSize;
-                root.right = rank(root.right, node, count, root.weight, R);
+                ans += root.aliveSize - root.right.aliveSize;
+                ans += rank(root.right, node);
             }
         }
-        root.pushUp();
-        return root;
+//        root.pushUp();
+        return ans;
     }
 
-    private static Node sa(Node root, int k, ObjectHolder<Node> count, double L, double R) {
-        if (root == Node.NIL) {
-            return root;
-        }
-        root = refactor(root, L, R);
-        root.pushDown();
 
-        if (root.left.liveSize >= k) {
-            root.left = sa(root.left, k, count, L, root.weight);
-        } else if (root.liveSize - root.right.liveSize == k) {
-            count.data = root;
-        } else {
-            k -= root.liveSize - root.right.liveSize;
-            root.right = sa(root.right, k, count, root.weight, R);
-        }
-
-        root.pushUp();
-        return root;
-    }
-
-    private static Node newNode(int key, Node next, double weight) {
-        Node root = new Node();
+    private static void init(int key, Node root, Node next, double weight) {
         root.key = key;
         root.weight = weight;
         root.next = next;
         root.occur++;
         root.offsetToTail = next.offsetToTail + 1;
         root.pushUp();
+    }
+
+    private static Node newNode(int key, Node next, double weight) {
+        Node root = new Node();
+        init(key, root, next, weight);
         return root;
     }
 
@@ -240,37 +231,35 @@ public class SuffixBalancedTree {
             insertNode.data = root;
             return root;
         }
-        root = refactor(root, L, R);
         root.pushDown();
         int cmpRes = insertCompare(root, key, next);
         if (cmpRes == 0) {
             insertNode.data = root;
-            root.occur++;
+            init(key, root, next, root.weight);
         } else if (cmpRes > 0) {
             root.left = insert(root.left, key, next, insertNode, L, root.weight);
         } else {
             root.right = insert(root.right, key, next, insertNode, root.weight, R);
         }
         root.pushUp();
+        root = refactor(root, L, R);
         return root;
     }
 
-    private static Node delete(Node root, Node node, double L, double R) {
+    private static void delete(Node root, Node node) {
         assert root != Node.NIL;
-        root = refactor(root, L, R);
         root.pushDown();
         if (root == node) {
             root.occur--;
         } else {
             int compRes = root.compareTo(node);
             if (compRes > 0) {
-                root.left = delete(root.left, node, L, root.weight);
+                delete(root.left, node);
             } else {
-                root.right = delete(root.right, node, root.weight, R);
+                delete(root.right, node);
             }
         }
         root.pushUp();
-        return root;
     }
 
     private static void collect(Node root) {
@@ -334,16 +323,17 @@ public class SuffixBalancedTree {
         Node left = NIL;
         Node right = NIL;
         int size;
-        int liveSize;
+        int aliveSize;
         int key;
-        int occur;
+        byte occur;
         public double weight;
         Node next;
+        //prev means the floor node
         public int offsetToTail;
 
         static {
             NIL.left = NIL.right = NIL;
-            NIL.size = NIL.liveSize = 0;
+            NIL.size = NIL.aliveSize = 0;
             NIL.key = -1;
             NIL.offsetToTail = -1;
         }
@@ -358,7 +348,7 @@ public class SuffixBalancedTree {
                 return;
             }
             size = left.size + right.size + 1;
-            liveSize = left.liveSize + right.liveSize + occur;
+            aliveSize = left.aliveSize + right.aliveSize + occur;
         }
 
         public void pushDown() {
@@ -372,7 +362,6 @@ public class SuffixBalancedTree {
             this.key = key;
             pushUp();
         }
-
 
         @Override
         public String toString() {

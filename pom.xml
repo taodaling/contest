@@ -21,10 +21,10 @@
         </dependency>
 
         <!--        <dependency>-->
-<!--            <groupId>com.google.re2j</groupId>-->
-<!--            <artifactId>re2j</artifactId>-->
-<!--            <version>1.5</version>-->
-<!--        </dependency>-->
+        <!--            <groupId>com.google.re2j</groupId>-->
+        <!--            <artifactId>re2j</artifactId>-->
+        <!--            <version>1.5</version>-->
+        <!--        </dependency>-->
 
         <dependency>
             <groupId>org.openjdk.jmh</groupId>

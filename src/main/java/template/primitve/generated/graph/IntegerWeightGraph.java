@@ -10,17 +10,20 @@ import java.util.Comparator;
 import java.util.List;
 
 public class IntegerWeightGraph {
-    public static void addEdge(List<IntegerWeightDirectedEdge>[] g, int s, int t, int w) {
-        g[s].add(new IntegerWeightDirectedEdge(t, w));
+    public static IntegerWeightDirectedEdge addEdge(List<IntegerWeightDirectedEdge>[] g, int s, int t, int w) {
+        IntegerWeightDirectedEdge ans = new IntegerWeightDirectedEdge(t, w);
+        g[s].add(ans);
+        return ans;
     }
 
-    public static void addUndirectedEdge(List<IntegerWeightUndirectedEdge>[] g, int s, int t, int w) {
+    public static IntegerWeightUndirectedEdge addUndirectedEdge(List<IntegerWeightUndirectedEdge>[] g, int s, int t, int w) {
         IntegerWeightUndirectedEdge toT = new IntegerWeightUndirectedEdge(t, w);
         IntegerWeightUndirectedEdge toS = new IntegerWeightUndirectedEdge(s, w);
         toS.rev = toT;
         toT.rev = toS;
         g[s].add(toT);
         g[t].add(toS);
+        return toT;
     }
 
     public static List<IntegerWeightDirectedEdge>[] createDirectedGraph(int n) {

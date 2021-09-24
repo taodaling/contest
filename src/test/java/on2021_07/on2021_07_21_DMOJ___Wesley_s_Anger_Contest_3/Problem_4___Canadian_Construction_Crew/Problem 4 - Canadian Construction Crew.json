@@ -1,0 +1,40 @@
+{
+  "name" : "Problem 4 - Canadian Construction Crew",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2 2\n1 2 2\n2 1 1\n",
+    "output" : "YES\nYES\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "4 4\n1 2 1\n4 3 2\n4 2 1\n2 3 2\n",
+    "output" : "YES\nNO\nYES\nYES\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_07.on2021_07_21_DMOJ___Wesley_s_Anger_Contest_3.Problem_4___Canadian_Construction_Crew.Problem4CanadianConstructionCrew",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.07.21",
+  "contestName" : "DMOJ - Wesley's Anger Contest 3",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

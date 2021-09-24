@@ -22,6 +22,25 @@ public class DoubleIntervalMap implements Iterable<DoubleIntervalMap.Interval> {
         total -= interval.length();
     }
 
+    public double mex(double x) {
+        Interval floor = floor(x);
+        if (floor == null) {
+            return x;
+        }
+        return Math.max(x, floor.r + 1);
+    }
+
+    public Double nextSet(double x) {
+        Interval floor = floor(x);
+        if (floor != null && floor.r >= x) {
+            return x;
+        }
+        Interval ceil = ceil(x);
+        if (ceil == null) {
+            return null;
+        }
+        return ceil.l;
+    }
 
     public boolean isEmpty() {
         return map.isEmpty();

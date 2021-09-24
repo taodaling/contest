@@ -12,6 +12,9 @@ import java.util.Arrays;
  * reference: https://codeforces.com/blog/entry/92310
  * </p>
  * O(n) build and O(1) search
+ * <p>
+ * range min query
+ * </p>
  */
 public class RMQBeta {
     int n;

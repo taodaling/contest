@@ -82,9 +82,18 @@ public class PrimitiveBuffers {
 
 
     public static void release(int[] a, int[] b, int[] c) {
-        release(a);
-        release(b);
+        release(a, b);
         release(c);
+    }
+
+    public static void release(int[] a, int[] b, int[] c, int[] d) {
+        release(a, b, c);
+        release(d);
+    }
+
+    public static void release(int[] a, int[] b, int[] c, int[] d, int[] e) {
+        release(a, b, c, d);
+        release(e);
     }
 
     public static double[] allocDoublePow2(int n) {

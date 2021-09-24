@@ -10,17 +10,20 @@ import java.util.Comparator;
 import java.util.List;
 
 public class LongWeightGraph {
-    public static void addEdge(List<LongWeightDirectedEdge>[] g, int s, int t, long w) {
-        g[s].add(new LongWeightDirectedEdge(t, w));
+    public static LongWeightDirectedEdge addEdge(List<LongWeightDirectedEdge>[] g, int s, int t, long w) {
+        LongWeightDirectedEdge ans = new LongWeightDirectedEdge(t, w);
+        g[s].add(ans);
+        return ans;
     }
 
-    public static void addUndirectedEdge(List<LongWeightUndirectedEdge>[] g, int s, int t, long w) {
+    public static LongWeightUndirectedEdge addUndirectedEdge(List<LongWeightUndirectedEdge>[] g, int s, int t, long w) {
         LongWeightUndirectedEdge toT = new LongWeightUndirectedEdge(t, w);
         LongWeightUndirectedEdge toS = new LongWeightUndirectedEdge(s, w);
         toS.rev = toT;
         toT.rev = toS;
         g[s].add(toT);
         g[t].add(toS);
+        return toT;
     }
 
     public static List<LongWeightDirectedEdge>[] createDirectedGraph(int n) {

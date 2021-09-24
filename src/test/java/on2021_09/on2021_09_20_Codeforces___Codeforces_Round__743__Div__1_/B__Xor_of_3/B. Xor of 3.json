@@ -1,0 +1,40 @@
+{
+  "name" : "B. Xor of 3",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3\n3\n0 0 0\n5\n1 1 1 1 0\n4\n1 0 0 1\n",
+    "output" : "YES\n0\nYES\n2\n3 1\nNO\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "1\n6\n1 0 1 0 1 1",
+    "output" : "",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_09.on2021_09_20_Codeforces___Codeforces_Round__743__Div__1_.B__Xor_of_3.BXorOf3",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.09.20",
+  "contestName" : "Codeforces - Codeforces Round #743 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

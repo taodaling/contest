@@ -1,0 +1,40 @@
+{
+  "name" : "E. Matrix",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "6\n100010\n110110\n011001\n010010\n000100\n011001\n",
+    "output" : "YES\n011000\n111100\n000111\n001100\n100000\n000111\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "3\n110\n101\n011\n",
+    "output" : "NO\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_07.on2021_07_26_Codeforces___Codeforces_Round__150__Div__1_.E__Matrix.EMatrix",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.07.26",
+  "contestName" : "Codeforces - Codeforces Round #150 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

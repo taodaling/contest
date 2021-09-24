@@ -69,7 +69,7 @@ public class GridHamiltonCirclePartition {
                 if ((i + j) % 2 == 0) {
                     IntegerFlow.addFlowEdge(g, idOfSrc(), idOfCell(i, j), 2);
 
-                    for (int[] d : GridUtils.DIRS) {
+                    for (int[] d : GridUtils.DIR4) {
                         int ni = i + d[0];
                         int nj = j + d[1];
                         if (!valid(ni, nj)) {

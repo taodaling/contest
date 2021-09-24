@@ -1,0 +1,45 @@
+{
+  "name" : "Problem 3 - Wesley Plays DDR",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "RLUDD\n1\nRLU 4\n",
+    "output" : "9\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "UDULRL\n2\nULR 3\nUDU 2\n",
+    "output" : "8\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "ULRURURU\n3\nLRURU 500\nLRUR 750\nURU 1000\n",
+    "output" : "508\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_07.on2021_07_21_DMOJ___Wesley_s_Anger_Contest_3.Problem_3___Wesley_Plays_DDR.Problem3WesleyPlaysDDR",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.07.21",
+  "contestName" : "DMOJ - Wesley's Anger Contest 3",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

@@ -1,0 +1,56 @@
+{
+  "name" : "PigeonholeNim",
+  "signature" : {
+    "name" : "countWinningMoves",
+    "result" : "int",
+    "arguments" : [ "int", "int", "int[]", "int" ],
+    "argumentNames" : [ "R", "C", "piles", "emptyWins" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "1", "1", "9", "1" ],
+    "result" : "2",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "1", "1", "17", "0" ],
+    "result" : "2",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "4", "1", "121 1 1 123", "1" ],
+    "result" : "2",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "2", "4", "2 19 2 191 2 111 2 33", "1" ],
+    "result" : "0",
+    "index" : 3,
+    "active" : true
+  }, {
+    "arguments" : [ "2", "4", "2 19 2 5 2 111 2 33", "1" ],
+    "result" : "1",
+    "index" : 4,
+    "active" : true
+  }, {
+    "arguments" : [ "3", "3", "1 1 1 1 1 1 1 1 1", "0" ],
+    "result" : "3",
+    "index" : 5,
+    "active" : true
+  }, {
+    "arguments" : [ "5", "3", "0 0 1 1 1 0 0 1 1 1 0 0 1 1 1", "0" ],
+    "result" : "3",
+    "index" : 6,
+    "active" : true
+  }, {
+    "arguments" : [ "3", "4", "0 1 2 3 4 5 6 7 8 9 10 11", "1" ],
+    "result" : "3",
+    "index" : 7,
+    "active" : true
+  } ],
+  "date" : "2021.08.01",
+  "contestName" : "TopCoder Open Round #4",
+  "testClasses" : [ ],
+  "fqn" : "on2021_08.on2021_08_01_TopCoder_Open_Round__4.PigeonholeNim.PigeonholeNim",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

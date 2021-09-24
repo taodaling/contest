@@ -9,7 +9,7 @@ public abstract class TwoSat {
         return (x << 1) | 1;
     }
 
-    protected int negate(int x) {
+    public int negate(int x) {
         return x ^ 1;
     }
 

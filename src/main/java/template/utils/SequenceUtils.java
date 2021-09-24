@@ -12,14 +12,14 @@ import java.util.function.IntFunction;
 public class SequenceUtils {
     public static int[][] groupBy(IntToIntegerFunction func, int n, int m) {
         int[] cnts = new int[m];
-        for(int i = 0; i < n; i++){
+        for (int i = 0; i < n; i++) {
             cnts[func.apply(i)]++;
         }
         int[][] ans = new int[m][];
-        for(int i = 0; i < m; i++){
+        for (int i = 0; i < m; i++) {
             ans[i] = new int[cnts[i]];
         }
-        for(int i = n - 1; i >= 0; i--){
+        for (int i = n - 1; i >= 0; i--) {
             int v = func.apply(i);
             ans[v][--cnts[v]] = i;
         }
@@ -161,6 +161,9 @@ public class SequenceUtils {
     }
 
     public static void deepFill(Object array, int val) {
+        if(array == null){
+            return;
+        }
         if (!array.getClass().isArray()) {
             throw new IllegalArgumentException();
         }
@@ -176,6 +179,9 @@ public class SequenceUtils {
     }
 
     public static void deepFill(Object array, short val) {
+        if(array == null){
+            return;
+        }
         if (!array.getClass().isArray()) {
             throw new IllegalArgumentException();
         }
@@ -191,6 +197,9 @@ public class SequenceUtils {
     }
 
     public static void deepFill(Object array, boolean val) {
+        if(array == null){
+            return;
+        }
         if (!array.getClass().isArray()) {
             throw new IllegalArgumentException();
         }
@@ -207,6 +216,9 @@ public class SequenceUtils {
 
 
     public static void deepFill(Object array, long val) {
+        if(array == null){
+            return;
+        }
         if (!array.getClass().isArray()) {
             throw new IllegalArgumentException();
         }
@@ -222,6 +234,9 @@ public class SequenceUtils {
     }
 
     public static void deepFill(Object array, double val) {
+        if(array == null){
+            return;
+        }
         if (!array.getClass().isArray()) {
             throw new IllegalArgumentException();
         }
@@ -237,6 +252,9 @@ public class SequenceUtils {
     }
 
     public static void deepFill(Object array, float val) {
+        if(array == null){
+            return;
+        }
         if (!array.getClass().isArray()) {
             throw new IllegalArgumentException();
         }
@@ -252,6 +270,9 @@ public class SequenceUtils {
     }
 
     public static void deepFill(Object array, char val) {
+        if(array == null){
+            return;
+        }
         if (!array.getClass().isArray()) {
             throw new IllegalArgumentException();
         }
@@ -267,6 +288,9 @@ public class SequenceUtils {
     }
 
     public static void deepFill(Object array, byte val) {
+        if(array == null){
+            return;
+        }
         if (!array.getClass().isArray()) {
             throw new IllegalArgumentException();
         }
@@ -333,36 +357,36 @@ public class SequenceUtils {
      * 旋转区间[l,r],使得原本在l的元素落在to处
      */
     public static <T> void rotate(List<T> list, int l, int r, int to) {
-        SequenceUtils.reverse(list, l, r);
         SequenceUtils.reverse(list, l, to - 1);
         SequenceUtils.reverse(list, to, r);
+        SequenceUtils.reverse(list, l, r);
     }
 
     /**
      * 旋转区间[l,r],使得原本在l的元素落在to处
      */
     public static void rotate(int[] list, int l, int r, int to) {
-        SequenceUtils.reverse(list, l, r);
         SequenceUtils.reverse(list, l, to - 1);
         SequenceUtils.reverse(list, to, r);
+        SequenceUtils.reverse(list, l, r);
     }
 
     /**
      * 旋转区间[l,r],使得原本在l的元素落在to处
      */
     public static void rotate(char[] list, int l, int r, int to) {
-        SequenceUtils.reverse(list, l, r);
         SequenceUtils.reverse(list, l, to - 1);
         SequenceUtils.reverse(list, to, r);
+        SequenceUtils.reverse(list, l, r);
     }
 
     /**
      * 旋转区间[l,r],使得原本在l的元素落在to处
      */
     public static void rotate(long[] list, int l, int r, int to) {
-        SequenceUtils.reverse(list, l, r);
         SequenceUtils.reverse(list, l, to - 1);
         SequenceUtils.reverse(list, to, r);
+        SequenceUtils.reverse(list, l, r);
     }
 
 
@@ -370,9 +394,9 @@ public class SequenceUtils {
      * 旋转区间[l,r],使得原本在l的元素落在to处
      */
     public static <T> void rotate(T[] list, int l, int r, int to) {
-        SequenceUtils.reverse(list, l, r);
         SequenceUtils.reverse(list, l, to - 1);
         SequenceUtils.reverse(list, to, r);
+        SequenceUtils.reverse(list, l, r);
     }
 
     public static <T> void reverse(List<T> data, int l, int r) {

@@ -9,7 +9,7 @@ public class EratosthenesSieve {
      * Find all primes in [2, n] and consume them.
      * The time complexity is O(n log log n) and the space complexity is O(sqrt(n))
      */
-    public static void sieve(IntConsumer consumer, int n) {
+    public static void sieve(int n, IntConsumer consumer) {
         if (n <= 1) {
             return;
         }

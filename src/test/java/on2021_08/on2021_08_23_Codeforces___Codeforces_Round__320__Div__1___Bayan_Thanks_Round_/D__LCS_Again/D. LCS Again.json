@@ -1,0 +1,50 @@
+{
+  "name" : "D. LCS Again",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 3\naaa\n",
+    "output" : "6\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "3 3\naab\n",
+    "output" : "11\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "1 2\na\n",
+    "output" : "1\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "10 9\nabacadefgh\n",
+    "output" : "789\n",
+    "index" : 3,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_08.on2021_08_23_Codeforces___Codeforces_Round__320__Div__1___Bayan_Thanks_Round_.D__LCS_Again.DLCSAgain",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.08.23",
+  "contestName" : "Codeforces - Codeforces Round #320 (Div. 1) [Bayan Thanks-Round]",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

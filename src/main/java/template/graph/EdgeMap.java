@@ -8,15 +8,20 @@ public class EdgeMap {
     LongHashMap map;
     LongBinaryMerger merger;
     private boolean directed;
+    private long def;
 
     public EdgeMap(int e) {
-        this(e, false, Math::min);
+        this(e, false, Long.MAX_VALUE, Math::min);
     }
 
-    public EdgeMap(int e, boolean directed, LongBinaryMerger merger) {
+    public EdgeMap(int e, boolean directed, long def, LongBinaryMerger merger) {
+        this.def = def;
         this.directed = directed;
         map = new LongHashMap(e, false);
         this.merger = merger;
+        //This line is used to ask CHelper to inline the merge function
+        //There seem like some bug
+        merger.merge(0, 0);
     }
 
     private long id(int a, int b) {
@@ -49,6 +54,15 @@ public class EdgeMap {
     }
 
     public long get(int a, int b) {
-        return map.get(id(a, b));
+        return map.getOrDefault(id(a, b), def);
+    }
+
+    public static EdgeMap ofUnitUndirectedGraph() {
+        return new EdgeMap(0, false, 1, (a, b) -> 1);
+    }
+
+
+    public static EdgeMap ofUnitDirectedGraph() {
+        return new EdgeMap(0, true, 1, (a, b) -> 1);
     }
 }

@@ -1,11 +1,21 @@
 package template.utils;
 
 public class GridUtils {
-    public static final int[][] DIRS = new int[][]{
+    public static final int[][] DIR4 = new int[][]{
             {1, 0},
             {0, -1},
             {-1, 0},
             {0, 1}
+    };
+    public static final int[][] DIR8 = new int[][]{
+            {1, 0},
+            {1, -1},
+            {0, -1},
+            {-1, -1},
+            {-1, 0},
+            {-1, 1},
+            {0, 1},
+            {1, 1}
     };
 
     /**

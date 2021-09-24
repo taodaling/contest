@@ -3,9 +3,9 @@ package template.datastructure;
 import template.math.DigitUtils;
 
 public class PersistentSegment implements Cloneable {
-    private static final PersistentSegment NIL = new PersistentSegment();
-    private PersistentSegment left;
-    private PersistentSegment right;
+    static final PersistentSegment NIL = new PersistentSegment();
+    PersistentSegment left;
+    PersistentSegment right;
 
     public void pushUp() {
     }

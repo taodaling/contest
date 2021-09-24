@@ -1,8 +1,8 @@
 package template.utils;
 
-import template.primitve.generated.datastructure.*;
 import template.primitve.generated.datastructure.DoubleFunction;
 import template.primitve.generated.datastructure.IntToLongFunction;
+import template.primitve.generated.datastructure.*;
 import template.rand.RandomWrapper;
 
 import java.util.Arrays;
@@ -49,6 +49,7 @@ public class SortUtils {
         }
         return ans;
     }
+
     public static int argmin(int[] a, int l, int r) {
         int ans = l;
         for (int i = l + 1; i <= r; i++) {
@@ -68,6 +69,7 @@ public class SortUtils {
         }
         return ans;
     }
+
     public static int argmin(long[] a, int l, int r) {
         int ans = l;
         for (int i = l + 1; i <= r; i++) {
@@ -87,6 +89,7 @@ public class SortUtils {
         }
         return ans;
     }
+
     public static int argmin(double[] a, int l, int r) {
         int ans = l;
         for (int i = l + 1; i <= r; i++) {
@@ -189,77 +192,59 @@ public class SortUtils {
         return ans;
     }
 
-    public static double maxOf(double... a) {
-        return Arrays.stream(a).max().orElse(0);
+    public static int min(int a, int b) {
+        return a < b ? a : b;
     }
 
-    public static int maxOf(int... a) {
-        return Arrays.stream(a).max().orElse(0);
+    public static int min(int a, int b, int c) {
+        return min(min(a, b), c);
     }
 
-    public static long maxOf(long... a) {
-        return Arrays.stream(a).max().orElse(0);
+
+    public static int min(int a, int b, int c, int d) {
+        return min(min(a, b, c), d);
     }
 
-    public static double minOf(double... a) {
-        return Arrays.stream(a).min().orElse(0);
+
+    public static int min(int a, int b, int c, int d, int e) {
+        return min(min(a, b, c, d), e);
     }
 
-    public static int minOf(int... a) {
-        return Arrays.stream(a).min().orElse(0);
+
+    public static long min(long a, long b) {
+        return a < b ? a : b;
     }
 
-    public static long minOf(long... a) {
-        return Arrays.stream(a).min().orElse(0);
+    public static long min(long a, long b, long c) {
+        return min(min(a, b), c);
     }
 
-    public static int minOf(int[] a, int l, int r) {
-        int x = a[l];
-        for (int i = l; i <= r; i++) {
-            x = Math.min(x, a[i]);
-        }
-        return x;
+
+    public static long min(long a, long b, long c, long d) {
+        return min(min(a, b, c), d);
     }
 
-    public static int maxOf(int[] a, int l, int r) {
-        int x = a[l];
-        for (int i = l; i <= r; i++) {
-            x = Math.max(x, a[i]);
-        }
-        return x;
+
+    public static long min(long a, long b, long c, long d, long e) {
+        return min(min(a, b, c, d), e);
     }
 
-    public static long minOf(long[] a, int l, int r) {
-        long x = a[l];
-        for (int i = l; i <= r; i++) {
-            x = Math.min(x, a[i]);
-        }
-        return x;
+    public static double min(double a, double b) {
+        return a < b ? a : b;
     }
 
-    public static long maxOf(long[] a, int l, int r) {
-        long x = a[l];
-        for (int i = l; i <= r; i++) {
-            x = Math.max(x, a[i]);
-        }
-        return x;
+    public static double min(double a, double b, double c) {
+        return min(min(a, b), c);
     }
 
-    public static <T> T minOf(T[] a, int l, int r, Comparator<T> comp) {
-        T x = a[l];
-        for (int i = l; i <= r; i++) {
 
-            x = min(x, a[i], comp);
-        }
-        return x;
+    public static double min(double a, double b, double c, double d) {
+        return min(min(a, b, c), d);
     }
 
-    public static <T> T maxOf(T[] a, int l, int r, Comparator<T> comp) {
-        T x = a[l];
-        for (int i = l; i <= r; i++) {
-            x = max(x, a[i], comp);
-        }
-        return x;
+
+    public static double min(double a, double b, double c, double d, double e) {
+        return min(min(a, b, c, d), e);
     }
 
     public static <T> int compareArray(T[] a, T[] b, int al, int ar, int bl, int br, Comparator<T> comp) {
@@ -864,6 +849,16 @@ public class SortUtils {
     public static boolean notStrictAscending(long[] data, int l, int r) {
         for (int i = l + 1; i <= r; i++) {
             if (data[i] < data[i - 1]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    public static <T> boolean notStrictAscending(T[] data, int l, int r, Comparator<T> comp) {
+        for (int i = l + 1; i <= r; i++) {
+            if (comp.compare(data[i], data[i - 1]) < 0) {
                 return false;
             }
         }

@@ -1,0 +1,45 @@
+{
+  "name" : "C - LCM of GCDs",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2\n2 15\n10 6\n",
+    "output" : "10\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "5\n148834018 644854700\n947642099 255192490\n35137537 134714230\n944287156 528403260\n68656286 200621680\n",
+    "output" : "238630\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "20\n557057460 31783488\n843507940 794587200\n640711140 620259584\n1901220 499867584\n190122000 41414848\n349507610 620259584\n890404700 609665088\n392918800 211889920\n507308870 722352000\n156850650 498904448\n806117280 862969856\n193607570 992030080\n660673950 422816704\n622015810 563434560\n207866720 316871744\n63057130 117502592\n482593010 366954816\n605221700 705015552\n702500790 900532160\n171743540 353470912\n",
+    "output" : "152594452160\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_07.on2021_07_25_AtCoder___AtCoder_Regular_Contest_124.C___LCM_of_GCDs.CLCMOfGCDs",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.07.25",
+  "contestName" : "AtCoder - AtCoder Regular Contest 124",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

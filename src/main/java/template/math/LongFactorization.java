@@ -7,8 +7,20 @@ public class LongFactorization {
     public long[] primes;
     int numberOfFactors = -1;
 
+    public LongFactorization makeFactor(long x) {
+        assert g % x == 0;
+        LongFactorization ans = new LongFactorization(g, Arrays.stream(primes)
+                .filter(t -> x % t == 0).toArray());
+        return ans;
+    }
+
     public LongFactorization(long g) {
         init(g);
+    }
+
+    private LongFactorization(long g, long[] p) {
+        this.g = g;
+        this.primes = p;
     }
 
     public void init(long g) {

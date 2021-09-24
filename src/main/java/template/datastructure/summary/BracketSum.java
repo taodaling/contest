@@ -11,17 +11,17 @@ public class BracketSum implements UpdatableSum<BracketSum, BracketUpdate> {
     int sum;
 
     @Override
-    public void add(BracketSum bracketSum) {
-        maxSize = Math.max(maxSize, bracketSum.maxSize);
-        worst = Math.min(worst, bracketSum.worst + sum);
-        sum += bracketSum.sum;
+    public void add(BracketSum right) {
+        maxSize = Math.max(maxSize, right.maxSize);
+        worst = Math.min(worst, right.worst + sum);
+        sum += right.sum;
     }
 
     @Override
-    public void copy(BracketSum bracketSum) {
-        maxSize = bracketSum.maxSize;
-        worst = bracketSum.worst;
-        sum = bracketSum.sum;
+    public void copy(BracketSum right) {
+        maxSize = right.maxSize;
+        worst = right.worst;
+        sum = right.sum;
     }
 
     @Override

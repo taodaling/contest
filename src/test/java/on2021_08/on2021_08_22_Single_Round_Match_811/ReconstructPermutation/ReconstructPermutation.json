@@ -1,0 +1,36 @@
+{
+  "name" : "ReconstructPermutation",
+  "signature" : {
+    "name" : "reconstruct",
+    "result" : "int[]",
+    "arguments" : [ "int", "int[]" ],
+    "argumentNames" : [ "N", "partial" ]
+  },
+  "tests" : [ {
+    "arguments" : [ "8", "1 3 5 7" ],
+    "result" : "0 1 2 3 4 5 6 7",
+    "index" : 0,
+    "active" : true
+  }, {
+    "arguments" : [ "5", "3 1 4 0 2" ],
+    "result" : "3 1 4 0 2",
+    "index" : 1,
+    "active" : true
+  }, {
+    "arguments" : [ "5", "0 3 1" ],
+    "result" : "0 2 3 1 4",
+    "index" : 2,
+    "active" : true
+  }, {
+    "arguments" : [ "8", "" ],
+    "result" : "0 1 2 3 4 5 6 7",
+    "index" : 3,
+    "active" : true
+  } ],
+  "date" : "2021.08.22",
+  "contestName" : "Single Round Match 811",
+  "testClasses" : [ ],
+  "fqn" : "on2021_08.on2021_08_22_Single_Round_Match_811.ReconstructPermutation.ReconstructPermutation",
+  "failOnOverflow" : false,
+  "memoryLimit" : "256M"
+}

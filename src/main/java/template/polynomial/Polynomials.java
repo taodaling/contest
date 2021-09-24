@@ -1,6 +1,9 @@
 package template.polynomial;
 
 import template.utils.PrimitiveBuffers;
+import template.utils.SortUtils;
+
+import java.util.Arrays;
 
 public class Polynomials {
     public static int rankOf(int[] p) {
@@ -92,4 +95,20 @@ public class Polynomials {
         return ans;
     }
 
+    public static void dotmul(int[] a, int[] b, int[] c, int mod) {
+        int n = SortUtils.min(a.length, b.length, c.length);
+        for (int i = 0; i < n; i++) {
+            c[i] = (int) ((long) a[i] * b[i] % mod);
+        }
+        for(int i = n; i < c.length; i++){
+            c[i] = 0;
+        }
+    }
+
+    public static void sumDotmul(int[] a, int[] b, int[] c, int mod) {
+        int n = SortUtils.min(a.length, b.length, c.length);
+        for (int i = 0; i < n; i++) {
+            c[i] = (int) (((long) a[i] * b[i] + c[i]) % mod);
+        }
+    }
 }

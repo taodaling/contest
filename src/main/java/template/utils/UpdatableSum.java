@@ -14,7 +14,7 @@ public interface UpdatableSum<S, U> extends Cloneable, Sum<S> {
         }
 
         @Override
-        public void add(NIL<U> uNilSum) {
+        public void add(NIL<U> right) {
         }
 
         @Override
@@ -22,7 +22,7 @@ public interface UpdatableSum<S, U> extends Cloneable, Sum<S> {
         }
 
         @Override
-        public void copy(NIL<U> uNilSum) {
+        public void copy(NIL<U> right) {
         }
 
         @Override

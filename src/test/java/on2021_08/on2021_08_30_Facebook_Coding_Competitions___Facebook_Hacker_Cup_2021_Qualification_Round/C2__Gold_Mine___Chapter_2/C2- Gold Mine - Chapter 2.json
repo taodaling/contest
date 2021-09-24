@@ -1,0 +1,40 @@
+{
+  "name" : "C2: Gold Mine - Chapter 2",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "gold_mine_chapter__.*input[.]txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "gold_mine_chapter__output.txt"
+  },
+  "tests" : [ {
+    "input" : "7\n2 1\n10 20\n1 2\n2 0\n10 20\n1 2\n4 1\n1 1 1 1\n2 1\n4 1\n1 3\n4 2\n1 1 1 1\n2 1\n4 1\n1 3\n6 2\n5 4 1 3 2 4\n5 1\n5 4\n5 3\n5 2\n6 3\n9 2\n2 14 7 6 11 3 6 1 8\n4 5\n6 7\n8 9\n1 3\n6 8\n2 4\n4 1\n1 8\n9 50\n9 14 7 6 11 3 6 1 8\n4 5\n6 7\n8 9\n1 3\n6 8\n2 4\n4 1\n1 8\n",
+    "output" : "Case #1: 30\nCase #2: 10\nCase #3: 3\nCase #4: 4\nCase #5: 19\nCase #6: 50\nCase #7: 65\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "5\n2\n10 20\n1 2\n4\n1 1 1 1\n2 1\n4 2\n1 3\n4\n1 1 1 1\n2 1\n4 1\n1 3\n6\n5 4 1 3 2 4\n5 1\n5 4\n5 3\n5 2\n6 3\n9\n2 14 7 6 11 3 6 1 8\n4 5\n6 7\n8 9\n1 3\n6 8\n2 4\n4 1\n1 8",
+    "output" : "Case #1: 30\nCase #2: 4\nCase #3: 3\nCase #4: 12\nCase #5: 32\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_08.on2021_08_30_Facebook_Coding_Competitions___Facebook_Hacker_Cup_2021_Qualification_Round.C2__Gold_Mine___Chapter_2.C2GoldMineChapter2",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.08.30",
+  "contestName" : "Facebook Coding Competitions - Facebook Hacker Cup 2021 Qualification Round",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

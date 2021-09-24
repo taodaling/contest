@@ -88,6 +88,8 @@ public class IntegerPriorityQueue implements Cloneable {
         SequenceUtils.swap(data, 1, size);
         size--;
         shiftDown(1);
+
+        assert size >= 0;
         return ans;
     }
 

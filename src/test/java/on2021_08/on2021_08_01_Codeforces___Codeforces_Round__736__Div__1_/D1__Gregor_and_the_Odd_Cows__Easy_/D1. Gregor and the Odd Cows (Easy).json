@@ -1,0 +1,40 @@
+{
+  "name" : "D1. Gregor and the Odd Cows (Easy)",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3\n0 0\n2 0\n0 4\n",
+    "output" : "1\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "5\n0 0\n2 16\n30 14\n4 6\n2 10\n",
+    "output" : "3\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_08.on2021_08_01_Codeforces___Codeforces_Round__736__Div__1_.D1__Gregor_and_the_Odd_Cows__Easy_.D1GregorAndTheOddCowsEasy",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "on2021_08.on2021_08_01_Codeforces___Codeforces_Round__736__Div__1_.D1__Gregor_and_the_Odd_Cows__Easy_.D1GregorAndTheOddCowsEasyTestCase" ],
+  "date" : "2021.08.01",
+  "contestName" : "Codeforces - Codeforces Round #736 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

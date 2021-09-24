@@ -1,0 +1,55 @@
+{
+  "name" : "Subarray Medians",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5\n1 5 2 4 3\n",
+    "output" : "276\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "5\n1 5 4 3 2\n",
+    "output" : "259\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "6\n1 2 3 4 5 6\n",
+    "output" : "714\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "3\n1 5 2",
+    "output" : "45\n",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "2\n 1 3",
+    "output" : "13",
+    "index" : 4,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx512M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_08.on2021_08_16_CS_Academy___Virtual_Round__10.Subarray_Medians.SubarrayMedians",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.08.16",
+  "contestName" : "CS Academy - Virtual Round #10",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

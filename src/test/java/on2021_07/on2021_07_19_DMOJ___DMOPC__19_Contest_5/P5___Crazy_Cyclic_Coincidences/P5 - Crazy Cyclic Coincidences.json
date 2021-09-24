@@ -1,0 +1,40 @@
+{
+  "name" : "P5 - Crazy Cyclic Coincidences",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "5 7 1\n3 4 6\n4 5 5\n4 2 3\n5 4 0\n3 3 7\n2 4 6\n1 2 6\n",
+    "output" : "no\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "5 7 7\n4 3 4\n4 2 4\n1 3 2\n3 1 2\n4 2 3\n2 3 1\n5 3 7\n",
+    "output" : "yes\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx128M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_07.on2021_07_19_DMOJ___DMOPC__19_Contest_5.P5___Crazy_Cyclic_Coincidences.P5CrazyCyclicCoincidences",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.07.19",
+  "contestName" : "DMOJ - DMOPC '19 Contest 5",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

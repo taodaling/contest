@@ -1,0 +1,50 @@
+{
+  "name" : "B. Up the Strip",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 998244353\n",
+    "output" : "5\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "5 998244353\n",
+    "output" : "25\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "42 998244353\n",
+    "output" : "793019428\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "787788 100000007\n",
+    "output" : "94810539\n",
+    "index" : 3,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx128M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_08.on2021_08_24_Codeforces___Codeforces_Round__740__Div__1__based_on_VK_Cup_2021___Final__Engine__.B__Up_the_Strip.BUpTheStrip",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.08.24",
+  "contestName" : "Codeforces - Codeforces Round #740 (Div. 1, based on VK Cup 2021 - Final (Engine))",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

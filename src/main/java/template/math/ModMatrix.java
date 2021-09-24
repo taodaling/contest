@@ -70,7 +70,7 @@ public class ModMatrix {
         return mat[i * m + j];
     }
 
-    public void increment(int i, int j, int x, int mod) {
+    public void increase(int i, int j, int x, int mod) {
         int index = i * m + j;
         mat[index] = DigitUtils.modplus(mat[index], x, mod);
     }

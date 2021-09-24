@@ -6,8 +6,8 @@ import java.math.BigInteger;
  * Factorial
  */
 public class Factorial {
-    int[] fact;
-    int[] inv;
+    public int[] fact;
+    public int[] inv;
     int mod;
 
     public int getMod() {

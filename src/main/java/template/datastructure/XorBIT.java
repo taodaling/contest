@@ -25,6 +25,17 @@ public class XorBIT {
         return sum;
     }
 
+    public long query(int l, int r) {
+        if (l > r) {
+            return 0;
+        }
+        long ans = query(r);
+        if (l > 1) {
+            ans ^= query(l - 1);
+        }
+        return ans;
+    }
+
     /**
      * 将A[i]更新为A[i]+mod
      */
@@ -35,6 +46,11 @@ public class XorBIT {
         for (; i <= n; i += i & -i) {
             data[i] ^= mod;
         }
+    }
+
+    public void update(int l, int r, long mod) {
+        update(l, mod);
+        update(r + 1, mod);
     }
 
     /**

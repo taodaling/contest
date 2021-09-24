@@ -52,6 +52,16 @@ public class FixedSizeSubsetGenerator {
      * @return
      */
     public boolean next() {
+        if (k == 0) {
+            if (first) {
+                first = false;
+                mask = virtualMask = 0;
+                return true;
+            } else {
+                return false;
+            }
+        }
+
         if (first) {
             first = false;
             l = 0;

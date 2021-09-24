@@ -62,6 +62,14 @@ public class IntegerLine2 {
         return new IntegerLine2(pt, IntegerPoint2.plus(pt, vec.perpendicular()));
     }
 
+    public static Point2 intersect(IntegerLine2 a, IntegerLine2 b) {
+        double d = (double) a.vec.x * b.vec.y - (double) a.vec.y * b.vec.x;
+        if (GeoConstant.sign(d) == 0) {
+            return null;
+        }
+        return Point2.div(Point2.minus(new Point2((double) b.vec.x * a.c, (double) b.vec.y * a.c), new Point2((double) a.vec.x * b.c, (double) a.vec.y * b.c)), d);
+    }
+
     /**
      * 判断一条平行的直线处于当前的上方还是下方，上方为1，下方为-1，重合为0
      */
@@ -103,10 +111,10 @@ public class IntegerLine2 {
         return -vec.y + "x + " + vec.x + "y = " + c;
     }
 
-    public static IntegerLine2[] asLinePolygon(IntegerPoint2[] pts){
+    public static IntegerLine2[] asLinePolygon(IntegerPoint2[] pts) {
         int n = pts.length;
         IntegerLine2[] ans = new IntegerLine2[n];
-        for(int i = 0; i < n; i++){
+        for (int i = 0; i < n; i++) {
             ans[i] = new IntegerLine2(pts[i], pts[(i + 1) % n]);
         }
         return ans;

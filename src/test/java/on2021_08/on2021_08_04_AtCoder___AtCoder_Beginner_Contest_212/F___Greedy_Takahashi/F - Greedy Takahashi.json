@@ -1,0 +1,40 @@
+{
+  "name" : "F - Greedy Takahashi",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 2 3\n1 2 1 3\n2 3 3 5\n1 1 5\n2 2 3\n1 3 2\n",
+    "output" : "2 3\n2\n3\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "8 10 10\n4 3 329982133 872113932\n6 8 101082040 756263297\n4 7 515073851 793074419\n8 7 899017043 941751547\n5 7 295510441 597348810\n7 2 688716395 890599546\n6 1 414221915 748470452\n6 4 810915860 904512496\n3 1 497469654 973509612\n4 1 307142272 872178157\n374358788 4 509276232\n243448834 6 585993193\n156350864 4 682491610\n131643541 8 836902943\n152874385 6 495945159\n382276121 1 481368090\n552433623 2 884584430\n580376205 2 639442239\n108790644 7 879874292\n883275610 1 994982498\n",
+    "output" : "4\n6 1\n4 1\n8\n6 1\n1\n2\n2\n7 2\n1\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_08.on2021_08_04_AtCoder___AtCoder_Beginner_Contest_212.F___Greedy_Takahashi.FGreedyTakahashi",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.08.04",
+  "contestName" : "AtCoder - AtCoder Beginner Contest 212",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

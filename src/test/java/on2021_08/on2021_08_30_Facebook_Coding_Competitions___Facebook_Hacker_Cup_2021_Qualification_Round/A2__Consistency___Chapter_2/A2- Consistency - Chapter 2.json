@@ -1,0 +1,35 @@
+{
+  "name" : "A2: Consistency - Chapter 2",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "consistency_chapter__.*input[.]txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "consistency_chapter__output.txt"
+  },
+  "tests" : [ {
+    "input" : "7\nABC\n2\nBA\nCA\nABC\n2\nAB\nAC\nF\n0\nBANANA\n4\nAB\nAN\nBA\nNA\nFBHC\n4\nFB\nBF\nHC\nCH\nFOXEN\n8\nNI\nOE\nNX\nEW\nOI\nFE\nFN\nXW\nCONSISTENCY\n26\nAB\nBC\nCD\nDE\nEF\nFG\nGH\nHI\nIJ\nJK\nKL\nLM\nMN\nNO\nOP\nPQ\nQR\nRS\nST\nTU\nUV\nVW\nWX\nXY\nYZ\nZA\n",
+    "output" : "Case #1: 2\nCase #2: -1\nCase #3: 0\nCase #4: 3\nCase #5: -1\nCase #6: 8\nCase #7: 100\n",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_08.on2021_08_30_Facebook_Coding_Competitions___Facebook_Hacker_Cup_2021_Qualification_Round.A2__Consistency___Chapter_2.A2ConsistencyChapter2",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.08.30",
+  "contestName" : "Facebook Coding Competitions - Facebook Hacker Cup 2021 Qualification Round",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

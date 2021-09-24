@@ -10,11 +10,17 @@ public class Splay implements Cloneable {
         NIL.size = 0;
     }
 
-    Splay left = NIL;
-    Splay right = NIL;
-    Splay father = NIL;
-    int size = 1;
-    int key;
+    public Splay left = NIL;
+    public Splay right = NIL;
+    public Splay father = NIL;
+    public int size = 1;
+    public int key;
+
+    public void init(int k) {
+        left = right = father = NIL;
+        size = 1;
+        key = k;
+    }
 
     public static void splay(Splay x) {
         if (x == NIL) {
@@ -175,6 +181,30 @@ public class Splay implements Cloneable {
         p.pushUp();
         splay(node);
         return node;
+    }
+
+    public static Splay addAsKth(Splay root, Splay node, int k) {
+        if (root == NIL) {
+            return node;
+        }
+        Splay.splay(root);
+        if (k == 1) {
+            node.setRight(root);
+            node.pushUp();
+            root = node;
+        } else {
+            root = Splay.selectKthAsRoot(root, k - 1);
+            node.setRight(root.right);
+            node.pushUp();
+            root.setRight(node);
+            root.pushUp();
+        }
+        return root;
+    }
+
+    public static Splay deleteKth(Splay root, int k){
+        root = Splay.selectKthAsRoot(root, k);
+        return Splay.deleteRoot(root);
     }
 
     /**

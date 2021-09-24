@@ -1,0 +1,40 @@
+{
+  "name" : "Problem 6 - Zeyu's Sadness Contest 1",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 1 2\n3 1 1\n1 1 1\n",
+    "output" : "1 10/0\n3 1/5\n2 -/-\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "2 3 6\n2 2 1\n1 3 1\n1 2 1\n2 1 2\n1 1 1\n2 3 1\n",
+    "output" : "2 45/3 8/1 67/3\n1 59/6 22/5 18/0\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx512M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_07.on2021_07_21_DMOJ___Wesley_s_Anger_Contest_3.Problem_6___Zeyu_s_Sadness_Contest_1.Problem6ZeyusSadnessContest1",
+  "checkerClass" : "on2021_07.on2021_07_21_DMOJ___Wesley_s_Anger_Contest_3.Problem_6___Zeyu_s_Sadness_Contest_1.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "on2021_07.on2021_07_21_DMOJ___Wesley_s_Anger_Contest_3.Problem_6___Zeyu_s_Sadness_Contest_1.Problem6ZeyusSadnessContest1TestCase" ],
+  "date" : "2021.07.21",
+  "contestName" : "DMOJ - Wesley's Anger Contest 3",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

@@ -1,0 +1,35 @@
+{
+  "name" : "B: Xs and Os",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "xs_and_os_.*input[.]txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "xs_and_os_output.txt"
+  },
+  "tests" : [ {
+    "input" : "8\n2\nXO\n..\n2\nX.\n.O\n3\n...\n...\n...\n3\n.OX\nX..\n..O\n3\nOXO\nX.X\nOXO\n3\n.XO\nO.X\nXO.\n4\nX...\n.O.O\n.XX.\nO.XO\n5\nOX.OO\nX.XXX\nOXOOO\nOXOOO\nXXXX.\n",
+    "output" : "Case #1: 1 1\nCase #2: 1 2\nCase #3: 3 6\nCase #4: 2 2\nCase #5: 1 1\nCase #6: Impossible\nCase #7: 2 2\nCase #8: 1 2\n",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_08.on2021_08_30_Facebook_Coding_Competitions___Facebook_Hacker_Cup_2021_Qualification_Round.B__Xs_and_Os.BXsAndOs",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.08.30",
+  "contestName" : "Facebook Coding Competitions - Facebook Hacker Cup 2021 Qualification Round",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

@@ -1,0 +1,40 @@
+{
+  "name" : "E - Snack",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3 3\n2 5 5\n1 2 2\n5 3 5\n",
+    "output" : "11\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "10 6\n3 54 62 64 25 89 1 47 77 4\n1 17 10 29 95 17\n32 40 90 27 50 9\n",
+    "output" : "211\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_08.on2021_08_22_AtCoder___AtCoder_Regular_Contest_125.E___Snack.ESnack",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.08.22",
+  "contestName" : "AtCoder - AtCoder Regular Contest 125",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

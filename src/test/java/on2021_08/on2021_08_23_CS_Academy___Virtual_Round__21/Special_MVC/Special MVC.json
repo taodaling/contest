@@ -1,0 +1,55 @@
+{
+  "name" : "Special MVC",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4 4\n1 2\n2 3\n3 4\n4 2\n",
+    "output" : "2\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "7 6\n1 2\n1 5\n2 3\n2 4\n5 6\n6 7\n",
+    "output" : "3\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "10 11\n1 2\n1 10\n2 3\n2 4\n4 5\n4 7\n4 8\n7 8\n5 9\n5 6\n3 6\n",
+    "output" : "5\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "1 0\n",
+    "output" : "0",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "1 2\n1 1\n 1 1",
+    "output" : "1",
+    "index" : 4,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx128M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_08.on2021_08_23_CS_Academy___Virtual_Round__21.Special_MVC.SpecialMVC",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.08.23",
+  "contestName" : "CS Academy - Virtual Round #21",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

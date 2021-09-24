@@ -1,0 +1,40 @@
+{
+  "name" : "D. Top-Notch Insertions",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "1\n5 3\n3 1\n4 1\n5 3\n",
+    "output" : "\n21\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "2\n\n3 0\n3 2\n2 1\n3 1",
+    "output" : "10\n1",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx512M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_08.on2021_08_25_Codeforces___Codeforces_Round__740__Div__1__based_on_VK_Cup_2021___Final__Engine__.D__Top_Notch_Insertions.DTopNotchInsertions",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.08.25",
+  "contestName" : "Codeforces - Codeforces Round #740 (Div. 1, based on VK Cup 2021 - Final (Engine))",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

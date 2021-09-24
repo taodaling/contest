@@ -1,7 +1,5 @@
 package template.rand;
 
-import java.util.Random;
-
 public abstract class SimulatedAnnealing<S> {
     public SimulatedAnnealing(double threshold, double k, double reduce) {
         this.threshold = threshold;
