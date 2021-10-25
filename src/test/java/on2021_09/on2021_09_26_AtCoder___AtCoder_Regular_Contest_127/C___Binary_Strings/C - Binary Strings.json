@@ -1,0 +1,45 @@
+{
+  "name" : "C - Binary Strings",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3\n101\n",
+    "output" : "11\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "10\n10100011\n",
+    "output" : "1001001111\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "1000000\n11111\n",
+    "output" : "1000000000000000000000000000000\n",
+    "index" : 2,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_09.on2021_09_26_AtCoder___AtCoder_Regular_Contest_127.C___Binary_Strings.CBinaryStrings",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.09.26",
+  "contestName" : "AtCoder - AtCoder Regular Contest 127",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

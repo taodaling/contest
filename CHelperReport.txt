@@ -1,2 +1,2 @@
-49 src/main/java/contest/H - Red and Blue Lamps.json
+58 src/main/java/contest/F. Defender of Childhood Dreams.json
 0

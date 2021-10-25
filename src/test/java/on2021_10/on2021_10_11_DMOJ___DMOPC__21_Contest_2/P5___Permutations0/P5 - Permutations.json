@@ -1,0 +1,40 @@
+{
+  "name" : "P5 - Permutations",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4 2\n1 2\n3 1\n2 4\n",
+    "output" : "5\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "20 15\n9 3\n2 4\n10 20\n1 19\n7 20\n15 16\n11 19\n17 16\n5 19\n16 20\n4 17\n13 11\n6 20\n14 17\n12 19\n18 19\n8 3\n19 16\n3 15\n",
+    "output" : "315531008\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_10.on2021_10_11_DMOJ___DMOPC__21_Contest_2.P5___Permutations0.P5Permutations",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.10.11",
+  "contestName" : "DMOJ - DMOPC '21 Contest 2",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

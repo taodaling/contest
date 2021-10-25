@@ -43,6 +43,9 @@ public class FastFourierTransform {
         return Polynomials.normalizeAndReplace(a);
     }
 
+
+    static int FFT_THRESHOLD = 32;
+
     /**
      * c[i]=\sum_{j} a[i-j]*b[j]
      */
@@ -50,6 +53,16 @@ public class FastFourierTransform {
         int rA = Polynomials.rankOf(a);
         int rB = Polynomials.rankOf(b);
         int rC = rA + rB;
+
+        if (rA <= FFT_THRESHOLD || rB <= FFT_THRESHOLD) {
+            double[] ans = PrimitiveBuffers.allocDoublePow2(rC + 1);
+            for (int i = 0; i <= rA; i++) {
+                for (int j = 0; j <= rB; j++) {
+                    ans[i + j] += a[i] * b[j];
+                }
+            }
+            return ans;
+        }
 
 
         double[] aReal = PrimitiveBuffers.allocDoublePow2(a, rC + 1);
@@ -76,6 +89,16 @@ public class FastFourierTransform {
         int rA = Polynomials.rankOf(a);
         int rB = Polynomials.rankOf(b);
         int rC = rA + rB;
+
+        if (rA <= FFT_THRESHOLD || rB <= FFT_THRESHOLD) {
+            double[] ans = PrimitiveBuffers.allocDoublePow2(rA + 1);
+            for (int i = 0; i <= rA; i++) {
+                for (int j = 0; j <= rB && i + j <= rA; j++) {
+                    ans[i] += a[i + j] * b[j];
+                }
+            }
+            return ans;
+        }
 
         double[] aReal = PrimitiveBuffers.allocDoublePow2(a, rC + 1);
         double[] aImg = PrimitiveBuffers.allocDoublePow2(rC + 1);

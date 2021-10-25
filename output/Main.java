@@ -1,15 +1,15 @@
 import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
+import java.util.stream.IntStream;
 import java.util.Arrays;
+import java.util.OptionalInt;
+import java.io.OutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.TreeSet;
 import java.nio.charset.StandardCharsets;
 import java.io.UncheckedIOException;
 import java.io.Closeable;
-import java.util.Comparator;
 import java.io.InputStream;
 
 /**
@@ -30,35 +30,34 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            HRedAndBlueLamps solver = new HRedAndBlueLamps();
+            FDefenderOfChildhoodDreams solver = new FDefenderOfChildhoodDreams();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class HRedAndBlueLamps {
+    static class FDefenderOfChildhoodDreams {
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.ri();
-            int r = in.ri();
-            int[] a = in.ri(n - 1);
-            r = Math.min(r, n - r);
-            int even = n / 2;
-            if (r >= even) {
-                long ans = 0;
-                for (int x : a) {
-                    ans += x;
-                }
-                out.println(ans);
-                return;
-            }
-            a = Arrays.copyOf(a, n);
-            long[] weights = new long[n];
+            int k = in.ri();
+            IntRadix radix = new IntRadix(k);
+            IntegerArrayList list = new IntegerArrayList(n * n);
             for (int i = 0; i < n; i++) {
-                weights[i] = a[i] + a[(i + 1) % n];
+                for (int j = i + 1; j < n; j++) {
+                    int x = 10;
+                    while (radix.get(i, x) == radix.get(j, x)) {
+                        x--;
+                    }
+                    list.add(x);
+                }
             }
-            PlantTreeProblem pt = new PlantTreeProblem(weights, r);
-            long ans = pt.getAnswer();
-            out.println(ans);
+            int[] ans = list.toArray();
+            int max = Arrays.stream(ans).max().orElse(-1);
+            out.println(max + 1);
+            for (int x : ans) {
+                out.append(x + 1).append(' ');
+            }
+            out.println();
         }
 
     }
@@ -72,12 +71,6 @@ public class Main {
 
         public FastInput(InputStream is) {
             this.is = is;
-        }
-
-        public void populate(int[] data) {
-            for (int i = 0; i < data.length; i++) {
-                data[i] = readInt();
-            }
         }
 
         private int read() {
@@ -105,12 +98,6 @@ public class Main {
             return readInt();
         }
 
-        public int[] ri(int n) {
-            int[] ans = new int[n];
-            populate(ans);
-            return ans;
-        }
-
         public int readInt() {
             boolean rev = false;
 
@@ -131,130 +118,28 @@ public class Main {
 
     }
 
-    static class IntegerBIT {
-        private int[] data;
-        private int n;
+    static class IntRadix {
+        private int[] pow;
+        private int base;
 
-        public IntegerBIT(int n) {
-            this.n = n;
-            data = new int[n + 1];
+        public IntRadix(int base) {
+            if (base <= 1) {
+                throw new IllegalArgumentException();
+            }
+            this.base = base;
+            IntegerArrayList ll = new IntegerArrayList(32);
+            ll.add(1);
+            while (!DigitUtils.isMultiplicationOverflow(ll.tail(), base, Integer.MAX_VALUE)) {
+                ll.add(ll.tail() * base);
+            }
+            pow = ll.toArray();
         }
 
-        public int query(int i) {
-            i = Math.min(i, n);
-            int sum = 0;
-            for (; i > 0; i -= i & -i) {
-                sum += data[i];
+        public int get(int x, int i) {
+            if (i >= pow.length) {
+                return 0;
             }
-            return sum;
-        }
-
-        public void update(int i, int mod) {
-            if (i <= 0) {
-                return;
-            }
-            for (; i <= n; i += i & -i) {
-                data[i] += mod;
-            }
-        }
-
-        public String toString() {
-            StringBuilder builder = new StringBuilder();
-            for (int i = 1; i <= n; i++) {
-                builder.append(query(i) - query(i - 1)).append(' ');
-            }
-            return builder.toString();
-        }
-
-    }
-
-    static class PlantTreeProblem {
-        IntegerBIT bit;
-        long ans;
-        int n;
-
-        public PlantTreeProblem(long[] weights, int m) {
-            n = weights.length;
-            bit = new IntegerBIT(n + 1);
-            TreeSet<PlantTreeProblem.Node> set = new TreeSet<>(PlantTreeProblem.Node.sortByW);
-            PlantTreeProblem.Node[] nodes = new PlantTreeProblem.Node[n];
-            for (int i = 0; i < n; i++) {
-                nodes[i] = new PlantTreeProblem.Node();
-                nodes[i].w = weights[i];
-                nodes[i].l = nodes[i].r = i;
-            }
-            for (int i = 0; i < n; i++) {
-                if (i > 0) {
-                    nodes[i].prev = nodes[i - 1];
-                } else {
-                    nodes[i].prev = nodes[n - 1];
-                }
-                if (i + 1 < n) {
-                    nodes[i].next = nodes[i + 1];
-                } else {
-                    nodes[i].next = nodes[0];
-                }
-            }
-            set.addAll(Arrays.asList(nodes));
-
-            for (int i = 0; i < m; i++) {
-                PlantTreeProblem.Node last = set.pollLast();
-                ans += last.w;
-                if (last.l <= last.r) {
-                    bit.update(last.l + 1, 1);
-                    bit.update(last.r + 2, 1);
-                } else {
-                    bit.update(1, 1);
-                    bit.update(last.r + 2, 1);
-                    bit.update(last.l + 1, n + 1);
-                    bit.update(n, 1);
-                }
-
-                if (last.next == last.prev) {
-                    continue;
-                }
-                PlantTreeProblem.Node prev = last.prev;
-                set.remove(last.next);
-                set.remove(last.prev);
-                prev.r = last.next.r;
-                prev.w += last.next.w - last.w;
-                prev.next = last.next.next;
-                prev.next.prev = prev;
-                set.add(prev);
-            }
-        }
-
-        public long getAnswer() {
-            return ans;
-        }
-
-        public boolean chooseOrNot(int i) {
-            return bit.query(i + 1) % 2 == 1;
-        }
-
-        public String toString() {
-            StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < n; i++) {
-                builder.append(chooseOrNot(i)).append(',');
-            }
-            if (builder.length() > 0) {
-                builder.setLength(builder.length() - 1);
-            }
-            return builder.toString();
-        }
-
-        private static class Node {
-            PlantTreeProblem.Node prev;
-            PlantTreeProblem.Node next;
-            long w;
-            int l;
-            int r;
-            static Comparator<PlantTreeProblem.Node> sortByW = (a, b) -> a.w == b.w ? a.l - b.l : Long.compare(a.w, b.w);
-
-            public String toString() {
-                return String.format("[%d, %d] => %d", l, r, w);
-            }
-
+            return (x / pow[i] % base);
         }
 
     }
@@ -304,13 +189,13 @@ public class Main {
             return this;
         }
 
-        public FastOutput append(long c) {
+        public FastOutput append(int c) {
             cache.append(c);
             afterWrite();
             return this;
         }
 
-        public FastOutput println(long c) {
+        public FastOutput println(int c) {
             return append(c).println();
         }
 
@@ -361,6 +246,145 @@ public class Main {
 
         public String toString() {
             return cache.toString();
+        }
+
+    }
+
+    static class SequenceUtils {
+        public static boolean equal(int[] a, int al, int ar, int[] b, int bl, int br) {
+            if ((ar - al) != (br - bl)) {
+                return false;
+            }
+            for (int i = al, j = bl; i <= ar; i++, j++) {
+                if (a[i] != b[j]) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+    }
+
+    static class IntegerArrayList implements Cloneable {
+        private int size;
+        private int cap;
+        private int[] data;
+        private static final int[] EMPTY = new int[0];
+
+        public IntegerArrayList(int cap) {
+            this.cap = cap;
+            if (cap == 0) {
+                data = EMPTY;
+            } else {
+                data = new int[cap];
+            }
+        }
+
+        public IntegerArrayList(int[] data) {
+            this(0);
+            addAll(data);
+        }
+
+        public IntegerArrayList(IntegerArrayList list) {
+            this.size = list.size;
+            this.cap = list.cap;
+            this.data = Arrays.copyOf(list.data, size);
+        }
+
+        public IntegerArrayList() {
+            this(0);
+        }
+
+        public void ensureSpace(int req) {
+            if (req > cap) {
+                while (cap < req) {
+                    cap = Math.max(cap + 10, 2 * cap);
+                }
+                data = Arrays.copyOf(data, cap);
+            }
+        }
+
+        private void checkRange(int i) {
+            if (i < 0 || i >= size) {
+                throw new ArrayIndexOutOfBoundsException("Access [" + i + "]");
+            }
+        }
+
+        public void add(int x) {
+            ensureSpace(size + 1);
+            data[size++] = x;
+        }
+
+        public void addAll(int[] x) {
+            addAll(x, 0, x.length);
+        }
+
+        public void addAll(int[] x, int offset, int len) {
+            ensureSpace(size + len);
+            System.arraycopy(x, offset, data, size, len);
+            size += len;
+        }
+
+        public void addAll(IntegerArrayList list) {
+            addAll(list.data, 0, list.size);
+        }
+
+        public int tail() {
+            checkRange(0);
+            return data[size - 1];
+        }
+
+        public int[] toArray() {
+            return Arrays.copyOf(data, size);
+        }
+
+        public String toString() {
+            return Arrays.toString(toArray());
+        }
+
+        public boolean equals(Object obj) {
+            if (!(obj instanceof IntegerArrayList)) {
+                return false;
+            }
+            IntegerArrayList other = (IntegerArrayList) obj;
+            return SequenceUtils.equal(data, 0, size - 1, other.data, 0, other.size - 1);
+        }
+
+        public int hashCode() {
+            int h = 1;
+            for (int i = 0; i < size; i++) {
+                h = h * 31 + Integer.hashCode(data[i]);
+            }
+            return h;
+        }
+
+        public IntegerArrayList clone() {
+            IntegerArrayList ans = new IntegerArrayList();
+            ans.addAll(this);
+            return ans;
+        }
+
+    }
+
+    static class DigitUtils {
+        private DigitUtils() {
+        }
+
+        public static boolean isMultiplicationOverflow(long a, long b, long limit) {
+            if (limit < 0) {
+                limit = -limit;
+            }
+            if (a < 0) {
+                a = -a;
+            }
+            if (b < 0) {
+                b = -b;
+            }
+            if (a == 0 || b == 0) {
+                return false;
+            }
+            //a * b > limit => a > limit / b
+            return a > limit / b;
         }
 
     }

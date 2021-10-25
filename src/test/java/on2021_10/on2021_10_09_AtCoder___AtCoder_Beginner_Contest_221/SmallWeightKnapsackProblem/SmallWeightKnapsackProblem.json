@@ -1,0 +1,30 @@
+{
+  "name" : "SmallWeightKnapsackProblem",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_10.on2021_10_09_AtCoder___AtCoder_Beginner_Contest_221.SmallWeightKnapsackProblem.SmallWeightKnapsackProblem",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "on2021_10.on2021_10_09_AtCoder___AtCoder_Beginner_Contest_221.SmallWeightKnapsackProblem.SmallWeightKnapsackProblemTestCase" ],
+  "date" : "2021.10.09",
+  "contestName" : "AtCoder - AtCoder Beginner Contest 221",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

@@ -37,6 +37,20 @@ public class FastHash {
         return hash(seq, seq.length);
     }
 
+    public long hash(long a, long b) {
+        return hash(DigitUtils.highBit(a), DigitUtils.lowBit(a), DigitUtils.highBit(b), DigitUtils.lowBit(b));
+    }
+
+    public long hash(long a, long b, long c) {
+        return hash(DigitUtils.highBit(a), DigitUtils.lowBit(a), DigitUtils.highBit(b), DigitUtils.lowBit(b),
+                DigitUtils.highBit(c), DigitUtils.lowBit(c));
+    }
+
+    public long hash(long a, long b, long c, long d) {
+        return hash(DigitUtils.highBit(a), DigitUtils.lowBit(a), DigitUtils.highBit(b), DigitUtils.lowBit(b),
+                DigitUtils.highBit(c), DigitUtils.lowBit(c), DigitUtils.highBit(d), DigitUtils.lowBit(d));
+    }
+
     public long hash(int a, int b) {
         long res1 = ((long) b * x1 + a) % mod;
         long res2 = ((long) b * x2 + a) % mod;
@@ -64,6 +78,54 @@ public class FastHash {
     public long hash(int a, int b, int c, int d) {
         long res1 = (((d * x1 + c) % mod * x1 + b) % mod * x1 + a) % mod;
         long res2 = (((d * x2 + c) % mod * x2 + b) % mod * x2 + a) % mod;
+        if (res1 < 0) {
+            res1 += mod;
+        }
+        if (res2 < 0) {
+            res2 += mod;
+        }
+        return DigitUtils.asLong(res1, res2);
+    }
+
+    public long hash(int a, int b, int c, int d, int e) {
+        long res1 = ((((e * x1 + d) % mod * x1 + c) % mod * x1 + b) % mod * x1 + a) % mod;
+        long res2 = ((((e * x2 + d) % mod * x2 + c) % mod * x2 + b) % mod * x2 + a) % mod;
+        if (res1 < 0) {
+            res1 += mod;
+        }
+        if (res2 < 0) {
+            res2 += mod;
+        }
+        return DigitUtils.asLong(res1, res2);
+    }
+
+    public long hash(int a, int b, int c, int d, int e, int f) {
+        long res1 = (((((f * x1 + e) % mod * x1 + d) % mod * x1 + c) % mod * x1 + b) % mod * x1 + a) % mod;
+        long res2 = (((((f * x2 + e) % mod * x2 + d) % mod * x2 + c) % mod * x2 + b) % mod * x2 + a) % mod;
+        if (res1 < 0) {
+            res1 += mod;
+        }
+        if (res2 < 0) {
+            res2 += mod;
+        }
+        return DigitUtils.asLong(res1, res2);
+    }
+
+    public long hash(int a, int b, int c, int d, int e, int f, int g) {
+        long res1 = ((((((g * x1 + f) % mod * x1 + e) % mod * x1 + d) % mod * x1 + c) % mod * x1 + b) % mod * x1 + a) % mod;
+        long res2 = ((((((g * x2 + f) % mod * x2 + e) % mod * x2 + d) % mod * x2 + c) % mod * x2 + b) % mod * x2 + a) % mod;
+        if (res1 < 0) {
+            res1 += mod;
+        }
+        if (res2 < 0) {
+            res2 += mod;
+        }
+        return DigitUtils.asLong(res1, res2);
+    }
+
+    public long hash(int a, int b, int c, int d, int e, int f, int g, int h) {
+        long res1 = (((((((h * x1 + g) % mod * x1 + f) % mod * x1 + e) % mod * x1 + d) % mod * x1 + c) % mod * x1 + b) % mod * x1 + a) % mod;
+        long res2 = (((((((h * x2 + g) % mod * x2 + f) % mod * x2 + e) % mod * x2 + d) % mod * x2 + c) % mod * x2 + b) % mod * x2 + a) % mod;
         if (res1 < 0) {
             res1 += mod;
         }

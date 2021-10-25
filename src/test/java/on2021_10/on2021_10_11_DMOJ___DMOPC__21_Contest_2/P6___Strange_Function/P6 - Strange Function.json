@@ -1,0 +1,30 @@
+{
+  "name" : "P6 - Strange Function",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_10.on2021_10_11_DMOJ___DMOPC__21_Contest_2.P6___Strange_Function.P6StrangeFunction",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "on2021_10.on2021_10_11_DMOJ___DMOPC__21_Contest_2.P6___Strange_Function.P6StrangeFunctionTestCase" ],
+  "date" : "2021.10.11",
+  "contestName" : "DMOJ - DMOPC '21 Contest 2",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

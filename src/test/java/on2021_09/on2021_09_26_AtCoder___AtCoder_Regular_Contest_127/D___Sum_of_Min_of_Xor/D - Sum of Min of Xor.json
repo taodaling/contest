@@ -1,0 +1,55 @@
+{
+  "name" : "D - Sum of Min of Xor",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3\n1 2 3\n4 5 6\n",
+    "output" : "4\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "4\n1 2 3 4\n1 2 3 4\n",
+    "output" : "24\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "10\n195247 210567 149398 9678 23694 46151 187762 17915 176476 249828\n68649 128425 249346 62366 194119 117620 26327 161384 207 57656\n",
+    "output" : "4019496\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "2\n0 1\n1 1",
+    "output" : "0",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "3\n1 2 3\n2 3 1",
+    "output" : "4",
+    "index" : 4,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_09.on2021_09_26_AtCoder___AtCoder_Regular_Contest_127.D___Sum_of_Min_of_Xor.DSumOfMinOfXor",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "on2021_09.on2021_09_26_AtCoder___AtCoder_Regular_Contest_127.D___Sum_of_Min_of_Xor.DSumOfMinOfXorTestCase" ],
+  "date" : "2021.09.26",
+  "contestName" : "AtCoder - AtCoder Regular Contest 127",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

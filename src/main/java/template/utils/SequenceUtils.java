@@ -363,7 +363,7 @@ public class SequenceUtils {
     }
 
     /**
-     * 旋转区间[l,r],使得原本在l的元素落在to处
+     * 旋转区间[l,r],使得原本在to的元素落在l处
      */
     public static void rotate(int[] list, int l, int r, int to) {
         SequenceUtils.reverse(list, l, to - 1);

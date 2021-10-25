@@ -1,0 +1,35 @@
+{
+  "name" : "B - Balls of Three Colors",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "3\n1 2 2\n1 2 3\n1 2 4\n",
+    "output" : "2\n-1\n4\n",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_10.on2021_10_19_AtCoder___Daiwa_Securities_Co__Ltd__Programming_Contest_2021_AtCoder_Regular_Contest_128_.B___Balls_of_Three_Colors.BBallsOfThreeColors",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.10.19",
+  "contestName" : "AtCoder - Daiwa Securities Co. Ltd. Programming Contest 2021（AtCoder Regular Contest 128）",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

@@ -1,0 +1,58 @@
+{
+  "name" : "Coprime Pairs",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2 0\n",
+    "output" : "6 9\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "3 3\n",
+    "output" : "9 14 55\n",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "3 1\n",
+    "output" : "9 15 25\n",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "4 3",
+    "output" : "",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "11 20",
+    "index" : 4,
+    "active" : true
+  }, {
+    "input" : "9999 0",
+    "index" : 5,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx64M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_09.on2021_09_28_CS_Academy___Virtual_Round__43.Coprime_Pairs.CoprimePairs",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.09.28",
+  "contestName" : "CS Academy - Virtual Round #43",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

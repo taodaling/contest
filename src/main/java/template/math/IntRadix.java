@@ -43,6 +43,9 @@ public class IntRadix {
     }
 
     public int get(int x, int i) {
+        if (i >= pow.length) {
+            return 0;
+        }
         return (x / pow[i] % base);
     }
 

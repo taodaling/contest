@@ -129,6 +129,7 @@ public class PrimitiveBuffers {
     }
 
     public static void release(double[] data) {
+        assert data.length == Integer.lowestOneBit(data.length);
         doublePow2Bufs[Log2.ceilLog(data.length)].release(data);
     }
 
