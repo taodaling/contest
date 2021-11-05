@@ -24,22 +24,29 @@ public class CoprimeModLog {
 
         long prod = DigitUtils.mod(1, mod);
         for (int i = 0; i < m; i++) {
-            map.putIfNotExist((int) prod, i);
+            map.put((int) prod, i);
             prod = prod * x % mod;
         }
+    }
+
+    public int log(int y) {
+        return log(y, 0);
     }
 
     /**
      * <p>return log_x y</p>
      * <p>O(p^0.5)</p>
      */
-    public int log(int y) {
+    public int log(int y, int atleast) {
         y = DigitUtils.mod(y, mod);
         long start = y;
         for (int i = 0; i * m < mod; start = start * invM % mod, i++) {
             int val = map.getOrDefault((int) start, -1);
             if (val >= 0) {
-                return (int) (((long) val + i * m) % phi);
+                int ans = (int) (((long) val + i * m) % phi);
+                if(ans >= atleast){
+                    return ans;
+                }
             }
         }
         return -1;

@@ -32,7 +32,7 @@ public class ModContinuousInterpolation {
     }
 
     /**
-     * Let f(x[i])=y[i], find f(x) in O(n)
+     * Let f(x + i)=y[i], find f(x) in O(n)
      */
     public int interpolate(int x0, int[] y, int n, long x) {
         x = DigitUtils.mod(x - x0, mod);

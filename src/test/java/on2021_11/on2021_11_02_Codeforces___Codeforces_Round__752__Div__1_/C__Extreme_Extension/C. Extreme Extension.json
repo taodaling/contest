@@ -1,0 +1,35 @@
+{
+  "name" : "C. Extreme Extension",
+  "testType" : "MULTI_NUMBER",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4\n3\n5 4 3\n4\n3 2 1 4\n1\n69\n8\n7264 40515 28226 92776 35285 21709 75124 48163\n",
+    "output" : "5\n9\n0\n117\n",
+    "index" : 0,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_11.on2021_11_02_Codeforces___Codeforces_Round__752__Div__1_.C__Extreme_Extension.CExtremeExtension",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.11.02",
+  "contestName" : "Codeforces - Codeforces Round #752 (Div. 1)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

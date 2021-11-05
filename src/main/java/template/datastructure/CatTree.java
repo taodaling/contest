@@ -4,6 +4,12 @@ import template.binary.Bits;
 import template.binary.Log2;
 
 public class CatTree<S, E> {
+    /**
+     * O(n log n) insert operation
+     * @param data
+     * @param len
+     * @param handler
+     */
     public CatTree(E[] data, int len, SetHandler<S, E> handler) {
         this.handler = handler;
         int level = Log2.ceilLog(len) + 1;
@@ -14,6 +20,12 @@ public class CatTree<S, E> {
         build(data, len, level - 1);
     }
 
+    /**
+     * O(1) merge set operation
+     * @param l
+     * @param r
+     * @return
+     */
     public S query(int l, int r) {
         if (l == r) {
             return (S) levels[0][l];

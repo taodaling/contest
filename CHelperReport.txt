@@ -1,2 +1,3 @@
-58 src/main/java/contest/F. Defender of Childhood Dreams.json
-0
+48 src/main/java/contest/D. Artistic Partition.json
+1
+1

@@ -30,14 +30,18 @@ public class GenericModLog {
         mul = DigitUtils.mod(extGCD.getX(), mod);
     }
 
+    public int log(int y) {
+        return log(y, 0);
+    }
+
     /**
      * return log_a y \mod p with O(\sqrt{p}) time complexity or -1 if doesn't exit
      */
-    public int log(int y) {
+    public int log(int y, int atLeast) {
         y = DigitUtils.mod(y, original);
         long prod = DigitUtils.mod(1, original);
         for (int i = 0; i < k; i++) {
-            if (prod == y) {
+            if (prod == y && i >= atLeast) {
                 return i;
             }
             prod = prod * a % original;
@@ -47,7 +51,7 @@ public class GenericModLog {
         }
 
         y = (int) ((long) y / div * mul % mod);
-        int ans = log.log(y);
+        int ans = log.log(y, atLeast - k);
         if (ans >= 0) {
             ans += k;
         }

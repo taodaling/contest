@@ -6,6 +6,13 @@ import java.util.HashMap;
  * https://judge.yosupo.jp/submission/7053
  */
 public class KthRootModPrime {
+    /**
+     * a^{1/k} \pmod p
+     * @param a
+     * @param k
+     * @param p
+     * @return
+     */
     public static long kth_root(long a, long k, long p) {
         if (k == 0) return a == 1 ? 1 : -1;
         if (k > 0 && a == 0) return 0;
