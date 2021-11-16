@@ -1,4 +1,6 @@
-package contest;
+package on2021_11.on2021_11_14_Codeforces___Codeforces_Round__755__Div__1__based_on_Technocup_2022_Elimination_Round_2_.D__Strange_LCS0;
+
+
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -7,8 +9,9 @@ import java.util.Random;
 import net.egork.chelper.task.Test;
 import net.egork.chelper.tester.TestCase;
 import template.rand.RandomWrapper;
+import template.rand.Randomized;
 
-public class HXorQueryTestCase {
+public class DStrangeLCSTestCase {
     @TestCase
     public Collection<Test> createTests() {
         RandomWrapper.INSTANCE.getRandom().setSeed(0);
@@ -43,26 +46,26 @@ public class HXorQueryTestCase {
 
     RandomWrapper random = new RandomWrapper(0);
     public Test create(int testNum){
-        int n = (int)2e5;
-        int q = (int)1e5;
+        int charset = 26 * 2;
         StringBuilder in = new StringBuilder();
-        printLine(in, n, q);
-        long[] a = new long[n];
-        for(int i = 0; i < n; i++){
-            a[i] = random.nextLong(0, (1L << 60) - 1);
+        printLine(in, 5);
+
+        StringBuilder sb = new StringBuilder();
+        for(char i = 'a'; i <= 'z'; i++){
+            sb.append(i).append(i);
         }
-        printLine(in, a);
-        for(int i = 0; i < q; i++){
-            int l = random.nextInt(1, n);
-            int r = random.nextInt(1, n);
-            if(l > r){
-                int tmp = l;
-                l = r;
-                r = tmp;
+        for(char i = 'A'; i <= 'Z'; i++){
+            sb.append(i).append(i);
+        }
+        char[] data = sb.toString().toCharArray();
+        for(int t = 0; t < 5; t++){
+            int n = 10;
+            printLine(in, n);
+            for(int i = 0; i < n; i++) {
+                Randomized.shuffle(data);
+                printLineObj(in, new String(data));
             }
-            long x = random.nextLong(0, (1L << 60) - 1);
-            printLine(in, l, r, x);
         }
-        return new Test(in.toString());
+        return new Test(in.toString(), null);
     }
 }

@@ -63,6 +63,10 @@ public class CountSubsetSum {
         PrimitiveBuffers.release(exp, log);
     }
 
+    public int[] product(){
+        return ans;
+    }
+
     /**
      * Count how many subsets of s exist that the sum of all elements in it equal to i(i <= n), return the number % mod
      */

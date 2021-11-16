@@ -103,7 +103,7 @@ public class IntPoly {
      * calculate lists[0] * lists[1] * ... * lists[lists.length - 1]
      * by dividing and conquer technology.
      * <br>
-     * The total time complexity is O(mlogn) while m = lists.length and
+     * The total time complexity is O(m \log m \log n) while m = lists.length and
      * n = lists[0].length + lists[1].length + ... + lists[m - 1].length.
      */
     public int[] dacMul(int[][] lists) {
@@ -248,6 +248,8 @@ public class IntPoly {
         ans = PrimitiveBuffers.replace(module(ans, n), ans);
         return ans;
     }
+
+
 
     /**
      * <p> ans = exp(a) mod x^n </p>

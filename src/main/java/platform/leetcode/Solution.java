@@ -1,75 +1,140 @@
 package platform.leetcode;
 
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.PriorityQueue;
+import java.util.Arrays;
 
 public class Solution {
     public static void main(String[] args) {
+
     }
 
-    public int secondMinimum(int n, int[][] edges, int time, int change) {
-        Node[] nodes = new Node[n];
-        for (int i = 0; i < n; i++) {
-            nodes[i] = new Node();
-        }
-        for (int[] e : edges) {
-            int a = e[0];
-            int b = e[1];
-            nodes[a].adj.add(nodes[b]);
-            nodes[b].adj.add(nodes[a]);
-        }
-        insert(nodes[0], 0);
-        while (!pq.isEmpty()) {
-            Event e = pq.remove();
-            Node root = e.node;
-            long t = e.time;
-            long nextTrigger = nextTrigger(t + time, change);
-            for(Node node : root.adj){
-                insert(node, nextTrigger);
+    int n;
+    int m;
+    char[] cs;
+
+    public boolean[] friendRequests(int n, int[][] restrictions, int[][] requests) {
+        boolean[] ans = new boolean[requests.length];
+        UndoDSU dsu = new UndoDSU(n);
+        dsu.init();
+        for (int i = 0; i < requests.length; i++) {
+            int u = requests[i][0];
+            int v = requests[i][1];
+            UndoOperation uo = dsu.merge(u, v);
+            uo.apply();
+            boolean ok = true;
+            for(int[] r : restrictions){
+                int a = r[0];
+                int b = r[1];
+                if(dsu.find(a) == dsu.find(b)){
+                    ok = false;
+                    break;
+                }
+            }
+            ans[i] = ok;
+            if(!ok){
+                uo.undo();
             }
         }
-        long ans = nodes[n - 1].times.get(1);
-        return (int)ans;
+        return ans;
     }
 
-    public long nextTrigger(long cur, long change) {
-        if (cur / change % 2 == 0) {
-            return cur;
+    public long encode(long a, long b) {
+        if (a > b) {
+            long tmp = a;
+            a = b;
+            b = tmp;
         }
-        return (cur + change - 1) / change * change;
+        return (a << 32) | (b & ((1L << 32) - 1));
     }
 
-    PriorityQueue<Event> pq = new PriorityQueue<>(Comparator.comparingLong(x -> x.time));
-
-    public void insert(Node root, long t) {
-        if (root.insert(t)) {
-            Event e = new Event();
-            e.node = root;
-            e.time = t;
-            pq.add(e);
-        }
-    }
 }
 
-class Event {
-    Node node;
-    long time;
+interface UndoOperation {
+    static final UndoOperation NIL = new UndoOperation() {
+        @Override
+        public void apply() {
+
+        }
+
+        @Override
+        public void undo() {
+
+        }
+    };
+
+    void apply();
+
+    void undo();
 }
 
-class Node {
-    List<Node> adj = new ArrayList<>();
-    List<Long> times = new ArrayList<>(2);
+abstract class CommutativeUndoOperation implements UndoOperation {
+    boolean flag;
+    public static CommutativeUndoOperation NIL = new CommutativeUndoOperation() {
+        @Override
+        public void apply() {
+        }
 
-    public boolean insert(long x) {
-        if (times.isEmpty() || times.get(times.size() - 1) != x) {
-            if (times.size() < 2) {
-                times.add(x);
-                return true;
+        @Override
+        public void undo() {
+        }
+    };
+}
+
+
+class UndoDSU {
+    int[] rank;
+    int[] p;
+
+    public UndoDSU(int n) {
+        rank = new int[n];
+        p = new int[n];
+    }
+
+    public void init() {
+        Arrays.fill(rank, 1);
+        Arrays.fill(p, -1);
+    }
+
+    public int find(int x) {
+        while (p[x] != -1) {
+            x = p[x];
+        }
+        return x;
+    }
+
+    public int size(int x) {
+        return rank[find(x)];
+    }
+
+    public CommutativeUndoOperation merge(int a, int b) {
+        return new CommutativeUndoOperation() {
+            int x, y;
+
+
+            public void apply() {
+                x = find(a);
+                y = find(b);
+                if (x == y) {
+                    return;
+                }
+                if (rank[x] < rank[y]) {
+                    int tmp = x;
+                    x = y;
+                    y = tmp;
+                }
+                p[y] = x;
+                rank[x] += rank[y];
             }
-        }
-        return false;
+
+
+            public void undo() {
+                int cur = y;
+                while (p[cur] != -1) {
+                    cur = p[cur];
+                    rank[cur] -= rank[y];
+                }
+                p[y] = -1;
+            }
+        };
     }
 }

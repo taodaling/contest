@@ -233,6 +233,14 @@ public class SortUtils {
         return a < b ? a : b;
     }
 
+    public static<T extends Comparable<T>> T min(T a, T b){
+        return a.compareTo(b) < 0 ? a : b;
+    }
+
+    public static<T extends Comparable<T>> T max(T a, T b){
+        return a.compareTo(b) > 0 ? a : b;
+    }
+
     public static double min(double a, double b, double c) {
         return min(min(a, b), c);
     }

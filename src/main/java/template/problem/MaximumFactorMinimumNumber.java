@@ -6,7 +6,7 @@ import template.primitve.generated.datastructure.LongArrayList;
 
 public class MaximumFactorMinimumNumber {
     public static void main(String[] args) {
-        System.out.println(MaximumFactorMinimumNumber.findMinimumNumberWithMaximumFactors((long) 1e12));
+        System.out.println(MaximumFactorMinimumNumber.findMinimumNumberWithMaximumFactors((long) 1e18));
 
         System.out.println(MaximumFactorMinimumNumber.maximumPrimeFactor((long)2e6)[1]);
     }

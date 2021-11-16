@@ -1,3 +1,2 @@
-48 src/main/java/contest/D. Artistic Partition.json
-1
-1
+41 src/main/java/contest/D. Strange LCS.json
+0

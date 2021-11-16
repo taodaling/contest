@@ -1,4 +1,4 @@
-package template.math;
+package performance;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -7,6 +7,7 @@ import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
+import template.math.Barrett;
 import template.rand.RandomWrapper;
 
 import java.lang.reflect.InvocationTargetException;
@@ -15,10 +16,10 @@ import java.lang.reflect.InvocationTargetException;
 @BenchmarkMode(Mode.Throughput)
 @Warmup(iterations = 1)
 @Fork(2)
-public class BarrettTest {
+public class BarrettPerf {
     public static void main(String[] args) throws RunnerException, InvocationTargetException, IllegalAccessException {
         Options options = new OptionsBuilder()
-                .include(BarrettTest.class.getSimpleName())
+                .include(BarrettPerf.class.getSimpleName())
                 .jvmArgsAppend("-XX:TieredStopAtLevel=1")
                 .build();
         new Runner(options).run();

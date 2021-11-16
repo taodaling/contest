@@ -1,0 +1,40 @@
+{
+  "name" : "A - ABC Identity",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "2\nABCCBA\n",
+    "output" : "111222\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "4\nAABCBCAACBCB\n",
+    "output" : "111211241244\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_11.on2021_11_13_AtCoder___AtCoder_Grand_Contest_055.A___ABC_Identity.AABCIdentity",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ ],
+  "date" : "2021.11.13",
+  "contestName" : "AtCoder - AtCoder Grand Contest 055",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

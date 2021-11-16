@@ -1,0 +1,40 @@
+{
+  "name" : "F - String Cards",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "4 3\node\nzaaa\nr\natc\n",
+    "output" : "atcoder\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "5 2\nz\nz\nzzz\nz\nzzzzzz\n",
+    "output" : "zz\n",
+    "index" : 1,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx1024M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_11.on2021_11_06_AtCoder___UNICORN_Programming_Contest_2021_AtCoder_Beginner_Contest_225_.F___String_Cards.FStringCards",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "on2021_11.on2021_11_06_AtCoder___UNICORN_Programming_Contest_2021_AtCoder_Beginner_Contest_225_.F___String_Cards.FStringCardsTestCase" ],
+  "date" : "2021.11.06",
+  "contestName" : "AtCoder - UNICORN Programming Contest 2021(AtCoder Beginner Contest 225)",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

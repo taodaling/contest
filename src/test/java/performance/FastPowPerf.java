@@ -1,14 +1,16 @@
-package template.math;
+package performance;
 
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
+import template.math.FastPow2;
+import template.math.FastPow4;
 
 import java.lang.reflect.InvocationTargetException;
 
-public class FastPowTest {
+public class FastPowPerf {
     static int mod = (int) 1e9 + 7;
     static FastPow2 cp = new FastPow2(10, mod);
     static FastPow4 fp = new FastPow4(10, mod);
@@ -16,7 +18,7 @@ public class FastPowTest {
 
     public static void main(String[] args) throws RunnerException, InvocationTargetException, IllegalAccessException {
         Options options = new OptionsBuilder()
-                .include(FastPowTest.class.getSimpleName())
+                .include(FastPowPerf.class.getSimpleName())
                 .jvmArgsAppend("-XX:TieredStopAtLevel=1")
                 .build();
         new Runner(options).run();

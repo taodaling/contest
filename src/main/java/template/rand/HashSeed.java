@@ -1,9 +1,17 @@
 package template.rand;
 
+import template.math.EratosthenesSieve;
+import template.primitve.generated.datastructure.IntegerArrayList;
 import template.utils.Pair;
 
 public class HashSeed {
-    private static int[] seeds = new int[]{11, 13, 17, 29, 31, 41, 43, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103};
+    private static int[] seeds;
+
+    static {
+        IntegerArrayList list = new IntegerArrayList(1000);
+        EratosthenesSieve.sieve(10000, list::add);
+        seeds = list.toArray();
+    }
 
     public static int getSeed() {
         return seeds[RandomWrapper.INSTANCE.nextInt(seeds.length)];
