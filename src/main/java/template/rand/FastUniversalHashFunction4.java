@@ -15,8 +15,8 @@ public class FastUniversalHashFunction4 implements HashFunction {
 
     @Override
     public HashFunction upgrade() {
-        return FastUniversalHashFunction5.INSTANCE;
-        //        FastUniversalHashFunction0.numberOfInstance--;
-//        return new UniversalHashFunction();
+//        return FastUniversalHashFunction5.INSTANCE;
+        FastUniversalHashFunction0.numberOfInstance--;
+        return new UniversalHashFunction();
     }
 }

@@ -4,6 +4,7 @@ import template.binary.Log2;
 import template.primitve.generated.datastructure.LongIterator;
 import template.rand.FastUniversalHashFunction0;
 import template.rand.HashFunction;
+import template.rand.RandomWrapper;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -23,8 +24,7 @@ import java.util.NoSuchElementException;
 public class PerfectHashing<V> implements Iterable<V> {
     HashFunction f1 = FastUniversalHashFunction0.getInstance();
     HashFunction[] f2;
-    static final Object NIL = new Object();
-
+    long notExistKey;
     int[] starts;
     int[] masks;
     long[] K;
@@ -48,6 +48,19 @@ public class PerfectHashing<V> implements Iterable<V> {
 
     public PerfectHashing(long[] keys, V[] values) {
         this((int) Math.ceil(keys.length));
+        while (true) {
+            notExistKey = RandomWrapper.INSTANCE.nextLong();
+            boolean find = false;
+            for (long k : keys) {
+                if (k == notExistKey) {
+                    find = true;
+                    break;
+                }
+            }
+            if (!find) {
+                break;
+            }
+        }
         init0(keys, values, new int[keys.length]);
     }
 
@@ -98,13 +111,13 @@ public class PerfectHashing<V> implements Iterable<V> {
             }
             i = r;
             while (true) {
-                Arrays.fill(V, L, L + M + 1, NIL);
+                Arrays.fill(K, L, L + M + 1, notExistKey);
                 boolean success = true;
                 HashFunction f = f2[h];
                 for (int j = l; j <= r; j++) {
                     int index = indices[j];
                     int h2 = L + ((int) f.f(keys[index]) & M);
-                    if (V[h2] != NIL) {
+                    if (K[h2] != notExistKey) {
                         success = false;
                         break;
                     }
@@ -127,7 +140,7 @@ public class PerfectHashing<V> implements Iterable<V> {
 
             @Override
             public boolean hasNext() {
-                while (cur <= globalMask && V[cur] == NIL) {
+                while (cur <= globalMask && K[cur] == notExistKey) {
                     cur++;
                 }
                 return cur <= globalMask;
@@ -150,7 +163,7 @@ public class PerfectHashing<V> implements Iterable<V> {
 
             @Override
             public boolean hasNext() {
-                while (cur <= globalMask && V[cur] == NIL) {
+                while (cur <= globalMask && K[cur] == notExistKey) {
                     cur++;
                 }
                 return cur <= globalMask;
@@ -166,19 +179,37 @@ public class PerfectHashing<V> implements Iterable<V> {
         };
     }
 
+    public static final int THRESHOLD = 4;
     public V getOrDefault(long key, V def) {
+//        int h1 = (int) f1.f(key) & globalMask;
+//        if (masks[h1] <= THRESHOLD) {
+//            int l = starts[h1];
+//            int r = l + masks[h1];
+//            while (l <= r) {
+//                if (K[l] != key || key == notExistKey) {
+//                    l++;
+//                } else {
+//                    return (V) V[l];
+//                }
+//            }
+//            return def;
+//        }
+//        int h2 = ((int) f2[h1].f(key) & masks[h1]);
+//        int index = starts[h1] + h2;
+//        return K[index] != key || key == notExistKey ? def : (V) V[index];
         int h1 = (int) f1.f(key) & globalMask;
         int h2 = masks[h1] == 0 ? 0 : ((int) f2[h1].f(key) & masks[h1]);
         int index = starts[h1] + h2;
-        Object ans = V[index];
-        return ans == NIL || K[index] != key ? def : (V) ans;
+        return K[index] != key || key == notExistKey ? def : (V) V[index];
+
     }
 
     public V get(long key) {
         return getOrDefault(key, null);
     }
 
+    private static Object notExistValue = new Object();
     public boolean containKey(long key) {
-        return getOrDefault(key, (V) NIL) != NIL;
+        return getOrDefault(key, (V)notExistValue) != notExistValue;
     }
 }
