@@ -3,7 +3,6 @@ package on2021_07.on2021_07_26_Codeforces___Codeforces_Global_Round_15.G__A_Seri
 
 
 import template.binary.Bits;
-import template.binary.FastBitCount2;
 import template.io.FastInput;
 import template.io.FastOutput;
 
@@ -21,7 +20,7 @@ public class GASeriousReferee {
         }
         if (i == S.length) {
             int bc = Long.bitCount(bitset);
-            if (bitset != (~Bits.headLongMask(n - bc) & whole)) {
+            if (bitset != (~Bits.lowestKOneLong(n - bc) & whole)) {
                 ok = false;
             }
             return;

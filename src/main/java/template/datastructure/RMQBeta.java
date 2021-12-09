@@ -80,9 +80,9 @@ public class RMQBeta {
         int tl = l & andMask;
 //        int tr = r & andMask;
         if (bl == br) {
-            return Integer.numberOfTrailingZeros(toLeft[r] & Bits.tailIntMask(32 - tl)) | (bl << shift);
+            return Integer.numberOfTrailingZeros(toLeft[r] & Bits.highestKOneInt(32 - tl)) | (bl << shift);
         }
-        int res1 = Integer.numberOfTrailingZeros(toLeft[(bl << shift) | andMask] & Bits.tailIntMask(32 - tl)) | (bl << shift);
+        int res1 = Integer.numberOfTrailingZeros(toLeft[(bl << shift) | andMask] & Bits.highestKOneInt(32 - tl)) | (bl << shift);
         int res2 = Integer.numberOfTrailingZeros(toLeft[r]) | (br << shift);
         int best = min(res1, res2);
         if (bl + 1 < br) {

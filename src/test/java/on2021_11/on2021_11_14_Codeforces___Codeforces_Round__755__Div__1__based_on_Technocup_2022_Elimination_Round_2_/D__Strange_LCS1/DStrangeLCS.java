@@ -1,11 +1,12 @@
-package contest;
+package on2021_11.on2021_11_14_Codeforces___Codeforces_Round__755__Div__1__based_on_Technocup_2022_Elimination_Round_2_.D__Strange_LCS1;
 
 
-import template.datastructure.PerfectHashing;
+
+
 import template.io.FastInput;
 import template.io.FastOutput;
+import template.primitve.generated.datastructure.LongHashMap;
 import template.rand.FastUniversalHashFunction0;
-import template.rand.FastUniversalHashFunction2;
 import template.rand.UniversalHashFunction;
 import template.string.FastLongHash;
 import template.utils.CloneSupportObject;
@@ -18,7 +19,8 @@ import java.util.List;
 
 public class DStrangeLCS {
     int charset = remake('Z') + 1;
-    Debug debug = new Debug(true);
+    Debug debug = new Debug(false);
+    LongHashMap map = new LongHashMap((int) 2e6, false);
 
     public void solve(int testNumber, FastInput in, FastOutput out) {
         int n = in.ri();
@@ -39,26 +41,30 @@ public class DStrangeLCS {
         }
         allList.sort(comp);
         E[] all = allList.toArray(new E[0]);
-        long[] keys = Arrays.stream(all).mapToLong(E::hash).toArray();
-        PerfectHashing<E> ph = new PerfectHashing<>(keys, all);
+
+        map.clear();
         for (int i = 0; i < all.length; i++) {
             all[i].index = i;
             all[i].score = 1;
             all[i].prev = null;
+
+            map.put(all[i].hash(), i);
         }
 
 
         for (E e : all) {
             for (int j = 0; j < charset; j++) {
                 buf.init();
-                for (int k = 0; k < n; k++) {
+                boolean ok = true;
+                for (int k = 0; k < n && ok; k++) {
                     int to = next[k][e.get(k) + 1][j];
+                    ok = to < s[k].length;
                     buf.set(k, to);
                 }
-                E obj = ph.get(buf.hash());
-                if (obj == null) {
+                if (!ok) {
                     continue;
                 }
+                E obj = all[(int) map.get(buf.hash())];
                 if (obj.score < e.score + 1) {
                     obj.score = e.score + 1;
                     obj.prev = e;
