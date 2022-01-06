@@ -118,7 +118,7 @@ public class RangeTree {
         for (int i = 0, y = x; i < data.length; i++) {
             int offset = y & bitShiftValueMask;
             y = y >>> bitShift;
-            long headMask = Bits.headLongMask(offset);
+            long headMask = Bits.lowestKOneLong(offset);
             if ((data[i][y] & headMask) != 0) {
                 return lastSet(i - 1, (y << bitShift) | Bits.highestOneBitOffset(data[i][y] & headMask));
             }
@@ -140,7 +140,7 @@ public class RangeTree {
         for (int i = 0, y = x; i < data.length; i++) {
             int offset = y & bitShiftValueMask;
             y = y >>> bitShift;
-            long tailMask = Bits.tailLongMask(63 - offset);
+            long tailMask = Bits.highestKOneLong(63 - offset);
             if ((data[i][y] & tailMask) != 0) {
                 return firstSet(i - 1, (y << bitShift) | Bits.lowestOneBitOffset(data[i][y] & tailMask));
             }

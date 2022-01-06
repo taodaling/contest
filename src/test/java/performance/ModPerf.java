@@ -18,7 +18,7 @@ public class ModPerf {
     public static void main(String[] args) throws RunnerException, InvocationTargetException, IllegalAccessException {
         Options options = new OptionsBuilder()
                 .include(ModPerf.class.getSimpleName())
-                .jvmArgsAppend("-XX:TieredStopAtLevel=1")
+                //.jvmArgsAppend("-XX:TieredStopAtLevel=1")
                 .build();
         new Runner(options).run();
     }

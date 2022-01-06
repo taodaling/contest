@@ -1,4 +1,6 @@
-package contest;
+package on2021_11.on2021_11_14_Codeforces___Codeforces_Round__755__Div__1__based_on_Technocup_2022_Elimination_Round_2_.D__Strange_LCS1;
+
+
 
 import java.util.ArrayList;
 import java.util.Collection;

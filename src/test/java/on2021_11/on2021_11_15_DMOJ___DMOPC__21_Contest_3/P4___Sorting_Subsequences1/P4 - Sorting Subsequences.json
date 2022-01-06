@@ -1,0 +1,65 @@
+{
+  "name" : "P4 - Sorting Subsequences",
+  "testType" : "SINGLE",
+  "input" : {
+    "type" : "STANDARD",
+    "fileName" : "input.txt"
+  },
+  "output" : {
+    "type" : "STANDARD",
+    "fileName" : "output.txt"
+  },
+  "tests" : [ {
+    "input" : "8 3\n4 7 6 2 8 3 1 5\n",
+    "output" : "1 2 3 5 4 6 8 7\n",
+    "index" : 0,
+    "active" : true
+  }, {
+    "input" : "3 1\n3 2 1",
+    "output" : "3 2 1 ",
+    "index" : 1,
+    "active" : true
+  }, {
+    "input" : "3 2\n3 1 2",
+    "output" : "1 3 2",
+    "index" : 2,
+    "active" : true
+  }, {
+    "input" : "4 2\n1 4 2 3",
+    "output" : "1 2 4 3",
+    "index" : 3,
+    "active" : true
+  }, {
+    "input" : "6 2\n5 2 1 3 6 4",
+    "output" : "1 2 5 3 4 6",
+    "index" : 4,
+    "active" : true
+  }, {
+    "input" : "4 2\n2 3 4 1",
+    "output" : "1 3 4 2",
+    "index" : 5,
+    "active" : true
+  }, {
+    "input" : "4 3\n2 3 4 1",
+    "output" : "1 2 4 3",
+    "index" : 6,
+    "active" : true
+  } ],
+  "location" : "src/main/java/contest",
+  "vmArgs" : "-Xmx256M",
+  "mainClass" : "Main",
+  "taskClass" : "on2021_11.on2021_11_15_DMOJ___DMOPC__21_Contest_3.P4___Sorting_Subsequences1.P4SortingSubsequences",
+  "checkerClass" : "net.egork.chelper.checkers.TokenChecker",
+  "checkerParameters" : "",
+  "testClasses" : [ "on2021_11.on2021_11_15_DMOJ___DMOPC__21_Contest_3.P4___Sorting_Subsequences1.P4SortingSubsequencesTestCase" ],
+  "date" : "2021.11.15",
+  "contestName" : "DMOJ - DMOPC '21 Contest 3",
+  "truncate" : true,
+  "inputClass" : "template.io.FastInput",
+  "outputClass" : "template.io.FastOutput",
+  "includeLocale" : false,
+  "failOnOverflow" : false,
+  "interactive" : false,
+  "interactor" : "net.egork.chelper.tester.Interactor",
+  "newThread" : true
+}

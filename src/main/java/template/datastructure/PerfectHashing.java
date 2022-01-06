@@ -6,9 +6,7 @@ import template.rand.FastUniversalHashFunction0;
 import template.rand.HashFunction;
 import template.rand.RandomWrapper;
 
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 /**
  * <p>
@@ -180,6 +178,7 @@ public class PerfectHashing<V> implements Iterable<V> {
     }
 
     public static final int THRESHOLD = 4;
+
     public V getOrDefault(long key, V def) {
 //        int h1 = (int) f1.f(key) & globalMask;
 //        if (masks[h1] <= THRESHOLD) {
@@ -209,7 +208,20 @@ public class PerfectHashing<V> implements Iterable<V> {
     }
 
     private static Object notExistValue = new Object();
+
     public boolean containKey(long key) {
-        return getOrDefault(key, (V)notExistValue) != notExistValue;
+        return getOrDefault(key, (V) notExistValue) != notExistValue;
+    }
+
+    @Override
+    public String toString() {
+        Map<Long, V> map = new HashMap<>();
+        for (int i = 0; i < K.length; i++) {
+            if (K[i] == notExistKey) {
+                continue;
+            }
+            map.put(K[i], (V)V[i]);
+        }
+        return map.toString();
     }
 }

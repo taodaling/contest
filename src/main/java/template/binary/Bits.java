@@ -141,27 +141,27 @@ public class Bits {
     public static int lowestOneBitOffset(int x) {
         return Integer.numberOfTrailingZeros(x);
     }
-    public static int tailIntMask(int n) {
+    public static int highestKOneInt(int n) {
         if (n == 0) {
             return 0;
         }
         return -1 << (32 - n);
     }
 
-    public static int headIntMask(int n) {
+    public static int lowestKOneInt(int n) {
         if (n == 0) {
             return 0;
         }
         return -1 >>> (32 - n);
     }
-    public static long tailLongMask(int n) {
+    public static long highestKOneLong(int n) {
         if (n == 0) {
             return 0;
         }
         return -1L << (64 - n);
     }
 
-    public static long headLongMask(int n) {
+    public static long lowestKOneLong(int n) {
         if (n == 0) {
             return 0;
         }
