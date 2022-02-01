@@ -6,6 +6,8 @@ import template.utils.PrimitiveBuffers;
 import template.utils.SequenceUtils;
 
 public class IntPoly {
+
+
     protected int mod;
     protected Power power;
     QuadraticResidue qr;
@@ -18,6 +20,11 @@ public class IntPoly {
 
     public int[] convolution(int[] a, int[] b) {
         return mulBF(a, b);
+    }
+
+    public static void main(String[] args) {
+        IntPoly poly = new IntPoly(998244353);
+        poly.divide(new int[]{1, 2, 3, 4}, new int[]{5, 6, 7, 0});
     }
 
     /**
@@ -248,7 +255,6 @@ public class IntPoly {
         ans = PrimitiveBuffers.replace(module(ans, n), ans);
         return ans;
     }
-
 
 
     /**
@@ -780,9 +786,9 @@ public class IntPoly {
                 return ans;
             }
 
-            if (rankA < FAST_DIVIDE_THRESHOLD || rankB < FAST_DIVIDE_THRESHOLD) {
-                return IntPoly.this.divideAndRemainder(a, b);
-            }
+//            if (rankA < FAST_DIVIDE_THRESHOLD || rankB < FAST_DIVIDE_THRESHOLD) {
+//                return IntPoly.this.divideAndRemainder(a, b);
+//            }
 
             int[] quotient = divide(a);
             int[] prod = convolution(b, quotient);

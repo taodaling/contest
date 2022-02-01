@@ -162,12 +162,6 @@ public class RangeTree {
         return lastSet(data.length - 1, 0);
     }
 
-    public int mex() {
-        if (size == n) {
-            return n;
-        }
-        return firstClear(data.length - 1, 0);
-    }
 
     public IntegerIterator iterator() {
         return iterator(0, n - 1);

@@ -32,6 +32,10 @@ public class IntPolyMTT extends IntPolyFFT {
     }
 
 
+    public static void main(String[] args) {
+        new IntPolyMTT((int)1e9 + 7).convolution(new int[]{10000000}, new int[]{10000000});
+    }
+
     @Override
     public int[] convolution(int[] a, int[] b) {
         if (Math.min(a.length, b.length) < (int) 2e5) {

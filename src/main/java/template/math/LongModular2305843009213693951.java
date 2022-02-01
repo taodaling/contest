@@ -4,7 +4,12 @@ public class LongModular2305843009213693951 implements ILongModular {
     private static long mod = 2305843009213693951L;
     private static final LongModular2305843009213693951 INSTANCE = new LongModular2305843009213693951();
 
+    public static void main(String[] args) {
+        System.out.println(Long.lowestOneBit(2305843009213693950L));
+    }
+
     private LongModular2305843009213693951() {
+
     }
 
     public static final LongModular2305843009213693951 getInstance() {

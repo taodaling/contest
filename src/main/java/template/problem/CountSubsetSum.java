@@ -4,12 +4,17 @@ package template.problem;
 import template.math.InverseNumber;
 import template.math.ModPrimeInverseNumber;
 import template.polynomial.IntPoly;
+import template.polynomial.IntPolyNTT;
 import template.primitve.generated.datastructure.IntToIntFunction;
 import template.utils.PrimitiveBuffers;
 
 import java.util.Arrays;
 
 public class CountSubsetSum {
+    public static void main(String[] args) {
+        new CountSubsetSum(new int[]{1, 1, 2, 2 ,3}, 2, 998244353, new IntPolyNTT(998244353));
+    }
+
     int[] ans;
     int mod;
 
@@ -22,8 +27,7 @@ public class CountSubsetSum {
      */
     /**
      * another interpretation:
-     * given |s| polynomial, F_i = c_i x^{s_i}+1
-     * Find F = F_1 * F_2 * ... * F_|S|
+ra
      */
     public CountSubsetSum(int[] s, int n, int mod, IntPoly poly, IntToIntFunction c) {
         this.mod = mod;

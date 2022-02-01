@@ -1,5 +1,7 @@
 package template.math;
 
+import template.binary.Log2;
+
 import java.util.HashMap;
 
 public class PrimitiveRoot {
@@ -8,6 +10,14 @@ public class PrimitiveRoot {
     private Power pow;
     private int phi;
     private static HashMap<Integer, Integer> root = new HashMap<>();
+
+    public static void main(String[] args){
+            int x = 998_244_353;
+          System.out.println(PrimitiveRoot.findAnyRoot(x));
+          System.out.println(Log2.ceilLog(Integer.lowestOneBit(x - 1)));
+            System.out.println(PrimitiveRoot.findAnyRoot((int)1e9 + 7));
+        System.out.println(PrimitiveRoot.findAnyRoot((int)1e9 + 9));
+    }
 
     public static int findAnyRoot(int x) {
         if (!root.containsKey(x)) {

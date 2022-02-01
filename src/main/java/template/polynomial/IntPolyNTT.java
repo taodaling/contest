@@ -7,6 +7,9 @@ import template.utils.PrimitiveBuffers;
 import java.util.Arrays;
 
 public class IntPolyNTT extends IntPoly {
+    public static void main(String[] args){
+        new IntPolyNTT(998244353).module(2, new int[]{998244353 - 1, 998244353 - 1, 1});
+    }
     protected int g;
     static final int NTT_THRESHOLD = 50;
     static final int NTT_DIVIDE_THRESHOLD = 200;

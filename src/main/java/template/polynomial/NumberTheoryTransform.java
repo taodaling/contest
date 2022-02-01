@@ -4,7 +4,21 @@ import template.binary.Log2;
 import template.math.Power;
 import template.utils.PrimitiveBuffers;
 
+import java.util.Arrays;
+
 public class NumberTheoryTransform {
+    public static void main(String[] args) {
+        int[] ans = new int[]{0, 1};
+        int mod = 998_244_353;
+        int g = 3;
+        Power pow = new Power(mod);
+        ntt(ans, false, mod, g, pow);
+        System.out.println(Arrays.toString(ans));
+        ntt(ans, true, mod, g, pow);
+        System.out.println(Arrays.toString(ans));
+
+    }
+
     /**
      * Normal but correct ntt
      */

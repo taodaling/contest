@@ -1,16 +1,23 @@
 import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Deque;
+import java.util.function.Supplier;
+import java.util.ArrayList;
 import java.io.OutputStream;
-import java.util.stream.IntStream;
+import java.io.PrintStream;
+import java.util.Collection;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.stream.Collectors;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.io.UncheckedIOException;
+import java.util.function.Consumer;
 import java.util.List;
 import java.util.stream.Stream;
 import java.io.Closeable;
+import java.util.ArrayDeque;
 import java.io.InputStream;
 
 /**
@@ -31,388 +38,409 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            P5CrowdedTravels solver = new P5CrowdedTravels();
+            Task solver = new Task();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class P5CrowdedTravels {
-        List<IntegerWeightUndirectedEdge>[] g;
-        long[] w1;
-        long[] w2;
-        int[] fa;
-
-        public void dfs(int root, int p) {
-            fa[root] = p;
-            for (IntegerWeightUndirectedEdge e : g[root]) {
-                w2[root] += e.weight;
-                if (e.to == p) {
-                    w1[root] = e.weight;
-                    continue;
-                }
-                dfs(e.to, root);
-            }
-        }
-
+    static class Task {
         public void solve(int testNumber, FastInput in, FastOutput out) {
             int n = in.ri();
-            int q = in.ri();
-            fa = new int[n];
-            w1 = new long[n];
-            w2 = new long[n];
-            g = Graph.createGraph(n);
-            LCTNode[] nodes = new LCTNode[n];
-            for (int i = 0; i < n; i++) {
-                nodes[i] = new LCTNode();
-                nodes[i].id = i;
-            }
-            for (int i = 0; i < n - 1; i++) {
-                int a = in.ri() - 1;
-                int b = in.ri() - 1;
-                int w = in.ri();
-                IntegerWeightGraph.addUndirectedEdge(g, a, b, w);
-            }
-            dfs(0, -1);
-            for (int i = 0; i < n; i++) {
-                nodes[i].weight = w1[i];
-                nodes[i].upgrade = false;
-                nodes[i].pushUp();
-            }
-            for (List<IntegerWeightUndirectedEdge> E : g) {
-                for (IntegerWeightUndirectedEdge e : E) {
-                    if (e.to < e.rev.to) {
-                        LCTNode.join(nodes[e.to], nodes[e.rev.to]);
-                    }
-                }
-            }
-            LCTNode.makeRoot(nodes[0]);
-            for (int i = 0; i < q; i++) {
-                int t = in.ri();
-                int u = in.ri() - 1;
-                LCTNode.access(nodes[u]);
-                if (t == 1) {
-                    long newB = w2[u] - w1[u];
-                    for (IntegerWeightUndirectedEdge e : g[u]) {
-                        if (e.to == fa[u]) {
-                            continue;
-                        }
-                        LCTNode.splay(nodes[e.to]);
-                        newB += nodes[e.to].weight;
-                    }
-                    LCTNode.splay(nodes[u]);
-                    nodes[u].upgrade = true;
-                    nodes[u].pushUp();
-                    nodes[u].modify(newB);
-
-                    LCTNode first = find(nodes[u]);
-                    LCTNode.access(first);
-                    LCTNode.splay(first);
-                    first.modify(-newB);
-                } else {
-                    LCTNode.splay(nodes[0]);
-                    out.println(nodes[0].sumOfWeight - nodes[0].weight);
-                }
-            }
+            int m = in.ri();
+            int[] a = in.ri(n);
+            int[] b = in.ri(m);
+            int[] conv = new IntPolyFFT(998244353).convolution(a, b);
         }
 
-        LCTNode find(LCTNode root) {
-            assert root != LCTNode.NIL;
-            root.pushDown();
-            if (root.sumOfUpgrade) {
-                return LCTNode.NIL;
-            }
-            if (!root.right.sumOfUpgrade) {
-                return find(root.right);
+    }
+
+    static interface InverseNumber {
+    }
+
+    static class IntPolyFFT extends IntPoly {
+        private static final int FFT_THRESHOLD = 50;
+
+        public IntPolyFFT(int mod) {
+            super(mod);
+        }
+
+        public int[] convolution(int[] a, int[] b) {
+            if (a != b) {
+                return multiplyMod(a, b);
             } else {
-                if (!root.upgrade) {
-                    return root;
-                } else {
-                    return find(root.left);
+                return pow2(a);
+            }
+        }
+
+        public int[] pow2(int[] a) {
+            int rA = rankOf(a);
+            if (rA < FFT_THRESHOLD) {
+                return mulBF(a, a);
+            }
+
+            int need = rA * 2 + 1;
+
+            double[] aReal = PrimitiveBuffers.allocDoublePow2(need);
+            double[] aImag = PrimitiveBuffers.allocDoublePow2(need);
+            int n = aReal.length;
+
+            for (int i = 0; i <= rA; i++) {
+                int x = DigitUtils.mod(a[i], mod);
+                aReal[i] = x & ((1 << 15) - 1);
+                aImag[i] = x >> 15;
+            }
+            FastFourierTransform.fft(new double[][]{aReal, aImag}, false);
+
+            double[] bReal = PrimitiveBuffers.allocDoublePow2(aReal, aReal.length);
+            double[] bImag = PrimitiveBuffers.allocDoublePow2(aImag, bReal.length);
+
+
+            for (int i = 0, j = 0; i <= j; i++, j = n - i) {
+                double ari = aReal[i];
+                double aii = aImag[i];
+                double bri = bReal[i];
+                double bii = bImag[i];
+                double arj = aReal[j];
+                double aij = aImag[j];
+                double brj = bReal[j];
+                double bij = bImag[j];
+
+                double a1r = (ari + arj) / 2;
+                double a1i = (aii - aij) / 2;
+                double a2r = (aii + aij) / 2;
+                double a2i = (arj - ari) / 2;
+
+                double b1r = (bri + brj) / 2;
+                double b1i = (bii - bij) / 2;
+                double b2r = (bii + bij) / 2;
+                double b2i = (brj - bri) / 2;
+
+                aReal[i] = a1r * b1r - a1i * b1i - a2r * b2i - a2i * b2r;
+                aImag[i] = a1r * b1i + a1i * b1r + a2r * b2r - a2i * b2i;
+                bReal[i] = a1r * b2r - a1i * b2i + a2r * b1r - a2i * b1i;
+                bImag[i] = a1r * b2i + a1i * b2r + a2r * b1i + a2i * b1r;
+
+                if (i != j) {
+                    a1r = (arj + ari) / 2;
+                    a1i = (aij - aii) / 2;
+                    a2r = (aij + aii) / 2;
+                    a2i = (ari - arj) / 2;
+
+                    b1r = (brj + bri) / 2;
+                    b1i = (bij - bii) / 2;
+                    b2r = (bij + bii) / 2;
+                    b2i = (bri - brj) / 2;
+
+                    aReal[j] = a1r * b1r - a1i * b1i - a2r * b2i - a2i * b2r;
+                    aImag[j] = a1r * b1i + a1i * b1r + a2r * b2r - a2i * b2i;
+                    bReal[j] = a1r * b2r - a1i * b2i + a2r * b1r - a2i * b1i;
+                    bImag[j] = a1r * b2i + a1i * b2r + a2r * b1i + a2i * b1r;
                 }
             }
+
+            FastFourierTransform.fft(new double[][]{aReal, aImag}, true);
+            FastFourierTransform.fft(new double[][]{bReal, bImag}, true);
+
+            int[] ans = PrimitiveBuffers.allocIntPow2(need);
+            for (int i = 0; i < need; i++) {
+                long aa = DigitUtils.mod(Math.round(aReal[i]), mod);
+                long bb = DigitUtils.mod(Math.round(bReal[i]), mod);
+                long cc = DigitUtils.mod(Math.round(aImag[i]), mod);
+                ans[i] = DigitUtils.mod(aa + (bb << 15) + (cc << 30), mod);
+            }
+
+            PrimitiveBuffers.release(aReal, bReal, aImag, bImag);
+            return ans;
+        }
+
+        private void to_string(String id, double[] a, double[] b) {
+            List<String> list = new ArrayList<>();
+            for (int i = 0; i < a.length; i++) {
+                list.add(String.format("(%.1f,%.1f)", a[i], b[i]));
+            }
+            String res = id + "\n\n" + list.stream().collect(Collectors.joining(" ")) + "\n";
+            System.out.println(res);
+        }
+
+        private int[] multiplyMod(int[] a, int[] b) {
+            int rA = rankOf(a);
+            int rB = rankOf(b);
+            if (Math.min(rA, rB) < FFT_THRESHOLD) {
+                return mulBF(a, b);
+            }
+
+            int need = rA + rB + 1;
+
+            double[] aReal = PrimitiveBuffers.allocDoublePow2(need);
+            double[] aImag = PrimitiveBuffers.allocDoublePow2(need);
+            int n = aReal.length;
+
+            for (int i = 0; i <= rA; i++) {
+                int x = DigitUtils.mod(a[i], mod);
+                aReal[i] = x & ((1 << 15) - 1);
+                aImag[i] = x >> 15;
+            }
+            FastFourierTransform.fft(new double[][]{aReal, aImag}, false);
+
+            double[] bReal = PrimitiveBuffers.allocDoublePow2(need);
+            double[] bImag = PrimitiveBuffers.allocDoublePow2(need);
+            for (int i = 0; i <= rB; i++) {
+                int x = DigitUtils.mod(b[i], mod);
+                bReal[i] = x & ((1 << 15) - 1);
+                bImag[i] = x >> 15;
+
+//            System.out.printf("%d %.1f %.1f\n", x, bReal[i], bImag[i]);
+            }
+//        to_string("", bReal, bImag);
+            FastFourierTransform.fft(new double[][]{bReal, bImag}, false);
+            to_string("一", aReal, aImag);
+            to_string("二", bReal, bImag);
+
+            for (int i = 0, j = 0; i <= j; i++, j = n - i) {
+                double ari = aReal[i];
+                double aii = aImag[i];
+                double bri = bReal[i];
+                double bii = bImag[i];
+                double arj = aReal[j];
+                double aij = aImag[j];
+                double brj = bReal[j];
+                double bij = bImag[j];
+
+                double a1r = (ari + arj) / 2;
+                double a1i = (aii - aij) / 2;
+                double a2r = (aii + aij) / 2;
+                double a2i = (arj - ari) / 2;
+
+                double b1r = (bri + brj) / 2;
+                double b1i = (bii - bij) / 2;
+                double b2r = (bii + bij) / 2;
+                double b2i = (brj - bri) / 2;
+
+                aReal[i] = a1r * b1r - a1i * b1i - a2r * b2i - a2i * b2r;
+                aImag[i] = a1r * b1i + a1i * b1r + a2r * b2r - a2i * b2i;
+                bReal[i] = a1r * b2r - a1i * b2i + a2r * b1r - a2i * b1i;
+                bImag[i] = a1r * b2i + a1i * b2r + a2r * b1i + a2i * b1r;
+
+                if (i != j) {
+                    a1r = (arj + ari) / 2;
+                    a1i = (aij - aii) / 2;
+                    a2r = (aij + aii) / 2;
+                    a2i = (ari - arj) / 2;
+
+                    b1r = (brj + bri) / 2;
+                    b1i = (bij - bii) / 2;
+                    b2r = (bij + bii) / 2;
+                    b2i = (bri - brj) / 2;
+
+                    aReal[j] = a1r * b1r - a1i * b1i - a2r * b2i - a2i * b2r;
+                    aImag[j] = a1r * b1i + a1i * b1r + a2r * b2r - a2i * b2i;
+                    bReal[j] = a1r * b2r - a1i * b2i + a2r * b1r - a2i * b1i;
+                    bImag[j] = a1r * b2i + a1i * b2r + a2r * b1i + a2i * b1r;
+                }
+            }
+
+            FastFourierTransform.fft(new double[][]{aReal, aImag}, true);
+            FastFourierTransform.fft(new double[][]{bReal, bImag}, true);
+            to_string("三", aReal, aImag);
+            to_string("四", bReal, bImag);
+            int[] ans = PrimitiveBuffers.allocIntPow2(need);
+            for (int i = 0; i < need; i++) {
+                long aa = DigitUtils.mod(Math.round(aReal[i]), mod);
+                long bb = DigitUtils.mod(Math.round(bReal[i]), mod);
+                long cc = DigitUtils.mod(Math.round(aImag[i]), mod);
+                System.out.printf("%d %d %d\n", aa, bb, cc);
+                ans[i] = DigitUtils.mod(aa + (bb << 15) + (cc << 30), mod);
+            }
+
+            PrimitiveBuffers.release(aReal, bReal, aImag, bImag);
+            return ans;
         }
 
     }
 
-    static class FastInput {
-        private final InputStream is;
-        private byte[] buf = new byte[1 << 13];
-        private int bufLen;
-        private int bufOffset;
-        private int next;
+    static class Power implements InverseNumber {
+        int mod;
 
-        public FastInput(InputStream is) {
-            this.is = is;
-        }
-
-        private int read() {
-            while (bufLen == bufOffset) {
-                bufOffset = 0;
-                try {
-                    bufLen = is.read(buf);
-                } catch (IOException e) {
-                    bufLen = -1;
-                }
-                if (bufLen == -1) {
-                    return -1;
-                }
-            }
-            return buf[bufOffset++];
-        }
-
-        public void skipBlank() {
-            while (next >= 0 && next <= 32) {
-                next = read();
-            }
-        }
-
-        public int ri() {
-            return readInt();
-        }
-
-        public int readInt() {
-            boolean rev = false;
-
-            skipBlank();
-            if (next == '+' || next == '-') {
-                rev = next == '-';
-                next = read();
-            }
-
-            int val = 0;
-            while (next >= '0' && next <= '9') {
-                val = val * 10 - next + '0';
-                next = read();
-            }
-
-            return rev ? val : -val;
+        public Power(int mod) {
+            this.mod = mod;
         }
 
     }
 
-    static class IntegerWeightDirectedEdge extends DirectedEdge {
-        public int weight;
-
-        public IntegerWeightDirectedEdge(int to, int weight) {
-            super(to);
-            this.weight = weight;
+    static class Log2 {
+        public static int ceilLog(int x) {
+            if (x <= 0) {
+                return 0;
+            }
+            return 32 - Integer.numberOfLeadingZeros(x - 1);
         }
 
     }
 
-    static class Graph {
-        public static List[] createGraph(int n) {
-            return IntStream.range(0, n).mapToObj(i -> new ArrayList<>()).toArray(i -> new List[i]);
+    static class Buffer<T> {
+        private Deque<T> deque;
+        private Supplier<T> supplier;
+        private Consumer<T> cleaner;
+        private int allocTime;
+        private int releaseTime;
+
+        public Buffer(Supplier<T> supplier) {
+            this(supplier, (x) -> {
+            });
         }
 
-    }
-
-    static class LCTNode {
-        public static final LCTNode NIL = new LCTNode();
-        public LCTNode left = NIL;
-        public LCTNode right = NIL;
-        public LCTNode father = NIL;
-        public LCTNode treeFather = NIL;
-        public boolean reverse;
-        public int id;
-        int size;
-        long sumOfWeight;
-        long weight;
-        long weightUpd;
-        boolean upgrade = true;
-        boolean sumOfUpgrade = true;
-
-        static {
-            NIL.left = NIL;
-            NIL.right = NIL;
-            NIL.father = NIL;
-            NIL.treeFather = NIL;
-            NIL.id = -1;
+        public Buffer(Supplier<T> supplier, Consumer<T> cleaner) {
+            this(supplier, cleaner, 0);
         }
 
-        public static void access(LCTNode x) {
-            LCTNode last = NIL;
-            while (x != NIL) {
-                splay(x);
-                x.right.father = NIL;
-                x.right.treeFather = x;
-                x.setRight(last);
-                x.pushUp();
-
-                last = x;
-                x = x.treeFather;
-            }
+        public Buffer(Supplier<T> supplier, Consumer<T> cleaner, int exp) {
+            this.supplier = supplier;
+            this.cleaner = cleaner;
+            deque = new ArrayDeque<>(exp);
         }
 
-        public static void makeRoot(LCTNode x) {
-            access(x);
-            splay(x);
-            x.reverse();
-        }
-
-        public static void join(LCTNode y, LCTNode x) {
-            makeRoot(x);
-            makeRoot(y);
-            x.treeFather = y;
-            y.pushUp();
-        }
-
-        public static void splay(LCTNode x) {
-            if (x == NIL) {
-                return;
-            }
-            LCTNode y, z;
-            while ((y = x.father) != NIL) {
-                if ((z = y.father) == NIL) {
-                    y.pushDown();
-                    x.pushDown();
-                    if (x == y.left) {
-                        zig(x);
-                    } else {
-                        zag(x);
-                    }
-                } else {
-                    z.pushDown();
-                    y.pushDown();
-                    x.pushDown();
-                    if (x == y.left) {
-                        if (y == z.left) {
-                            zig(y);
-                            zig(x);
-                        } else {
-                            zig(x);
-                            zag(x);
-                        }
-                    } else {
-                        if (y == z.left) {
-                            zag(x);
-                            zig(x);
-                        } else {
-                            zag(y);
-                            zag(x);
-                        }
-                    }
-                }
-            }
-
-            x.pushDown();
-            x.pushUp();
-        }
-
-        public static void zig(LCTNode x) {
-            LCTNode y = x.father;
-            LCTNode z = y.father;
-            LCTNode b = x.right;
-
-            y.setLeft(b);
-            x.setRight(y);
-            z.changeChild(y, x);
-
-            y.pushUp();
-        }
-
-        public static void zag(LCTNode x) {
-            LCTNode y = x.father;
-            LCTNode z = y.father;
-            LCTNode b = x.left;
-
-            y.setRight(b);
-            x.setLeft(y);
-            z.changeChild(y, x);
-
-            y.pushUp();
-        }
-
-        public String toString() {
-            return "" + id;
-        }
-
-        public void pushDown() {
-            if (this == NIL) {
-                return;
-            }
-            if (reverse) {
-                reverse = false;
-
-                LCTNode tmpNode = left;
-                left = right;
-                right = tmpNode;
-
-                left.reverse();
-                right.reverse();
-            }
-
-            left.treeFather = treeFather;
-            right.treeFather = treeFather;
-
-            if (weightUpd != 0) {
-                left.modify(weightUpd);
-                right.modify(weightUpd);
-                weightUpd = 0;
-            }
-        }
-
-        public void modify(long x) {
-            if (this == NIL) {
-                return;
-            }
-            weightUpd += x;
-            weight += x;
-            sumOfWeight += x * size;
-        }
-
-        public void reverse() {
-            reverse = !reverse;
-        }
-
-        public void setLeft(LCTNode x) {
-            left = x;
-            x.father = this;
-        }
-
-        public void setRight(LCTNode x) {
-            right = x;
-            x.father = this;
-        }
-
-        public void changeChild(LCTNode y, LCTNode x) {
-            if (left == y) {
-                setLeft(x);
+        public T alloc() {
+            allocTime++;
+            T res;
+            if (deque.isEmpty()) {
+                res = supplier.get();
+                cleaner.accept(res);
             } else {
-                setRight(x);
+                res = deque.removeFirst();
             }
+            return res;
         }
 
-        public void pushUp() {
-            if (this == NIL) {
+        public void release(T e) {
+            if (e == null) {
                 return;
             }
-            size = left.size + right.size + 1;
-            sumOfWeight = left.sumOfWeight + right.sumOfWeight + weight;
-            sumOfUpgrade = left.sumOfUpgrade && right.sumOfUpgrade && upgrade;
+            releaseTime++;
+            cleaner.accept(e);
+            deque.addLast(e);
         }
 
     }
 
-    static class IntegerWeightUndirectedEdge extends IntegerWeightDirectedEdge {
-        public IntegerWeightUndirectedEdge rev;
+    static class IntPoly {
+        protected int mod;
+        protected Power power;
+        QuadraticResidue qr;
 
-        public IntegerWeightUndirectedEdge(int to, int weight) {
-            super(to, weight);
+        public IntPoly(int mod) {
+            this.mod = mod;
+            this.power = new Power(mod);
+            qr = new QuadraticResidue(mod);
+        }
+
+        public int rankOf(int[] p) {
+            int r = p.length - 1;
+            while (r >= 0 && p[r] == 0) {
+                r--;
+            }
+            return Math.max(0, r);
+        }
+
+        public int[] mulBF(int[] a, int[] b) {
+            int rA = rankOf(a);
+            int rB = rankOf(b);
+            if (rA > rB) {
+                {
+                    int tmp = rA;
+                    rA = rB;
+                    rB = tmp;
+                }
+                {
+                    int[] tmp = a;
+                    a = b;
+                    b = tmp;
+                }
+            }
+            int[] c = PrimitiveBuffers.allocIntPow2(rA + rB + 1);
+            for (int i = 0; i <= rA; i++) {
+                for (int j = 0; j <= rB; j++) {
+                    c[i + j] = (int) ((c[i + j] + (long) a[i] * b[j]) % mod);
+                }
+            }
+            return c;
         }
 
     }
 
-    static class IntegerWeightGraph {
-        public static IntegerWeightUndirectedEdge addUndirectedEdge(List<IntegerWeightUndirectedEdge>[] g, int s, int t, int w) {
-            IntegerWeightUndirectedEdge toT = new IntegerWeightUndirectedEdge(t, w);
-            IntegerWeightUndirectedEdge toS = new IntegerWeightUndirectedEdge(s, w);
-            toS.rev = toT;
-            toT.rev = toS;
-            g[s].add(toT);
-            g[t].add(toS);
-            return toT;
+    static class FastFourierTransform {
+        private static double[][] realLevels = new double[30][];
+        private static double[][] imgLevels = new double[30][];
+
+        private static void prepareLevel(int i) {
+            if (realLevels[i] == null) {
+                realLevels[i] = new double[1 << i];
+                imgLevels[i] = new double[1 << i];
+                for (int j = 0, s = 1 << i; j < s; j++) {
+                    realLevels[i][j] = Math.cos(Math.PI / s * j);
+                    imgLevels[i][j] = Math.sin(Math.PI / s * j);
+                }
+            }
+        }
+
+        public static void fft(double[][] p, boolean inv) {
+            int m = Log2.ceilLog(p[0].length);
+            int n = 1 << m;
+            int shift = 32 - Integer.numberOfTrailingZeros(n);
+            for (int i = 1; i < n; i++) {
+                int j = Integer.reverse(i << shift);
+                if (i < j) {
+                    SequenceUtils.swap(p[0], i, j);
+                    SequenceUtils.swap(p[1], i, j);
+                }
+            }
+
+            double[][] t = new double[2][1];
+            for (int d = 0; d < m; d++) {
+                int s = 1 << d;
+                int s2 = s << 1;
+                prepareLevel(d);
+                for (int i = 0; i < n; i += s2) {
+                    for (int j = 0; j < s; j++) {
+                        int a = i + j;
+                        int b = a + s;
+                        mul(realLevels[d][j], imgLevels[d][j], p[0][b], p[1][b], t, 0);
+                        sub(p[0][a], p[1][a], t[0][0], t[1][0], p, b);
+                        add(p[0][a], p[1][a], t[0][0], t[1][0], p, a);
+                    }
+                }
+            }
+
+            if (inv) {
+                for (int i = 0, j = 0; i <= j; i++, j = n - i) {
+                    double a = p[0][j];
+                    double b = p[1][j];
+                    div(p[0][i], p[1][i], n, p, j);
+                    if (i != j) {
+                        div(a, b, n, p, i);
+                    }
+                }
+            }
+        }
+
+        public static void add(double r1, double i1, double r2, double i2, double[][] r, int i) {
+            r[0][i] = r1 + r2;
+            r[1][i] = i1 + i2;
+        }
+
+        public static void sub(double r1, double i1, double r2, double i2, double[][] r, int i) {
+            r[0][i] = r1 - r2;
+            r[1][i] = i1 - i2;
+        }
+
+        public static void mul(double r1, double i1, double r2, double i2, double[][] r, int i) {
+            r[0][i] = r1 * r2 - i1 * i2;
+            r[1][i] = r1 * i2 + i1 * r2;
+        }
+
+        public static void div(double r1, double i1, double r2, double[][] r, int i) {
+            r[0][i] = r1 / r2;
+            r[1][i] = i1 / r2;
         }
 
     }
@@ -462,20 +490,6 @@ public class Main {
             return this;
         }
 
-        public FastOutput append(long c) {
-            cache.append(c);
-            afterWrite();
-            return this;
-        }
-
-        public FastOutput println(long c) {
-            return append(c).println();
-        }
-
-        public FastOutput println() {
-            return append('\n');
-        }
-
         public FastOutput flush() {
             try {
                 if (stringBuilderValueField != null) {
@@ -523,15 +537,155 @@ public class Main {
 
     }
 
-    static class DirectedEdge {
-        public int to;
+    static class QuadraticResidue {
+        final int mod;
+        Power power;
 
-        public DirectedEdge(int to) {
-            this.to = to;
+        public QuadraticResidue(int mod) {
+            this.mod = mod;
+            power = new Power(mod);
         }
 
-        public String toString() {
-            return "->" + to;
+    }
+
+    static class SequenceUtils {
+        public static void swap(double[] data, int i, int j) {
+            double tmp = data[i];
+            data[i] = data[j];
+            data[j] = tmp;
+        }
+
+    }
+
+    static class FastInput {
+        private final InputStream is;
+        private byte[] buf = new byte[1 << 13];
+        private int bufLen;
+        private int bufOffset;
+        private int next;
+
+        public FastInput(InputStream is) {
+            this.is = is;
+        }
+
+        public void populate(int[] data) {
+            for (int i = 0; i < data.length; i++) {
+                data[i] = readInt();
+            }
+        }
+
+        private int read() {
+            while (bufLen == bufOffset) {
+                bufOffset = 0;
+                try {
+                    bufLen = is.read(buf);
+                } catch (IOException e) {
+                    bufLen = -1;
+                }
+                if (bufLen == -1) {
+                    return -1;
+                }
+            }
+            return buf[bufOffset++];
+        }
+
+        public void skipBlank() {
+            while (next >= 0 && next <= 32) {
+                next = read();
+            }
+        }
+
+        public int ri() {
+            return readInt();
+        }
+
+        public int[] ri(int n) {
+            int[] ans = new int[n];
+            populate(ans);
+            return ans;
+        }
+
+        public int readInt() {
+            boolean rev = false;
+
+            skipBlank();
+            if (next == '+' || next == '-') {
+                rev = next == '-';
+                next = read();
+            }
+
+            int val = 0;
+            while (next >= '0' && next <= '9') {
+                val = val * 10 - next + '0';
+                next = read();
+            }
+
+            return rev ? val : -val;
+        }
+
+    }
+
+    static class DigitUtils {
+        private DigitUtils() {
+        }
+
+        public static int mod(long x, int mod) {
+            if (x < -mod || x >= mod) {
+                x %= mod;
+            }
+            if (x < 0) {
+                x += mod;
+            }
+            return (int) x;
+        }
+
+        public static int mod(int x, int mod) {
+            if (x < -mod || x >= mod) {
+                x %= mod;
+            }
+            if (x < 0) {
+                x += mod;
+            }
+            return x;
+        }
+
+    }
+
+    static class PrimitiveBuffers {
+        public static Buffer<int[]>[] intPow2Bufs = new Buffer[30];
+        public static Buffer<double[]>[] doublePow2Bufs = new Buffer[30];
+
+        static {
+            for (int i = 0; i < 30; i++) {
+                int finalI = i;
+                intPow2Bufs[i] = new Buffer<>(() -> new int[1 << finalI], x -> Arrays.fill(x, 0));
+                doublePow2Bufs[i] = new Buffer<>(() -> new double[1 << finalI], x -> Arrays.fill(x, 0));
+            }
+        }
+
+        public static int[] allocIntPow2(int n) {
+            return intPow2Bufs[Log2.ceilLog(n)].alloc();
+        }
+
+        public static double[] allocDoublePow2(int n) {
+            return doublePow2Bufs[Log2.ceilLog(n)].alloc();
+        }
+
+        public static double[] allocDoublePow2(double[] data, int newLen) {
+            double[] ans = allocDoublePow2(newLen);
+            System.arraycopy(data, 0, ans, 0, Math.min(data.length, newLen));
+            return ans;
+        }
+
+        public static void release(double[] data) {
+            assert data.length == Integer.lowestOneBit(data.length);
+            doublePow2Bufs[Log2.ceilLog(data.length)].release(data);
+        }
+
+        public static void release(double[]... data) {
+            for (double[] x : data) {
+                release(x);
+            }
         }
 
     }

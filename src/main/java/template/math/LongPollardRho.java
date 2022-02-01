@@ -5,7 +5,11 @@ import template.rand.RandomWrapper;
 import java.util.*;
 
 public class LongPollardRho {
+    public static void main(String[] args) {
+        System.out.println(LongPollardRho.findAllFactors(1323668450567L));
+    }
     private LongPollardRho() {
+
     }
 
     static long[] smallPrimes = new long[]{2, 3, 5, 7, 11, 13, 17, 19};

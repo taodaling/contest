@@ -1,10 +1,19 @@
 package template.math;
 
+import template.primitve.generated.datastructure.IntegerArrayList;
+
 import java.util.Arrays;
 import java.util.function.IntConsumer;
 
 
 public class EratosthenesSieve {
+
+    public static void main(String[] args){
+        IntegerArrayList list = new IntegerArrayList(100);
+        sieve(100, list::add);
+        System.out.println(list);
+    }
+
     /**
      * Find all primes in [2, n] and consume them.
      * The time complexity is O(n log log n) and the space complexity is O(sqrt(n))

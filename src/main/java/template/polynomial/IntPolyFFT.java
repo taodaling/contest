@@ -4,6 +4,12 @@ import template.math.DigitUtils;
 import template.utils.PrimitiveBuffers;
 
 public class IntPolyFFT extends IntPoly {
+    public static void main(String[] args) {
+        int[] a = new int[] {1, 2, 3, 4};
+        int[] b = new int[] {5, 6, 7, 8, 9};
+        new IntPolyFFT(998244353).convolution(a, b);
+    }
+
     private static final int FFT_THRESHOLD = 50;
     private static final int FFT_DIVIDE_THRESHOLD = 200;
 
@@ -105,9 +111,9 @@ public class IntPolyFFT extends IntPoly {
     private int[] multiplyMod(int[] a, int[] b) {
         int rA = rankOf(a);
         int rB = rankOf(b);
-        if (Math.min(rA, rB) < FFT_THRESHOLD) {
-            return mulBF(a, b);
-        }
+//        if (Math.min(rA, rB) < FFT_THRESHOLD) {
+//            return mulBF(a, b);
+//        }
 
         int need = rA + rB + 1;
 
