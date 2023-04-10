@@ -2,21 +2,12 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Deque;
-import java.util.TreeSet;
-import java.util.ArrayList;
-import java.util.Map;
 import java.io.OutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.io.UncheckedIOException;
-import java.util.List;
 import java.io.Closeable;
-import java.util.ArrayDeque;
-import java.util.Comparator;
-import java.util.Collections;
 import java.io.InputStream;
 
 /**
@@ -37,155 +28,804 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            Task solver = new Task();
+            BZOJ1018 solver = new BZOJ1018();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class Task {
-        UndoDSU dsu;
+    static class BZOJ1018 {
+        int C;
 
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            int N = in.ri();
-            int M = in.ri();
-            int[][] ops = new int[M][];
-            PriorityCommutativeUndoOperation[] undoOperations = new PriorityCommutativeUndoOperation[M];
-            dsu = new UndoDSU(N + 1);
-            dsu.init();
-            UndoPriorityQueue pq = new UndoPriorityQueue(M);
-            for (int i = 0; i < M; i++) {
-                ops[i] = in.ri(3);
+            C = in.ri();
+
+            DynamicConnectivity dc = new DynamicConnectivity(2 * C, 100000);
+            while (true) {
+                String cmd = in.rs();
+                if (cmd.equals("Exit")) {
+                    return;
+                }
+                int x = in.ri() - 1;
+                int y = in.ri() - 1;
+                int a = in.ri() - 1;
+                int b = in.ri() - 1;
+                int id1 = id(x, y);
+                int id2 = id(a, b);
+                if (cmd.equals("Open")) {
+                    dc.addEdge(id1, id2);
+                } else if (cmd.equals("Close")) {
+                    dc.deleteEdge(id1, id2);
+                } else {
+                    if (dc.check(id1, id2)) {
+                        out.println("Y");
+                    } else {
+                        out.println("N");
+                    }
+                }
             }
-            Map<Long, Edge> E = new HashMap<>(M);
-            for (int i = 0; i < M; i++) {
-                int[] op = ops[i];
-                if (op[0] == 2) {
+        }
+
+        public int id(int a, int b) {
+            return a * C + b;
+        }
+
+    }
+
+    static class LongObjectHashMap<V> {
+        private int[] slot;
+        private int[] next;
+        private long[] keys;
+        private Object[] values;
+        private int alloc;
+        private boolean[] removed;
+        private int mask;
+        private int size;
+        private boolean rehash;
+        private Hasher hasher = new Hasher();
+        private int[] version;
+        private int now;
+
+        private void access(int i) {
+            if (version[i] != now) {
+                slot[i] = 0;
+                version[i] = now;
+            }
+        }
+
+        public LongObjectHashMap(int cap, boolean rehash) {
+            this.mask = (1 << (32 - Integer.numberOfLeadingZeros(cap - 1))) - 1;
+            slot = new int[mask + 1];
+            version = new int[mask + 1];
+            next = new int[cap + 1];
+            keys = new long[cap + 1];
+            values = new Object[cap + 1];
+            removed = new boolean[cap + 1];
+            this.rehash = rehash;
+        }
+
+        private void doubleCapacity() {
+            int newSize = Math.max(next.length + 10, next.length * 2);
+            next = Arrays.copyOf(next, newSize);
+            keys = Arrays.copyOf(keys, newSize);
+            values = Arrays.copyOf(values, newSize);
+            removed = Arrays.copyOf(removed, newSize);
+        }
+
+        private void rehash() {
+            int[] newSlots = new int[Math.max(16, slot.length * 2)];
+            int[] newVersions = new int[newSlots.length];
+            int newMask = newSlots.length - 1;
+            for (int i = 0; i < slot.length; i++) {
+                access(i);
+                if (slot[i] == 0) {
                     continue;
                 }
-                if (op[0] == 0) {
-                    Edge e = new Edge();
-                    e.a = op[1];
-                    e.b = op[2];
-                    e.addTime = i;
-                    E.put(idOfEdge(e.a, e.b), e);
+                int head = slot[i];
+                while (head != 0) {
+                    int n = next[head];
+                    int s = hash(keys[head]) & newMask;
+                    next[head] = newSlots[s];
+                    newSlots[s] = head;
+                    head = n;
+                }
+            }
+            this.slot = newSlots;
+            this.mask = newMask;
+            this.version = newVersions;
+            now = 0;
+        }
+
+        private void alloc() {
+            alloc++;
+            if (alloc >= next.length) {
+                doubleCapacity();
+            }
+            next[alloc] = 0;
+            removed[alloc] = false;
+            values[alloc] = null;
+            size++;
+        }
+
+        private int hash(long x) {
+            return hasher.hash(x);
+        }
+
+        public void put(long x, V y) {
+            int h = hash(x);
+            int s = h & mask;
+            access(s);
+            if (slot[s] == 0) {
+                alloc();
+                slot[s] = alloc;
+                keys[alloc] = x;
+                values[alloc] = y;
+            } else {
+                int index = findIndexOrLastEntry(s, x);
+                if (keys[index] != x) {
+                    alloc();
+                    next[index] = alloc;
+                    keys[alloc] = x;
+                    values[alloc] = y;
                 } else {
-                    Edge e = E.remove(idOfEdge(op[1], op[2]));
-                    e.delTime = i;
-                    undoOperations[e.addTime] = asOp(e);
+                    values[index] = y;
                 }
             }
-            int delTimeEnum = M;
-            for (Edge e : E.values()) {
-                e.delTime = delTimeEnum++;
-                undoOperations[e.addTime] = asOp(e);
+            if (rehash && size >= slot.length) {
+                rehash();
             }
-            for (int i = 0; i < M; i++) {
-                int[] op = ops[i];
-                if (op[0] == 2) {
-                    //answer query
-                    if (dsu.find(op[1]) == dsu.find(op[2])) {
-                        out.println('Y');
-                    } else {
-                        out.println('N');
+        }
+
+        public boolean containKey(long x) {
+            int h = hash(x);
+            int s = h & mask;
+            access(s);
+            if (slot[s] == 0) {
+                return false;
+            }
+            return keys[findIndexOrLastEntry(s, x)] == x;
+        }
+
+        public V remove(long x) {
+            int h = hash(x);
+            int s = h & mask;
+            access(s);
+            if (slot[s] == 0) {
+                return null;
+            }
+            int pre = 0;
+            int index = slot[s];
+            while (keys[index] != x) {
+                pre = index;
+                if (next[index] != 0) {
+                    index = next[index];
+                } else {
+                    break;
+                }
+            }
+            if (keys[index] != x) {
+                return null;
+            }
+            if (slot[s] == index) {
+                slot[s] = next[index];
+            } else {
+                next[pre] = next[index];
+            }
+            removed[index] = true;
+            size--;
+            return (V) values[index];
+        }
+
+        private int findIndexOrLastEntry(int s, long x) {
+            int iter = slot[s];
+            while (keys[iter] != x) {
+                if (next[iter] != 0) {
+                    iter = next[iter];
+                } else {
+                    return iter;
+                }
+            }
+            return iter;
+        }
+
+        public LongObjectEntryIterator<V> iterator() {
+            return new LongObjectEntryIterator() {
+                int index = 1;
+                int readIndex = -1;
+
+
+                public boolean hasNext() {
+                    while (index <= alloc && removed[index]) {
+                        index++;
                     }
-                } else if (op[0] == 0) {
-                    pq.push(undoOperations[i]);
-                } else if (op[0] == 1) {
-                    pq.pop();
+                    return index <= alloc;
                 }
-            }
 
+
+                public long getEntryKey() {
+                    return keys[readIndex];
+                }
+
+
+                public Object getEntryValue() {
+                    return values[readIndex];
+                }
+
+
+                public void next() {
+                    if (!hasNext()) {
+                        throw new IllegalStateException();
+                    }
+                    readIndex = index;
+                    index++;
+                }
+            };
         }
 
-        PriorityCommutativeUndoOperation asOp(Edge e) {
-            PriorityCommutativeUndoOperation op = new PriorityCommutativeUndoOperation(e.delTime,
-                    dsu.merge(e.a, e.b));
-            return op;
-        }
-
-        long idOfEdge(int a, int b) {
-            if (a > b) {
-                return idOfEdge(b, a);
+        public String toString() {
+            LongObjectEntryIterator<V> iterator = iterator();
+            StringBuilder builder = new StringBuilder("{");
+            while (iterator.hasNext()) {
+                iterator.next();
+                builder.append(iterator.getEntryKey()).append("->").append(iterator.getEntryValue()).append(',');
             }
-            return DigitUtils.asLong(a, b);
+            if (builder.charAt(builder.length() - 1) == ',') {
+                builder.setLength(builder.length() - 1);
+            }
+            builder.append('}');
+            return builder.toString();
         }
 
     }
 
-    static class FastInput {
-        private final InputStream is;
-        private byte[] buf = new byte[1 << 13];
-        private int bufLen;
-        private int bufOffset;
-        private int next;
+    static class DynamicConnectivity {
+        DynamicConnectivity.EulerTourTree[] levels;
+        int n;
+        int log2;
+        LongObjectHashMap<DynamicConnectivity.EdgeInfo> map;
 
-        public FastInput(InputStream is) {
-            this.is = is;
+        public DynamicConnectivity(int n, int m) {
+            this.n = n;
+            this.log2 = 32 - Integer.numberOfLeadingZeros(n - 1);
+            levels = new DynamicConnectivity.EulerTourTree[log2 + 1];
+            for (int i = 1; i <= log2; i++) {
+                levels[i] = new DynamicConnectivity.EulerTourTree(n, 0);
+                levels[i].id = i;
+            }
+            map = new LongObjectHashMap<>(m, true);
         }
 
-        public void populate(int[] data) {
-            for (int i = 0; i < data.length; i++) {
-                data[i] = readInt();
+        public boolean check(int i, int j) {
+            if (i == j) {
+                return true;
+            }
+            int r1 = levels[log2].rootOf(i);
+            int r2 = levels[log2].rootOf(j);
+            return r1 == r2;
+        }
+
+        public void addEdge(int i, int j) {
+            DynamicConnectivity.EdgeInfo info = new DynamicConnectivity.EdgeInfo();
+            info.a = i;
+            info.b = j;
+            info.level = log2 + 1;
+            map.put(idOfEdge(i, j), info);
+            pushDownEdge(info, levels[log2].rootOf(info.a) != levels[log2].rootOf(info.b));
+        }
+
+        private void pushDownEdge(DynamicConnectivity.EdgeInfo info, boolean link) {
+            info.level--;
+            if (info.level == 0) {
+                return;
+            }
+
+            addEdgeChain(info);
+            if (link) {
+                levels[info.level].link(info);
             }
         }
 
-        private int read() {
-            while (bufLen == bufOffset) {
-                bufOffset = 0;
+        private void addEdgeChain(DynamicConnectivity.EdgeInfo info) {
+            DynamicConnectivity.EdgeChain chain1 = new DynamicConnectivity.EdgeChain(info);
+            DynamicConnectivity.EdgeChain chain2 = new DynamicConnectivity.EdgeChain(info);
+            DynamicConnectivity.Splay.splay(levels[info.level].nodes[info.a]);
+            levels[info.level].nodes[info.a].addEdge(chain1);
+            levels[info.level].nodes[info.a].pushUp();
+            DynamicConnectivity.Splay.splay(levels[info.level].nodes[info.b]);
+            levels[info.level].nodes[info.b].addEdge(chain2);
+            levels[info.level].nodes[info.b].pushUp();
+        }
+
+        public void deleteEdge(int i, int j) {
+            long idOfEdge = idOfEdge(i, j);
+            DynamicConnectivity.EdgeInfo info = map.remove(idOfEdge);
+            if (info.level == 0) {
+                return;
+            }
+
+            int curLevel = info.level;
+            info.level = -1;
+            if (!levels[log2].map.containKey(idOfEdge)) {
+                return;
+            }
+
+            for (int k = curLevel; k <= log2; k++) {
+                levels[k].cut(i, j);
+            }
+
+            for (int k = curLevel; k <= log2; k++) {
+                DynamicConnectivity.Splay ti = levels[k].nodes[i];
+                DynamicConnectivity.Splay tj = levels[k].nodes[j];
+                DynamicConnectivity.Splay.splay(ti);
+                DynamicConnectivity.Splay.splay(tj);
+
+                if (ti.size > tj.size) {
+                    DynamicConnectivity.Splay tmp = ti;
+                    ti = tj;
+                    tj = tmp;
+                }
+
+                DynamicConnectivity.Splay.splay(ti);
+                while (ti.infoWithMaxLevel != null) {
+                    ti = ti.infoWithMaxLevel;
+                    DynamicConnectivity.Splay.splay(ti);
+                    if (ti.infoWithMaxLevel.info.level < k) {
+                        break;
+                    }
+                    pushDownEdge(ti.info, true);
+                    DynamicConnectivity.Splay.splay(ti);
+                }
+                DynamicConnectivity.Splay.splay(ti);
+                while (ti.containEdge != null) {
+                    ti = ti.containEdge;
+                    DynamicConnectivity.Splay.splay(ti);
+                    DynamicConnectivity.EdgeInfo e = ti.popEdge().info;
+                    ti.pushUp();
+                    if (e.level < k) {
+                    } else if (levels[log2].rootOf(e.a) ==
+                            levels[log2].rootOf(e.b)) {
+                        if (e.level == k) {
+                            pushDownEdge(e, false);
+                        }
+                    } else {
+                        addEdgeChain(e);
+                        for (int t = k; t <= log2; t++) {
+                            levels[t].link(e);
+                        }
+                        return;
+                    }
+                    DynamicConnectivity.Splay.splay(ti);
+                }
+            }
+        }
+
+        private static long idOfEdge(int i, int j) {
+            if (i > j) {
+                int tmp = i;
+                i = j;
+                j = tmp;
+            }
+            return (((long) i) << 32) | j;
+        }
+
+        private static class EdgeInfo {
+            int a;
+            int b;
+            int level;
+
+            public String toString() {
+                return String.format("%d -> %d", a, b);
+            }
+
+        }
+
+        private static class EdgeChain {
+            final DynamicConnectivity.EdgeInfo info;
+            DynamicConnectivity.EdgeChain next;
+
+            private EdgeChain(DynamicConnectivity.EdgeInfo info) {
+                this.info = info;
+            }
+
+            public String toString() {
+                if (next == null) {
+                    return info.toString();
+                }
+                return info.toString() + ", " + next.toString();
+            }
+
+        }
+
+        public static class EulerTourTree {
+            DynamicConnectivity.Splay[] nodes;
+            int id;
+            LongObjectHashMap<DynamicConnectivity.EulerTourTree.Edge> map;
+
+            private DynamicConnectivity.Splay alloc(int id) {
+                DynamicConnectivity.Splay splay = new DynamicConnectivity.Splay();//buffer.alloc();
+                splay.id = id;
+                return splay;
+            }
+
+            public EulerTourTree(int n, int m) {
+                map = new LongObjectHashMap<>(m, true);
+                nodes = new DynamicConnectivity.Splay[n];
+                for (int i = 0; i < n; i++) {
+                    nodes[i] = alloc(i);
+                    nodes[i].node = 1;
+                    nodes[i].pushUp();
+                }
+            }
+
+            private void destroy(DynamicConnectivity.Splay s) {
+//            s.info = null;
+//            s.chain = null;
+//            s.infoWithMaxLevel = null;
+//            s.containEdge = null;
+//            buffer.release(s);
+            }
+
+            public int rootOf(int i) {
+                return rootOf(nodes[i]).id;
+            }
+
+            public void setRoot(int i) {
+                if (rootOf(i) == i) {
+                    return;
+                }
+
+                DynamicConnectivity.Splay.splay(nodes[i]);
+                DynamicConnectivity.Splay l = DynamicConnectivity.Splay.splitLeft(nodes[i]);
+                if (l == DynamicConnectivity.Splay.NIL) {
+                    return;
+                }
+                DynamicConnectivity.Splay a = DynamicConnectivity.Splay.selectMinAsRoot(l);
+                DynamicConnectivity.Splay b = DynamicConnectivity.Splay.selectMaxAsRoot(nodes[i]);
+
+                if (nodes[a.id] == a) {
+                    DynamicConnectivity.Splay.splitLeft(b);
+                    destroy(b);
+                } else {
+                    l = DynamicConnectivity.Splay.splitRight(a);
+                    destroy(a);
+                }
+
+                DynamicConnectivity.Splay newNode = alloc(i);
+                DynamicConnectivity.Splay.splay(nodes[i]);
+                DynamicConnectivity.Splay.splay(l);
+                DynamicConnectivity.Splay.merge(nodes[i], DynamicConnectivity.Splay.merge(l, newNode));
+            }
+
+            public void link(DynamicConnectivity.EdgeInfo info) {
+                int i = info.a;
+                int j = info.b;
+                setRoot(i);
+                setRoot(j);
+
+                DynamicConnectivity.EulerTourTree.Edge e = new DynamicConnectivity.EulerTourTree.Edge();
+
+                long id = idOfEdge(i, j);
+                e.a = alloc(-i * 10000 - j);
+                e.b = alloc(-i * 10000 - j);
+                e.a.info = info;
+                e.a.pushUp();
+                e.b.pushUp();
+                map.put(id, e);
+
+                DynamicConnectivity.Splay.splay(nodes[i]);
+                DynamicConnectivity.Splay.splay(nodes[j]);
+                DynamicConnectivity.Splay.merge(nodes[i], e.a);
+                DynamicConnectivity.Splay.merge(nodes[j], e.b);
+                DynamicConnectivity.Splay.splay(nodes[i]);
+                DynamicConnectivity.Splay.splay(nodes[j]);
+                DynamicConnectivity.Splay.merge(nodes[i], nodes[j]);
+
+                DynamicConnectivity.Splay newNode = alloc(i);
+                DynamicConnectivity.Splay.splay(nodes[i]);
+                DynamicConnectivity.Splay.merge(nodes[i], newNode);
+            }
+
+            private DynamicConnectivity.Splay rootOf(DynamicConnectivity.Splay x) {
+                DynamicConnectivity.Splay.splay(x);
+                return DynamicConnectivity.Splay.selectMinAsRoot(x);
+            }
+
+            public void cut(int i, int j) {
+                long id = idOfEdge(i, j);
+                DynamicConnectivity.EulerTourTree.Edge e = map.remove(id);
+
+                DynamicConnectivity.Splay.splay(e.a);
+                DynamicConnectivity.Splay al = DynamicConnectivity.Splay.splitLeft(e.a);
+                DynamicConnectivity.Splay ar = DynamicConnectivity.Splay.splitRight(e.a);
+
+
+                DynamicConnectivity.Splay l, r;
+                if (rootOf(ar) == rootOf(e.b)) {
+                    DynamicConnectivity.Splay.splay(e.b);
+                    DynamicConnectivity.Splay bl = DynamicConnectivity.Splay.splitLeft(e.b);
+                    DynamicConnectivity.Splay br = DynamicConnectivity.Splay.splitRight(e.b);
+
+                    l = al;
+                    r = br;
+                } else {
+                    DynamicConnectivity.Splay.splay(e.b);
+                    DynamicConnectivity.Splay bl = DynamicConnectivity.Splay.splitLeft(e.b);
+                    DynamicConnectivity.Splay br = DynamicConnectivity.Splay.splitRight(e.b);
+
+                    l = bl;
+                    r = ar;
+                }
+
+                DynamicConnectivity.Splay.splay(l);
+                DynamicConnectivity.Splay.splay(r);
+                l = DynamicConnectivity.Splay.selectMaxAsRoot(l);
+                r = DynamicConnectivity.Splay.selectMinAsRoot(r);
+
+                if (nodes[l.id] == l) {
+                    DynamicConnectivity.Splay rSnapshot = r;
+                    r = DynamicConnectivity.Splay.splitRight(r);
+                    destroy(rSnapshot);
+                } else {
+                    DynamicConnectivity.Splay lSnapshot = l;
+                    l = DynamicConnectivity.Splay.splitLeft(l);
+                    destroy(lSnapshot);
+                }
+
+                DynamicConnectivity.Splay.merge(l, r);
+                destroy(e.a);
+                destroy(e.b);
+            }
+
+            private static class Edge {
+                DynamicConnectivity.Splay a;
+                DynamicConnectivity.Splay b;
+
+            }
+
+        }
+
+        public static class Splay implements Cloneable {
+            public static final DynamicConnectivity.Splay NIL = new DynamicConnectivity.Splay();
+            DynamicConnectivity.Splay left = NIL;
+            DynamicConnectivity.Splay right = NIL;
+            DynamicConnectivity.Splay father = NIL;
+            int size;
+            byte node;
+            int id;
+            DynamicConnectivity.EdgeChain chain;
+            DynamicConnectivity.EdgeInfo info;
+            DynamicConnectivity.Splay containEdge;
+            DynamicConnectivity.Splay infoWithMaxLevel;
+
+            static {
+                NIL.left = NIL;
+                NIL.right = NIL;
+                NIL.father = NIL;
+                NIL.size = 0;
+                NIL.id = -2;
+            }
+
+            public void addEdge(DynamicConnectivity.EdgeChain newChain) {
+                newChain.next = chain;
+                chain = newChain;
+                containEdge = this;
+            }
+
+            public DynamicConnectivity.EdgeChain popEdge() {
+                DynamicConnectivity.EdgeChain head = chain;
+                chain = head.next;
+                head.next = null;
+                return head;
+            }
+
+            public static void splay(DynamicConnectivity.Splay x) {
+                if (x == NIL) {
+                    return;
+                }
+                DynamicConnectivity.Splay y, z;
+                while ((y = x.father) != NIL) {
+                    if ((z = y.father) == NIL) {
+                        y.pushDown();
+                        x.pushDown();
+                        if (x == y.left) {
+                            zig(x);
+                        } else {
+                            zag(x);
+                        }
+                    } else {
+                        z.pushDown();
+                        y.pushDown();
+                        x.pushDown();
+                        if (x == y.left) {
+                            if (y == z.left) {
+                                zig(y);
+                                zig(x);
+                            } else {
+                                zig(x);
+                                zag(x);
+                            }
+                        } else {
+                            if (y == z.left) {
+                                zag(x);
+                                zig(x);
+                            } else {
+                                zag(y);
+                                zag(x);
+                            }
+                        }
+                    }
+                }
+
+                x.pushDown();
+                x.pushUp();
+            }
+
+            public static void zig(DynamicConnectivity.Splay x) {
+                DynamicConnectivity.Splay y = x.father;
+                DynamicConnectivity.Splay z = y.father;
+                DynamicConnectivity.Splay b = x.right;
+
+                y.setLeft(b);
+                x.setRight(y);
+                z.changeChild(y, x);
+
+                y.pushUp();
+            }
+
+            public static void zag(DynamicConnectivity.Splay x) {
+                DynamicConnectivity.Splay y = x.father;
+                DynamicConnectivity.Splay z = y.father;
+                DynamicConnectivity.Splay b = x.left;
+
+                y.setRight(b);
+                x.setLeft(y);
+                z.changeChild(y, x);
+
+                y.pushUp();
+            }
+
+            public void setLeft(DynamicConnectivity.Splay x) {
+                left = x;
+                x.father = this;
+            }
+
+            public void setRight(DynamicConnectivity.Splay x) {
+                right = x;
+                x.father = this;
+            }
+
+            public void changeChild(DynamicConnectivity.Splay y, DynamicConnectivity.Splay x) {
+                if (left == y) {
+                    setLeft(x);
+                } else {
+                    setRight(x);
+                }
+            }
+
+            public void pushUp() {
+                if (this == NIL) {
+                    return;
+                }
+                size = left.size + right.size + node;
+
+                containEdge = null;
+                if (chain != null) {
+                    containEdge = this;
+                } else if (left.containEdge != null) {
+                    containEdge = left.containEdge;
+                } else {
+                    containEdge = right.containEdge;
+                }
+
+                infoWithMaxLevel = null;
+                if (info != null) {
+                    infoWithMaxLevel = this;
+                }
+                if (left.infoWithMaxLevel != null &&
+                        (infoWithMaxLevel == null || infoWithMaxLevel.info.level < left.infoWithMaxLevel.info.level)) {
+                    infoWithMaxLevel = left.infoWithMaxLevel;
+                }
+                if (right.infoWithMaxLevel != null &&
+                        (infoWithMaxLevel == null || infoWithMaxLevel.info.level < right.infoWithMaxLevel.info.level)) {
+                    infoWithMaxLevel = right.infoWithMaxLevel;
+                }
+            }
+
+            public void pushDown() {
+            }
+
+            public static void toString(DynamicConnectivity.Splay root, StringBuilder builder) {
+                if (root == NIL) {
+                    return;
+                }
+                root.pushDown();
+                toString(root.left, builder);
+                builder.append(root.id).append(',');
+                toString(root.right, builder);
+            }
+
+            public DynamicConnectivity.Splay clone() {
                 try {
-                    bufLen = is.read(buf);
-                } catch (IOException e) {
-                    bufLen = -1;
-                }
-                if (bufLen == -1) {
-                    return -1;
+                    return (DynamicConnectivity.Splay) super.clone();
+                } catch (CloneNotSupportedException e) {
+                    throw new RuntimeException(e);
                 }
             }
-            return buf[bufOffset++];
-        }
 
-        public void skipBlank() {
-            while (next >= 0 && next <= 32) {
-                next = read();
-            }
-        }
-
-        public int ri() {
-            return readInt();
-        }
-
-        public int[] ri(int n) {
-            int[] ans = new int[n];
-            populate(ans);
-            return ans;
-        }
-
-        public int readInt() {
-            boolean rev = false;
-
-            skipBlank();
-            if (next == '+' || next == '-') {
-                rev = next == '-';
-                next = read();
+            public static DynamicConnectivity.Splay cloneTree(DynamicConnectivity.Splay splay) {
+                if (splay == NIL) {
+                    return NIL;
+                }
+                splay = splay.clone();
+                splay.left = cloneTree(splay.left);
+                splay.right = cloneTree(splay.right);
+                return splay;
             }
 
-            int val = 0;
-            while (next >= '0' && next <= '9') {
-                val = val * 10 - next + '0';
-                next = read();
+            public static DynamicConnectivity.Splay selectMinAsRoot(DynamicConnectivity.Splay root) {
+                if (root == NIL) {
+                    return root;
+                }
+                root.pushDown();
+                while (root.left != NIL) {
+                    root = root.left;
+                    root.pushDown();
+                }
+                splay(root);
+                return root;
             }
 
-            return rev ? val : -val;
+            public static DynamicConnectivity.Splay selectMaxAsRoot(DynamicConnectivity.Splay root) {
+                if (root == NIL) {
+                    return root;
+                }
+                root.pushDown();
+                while (root.right != NIL) {
+                    root = root.right;
+                    root.pushDown();
+                }
+                splay(root);
+                return root;
+            }
+
+            public static DynamicConnectivity.Splay splitLeft(DynamicConnectivity.Splay root) {
+                root.pushDown();
+                DynamicConnectivity.Splay left = root.left;
+                left.father = NIL;
+                root.setLeft(NIL);
+                root.pushUp();
+                return left;
+            }
+
+            public static DynamicConnectivity.Splay splitRight(DynamicConnectivity.Splay root) {
+                root.pushDown();
+                DynamicConnectivity.Splay right = root.right;
+                right.father = NIL;
+                root.setRight(NIL);
+                root.pushUp();
+                return right;
+            }
+
+            public static DynamicConnectivity.Splay merge(DynamicConnectivity.Splay a, DynamicConnectivity.Splay b) {
+                if (a == NIL) {
+                    return b;
+                }
+                if (b == NIL) {
+                    return a;
+                }
+                a = selectMaxAsRoot(a);
+                a.setRight(b);
+                a.pushUp();
+                return a;
+            }
+
+            public String toString() {
+                StringBuilder builder = new StringBuilder().append(id).append(":");
+                toString(cloneTree(this), builder);
+                return builder.toString();
+            }
+
         }
-
-    }
-
-    static class Edge {
-        int addTime;
-        int delTime;
-        int a;
-        int b;
 
     }
 
@@ -234,7 +874,13 @@ public class Main {
             return this;
         }
 
-        public FastOutput println(char c) {
+        public FastOutput append(String c) {
+            cache.append(c);
+            afterWrite();
+            return this;
+        }
+
+        public FastOutput println(String c) {
             return append(c).println();
         }
 
@@ -289,184 +935,106 @@ public class Main {
 
     }
 
-    static class UndoPriorityQueue {
-        TreeSet<PriorityCommutativeUndoOperation> set = new TreeSet<>(Comparator.comparingLong(x -> x.priority));
-        UndoStack stack;
-        List<PriorityCommutativeUndoOperation> bufferForLowPriority;
-        List<PriorityCommutativeUndoOperation> bufferForHighPriority;
+    static class FastInput {
+        private final InputStream is;
+        private StringBuilder defaultStringBuf = new StringBuilder(1 << 13);
+        private byte[] buf = new byte[1 << 13];
+        private int bufLen;
+        private int bufOffset;
+        private int next;
 
-        public UndoPriorityQueue(int cap) {
-            stack = new UndoStack(cap);
-            bufferForLowPriority = new ArrayList<>(cap);
-            bufferForHighPriority = new ArrayList<>(cap);
+        public FastInput(InputStream is) {
+            this.is = is;
         }
 
-        public void push(PriorityCommutativeUndoOperation op) {
-            if (!set.add(op)) {
-                throw new IllegalArgumentException("Duplicate priority");
-            }
-            pushStack(op);
-        }
-
-        private void pushStack(PriorityCommutativeUndoOperation op) {
-            op.offsetToBottom = stack.size();
-            stack.push(op);
-        }
-
-        public PriorityCommutativeUndoOperation pop() {
-            int k = 0;
-            int size = size();
-            bufferForLowPriority.clear();
-            for (PriorityCommutativeUndoOperation op : set) {
-                bufferForLowPriority.add(op);
-                k = Math.max(k, size - op.offsetToBottom);
-                op.offsetToBottom = -1;
-                if (bufferForLowPriority.size() * 2 >= k) {
-                    break;
+        private int read() {
+            while (bufLen == bufOffset) {
+                bufOffset = 0;
+                try {
+                    bufLen = is.read(buf);
+                } catch (IOException e) {
+                    bufLen = -1;
+                }
+                if (bufLen == -1) {
+                    return -1;
                 }
             }
-            if (k > 1) {
-                bufferForHighPriority.clear();
-                for (int i = 0; i < k; i++) {
-                    PriorityCommutativeUndoOperation op = (PriorityCommutativeUndoOperation) stack.pop();
-                    if (op.offsetToBottom != -1) {
-                        bufferForHighPriority.add(op);
-                    }
-                }
-                for (PriorityCommutativeUndoOperation op : bufferForHighPriority) {
-                    pushStack(op);
-                }
-                Collections.reverse(bufferForLowPriority);
-                for (PriorityCommutativeUndoOperation op : bufferForLowPriority) {
-                    pushStack(op);
-                }
+            return buf[bufOffset++];
+        }
+
+        public void skipBlank() {
+            while (next >= 0 && next <= 32) {
+                next = read();
             }
-            PriorityCommutativeUndoOperation ans = set.pollFirst();
-            stack.pop();
-            return ans;
         }
 
-        public int size() {
-            return stack.size();
+        public int ri() {
+            return readInt();
         }
 
-    }
+        public int readInt() {
+            boolean rev = false;
 
-    static class DigitUtils {
-        public static long INT_TO_LONG_MASK = (1L << 32) - 1;
-
-        private DigitUtils() {
-        }
-
-        public static long asLong(int high, int low) {
-            return (((long) high) << 32) | (((long) low) & INT_TO_LONG_MASK);
-        }
-
-    }
-
-    static class UndoDSU {
-        int[] rank;
-        int[] p;
-
-        public UndoDSU(int n) {
-            rank = new int[n];
-            p = new int[n];
-        }
-
-        public void init() {
-            Arrays.fill(rank, 1);
-            Arrays.fill(p, -1);
-        }
-
-        public int find(int x) {
-            while (p[x] != -1) {
-                x = p[x];
+            skipBlank();
+            if (next == '+' || next == '-') {
+                rev = next == '-';
+                next = read();
             }
-            return x;
+
+            int val = 0;
+            while (next >= '0' && next <= '9') {
+                val = val * 10 - next + '0';
+                next = read();
+            }
+
+            return rev ? val : -val;
         }
 
-        public UndoOperation merge(int a, int b) {
-            return new UndoOperation() {
-                int x, y;
+        public String rs() {
+            return readString();
+        }
 
+        public String readString(StringBuilder builder) {
+            skipBlank();
 
-                public void apply() {
-                    x = find(a);
-                    y = find(b);
-                    if (x == y) {
-                        return;
-                    }
-                    if (rank[x] < rank[y]) {
-                        int tmp = x;
-                        x = y;
-                        y = tmp;
-                    }
-                    p[y] = x;
-                    rank[x] += rank[y];
-                }
+            while (next > 32) {
+                builder.append((char) next);
+                next = read();
+            }
 
+            return builder.toString();
+        }
 
-                public void undo() {
-                    int cur = y;
-                    while (p[cur] != -1) {
-                        cur = p[cur];
-                        rank[cur] -= rank[y];
-                    }
-                    p[y] = -1;
-                }
-            };
+        public String readString() {
+            defaultStringBuf.setLength(0);
+            return readString(defaultStringBuf);
         }
 
     }
 
-    static class PriorityCommutativeUndoOperation implements UndoOperation {
-        public long priority;
-        int offsetToBottom;
-        UndoOperation op;
+    static class Hasher {
+        private final long time = System.nanoTime() + System.currentTimeMillis() * 31L;
 
-        public PriorityCommutativeUndoOperation(long priority, UndoOperation op) {
-            this.priority = priority;
-            this.op = op;
+        public int shuffle(long z) {
+            z += time;
+            z = (z ^ (z >>> 33)) * 0x62a9d9ed799705f5L;
+            return (int) (((z ^ (z >>> 28)) * 0xcb24d0a5c88c35b3L) >>> 32);
         }
 
-        public void apply() {
-            op.apply();
-        }
-
-        public void undo() {
-            op.undo();
+        public int hash(long x) {
+            return shuffle(x);
         }
 
     }
 
-    static class UndoStack {
-        private Deque<UndoOperation> dq;
+    static interface LongObjectEntryIterator<V> {
+        boolean hasNext();
 
-        public UndoStack(int size) {
-            dq = new ArrayDeque<>(size);
-        }
+        void next();
 
-        public void push(UndoOperation op) {
-            dq.addLast(op);
-            op.apply();
-        }
+        long getEntryKey();
 
-        public UndoOperation pop() {
-            UndoOperation ans = dq.removeLast();
-            ans.undo();
-            return ans;
-        }
-
-        public int size() {
-            return dq.size();
-        }
-
-    }
-
-    static interface UndoOperation {
-        void apply();
-
-        void undo();
+        V getEntryValue();
 
     }
 }

@@ -1,7 +1,7 @@
 package template.utils;
 
 public class GeometryUtils {
-    public static final double PREC = 1e-6;
+    public static final double PREC = 1e-8;
     public static final double INF = 1e30;
 
     public static double valueOf(double x) {

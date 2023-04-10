@@ -42,6 +42,10 @@ public class ModGenericFastWalshHadamardTransform {
         rootCache.put(4294967334654705682L, 4138593);
     }
 
+    public static void main(String[] args) {
+        System.out.println(currentSupport());
+    }
+
     public static String currentSupport() {
         StringBuilder in = new StringBuilder();
         for (long key : rootCache.keySet()) {

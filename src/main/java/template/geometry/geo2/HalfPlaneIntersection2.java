@@ -59,6 +59,21 @@ public class HalfPlaneIntersection2 {
                 return false;
             }
         }
+        while (deque.size() >= 2) {
+            Line2 front = deque.removeFirst();
+            Point2 pt = Line2.intersect(front, deque.peekFirst());
+            if (pt == null) {
+                continue;
+            }
+            int side = line.side(pt);
+            if (side > 0 || (close && side == 0)) {
+                deque.addFirst(front);
+                break;
+            }
+            if (Point2.orient(line.vec, deque.peekFirst().vec) != Point2.orient(front.vec, deque.peekFirst().vec)) {
+                return false;
+            }
+        }
         if (deque.size() == 1 && Point2.orient(line.vec, deque.peekLast().vec) == 0) {
             int side = deque.peekLast().side(line);
             if (!(side > 0 || (close && side == 0))) {
