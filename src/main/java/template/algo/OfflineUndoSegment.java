@@ -13,9 +13,9 @@ public class OfflineUndoSegment {
 
     private OfflineUndoSegment left;
     private OfflineUndoSegment right;
-    private List<CommutativeUndoOperation> items = new ArrayList<>();
+    private List<FlaggedCommutativeUndoOperation> items = new ArrayList<>();
 
-    private void modify(CommutativeUndoOperation item) {
+    private void modify(FlaggedCommutativeUndoOperation item) {
         items.add(item);
     }
 
@@ -44,7 +44,7 @@ public class OfflineUndoSegment {
         return ll > r || rr < l;
     }
 
-    public void update(int ll, int rr, int l, int r, CommutativeUndoOperation item) {
+    public void update(int ll, int rr, int l, int r, FlaggedCommutativeUndoOperation item) {
         if (leave(ll, rr, l, r)) {
             return;
         }
@@ -60,7 +60,7 @@ public class OfflineUndoSegment {
     }
 
     public void solve(int l, int r, Callback consumer) {
-        for (CommutativeUndoOperation item : items) {
+        for (FlaggedCommutativeUndoOperation item : items) {
             item.apply();
         }
         if (l < r) {
@@ -72,7 +72,7 @@ public class OfflineUndoSegment {
         }
 
         Collections.reverse(items);
-        for (CommutativeUndoOperation item : items) {
+        for (FlaggedCommutativeUndoOperation item : items) {
             item.undo();
         }
     }

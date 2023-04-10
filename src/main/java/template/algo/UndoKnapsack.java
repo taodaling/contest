@@ -15,8 +15,8 @@ public class UndoKnapsack {
     /**
      * apply take O(dp.length) and undo take O(1)
      */
-    public CommutativeUndoOperation add(int weight, long value) {
-        return new CommutativeUndoOperation() {
+    public UndoOperation add(int weight, long value) {
+        return new UndoOperation() {
             long[] next = new long[dp.length];
 
             @Override

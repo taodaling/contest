@@ -9,9 +9,9 @@ import java.util.Deque;
 public class UndoQueue {
 
 
-    private Deque<CommutativeUndoOperation> dq;
-    private Deque<CommutativeUndoOperation> bufA;
-    private Deque<CommutativeUndoOperation> bufB;
+    private Deque<FlaggedCommutativeUndoOperation> dq;
+    private Deque<FlaggedCommutativeUndoOperation> bufA;
+    private Deque<FlaggedCommutativeUndoOperation> bufB;
 
     public UndoQueue(int size) {
         dq = new ArrayDeque<>(size);
@@ -19,18 +19,18 @@ public class UndoQueue {
         bufB = new ArrayDeque<>(size);
     }
 
-    public void add(CommutativeUndoOperation op) {
+    public void add(FlaggedCommutativeUndoOperation op) {
         op.flag = false;
         pushAndDo(op);
     }
 
-    private void pushAndDo(CommutativeUndoOperation op) {
+    private void pushAndDo(FlaggedCommutativeUndoOperation op) {
         dq.addLast(op);
         op.apply();
     }
 
     private void popAndUndo() {
-        CommutativeUndoOperation ans = dq.removeLast();
+        FlaggedCommutativeUndoOperation ans = dq.removeLast();
         ans.undo();
         if (ans.flag) {
             bufA.addLast(ans);
@@ -39,7 +39,7 @@ public class UndoQueue {
         }
     }
 
-    public CommutativeUndoOperation remove() {
+    public FlaggedCommutativeUndoOperation remove() {
         if (!dq.peekLast().flag) {
             popAndUndo();
             while (!dq.isEmpty() && bufB.size() != bufA.size()) {
@@ -47,13 +47,13 @@ public class UndoQueue {
             }
             if (dq.isEmpty()) {
                 while (!bufB.isEmpty()) {
-                    CommutativeUndoOperation ans = bufB.removeFirst();
+                    FlaggedCommutativeUndoOperation ans = bufB.removeFirst();
                     ans.flag = true;
                     pushAndDo(ans);
                 }
             } else {
                 while (!bufB.isEmpty()) {
-                    CommutativeUndoOperation ans = bufB.removeLast();
+                    FlaggedCommutativeUndoOperation ans = bufB.removeLast();
                     pushAndDo(ans);
                 }
             }
@@ -62,7 +62,7 @@ public class UndoQueue {
             }
         }
 
-        CommutativeUndoOperation ans = dq.removeLast();
+        FlaggedCommutativeUndoOperation ans = dq.removeLast();
         ans.undo();
         return ans;
     }

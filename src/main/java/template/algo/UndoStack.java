@@ -15,8 +15,10 @@ public class UndoStack {
         op.apply();
     }
 
-    public void pop() {
-        dq.removeLast().undo();
+    public UndoOperation pop() {
+        UndoOperation ans = dq.removeLast();
+        ans.undo();
+        return ans;
     }
 
     public int size() {

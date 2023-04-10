@@ -49,8 +49,8 @@ public class UndoXorDSU {
         return rank[find(x)];
     }
 
-    public CommutativeUndoOperation merge(int a, int b, long d) {
-        return new CommutativeUndoOperation() {
+    public UndoOperation merge(int a, int b, long d) {
+        return new UndoOperation() {
             int x, y;
             boolean conflictSnapshot;
 

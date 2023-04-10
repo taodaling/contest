@@ -27,8 +27,8 @@ public class UndoDSU {
         return rank[find(x)];
     }
 
-    public CommutativeUndoOperation merge(int a, int b) {
-        return new CommutativeUndoOperation() {
+    public UndoOperation merge(int a, int b) {
+        return new UndoOperation() {
             int x, y;
 
 
