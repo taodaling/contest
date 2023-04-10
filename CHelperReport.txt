@@ -1,2 +1,2 @@
-31 src/main/java/contest/Task.json
+35 src/main/java/contest/BZOJ1018.json
 0

@@ -14,6 +14,7 @@ public class ExternalExecutor {
 
     public String invoke(String input) {
         try {
+            input = input + "\n";
             Process process = Runtime.getRuntime().exec(path);
             process.getOutputStream().write(input.getBytes());
             process.getOutputStream().flush();

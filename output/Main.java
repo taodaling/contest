@@ -2,22 +2,12 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
-import java.util.Deque;
-import java.util.function.Supplier;
-import java.util.ArrayList;
 import java.io.OutputStream;
-import java.io.PrintStream;
-import java.util.Collection;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.stream.Collectors;
 import java.nio.charset.StandardCharsets;
 import java.io.UncheckedIOException;
-import java.util.function.Consumer;
-import java.util.List;
-import java.util.stream.Stream;
 import java.io.Closeable;
-import java.util.ArrayDeque;
 import java.io.InputStream;
 
 /**
@@ -38,409 +28,803 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            Task solver = new Task();
+            BZOJ1018 solver = new BZOJ1018();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class Task {
+    static class BZOJ1018 {
+        int C;
+
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            int n = in.ri();
-            int m = in.ri();
-            int[] a = in.ri(n);
-            int[] b = in.ri(m);
-            int[] conv = new IntPolyFFT(998244353).convolution(a, b);
-        }
+            C = in.ri();
 
-    }
-
-    static interface InverseNumber {
-    }
-
-    static class IntPolyFFT extends IntPoly {
-        private static final int FFT_THRESHOLD = 50;
-
-        public IntPolyFFT(int mod) {
-            super(mod);
-        }
-
-        public int[] convolution(int[] a, int[] b) {
-            if (a != b) {
-                return multiplyMod(a, b);
-            } else {
-                return pow2(a);
-            }
-        }
-
-        public int[] pow2(int[] a) {
-            int rA = rankOf(a);
-            if (rA < FFT_THRESHOLD) {
-                return mulBF(a, a);
-            }
-
-            int need = rA * 2 + 1;
-
-            double[] aReal = PrimitiveBuffers.allocDoublePow2(need);
-            double[] aImag = PrimitiveBuffers.allocDoublePow2(need);
-            int n = aReal.length;
-
-            for (int i = 0; i <= rA; i++) {
-                int x = DigitUtils.mod(a[i], mod);
-                aReal[i] = x & ((1 << 15) - 1);
-                aImag[i] = x >> 15;
-            }
-            FastFourierTransform.fft(new double[][]{aReal, aImag}, false);
-
-            double[] bReal = PrimitiveBuffers.allocDoublePow2(aReal, aReal.length);
-            double[] bImag = PrimitiveBuffers.allocDoublePow2(aImag, bReal.length);
-
-
-            for (int i = 0, j = 0; i <= j; i++, j = n - i) {
-                double ari = aReal[i];
-                double aii = aImag[i];
-                double bri = bReal[i];
-                double bii = bImag[i];
-                double arj = aReal[j];
-                double aij = aImag[j];
-                double brj = bReal[j];
-                double bij = bImag[j];
-
-                double a1r = (ari + arj) / 2;
-                double a1i = (aii - aij) / 2;
-                double a2r = (aii + aij) / 2;
-                double a2i = (arj - ari) / 2;
-
-                double b1r = (bri + brj) / 2;
-                double b1i = (bii - bij) / 2;
-                double b2r = (bii + bij) / 2;
-                double b2i = (brj - bri) / 2;
-
-                aReal[i] = a1r * b1r - a1i * b1i - a2r * b2i - a2i * b2r;
-                aImag[i] = a1r * b1i + a1i * b1r + a2r * b2r - a2i * b2i;
-                bReal[i] = a1r * b2r - a1i * b2i + a2r * b1r - a2i * b1i;
-                bImag[i] = a1r * b2i + a1i * b2r + a2r * b1i + a2i * b1r;
-
-                if (i != j) {
-                    a1r = (arj + ari) / 2;
-                    a1i = (aij - aii) / 2;
-                    a2r = (aij + aii) / 2;
-                    a2i = (ari - arj) / 2;
-
-                    b1r = (brj + bri) / 2;
-                    b1i = (bij - bii) / 2;
-                    b2r = (bij + bii) / 2;
-                    b2i = (bri - brj) / 2;
-
-                    aReal[j] = a1r * b1r - a1i * b1i - a2r * b2i - a2i * b2r;
-                    aImag[j] = a1r * b1i + a1i * b1r + a2r * b2r - a2i * b2i;
-                    bReal[j] = a1r * b2r - a1i * b2i + a2r * b1r - a2i * b1i;
-                    bImag[j] = a1r * b2i + a1i * b2r + a2r * b1i + a2i * b1r;
+            DynamicConnectivity dc = new DynamicConnectivity(2 * C, 100000);
+            while (true) {
+                String cmd = in.rs();
+                if (cmd.equals("Exit")) {
+                    return;
+                }
+                int x = in.ri() - 1;
+                int y = in.ri() - 1;
+                int a = in.ri() - 1;
+                int b = in.ri() - 1;
+                int id1 = id(x, y);
+                int id2 = id(a, b);
+                if (cmd.equals("Open")) {
+                    dc.addEdge(id1, id2);
+                } else if (cmd.equals("Close")) {
+                    dc.deleteEdge(id1, id2);
+                } else {
+                    if (dc.check(id1, id2)) {
+                        out.println("Y");
+                    } else {
+                        out.println("N");
+                    }
                 }
             }
-
-            FastFourierTransform.fft(new double[][]{aReal, aImag}, true);
-            FastFourierTransform.fft(new double[][]{bReal, bImag}, true);
-
-            int[] ans = PrimitiveBuffers.allocIntPow2(need);
-            for (int i = 0; i < need; i++) {
-                long aa = DigitUtils.mod(Math.round(aReal[i]), mod);
-                long bb = DigitUtils.mod(Math.round(bReal[i]), mod);
-                long cc = DigitUtils.mod(Math.round(aImag[i]), mod);
-                ans[i] = DigitUtils.mod(aa + (bb << 15) + (cc << 30), mod);
-            }
-
-            PrimitiveBuffers.release(aReal, bReal, aImag, bImag);
-            return ans;
         }
 
-        private void to_string(String id, double[] a, double[] b) {
-            List<String> list = new ArrayList<>();
-            for (int i = 0; i < a.length; i++) {
-                list.add(String.format("(%.1f,%.1f)", a[i], b[i]));
-            }
-            String res = id + "\n\n" + list.stream().collect(Collectors.joining(" ")) + "\n";
-            System.out.println(res);
+        public int id(int a, int b) {
+            return a * C + b;
         }
 
-        private int[] multiplyMod(int[] a, int[] b) {
-            int rA = rankOf(a);
-            int rB = rankOf(b);
-            if (Math.min(rA, rB) < FFT_THRESHOLD) {
-                return mulBF(a, b);
+    }
+
+    static class LongObjectHashMap<V> {
+        private int[] slot;
+        private int[] next;
+        private long[] keys;
+        private Object[] values;
+        private int alloc;
+        private boolean[] removed;
+        private int mask;
+        private int size;
+        private boolean rehash;
+        private Hasher hasher = new Hasher();
+        private int[] version;
+        private int now;
+
+        private void access(int i) {
+            if (version[i] != now) {
+                slot[i] = 0;
+                version[i] = now;
             }
+        }
 
-            int need = rA + rB + 1;
+        public LongObjectHashMap(int cap, boolean rehash) {
+            this.mask = (1 << (32 - Integer.numberOfLeadingZeros(cap - 1))) - 1;
+            slot = new int[mask + 1];
+            version = new int[mask + 1];
+            next = new int[cap + 1];
+            keys = new long[cap + 1];
+            values = new Object[cap + 1];
+            removed = new boolean[cap + 1];
+            this.rehash = rehash;
+        }
 
-            double[] aReal = PrimitiveBuffers.allocDoublePow2(need);
-            double[] aImag = PrimitiveBuffers.allocDoublePow2(need);
-            int n = aReal.length;
+        private void doubleCapacity() {
+            int newSize = Math.max(next.length + 10, next.length * 2);
+            next = Arrays.copyOf(next, newSize);
+            keys = Arrays.copyOf(keys, newSize);
+            values = Arrays.copyOf(values, newSize);
+            removed = Arrays.copyOf(removed, newSize);
+        }
 
-            for (int i = 0; i <= rA; i++) {
-                int x = DigitUtils.mod(a[i], mod);
-                aReal[i] = x & ((1 << 15) - 1);
-                aImag[i] = x >> 15;
-            }
-            FastFourierTransform.fft(new double[][]{aReal, aImag}, false);
-
-            double[] bReal = PrimitiveBuffers.allocDoublePow2(need);
-            double[] bImag = PrimitiveBuffers.allocDoublePow2(need);
-            for (int i = 0; i <= rB; i++) {
-                int x = DigitUtils.mod(b[i], mod);
-                bReal[i] = x & ((1 << 15) - 1);
-                bImag[i] = x >> 15;
-
-//            System.out.printf("%d %.1f %.1f\n", x, bReal[i], bImag[i]);
-            }
-//        to_string("", bReal, bImag);
-            FastFourierTransform.fft(new double[][]{bReal, bImag}, false);
-            to_string("一", aReal, aImag);
-            to_string("二", bReal, bImag);
-
-            for (int i = 0, j = 0; i <= j; i++, j = n - i) {
-                double ari = aReal[i];
-                double aii = aImag[i];
-                double bri = bReal[i];
-                double bii = bImag[i];
-                double arj = aReal[j];
-                double aij = aImag[j];
-                double brj = bReal[j];
-                double bij = bImag[j];
-
-                double a1r = (ari + arj) / 2;
-                double a1i = (aii - aij) / 2;
-                double a2r = (aii + aij) / 2;
-                double a2i = (arj - ari) / 2;
-
-                double b1r = (bri + brj) / 2;
-                double b1i = (bii - bij) / 2;
-                double b2r = (bii + bij) / 2;
-                double b2i = (brj - bri) / 2;
-
-                aReal[i] = a1r * b1r - a1i * b1i - a2r * b2i - a2i * b2r;
-                aImag[i] = a1r * b1i + a1i * b1r + a2r * b2r - a2i * b2i;
-                bReal[i] = a1r * b2r - a1i * b2i + a2r * b1r - a2i * b1i;
-                bImag[i] = a1r * b2i + a1i * b2r + a2r * b1i + a2i * b1r;
-
-                if (i != j) {
-                    a1r = (arj + ari) / 2;
-                    a1i = (aij - aii) / 2;
-                    a2r = (aij + aii) / 2;
-                    a2i = (ari - arj) / 2;
-
-                    b1r = (brj + bri) / 2;
-                    b1i = (bij - bii) / 2;
-                    b2r = (bij + bii) / 2;
-                    b2i = (bri - brj) / 2;
-
-                    aReal[j] = a1r * b1r - a1i * b1i - a2r * b2i - a2i * b2r;
-                    aImag[j] = a1r * b1i + a1i * b1r + a2r * b2r - a2i * b2i;
-                    bReal[j] = a1r * b2r - a1i * b2i + a2r * b1r - a2i * b1i;
-                    bImag[j] = a1r * b2i + a1i * b2r + a2r * b1i + a2i * b1r;
+        private void rehash() {
+            int[] newSlots = new int[Math.max(16, slot.length * 2)];
+            int[] newVersions = new int[newSlots.length];
+            int newMask = newSlots.length - 1;
+            for (int i = 0; i < slot.length; i++) {
+                access(i);
+                if (slot[i] == 0) {
+                    continue;
+                }
+                int head = slot[i];
+                while (head != 0) {
+                    int n = next[head];
+                    int s = hash(keys[head]) & newMask;
+                    next[head] = newSlots[s];
+                    newSlots[s] = head;
+                    head = n;
                 }
             }
+            this.slot = newSlots;
+            this.mask = newMask;
+            this.version = newVersions;
+            now = 0;
+        }
 
-            FastFourierTransform.fft(new double[][]{aReal, aImag}, true);
-            FastFourierTransform.fft(new double[][]{bReal, bImag}, true);
-            to_string("三", aReal, aImag);
-            to_string("四", bReal, bImag);
-            int[] ans = PrimitiveBuffers.allocIntPow2(need);
-            for (int i = 0; i < need; i++) {
-                long aa = DigitUtils.mod(Math.round(aReal[i]), mod);
-                long bb = DigitUtils.mod(Math.round(bReal[i]), mod);
-                long cc = DigitUtils.mod(Math.round(aImag[i]), mod);
-                System.out.printf("%d %d %d\n", aa, bb, cc);
-                ans[i] = DigitUtils.mod(aa + (bb << 15) + (cc << 30), mod);
+        private void alloc() {
+            alloc++;
+            if (alloc >= next.length) {
+                doubleCapacity();
             }
-
-            PrimitiveBuffers.release(aReal, bReal, aImag, bImag);
-            return ans;
+            next[alloc] = 0;
+            removed[alloc] = false;
+            values[alloc] = null;
+            size++;
         }
 
-    }
-
-    static class Power implements InverseNumber {
-        int mod;
-
-        public Power(int mod) {
-            this.mod = mod;
+        private int hash(long x) {
+            return hasher.hash(x);
         }
 
-    }
-
-    static class Log2 {
-        public static int ceilLog(int x) {
-            if (x <= 0) {
-                return 0;
-            }
-            return 32 - Integer.numberOfLeadingZeros(x - 1);
-        }
-
-    }
-
-    static class Buffer<T> {
-        private Deque<T> deque;
-        private Supplier<T> supplier;
-        private Consumer<T> cleaner;
-        private int allocTime;
-        private int releaseTime;
-
-        public Buffer(Supplier<T> supplier) {
-            this(supplier, (x) -> {
-            });
-        }
-
-        public Buffer(Supplier<T> supplier, Consumer<T> cleaner) {
-            this(supplier, cleaner, 0);
-        }
-
-        public Buffer(Supplier<T> supplier, Consumer<T> cleaner, int exp) {
-            this.supplier = supplier;
-            this.cleaner = cleaner;
-            deque = new ArrayDeque<>(exp);
-        }
-
-        public T alloc() {
-            allocTime++;
-            T res;
-            if (deque.isEmpty()) {
-                res = supplier.get();
-                cleaner.accept(res);
+        public void put(long x, V y) {
+            int h = hash(x);
+            int s = h & mask;
+            access(s);
+            if (slot[s] == 0) {
+                alloc();
+                slot[s] = alloc;
+                keys[alloc] = x;
+                values[alloc] = y;
             } else {
-                res = deque.removeFirst();
+                int index = findIndexOrLastEntry(s, x);
+                if (keys[index] != x) {
+                    alloc();
+                    next[index] = alloc;
+                    keys[alloc] = x;
+                    values[alloc] = y;
+                } else {
+                    values[index] = y;
+                }
             }
-            return res;
+            if (rehash && size >= slot.length) {
+                rehash();
+            }
         }
 
-        public void release(T e) {
-            if (e == null) {
+        public boolean containKey(long x) {
+            int h = hash(x);
+            int s = h & mask;
+            access(s);
+            if (slot[s] == 0) {
+                return false;
+            }
+            return keys[findIndexOrLastEntry(s, x)] == x;
+        }
+
+        public V remove(long x) {
+            int h = hash(x);
+            int s = h & mask;
+            access(s);
+            if (slot[s] == 0) {
+                return null;
+            }
+            int pre = 0;
+            int index = slot[s];
+            while (keys[index] != x) {
+                pre = index;
+                if (next[index] != 0) {
+                    index = next[index];
+                } else {
+                    break;
+                }
+            }
+            if (keys[index] != x) {
+                return null;
+            }
+            if (slot[s] == index) {
+                slot[s] = next[index];
+            } else {
+                next[pre] = next[index];
+            }
+            removed[index] = true;
+            size--;
+            return (V) values[index];
+        }
+
+        private int findIndexOrLastEntry(int s, long x) {
+            int iter = slot[s];
+            while (keys[iter] != x) {
+                if (next[iter] != 0) {
+                    iter = next[iter];
+                } else {
+                    return iter;
+                }
+            }
+            return iter;
+        }
+
+        public LongObjectEntryIterator<V> iterator() {
+            return new LongObjectEntryIterator() {
+                int index = 1;
+                int readIndex = -1;
+
+
+                public boolean hasNext() {
+                    while (index <= alloc && removed[index]) {
+                        index++;
+                    }
+                    return index <= alloc;
+                }
+
+
+                public long getEntryKey() {
+                    return keys[readIndex];
+                }
+
+
+                public Object getEntryValue() {
+                    return values[readIndex];
+                }
+
+
+                public void next() {
+                    if (!hasNext()) {
+                        throw new IllegalStateException();
+                    }
+                    readIndex = index;
+                    index++;
+                }
+            };
+        }
+
+        public String toString() {
+            LongObjectEntryIterator<V> iterator = iterator();
+            StringBuilder builder = new StringBuilder("{");
+            while (iterator.hasNext()) {
+                iterator.next();
+                builder.append(iterator.getEntryKey()).append("->").append(iterator.getEntryValue()).append(',');
+            }
+            if (builder.charAt(builder.length() - 1) == ',') {
+                builder.setLength(builder.length() - 1);
+            }
+            builder.append('}');
+            return builder.toString();
+        }
+
+    }
+
+    static class DynamicConnectivity {
+        DynamicConnectivity.EulerTourTree[] levels;
+        int n;
+        int log2;
+        LongObjectHashMap<DynamicConnectivity.EdgeInfo> map;
+
+        public DynamicConnectivity(int n, int m) {
+            this.n = n;
+            this.log2 = 32 - Integer.numberOfLeadingZeros(n - 1);
+            levels = new DynamicConnectivity.EulerTourTree[log2 + 1];
+            for (int i = 1; i <= log2; i++) {
+                levels[i] = new DynamicConnectivity.EulerTourTree(n, 0);
+                levels[i].id = i;
+            }
+            map = new LongObjectHashMap<>(m, true);
+        }
+
+        public boolean check(int i, int j) {
+            if (i == j) {
+                return true;
+            }
+            int r1 = levels[log2].rootOf(i);
+            int r2 = levels[log2].rootOf(j);
+            return r1 == r2;
+        }
+
+        public void addEdge(int i, int j) {
+            DynamicConnectivity.EdgeInfo info = new DynamicConnectivity.EdgeInfo();
+            info.a = i;
+            info.b = j;
+            info.level = log2 + 1;
+            map.put(idOfEdge(i, j), info);
+            pushDownEdge(info, levels[log2].rootOf(info.a) != levels[log2].rootOf(info.b));
+        }
+
+        private void pushDownEdge(DynamicConnectivity.EdgeInfo info, boolean link) {
+            info.level--;
+            if (info.level == 0) {
                 return;
             }
-            releaseTime++;
-            cleaner.accept(e);
-            deque.addLast(e);
-        }
 
-    }
-
-    static class IntPoly {
-        protected int mod;
-        protected Power power;
-        QuadraticResidue qr;
-
-        public IntPoly(int mod) {
-            this.mod = mod;
-            this.power = new Power(mod);
-            qr = new QuadraticResidue(mod);
-        }
-
-        public int rankOf(int[] p) {
-            int r = p.length - 1;
-            while (r >= 0 && p[r] == 0) {
-                r--;
-            }
-            return Math.max(0, r);
-        }
-
-        public int[] mulBF(int[] a, int[] b) {
-            int rA = rankOf(a);
-            int rB = rankOf(b);
-            if (rA > rB) {
-                {
-                    int tmp = rA;
-                    rA = rB;
-                    rB = tmp;
-                }
-                {
-                    int[] tmp = a;
-                    a = b;
-                    b = tmp;
-                }
-            }
-            int[] c = PrimitiveBuffers.allocIntPow2(rA + rB + 1);
-            for (int i = 0; i <= rA; i++) {
-                for (int j = 0; j <= rB; j++) {
-                    c[i + j] = (int) ((c[i + j] + (long) a[i] * b[j]) % mod);
-                }
-            }
-            return c;
-        }
-
-    }
-
-    static class FastFourierTransform {
-        private static double[][] realLevels = new double[30][];
-        private static double[][] imgLevels = new double[30][];
-
-        private static void prepareLevel(int i) {
-            if (realLevels[i] == null) {
-                realLevels[i] = new double[1 << i];
-                imgLevels[i] = new double[1 << i];
-                for (int j = 0, s = 1 << i; j < s; j++) {
-                    realLevels[i][j] = Math.cos(Math.PI / s * j);
-                    imgLevels[i][j] = Math.sin(Math.PI / s * j);
-                }
+            addEdgeChain(info);
+            if (link) {
+                levels[info.level].link(info);
             }
         }
 
-        public static void fft(double[][] p, boolean inv) {
-            int m = Log2.ceilLog(p[0].length);
-            int n = 1 << m;
-            int shift = 32 - Integer.numberOfTrailingZeros(n);
-            for (int i = 1; i < n; i++) {
-                int j = Integer.reverse(i << shift);
-                if (i < j) {
-                    SequenceUtils.swap(p[0], i, j);
-                    SequenceUtils.swap(p[1], i, j);
+        private void addEdgeChain(DynamicConnectivity.EdgeInfo info) {
+            DynamicConnectivity.EdgeChain chain1 = new DynamicConnectivity.EdgeChain(info);
+            DynamicConnectivity.EdgeChain chain2 = new DynamicConnectivity.EdgeChain(info);
+            DynamicConnectivity.Splay.splay(levels[info.level].nodes[info.a]);
+            levels[info.level].nodes[info.a].addEdge(chain1);
+            levels[info.level].nodes[info.a].pushUp();
+            DynamicConnectivity.Splay.splay(levels[info.level].nodes[info.b]);
+            levels[info.level].nodes[info.b].addEdge(chain2);
+            levels[info.level].nodes[info.b].pushUp();
+        }
+
+        public void deleteEdge(int i, int j) {
+            long idOfEdge = idOfEdge(i, j);
+            DynamicConnectivity.EdgeInfo info = map.remove(idOfEdge);
+            if (info.level == 0) {
+                return;
+            }
+
+            int curLevel = info.level;
+            info.level = -1;
+            if (!levels[log2].map.containKey(idOfEdge)) {
+                return;
+            }
+
+            for (int k = curLevel; k <= log2; k++) {
+                levels[k].cut(i, j);
+            }
+
+            for (int k = curLevel; k <= log2; k++) {
+                DynamicConnectivity.Splay ti = levels[k].nodes[i];
+                DynamicConnectivity.Splay tj = levels[k].nodes[j];
+                DynamicConnectivity.Splay.splay(ti);
+                DynamicConnectivity.Splay.splay(tj);
+
+                if (ti.size > tj.size) {
+                    DynamicConnectivity.Splay tmp = ti;
+                    ti = tj;
+                    tj = tmp;
+                }
+
+                DynamicConnectivity.Splay.splay(ti);
+                while (ti.infoWithMaxLevel != null) {
+                    ti = ti.infoWithMaxLevel;
+                    DynamicConnectivity.Splay.splay(ti);
+                    if (ti.infoWithMaxLevel.info.level < k) {
+                        break;
+                    }
+                    pushDownEdge(ti.info, true);
+                    DynamicConnectivity.Splay.splay(ti);
+                }
+                DynamicConnectivity.Splay.splay(ti);
+                while (ti.containEdge != null) {
+                    ti = ti.containEdge;
+                    DynamicConnectivity.Splay.splay(ti);
+                    DynamicConnectivity.EdgeInfo e = ti.popEdge().info;
+                    ti.pushUp();
+                    if (e.level < k) {
+                    } else if (levels[log2].rootOf(e.a) ==
+                            levels[log2].rootOf(e.b)) {
+                        if (e.level == k) {
+                            pushDownEdge(e, false);
+                        }
+                    } else {
+                        addEdgeChain(e);
+                        for (int t = k; t <= log2; t++) {
+                            levels[t].link(e);
+                        }
+                        return;
+                    }
+                    DynamicConnectivity.Splay.splay(ti);
+                }
+            }
+        }
+
+        private static long idOfEdge(int i, int j) {
+            if (i > j) {
+                int tmp = i;
+                i = j;
+                j = tmp;
+            }
+            return (((long) i) << 32) | j;
+        }
+
+        private static class EdgeInfo {
+            int a;
+            int b;
+            int level;
+
+            public String toString() {
+                return String.format("%d -> %d", a, b);
+            }
+
+        }
+
+        private static class EdgeChain {
+            final DynamicConnectivity.EdgeInfo info;
+            DynamicConnectivity.EdgeChain next;
+
+            private EdgeChain(DynamicConnectivity.EdgeInfo info) {
+                this.info = info;
+            }
+
+            public String toString() {
+                if (next == null) {
+                    return info.toString();
+                }
+                return info.toString() + ", " + next.toString();
+            }
+
+        }
+
+        public static class EulerTourTree {
+            DynamicConnectivity.Splay[] nodes;
+            int id;
+            LongObjectHashMap<DynamicConnectivity.EulerTourTree.Edge> map;
+
+            private DynamicConnectivity.Splay alloc(int id) {
+                DynamicConnectivity.Splay splay = new DynamicConnectivity.Splay();//buffer.alloc();
+                splay.id = id;
+                return splay;
+            }
+
+            public EulerTourTree(int n, int m) {
+                map = new LongObjectHashMap<>(m, true);
+                nodes = new DynamicConnectivity.Splay[n];
+                for (int i = 0; i < n; i++) {
+                    nodes[i] = alloc(i);
+                    nodes[i].node = 1;
+                    nodes[i].pushUp();
                 }
             }
 
-            double[][] t = new double[2][1];
-            for (int d = 0; d < m; d++) {
-                int s = 1 << d;
-                int s2 = s << 1;
-                prepareLevel(d);
-                for (int i = 0; i < n; i += s2) {
-                    for (int j = 0; j < s; j++) {
-                        int a = i + j;
-                        int b = a + s;
-                        mul(realLevels[d][j], imgLevels[d][j], p[0][b], p[1][b], t, 0);
-                        sub(p[0][a], p[1][a], t[0][0], t[1][0], p, b);
-                        add(p[0][a], p[1][a], t[0][0], t[1][0], p, a);
+            private void destroy(DynamicConnectivity.Splay s) {
+//            s.info = null;
+//            s.chain = null;
+//            s.infoWithMaxLevel = null;
+//            s.containEdge = null;
+//            buffer.release(s);
+            }
+
+            public int rootOf(int i) {
+                return rootOf(nodes[i]).id;
+            }
+
+            public void setRoot(int i) {
+                if (rootOf(i) == i) {
+                    return;
+                }
+
+                DynamicConnectivity.Splay.splay(nodes[i]);
+                DynamicConnectivity.Splay l = DynamicConnectivity.Splay.splitLeft(nodes[i]);
+                if (l == DynamicConnectivity.Splay.NIL) {
+                    return;
+                }
+                DynamicConnectivity.Splay a = DynamicConnectivity.Splay.selectMinAsRoot(l);
+                DynamicConnectivity.Splay b = DynamicConnectivity.Splay.selectMaxAsRoot(nodes[i]);
+
+                if (nodes[a.id] == a) {
+                    DynamicConnectivity.Splay.splitLeft(b);
+                    destroy(b);
+                } else {
+                    l = DynamicConnectivity.Splay.splitRight(a);
+                    destroy(a);
+                }
+
+                DynamicConnectivity.Splay newNode = alloc(i);
+                DynamicConnectivity.Splay.splay(nodes[i]);
+                DynamicConnectivity.Splay.splay(l);
+                DynamicConnectivity.Splay.merge(nodes[i], DynamicConnectivity.Splay.merge(l, newNode));
+            }
+
+            public void link(DynamicConnectivity.EdgeInfo info) {
+                int i = info.a;
+                int j = info.b;
+                setRoot(i);
+                setRoot(j);
+
+                DynamicConnectivity.EulerTourTree.Edge e = new DynamicConnectivity.EulerTourTree.Edge();
+
+                long id = idOfEdge(i, j);
+                e.a = alloc(-i * 10000 - j);
+                e.b = alloc(-i * 10000 - j);
+                e.a.info = info;
+                e.a.pushUp();
+                e.b.pushUp();
+                map.put(id, e);
+
+                DynamicConnectivity.Splay.splay(nodes[i]);
+                DynamicConnectivity.Splay.splay(nodes[j]);
+                DynamicConnectivity.Splay.merge(nodes[i], e.a);
+                DynamicConnectivity.Splay.merge(nodes[j], e.b);
+                DynamicConnectivity.Splay.splay(nodes[i]);
+                DynamicConnectivity.Splay.splay(nodes[j]);
+                DynamicConnectivity.Splay.merge(nodes[i], nodes[j]);
+
+                DynamicConnectivity.Splay newNode = alloc(i);
+                DynamicConnectivity.Splay.splay(nodes[i]);
+                DynamicConnectivity.Splay.merge(nodes[i], newNode);
+            }
+
+            private DynamicConnectivity.Splay rootOf(DynamicConnectivity.Splay x) {
+                DynamicConnectivity.Splay.splay(x);
+                return DynamicConnectivity.Splay.selectMinAsRoot(x);
+            }
+
+            public void cut(int i, int j) {
+                long id = idOfEdge(i, j);
+                DynamicConnectivity.EulerTourTree.Edge e = map.remove(id);
+
+                DynamicConnectivity.Splay.splay(e.a);
+                DynamicConnectivity.Splay al = DynamicConnectivity.Splay.splitLeft(e.a);
+                DynamicConnectivity.Splay ar = DynamicConnectivity.Splay.splitRight(e.a);
+
+
+                DynamicConnectivity.Splay l, r;
+                if (rootOf(ar) == rootOf(e.b)) {
+                    DynamicConnectivity.Splay.splay(e.b);
+                    DynamicConnectivity.Splay bl = DynamicConnectivity.Splay.splitLeft(e.b);
+                    DynamicConnectivity.Splay br = DynamicConnectivity.Splay.splitRight(e.b);
+
+                    l = al;
+                    r = br;
+                } else {
+                    DynamicConnectivity.Splay.splay(e.b);
+                    DynamicConnectivity.Splay bl = DynamicConnectivity.Splay.splitLeft(e.b);
+                    DynamicConnectivity.Splay br = DynamicConnectivity.Splay.splitRight(e.b);
+
+                    l = bl;
+                    r = ar;
+                }
+
+                DynamicConnectivity.Splay.splay(l);
+                DynamicConnectivity.Splay.splay(r);
+                l = DynamicConnectivity.Splay.selectMaxAsRoot(l);
+                r = DynamicConnectivity.Splay.selectMinAsRoot(r);
+
+                if (nodes[l.id] == l) {
+                    DynamicConnectivity.Splay rSnapshot = r;
+                    r = DynamicConnectivity.Splay.splitRight(r);
+                    destroy(rSnapshot);
+                } else {
+                    DynamicConnectivity.Splay lSnapshot = l;
+                    l = DynamicConnectivity.Splay.splitLeft(l);
+                    destroy(lSnapshot);
+                }
+
+                DynamicConnectivity.Splay.merge(l, r);
+                destroy(e.a);
+                destroy(e.b);
+            }
+
+            private static class Edge {
+                DynamicConnectivity.Splay a;
+                DynamicConnectivity.Splay b;
+
+            }
+
+        }
+
+        public static class Splay implements Cloneable {
+            public static final DynamicConnectivity.Splay NIL = new DynamicConnectivity.Splay();
+            DynamicConnectivity.Splay left = NIL;
+            DynamicConnectivity.Splay right = NIL;
+            DynamicConnectivity.Splay father = NIL;
+            int size;
+            byte node;
+            int id;
+            DynamicConnectivity.EdgeChain chain;
+            DynamicConnectivity.EdgeInfo info;
+            DynamicConnectivity.Splay containEdge;
+            DynamicConnectivity.Splay infoWithMaxLevel;
+
+            static {
+                NIL.left = NIL;
+                NIL.right = NIL;
+                NIL.father = NIL;
+                NIL.size = 0;
+                NIL.id = -2;
+            }
+
+            public void addEdge(DynamicConnectivity.EdgeChain newChain) {
+                newChain.next = chain;
+                chain = newChain;
+                containEdge = this;
+            }
+
+            public DynamicConnectivity.EdgeChain popEdge() {
+                DynamicConnectivity.EdgeChain head = chain;
+                chain = head.next;
+                head.next = null;
+                return head;
+            }
+
+            public static void splay(DynamicConnectivity.Splay x) {
+                if (x == NIL) {
+                    return;
+                }
+                DynamicConnectivity.Splay y, z;
+                while ((y = x.father) != NIL) {
+                    if ((z = y.father) == NIL) {
+                        y.pushDown();
+                        x.pushDown();
+                        if (x == y.left) {
+                            zig(x);
+                        } else {
+                            zag(x);
+                        }
+                    } else {
+                        z.pushDown();
+                        y.pushDown();
+                        x.pushDown();
+                        if (x == y.left) {
+                            if (y == z.left) {
+                                zig(y);
+                                zig(x);
+                            } else {
+                                zig(x);
+                                zag(x);
+                            }
+                        } else {
+                            if (y == z.left) {
+                                zag(x);
+                                zig(x);
+                            } else {
+                                zag(y);
+                                zag(x);
+                            }
+                        }
                     }
                 }
+
+                x.pushDown();
+                x.pushUp();
             }
 
-            if (inv) {
-                for (int i = 0, j = 0; i <= j; i++, j = n - i) {
-                    double a = p[0][j];
-                    double b = p[1][j];
-                    div(p[0][i], p[1][i], n, p, j);
-                    if (i != j) {
-                        div(a, b, n, p, i);
-                    }
+            public static void zig(DynamicConnectivity.Splay x) {
+                DynamicConnectivity.Splay y = x.father;
+                DynamicConnectivity.Splay z = y.father;
+                DynamicConnectivity.Splay b = x.right;
+
+                y.setLeft(b);
+                x.setRight(y);
+                z.changeChild(y, x);
+
+                y.pushUp();
+            }
+
+            public static void zag(DynamicConnectivity.Splay x) {
+                DynamicConnectivity.Splay y = x.father;
+                DynamicConnectivity.Splay z = y.father;
+                DynamicConnectivity.Splay b = x.left;
+
+                y.setRight(b);
+                x.setLeft(y);
+                z.changeChild(y, x);
+
+                y.pushUp();
+            }
+
+            public void setLeft(DynamicConnectivity.Splay x) {
+                left = x;
+                x.father = this;
+            }
+
+            public void setRight(DynamicConnectivity.Splay x) {
+                right = x;
+                x.father = this;
+            }
+
+            public void changeChild(DynamicConnectivity.Splay y, DynamicConnectivity.Splay x) {
+                if (left == y) {
+                    setLeft(x);
+                } else {
+                    setRight(x);
                 }
             }
-        }
 
-        public static void add(double r1, double i1, double r2, double i2, double[][] r, int i) {
-            r[0][i] = r1 + r2;
-            r[1][i] = i1 + i2;
-        }
+            public void pushUp() {
+                if (this == NIL) {
+                    return;
+                }
+                size = left.size + right.size + node;
 
-        public static void sub(double r1, double i1, double r2, double i2, double[][] r, int i) {
-            r[0][i] = r1 - r2;
-            r[1][i] = i1 - i2;
-        }
+                containEdge = null;
+                if (chain != null) {
+                    containEdge = this;
+                } else if (left.containEdge != null) {
+                    containEdge = left.containEdge;
+                } else {
+                    containEdge = right.containEdge;
+                }
 
-        public static void mul(double r1, double i1, double r2, double i2, double[][] r, int i) {
-            r[0][i] = r1 * r2 - i1 * i2;
-            r[1][i] = r1 * i2 + i1 * r2;
-        }
+                infoWithMaxLevel = null;
+                if (info != null) {
+                    infoWithMaxLevel = this;
+                }
+                if (left.infoWithMaxLevel != null &&
+                        (infoWithMaxLevel == null || infoWithMaxLevel.info.level < left.infoWithMaxLevel.info.level)) {
+                    infoWithMaxLevel = left.infoWithMaxLevel;
+                }
+                if (right.infoWithMaxLevel != null &&
+                        (infoWithMaxLevel == null || infoWithMaxLevel.info.level < right.infoWithMaxLevel.info.level)) {
+                    infoWithMaxLevel = right.infoWithMaxLevel;
+                }
+            }
 
-        public static void div(double r1, double i1, double r2, double[][] r, int i) {
-            r[0][i] = r1 / r2;
-            r[1][i] = i1 / r2;
+            public void pushDown() {
+            }
+
+            public static void toString(DynamicConnectivity.Splay root, StringBuilder builder) {
+                if (root == NIL) {
+                    return;
+                }
+                root.pushDown();
+                toString(root.left, builder);
+                builder.append(root.id).append(',');
+                toString(root.right, builder);
+            }
+
+            public DynamicConnectivity.Splay clone() {
+                try {
+                    return (DynamicConnectivity.Splay) super.clone();
+                } catch (CloneNotSupportedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            public static DynamicConnectivity.Splay cloneTree(DynamicConnectivity.Splay splay) {
+                if (splay == NIL) {
+                    return NIL;
+                }
+                splay = splay.clone();
+                splay.left = cloneTree(splay.left);
+                splay.right = cloneTree(splay.right);
+                return splay;
+            }
+
+            public static DynamicConnectivity.Splay selectMinAsRoot(DynamicConnectivity.Splay root) {
+                if (root == NIL) {
+                    return root;
+                }
+                root.pushDown();
+                while (root.left != NIL) {
+                    root = root.left;
+                    root.pushDown();
+                }
+                splay(root);
+                return root;
+            }
+
+            public static DynamicConnectivity.Splay selectMaxAsRoot(DynamicConnectivity.Splay root) {
+                if (root == NIL) {
+                    return root;
+                }
+                root.pushDown();
+                while (root.right != NIL) {
+                    root = root.right;
+                    root.pushDown();
+                }
+                splay(root);
+                return root;
+            }
+
+            public static DynamicConnectivity.Splay splitLeft(DynamicConnectivity.Splay root) {
+                root.pushDown();
+                DynamicConnectivity.Splay left = root.left;
+                left.father = NIL;
+                root.setLeft(NIL);
+                root.pushUp();
+                return left;
+            }
+
+            public static DynamicConnectivity.Splay splitRight(DynamicConnectivity.Splay root) {
+                root.pushDown();
+                DynamicConnectivity.Splay right = root.right;
+                right.father = NIL;
+                root.setRight(NIL);
+                root.pushUp();
+                return right;
+            }
+
+            public static DynamicConnectivity.Splay merge(DynamicConnectivity.Splay a, DynamicConnectivity.Splay b) {
+                if (a == NIL) {
+                    return b;
+                }
+                if (b == NIL) {
+                    return a;
+                }
+                a = selectMaxAsRoot(a);
+                a.setRight(b);
+                a.pushUp();
+                return a;
+            }
+
+            public String toString() {
+                StringBuilder builder = new StringBuilder().append(id).append(":");
+                toString(cloneTree(this), builder);
+                return builder.toString();
+            }
+
         }
 
     }
@@ -490,6 +874,20 @@ public class Main {
             return this;
         }
 
+        public FastOutput append(String c) {
+            cache.append(c);
+            afterWrite();
+            return this;
+        }
+
+        public FastOutput println(String c) {
+            return append(c).println();
+        }
+
+        public FastOutput println() {
+            return append('\n');
+        }
+
         public FastOutput flush() {
             try {
                 if (stringBuilderValueField != null) {
@@ -537,28 +935,9 @@ public class Main {
 
     }
 
-    static class QuadraticResidue {
-        final int mod;
-        Power power;
-
-        public QuadraticResidue(int mod) {
-            this.mod = mod;
-            power = new Power(mod);
-        }
-
-    }
-
-    static class SequenceUtils {
-        public static void swap(double[] data, int i, int j) {
-            double tmp = data[i];
-            data[i] = data[j];
-            data[j] = tmp;
-        }
-
-    }
-
     static class FastInput {
         private final InputStream is;
+        private StringBuilder defaultStringBuf = new StringBuilder(1 << 13);
         private byte[] buf = new byte[1 << 13];
         private int bufLen;
         private int bufOffset;
@@ -566,12 +945,6 @@ public class Main {
 
         public FastInput(InputStream is) {
             this.is = is;
-        }
-
-        public void populate(int[] data) {
-            for (int i = 0; i < data.length; i++) {
-                data[i] = readInt();
-            }
         }
 
         private int read() {
@@ -599,12 +972,6 @@ public class Main {
             return readInt();
         }
 
-        public int[] ri(int n) {
-            int[] ans = new int[n];
-            populate(ans);
-            return ans;
-        }
-
         public int readInt() {
             boolean rev = false;
 
@@ -623,70 +990,51 @@ public class Main {
             return rev ? val : -val;
         }
 
-    }
-
-    static class DigitUtils {
-        private DigitUtils() {
+        public String rs() {
+            return readString();
         }
 
-        public static int mod(long x, int mod) {
-            if (x < -mod || x >= mod) {
-                x %= mod;
+        public String readString(StringBuilder builder) {
+            skipBlank();
+
+            while (next > 32) {
+                builder.append((char) next);
+                next = read();
             }
-            if (x < 0) {
-                x += mod;
-            }
-            return (int) x;
+
+            return builder.toString();
         }
 
-        public static int mod(int x, int mod) {
-            if (x < -mod || x >= mod) {
-                x %= mod;
-            }
-            if (x < 0) {
-                x += mod;
-            }
-            return x;
+        public String readString() {
+            defaultStringBuf.setLength(0);
+            return readString(defaultStringBuf);
         }
 
     }
 
-    static class PrimitiveBuffers {
-        public static Buffer<int[]>[] intPow2Bufs = new Buffer[30];
-        public static Buffer<double[]>[] doublePow2Bufs = new Buffer[30];
+    static class Hasher {
+        private final long time = System.nanoTime() + System.currentTimeMillis() * 31L;
 
-        static {
-            for (int i = 0; i < 30; i++) {
-                int finalI = i;
-                intPow2Bufs[i] = new Buffer<>(() -> new int[1 << finalI], x -> Arrays.fill(x, 0));
-                doublePow2Bufs[i] = new Buffer<>(() -> new double[1 << finalI], x -> Arrays.fill(x, 0));
-            }
+        public int shuffle(long z) {
+            z += time;
+            z = (z ^ (z >>> 33)) * 0x62a9d9ed799705f5L;
+            return (int) (((z ^ (z >>> 28)) * 0xcb24d0a5c88c35b3L) >>> 32);
         }
 
-        public static int[] allocIntPow2(int n) {
-            return intPow2Bufs[Log2.ceilLog(n)].alloc();
+        public int hash(long x) {
+            return shuffle(x);
         }
 
-        public static double[] allocDoublePow2(int n) {
-            return doublePow2Bufs[Log2.ceilLog(n)].alloc();
-        }
+    }
 
-        public static double[] allocDoublePow2(double[] data, int newLen) {
-            double[] ans = allocDoublePow2(newLen);
-            System.arraycopy(data, 0, ans, 0, Math.min(data.length, newLen));
-            return ans;
-        }
+    static interface LongObjectEntryIterator<V> {
+        boolean hasNext();
 
-        public static void release(double[] data) {
-            assert data.length == Integer.lowestOneBit(data.length);
-            doublePow2Bufs[Log2.ceilLog(data.length)].release(data);
-        }
+        void next();
 
-        public static void release(double[]... data) {
-            for (double[] x : data) {
-                release(x);
-            }
-        }
+        long getEntryKey();
+
+        V getEntryValue();
 
     }
 }

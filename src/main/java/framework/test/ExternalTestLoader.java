@@ -7,7 +7,7 @@ import java.io.File;
 import java.util.*;
 
 public class ExternalTestLoader {
-    static File root = new File("F:\\sourcecode\\contest\\testcase");
+    static File root = new File("D:\\competitve-programming\\testcases\\");
 
     static String getFileName(String whole) {
         int index = whole.lastIndexOf(".");

@@ -75,7 +75,7 @@ public class CapacityScalingMinimumCostFlowBySpfa {
     /**
      * O(VE^2 \log_2 max_capacity_of_each_edges)
      *
-     * @param maxFlow whether ensure it's a max flow (else only negative cost flow will be sent)
+     * @param maxFlow if it's a max flow (else only negative cost flow will be sent)
      */
     public long[] apply(List<LongCostFlowEdge>[] g, int s, int t, boolean maxFlow) {
         this.g = g;
