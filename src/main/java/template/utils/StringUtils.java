@@ -22,5 +22,7 @@ public class StringUtils {
     public static void debug(String name, Object val) {
         printLine(System.err, name, "=", val);
     }
-
+    public static boolean isNullOrEmpty(String s) {
+        return s == null || s.length() == 0;
+    }
 }

@@ -1,13 +1,18 @@
 import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.io.UncheckedIOException;
 import java.io.Closeable;
+import java.io.BufferedReader;
 import java.io.InputStream;
 
 /**
@@ -28,803 +33,220 @@ public class Main {
             OutputStream outputStream = System.out;
             FastInput in = new FastInput(inputStream);
             FastOutput out = new FastOutput(outputStream);
-            BZOJ1018 solver = new BZOJ1018();
+            VeryShortProblem solver = new VeryShortProblem();
             solver.solve(1, in, out);
             out.close();
         }
     }
 
-    static class BZOJ1018 {
-        int C;
+    static class VeryShortProblem {
+        Debug debug = new Debug(false);
+        boolean error = false;
+        String s;
+        int offset;
 
         public void solve(int testNumber, FastInput in, FastOutput out) {
-            C = in.ri();
+            try {
+                BufferedReader bis = new BufferedReader(new InputStreamReader(in.getInputStream()));
+                int step = 0;
+                while (true) {
+                    step++;
 
-            DynamicConnectivity dc = new DynamicConnectivity(2 * C, 100000);
-            while (true) {
-                String cmd = in.rs();
-                if (cmd.equals("Exit")) {
-                    return;
-                }
-                int x = in.ri() - 1;
-                int y = in.ri() - 1;
-                int a = in.ri() - 1;
-                int b = in.ri() - 1;
-                int id1 = id(x, y);
-                int id2 = id(a, b);
-                if (cmd.equals("Open")) {
-                    dc.addEdge(id1, id2);
-                } else if (cmd.equals("Close")) {
-                    dc.deleteEdge(id1, id2);
-                } else {
-                    if (dc.check(id1, id2)) {
-                        out.println("Y");
-                    } else {
-                        out.println("N");
+                    if (step >= 10000) {
+                        //  while(true) {}
                     }
-                }
-            }
-        }
+                    //in.skipOneEmptyLine();
 
-        public int id(int a, int b) {
-            return a * C + b;
-        }
-
-    }
-
-    static class LongObjectHashMap<V> {
-        private int[] slot;
-        private int[] next;
-        private long[] keys;
-        private Object[] values;
-        private int alloc;
-        private boolean[] removed;
-        private int mask;
-        private int size;
-        private boolean rehash;
-        private Hasher hasher = new Hasher();
-        private int[] version;
-        private int now;
-
-        private void access(int i) {
-            if (version[i] != now) {
-                slot[i] = 0;
-                version[i] = now;
-            }
-        }
-
-        public LongObjectHashMap(int cap, boolean rehash) {
-            this.mask = (1 << (32 - Integer.numberOfLeadingZeros(cap - 1))) - 1;
-            slot = new int[mask + 1];
-            version = new int[mask + 1];
-            next = new int[cap + 1];
-            keys = new long[cap + 1];
-            values = new Object[cap + 1];
-            removed = new boolean[cap + 1];
-            this.rehash = rehash;
-        }
-
-        private void doubleCapacity() {
-            int newSize = Math.max(next.length + 10, next.length * 2);
-            next = Arrays.copyOf(next, newSize);
-            keys = Arrays.copyOf(keys, newSize);
-            values = Arrays.copyOf(values, newSize);
-            removed = Arrays.copyOf(removed, newSize);
-        }
-
-        private void rehash() {
-            int[] newSlots = new int[Math.max(16, slot.length * 2)];
-            int[] newVersions = new int[newSlots.length];
-            int newMask = newSlots.length - 1;
-            for (int i = 0; i < slot.length; i++) {
-                access(i);
-                if (slot[i] == 0) {
-                    continue;
-                }
-                int head = slot[i];
-                while (head != 0) {
-                    int n = next[head];
-                    int s = hash(keys[head]) & newMask;
-                    next[head] = newSlots[s];
-                    newSlots[s] = head;
-                    head = n;
-                }
-            }
-            this.slot = newSlots;
-            this.mask = newMask;
-            this.version = newVersions;
-            now = 0;
-        }
-
-        private void alloc() {
-            alloc++;
-            if (alloc >= next.length) {
-                doubleCapacity();
-            }
-            next[alloc] = 0;
-            removed[alloc] = false;
-            values[alloc] = null;
-            size++;
-        }
-
-        private int hash(long x) {
-            return hasher.hash(x);
-        }
-
-        public void put(long x, V y) {
-            int h = hash(x);
-            int s = h & mask;
-            access(s);
-            if (slot[s] == 0) {
-                alloc();
-                slot[s] = alloc;
-                keys[alloc] = x;
-                values[alloc] = y;
-            } else {
-                int index = findIndexOrLastEntry(s, x);
-                if (keys[index] != x) {
-                    alloc();
-                    next[index] = alloc;
-                    keys[alloc] = x;
-                    values[alloc] = y;
-                } else {
-                    values[index] = y;
-                }
-            }
-            if (rehash && size >= slot.length) {
-                rehash();
-            }
-        }
-
-        public boolean containKey(long x) {
-            int h = hash(x);
-            int s = h & mask;
-            access(s);
-            if (slot[s] == 0) {
-                return false;
-            }
-            return keys[findIndexOrLastEntry(s, x)] == x;
-        }
-
-        public V remove(long x) {
-            int h = hash(x);
-            int s = h & mask;
-            access(s);
-            if (slot[s] == 0) {
-                return null;
-            }
-            int pre = 0;
-            int index = slot[s];
-            while (keys[index] != x) {
-                pre = index;
-                if (next[index] != 0) {
-                    index = next[index];
-                } else {
-                    break;
-                }
-            }
-            if (keys[index] != x) {
-                return null;
-            }
-            if (slot[s] == index) {
-                slot[s] = next[index];
-            } else {
-                next[pre] = next[index];
-            }
-            removed[index] = true;
-            size--;
-            return (V) values[index];
-        }
-
-        private int findIndexOrLastEntry(int s, long x) {
-            int iter = slot[s];
-            while (keys[iter] != x) {
-                if (next[iter] != 0) {
-                    iter = next[iter];
-                } else {
-                    return iter;
-                }
-            }
-            return iter;
-        }
-
-        public LongObjectEntryIterator<V> iterator() {
-            return new LongObjectEntryIterator() {
-                int index = 1;
-                int readIndex = -1;
-
-
-                public boolean hasNext() {
-                    while (index <= alloc && removed[index]) {
-                        index++;
+                    String number = bis.readLine();
+                    debug.debug("number", number);
+                    if (number.equals("#")) {
+                        break;
                     }
-                    return index <= alloc;
-                }
+                    int digit = Integer.parseInt(bis.readLine());
 
-
-                public long getEntryKey() {
-                    return keys[readIndex];
-                }
-
-
-                public Object getEntryValue() {
-                    return values[readIndex];
-                }
-
-
-                public void next() {
-                    if (!hasNext()) {
-                        throw new IllegalStateException();
+                    setString(number);
+                    BigDecimal value = null;
+                    try {
+                        value = readRealNumber();
+                    } catch (IllegalArgumentException e) {
                     }
-                    readIndex = index;
-                    index++;
+                    if (!isGoodEnd()) {
+                        out.println("Not a floating point number");
+                        continue;
+                    }
+
+                    value = value.setScale(digit, RoundingMode.DOWN);
+                    if (value.equals(BigDecimal.ZERO)) {
+                        value = BigDecimal.ZERO;
+                    }
+                    StringBuilder builder = new StringBuilder();
+                    builder.append(value.toPlainString());
+                    if (digit > 0) {
+                        int addition = digit;
+                        int index = builder.indexOf(".");
+                        if (index < 0) {
+                            builder.append(".");
+                        } else {
+                            addition = digit - (builder.length() - 1 - index);
+                        }
+                        for (int i = 0; i < addition; i++) {
+                            builder.append('0');
+                        }
+                    }
+                    if (builder.length() >= 1000) {
+                        while (true) {
+                        }
+                    }
+                    out.println(builder);
                 }
-            };
+            } catch (IOException e) {
+            }
         }
 
-        public String toString() {
-            LongObjectEntryIterator<V> iterator = iterator();
-            StringBuilder builder = new StringBuilder("{");
-            while (iterator.hasNext()) {
-                iterator.next();
-                builder.append(iterator.getEntryKey()).append("->").append(iterator.getEntryValue()).append(',');
+        public boolean isDigit() {
+            return peek() >= '0' && peek() <= '9';
+        }
+
+        public int readDigit() {
+            addAssert(isDigit());
+            return read() - '0';
+        }
+
+        public boolean isUnsignedIntegerNumber() {
+            return isDigit();
+        }
+
+        public String readUnsignedIntegerNumber() {
+            addAssert(isUnsignedIntegerNumber());
+            StringBuilder builder = new StringBuilder();
+            while (isDigit()) {
+                builder.append(readDigit());
             }
-            if (builder.charAt(builder.length() - 1) == ',') {
-                builder.setLength(builder.length() - 1);
-            }
-            builder.append('}');
             return builder.toString();
         }
 
-    }
-
-    static class DynamicConnectivity {
-        DynamicConnectivity.EulerTourTree[] levels;
-        int n;
-        int log2;
-        LongObjectHashMap<DynamicConnectivity.EdgeInfo> map;
-
-        public DynamicConnectivity(int n, int m) {
-            this.n = n;
-            this.log2 = 32 - Integer.numberOfLeadingZeros(n - 1);
-            levels = new DynamicConnectivity.EulerTourTree[log2 + 1];
-            for (int i = 1; i <= log2; i++) {
-                levels[i] = new DynamicConnectivity.EulerTourTree(n, 0);
-                levels[i].id = i;
-            }
-            map = new LongObjectHashMap<>(m, true);
+        public boolean isSign() {
+            return peek() == '+' || peek() == '-';
         }
 
-        public boolean check(int i, int j) {
-            if (i == j) {
-                return true;
-            }
-            int r1 = levels[log2].rootOf(i);
-            int r2 = levels[log2].rootOf(j);
-            return r1 == r2;
+        public int readSign() {
+            return read() == '+' ? 1 : -1;
         }
 
-        public void addEdge(int i, int j) {
-            DynamicConnectivity.EdgeInfo info = new DynamicConnectivity.EdgeInfo();
-            info.a = i;
-            info.b = j;
-            info.level = log2 + 1;
-            map.put(idOfEdge(i, j), info);
-            pushDownEdge(info, levels[log2].rootOf(info.a) != levels[log2].rootOf(info.b));
+        public boolean isIntegerNumber() {
+            return isUnsignedIntegerNumber() || isSign();
         }
 
-        private void pushDownEdge(DynamicConnectivity.EdgeInfo info, boolean link) {
-            info.level--;
-            if (info.level == 0) {
-                return;
-            }
-
-            addEdgeChain(info);
-            if (link) {
-                levels[info.level].link(info);
+        public void addAssert(boolean val) {
+            if (!val) {
+                error = true;
+                throw new IllegalArgumentException();
             }
         }
 
-        private void addEdgeChain(DynamicConnectivity.EdgeInfo info) {
-            DynamicConnectivity.EdgeChain chain1 = new DynamicConnectivity.EdgeChain(info);
-            DynamicConnectivity.EdgeChain chain2 = new DynamicConnectivity.EdgeChain(info);
-            DynamicConnectivity.Splay.splay(levels[info.level].nodes[info.a]);
-            levels[info.level].nodes[info.a].addEdge(chain1);
-            levels[info.level].nodes[info.a].pushUp();
-            DynamicConnectivity.Splay.splay(levels[info.level].nodes[info.b]);
-            levels[info.level].nodes[info.b].addEdge(chain2);
-            levels[info.level].nodes[info.b].pushUp();
+        public BigInteger readIntegerNumber() {
+            addAssert(isIntegerNumber());
+            if (isUnsignedIntegerNumber()) {
+                return new BigInteger(readUnsignedIntegerNumber());
+            }
+            int sign = readSign();
+            BigInteger ans = new BigInteger(readUnsignedIntegerNumber());
+            if (sign < 0) {
+                ans = ans.negate();
+            }
+            return ans;
         }
 
-        public void deleteEdge(int i, int j) {
-            long idOfEdge = idOfEdge(i, j);
-            DynamicConnectivity.EdgeInfo info = map.remove(idOfEdge);
-            if (info.level == 0) {
-                return;
-            }
-
-            int curLevel = info.level;
-            info.level = -1;
-            if (!levels[log2].map.containKey(idOfEdge)) {
-                return;
-            }
-
-            for (int k = curLevel; k <= log2; k++) {
-                levels[k].cut(i, j);
-            }
-
-            for (int k = curLevel; k <= log2; k++) {
-                DynamicConnectivity.Splay ti = levels[k].nodes[i];
-                DynamicConnectivity.Splay tj = levels[k].nodes[j];
-                DynamicConnectivity.Splay.splay(ti);
-                DynamicConnectivity.Splay.splay(tj);
-
-                if (ti.size > tj.size) {
-                    DynamicConnectivity.Splay tmp = ti;
-                    ti = tj;
-                    tj = tmp;
-                }
-
-                DynamicConnectivity.Splay.splay(ti);
-                while (ti.infoWithMaxLevel != null) {
-                    ti = ti.infoWithMaxLevel;
-                    DynamicConnectivity.Splay.splay(ti);
-                    if (ti.infoWithMaxLevel.info.level < k) {
-                        break;
-                    }
-                    pushDownEdge(ti.info, true);
-                    DynamicConnectivity.Splay.splay(ti);
-                }
-                DynamicConnectivity.Splay.splay(ti);
-                while (ti.containEdge != null) {
-                    ti = ti.containEdge;
-                    DynamicConnectivity.Splay.splay(ti);
-                    DynamicConnectivity.EdgeInfo e = ti.popEdge().info;
-                    ti.pushUp();
-                    if (e.level < k) {
-                    } else if (levels[log2].rootOf(e.a) ==
-                            levels[log2].rootOf(e.b)) {
-                        if (e.level == k) {
-                            pushDownEdge(e, false);
-                        }
-                    } else {
-                        addEdgeChain(e);
-                        for (int t = k; t <= log2; t++) {
-                            levels[t].link(e);
-                        }
-                        return;
-                    }
-                    DynamicConnectivity.Splay.splay(ti);
-                }
-            }
+        public boolean isExponentSymbol() {
+            return peek() == 'e' || peek() == 'E';
         }
 
-        private static long idOfEdge(int i, int j) {
-            if (i > j) {
-                int tmp = i;
-                i = j;
-                j = tmp;
-            }
-            return (((long) i) << 32) | j;
+        public void readExponentSymbol() {
+            addAssert(isExponentSymbol());
+            read();
         }
 
-        private static class EdgeInfo {
-            int a;
-            int b;
-            int level;
-
-            public String toString() {
-                return String.format("%d -> %d", a, b);
-            }
-
+        public boolean isExponent() {
+            return isExponentSymbol();
         }
 
-        private static class EdgeChain {
-            final DynamicConnectivity.EdgeInfo info;
-            DynamicConnectivity.EdgeChain next;
-
-            private EdgeChain(DynamicConnectivity.EdgeInfo info) {
-                this.info = info;
+        public BigDecimal readExponent() {
+            addAssert(isExponent());
+            readExponentSymbol();
+            BigInteger val = readIntegerNumber();
+            BigInteger unsigned = val.abs();
+            int sign = val.signum();
+            if (unsigned.compareTo(BigInteger.valueOf(300)) >= 0) {
+                unsigned = BigInteger.valueOf(300);
             }
-
-            public String toString() {
-                if (next == null) {
-                    return info.toString();
-                }
-                return info.toString() + ", " + next.toString();
+            if (sign >= 0) {
+                return BigDecimal.valueOf(10).pow(unsigned.intValue());
             }
-
+            return new BigDecimal("0.1").pow(unsigned.intValue());
         }
 
-        public static class EulerTourTree {
-            DynamicConnectivity.Splay[] nodes;
-            int id;
-            LongObjectHashMap<DynamicConnectivity.EulerTourTree.Edge> map;
-
-            private DynamicConnectivity.Splay alloc(int id) {
-                DynamicConnectivity.Splay splay = new DynamicConnectivity.Splay();//buffer.alloc();
-                splay.id = id;
-                return splay;
-            }
-
-            public EulerTourTree(int n, int m) {
-                map = new LongObjectHashMap<>(m, true);
-                nodes = new DynamicConnectivity.Splay[n];
-                for (int i = 0; i < n; i++) {
-                    nodes[i] = alloc(i);
-                    nodes[i].node = 1;
-                    nodes[i].pushUp();
-                }
-            }
-
-            private void destroy(DynamicConnectivity.Splay s) {
-//            s.info = null;
-//            s.chain = null;
-//            s.infoWithMaxLevel = null;
-//            s.containEdge = null;
-//            buffer.release(s);
-            }
-
-            public int rootOf(int i) {
-                return rootOf(nodes[i]).id;
-            }
-
-            public void setRoot(int i) {
-                if (rootOf(i) == i) {
-                    return;
-                }
-
-                DynamicConnectivity.Splay.splay(nodes[i]);
-                DynamicConnectivity.Splay l = DynamicConnectivity.Splay.splitLeft(nodes[i]);
-                if (l == DynamicConnectivity.Splay.NIL) {
-                    return;
-                }
-                DynamicConnectivity.Splay a = DynamicConnectivity.Splay.selectMinAsRoot(l);
-                DynamicConnectivity.Splay b = DynamicConnectivity.Splay.selectMaxAsRoot(nodes[i]);
-
-                if (nodes[a.id] == a) {
-                    DynamicConnectivity.Splay.splitLeft(b);
-                    destroy(b);
-                } else {
-                    l = DynamicConnectivity.Splay.splitRight(a);
-                    destroy(a);
-                }
-
-                DynamicConnectivity.Splay newNode = alloc(i);
-                DynamicConnectivity.Splay.splay(nodes[i]);
-                DynamicConnectivity.Splay.splay(l);
-                DynamicConnectivity.Splay.merge(nodes[i], DynamicConnectivity.Splay.merge(l, newNode));
-            }
-
-            public void link(DynamicConnectivity.EdgeInfo info) {
-                int i = info.a;
-                int j = info.b;
-                setRoot(i);
-                setRoot(j);
-
-                DynamicConnectivity.EulerTourTree.Edge e = new DynamicConnectivity.EulerTourTree.Edge();
-
-                long id = idOfEdge(i, j);
-                e.a = alloc(-i * 10000 - j);
-                e.b = alloc(-i * 10000 - j);
-                e.a.info = info;
-                e.a.pushUp();
-                e.b.pushUp();
-                map.put(id, e);
-
-                DynamicConnectivity.Splay.splay(nodes[i]);
-                DynamicConnectivity.Splay.splay(nodes[j]);
-                DynamicConnectivity.Splay.merge(nodes[i], e.a);
-                DynamicConnectivity.Splay.merge(nodes[j], e.b);
-                DynamicConnectivity.Splay.splay(nodes[i]);
-                DynamicConnectivity.Splay.splay(nodes[j]);
-                DynamicConnectivity.Splay.merge(nodes[i], nodes[j]);
-
-                DynamicConnectivity.Splay newNode = alloc(i);
-                DynamicConnectivity.Splay.splay(nodes[i]);
-                DynamicConnectivity.Splay.merge(nodes[i], newNode);
-            }
-
-            private DynamicConnectivity.Splay rootOf(DynamicConnectivity.Splay x) {
-                DynamicConnectivity.Splay.splay(x);
-                return DynamicConnectivity.Splay.selectMinAsRoot(x);
-            }
-
-            public void cut(int i, int j) {
-                long id = idOfEdge(i, j);
-                DynamicConnectivity.EulerTourTree.Edge e = map.remove(id);
-
-                DynamicConnectivity.Splay.splay(e.a);
-                DynamicConnectivity.Splay al = DynamicConnectivity.Splay.splitLeft(e.a);
-                DynamicConnectivity.Splay ar = DynamicConnectivity.Splay.splitRight(e.a);
-
-
-                DynamicConnectivity.Splay l, r;
-                if (rootOf(ar) == rootOf(e.b)) {
-                    DynamicConnectivity.Splay.splay(e.b);
-                    DynamicConnectivity.Splay bl = DynamicConnectivity.Splay.splitLeft(e.b);
-                    DynamicConnectivity.Splay br = DynamicConnectivity.Splay.splitRight(e.b);
-
-                    l = al;
-                    r = br;
-                } else {
-                    DynamicConnectivity.Splay.splay(e.b);
-                    DynamicConnectivity.Splay bl = DynamicConnectivity.Splay.splitLeft(e.b);
-                    DynamicConnectivity.Splay br = DynamicConnectivity.Splay.splitRight(e.b);
-
-                    l = bl;
-                    r = ar;
-                }
-
-                DynamicConnectivity.Splay.splay(l);
-                DynamicConnectivity.Splay.splay(r);
-                l = DynamicConnectivity.Splay.selectMaxAsRoot(l);
-                r = DynamicConnectivity.Splay.selectMinAsRoot(r);
-
-                if (nodes[l.id] == l) {
-                    DynamicConnectivity.Splay rSnapshot = r;
-                    r = DynamicConnectivity.Splay.splitRight(r);
-                    destroy(rSnapshot);
-                } else {
-                    DynamicConnectivity.Splay lSnapshot = l;
-                    l = DynamicConnectivity.Splay.splitLeft(l);
-                    destroy(lSnapshot);
-                }
-
-                DynamicConnectivity.Splay.merge(l, r);
-                destroy(e.a);
-                destroy(e.b);
-            }
-
-            private static class Edge {
-                DynamicConnectivity.Splay a;
-                DynamicConnectivity.Splay b;
-
-            }
-
+        public boolean isSimpleUnsignedRealNumber() {
+            return isUnsignedIntegerNumber() || peek() == '.';
         }
 
-        public static class Splay implements Cloneable {
-            public static final DynamicConnectivity.Splay NIL = new DynamicConnectivity.Splay();
-            DynamicConnectivity.Splay left = NIL;
-            DynamicConnectivity.Splay right = NIL;
-            DynamicConnectivity.Splay father = NIL;
-            int size;
-            byte node;
-            int id;
-            DynamicConnectivity.EdgeChain chain;
-            DynamicConnectivity.EdgeInfo info;
-            DynamicConnectivity.Splay containEdge;
-            DynamicConnectivity.Splay infoWithMaxLevel;
+        public BigDecimal readFractionPart() {
+            read();
+            return new BigDecimal("0." + readUnsignedIntegerNumber());
+        }
 
-            static {
-                NIL.left = NIL;
-                NIL.right = NIL;
-                NIL.father = NIL;
-                NIL.size = 0;
-                NIL.id = -2;
+        public BigDecimal readSimpleUnsignedRealNumber() {
+            addAssert(isSimpleUnsignedRealNumber());
+            if (peek() == '.') {
+                return readFractionPart();
             }
-
-            public void addEdge(DynamicConnectivity.EdgeChain newChain) {
-                newChain.next = chain;
-                chain = newChain;
-                containEdge = this;
+            BigDecimal intPart = new BigDecimal(readUnsignedIntegerNumber());
+            if (peek() == '.') {
+                intPart = intPart.add(readFractionPart());
             }
+            return intPart;
+        }
 
-            public DynamicConnectivity.EdgeChain popEdge() {
-                DynamicConnectivity.EdgeChain head = chain;
-                chain = head.next;
-                head.next = null;
-                return head;
+        public boolean isSimpleRealNumber() {
+            return isSimpleUnsignedRealNumber() || isSign();
+        }
+
+        public BigDecimal readSimpleRealNumber() {
+            addAssert(isSimpleRealNumber());
+            if (isSimpleUnsignedRealNumber()) {
+                return readSimpleUnsignedRealNumber();
             }
-
-            public static void splay(DynamicConnectivity.Splay x) {
-                if (x == NIL) {
-                    return;
-                }
-                DynamicConnectivity.Splay y, z;
-                while ((y = x.father) != NIL) {
-                    if ((z = y.father) == NIL) {
-                        y.pushDown();
-                        x.pushDown();
-                        if (x == y.left) {
-                            zig(x);
-                        } else {
-                            zag(x);
-                        }
-                    } else {
-                        z.pushDown();
-                        y.pushDown();
-                        x.pushDown();
-                        if (x == y.left) {
-                            if (y == z.left) {
-                                zig(y);
-                                zig(x);
-                            } else {
-                                zig(x);
-                                zag(x);
-                            }
-                        } else {
-                            if (y == z.left) {
-                                zag(x);
-                                zig(x);
-                            } else {
-                                zag(y);
-                                zag(x);
-                            }
-                        }
-                    }
-                }
-
-                x.pushDown();
-                x.pushUp();
+            int sign = readSign();
+            BigDecimal value = readSimpleUnsignedRealNumber();
+            if (sign < 0) {
+                value = value.negate();
             }
+            return value;
+        }
 
-            public static void zig(DynamicConnectivity.Splay x) {
-                DynamicConnectivity.Splay y = x.father;
-                DynamicConnectivity.Splay z = y.father;
-                DynamicConnectivity.Splay b = x.right;
-
-                y.setLeft(b);
-                x.setRight(y);
-                z.changeChild(y, x);
-
-                y.pushUp();
+        public BigDecimal readRealNumber() {
+            BigDecimal real = readSimpleRealNumber();
+            if (isExponent()) {
+                real = real.multiply(readExponent());
             }
+            return real;
+        }
 
-            public static void zag(DynamicConnectivity.Splay x) {
-                DynamicConnectivity.Splay y = x.father;
-                DynamicConnectivity.Splay z = y.father;
-                DynamicConnectivity.Splay b = x.left;
+        public boolean isGoodEnd() {
+            return !error && offset == s.length();
+        }
 
-                y.setRight(b);
-                x.setLeft(y);
-                z.changeChild(y, x);
+        public void setString(String s) {
+            this.s = s;
+            offset = 0;
+            error = false;
+        }
 
-                y.pushUp();
-            }
+        public int peek() {
+            return offset >= s.length() ? -1 : s.charAt(offset);
+        }
 
-            public void setLeft(DynamicConnectivity.Splay x) {
-                left = x;
-                x.father = this;
-            }
-
-            public void setRight(DynamicConnectivity.Splay x) {
-                right = x;
-                x.father = this;
-            }
-
-            public void changeChild(DynamicConnectivity.Splay y, DynamicConnectivity.Splay x) {
-                if (left == y) {
-                    setLeft(x);
-                } else {
-                    setRight(x);
-                }
-            }
-
-            public void pushUp() {
-                if (this == NIL) {
-                    return;
-                }
-                size = left.size + right.size + node;
-
-                containEdge = null;
-                if (chain != null) {
-                    containEdge = this;
-                } else if (left.containEdge != null) {
-                    containEdge = left.containEdge;
-                } else {
-                    containEdge = right.containEdge;
-                }
-
-                infoWithMaxLevel = null;
-                if (info != null) {
-                    infoWithMaxLevel = this;
-                }
-                if (left.infoWithMaxLevel != null &&
-                        (infoWithMaxLevel == null || infoWithMaxLevel.info.level < left.infoWithMaxLevel.info.level)) {
-                    infoWithMaxLevel = left.infoWithMaxLevel;
-                }
-                if (right.infoWithMaxLevel != null &&
-                        (infoWithMaxLevel == null || infoWithMaxLevel.info.level < right.infoWithMaxLevel.info.level)) {
-                    infoWithMaxLevel = right.infoWithMaxLevel;
-                }
-            }
-
-            public void pushDown() {
-            }
-
-            public static void toString(DynamicConnectivity.Splay root, StringBuilder builder) {
-                if (root == NIL) {
-                    return;
-                }
-                root.pushDown();
-                toString(root.left, builder);
-                builder.append(root.id).append(',');
-                toString(root.right, builder);
-            }
-
-            public DynamicConnectivity.Splay clone() {
-                try {
-                    return (DynamicConnectivity.Splay) super.clone();
-                } catch (CloneNotSupportedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-
-            public static DynamicConnectivity.Splay cloneTree(DynamicConnectivity.Splay splay) {
-                if (splay == NIL) {
-                    return NIL;
-                }
-                splay = splay.clone();
-                splay.left = cloneTree(splay.left);
-                splay.right = cloneTree(splay.right);
-                return splay;
-            }
-
-            public static DynamicConnectivity.Splay selectMinAsRoot(DynamicConnectivity.Splay root) {
-                if (root == NIL) {
-                    return root;
-                }
-                root.pushDown();
-                while (root.left != NIL) {
-                    root = root.left;
-                    root.pushDown();
-                }
-                splay(root);
-                return root;
-            }
-
-            public static DynamicConnectivity.Splay selectMaxAsRoot(DynamicConnectivity.Splay root) {
-                if (root == NIL) {
-                    return root;
-                }
-                root.pushDown();
-                while (root.right != NIL) {
-                    root = root.right;
-                    root.pushDown();
-                }
-                splay(root);
-                return root;
-            }
-
-            public static DynamicConnectivity.Splay splitLeft(DynamicConnectivity.Splay root) {
-                root.pushDown();
-                DynamicConnectivity.Splay left = root.left;
-                left.father = NIL;
-                root.setLeft(NIL);
-                root.pushUp();
-                return left;
-            }
-
-            public static DynamicConnectivity.Splay splitRight(DynamicConnectivity.Splay root) {
-                root.pushDown();
-                DynamicConnectivity.Splay right = root.right;
-                right.father = NIL;
-                root.setRight(NIL);
-                root.pushUp();
-                return right;
-            }
-
-            public static DynamicConnectivity.Splay merge(DynamicConnectivity.Splay a, DynamicConnectivity.Splay b) {
-                if (a == NIL) {
-                    return b;
-                }
-                if (b == NIL) {
-                    return a;
-                }
-                a = selectMaxAsRoot(a);
-                a.setRight(b);
-                a.pushUp();
-                return a;
-            }
-
-            public String toString() {
-                StringBuilder builder = new StringBuilder().append(id).append(":");
-                toString(cloneTree(this), builder);
-                return builder.toString();
-            }
-
+        public int read() {
+            return s.charAt(offset++);
         }
 
     }
@@ -880,7 +302,17 @@ public class Main {
             return this;
         }
 
+        public FastOutput append(Object c) {
+            cache.append(c);
+            afterWrite();
+            return this;
+        }
+
         public FastOutput println(String c) {
+            return append(c).println();
+        }
+
+        public FastOutput println(Object c) {
             return append(c).println();
         }
 
@@ -935,106 +367,34 @@ public class Main {
 
     }
 
+    static class Debug {
+        private boolean offline;
+        private PrintStream out = System.err;
+
+        public Debug(boolean enable) {
+            offline = enable && System.getSecurityManager() == null;
+        }
+
+        public Debug debug(String name, String x) {
+            if (offline) {
+                out.printf("%s=%s", name, x);
+                out.println();
+            }
+            return this;
+        }
+
+    }
+
     static class FastInput {
         private final InputStream is;
-        private StringBuilder defaultStringBuf = new StringBuilder(1 << 13);
-        private byte[] buf = new byte[1 << 13];
-        private int bufLen;
-        private int bufOffset;
-        private int next;
 
         public FastInput(InputStream is) {
             this.is = is;
         }
 
-        private int read() {
-            while (bufLen == bufOffset) {
-                bufOffset = 0;
-                try {
-                    bufLen = is.read(buf);
-                } catch (IOException e) {
-                    bufLen = -1;
-                }
-                if (bufLen == -1) {
-                    return -1;
-                }
-            }
-            return buf[bufOffset++];
+        public InputStream getInputStream() {
+            return is;
         }
-
-        public void skipBlank() {
-            while (next >= 0 && next <= 32) {
-                next = read();
-            }
-        }
-
-        public int ri() {
-            return readInt();
-        }
-
-        public int readInt() {
-            boolean rev = false;
-
-            skipBlank();
-            if (next == '+' || next == '-') {
-                rev = next == '-';
-                next = read();
-            }
-
-            int val = 0;
-            while (next >= '0' && next <= '9') {
-                val = val * 10 - next + '0';
-                next = read();
-            }
-
-            return rev ? val : -val;
-        }
-
-        public String rs() {
-            return readString();
-        }
-
-        public String readString(StringBuilder builder) {
-            skipBlank();
-
-            while (next > 32) {
-                builder.append((char) next);
-                next = read();
-            }
-
-            return builder.toString();
-        }
-
-        public String readString() {
-            defaultStringBuf.setLength(0);
-            return readString(defaultStringBuf);
-        }
-
-    }
-
-    static class Hasher {
-        private final long time = System.nanoTime() + System.currentTimeMillis() * 31L;
-
-        public int shuffle(long z) {
-            z += time;
-            z = (z ^ (z >>> 33)) * 0x62a9d9ed799705f5L;
-            return (int) (((z ^ (z >>> 28)) * 0xcb24d0a5c88c35b3L) >>> 32);
-        }
-
-        public int hash(long x) {
-            return shuffle(x);
-        }
-
-    }
-
-    static interface LongObjectEntryIterator<V> {
-        boolean hasNext();
-
-        void next();
-
-        long getEntryKey();
-
-        V getEntryValue();
 
     }
 }

@@ -30,7 +30,7 @@ public class LCTNode {
         pushUp();
     }
 
-    public static void access(LCTNode x) {
+    public static LCTNode access(LCTNode x) {
         LCTNode last = NIL;
         while (x != NIL) {
             splay(x);
@@ -44,6 +44,7 @@ public class LCTNode {
             last = x;
             x = x.treeFather;
         }
+        return last;
     }
 
     public static void makeRoot(LCTNode x) {
@@ -210,21 +211,13 @@ public class LCTNode {
             return a;
         }
         access(a);
-        splay(a);
-        access(b);
-        splay(b);
-        if (a.treeFather != NIL) {
-            return a.treeFather;
-        }
-        if (a.father != NIL) {
-            //in same splay
-            return a;
-        }
-        return NIL;
+        return access(b);
     }
 
     public static boolean connected(LCTNode a, LCTNode b) {
-        return lca(a, b) != NIL;
+        makeRoot(a);
+        access(b);
+        return findRoot(b) == a;
 //        makeRoot(a);
 //        access(b);
 //        splay(b);

@@ -18,6 +18,7 @@ public class EulerTourTree {
     private Splay alloc(int id) {
         Splay splay = new Splay();//buffer.alloc();
         splay.id = id;
+        splay.pushUp();
         return splay;
     }
 

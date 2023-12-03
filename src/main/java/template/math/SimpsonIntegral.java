@@ -1,6 +1,19 @@
 package template.math;
 
 public class SimpsonIntegral {
+
+    public static void main(String[] args) {
+        System.out.println(
+                new SimpsonIntegral(1e-10, x -> {
+                    var sin = Math.sin(x);
+                    var cos = Math.cos(x);
+                    return (1 + cos) * (1 + cos) * sin * sin * (-sin * cos - (1 + cos) * sin);
+                }).integral(0, Math.PI / 2)
+        );
+
+        System.out.println((15.0 / 48 * Math.PI - 2.0 / 3) * Math.PI);
+    }
+
     private final double eps;
     private Function function;
     private final double threshold;

@@ -238,6 +238,9 @@ public class FastInput {
     }
 
     public int readLine(char[] data, int offset) {
+        if (next == 0) {
+            next = read();
+        }
         int originalOffset = offset;
         while (next != -1 && next != '\n' && next != '\r') {
             data[offset++] = (char) next;
@@ -247,6 +250,9 @@ public class FastInput {
     }
 
     public void readLine(StringBuilder builder) {
+        if (next == 0) {
+            next = read();
+        }
         while (next != -1 && next != '\n' && next != '\r') {
             builder.append((char) next);
             next = read();
@@ -255,6 +261,15 @@ public class FastInput {
 
     public void skipEmptyLine() {
         while (next == '\r' || next == '\n') {
+            next = read();
+        }
+    }
+
+    public void skipOneEmptyLine() {
+        if(next == '\r') {
+            next = read();
+        }
+        if(next == '\n') {
             next = read();
         }
     }
@@ -354,11 +369,23 @@ public class FastInput {
         return is;
     }
 
-    public String[] readAll() {
+    public String[] readAllToken() {
         List<String> res = new ArrayList<>();
         while (hasMore()) {
             res.add(rs());
         }
         return res.toArray(new String[0]);
+    }
+
+    public String readAll() {
+        StringBuilder ans = new StringBuilder();
+        if (next == 0) {
+            next = read();
+        }
+        while (next >= 0) {
+            ans.append((char) next);
+            next = read();
+        }
+        return ans.toString();
     }
 }

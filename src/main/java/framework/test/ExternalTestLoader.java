@@ -17,23 +17,36 @@ public class ExternalTestLoader {
         return whole;
     }
 
+    private static void dfs(File root, Map<String, String> input, Map<String, String> output) {
+        if (root.isFile()) {
+            if (root.getName().endsWith(".in")) {
+                input.put(getFileName(root.getName()),
+                        FileUtils.readFile(root));
+            } else if (root.getName().endsWith(".out")) {
+                output.put(getFileName(root.getName()),
+                        FileUtils.readFile(root));
+            }
+            return;
+        }
+        for (File file : root.listFiles()) {
+            dfs(file, input, output);
+        }
+    }
 
     private static Comparator<String> sortByLenThenByVal = Comparator.<String>comparingInt(x -> x.length())
             .thenComparing(Comparator.naturalOrder());
+
     public static List<Test> loadLocalTests() {
         Map<String, String> input = new TreeMap<>(sortByLenThenByVal);
         Map<String, String> output = new TreeMap<>(sortByLenThenByVal);
-        for (File file : root.listFiles()) {
-            if (file.getName().endsWith(".in")) {
-                input.put(getFileName(file.getName()),
-                        FileUtils.readFile(file));
-            } else {
-                output.put(getFileName(file.getName()),
-                        FileUtils.readFile(file));
-            }
-        }
+        dfs(root, input, output);
+
         List<Test> ans = new ArrayList<>();
+
         for (String key : input.keySet()) {
+            if (!output.containsKey(key)) {
+                continue;
+            }
             ans.add(new Test(input.get(key), output.get(key)));
         }
         return ans;

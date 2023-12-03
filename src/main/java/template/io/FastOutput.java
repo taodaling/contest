@@ -79,8 +79,9 @@ public class FastOutput implements AutoCloseable, Closeable, Appendable {
     static DecimalFormat defaultDoubleFormat = new DecimalFormat("#.############");
     DecimalFormat doubleFormat = defaultDoubleFormat;
 
-    public void setDoubleFormat(DecimalFormat df){
+    public FastOutput setDoubleFormat(DecimalFormat df){
         this.doubleFormat = df;
+        return this;
     }
 
     public FastOutput append(float c) {

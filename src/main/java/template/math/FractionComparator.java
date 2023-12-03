@@ -7,6 +7,21 @@ public class FractionComparator {
     /**
      * compare a / b and c / d
      */
+    public static int compare(int a, int b, int c, int d) {
+        if(b < 0) {
+            a = -a;
+            b = -b;
+        }
+        if(d < 0) {
+            c = -c;
+            d = -d;
+        }
+        return Long.compare((long)a * d, (long)c * b);
+    }
+
+    /**
+     * compare a / b and c / d
+     */
     public static int compare(long a, long b, long c, long d) {
         if (b < 0) {
             a = -a;
